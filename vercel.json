@@ -1,0 +1,4 @@
+{
+  "cleanUrls": true,
+  "rewrites": [{ "source": "/", "destination": "/c8-module2-map.html" }]
+}

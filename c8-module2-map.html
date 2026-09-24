@@ -9,8 +9,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
 <style>
 :root{
   --bg:#F4F3EF; --bg2:#EDEBE5; --card:#FFFFFF; --ink:#1B1B1B; --ink2:#5A5A5A; --ink3:#8A8A8A; --line:#E2E0DA;
@@ -519,7 +517,51 @@ body.drive .dkeys{display:flex}
 </div>
 
 <script>
-(function(){
+/* ============ Schedule sheet (the database for this page) ============ */
+var SHEET_ID = '1Kg6T-dJWaYx_JCPiRk3u0nBuAQcsCVRDPj1NFKP4WzM';
+var SHEET_URL = 'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&headers=0';
+function parseCSV(text){
+  var rows=[], row=[], cell='', q=false, i=0, c;
+  text = text.replace(/^﻿/,'');
+  for(; i<text.length; i++){
+    c = text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){ cell+='"'; i++; } else q=false; } else cell+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ row.push(cell); cell=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&text[i+1]==='\n') i++; row.push(cell); rows.push(row); row=[]; cell=''; }
+    else cell+=c;
+  }
+  if(cell!==''||row.length){ row.push(cell); rows.push(row); }
+  return rows;
+}
+function parseSheet(text){
+  var rows = parseCSV(text), hi=-1;
+  for(var i=0;i<rows.length;i++){ if(/^lecture title$/i.test((rows[i][1]||'').trim())){ hi=i; break; } }
+  if(hi<0) return null;
+  var start=null; for(var j=0;j<hi;j++){ if(/\d{4}/.test(rows[j][0]||'')){ start=rows[j][0].trim(); break; } }
+  var out={start:start, lectures:[], events:[]};
+  rows.slice(hi+1).forEach(function(r){
+    var g=function(k){ return (r[k]||'').trim(); };
+    var title=g(1); if(!title) return;
+    var rec={date:g(0), title:title, type:g(2), tools:g(3), arc:g(4), can:g(5), done:g(6), prep:g(7), owner:g(8), status:g(9)};
+    var m=title.match(/^(\d+)\.\s*(.+)$/);
+    if(m){ rec.n=+m[1]; rec.title=m[2].trim(); out.lectures.push(rec); } else out.events.push(rec);
+  });
+  return out;
+}
+function loadSheet(){
+  var Q = new URLSearchParams(location.search);
+  if(Q.get('sheet')==='0' || !window.fetch) return Promise.resolve(null);
+  var ctl = window.AbortController ? new AbortController() : null;
+  var tm = setTimeout(function(){ if(ctl) ctl.abort(); }, 7000);
+  return fetch(SHEET_URL+'&_='+Date.now(), {signal: ctl?ctl.signal:undefined, cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error('sheet '+r.status); return r.text(); })
+    .then(parseSheet)
+    .catch(function(e){ console.warn('Schedule sheet unavailable, using the built-in copy.', e); return null; })
+    .then(function(v){ clearTimeout(tm); return v; });
+}
+
+function main(SHEET){
 'use strict';
 if(!window.d3){ document.body.innerHTML = '<p style="font:16px sans-serif;padding:24px">The map needs an internet connection to load. Please reload.</p>'; return; }
 
@@ -637,11 +679,46 @@ var STOPS = [
     can:'Connect the deterministic, probabilistic and human pieces into an agent, and decide where the human stays in command.',kw:'agents human in the loop intuition'},
   {id:'ns',kind:'ns',x:3540,y:900}
 ];
+/* ============ Merge the sheet into the stops ============ */
+var EVENTS = [];
+var SHEET_OK = false;
+function parseDay(str){ var m=String(str||'').match(/(\d{1,2})\s+([A-Za-z]{3})[A-Za-z]*\s+(\d{4})/); if(!m) return null; var mi=MO.indexOf(m[2].slice(0,1).toUpperCase()+m[2].slice(1,3).toLowerCase()); return mi<0?null:d(+m[3],mi+1,+m[1]); }
+function typeLabel(t){ t=String(t||'').toLowerCase(); var th=/theory/.test(t), pr=/practical/.test(t); if(th&&pr) return 'Theory and practical'; if(pr) return 'Practical'; if(th) return 'Theory'; return t?t.charAt(0).toUpperCase()+t.slice(1):''; }
+function tidyDone(t){ return String(t||'').replace(/^ARC\s*\d+\s*DONE EQUALS:\s*/i,'Done means: ').replace(/\s*\n+\s*/g,' ').replace(/\.?\s*(Public moment \d+):\s*(.+?)\.?$/i,'. $1: $2.').trim(); }
+function applySheet(sh){
+  if(!sh || !sh.lectures.length) return;
+  var st = parseDay(sh.start); if(st){ START=st; WEEK = TODAY<START ? 0 : Math.min(12, Math.floor(days(START,TODAY)/7)+1); }
+  var byN = {}; STOPS.forEach(function(s){ if(s.n) byN[s.n]=s; });
+  sh.lectures.forEach(function(r){
+    var s = byN[r.n]; if(!s){ console.warn('Sheet lecture '+r.n+' has no stop on the map yet: '+r.title); return; }
+    var dt = parseDay(r.date);
+    if(r.title) s.t = r.title;
+    if(r.type) s.type = typeLabel(r.type);
+    if(dt){ s.sheetDate = dt; s.w = Math.max(1, Math.floor(days(START,dt)/7)+1); s.d = WD[dt.getDay()]; }
+    var tools = r.tools && !/^none$/i.test(r.tools) ? r.tools : (r.tools ? '' : null);
+    if(tools!==null){ if(s.nocode) s.nocode.tools = tools; else s.tools = tools||undefined; }
+    if(r.can){ if(s.nocode) s.nocode.can = r.can; else s.can = r.can; }
+    if(r.done){
+      if(/^THE CLIFF\b/i.test(r.done)){ var ct=r.done.replace(/^THE CLIFF:?\s*/i,''); ct=ct.charAt(0).toUpperCase()+ct.slice(1); if(s.nocode) s.nocode.cliff=ct; else s.cliff=ct; }
+      else s.done = tidyDone(r.done);
+    }
+    if(r.prep) s.prep = r.prep;
+    if(r.owner) s.owner = r.owner;
+    if(r.status) s.sheetStatus = r.status;
+    if(r.arc) s.arc = r.arc;
+    s.fromSheet = true;
+  });
+  sh.events.forEach(function(r){ var dt=parseDay(r.date); if(!dt) return; EVENTS.push({t:r.title, type:r.type||'Event', date:dt, done:r.done, prep:r.prep}); });
+  EVENTS.sort(function(a,b){ return a.date-b.date; });
+  SHEET_OK = true;
+}
+applySheet(SHEET);
+
 var ST = {};
 var CHECKS = [];
 STOPS.forEach(function(s,i){
   s.i = i; ST[s.id] = s;
-  if(s.n){ s.kind='lec'; s.num=String(s.n); s.date=dateFor(s.w,s.d); }
+  if(s.n){ s.kind='lec'; s.num=String(s.n); s.date=s.sheetDate||dateFor(s.w,s.d); }
   if(s.done){ s.cp = CHECKS.length; CHECKS.push(s); }
 });
 REGIONS.forEach(function(r){ r.stops.forEach(function(id){ ST[id].region=r; ST[id].cont=CONTS[r.c]; }); });
@@ -930,12 +1007,13 @@ function stopCard(s, focus){
   var C=s.cont, st=status(s), v=variant(s), can=(v&&v.can)||s.can||(s.nocode&&s.nocode.can);
   var kick = s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w : s.kind==='camp' ? 'Base camp · Week 0' : 'Intuition · Weeks 11 to 12';
   var h = '<h2 id="ptitle">'+esc(s.t)+'</h2>';
-  h += '<div class="pills"><span class="pill '+(st.hot?'hot':st.cls==='st-held'?'ok':'')+'">'+(st.cls==='st-held'?'✓ ':'')+esc(st.txt)+'</span><span class="pill">'+esc(s.type)+'</span><button type="button" class="pill terr" data-cont="'+C.id+'" style="cursor:pointer">'+esc(C.name)+' · '+esc(C.verif)+'</button></div>';
+  h += '<div class="pills"><span class="pill '+(st.hot?'hot':st.cls==='st-held'?'ok':'')+'">'+(st.cls==='st-held'?'✓ ':'')+esc(st.txt)+'</span><span class="pill">'+esc(s.type)+'</span><button type="button" class="pill terr" data-cont="'+C.id+'" style="cursor:pointer">'+esc(C.name)+' · '+esc(C.verif)+'</button>'+(s.owner?'<span class="pill">Led by '+esc(s.owner)+'</span>':'')+'</div>';
   if(s.kind==='p3' && !P3_UNLOCKED) h += '<p>This territory is under fog until Lecture 18 is done on Fri 20 Nov. You will know what the rules and judgment territories can and cannot verify before you get here.</p>';
   h += '<div class="can"><b>You will be able to</b><span>'+esc(can)+'</span></div>';
   h += toolsHTML(s);
-  var cl = s.nocode && track!=='code' && s.nocode.cliff;
+  var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
   if(cl) h += '<div class="cliff"><b>THE CLIFF</b>'+esc(cl)+'</div>';
+  if(s.prep) h += '<h3>Prep notes</h3><p>'+esc(s.prep)+'</p>';
   if(s.done){
     var open=cpOpen(s), on=cpDone(s);
     h += '<div class="cp"><div class="h">'+FLAG.replace('class="flag"','')+'Checkpoint '+(s.cp+1)+' of '+CHECKS.length+'</div>'+esc(s.done)+
@@ -970,6 +1048,9 @@ function directionsCard(onlyChecks){
   else h += '<div class="stats"><div><b>12</b><i>weeks</i></div><div><b>18</b><i>lectures</i></div><div><b>'+CHECKS.length+'</b><i>checkpoints</i></div></div>';
   var last=null;
   list.forEach(function(s){ if(s.cont!==last){ last=s.cont; h += '<div class="grp" style="--ci:'+s.cont.ci+';--soft:'+s.cont.soft+'">'+esc(s.cont.name)+' · '+esc(s.cont.verif)+'</div>'; } h += rowHTML(s); });
+  if(!onlyChecks && EVENTS.length){
+    h += '<div class="grp" style="--ci:#1B1B1B;--soft:#EDEBE5">Also on the calendar</div><div class="rows">'+EVENTS.map(function(e){ var past=e.date<TODAY; return '<div class="row '+(past?'st-held':'st-up')+'" style="--c:#1B1B1B;--ci:#1B1B1B;cursor:default"><span class="rd">·</span><span><b>'+esc(e.t)+'</b><i>'+esc(e.type)+(e.done?' · '+esc(e.done):'')+'</i></span><span class="rt">'+(past?'✓ ':'')+esc(fmt(e.date))+'</span></div>'; }).join('')+'</div>';
+  }
   openPanel(onlyChecks?'checks':'dir', onlyChecks?CHECKS.filter(cpDone).length+' of '+CHECKS.length+' planted':'Directions', NEUTRAL, h);
 }
 function starCard(){
@@ -1174,7 +1255,8 @@ if(hash && ST[hash]){ setTimeout(function(){ selectStop(hash); }, 60); }
 else if(hash==='process'){ setTimeout(openProcess, 60); }
 
 /* ============ Drive mode (desktop, 3D) ============ */
-(function(){
+/* Off by default. Nothing 3D is downloaded unless the page is opened with ?view=drive. */
+function initDrive(){
 var viewChip = document.getElementById('viewChip');
 var canDrive = !!(window.THREE && window.CANNON) && matchMedia('(min-width: 900px) and (pointer: fine)').matches && (function(){ try{ var c=document.createElement('canvas'); return !!(c.getContext('webgl')||c.getContext('experimental-webgl')); }catch(e){ return false; } })();
 if(!canDrive) return;
@@ -1636,9 +1718,18 @@ viewChip.addEventListener('click', function(){ enterDrive(); });
 document.getElementById('toMap').addEventListener('click', function(){ exitDrive(); });
 document.getElementById('dMap').addEventListener('click', function(){ load.classList.remove('on'); exitDrive(); });
 document.getElementById('dOver').addEventListener('click', function(){ overviewOn=!overviewOn; });
-if(sget('c8m2-view')!=='map' && params.get('view')!=='map') enterDrive();
-})();
-})();
+enterDrive();
+}
+function loadScript(src){ return new Promise(function(res,rej){ var el=document.createElement('script'); el.src=src; el.onload=res; el.onerror=function(){ rej(new Error('failed '+src)); }; document.head.appendChild(el); }); }
+if(params.get('view')==='drive'){
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
+    .then(function(){ return loadScript('https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js'); })
+    .then(function(){ initDrive(); })
+    .catch(function(e){ console.warn(e); toast('3D mode could not load. Showing the flat map.'); });
+}
+if(SHEET===null && params.get('sheet')!=='0') setTimeout(function(){ toast('Could not reach the schedule sheet. Showing the built-in copy.'); }, 900);
+}
+loadSheet().then(main);
 </script>
 </body>
 </html>
