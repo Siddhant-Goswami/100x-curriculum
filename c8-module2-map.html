@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Module 2 Map | 100xEngineers</title>
-<meta name="description" content="Cohort 8, Module 2 as a map. Start at your observation, travel through rules, judgment and intuition, arrive at your North Star.">
+<meta name="description" content="Cohort 8, Module 2 as a map. Start at your observation, decide what to build, travel through deterministic, probabilistic and human steps, cross two bridges, arrive at your North Star.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -79,6 +79,18 @@ button{font:inherit;color:inherit}
 
 .lr{pointer-events:auto;border:0;background:none;padding:4px 6px;cursor:pointer;font:600 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ci);white-space:nowrap}
 .lr:hover{text-decoration:underline;text-underline-offset:3px}
+.lr small{display:block;margin-top:3px;font:500 9.5px var(--mono);letter-spacing:.12em;opacity:.75}
+
+.bl{pointer-events:auto;border:0;background:none;padding:4px 8px;cursor:pointer;text-align:center;white-space:nowrap}
+.bl .k{display:block;font:700 9.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--ink3)}
+.bl .n{display:block;margin-top:2px;font:500 clamp(12px,calc(var(--k,.4)*34px),17px)/1.2 var(--sans);letter-spacing:-.01em;color:var(--ink)}
+.bl .m{display:block;margin-top:3px;font:11px var(--mono);color:var(--ink2)}
+.bl:hover .n{text-decoration:underline;text-underline-offset:3px}
+.tiny .bl .m{display:none}
+.bridge-edge{fill:none;stroke:#1B1B1B;stroke-opacity:.55;stroke-width:34;stroke-linecap:butt}
+.bridge-deck{fill:none;stroke-width:28;stroke-linecap:butt;cursor:pointer}
+.bridge-plank{fill:none;stroke:#1B1B1B;stroke-opacity:.22;stroke-width:28;stroke-dasharray:2 9;pointer-events:none}
+.bridge-post{fill:#fff;stroke:#1B1B1B;stroke-width:1.5;vector-effect:non-scaling-stroke}
 .lr:active{opacity:.7}
 
 .lf{font:600 10.5px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--coral);padding:0 0 6px 2px;white-space:nowrap}
@@ -353,6 +365,19 @@ button.pill.terr:active{transform:scale(.97)}
 .btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
 .btn.ghost:hover{background:var(--bg)}
 
+/* Track gate: asked once, the first time someone goes into the process */
+.gate{position:absolute;left:50%;bottom:112px;transform:translate(-50%,8px);z-index:19;width:min(560px,calc(100vw - 32px));padding:18px 20px 20px;border-radius:18px;opacity:0;visibility:hidden;transition:opacity .2s var(--e-in),transform .2s var(--e-in),visibility 0s linear .2s}
+.gate.on{opacity:1;visibility:visible;transform:translate(-50%,0);transition:opacity .3s var(--e-out),transform .3s var(--e-out),visibility 0s}
+.gate .k{margin:0 0 6px;font:600 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--coral)}
+.gate h2{margin:0 0 6px;font-size:clamp(20px,2.6vw,26px);line-height:1.15;letter-spacing:-.025em;font-weight:500}
+.gate p{margin:0 0 14px;font:12.5px/1.55 var(--mono);color:var(--ink2)}
+.gopts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gopt{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:14px;text-align:left;cursor:pointer;transition:border-color var(--d-micro),background var(--d-micro),transform var(--d-micro) var(--e-out)}
+.gopt:hover{border-color:var(--ink);background:#FBFAF7}
+.gopt:active{transform:scale(.98)}
+.gopt b{display:block;font:600 15px var(--sans)}
+.gopt i{display:block;margin-top:4px;font:normal 11.5px/1.4 var(--mono);color:var(--ink3)}
+
 /* Intro + toast + help */
 .intro{position:absolute;left:50%;bottom:112px;transform:translate(-50%,0);z-index:16;width:min(620px,calc(100vw - 32px));padding:20px 22px;border-radius:18px;opacity:0;visibility:hidden;transition:opacity .25s var(--e-in),transform .25s var(--e-in),visibility 0s linear .25s}
 .intro.on{opacity:1;visibility:visible;transform:translate(-50%,-4px);transition:opacity .35s var(--e-out),transform .35s var(--e-out),visibility 0s}
@@ -391,6 +416,8 @@ button.pill.terr:active{transform:scale(.97)}
   .help{right:16px;bottom:calc(170px + var(--sab))}
   .ctrls{bottom:calc(108px + var(--sab))}
   .intro{bottom:calc(112px + var(--sab));padding:16px 16px 14px}
+  .gate{bottom:calc(112px + var(--sab));padding:16px 16px 16px}
+  .gate p{font-size:12px;margin-bottom:12px}
   .io.tight{visibility:hidden}
   .intro p{font-size:12px;margin-bottom:10px}
   .intro .btn{height:38px;padding:0 14px;font-size:13px}
@@ -400,9 +427,9 @@ button.pill.terr:active{transform:scale(.97)}
 @media (hover:none){ .pin .pl{transition:none} }
 @media (prefers-reduced-motion:reduce){
   .pin.st-next .dot,.pin.st-today .dot,.me .p,.fog g{animation:none}
-  .ov,.ov.on,.panel,.panel.open,.intro,.intro.on,.scrub,.toast,.toast.on{transition-duration:.01ms}
+  .ov,.ov.on,.panel,.panel.open,.intro,.intro.on,.gate,.gate.on,.scrub,.toast,.toast.on{transition-duration:.01ms}
   .results.open,.lpop.open,.help.open,.panel .pb.swap{animation:none}
-  .pin .dot,.chip,.btn,.ib,.roundb,.lopt,.nav2 button,.tsw button,.lc .n,.lr,.io .t,.io .k,.endpt .g{transition:none}
+  .pin .dot,.chip,.btn,.ib,.roundb,.lopt,.gopt,.nav2 button,.tsw button,.lc .n,.lr,.io .t,.io .k,.endpt .g{transition:none}
 }
 
 /* ---------- Drive mode (desktop 3D) ---------- */
@@ -477,7 +504,7 @@ body.drive .dkeys{display:flex}
     <div class="chips" id="chips">
       <button class="chip hot" type="button" data-act="next"><span class="d"></span><span id="chipNext">Next stop</span></button>
       <button class="chip" type="button" data-act="in">◉ You, today</button>
-      <button class="chip" type="button" data-act="camp">⛺ Base camp</button>
+      <button class="chip" type="button" data-act="camp">⛺ What to build</button>
       <button class="chip" type="button" data-act="checkpoints">⚑ Checkpoints</button>
       <button class="chip" type="button" data-act="star">★ North Star</button>
       <button class="chip" type="button" data-act="overview">⤢ Whole map</button>
@@ -525,7 +552,7 @@ body.drive .dkeys{display:flex}
     </button>
     <div class="lpop float" id="lpop">
       <h3>Your track</h3>
-      <p>Same theory, same checkpoints. The layer only changes which tools the map shows you.</p>
+      <p>Same theory, same checkpoints. The track changes the tools and who leads the practical lectures.</p>
       <div class="lopts" role="radiogroup" aria-label="Track">
         <button class="lopt" type="button" role="radio" data-track="nocode" aria-checked="false"><b>No-code</b><i>Read the plan, approve, verify</i></button>
         <button class="lopt" type="button" role="radio" data-track="code" aria-checked="false"><b>Code</b><i>Python, your own backend</i></button>
@@ -551,6 +578,15 @@ body.drive .dkeys{display:flex}
     <p>Every piece of software is an <b>input</b>, a <b>process</b> and an <b>output</b>. Your input is where you stand today: your observation. Your output is your North Star. The process is this module. Open it.</p>
     <div class="acts"><button class="btn coral" type="button" id="openProc">Open the process</button><button class="btn ghost" type="button" data-act="me">Take me to where I am</button></div>
   </div>
+  <div class="gate float" id="gate" role="dialog" aria-labelledby="gateT">
+    <p class="k">Before you go further in</p>
+    <h2 id="gateT">Are you on the code or the no-code track?</h2>
+    <p>Theory is shared. The practical lectures, their tools and who leads them depend on your track. You can switch any time from the Track button, bottom left.</p>
+    <div class="gopts">
+      <button class="gopt" type="button" data-gate="nocode"><b>No-code</b><i>Read the plan, approve, verify</i></button>
+      <button class="gopt" type="button" data-gate="code"><b>Code</b><i>Python, your own backend</i></button>
+    </div>
+  </div>
   <button class="dhint" id="dHint" type="button"></button>
   <div class="dkeys float" id="dKeys">
     <span class="g"><kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd>Drive</span>
@@ -564,7 +600,7 @@ body.drive .dkeys{display:flex}
     <div class="in">
       <div class="br">100x<span>E</span> · Cohort 8</div>
       <h1>Module 2,<br>on four wheels.</h1>
-      <p>Start at your observation. Drive through rules, judgment and intuition. Park at your North Star.</p>
+      <p>Start at your observation. Drive through deterministic, probabilistic and human. Park at your North Star.</p>
       <div class="bar"><i id="dBar"></i></div>
       <button class="btn coral" type="button" id="dStart" disabled>Loading the world</button>
       <button class="lnk" type="button" id="dMap">Use the flat map instead</button>
@@ -577,6 +613,7 @@ body.drive .dkeys{display:flex}
 /* ============ Schedule sheet (the database for this page) ============ */
 var SHEET_ID = '1Kg6T-dJWaYx_JCPiRk3u0nBuAQcsCVRDPj1NFKP4WzM';
 var SHEET_URL = 'https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:csv&headers=0';
+var CODE_GID = '368290478'; /* the "Code Track" tab; the first tab is the No-Code Track */
 function parseCSV(text){
   var rows=[], row=[], cell='', q=false, i=0, c;
   text = text.replace(/^﻿/,'');
@@ -611,11 +648,13 @@ function loadSheet(){
   if(Q.get('sheet')==='0' || !window.fetch) return Promise.resolve(null);
   var ctl = window.AbortController ? new AbortController() : null;
   var tm = setTimeout(function(){ if(ctl) ctl.abort(); }, 7000);
-  return fetch(SHEET_URL+'&_='+Date.now(), {signal: ctl?ctl.signal:undefined, cache:'no-store'})
+  function get(url){ return fetch(url+'&_='+Date.now(), {signal: ctl?ctl.signal:undefined, cache:'no-store'})
     .then(function(r){ if(!r.ok) throw new Error('sheet '+r.status); return r.text(); })
-    .then(parseSheet)
-    .catch(function(e){ console.warn('Schedule sheet unavailable, using the built-in copy.', e); return null; })
-    .then(function(v){ clearTimeout(tm); return v; });
+    .then(parseSheet); }
+  return Promise.all([
+    get(SHEET_URL).catch(function(e){ console.warn('Schedule sheet unavailable, using the built-in copy.', e); return null; }),
+    get(SHEET_URL+'&gid='+CODE_GID).catch(function(e){ console.warn('Code Track tab unavailable.', e); return null; })
+  ]).then(function(v){ clearTimeout(tm); if(v[0]) v[0].code = v[1]; return v[0]; });
 }
 
 function main(SHEET){
@@ -651,21 +690,26 @@ function dateFor(w,dn){ return addDays(START,(w-1)*7+(dn==='Fri'?4:5)); }
 
 /* ============ Territories ============ */
 var CONTS = {
-  camp:{id:'camp',name:'Base camp',sub:'Week 0 · What to build',verif:'Your own lived experience',q:'What is worth building?',c:'#F2603C',soft:'#FDE9E2',ci:'#B8431F',
-    desc:'Decide what is worth building before learning how. Observation before idea: fix your North Star, write one real observation, turn it into a hypothesis that can fail, and deliver the value by hand.',
+  camp:{id:'camp',name:'What to build',sub:'Week 0 · Mandatory, before anything else',verif:'Discovery to MVP',q:'What is worth building?',c:'#F2603C',soft:'#FDE9E2',ci:'#B8431F',
+    desc:'Mandatory, and first. Decide what is worth building before learning how: fix your North Star, write one real observation, turn it into a hypothesis that can fail, and deliver the value by hand. Once you know what to build, the rest of the map opens up.',
     label:[800,1545], extra:[[700,1200],[930,1220]], r:120, seed:11},
-  rules:{id:'rules',name:'Rules',sub:'Deterministic · Weeks 1 to 5',verif:'Verifiable by a rule',q:'Which steps deserve rules?',c:'#D98E00',soft:'#FBF0D6',ci:'#8A5A00',
+  rules:{id:'rules',name:'Deterministic',sub:'Deterministic · Weeks 1 to 5',verif:'Verifiable by a rule',q:'Which steps deserve rules?',c:'#D98E00',soft:'#FBF0D6',ci:'#8A5A00',
     desc:'Same input, same output, every time. The three interfaces of every app (UI, API, database), then one deployed MVP in a real person\'s hands. You control everything here while you learn a new world. Nothing guesses.',
     label:[1330,905], extra:[[1300,1250]], r:165, seed:23},
-  judgment:{id:'judgment',name:'Judgment',sub:'Probabilistic · Weeks 5 to 10',verif:'Verifiable by judgment',q:'Which steps deserve a model?',c:'#6E4BE8',soft:'#ECE6FB',ci:'#5332C9',
+  judgment:{id:'judgment',name:'Probabilistic',sub:'Probabilistic · Weeks 5 to 10',verif:'Verifiable by judgment',q:'Which steps deserve a model?',c:'#6E4BE8',soft:'#ECE6FB',ci:'#5332C9',
     desc:'Writable and handable, but the output can vary for the same input. LLMs, tool calling, retrieval and memory, then shaped with data, fine-tuned only when that is the right answer, and measured against a rubric written before you see any output.',
     label:[2240,1000], extra:[[2250,1330]], r:175, seed:37},
-  intuition:{id:'intuition',name:'Intuition',sub:'Human in the loop · Weeks 11 to 12',verif:'Not verifiable yet',q:'Which steps stay human?',c:'#1E9B57',soft:'#E1F4E8',ci:'#167A44',
-    desc:'Intuition you can perform but not articulate. Agents of two kinds, artificial and human, and a process for finding which tasks do not transfer.',
-    label:[2990,1060], extra:[[2920,700],[3070,730],[3060,930],[2920,935]], r:105, seed:51}
+  intuition:{id:'intuition',name:'Human',sub:'Module 3 · About 3 weeks, 6 lectures',verif:'In the loop, not verifiable yet',q:'Which steps stay human?',c:'#1E9B57',soft:'#E1F4E8',ci:'#167A44',
+    desc:'Module 3. About three weeks and six lectures on agents built for humans: intuition you can perform but not articulate, agents of two kinds, artificial and human, and a process for finding which tasks do not transfer. You get here by crossing the Assignment 2 bridge, and you leave by the capstone bridge to your North Star.',
+    label:[3150,1075], extra:[[3060,1080],[3230,1070]], r:100, seed:51}
+};
+/* Bridges are not territories: they join two of them. */
+var BRIDGES = {
+  a2:{id:'a2',bridge:true,name:'Assignment 2',verif:'The bridge to agents',c:'#1B1B1B',soft:'#EDEBE5',ci:'#1B1B1B',from:'#6E4BE8',to:'#1E9B57'},
+  cap:{id:'cap',bridge:true,name:'Capstone',verif:'The final bridge to your North Star',c:'#1B1B1B',soft:'#FFF4DA',ci:'#1B1B1B',from:'#1E9B57',to:'#E0A000'}
 };
 var REGIONS = [
-  {id:'camp-r',c:'camp',name:'Observation to first proof',stops:['b1','b2','b3'],desc:'Three steps, one per part of Assignment 1. The output is not an app. It is a process you have run once by hand, with a number attached.'},
+  {id:'camp-r',c:'camp',name:'What to build',sub:'Discovery to MVP',stops:['b1','b2','b3'],desc:'Mandatory. Three steps, one per part of Assignment 1. The output is not an app. It is a process you have run once by hand, with a number attached, and it tells you what to build.'},
   {id:'orient',c:'rules',name:'Orientation',stops:['L1'],desc:'The verifier is the job. Every lecture from here is one of three boxes: verifiable by a rule, by judgment, or not at all.'},
   {id:'ui',c:'rules',name:'The first interface',stops:['L2','L3'],desc:'What an interface is, and the UI as the first of three. From PRD to a running frontend.'},
   {id:'api',c:'rules',name:'The second interface',stops:['L4','L5'],desc:'Why the frontend cannot store or protect data on its own. The API, and the cliff of the no-code track.'},
@@ -675,7 +719,7 @@ var REGIONS = [
   {id:'retrieval',c:'judgment',name:'Retrieval and memory',stops:['L12','L13','L14'],desc:'Why the model cannot answer from your documents by default, and what retrieval and memory change.'},
   {id:'harness',c:'judgment',name:'The harness',stops:['L15'],desc:'Connecting the dots. The arrangement of rule, model and human nodes, not the model, decides reliability.'},
   {id:'measure',c:'judgment',name:'Shape and measure',stops:['L16','L17','L18'],desc:'Fine-tune only when it is the right answer, prepare clean data, and judge the judge.'},
-  {id:'agents',c:'intuition',name:'Agents for humans',stops:['P3'],desc:'Where a person has to stay, and how agents are built for humans.'}
+  {id:'agents',c:'intuition',name:'Module 3 · Agents for humans',stops:['M1','M2','M3','M4','M5','M6'],desc:'Six lectures over about three weeks. Where a person has to stay, and how agents are built for humans. Locked until you cross the Assignment 2 bridge.'}
 ];
 
 /* ============ Stops, in route order ============ */
@@ -732,10 +776,21 @@ var STOPS = [
   {id:'L18',n:18,w:10,d:'Fri',t:'Evaluation of LLMs',type:'Theory and practical',tools:'TBD',x:2545,y:1105,
     can:'Run an eval with a written rubric, and judge the judge: show one case where the LLM grader was wrong.',
     done:'Done means: an eval sheet with rubric, scores, and the flagged grader error.',kw:'evaluation evals rubric llm as judge golden dataset'},
-  {id:'P3',kind:'p3',num:'11',t:'Agents: building for humans',type:'Weeks 11 to 12',date:d(2026,11,23),x:2990,y:820,
-    can:'Connect the deterministic, probabilistic and human pieces into an agent, and decide where the human stays in command.',kw:'agents human in the loop intuition'},
-  {id:'ns',kind:'ns',x:3540,y:900}
+  {id:'A2',kind:'bridge',br:'a2',num:'A2',t:'Assignment 2: the bridge to agents',type:'Assignment 2 · Bridge',x:2850,y:985,
+    can:'Right after Lecture 18, the last Probabilistic lecture, cross this bridge. Assignment 2 is how you unlock the agents module (Module 3).',
+    kw:'assignment 2 bridge unlock agents module 3'},
+  {id:'M1',kind:'m3',m:1,num:'M1',x:3000,y:905},
+  {id:'M2',kind:'m3',m:2,num:'M2',x:3030,y:775},
+  {id:'M3',kind:'m3',m:3,num:'M3',x:3140,y:715},
+  {id:'M4',kind:'m3',m:4,num:'M4',x:3250,y:770},
+  {id:'M5',kind:'m3',m:5,num:'M5',x:3265,y:890},
+  {id:'M6',kind:'m3',m:6,num:'M6',x:3310,y:995},
+  {id:'cap',kind:'bridge',br:'cap',num:'★',t:'Final capstone',type:'Capstone · Final bridge',x:3475,y:955,
+    can:'After Module 3 you build your final capstone. It is the last bridge on the map, the one that takes you from what you can now build to your North Star.',
+    kw:'capstone final project bridge north star'},
+  {id:'ns',kind:'ns',x:3740,y:900}
 ];
+STOPS.forEach(function(s){ if(s.kind==='m3'){ s.t='Module 3, lecture '+s.m; s.type='Locked lecture'; s.kw='module 3 agents human locked lecture'; } });
 /* ============ Merge the sheet into the stops ============ */
 var EVENTS = [];
 var SHEET_OK = false;
@@ -765,6 +820,13 @@ function applySheet(sh){
     if(r.arc) s.arc = r.arc;
     s.fromSheet = true;
   });
+  if(sh.code) sh.code.lectures.forEach(function(r){
+    var s = byN[r.n]; if(!s) return;
+    if(r.owner) s.codeOwner = r.owner;
+    if(!s.code) return;
+    if(r.tools && !/^none$/i.test(r.tools)) s.code.tools = r.tools.trim();
+    if(r.can) s.code.can = r.can;
+  });
   sh.events.forEach(function(r){ var dt=parseDay(r.date); if(!dt) return; EVENTS.push({t:r.title, type:r.type||'Event', date:dt, done:r.done, prep:r.prep}); });
   EVENTS.sort(function(a,b){ return a.date-b.date; });
   SHEET_OK = true;
@@ -779,6 +841,7 @@ STOPS.forEach(function(s,i){
   if(s.done){ s.cp = CHECKS.length; CHECKS.push(s); }
 });
 REGIONS.forEach(function(r){ r.stops.forEach(function(id){ ST[id].region=r; ST[id].cont=CONTS[r.c]; }); });
+STOPS.forEach(function(s){ if(s.br) s.cont=BRIDGES[s.br]; });
 var LECS = STOPS.filter(function(s){ return s.kind==='lec'; });
 var NEXT = null; for(var i=0;i<LECS.length;i++){ if(LECS[i].date>=TODAY){ NEXT=LECS[i]; break; } }
 var TRAVEL = STOPS.filter(function(s){ return s.kind!=='in' && s.kind!=='ns'; });
@@ -789,7 +852,9 @@ function variant(s){ if(!s.nocode) return {tools:s.tools,can:s.can}; return trac
 
 /* ============ Status ============ */
 function status(s){
-  if(s.kind==='p3') return P3_UNLOCKED ? {cls:'st-next',txt:'Open now',hot:true} : {cls:'st-locked',txt:'Opens after Lecture 18'};
+  if(s.id==='A2') return P3_UNLOCKED ? {cls:'st-next',txt:'Open now · unlocks Module 3',hot:true} : {cls:'st-up',txt:'After Lecture 18'};
+  if(s.kind==='m3') return {cls:'st-locked',txt:'Locked · Module 3'};
+  if(s.id==='cap') return {cls:'st-locked',txt:'After Module 3'};
   if(s.id==='b2') return TODAY<=FIRST_PROOF ? {cls:'st-active',txt:'Self-paced · Week 0'} : {cls:'st-held',txt:'Week 0 · done'};
   if(s.due){ var dl=days(TODAY,s.due); return dl>=0 ? {cls:'st-active',txt:'Due '+fmt(s.due)+(dl===0?' · today':' · in '+dl+(dl===1?' day':' days')),hot:dl<=7} : {cls:'st-held',txt:'Was due '+fmt(s.due)}; }
   var dd = days(TODAY,s.date);
@@ -802,8 +867,9 @@ function cpOpen(s){ return s.due ? true : days(TODAY,s.date)<=0; }
 function cpDone(s){ return cpOpen(s) && sget('c8m2-cp-'+s.id)==='1'; }
 
 /* ============ World geometry ============ */
-var W=3820, H=1800;
-var FRAME={x:600,y:200,w:2620,h:1400}, INCARD={x:80,y:720,w:400,h:360}, OUTCARD={x:3340,y:720,w:400,h:360};
+var W=4020, H=1800;
+var FRAME={x:600,y:200,w:2820,h:1400}, INCARD={x:80,y:720,w:400,h:360}, OUTCARD={x:3540,y:720,w:400,h:360};
+var NSX = OUTCARD.x+OUTCARD.w/2;
 function resample(poly,n){
   var per=0, seg=[]; for(var i=0;i<poly.length;i++){ var a=poly[i], b=poly[(i+1)%poly.length], l=Math.hypot(b[0]-a[0],b[1]-a[1]); seg.push(l); per+=l; }
   var out=[], step=per/n, acc=0, j=0, pos=0;
@@ -844,7 +910,7 @@ var fr = d3.select('#frames');
   fr.append('rect').attr('class','iocard'+(a[1]==='out'?' out':'')).attr('x',c.x).attr('y',c.y).attr('width',c.w).attr('height',c.h).attr('rx',36).attr('data-io',a[1]);
 });
 fr.append('rect').attr('class','frame').attr('x',FRAME.x).attr('y',FRAME.y).attr('width',FRAME.w).attr('height',FRAME.h).attr('rx',48);
-d3.select('#starGlow').attr('cx',3540).attr('cy',900);
+d3.select('#starGlow').attr('cx',NSX).attr('cy',900);
 
 /* Process cover (dissolves as you zoom in) */
 var coverG = d3.select('#coverG');
@@ -852,7 +918,7 @@ coverG.append('rect').attr('x',FRAME.x).attr('y',FRAME.y).attr('width',FRAME.w).
 coverG.append('rect').attr('x',FRAME.x).attr('y',FRAME.y).attr('width',FRAME.w).attr('height',FRAME.h).attr('rx',48).attr('fill','url(#hatch)');
 coverG.append('rect').attr('x',FRAME.x).attr('y',FRAME.y).attr('width',FRAME.w).attr('height',FRAME.h).attr('rx',48).attr('fill','none').attr('stroke','#F2603C').attr('stroke-width',1.5).attr('vector-effect','non-scaling-stroke');
 
-/* Fog of war over Intuition */
+/* Fog of war over Human (Module 3) */
 if(!P3_UNLOCKED){
   var fog=d3.select('#fog'), rnd=mulberry(7), C3=CONTS.intuition;
   for(var gi=0;gi<2;gi++){ var gg=fog.append('g').attr('filter','url(#blur)').attr('opacity',gi?.7:.9);
@@ -867,12 +933,37 @@ var rnode = document.getElementById('routeRest'), LEN = rnode.getTotalLength(), 
 for(var si=0;si<=NS;si++){ var pt=rnode.getPointAtLength(LEN*si/NS); SAMP.push([pt.x,pt.y]); }
 (function(){ var from=0; STOPS.forEach(function(s){ var best=from, bd=1e9; for(var j=from;j<=NS;j++){ var dd2=(SAMP[j][0]-s.x)*(SAMP[j][0]-s.x)+(SAMP[j][1]-s.y)*(SAMP[j][1]-s.y); if(dd2<bd){ bd=dd2; best=j; } if(bd<4 && dd2>bd*50) break; } s.s=best/NS; from=best; }); })();
 function pointAt(s){ var p=rnode.getPointAtLength(LEN*clamp(s,0,1)); return [p.x,p.y]; }
-var ANCH = [[T0,0],[ST.b1.date,ST.b1.s]].concat(LECS.map(function(l){ return [l.date,l.s]; })).concat([[ST.P3.date,ST.P3.s],[END,1]]);
+var TAIL = ['A2','M1','M2','M3','M4','M5','M6','cap'].map(function(id){ return ST[id]; }), TAIL0 = addDays(LECS[LECS.length-1].date,2);
+TAIL.forEach(function(s,i){ s.adate = new Date(TAIL0.getTime()+(END-TAIL0)*i/TAIL.length); });
+var ANCH = [[T0,0],[ST.b1.date,ST.b1.s]].concat(LECS.map(function(l){ return [l.date,l.s]; })).concat(TAIL.map(function(s){ return [s.adate,s.s]; })).concat([[END,1]]);
 function sForDate(t){
   if(t<=ANCH[0][0]) return 0;
   for(var i=1;i<ANCH.length;i++){ if(t<=ANCH[i][0]){ var a=ANCH[i-1], b=ANCH[i]; return a[1]+(b[1]-a[1])*((t-a[0])/(b[0]-a[0]||1)); } }
   return 1;
 }
+/* Bridges: the stretch of route that leaves one territory and lands on the next */
+(function(){
+  var bg = d3.select('#world').insert('g','#routeCase').attr('id','bridges'), defs = d3.select('#map defs');
+  function span(s){
+    var i0 = Math.round(TRAVEL[TRAVEL.indexOf(s)-1].s*NS), i1 = Math.round((s.id==='cap'?1:TRAVEL[TRAVEL.indexOf(s)+1].s)*NS), from = TRAVEL[TRAVEL.indexOf(s)-1].cont, a=i0, b=i1;
+    while(a<i1 && d3.polygonContains(from.hull, SAMP[a])) a++;
+    if(s.id==='cap'){ b=a; while(b<i1 && SAMP[b][0]<OUTCARD.x+6) b++; }
+    else { var to = TRAVEL[TRAVEL.indexOf(s)+1].cont; b=a; while(b<i1 && !d3.polygonContains(to.hull, SAMP[b])) b++; }
+    return SAMP.slice(Math.max(i0,a-6), Math.min(i1,b+6)+1);
+  }
+  TRAVEL.filter(function(s){ return s.kind==='bridge'; }).forEach(function(s){
+    var pts = span(s), B = s.cont, p0 = pts[0], p1 = pts[pts.length-1], d = d3.line()(pts);
+    defs.append('linearGradient').attr('id','bg-'+B.id).attr('gradientUnits','userSpaceOnUse').attr('x1',p0[0]).attr('y1',p0[1]).attr('x2',p1[0]).attr('y2',p1[1])
+      .call(function(g){ g.append('stop').attr('offset',0).attr('stop-color',B.from).attr('stop-opacity',.55); g.append('stop').attr('offset',1).attr('stop-color',B.to).attr('stop-opacity',.55); });
+    var g = bg.append('g').attr('data-stop',s.id);
+    g.append('path').attr('class','bridge-edge').attr('d',d);
+    g.append('path').attr('class','bridge-deck').attr('d',d).attr('stroke','#FBFAF7');
+    g.append('path').attr('class','bridge-deck').attr('d',d).attr('stroke','url(#bg-'+B.id+')');
+    g.append('path').attr('class','bridge-plank').attr('d',d);
+    [p0,p1].forEach(function(p){ g.append('circle').attr('class','bridge-post').attr('cx',p[0]).attr('cy',p[1]).attr('r',9); });
+    var mid = pts[Math.floor(pts.length/2)]; s.blabel = [mid[0], Math.min(p0[1],p1[1])-34];
+  });
+})();
 var S_TODAY = sForDate(new Date(TODAY.getTime()+DAY*0.5));
 d3.select('#routeDone').attr('d', d3.line()(SAMP.slice(0, Math.max(2, Math.round(S_TODAY*NS)+1))));
 
@@ -886,29 +977,34 @@ function addItem(html, x, y, lmin, lmax, cls, attrs){
   ov.appendChild(el);
   var c = ' '+(cls||'')+' ', sfx = '';
   if(/ (io|lc|cl|endpt|me|tc) /.test(c)) sfx=' translate(-50%,-50%)';
-  else if(/ lr /.test(c)) sfx=' translate(-50%,-100%)';
+  else if(/ (lr|bl) /.test(c)) sfx=' translate(-50%,-100%)';
   else if(/ lf /.test(c)) sfx=' translate(0,-100%)';
   var it = {el:el,x:x,y:y,lmin:lmin,lmax:lmax,on:false,sfx:sfx};
   items.push(it); return it;
 }
 /* Level 0: Input, Process, Output */
 var ioIn = addItem('<span class="k">Input</span><span class="t">You, today</span><span class="d">Your observation. A real person, a real problem, from your own life.</span>', 280, 900, 0, 0, 'io', {tag:'button','data-act':'in','aria-label':'Input: where you stand'});
-var ioOut = addItem('<span class="k">Output</span><span class="t">North Star</span><span class="d">A six-month goal someone else could verify on the date.</span>', 3540, 900, 0, 0, 'io', {tag:'button','data-act':'star','aria-label':'Output: your North Star'});
-var coverLbl = addItem('<span class="t">Process</span><span class="d">Everything between where you stand and where you want to be. Twelve weeks. Three kinds of step.</span><button class="btn coral" type="button" data-act="open">Open the process</button>', 1910, 900, 0, 0, 'cl');
+var ioOut = addItem('<span class="k">Output</span><span class="t">North Star</span><span class="d">A six-month goal someone else could verify on the date.</span>', NSX, 900, 0, 0, 'io', {tag:'button','data-act':'star','aria-label':'Output: your North Star'});
+var coverLbl = addItem('<span class="t">Process</span><span class="d">Everything between where you stand and where you want to be. Know what to build, then three kinds of step and two bridges.</span><button class="btn coral" type="button" data-act="open">Open the process</button>', FRAME.x+FRAME.w/2, 900, 0, 0, 'cl');
 /* Level 1+: endpoints */
 var nsText = function(){ var v=sget('c8m2-northstar'); return v ? v : 'Write yours'; };
 var obsText = function(){ var v=sget('c8m2-observation'); return v ? v : 'Your observation'; };
 var epIn = addItem('<span class="g">◉</span><span class="l">Start · you</span><span class="m" id="epInM"></span>', 280, 900, 1, 3, 'endpt', {tag:'button','data-act':'in','aria-label':'Start: your observation'});
-var epOut = addItem('<span class="g">★</span><span class="l">North Star</span><span class="m" id="epOutM"></span>', 3540, 900, 1, 3, 'endpt star', {tag:'button','data-act':'star','aria-label':'Destination: your North Star'});
+var epOut = addItem('<span class="g">★</span><span class="l">North Star</span><span class="m" id="epOutM"></span>', NSX, 900, 1, 3, 'endpt star', {tag:'button','data-act':'star','aria-label':'Destination: your North Star'});
 addItem('Inside the process', FRAME.x+40, FRAME.y+6, 1, 2, 'lf');
 /* Continent labels (level 1) */
 Object.keys(CONTS).forEach(function(k){ var C=CONTS[k];
-  C.item = addItem('<span class="n">'+C.name+'</span><span class="s">'+C.verif+'</span><span class="q">'+(k==='intuition'&&!P3_UNLOCKED?'Unlocks after Lecture 18':C.sub.split(' · ')[1])+'</span>', C.label[0], C.label[1], 1, 1, 'lc halo', {tag:'button','data-cont':k,style:'--ci:'+C.ci,'aria-label':C.name+', '+C.verif});
+  C.item = addItem('<span class="n">'+C.name+'</span><span class="s">'+C.verif+'</span><span class="q">'+(k==='intuition'&&!P3_UNLOCKED?'Module 3 · 6 lectures · locked':C.sub.split(' · ')[1])+'</span>', C.label[0], C.label[1], 1, 1, 'lc halo', {tag:'button','data-cont':k,style:'--ci:'+C.ci,'aria-label':C.name+', '+C.verif});
 });
 /* Region labels (level 2+) */
 REGIONS.forEach(function(r){ var C=CONTS[r.c];
   if(r.c==='camp'){ r.label=[CONTS.camp.label[0], ST.b1.y-60]; }
-  r.item = addItem(esc(r.name), r.label[0], r.label[1], 2, 3, 'lr halo', {tag:'button','data-region':r.id,style:'--ci:'+C.ci});
+  r.item = addItem(esc(r.name)+(r.sub?'<small>'+esc(r.sub)+'</small>':''), r.label[0], r.label[1], 2, 3, 'lr halo', {tag:'button','data-region':r.id,style:'--ci:'+C.ci});
+});
+/* Bridge labels (level 1+) */
+TRAVEL.filter(function(s){ return s.kind==='bridge'; }).forEach(function(s){ var B=s.cont;
+  var sub = s.id==='A2' ? 'After Lecture 18 · unlocks Module 3' : 'After Module 3 · to your North Star';
+  addItem('<span class="k">Bridge</span><span class="n">'+esc(B.name)+'</span><span class="m">'+sub+'</span>', s.blabel[0], s.blabel[1], 1, 3, 'bl halo', {tag:'button','data-stop':s.id,'aria-label':'Bridge: '+B.name+'. '+sub});
 });
 /* Stop pins */
 var FLAG = '<svg class="flag" viewBox="0 0 14 18" aria-hidden="true"><path class="pole" d="M2 17V1.5"/><path class="cloth" d="M2.5 2h9l-2.2 3.2L11.5 8.5h-9z"/></svg>';
@@ -919,7 +1015,7 @@ TRAVEL.forEach(function(s){ var C=s.cont;
 function renderPin(s){
   var st = status(s), el = s.item.el, C = s.cont;
   el.className = 'ov pin '+st.cls+(s.item.on?' on':'')+(s.done?' is-cp':'')+(s.done&&cpDone(s)?' cleared':'')+(sget('c8m2-note-'+s.id)?' has-note':'')+(selected===s.id?' sel':'');
-  var label = s.kind==='lec' ? 'Lecture '+s.n : s.kind==='camp' ? 'Base camp' : 'Weeks 11 to 12';
+  var label = s.kind==='lec' ? 'Lecture '+s.n : s.kind==='camp' ? 'What to build' : s.kind==='m3' ? 'Module 3' : 'Bridge';
   el.innerHTML = '<span class="dot"><span class="num">'+esc(s.num)+'</span></span>'+(s.done?FLAG:'')+'<span class="pl halo"><b>'+esc(s.t)+'</b><i class="'+(st.hot?'hot':'')+'">'+esc(st.txt)+'</i></span>';
   el.setAttribute('aria-label', label+': '+s.t+'. '+st.txt+(s.done?'. Checkpoint.':''));
 }
@@ -938,13 +1034,41 @@ var zoom = d3.zoom()
   .filter(function(e){ if(e.type==='dblclick' && e.target.closest && e.target.closest('.pin,.lc,.lr,.io,.endpt,.me,.cl')) return false; return (!e.ctrlKey || e.type==='wheel') && !e.button; })
   .on('start', function(e){ if(e.sourceEvent && e.sourceEvent.type!=='wheel') stage.classList.add('dragging'); })
   .on('end', function(){ stage.classList.remove('dragging'); })
-  .on('zoom', function(e){ render(e.transform); });
+  .on('zoom', function(e){ render(e.transform); if(!track && e.sourceEvent && e.sourceEvent.type==='wheel' && e.sourceEvent.deltaY<0 && e.transform.k>=gateCap()*0.995) nudgeGate(); });
 d3.select(stage).call(zoom);
 d3.select(stage).on('dblclick.zoom', function(e){ if(e.target.closest && e.target.closest('.pin,.lc,.lr,.io,.endpt,.me,.cl,button')) return; var p=d3.pointer(e,stage); var w=T.invert(p); flyTo(w[0],w[1],T.k*2.2,{keepAt:p}); });
 
 var coverEl = document.getElementById('coverG'), introEl = document.getElementById('intro');
+/* ============ Track gate ============ */
+/* Until someone picks code or no-code, the process opens only as far as its territories. */
+var gateEl = document.getElementById('gate'), gateForced = false, pendingGo = null, lastNudge = 0;
+function gateCap(){ return Math.max(LV2K*0.97, K0*1.45); }
+function maxK(){ return track ? 4.5 : gateCap(); }
+function applyExtent(){ zoom.scaleExtent([K0*0.85, maxK()]); }
+function gateCheck(){
+  var on = false;
+  if(!track && LV>=1){
+    var v=vp(), c=T.invert([v.cx,v.cy]), inProc = c[0]>FRAME.x && c[0]<FRAME.x+FRAME.w;
+    var busy = panelOpen && (panelKey==='in' || panelKey==='star' || v.mob);
+    on = gateForced || (inProc && !busy);
+  }
+  if(on!==gateEl.classList.contains('on')){ gateEl.classList.toggle('on', on); if(on) introEl.classList.remove('on'); }
+}
+function nudgeGate(){
+  gateForced = true; gateCheck();
+  var n=Date.now(); if(reduced || !gateEl.animate || n-lastNudge<700) return; lastNudge=n;
+  gateEl.animate([{transform:'translate(-50%,0)'},{transform:'translate(calc(-50% - 7px),0)'},{transform:'translate(calc(-50% + 6px),0)'},{transform:'translate(calc(-50% - 3px),0)'},{transform:'translate(-50%,0)'}],{duration:360,easing:'cubic-bezier(.65,0,.35,1)'});
+}
+/* Call before any move deeper into the process. Returns true when it had to ask first. */
+function needTrack(go){
+  if(track) return false;
+  pendingGo = go; gateForced = true;
+  if(panelOpen && vp().mob) closePanel();
+  if(LV<1) openProcess(); else nudgeGate();
+  gateCheck(); return true;
+}
 var introOff = (function(){ try{ return sessionStorage.getItem('c8m2-intro-off')==='1'; }catch(e){ return false; } })();
-function showIntro(on){ introEl.classList.toggle('on', !!on && !introOff); }
+function showIntro(on){ introEl.classList.toggle('on', !!on && !introOff && !gateEl.classList.contains('on')); }
 document.getElementById('introX').addEventListener('click', function(){ introOff=true; try{ sessionStorage.setItem('c8m2-intro-off','1'); }catch(e){} introEl.classList.remove('on'); });
 function render(t){
   T = t; world.attr('transform', t); Z = t.k/K0;
@@ -974,14 +1098,14 @@ function vp(){
   var w=stage.clientWidth, h=stage.clientHeight, mob = w<=760;
   var l=0, r=w, t=mob?118:72, b=h-(mob?100:104);
   if(panelOpen){ if(mob) b = h*0.38; else l = 16+Math.min(392,w-32)+8; }
-  else if(mob && introEl.classList.contains('on')){ var it=introEl.getBoundingClientRect().top; if(it>t+120) b = it-12; }
+  else if(mob && (introEl.classList.contains('on') || gateEl.classList.contains('on'))){ var it=(gateEl.classList.contains('on')?gateEl:introEl).getBoundingClientRect().top; if(it>t+120) b = it-12; }
   return {l:l,r:r,t:t,b:b,w:r-l,h:b-t,cx:(l+r)/2,cy:(t+b)/2,mob:mob};
 }
 function fitK(){ var v=vp(); if(v.mob) return Math.min(v.w/(FRAME.w+120), v.h/H)*0.96; return Math.min(v.w/W, v.h/H)*0.96; }
 function transformFor(x,y,k,at){ var v=vp(); var px = at?at[0]:v.cx, py = at?at[1]:v.cy; return d3.zoomIdentity.translate(px-x*k, py-y*k).scale(k); }
 function flyTo(x,y,k,opt){
   if(DRIVE.on && DRIVE.goto){ DRIVE.goto(x,y); return; }
-  opt=opt||{}; k=clamp(k, K0*0.9, 4.5);
+  opt=opt||{}; k=clamp(k, K0*0.9, maxK());
   var t = transformFor(x,y,k,opt.keepAt);
   if(reduced || opt.instant){ d3.select(stage).interrupt().call(zoom.transform, t); return; }
   var v=vp(), c0=T.invert([v.cx,v.cy]);
@@ -991,7 +1115,7 @@ function flyTo(x,y,k,opt){
 function flyBox(b, pad, kmin, kmax){ var v=vp(); var k=Math.min(v.w/(b[2]-b[0]+2*pad), v.h/(b[3]-b[1]+2*pad)); k=clamp(k, kmin||0, kmax||9); flyTo((b[0]+b[2])/2,(b[1]+b[3])/2,k); }
 function overview(){ if(DRIVE.on && DRIVE.overview){ DRIVE.overview(); return; } flyTo(W/2,H/2,fitK()); }
 function openProcess(){ if(DRIVE.on && DRIVE.overview){ DRIVE.overview(); return; } flyBox([FRAME.x,FRAME.y,FRAME.x+FRAME.w,FRAME.y+FRAME.h], 20, K0*1.34); }
-function locate(){ flyTo(MEP[0],MEP[1],Math.max(T.k,1.0)); pulseItem(meItem); }
+function locate(){ if(needTrack(locate)) return; flyTo(MEP[0],MEP[1],Math.max(T.k,1.0)); pulseItem(meItem); }
 function pulseItem(it){ if(reduced||!it.el.animate) return; it.el.firstChild.animate([{transform:'scale(1)'},{transform:'scale(1.6)'},{transform:'scale(1)'}],{duration:600,easing:'cubic-bezier(.65,0,.35,1)'}); }
 
 /* ============ Chrome: crumbs, minimap, status ============ */
@@ -1008,6 +1132,7 @@ function updateChrome(){
     if(LV>=2){ var R = regionAt(c); if(R && (!C || R.c===C.id)) html += '<span class="sp">›</span><button data-region="'+R.id+'">'+esc(R.name)+'</button>'; }
   }
   if(html!==lastCrumb){ crumbs.innerHTML=html; lastCrumb=html; }
+  gateCheck();
   var tl=T.invert([0,0]), br=T.invert([stage.clientWidth,stage.clientHeight]);
   miniVp.attr('x',tl[0]).attr('y',tl[1]).attr('width',br[0]-tl[0]).attr('height',br[1]-tl[1]);
 }
@@ -1015,7 +1140,7 @@ var mini = d3.select('#miniSvg').attr('viewBox',[-100,-60,W+200,H+120].join(' ')
 Object.keys(CONTS).forEach(function(k){ mini.append('path').attr('d',closed(CONTS[k].hull)).attr('fill',CONTS[k].soft).attr('stroke',CONTS[k].c).attr('stroke-width',8); });
 mini.append('path').attr('d',routeD).attr('fill','none').attr('stroke','#A9A59C').attr('stroke-width',10).attr('stroke-dasharray','8 40');
 mini.append('circle').attr('cx',MEP[0]).attr('cy',MEP[1]).attr('r',50).attr('fill','#F2603C');
-mini.append('circle').attr('cx',3540).attr('cy',900).attr('r',50).attr('fill','#1B1B1B');
+mini.append('circle').attr('cx',NSX).attr('cy',900).attr('r',50).attr('fill','#1B1B1B');
 var miniVp = mini.append('rect').attr('class','vp');
 document.getElementById('mini').addEventListener('click', function(e){ var r=this.getBoundingClientRect(), vb=[-100,-60,W+200,H+120]; var s=Math.min(r.width/vb[2], r.height/vb[3]); var ox=(r.width-vb[2]*s)/2, oy=(r.height-vb[3]*s)/2; var x=vb[0]+(e.clientX-r.left-ox)/s, y=vb[1]+(e.clientY-r.top-oy)/s; flyTo(x,y,Math.max(T.k,K0*1.4)); });
 
@@ -1025,7 +1150,7 @@ function updateStatus(){
   var n = CHECKS.filter(cpDone).length;
   document.getElementById('flagN').textContent = n+'/'+CHECKS.length;
   document.getElementById('flags').innerHTML = CHECKS.map(function(s){ return '<i class="'+(cpDone(s)?'on':'')+'"></i>'; }).join('');
-  document.getElementById('chipNext').textContent = NEXT ? (status(NEXT).cls==='st-today'?'Today':'Next')+': Lecture '+NEXT.n : 'Part 3';
+  document.getElementById('chipNext').textContent = NEXT ? (status(NEXT).cls==='st-today'?'Today':'Next')+': Lecture '+NEXT.n : 'Assignment 2';
   document.getElementById('epInM').textContent = obsText();
   document.getElementById('epOutM').textContent = nsText();
   if(DRIVE.refresh) DRIVE.refresh();
@@ -1072,7 +1197,7 @@ function toolsHTML(s){
     if(!v) return out + '<p>Pick your track to see the tools for this stop. Theory is shared by both.</p>';
   } else out += '<h3>Tools</h3>';
   var t = v.tools;
-  if(!t) return out+'<p>None. This one is theory, shared by both tracks.</p>';
+  if(!t) return s.kind==='lec' ? out+'<p>None. This one is theory, shared by both tracks.</p>' : '';
   if(/TO NAME|TBD/i.test(t)) return out+'<div class="tools"><span class="tool tbd">Tool to be announced</span></div>';
   return out+'<div class="tools">'+t.split(/,\s*|\s+plus\s+/).map(function(x){ return '<span class="tool">'+esc(x)+'</span>'; }).join('')+'</div>';
 }
@@ -1085,7 +1210,7 @@ function canItems(t){
 function canHTML(s){
   var v=variant(s), can=(v&&v.can)||s.can||(s.nocode&&s.nocode.can)||'', items=canItems(can);
   if(items.length>1) return '<div class="can"><b>You will be able to</b><ol>'+items.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ol></div>';
-  return '<div class="can"><b>You will be able to</b><span>'+esc(items[0]||can)+'</span></div>';
+  return '<div class="can"><b>'+(s.kind==='bridge'?'What this is':'You will be able to')+'</b><span>'+esc(items[0]||can)+'</span></div>';
 }
 function formatLabel(s){
   var t=s.type||'';
@@ -1099,31 +1224,37 @@ function agendaHTML(s){
   var when = s.kind==='lec' ? fmt(s.date)+' · Week '+s.w : s.due ? 'Due '+fmt(s.due) : s.date ? fmt(s.date) : s.id==='b2' ? 'Self-paced · Week 0' : (s.type||'');
   var rows = [['When', esc(when)], ['Format', formatLabel(s)]];
   if(s.arc) rows.push(['Arc', esc(s.arc)]);
-  if(s.owner) rows.push(['Led by', esc(s.owner)]);
+  var lead = track==='code' && s.codeOwner ? s.codeOwner : s.owner;
+  if(lead) rows.push(['Led by', esc(lead)]);
   return '<h3>Agenda</h3><dl class="ag">'+rows.map(function(r){ return '<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>'; }).join('')+'</dl>';
 }
 /* Everything on the card that changes with the track lives in one box, so a switch never rebuilds the field note. */
 function trackBitsHTML(s){
-  var h = canHTML(s) + toolsHTML(s);
+  var h = (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
   if(cl) h += '<div class="cliff"><b>THE CLIFF</b>'+esc(cl)+'</div>';
   return h;
 }
 function stopCard(s, focus){
   var C=s.cont, st=status(s);
-  var kick = s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w : s.kind==='camp' ? 'Base camp · Week 0' : 'Intuition · Weeks 11 to 12';
+  var kick = s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w : s.kind==='camp' ? 'What to build · Week 0' : s.kind==='m3' ? 'Human · Module 3' : 'Bridge · '+C.name;
   var h = '<h2 id="ptitle">'+esc(s.t)+'</h2>';
-  h += '<div class="pills"><span class="pill '+(st.hot?'hot':st.cls==='st-held'?'ok':'')+'">'+(st.cls==='st-held'?'✓ ':'')+esc(st.txt)+'</span><span class="pill">'+esc(s.type)+'</span><button type="button" class="pill terr" data-cont="'+C.id+'">'+esc(C.name)+' · '+esc(C.verif)+'</button></div>';
-  if(s.kind==='p3' && !P3_UNLOCKED) h += '<p>This territory is under fog until Lecture 18 is done on Fri 20 Nov. You will know what the rules and judgment territories can and cannot verify before you get here.</p>';
-  h += agendaHTML(s);
-  h += '<div id="trackBits">'+trackBitsHTML(s)+'</div>';
+  h += '<div class="pills"><span class="pill '+(st.hot?'hot':st.cls==='st-held'?'ok':'')+'">'+(st.cls==='st-held'?'✓ ':'')+esc(st.txt)+'</span><span class="pill">'+esc(s.type)+'</span>'+(C.bridge?'<span class="pill terr">'+esc(C.verif)+'</span>':'<button type="button" class="pill terr" data-cont="'+C.id+'">'+esc(C.name)+' · '+esc(C.verif)+'</button>')+'</div>';
+  if(s.kind==='m3'){
+    h += '<p>Module 3 runs for about three weeks: <b>six lectures</b> on agents built for humans. They are locked until you cross the <b>Assignment 2</b> bridge after Lecture 18. Titles, tools and dates appear here when they open.</p>';
+    h += '<p>After the sixth lecture you start your <b>final capstone</b>, the last bridge to your North Star.</p>';
+  } else {
+    h += '<div id="trackBits">'+trackBitsHTML(s)+'</div>';
+  }
+  if(s.id==='A2') h += '<div class="law"><b>WHY A BRIDGE</b>Probabilistic ends with Lecture 18. Assignment 2 puts what you built there to work, and handing it in is what unlocks Module 3.</div>';
+  if(s.id==='cap') h += '<div class="law"><b>THE LAST BRIDGE</b>Module 3 ends, the capstone begins. It is built for the North Star you wrote at the start, and measured against it.</div>';
   if(s.prep) h += '<h3>Before the lecture</h3><p>'+esc(s.prep)+'</p>';
   if(s.done){
     var open=cpOpen(s), on=cpDone(s);
     h += '<div class="cp"><div class="h">'+FLAG.replace('class="flag"','')+'Checkpoint '+(s.cp+1)+' of '+CHECKS.length+'</div>'+esc(s.done)+
       '<label class="chk'+(open?'':' off')+'"><input type="checkbox" data-cp="'+s.id+'"'+(on?' checked':'')+(open?'':' disabled')+'> '+(open?'I cleared this. Plant the flag.':'You can plant this flag after '+fmt(s.date))+'</label></div>';
   }
-  h += '<h3>Field note</h3><div class="note"><label class="vh" for="note">Field note</label><textarea id="note" data-note="'+s.id+'" placeholder="What did you observe at this stop? Only you can see this.">'+esc(sget('c8m2-note-'+s.id)||'')+'</textarea><div class="saved" id="savedMsg"></div></div>';
+  if(s.kind!=='m3') h += '<h3>Field note</h3><div class="note"><label class="vh" for="note">Field note</label><textarea id="note" data-note="'+s.id+'" placeholder="What did you observe at this stop? Only you can see this.">'+esc(sget('c8m2-note-'+s.id)||'')+'</textarea><div class="saved" id="savedMsg"></div></div>';
   var prev = TRAVEL[TRAVEL.indexOf(s)-1], next = TRAVEL[TRAVEL.indexOf(s)+1];
   h += '<div class="nav2"><button type="button" data-stop="'+(prev?prev.id:'')+'"'+(prev?'':' disabled')+'><b>← Previous</b><span>'+(prev?esc(prev.t):'Start')+'</span></button><button type="button" class="nx" data-stop="'+(next?next.id:'')+'"'+(next?'':' disabled')+'><b>Next stop →</b><span>'+(next?esc(next.t):'North Star')+'</span></button></div>';
   openPanel('stop:'+s.id, kick, C, h, focus);
@@ -1178,13 +1309,14 @@ function inCard(){
 /* ============ Selection ============ */
 function selectStop(id, opt){
   var s = ST[id]; if(!s) return; opt=opt||{};
+  if(needTrack(function(){ selectStop(id, opt); })) return;
   setSelected(id); stopCard(s, opt.focus);
   if(!opt.noFly) flyTo(s.x, s.y, Math.max(T.k, LV3K+0.1));
   history.replaceState(null,'','#'+id);
-  setScrubTo(s.date || s.due || T0, true);
+  setScrubTo(s.date || s.due || s.adate || T0, true);
 }
-function selectRegion(id){ var r=REGIONS.filter(function(x){return x.id===id;})[0]; if(!r) return; setSelected(null); regionCard(r); flyBox(r.bbox, 60, LV2K+0.05, LV3K+0.4); }
-function selectCont(id){ var C=CONTS[id]; setSelected(null); contCard(C); flyBox(C.bbox, 40, LV2K+0.02, 1.2); }
+function selectRegion(id){ var r=REGIONS.filter(function(x){return x.id===id;})[0]; if(!r) return; if(needTrack(function(){ selectRegion(id); })) return; setSelected(null); regionCard(r); flyBox(r.bbox, 60, LV2K+0.05, LV3K+0.4); }
+function selectCont(id){ var C=CONTS[id]; if(!C) return; if(needTrack(function(){ selectCont(id); })) return; setSelected(null); contCard(C); flyBox(C.bbox, 40, LV2K+0.02, 1.2); }
 function stepStop(dir){ var cur = selected ? ST[selected] : (NEXT||TRAVEL[0]); var i=TRAVEL.indexOf(cur)+dir; if(!selected) i=TRAVEL.indexOf(cur); if(TRAVEL[i]) selectStop(TRAVEL[i].id); }
 
 /* ============ Actions ============ */
@@ -1193,10 +1325,10 @@ function act(a){
     case 'open': closePanel(); openProcess(); break;
     case 'overview': closePanel(); overview(); break;
     case 'me': if(panelOpen && vp().mob) closePanel(); locate(); break;
-    case 'next': selectStop(NEXT ? NEXT.id : 'P3'); break;
+    case 'next': selectStop(NEXT ? NEXT.id : 'A2'); break;
     case 'camp': selectCont('camp'); break;
     case 'checkpoints': directionsCard(true); break;
-    case 'star': starCard(); flyTo(3540,900,Math.max(K0*1.6,0.5)); break;
+    case 'star': starCard(); flyTo(NSX,900,Math.max(K0*1.6,0.5)); break;
     case 'in': inCard(); flyTo(280,900,Math.max(K0*1.6,0.5)); break;
   }
 }
@@ -1207,7 +1339,8 @@ document.addEventListener('click', function(e){
   if((b=t.closest('[data-region]'))){ selectRegion(b.dataset.region); return; }
   if((b=t.closest('[data-cont]'))){ selectCont(b.dataset.cont); return; }
   if((b=t.closest('[data-act]'))){ act(b.dataset.act); return; }
-  if((b=t.closest('[data-track]'))){ setTrack(b.dataset.track); return; }
+  if((b=t.closest('[data-track]'))){ if(gateEl.classList.contains('on')) chooseTrack(b.dataset.track); else setTrack(b.dataset.track); return; }
+  if((b=t.closest('[data-gate]'))){ chooseTrack(b.dataset.gate); return; }
   if((b=t.closest('.iocard'))){ act(b.dataset.io==='out'?'star':'in'); return; }
   if(t.closest('#coverG')){ act('open'); return; }
 });
@@ -1240,9 +1373,9 @@ document.addEventListener('input', function(e){
 });
 
 /* ============ Track ============ */
-function setTrack(t){
+function setTrack(t, fromGate){
   if(t!=='code' && t!=='nocode') return;
-  track=t; sset('c8m2-track',t);
+  track=t; sset('c8m2-track',t); applyExtent(); gateForced=false; pendingGo=null; gateCheck();
   $$('.lopt').forEach(function(b){ b.setAttribute('aria-checked', b.dataset.track===t); });
   document.getElementById('layerName').textContent = t==='code'?'Code track':'No-code track';
   if(panelKey && panelKey.indexOf('stop:')===0){
@@ -1250,7 +1383,14 @@ function setTrack(t){
     if(box){ box.innerHTML = trackBitsHTML(ST[panelKey.slice(5)]); if(!reduced && box.animate) box.animate([{opacity:0},{opacity:1}],{duration:200,easing:'cubic-bezier(.16,1,.3,1)'}); }
     else stopCard(ST[panelKey.slice(5)]);
   }
-  toast((t==='code'?'Code':'No-code')+' layer on · tools updated');
+  toast(fromGate ? (t==='code'?'Code':'No-code')+' track on · switch any time from Track, bottom left' : (t==='code'?'Code':'No-code')+' track on · tools and leads updated');
+}
+function chooseTrack(t){
+  var go = pendingGo; pendingGo = null; gateForced = false;
+  setTrack(t, true); gateCheck();
+  if(go){ go(); return; }
+  var v=vp(), c=T.invert([v.cx,v.cy]);
+  flyTo(c[0], c[1], Math.max(T.k*1.5, LV2K+0.12));
 }
 var layerBtn=document.getElementById('layerBtn'), lpop=document.getElementById('lpop');
 layerBtn.addEventListener('click', function(){ var o=!lpop.classList.contains('open'); lpop.classList.toggle('open',o); layerBtn.setAttribute('aria-expanded',o); });
@@ -1351,7 +1491,7 @@ function toast(msg){ toastEl.textContent=msg; toastEl.classList.add('on'); clear
 function setup(first){
   var v=vp(), c = first ? [W/2,H/2] : T.invert([v.cx,v.cy]), z = first ? 1 : Z;
   K0 = fitK();
-  zoom.scaleExtent([K0*0.85, 4.5]).translateExtent([[-W*0.6,-H*0.8],[W*1.6,H*1.8]]);
+  zoom.scaleExtent([K0*0.85, maxK()]).translateExtent([[-W*0.6,-H*0.8],[W*1.6,H*1.8]]);
   d3.select(stage).call(zoom.transform, transformFor(c[0],c[1],K0*z));
 }
 var hash = location.hash.slice(1);
@@ -1520,7 +1660,7 @@ function stopLook(s){
   if(st.hot) return {coin:'#F2603C',num:'#F2603C',st:st};
   return {coin:C.c,num:C.ci,st:st};
 }
-function kickFor(s){ return s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w+' · '+fmt(s.date) : s.kind==='camp' ? 'Base camp · '+s.type : 'Weeks 11 to 12'; }
+function kickFor(s){ return s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w+' · '+fmt(s.date) : s.kind==='camp' ? 'What to build · '+s.type : s.kind==='m3' ? 'Module 3 · locked' : s.type; }
 function stopLabel(a){
   var s=a.s, lk=stopLook(s);
   a.label = retext(a.label, {w:5.4,lines:[
@@ -1554,12 +1694,12 @@ function buildAreas(){
       box(.07,2.2,.07,'#5A5A5A', a.half-.25,1.1,-a.half+.25, a.g);
       a.flag=box(.72,.44,.05,'#D9D5CC', a.half-.25+.39,.6,-a.half+.25, a.g);
     }
-    if(s===NEXT || (!NEXT && s.kind==='p3')){
+    if(s===NEXT || (!NEXT && s.id==='A2')){
       var ring=new THREE.Mesh(new THREE.RingGeometry(2.05,2.3,64), flat('#F2603C',.6)); ring.rotation.x=-Math.PI/2; ring.position.y=.03; ring.renderOrder=4; a.g.add(ring); a.pulse=ring;
     }
     stopLabel(a);
   });
-  var pi=U(280,900), po=U(3540,900);
+  var pi=U(280,900), po=U(NSX,900);
   DRIVE.inA=addArea({x:pi.x,z:pi.z,half:2.2,c:'#1B1B1B',kind:'in'});
   DRIVE.nsA=addArea({x:po.x,z:po.z,half:2.4,c:'#E0A000',kind:'ns'});
   endLabels();
@@ -1632,7 +1772,7 @@ function buildProps(){
   /* Intuition: trees */
   var C3=CONTS.intuition, b=C3.bbox, placed=0, tries=0;
   while(placed<9 && tries++<200){ var px=b[0]+rnd()*(b[2]-b[0]), py=b[1]+rnd()*(b[3]-b[1]);
-    if(!d3.polygonContains(C3.hull,[px,py]) || Math.hypot(px-ST.P3.x,py-ST.P3.y)<120 || Math.abs(py-(b[1]+40))<70) continue;
+    if(!d3.polygonContains(C3.hull,[px,py]) || TAIL.some(function(m){ return Math.hypot(px-m.x,py-m.y)<70; }) || Math.abs(py-(b[1]+40))<70) continue;
     var u=U(px,py), tr=new THREE.Group(), s=.8+rnd()*.5;
     var trunk=new THREE.Mesh(new THREE.CylinderGeometry(.12,.16,.7,6), M('#8A5A3A')); trunk.position.y=-1.3*s+.35; tr.add(trunk);
     var fol=new THREE.Mesh(new THREE.ConeGeometry(.85,1.9,6), M('#1E9B57')); fol.position.y=-1.3*s+.7+.95; tr.add(fol);
@@ -1732,7 +1872,7 @@ function frame(now){
   cam.position.copy(camT).addScaledVector(OFF,camD); cam.lookAt(camT);
   R.render(scene,cam);
 }
-function areaName(a){ return a.kind==='in' ? 'Start · your observation' : a.kind==='ns' ? 'Your North Star' : (a.s.kind==='lec'?'Lecture '+a.s.n:a.s.kind==='camp'?'Base camp '+a.s.num:'Part 3')+' · '+a.s.t; }
+function areaName(a){ return a.kind==='in' ? 'Start · your observation' : a.kind==='ns' ? 'Your North Star' : (a.s.kind==='lec'?'Lecture '+a.s.n:a.s.kind==='camp'?'What to build '+a.s.num:a.s.kind==='m3'?'Module 3':'Bridge')+' · '+a.s.t; }
 function setCur(a){
   cur=a; var km=DRIVE.key;
   if(a){ km.visible=true; km.scale.set(.2,.075,1); km.position.set(a.x+a.half-1.05, .05, a.z+a.half-.5);
