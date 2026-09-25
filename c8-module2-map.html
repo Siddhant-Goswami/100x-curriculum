@@ -1265,7 +1265,6 @@ function stopCard(s, focus){
   if(s.id==='HK') h += '<div class="law"><b>WHY A BRIDGE</b>Deterministic ends with Lecture 8 and a deployed MVP. The hackathon runs '+fmt(s.date)+' to '+fmt(s.end)+(s.results?', with results on '+fmt(s.results):'')+'. Then Lecture 9 opens Probabilistic, where nothing is guaranteed to repeat.</div>';
   if(s.id==='A2') h += '<div class="law"><b>WHY A BRIDGE</b>Probabilistic ends with Lecture 18. Assignment 2 puts what you built there to work, and handing it in is what unlocks Module 3.</div>';
   if(s.id==='cap') h += '<div class="law"><b>THE LAST BRIDGE</b>Module 3 ends, the capstone begins. It is built for the North Star you wrote at the start, and measured against it.</div>';
-  if(s.prep) h += '<h3>Before the lecture</h3><p>'+esc(s.prep)+'</p>';
   if(s.done){
     var open=cpOpen(s), on=cpDone(s);
     h += '<div class="cp"><div class="h">'+FLAG.replace('class="flag"','')+'Checkpoint '+(s.cp+1)+' of '+CHECKS.length+'</div>'+esc(s.done)+
