@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Module 2 Map | 100xEngineers</title>
-<meta name="description" content="Cohort 8, Module 2 as a map. Start at your observation, decide what to build, travel through deterministic, probabilistic and human steps, cross two bridges, arrive at your North Star.">
+<meta name="description" content="Cohort 8, Module 2 as a map. Start at your observation, decide what to build, travel through deterministic, probabilistic and human steps, cross a bridge at every border, arrive at your North Star.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -692,7 +692,7 @@ function dateFor(w,dn){ return addDays(START,(w-1)*7+(dn==='Fri'?4:5)); }
 var CONTS = {
   camp:{id:'camp',name:'What to build',sub:'Week 0 · Mandatory, before anything else',verif:'Discovery to MVP',q:'What is worth building?',c:'#F2603C',soft:'#FDE9E2',ci:'#B8431F',
     desc:'Mandatory, and first. Decide what is worth building before learning how: fix your North Star, write one real observation, turn it into a hypothesis that can fail, and deliver the value by hand. Once you know what to build, the rest of the map opens up.',
-    label:[800,1545], extra:[[700,1200],[930,1220]], r:120, seed:11},
+    label:[770,1545], extra:[[680,1200],[850,1225]], r:120, seed:11},
   rules:{id:'rules',name:'Deterministic',sub:'Deterministic · Weeks 1 to 5',verif:'Verifiable by a rule',q:'Which steps deserve rules?',c:'#D98E00',soft:'#FBF0D6',ci:'#8A5A00',
     desc:'Same input, same output, every time. The three interfaces of every app (UI, API, database), then one deployed MVP in a real person\'s hands. You control everything here while you learn a new world. Nothing guesses.',
     label:[1330,905], extra:[[1300,1250]], r:165, seed:23},
@@ -705,11 +705,13 @@ var CONTS = {
 };
 /* Bridges are not territories: they join two of them. */
 var BRIDGES = {
+  a1:{id:'a1',bridge:true,name:'Assignment 1',verif:'The bridge to building',c:'#1B1B1B',soft:'#FDE9E2',ci:'#1B1B1B',from:'#F2603C',to:'#D98E00'},
+  hack:{id:'hack',bridge:true,name:'Hackathon',verif:'The bridge from rules to models',c:'#1B1B1B',soft:'#FBF0D6',ci:'#1B1B1B',from:'#D98E00',to:'#6E4BE8'},
   a2:{id:'a2',bridge:true,name:'Assignment 2',verif:'The bridge to agents',c:'#1B1B1B',soft:'#EDEBE5',ci:'#1B1B1B',from:'#6E4BE8',to:'#1E9B57'},
   cap:{id:'cap',bridge:true,name:'Capstone',verif:'The final bridge to your North Star',c:'#1B1B1B',soft:'#FFF4DA',ci:'#1B1B1B',from:'#1E9B57',to:'#E0A000'}
 };
 var REGIONS = [
-  {id:'camp-r',c:'camp',name:'What to build',sub:'Discovery to MVP',stops:['b1','b2','b3'],desc:'Mandatory. Three steps, one per part of Assignment 1. The output is not an app. It is a process you have run once by hand, with a number attached, and it tells you what to build.'},
+  {id:'camp-r',c:'camp',name:'What to build',sub:'Discovery to MVP',stops:['b1','b2'],desc:'Mandatory. The workshop, then discovery, then Assignment 1 is the bridge out. The output is not an app. It is a process you have run once by hand, with a number attached, and it tells you what to build.'},
   {id:'orient',c:'rules',name:'Orientation',stops:['L1'],desc:'The verifier is the job. Every lecture from here is one of three boxes: verifiable by a rule, by judgment, or not at all.'},
   {id:'ui',c:'rules',name:'The first interface',stops:['L2','L3'],desc:'What an interface is, and the UI as the first of three. From PRD to a running frontend.'},
   {id:'api',c:'rules',name:'The second interface',stops:['L4','L5'],desc:'Why the frontend cannot store or protect data on its own. The API, and the cliff of the no-code track.'},
@@ -731,9 +733,9 @@ var STOPS = [
   {id:'b2',kind:'camp',num:'B',t:'Discovery to hypothesis',type:'Self-paced',x:815,y:1415,
     can:'Turn your observation into a hypothesis that can fail: subject, problem, cause, intervention, a number, a deadline, and the result that would prove it wrong.',
     tools:'discovery-to-mvp-coach skill',kw:'discovery hypothesis falsifiable causal chain evidence audit subject simulated interview mom test'},
-  {id:'b3',kind:'camp',num:'C',t:'First proof: the manual MVP',type:'Assignment 1',due:FIRST_PROOF,x:880,y:1305,
-    can:'Deliver the value by hand to 2 to 5 real people, then write down the input, the process and the output you actually used.',
-    tools:'Lovable or any builder, for the tracker only',kw:'manual mvp tracker first proof assignment input process output card 21 days cohort zero',
+  {id:'b3',kind:'bridge',br:'a1',num:'A1',t:'Assignment 1: First Proof',type:'Assignment 1 · Bridge',due:FIRST_PROOF,x:1005,y:1290,
+    can:'21 days, one observation from your own life, one link a stranger can use. Publish a tracker for your manual MVP plan, deliver the value by hand to 2 to 5 real people, and fill the Input-Process-Output card from what you actually did.',
+    tools:'discovery-to-mvp-coach skill, Lovable or any AI builder for the tracker only',kw:'manual mvp tracker first proof assignment input process output card 21 days cohort zero',
     done:'Done means: a published 21-day tracker a stranger can open, 2 to 5 real conversations logged, and your Input-Process-Output card filled from a run you did by hand.'},
   {id:'L1',n:1,w:1,d:'Sat',t:'Orientation and State of AI 2026',type:'Theory',x:1195,y:1215,can:'Know what this module asks of you: read a plan, approve it, verify the result.',kw:'verifier law golden dataset fde forward deployed engineer three boxes state of ai mckinsey'},
   {id:'L2',n:2,w:2,d:'Fri',t:'What is an interface; UI as the first interface',type:'Theory',x:1150,y:1000,can:'Explain what an interface is and name the three a software system has, using your own app as the example.',kw:'interface ui frontend'},
@@ -752,6 +754,9 @@ var STOPS = [
     nocode:{tools:'Antigravity, Supabase, Vercel',can:'Deploy to Vercel and hand a live URL to a real user who completes one task on it.'},
     code:{tools:'Gradio, FastAPI, Supabase, Render',can:'Deploy the full app and hand a live URL to a real user who completes one task on it.'},
     done:'Done means: a named person who did not build it completes the task on the live link. Public moment 1.',kw:'deploy mvp launch live url'},
+  {id:'HK',kind:'bridge',br:'hack',num:'H',t:'Hackathon: from deterministic to probabilistic',type:'Hackathon · Bridge',date:d(2026,10,17),end:d(2026,10,19),results:d(2026,10,21),x:1705,y:1105,
+    can:'Two days right after Lecture 8. Take the deterministic app you just deployed and build on it under time pressure, then cross into Probabilistic, where the same input can give a different output.',
+    kw:'hackathon bridge deterministic probabilistic rules models lecture 8 results'},
   {id:'L9',n:9,w:5,d:'Sat',t:'Intro to LLMs',type:'Theory',x:1935,y:1140,can:'Explain what an LLM can and cannot know, and where its knowledge stops.',kw:'llm language model knowledge cutoff'},
   {id:'L10',n:10,w:6,d:'Fri',t:'Tool calling and MCP',type:'Theory',x:2040,y:1265,can:'Explain tool calling as the model asking for an action, not taking it.',kw:'tool calling mcp model context protocol'},
   {id:'L11',n:11,w:6,d:'Sat',t:'Tool calling and MCP',type:'Practical',x:2170,y:1210,
@@ -827,7 +832,11 @@ function applySheet(sh){
     if(r.tools && !/^none$/i.test(r.tools)) s.code.tools = r.tools.trim();
     if(r.can) s.code.can = r.can;
   });
-  sh.events.forEach(function(r){ var dt=parseDay(r.date); if(!dt) return; EVENTS.push({t:r.title, type:r.type||'Event', date:dt, done:r.done, prep:r.prep}); });
+  sh.events.forEach(function(r){ var dt=parseDay(r.date); if(!dt) return;
+    var hk = STOPS.filter(function(s){ return s.id==='HK'; })[0];
+    if(/^hackathon results/i.test(r.title)) hk.results = dt;
+    else if(/^hackathon/i.test(r.title)){ hk.date = dt; var e=parseDay(r.done); if(e) hk.end = e; }
+    EVENTS.push({t:r.title, type:r.type||'Event', date:dt, done:r.done, prep:r.prep}); });
   EVENTS.sort(function(a,b){ return a.date-b.date; });
   SHEET_OK = true;
 }
@@ -852,6 +861,12 @@ function variant(s){ if(!s.nocode) return {tools:s.tools,can:s.can}; return trac
 
 /* ============ Status ============ */
 function status(s){
+  if(s.id==='HK'){
+    if(days(TODAY,s.date)>0) return {cls:'st-up',txt:fmt(s.date)+' to '+fmt(s.end)+' · after Lecture 8'};
+    if(days(TODAY,s.end)>=0) return {cls:'st-today',txt:'On now · ends '+fmt(s.end),hot:true};
+    if(s.results && days(TODAY,s.results)>=0) return {cls:'st-held',txt:'Held · results '+fmt(s.results)};
+    return {cls:'st-held',txt:'Held · '+fmt(s.date)};
+  }
   if(s.id==='A2') return P3_UNLOCKED ? {cls:'st-next',txt:'Open now · unlocks Module 3',hot:true} : {cls:'st-up',txt:'After Lecture 18'};
   if(s.kind==='m3') return {cls:'st-locked',txt:'Locked · Module 3'};
   if(s.id==='cap') return {cls:'st-locked',txt:'After Module 3'};
@@ -935,7 +950,7 @@ for(var si=0;si<=NS;si++){ var pt=rnode.getPointAtLength(LEN*si/NS); SAMP.push([
 function pointAt(s){ var p=rnode.getPointAtLength(LEN*clamp(s,0,1)); return [p.x,p.y]; }
 var TAIL = ['A2','M1','M2','M3','M4','M5','M6','cap'].map(function(id){ return ST[id]; }), TAIL0 = addDays(LECS[LECS.length-1].date,2);
 TAIL.forEach(function(s,i){ s.adate = new Date(TAIL0.getTime()+(END-TAIL0)*i/TAIL.length); });
-var ANCH = [[T0,0],[ST.b1.date,ST.b1.s]].concat(LECS.map(function(l){ return [l.date,l.s]; })).concat(TAIL.map(function(s){ return [s.adate,s.s]; })).concat([[END,1]]);
+var ANCH = [[T0,0],[ST.b1.date,ST.b1.s]].concat(LECS.map(function(l){ return [l.date,l.s]; }), [[new Date((ST.HK.date.getTime()+ST.HK.end.getTime())/2),ST.HK.s]]).sort(function(a,b){ return a[1]-b[1]; }).concat(TAIL.map(function(s){ return [s.adate,s.s]; })).concat([[END,1]]);
 function sForDate(t){
   if(t<=ANCH[0][0]) return 0;
   for(var i=1;i<ANCH.length;i++){ if(t<=ANCH[i][0]){ var a=ANCH[i-1], b=ANCH[i]; return a[1]+(b[1]-a[1])*((t-a[0])/(b[0]-a[0]||1)); } }
@@ -985,7 +1000,7 @@ function addItem(html, x, y, lmin, lmax, cls, attrs){
 /* Level 0: Input, Process, Output */
 var ioIn = addItem('<span class="k">Input</span><span class="t">You, today</span><span class="d">Your observation. A real person, a real problem, from your own life.</span>', 280, 900, 0, 0, 'io', {tag:'button','data-act':'in','aria-label':'Input: where you stand'});
 var ioOut = addItem('<span class="k">Output</span><span class="t">North Star</span><span class="d">A six-month goal someone else could verify on the date.</span>', NSX, 900, 0, 0, 'io', {tag:'button','data-act':'star','aria-label':'Output: your North Star'});
-var coverLbl = addItem('<span class="t">Process</span><span class="d">Everything between where you stand and where you want to be. Know what to build, then three kinds of step and two bridges.</span><button class="btn coral" type="button" data-act="open">Open the process</button>', FRAME.x+FRAME.w/2, 900, 0, 0, 'cl');
+var coverLbl = addItem('<span class="t">Process</span><span class="d">Everything between where you stand and where you want to be. Know what to build, then three kinds of step, with a bridge at every border.</span><button class="btn coral" type="button" data-act="open">Open the process</button>', FRAME.x+FRAME.w/2, 900, 0, 0, 'cl');
 /* Level 1+: endpoints */
 var nsText = function(){ var v=sget('c8m2-northstar'); return v ? v : 'Write yours'; };
 var obsText = function(){ var v=sget('c8m2-observation'); return v ? v : 'Your observation'; };
@@ -1003,7 +1018,7 @@ REGIONS.forEach(function(r){ var C=CONTS[r.c];
 });
 /* Bridge labels (level 1+) */
 TRAVEL.filter(function(s){ return s.kind==='bridge'; }).forEach(function(s){ var B=s.cont;
-  var sub = s.id==='A2' ? 'After Lecture 18 · unlocks Module 3' : 'After Module 3 · to your North Star';
+  var sub = s.id==='b3' ? 'Due '+fmt(s.due)+' · into Deterministic' : s.id==='HK' ? 'After Lecture 8 · '+fmt(s.date)+' to '+fmt(s.end) : s.id==='A2' ? 'After Lecture 18 · unlocks Module 3' : 'After Module 3 · to your North Star';
   addItem('<span class="k">Bridge</span><span class="n">'+esc(B.name)+'</span><span class="m">'+sub+'</span>', s.blabel[0], s.blabel[1], 1, 3, 'bl halo', {tag:'button','data-stop':s.id,'aria-label':'Bridge: '+B.name+'. '+sub});
 });
 /* Stop pins */
@@ -1246,6 +1261,8 @@ function stopCard(s, focus){
   } else {
     h += '<div id="trackBits">'+trackBitsHTML(s)+'</div>';
   }
+  if(s.id==='b3') h += '<div class="law"><b>WHY A BRIDGE</b>What to build ends with a process you have run once by hand, with a number attached. Do not automate anything on the card during the 21 days: it is the input to Week 1, where Deterministic starts turning it into a system.</div>';
+  if(s.id==='HK') h += '<div class="law"><b>WHY A BRIDGE</b>Deterministic ends with Lecture 8 and a deployed MVP. The hackathon runs '+fmt(s.date)+' to '+fmt(s.end)+(s.results?', with results on '+fmt(s.results):'')+'. Then Lecture 9 opens Probabilistic, where nothing is guaranteed to repeat.</div>';
   if(s.id==='A2') h += '<div class="law"><b>WHY A BRIDGE</b>Probabilistic ends with Lecture 18. Assignment 2 puts what you built there to work, and handing it in is what unlocks Module 3.</div>';
   if(s.id==='cap') h += '<div class="law"><b>THE LAST BRIDGE</b>Module 3 ends, the capstone begins. It is built for the North Star you wrote at the start, and measured against it.</div>';
   if(s.prep) h += '<h3>Before the lecture</h3><p>'+esc(s.prep)+'</p>';
