@@ -289,6 +289,9 @@ button.pill.terr:active{transform:scale(.97)}
 .can ol{margin:2px 0 0;padding:0 0 0 20px;font-size:14px;line-height:1.5;color:var(--ink)}
 .can ol li{margin:0 0 6px;padding-left:2px} .can ol li:last-child{margin:0}
 .can ol li::marker{font:600 11px var(--mono);color:var(--ink3)}
+.can.lo{margin-top:8px}
+.can.lo em{display:block;font-style:normal;font-weight:600;font-size:13px;color:var(--ink);margin:10px 0 4px}
+.can.lo em:first-of-type{margin-top:2px}
 .ag{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;margin:0 0 6px;font-size:13.5px;line-height:1.4}
 .ag dt{font:600 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding-top:3px;white-space:nowrap}
 .ag dd{margin:0;color:var(--ink)} .ag dd i{font-style:normal;color:var(--ink3)}
@@ -637,7 +640,7 @@ function parseSheet(text){
   rows.slice(hi+1).forEach(function(r){
     var g=function(k){ return (r[k]||'').trim(); };
     var title=g(1); if(!title) return;
-    var rec={date:g(0), title:title, type:g(2), tools:g(3), arc:g(4), can:g(5), done:g(6), prep:g(7), owner:g(8), status:g(9)};
+    var rec={date:g(0), title:title, type:g(2), tools:g(3), arc:g(4), can:g(5), done:g(6), prep:g(7), owner:g(8), status:g(9), lo:g(10)};
     var m=title.match(/^(\d+)\.\s*(.+)$/);
     if(m){ rec.n=+m[1]; rec.title=m[2].trim(); out.lectures.push(rec); } else out.events.push(rec);
   });
@@ -697,7 +700,7 @@ var CONTS = {
     desc:'Same input, same output, every time. The three interfaces of every app (UI, API, database), then one deployed MVP in a real person\'s hands. You control everything here while you learn a new world. Nothing guesses.',
     label:[1330,905], extra:[[1300,1250]], r:165, seed:23},
   judgment:{id:'judgment',name:'Probabilistic',sub:'Probabilistic · Weeks 5 to 10',verif:'Verifiable by judgment',q:'Which steps deserve a model?',c:'#6E4BE8',soft:'#ECE6FB',ci:'#5332C9',
-    desc:'Writable and handable, but the output can vary for the same input. LLMs, tool calling, retrieval and memory, then shaped with data, fine-tuned only when that is the right answer, and measured against a rubric written before you see any output.',
+    desc:'Writable and handable, but the output can vary for the same input. LLM primitives and tool calling, then context through retrieval and memory, the harness that connects them, and model behavior: clean data, fine-tuning only when that is the right answer, and an eval against a rubric written before you see any output.',
     label:[2240,1000], extra:[[2250,1330]], r:175, seed:37},
   intuition:{id:'intuition',name:'Human',sub:'Module 3 · About 3 weeks, 6 lectures',verif:'In the loop, not verifiable yet',q:'Which steps stay human?',c:'#1E9B57',soft:'#E1F4E8',ci:'#167A44',
     desc:'Module 3. About three weeks and six lectures on agents built for humans: intuition you can perform but not articulate, agents of two kinds, artificial and human, and a process for finding which tasks do not transfer. You get here by crossing the Assignment 2 bridge, and you leave by the capstone bridge to your North Star.',
@@ -717,10 +720,10 @@ var REGIONS = [
   {id:'api',c:'rules',name:'The second interface',stops:['L4','L5'],desc:'Why the frontend cannot store or protect data on its own. The API, and the cliff of the no-code track.'},
   {id:'data',c:'rules',name:'Data',stops:['L6','L7'],desc:'Model the domain before any table exists, then make data survive a refresh.'},
   {id:'launch',c:'rules',name:'Launch',stops:['L8'],desc:'One deployed MVP, in the hands of a named person who did not build it.'},
-  {id:'models',c:'judgment',name:'Models and tools',stops:['L9','L10','L11'],desc:'What an LLM can and cannot know, and tool calling as the model asking for an action, not taking it.'},
-  {id:'retrieval',c:'judgment',name:'Retrieval and memory',stops:['L12','L13','L14'],desc:'Why the model cannot answer from your documents by default, and what retrieval and memory change.'},
-  {id:'harness',c:'judgment',name:'The harness',stops:['L15'],desc:'Connecting the dots. The arrangement of rule, model and human nodes, not the model, decides reliability.'},
-  {id:'measure',c:'judgment',name:'Shape and measure',stops:['L16','L17','L18'],desc:'Fine-tune only when it is the right answer, prepare clean data, and judge the judge.'},
+  {id:'models',c:'judgment',name:'LLM primitives',stops:['L9','L10','L11'],desc:'What an LLM can and cannot know, and tool calling as the model asking for an action, not taking it.'},
+  {id:'retrieval',c:'judgment',name:'Context',stops:['L12','L13','L14'],desc:'Why the model cannot answer from your documents by default, and what retrieval and memory change.'},
+  {id:'harness',c:'judgment',name:'Harness',stops:['L15'],desc:'Connecting the dots. The arrangement of rule, model and human nodes, not the model, decides reliability.'},
+  {id:'measure',c:'judgment',name:'Model behavior',stops:['L16','L17','L18'],desc:'Fine-tune only when it is the right answer, prepare clean data, and judge the judge.'},
   {id:'agents',c:'intuition',name:'Module 3 · Agents for humans',stops:['M1','M2','M3','M4','M5','M6'],desc:'Six lectures over about three weeks. Where a person has to stay, and how agents are built for humans. Locked until you cross the Assignment 2 bridge.'}
 ];
 
@@ -815,6 +818,7 @@ function applySheet(sh){
     var tools = r.tools && !/^none$/i.test(r.tools) ? r.tools : (r.tools ? '' : null);
     if(tools!==null){ if(s.nocode) s.nocode.tools = tools; else s.tools = tools||undefined; }
     if(r.can){ if(s.nocode) s.nocode.can = r.can; else s.can = r.can; }
+    if(r.lo){ if(s.nocode) s.nocode.lo = r.lo; else s.lo = r.lo; }
     if(r.done){
       if(/^THE CLIFF\b/i.test(r.done)){ var ct=r.done.replace(/^THE CLIFF:?\s*/i,''); ct=ct.charAt(0).toUpperCase()+ct.slice(1); if(s.nocode) s.nocode.cliff=ct; else s.cliff=ct; }
       else s.done = tidyDone(r.done);
@@ -828,6 +832,7 @@ function applySheet(sh){
   if(sh.code) sh.code.lectures.forEach(function(r){
     var s = byN[r.n]; if(!s) return;
     if(r.owner) s.codeOwner = r.owner;
+    if(r.lo){ if(s.code) s.code.lo = r.lo; else s.codeLo = r.lo; }
     if(!s.code) return;
     if(r.tools && !/^none$/i.test(r.tools)) s.code.tools = r.tools.trim();
     if(r.can) s.code.can = r.can;
@@ -857,7 +862,7 @@ var TRAVEL = STOPS.filter(function(s){ return s.kind!=='in' && s.kind!=='ns'; })
 
 /* ============ Track layer ============ */
 var track = sget('c8m2-track'); if(track!=='code' && track!=='nocode') track=null;
-function variant(s){ if(!s.nocode) return {tools:s.tools,can:s.can}; return track ? s[track] : null; }
+function variant(s){ if(!s.nocode) return {tools:s.tools,can:s.can,lo:track==='code'&&s.codeLo?s.codeLo:s.lo}; return track ? s[track] : null; }
 
 /* ============ Status ============ */
 function status(s){
@@ -1227,6 +1232,27 @@ function canHTML(s){
   if(items.length>1) return '<div class="can"><b>You will be able to</b><ol>'+items.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ol></div>';
   return '<div class="can"><b>'+(s.kind==='bridge'?'What this is':'You will be able to')+'</b><span>'+esc(items[0]||can)+'</span></div>';
 }
+/* Learning outcomes from the sheet: bullets, optionally under "Part 1: ..." headings. */
+function loGroups(t){
+  var lines = String(t||'').replace(/[\u2060\u200B\uFEFF]/g,'').replace(/\r/g,'').split('\n').map(function(x){ return x.trim(); }).filter(Boolean);
+  var BUL = /^([•·\-*]|\d{1,2}[.)])\s*/, bulleted = lines.some(function(x){ return BUL.test(x); });
+  var groups = [], g = null;
+  lines.forEach(function(x){
+    if(bulleted && !BUL.test(x)){ g = {h:x.replace(/:$/,''), items:[]}; groups.push(g); return; }
+    if(!g){ g = {h:'', items:[]}; groups.push(g); }
+    g.items.push(x.replace(BUL,''));
+  });
+  return groups.filter(function(g){ return g.items.length; });
+}
+function loHTML(s){
+  var v=variant(s), groups=loGroups((v&&v.lo)||(s.nocode&&s.nocode.lo)||'');
+  if(!groups.length) return '';
+  var n=1;
+  return '<div class="can lo"><b>Learning outcomes</b>'+groups.map(function(g){
+    var h=(g.h?'<em>'+esc(g.h)+'</em>':'')+'<ol start="'+n+'">'+g.items.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ol>';
+    n += g.items.length; return h;
+  }).join('')+'</div>';
+}
 function formatLabel(s){
   var t=s.type||'';
   if(s.kind!=='lec') return t;
@@ -1245,7 +1271,7 @@ function agendaHTML(s){
 }
 /* Everything on the card that changes with the track lives in one box, so a switch never rebuilds the field note. */
 function trackBitsHTML(s){
-  var h = (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + toolsHTML(s);
+  var h = (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + loHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
   if(cl) h += '<div class="cliff"><b>THE CLIFF</b>'+esc(cl)+'</div>';
   return h;
