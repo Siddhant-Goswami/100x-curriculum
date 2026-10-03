@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Design Your API | 100xEngineers</title>
-<meta name="description" content="Practice set after Lecture 4 of the 100xEngineers Cohort 8 Module 2: get a 201 from a real API, break it on purpose, then list every request your own app needs.">
+<title>Practice Set: API as the Second Interface | 100xEngineers</title>
+<meta name="description" content="Practice set after Lecture 4 of the 100xEngineers Cohort 8 Module 2: work through the Request Builder, get a 201 from a real API and a 200 from a model, break it on purpose, then design every request your own app needs.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -16,133 +16,105 @@
 <div id="prog" aria-hidden="true"></div>
 <header class="top"><div class="in">
   <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
-  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 <div class="wrap grid">
-  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex6">Open exercise 6</a></div></div></aside>
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Open the Request Builder</a><br><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a></div></div></aside>
   <main>
 <details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
-  <p class="kick">Practice set · Follows Lecture 4: API as the second interface · Both tracks</p>
-  <h1>Design Your API</h1>
-  <p class="dek">Get a 201 from a real machine. Break it four ways on purpose. Then write down every request your own app will need.</p>
-  <div class="meta"><span>Post before Fri 9 Oct</span><span>Cohort 8 · Module 2</span><span>About 90 minutes</span></div>
+  <p class="kick">Practice set · Follows Lecture 4 · Both tracks</p>
+  <h1>Practice Set: API as the Second Interface</h1>
+  <p class="dek">Send real requests to real machines, put a model behind one of them, then design every request your own app needs.</p>
+  <div class="meta"><span>Due before the Lecture 5 practical, Fri 9 Oct</span><span>Reviewed in next week's office hour</span><span>Cohort 8 · Module 2</span></div>
 </div>
 
-<div class="call"><p class="kick">The practice set in one sentence</p><p>Replay Round Three against the real Aarav service until you get a 201, cause a 400, 401, 404 and 405 on purpose and write down what fixed each one, then list every request your own app needs: CRUD action, method, address, package in and reply, with at least one request that calls a model and every key marked with the box it lives in.</p></div>
+<div class="call"><p class="kick">The practice set in one sentence</p><p>Work through the ten steps of the Request Builder in your browser, keep what each step produces, and finish by writing the API table for your own app.</p></div>
 
-<section class="s" id="s01"><h2><span class="n">01</span>Why This Exercise Exists</h2>
-<p>In the lecture the machine taught you the six parts, one error at a time. That only sticks if you do it again on your own, with nobody at the host's keyboard. The warm-ups are that replay.</p>
-<p>The main task is the step after. On Friday both tracks build a backend. A backend is a list of doors: which actions each door takes, what package it expects, and what it replies. If you cannot write that list on paper, you cannot build it, and you cannot tell when your build is wrong. The list you write here is the spec for Friday.</p>
-<p>Lecture recap: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">the lecture notes</a>.</p>
-</section>
-
-<section class="s" id="s02"><h2><span class="n">02</span>Warm-up A: Replay Round Three for Real</h2>
-<p>The machine from the game is real. It lives at <code>https://100x-curriculum.vercel.app/aarav</code> and answers with the same codes. You need two requests: one to Create a key, one to Create a diagnosis. Use <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex6">exercise 6 of the Request Builder</a>, curl, or your no-code tool's HTTP step. All three send the same four parts.</p>
-<h3>Request 1: Create a key</h3>
-<p>Keys are issued by the machine. No key is needed to ask for one.</p>
-<div class="env">
-  <div class="band addr"><b>Address</b><code>https://100x-curriculum.vercel.app/aarav/keys</code></div>
-  <div class="band act"><b>Action</b><code>POST · Create</code></div>
-  <div class="band key"><b>Key</b><code>none needed for this door</code></div>
-  <div class="band pkg"><b>Package</b><code>Content-Type: application/json<br>{"name": "your name"}</code></div>
-  <div class="band code"><b>Reply</b><code>201 · {"key": "aarav_…"}</code></div>
-</div>
-<p>Copy the key from the reply. Keep it out of Discord, screenshots and chat.</p>
-<h3>Request 2: Create a diagnosis</h3>
-<div class="env">
-  <div class="band addr"><b>Address</b><code>https://100x-curriculum.vercel.app/aarav/diagnoses</code></div>
-  <div class="band act"><b>Action</b><code>POST · Create</code></div>
-  <div class="band key"><b>Key</b><code>Authorization: Bearer &lt;your aarav_ key&gt;</code></div>
-  <div class="band pkg"><b>Package</b><code>Content-Type: application/json<br>{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</code></div>
-  <div class="band code"><b>Reply</b><code>201 · a diagnosis, plus what the machine read from you in you_sent</code></div>
-</div>
-<p>The same two requests in a terminal (code track):</p>
-<div id="curlA"></div>
-<p>Then send request 2 a second time. You should get the identical diagnosis. Write down why that matters: the same request to Groq would not do this.</p>
-</section>
-
-<section class="s" id="s03"><h2><span class="n">03</span>Warm-up B: Break It on Purpose</h2>
-<p>Every code you will meet this month is one change away from a working request. Start from your working request 2 and change exactly one thing at a time. Predict the code before you press Send. Then write down what the reply said and what you changed back to fix it.</p>
-<div class="tw"><table>
-<thead><tr><th>Cause this</th><th>One change to try</th><th>Part</th><th>Your prediction</th><th>What it replied, and the fix</th></tr></thead>
-<tbody>
-<tr><td><span class="sc s4">400</span></td><td>Delete one comma or quote from the package</td><td><span class="part pkg">package</span></td><td></td><td></td></tr>
-<tr><td><span class="sc s4">401</span></td><td>Remove the Authorization header, or drop the word Bearer</td><td><span class="part key">key</span></td><td></td><td></td></tr>
-<tr><td><span class="sc s4">404</span></td><td>Send to <code>/aarav/diagnosis</code> (no s)</td><td><span class="part addr">address</span></td><td></td><td></td></tr>
-<tr><td><span class="sc s4">405</span></td><td>Send DELETE to <code>/aarav/diagnoses</code></td><td><span class="part act">action</span></td><td></td><td></td></tr>
-<tr><td><span class="sc s5">500</span></td><td>Send anything to <code>/aarav/broken</code></td><td>their machine</td><td></td><td></td></tr>
-</tbody></table></div>
-<p>Copy the table into your notes and fill it in. Two more to try if you want them: put your key in the address as <code>?key=…</code> and read what the machine says about it, and Read <code>/aarav/diagnoses</code> after creating three. The empty list is the point; the machine has no memory.</p>
-<details class="acc"><summary>Stuck on a code? Read the error before you change anything.</summary><div class="b"><p>Every error reply from Aarav's service names the part that failed in <code>error.part</code> and tells you what to do in <code>error.hint</code>. Read those two fields first. Fix one thing, send again.</p></div></details>
-</section>
-
-<section class="s" id="s04"><h2><span class="n">04</span>The Main Task: List Every Request Your App Needs</h2>
-<p>Use your Assignment 1 observation. If your hypothesis is not ready yet, use Aarav's. Do not wait for your interviews to finish; this does not depend on them.</p>
+<section class="s" id="s01"><h2><span class="n">01</span>How It Works</h2>
 <ol class="steps">
-  <li><b>Write the input and the output in one line each.</b> What the user gives your app, and what your app gives back. This is the Input → Process → Output you already have.</li>
-  <li><b>List every request.</b> For each one: the CRUD action, the method, the address, the package in, and the reply with its codes (the success code and at least one failure code).</li>
-  <li><b>At least one request must call a model.</b> Say which box makes that call.</li>
-  <li><b>Mark every key and the box it lives in.</b> UI, backend or model provider. If any key is in the UI box, move it.</li>
-  <li><b>Draw the boxes.</b> UI → backend → model, with an arrow for each request in your list.</li>
+  <li><b>Open the <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a>.</b> Everything happens in that page. Nothing to install.</li>
+  <li><b>Do the steps in order, 1 to 10.</b> Each step ends with a checkpoint. Tick it when you have the result; ticks save on this device.</li>
+  <li><b>Keep what the steps produce.</b> Screenshots and short notes, as listed in section 03 below.</li>
+  <li><b>Post it</b> in your track channel on Discord before the Lecture 5 practical. We go through it together in next week's office hour, <span class="pend">date to be added</span>.</li>
 </ol>
-<h3>The worked example: Aarav's API</h3>
-<div class="tw"><table>
-<thead><tr><th>CRUD</th><th>Method</th><th>Address</th><th>Package in</th><th>Reply</th></tr></thead>
-<tbody>
-<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows</td><td class="mono">{"description": "..."}</td><td><span class="sc s2">201</span> + workflow id · <span class="sc s4">400</span> if description is missing</td></tr>
-<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}</td><td>none</td><td><span class="sc s2">200</span> + the workflow · <span class="sc s4">404</span> if no such id</td></tr>
-<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows/{id}/diagnoses</td><td>none; the backend sends the workflow to Groq</td><td><span class="sc s2">201</span> + diagnosis · <span class="sc s5">5xx</span> if Groq fails</td></tr>
-<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}/diagnoses</td><td>none</td><td><span class="sc s2">200</span> + past diagnoses</td></tr>
-</tbody></table></div>
+<p>Plan for about two hours in total. Step 8 needs a free Groq account; create it with Google or GitHub, no card needed.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Code Track and No-Code Track</h2>
 <div class="two">
-  <div class="card"><p class="kick">Keys</p><h4>The Groq key lives in the backend</h4><p>Aarav's UI holds no key at all. The backend adds the Groq key when it calls the model.</p></div>
-  <div class="card"><p class="kick">Model call</p><h4>Row 3</h4><p>The backend sends the stored workflow to Groq and saves what comes back.</p></div>
+  <div class="card"><p class="kick">Both tracks</p><h4>Every step, in the browser</h4><p>The Request Builder sends real requests for you. You fill in the four parts and read the reply. That is the whole skill, whichever track you are on.</p></div>
+  <div class="card"><p class="kick">Code track · optional extra</p><h4>Run step 8 in Python</h4><p>If you set up Python in Lecture 3, run the Python version of the Groq request shown in step 8. It becomes the body of your FastAPI route in Lecture 5.</p></div>
 </div>
-<p>Yours will have different nouns. A recipe planner has <code>/recipes</code> and <code>/plans</code>; a ticket summariser has <code>/tickets</code> and <code>/summaries</code>. Nouns as addresses, CRUD as the actions.</p>
+<div class="card" style="margin:0 0 18px"><p class="kick">No-code track · how the parts map</p><h4>The same four boxes in any HTTP step</h4><p>Every no-code tool that calls an API asks for the same things: <span class="part addr">URL</span> for the address, <span class="part act">Method</span> for the action, a <span class="part key">header</span> named Authorization for the key, and a <span class="part pkg">JSON body</span> for the package. Each step in the Request Builder shows the mapping. In Lecture 5, Antigravity will ask you for the same parts.</p></div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>What to Submit</h2>
+<p>Tick each deliverable when it is ready. Ticks save on this device.</p>
+<ul class="ck" data-stage="sub">
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. A 201 from the real Aarav service</span><span class="h"><span class="kick">Step 4</span>A screenshot of the reply with the diagnosis in it. Mask your key if it shows anywhere.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. The "break it" table</span><span class="h"><span class="kick">Step 5</span>For 400, 401, 404 and 405, plus the 500 from <code>/aarav/broken</code>: what you changed, the code you got, and the part it points to. Use the template below.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. A 200 from Groq, twice</span><span class="h"><span class="kick">Step 8</span>The two answers to the same request, side by side, and one line: which would you trust, and why?</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Where your key was, and where it should be</span><span class="h"><span class="kick">Step 9</span>One sentence: where you found your key in DevTools, and which box it should live in instead. Never a screenshot of a key.</span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">5. Design your API</span><span class="h"><span class="kick">Step 10</span>Every request your app needs, in the table format below. At least one request calls a model. Every key marked with the box it lives in.</span></label></li>
+</ul>
+<div class="stg"><span class="kick">Deliverables ready</span><div class="bar"><i></i></div><span class="num">0 / 5</span><button class="reset" type="button">Reset</button></div>
+
+<h3>Template for deliverable 2: break it on purpose</h3>
+<div class="tw"><table>
+<thead><tr><th>What I changed</th><th>Code I got</th><th>The part it points to</th></tr></thead>
+<tbody>
+<tr><td>Example: deleted the closing brace of the package</td><td><span class="sc s4">400</span></td><td><span class="part pkg">package</span></td></tr>
+<tr><td>&nbsp;</td><td><span class="sc s4">401</span></td><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td><span class="sc s4">404</span></td><td>&nbsp;</td></tr>
+<tr><td>&nbsp;</td><td><span class="sc s4">405</span></td><td>&nbsp;</td></tr>
+<tr><td>Sent anything to <code>/aarav/broken</code></td><td><span class="sc s5">500</span></td><td>None of yours: their machine</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Deliverable 5: Design Your API</h2>
+<p>Use your Assignment 1 observation. If your hypothesis is not ready yet, use Aarav's workflow. Start from one question: what does your user do, and which of those actions would your app need another machine for?</p>
+<h3>The worked example: Aarav's app</h3>
+<div class="tw"><table>
+<thead><tr><th>CRUD</th><th>Method</th><th>Address</th><th>Package in</th><th>Reply</th><th>Key</th></tr></thead>
+<tbody>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows</td><td class="mono">{"description": "..."}</td><td><span class="sc s2">201</span> + workflow id · <span class="sc s4">400</span> if the description is missing</td><td>None from the UI</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}</td><td>none</td><td><span class="sc s2">200</span> + the workflow · <span class="sc s4">404</span> if no such id</td><td>None from the UI</td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows/{id}/diagnoses</td><td>none; the backend sends the workflow to Groq</td><td><span class="sc s2">201</span> + diagnosis · <span class="sc s5">5xx</span> if Groq fails</td><td>Groq key, in the backend</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}/diagnoses</td><td>none</td><td><span class="sc s2">200</span> + past diagnoses</td><td>None from the UI</td></tr>
+</tbody></table></div>
+<p>Three boxes sit behind that table: <strong>UI → backend → Groq</strong>. The UI calls only the backend. The backend holds the Groq key and stores the data, because a page can do neither.</p>
+<h3>Your table</h3>
+<div class="tw"><table>
+<thead><tr><th>CRUD</th><th>Method</th><th>Address</th><th>Package in</th><th>Reply, with codes</th><th>Key, and the box it lives in</th></tr></thead>
+<tbody>
+<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td></tr>
+</tbody></table></div>
+<h3>Check your table before you post</h3>
+<ul>
+  <li>Every action is one of Create, Read, Update, Delete, spelled with the matching method.</li>
+  <li>Addresses are nouns (<code>/workflows</code>), not verbs (<code>/getWorkflow</code>).</li>
+  <li>At least one request calls a model.</li>
+  <li>No key sits in the UI box.</li>
+  <li>Each reply lists the success code and at least one failure code.</li>
+</ul>
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Rules</h2>
-<details class="acc" open><summary>Predict the code before you send.</summary><div class="b"><p>Write the code you expect next to every request in warm-up B. Keep the wrong predictions; they are where the learning is.</p></div></details>
-<details class="acc"><summary>Read the code, fix one thing, send again.</summary><div class="b"><p>Change one part at a time. If you change two and it works, you do not know which one fixed it.</p></div></details>
-<details class="acc"><summary>Never paste a key in Discord.</summary><div class="b"><p>Not in a screenshot, not in a help post, not in an AI chat. Mask it as <code>aarav_••••</code> or <code>gsk_••••</code>. If one leaks, revoke it and make a new one. See the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">key safety page</a>.</p></div></details>
-<details class="acc"><summary>Create, Read, Update, Delete. No other words.</summary><div class="b"><p>Write the CRUD action in its own column, then the method. Do not invent names like "fetch" or "change" for the actions.</p></div></details>
-<details class="acc"><summary>AI is allowed for hints, not for the list.</summary><div class="b"><p>Ask for help with a code you do not understand. Write the list of requests yourself: you must be able to explain why each one has the action it has.</p></div></details>
+<details class="acc" open><summary>Predict the code before you send.</summary><div class="b"><p>Write down the code you expect before every request in steps 4 to 6. Keep the prediction even when it is wrong; the wrong ones are where you learn.</p></div></details>
+<details class="acc"><summary>Never paste a key in Discord.</summary><div class="b"><p>Not in a message, not in a screenshot, not in an AI chat. If a key leaks, revoke it and create a new one. See <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s9">step 9</a>.</p></div></details>
+<details class="acc"><summary>Use your own Groq account.</summary><div class="b"><p>Groq's free limits apply per account, not per key: 30 requests a minute and 1,000 a day on <code>openai/gpt-oss-120b</code>. A shared account runs out for everyone at once.</p></div></details>
+<details class="acc"><summary>Stuck for more than 20 minutes?</summary><div class="b"><p>Check <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a> first. Then post in your track channel: the exact error and code, what you tried, and the request with the key masked.</p></div></details>
 </section>
 
-<section class="s" id="s06"><h2><span class="n">06</span>What to Submit</h2>
-<p>Tick each deliverable as it is ready. Ticks save on this device.</p>
-<ul class="ck" data-stage="sub">
-<li><input type="checkbox" id="p1"><label for="p1"><span class="t">A 201 from Aarav's service</span><span class="h">A screenshot of the 201 reply with the diagnosis. Mask your key.</span></label></li>
-<li><input type="checkbox" id="p2"><label for="p2"><span class="t">The break-it table</span><span class="h">400, 401, 404, 405 and 500, each with your prediction, the reply, and the fix.</span></label></li>
-<li><input type="checkbox" id="p3"><label for="p3"><span class="t">Input and output, one line each</span><span class="h">From your Assignment 1 observation, or Aarav's.</span></label></li>
-<li><input type="checkbox" id="p4"><label for="p4"><span class="t">Your request list</span><span class="h">CRUD action, method, address, package in, reply with codes, for every request.</span></label></li>
-<li><input type="checkbox" id="p5"><label for="p5"><span class="t">At least one model call</span><span class="h">Which request calls a model, and which box makes the call.</span></label></li>
-<li><input type="checkbox" id="p6"><label for="p6"><span class="t">Every key, and the box it lives in</span><span class="h">No key in the UI box.</span></label></li>
-<li><input type="checkbox" id="p7"><label for="p7"><span class="t">The box diagram</span><span class="h">UI → backend → model, one arrow per request. A photo of paper is fine.</span></label></li>
-</ul>
-<div class="stg"><span class="kick">Deliverables ready</span><div class="bar"><i></i></div><span class="num">0 / 7</span><button class="reset" type="button">Reset</button></div>
+<section class="s" id="s06"><h2><span class="n">06</span>Where to Post</h2>
+<p>Post all five deliverables in one thread in your track channel on Discord <span class="pend">channel link</span>, before the Lecture 5 practical on Fri 9 Oct. Next week's office hour, <span class="pend">date to be added</span>, goes through the Groq step and reviews API designs from that thread.</p>
+<p class="sig">Four things in, two things out.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">notes</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">troubleshooting</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a></small></p>
 </section>
-
-<section class="s" id="s07"><h2><span class="n">07</span>Where to Post, and How to Get Unblocked</h2>
-<p>Post everything in your track channel on Discord <span class="pend">channel link to come</span> before the Lecture 5 practical on <strong>Fri 9 Oct</strong>. Code track and no-code track post in their own channels; the task is the same.</p>
-<p>Stuck on a code for more than 20 minutes: post the exact reply (status code and the error JSON), the request you sent with the key masked, and what you already tried. Someone else's fix is often your blocker.</p>
-<p>The common failures and their fixes are in the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a>.</p>
-</section>
-
-<section class="s" id="s08"><h2><span class="n">08</span>After Submission</h2>
-<p>On Friday your request list becomes the backend you build. Code track: Python and FastAPI, deployed on Render. No-code track, with Rahul: Antigravity. The doors you write down here are the doors you build.</p>
-<p>Assignment 1 is still due <strong>Fri 9 Oct</strong>, on its own track.</p>
-<p class="sig">Predict the code, then send.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">lecture notes</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">cards</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a></small></p>
-</section>
-
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  var cmd=['# 1. Create a key','curl -X POST https://100x-curriculum.vercel.app/aarav/keys \\','  -H "Content-Type: application/json" \\','  -d \'{"name": "your name"}\'','','# 2. Create a diagnosis (paste your key)','curl -X POST https://100x-curriculum.vercel.app/aarav/diagnoses \\','  -H "Authorization: Bearer aarav_YOUR_KEY" \\','  -H "Content-Type: application/json" \\','  -d \'{"workflow": "I open Jira, read the tickets, write a status report and post it on Slack. About 90 minutes."}\''].join('\n');
-  document.getElementById('curlA').innerHTML=c8code({title:'terminal · warm-up A',code:cmd,tags:{1:['Action + address','#D98E00'],3:['Package','#1E9B57'],6:['Action + address','#D98E00'],7:['Key','#6E4BE8'],9:['Package','#1E9B57']}});
-});
-</script>
 
   </main>
 </div>

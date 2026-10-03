@@ -36,16 +36,18 @@ var GUIDE_LINKS = {
   /* Lecture 4 · API as the second interface (pages live in c8/module-2/lecture-04-the-second-interface) */
   l04Hub: '/c8/module-2/lecture-04-the-second-interface/',
   l04Builder: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder',
-  l04Groq: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex5',
-  l04Aarav: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex6',
-  l04Codes: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex7',
+  l04Groq: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8',
+  l04Aarav: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s4',
+  l04Codes: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s6',
   l04Wire: '/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire',
   l04Notes: '/c8/module-2/lecture-04-the-second-interface/post-lecture/notes',
   l04Practice: '/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set',
-  l04Cards: '/c8/module-2/lecture-04-the-second-interface/post-lecture/cards',
   l04Network: '/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab',
   l04Keys: '/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety',
-  l04OfficeHour: '/c8/module-2/lecture-04-the-second-interface/post-lecture/office-hour-guide',
+  l04Trouble: '/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting',
+  l04Get: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s2',
+  l04Traffic: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s7',
+  l04KeyStep: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s9',
   l04Kit: '/c8/module-2/lecture-04-the-second-interface/post-lecture/kit',
   aaravApi: 'https://100x-curriculum.vercel.app/aarav',
   groqKeys: 'https://console.groq.com/keys',
@@ -262,57 +264,52 @@ GUIDES.L3 = { code: {
    Source: c8/module-2/lecture-04-the-second-interface/_plan/lecture-plan-v2.md */
 GUIDES.L4 = { all: {
   name: 'Four things in, two things out',
-  sub: 'Lecture companion · 3 October 2026 · both tracks',
-  deadline: 'Practice set: Design your API',
-  keep: 'Every request between two machines carries four things: an address, an action, a key, and a package in a format both sides agree on. Every reply carries two: a code and a package. You did not memorise these; the machine taught them to you in Round Three, one error at a time. Each part exists because something broke without it, from Morse code to JSON.',
+  sub: 'After the lecture · 3 October 2026 · both tracks',
+  deadline: 'Practice set',
+  keep: 'Every request between two machines carries four things: an address, an action, a key, and a package in a format both sides agree on. Every reply carries two: a code and a package. You did not memorise these; the machine taught them to you in Round Three, one error at a time. This week you send real requests with them, from the Request Builder, ending with a model behind your request.',
   ideas: [
-    ['4xx is yours, 5xx is theirs.', 'The machine does not guess. A 400, 401, 404 or 405 means one part of your request was wrong. Read the code, fix one thing, send again.'],
+    ['4xx is yours, 5xx is theirs.', 'The machine does not guess. A 400, 401, 404 or 405 means one part of your request was wrong, and the code tells you which.'],
     ['Create, Read, Update, Delete.', 'What you want is a CRUD action. The HTTP method is how it is spelled on the wire: POST, GET, PUT or PATCH, DELETE. Asking ChatGPT about the weather is a Create, because a new reply is added to your conversation.'],
-    ['Interface = common language + protocol.', 'Morse, ASCII and JSON are common languages. TCP/IP, HTTP and REST are protocols. Groq\'s address says /openai/v1 because a shared format wins by adoption.'],
-    ['The door is deterministic. What comes through it is probabilistic.', 'Aarav\'s service returns the same diagnosis twice. Groq returns different words to the same request. Which one is right, and who decides? That is the verifier.'],
-    ['The key and the data live in a backend.', 'A key in a web page ships to every visitor, and a page forgets everything on refresh. UI, then backend, then Groq. That backend is what both tracks build on Friday.']
+    ['The door is deterministic. What comes through it is probabilistic.', 'Aarav\'s service returns the same diagnosis twice. A model on Groq returns different words to the same request. Which one is right, and who decides? That is the verifier.'],
+    ['The key and the data live in a backend.', 'A key in a web page ships to every visitor, and a page forgets everything on refresh. UI, then backend, then the model. That backend is what both tracks build in the Lecture 5 practical.']
   ],
-  rule: 'Predict the status code before you press Send. When it is not what you predicted, read the code and the hint, change one part, and send again.',
+  rule: 'Do the Request Builder steps in order. Before every Send, predict the status code. Pick your track at the top of the page for the Python or no-code version of each step.',
   stages: [
-    {id:'parts', name:'The parts', short:'Parts', sub:'In the lecture',
-     intro:'Name every part without looking: four in the request, two in the reply. The Request Builder colours them the same way on every page.',
+    {id:'lecture', name:'In the lecture', short:'Lecture', sub:'Done in class',
+     intro:'Round Three, the six parts, the CRUD quiz and Aarav\'s workflow. Tick these if you can do them without looking; if not, read the notes first.',
      ticks:[
        {id:'four', t:'I can name the four parts of a request', how:'Address, action, key, package.'},
        {id:'two', t:'I can name the two parts of a reply', how:'Code and package.'},
-       {id:'ladder', t:'I can say which old problem each part solves', how:'Morse and ASCII: a shared code. TCP/IP: the address. HTTP: action, key, code. REST: CRUD on nouns. JSON: the package.', link:'l04Wire', linkLabel:'The Wire'},
-       {id:'codes', t:'I can say whose fault 400, 401, 404, 405, 429 and 500 are', how:'4xx yours, 5xx theirs.', link:'l04Codes', linkLabel:'Cause every code'}
+       {id:'crud', t:'I can match each CRUD action to its method', how:'Create POST, Read GET, Update PUT or PATCH, Delete DELETE.', link:'l04Notes', linkLabel:'Lecture notes'}
      ]},
-    {id:'first', name:'First requests', short:'Requests', sub:'Your own 200 and 201',
-     intro:'Real requests to real machines, from the browser. Nothing to install.',
+    {id:'requests', name:'Real requests', short:'Requests', sub:'Request Builder steps 1 to 6',
+     intro:'All in the browser. Nothing to install.',
      ticks:[
-       {id:'get', t:'A GET in the address bar', how:'httpbin.org/get?text=hello comes back with your text inside args.', cmd:'https://httpbin.org/get?text=hello'},
-       {id:'space', t:'Saw a space become %20', how:'In the Request Builder, exercise 3, or in the Network tab\'s Request URL.'},
-       {id:'post', t:'A POST with a package', how:'Your text comes back at json.text.', link:'l04Builder', linkLabel:'Request Builder'},
-       {id:'aarav', t:'A 201 from Aarav\'s real service', how:'Create a key at /aarav/keys, then Create a diagnosis at /aarav/diagnoses.', link:'l04Aarav', linkLabel:'Aarav, for real'}
+       {id:'get', t:'A 200 from a Read, and a space turned into %20', how:'Step 2.', link:'l04Get', linkLabel:'Step 2'},
+       {id:'post', t:'A 200 from a Create, with my text at json.text', how:'Step 3.'},
+       {id:'aarav', t:'A 201 key and a 201 diagnosis from Aarav\'s real service', how:'Step 4. Send twice: identical.', link:'l04Aarav', linkLabel:'Step 4'},
+       {id:'break', t:'Caused a 400, 401, 404 and 405 on purpose', how:'Step 5. Predict each code first.'},
+       {id:'codes', t:'Sent all eight whose-fault cards', how:'Step 6.', link:'l04Codes', linkLabel:'Step 6'}
      ]},
-    {id:'model', name:'A model', short:'Model', sub:'Groq, with a q',
-     intro:'The brain for your UI. Same four parts, a different machine. Model: openai/gpt-oss-120b. Free tier limits are per Groq account, so use your own.',
+    {id:'model', name:'Traffic and a model', short:'Model', sub:'Request Builder steps 7 to 9',
+     intro:'Read your own requests in DevTools, then put a model behind one. Model: openai/gpt-oss-120b. Use your own free Groq account; limits are per account.',
      ticks:[
-       {id:'key', t:'Groq key created', how:'console.groq.com/keys. Copy it once; Groq does not show it again. Never paste it in Discord.', link:'groqKeys', linkLabel:'console.groq.com/keys'},
-       {id:'ok', t:'A 200 from Groq', how:'The answer is at choices[0].message.content.', link:'l04Groq', linkLabel:'Groq in the Builder'},
-       {id:'twice', t:'Sent the same request twice', how:'Two different answers. Write one line on which you would trust, and why.'},
-       {id:'devtools', t:'Found my own key in DevTools', how:'Network, the chat/completions request, Request Headers. Then say where the key should live instead.', link:'l04Keys', linkLabel:'Keys'}
+       {id:'devtools', t:'Found all five parts of my request in DevTools', how:'Step 7.', link:'l04Traffic', linkLabel:'Step 7'},
+       {id:'key', t:'Groq key created', how:'console.groq.com/keys. Copy it once. Never paste it in Discord.', link:'groqKeys', linkLabel:'console.groq.com/keys'},
+       {id:'ok', t:'A 200 from Groq, sent twice, two different answers', how:'Step 8. Write one line on which you would trust.', link:'l04Groq', linkLabel:'Step 8'},
+       {id:'where', t:'Found my key in DevTools and know which box it belongs in', how:'Step 9: UI, backend, model. The backend holds it.', link:'l04KeyStep', linkLabel:'Step 9'}
      ]},
-    {id:'design', name:'Design your API', short:'Design', sub:'The practice set',
-     intro:'Use your Assignment 1 observation, or Aarav\'s. Post it in your track channel before the Lecture 5 practical.',
+    {id:'submit', name:'Practice set', short:'Submit', sub:'Before the Lecture 5 practical',
+     intro:'Five items, posted in your track channel. Step 10 of the Request Builder leads into it.',
      ticks:[
-       {id:'break', t:'Broke Aarav\'s service on purpose', how:'Caused a 400, 401, 404 and 405, and wrote what you changed each time.'},
-       {id:'list', t:'Listed every request my app needs', how:'CRUD action, method, address, package in, reply with its codes.'},
-       {id:'llm', t:'At least one request calls a model'},
-       {id:'boxes', t:'Every key marked, with the box it lives in', how:'UI, backend, or the model provider. Never the UI.'},
-       {id:'posted', t:'Posted in my track channel', link:'l04Practice', linkLabel:'Practice set'}
+       {id:'design', t:'Designed my API', how:'Every request: CRUD action, method, address, package in, reply with codes. At least one model call. Every key marked with its box.', link:'l04Practice', linkLabel:'Practice set'},
+       {id:'posted', t:'All five items posted in my track channel'}
      ]}
   ],
   actions: [
-    {id:'a1', t:'Keep going on Assignment 1', how:'Due Fri 9 Oct, on its own track. The practice set does not depend on it.'},
-    {id:'notes', t:'Read the lecture notes once', link:'l04Notes', linkLabel:'Lecture notes'},
-    {id:'net', t:'Read one more app in the Network tab', how:'Pick any site you use daily. Find the address, the action, the package and the code. Never expand authorization.', link:'l04Network', linkLabel:'Network tab guide'},
-    {id:'kit', t:'Code track: run the Python version of the Groq call', how:'It becomes the body of your FastAPI route on Friday.', link:'l04Kit', linkLabel:'Kit'}
+    {id:'a1', t:'Keep going on Assignment 1', how:'Due Fri 9 Oct, on its own track.'},
+    {id:'oh', t:'Bring your practice set to next week\'s office hour', how:'Plus any request that would not work, with its status code.'},
+    {id:'wire', t:'Optional: The Wire', how:'Why a request has exactly these parts, from Morse code to JSON.', link:'l04Wire', linkLabel:'The Wire'}
   ],
   next: 'Next: Lecture 5 practical, Fri 9 Oct. The code track builds the backend in Python with FastAPI and deploys it on Render; the no-code track builds it in Antigravity. The backend holds the Groq key and sits between your UI and the model. Lecture 6, Sat 10 Oct: where should the diagnoses live?',
   errors: [
@@ -324,18 +321,16 @@ GUIDES.L4 = { all: {
     ['No reply at all', 'Offline, wrong host, or the browser blocked the request', 'Check the address letter for letter; try the other echo machine']
   ],
   read: [
-    ['Lecture hub', 'l04Hub', 'Every Lecture 4 page in one place.'],
-    ['Request Builder', 'l04Builder', 'The playground used in the lecture: echo, Aarav, Groq, every code.'],
-    ['The Wire', 'l04Wire', 'The six problems from Morse to JSON, and the part each became.'],
-    ['Cards', 'l04Cards', 'The envelope, status codes, CRUD and methods, the Groq request. Printable.'],
-    ['Lecture notes', 'l04Notes', 'The lecture, questions first and names second.'],
-    ['Practice set: Design your API', 'l04Practice', 'The exercise for this week.'],
-    ['Reading the Network tab', 'l04Network', 'ChatGPT\'s traffic and your own Groq request, part by part.'],
+    ['Lecture hub', 'l04Hub', 'What we did, your path this week, and the dates.'],
+    ['Request Builder', 'l04Builder', 'The practice lab: ten steps, code and no-code.'],
+    ['Practice set', 'l04Practice', 'The five things to submit.'],
+    ['Lecture notes', 'l04Notes', 'Round Three, the six parts, the CRUD quiz, Aarav\'s workflow.'],
+    ['Troubleshooting', 'l04Trouble', 'Search an error; see the part it points to and the fix.'],
+    ['Reading the Network tab', 'l04Network', 'Your own requests, then ChatGPT\'s, part by part.'],
     ['Keys', 'l04Keys', 'Bearer, where keys live, and what to do when one leaks.'],
-    ['Office hour guide', 'l04OfficeHour', 'Errors you should expect and how to ask for help.'],
-    ['Kit', 'l04Kit', 'Every link and command, the Python bridge and the no-code bridge.'],
-    ['Aarav\'s Diagnosis Service', 'aaravApi', 'The real machine from Round Three. Open it: the reply lists its doors.'],
-    ['Groq models and limits', 'groqModels', 'Check which models are live before you build on one.']
+    ['Kit', 'l04Kit', 'Every link and command, the Python bridge and the no-code mapping.'],
+    ['The Wire', 'l04Wire', 'Optional: six problems from Morse code to JSON, and the part each became.'],
+    ['Aarav\'s Diagnosis Service', 'aaravApi', 'The real machine from Round Three. Open it: the reply lists its doors.']
   ],
   words: [
     ['API', 'The interface between two machines: requests in, replies out.'],
@@ -347,9 +342,7 @@ GUIDES.L4 = { all: {
     ['Body', 'The package inside the request or reply.'],
     ['JSON', 'A text format, not a language. Keys and values in curly braces.'],
     ['Status code', 'The number on every reply. 2xx worked, 4xx yours, 5xx theirs.'],
-    ['HTTPS', 'HTTP inside a sealed envelope, so nobody in between can read the key.'],
-    ['REST', 'A design style: nouns as addresses, CRUD as verbs. Not a protocol.'],
     ['Rate limit', 'How many requests you may send in a window. Past it, 429.']
   ],
-  kw: 'api http https rest json crud create read update delete get post put patch status code 200 201 400 401 404 405 429 500 header authorization bearer key groq gpt-oss network tab devtools request builder the wire aarav diagnosis morse ascii tcp ip practice set design your api'
+  kw: 'api http https rest json crud create read update delete get post put patch status code 200 201 400 401 404 405 429 500 header authorization bearer key groq gpt-oss network tab devtools request builder practice lab practice set aarav diagnosis troubleshooting'
 }};

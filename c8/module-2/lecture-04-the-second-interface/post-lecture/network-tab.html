@@ -34,7 +34,6 @@
 .dt .kv p code{background:none;border:0;padding:0;font-size:12px;overflow-wrap:anywhere;color:var(--ink)}
 .dt .kv p.m{border-left:3px solid var(--l);padding-left:8px;margin-left:-11px}
 .dt .kv .mask{background:var(--ink);color:var(--ink);border-radius:3px;user-select:none}
-.dt .kv .sticky{display:inline-block;background:#FFE58A;color:#5a4600;border-radius:3px;padding:0 8px;transform:rotate(-2deg);font-weight:500}
 .dt .lab{font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--l);margin-left:6px;white-space:nowrap}
 @media (max-width:640px){.dt .body{grid-template-columns:1fr}.dt .list{border-right:0;border-bottom:1px solid var(--line)}.dt .kv p{grid-template-columns:1fr;gap:0}}
 .cap{font-size:13px;color:var(--ink3);margin:0 0 20px}
@@ -46,7 +45,7 @@
 <div id="prog" aria-hidden="true"></div>
 <header class="top"><div class="in">
   <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
-  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 <div class="wrap grid">
@@ -57,7 +56,7 @@
   <p class="kick">Guide · Lecture 4: API as the second interface · Both tracks</p>
   <h1>Reading the Network Tab</h1>
   <p class="dek">Every request your browser sends is written down. Open the list, click one, and find the four parts of the request and the two parts of the reply.</p>
-  <div class="meta"><span>Sat 3 Oct 2026</span><span>Cohort 8 · Module 2</span><span>Chrome</span></div>
+  <div class="meta"><span>Post-lecture · both tracks</span><span>Chrome, nothing to install</span><span>About 20 minutes</span></div>
 </div>
 
 <div class="call"><p class="kick">What you are looking for</p><p>Every request carries an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span> and a <span class="part pkg">package</span>. Every reply carries a <span class="part code">code</span> and a package. The Network tab shows all six. In Lecture 2 you were told you did not need to read it yet. Now you do.</p></div>
@@ -70,62 +69,55 @@
   <li><b>Filter to Fetch/XHR.</b> These are the requests a page sends by itself, after it has loaded. Images, fonts and styles drop out of the list.</li>
   <li><b>Clear the list.</b> The circle with a line through it, top left. Now the next request you cause is the only one there.</li>
   <li><b>Cause one request, then click it.</b> The right side shows tabs: Headers, Payload, Preview, Response. The six parts live across those tabs.</li>
+  <li><b>Keep DevTools open while you work.</b> If you open it after sending, send the request again: the list only records what happens while it is open.</li>
 </ol>
 <p class="cap">The panels below are drawn in HTML so they read the same on every machine. Real screenshots will be added to this page from <code>assets/images/</code>.</p>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>Part 1: ChatGPT's Real Request</h2>
-<p>Log in to ChatGPT in Chrome, open the Network tab, filter to Fetch/XHR, clear it, and send "hi". Several requests appear. One fires just before the message and carries a name like <code>chat-requirements</code>: the site checking you before it lets the message through. The one you want is named <code>conversation</code>. In recent builds its address ends in <code>/backend-api/f/conversation</code>. The exact name changes from time to time; look for the one sent at the moment you pressed Enter.</p>
-<p>If you are logged out, ChatGPT uses different addresses. Log in first.</p>
-
-<div class="dt" role="img" aria-label="Mock of the Chrome Network panel with ChatGPT's conversation request selected, Headers tab open">
-  <div class="bar"><span>All</span><span class="on">Fetch/XHR</span><span>Doc</span><span>JS</span><span class="tt">5 requests</span></div>
+<section class="s" id="s02"><h2><span class="n">02</span>Part 1: This Site's Own Requests</h2>
+<p>Start with traffic you made yourself, on a page that hides nothing. This is step 7 of the <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s7">Request Builder</a>.</p>
+<ol class="steps">
+  <li><b>Open the Request Builder</b> and go to step 4, <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s4">Replay Round Three for real</a>. If you have not created a key there yet, do that first.</li>
+  <li><b>Open DevTools, then Network, then Fetch/XHR, then clear the list</b>, as in section 01.</li>
+  <li><b>Press Send</b> on the diagnosis request in step 4. One line appears in the list, named <code>diagnoses</code>. Click it.</li>
+  <li><b>Headers tab.</b> Find Request URL, Request Method and Status Code at the top, then <code>authorization</code> and <code>content-type</code> under Request Headers.</li>
+  <li><b>Payload tab.</b> Your package: <code>{"workflow": "..."}</code>.</li>
+  <li><b>Response tab.</b> The reply package, with the diagnosis inside. The machine also echoes back what it read from you under <code>you_sent</code>.</li>
+</ol>
+<div class="dt" role="img" aria-label="Mock of the Network panel with the Aarav diagnoses request selected">
+  <div class="bar"><span>All</span><span class="on">Fetch/XHR</span><span class="tt">1 request</span></div>
   <div class="body">
-    <div class="list">
-      <div>chat-requirements<i>200</i></div>
-      <div class="sel">conversation<i>200</i></div>
-      <div>conversations?offset=0<i>200</i></div>
-      <div>lat/r<i>200</i></div>
-      <div>gizmos/bootstrap<i>200</i></div>
-    </div>
+    <div class="list"><div class="sel">diagnoses<i>201</i></div></div>
     <div class="det">
       <div class="tabs"><span class="on">Headers</span><span>Payload</span><span>Preview</span><span>Response</span></div>
       <div class="kv">
-        <p class="m" style="--l:var(--p-addr)"><b>Request URL</b><code>https://chatgpt.com/backend-api/f/conversation<span class="lab">address</span></code></p>
-        <p class="m" style="--l:var(--p-act)"><b>Request Method</b><code><span class="sticky">covered until the quiz</span><span class="lab">action</span></code></p>
-        <p class="m" style="--l:var(--p-code)"><b>Status Code</b><code>200 OK<span class="lab">code</span></code></p>
-        <p><b>content-type</b><code>application/json</code></p>
-        <p class="m" style="--l:var(--p-key)"><b>authorization</b><code>Bearer <span class="mask">eyJhbGciOiJSUzI1NiIsInR5cCI6</span><span class="lab">key · never expand</span></code></p>
-        <p><b>cookie</b><code><span class="mask">__Secure-next-auth.session-token=</span> never expand</code></p>
+        <p class="m" style="--l:var(--p-addr)"><b>Request URL</b><code>https://100x-curriculum.vercel.app/aarav/diagnoses<span class="lab">address</span></code></p>
+        <p class="m" style="--l:var(--p-act)"><b>Request Method</b><code>POST<span class="lab">action · Create</span></code></p>
+        <p class="m" style="--l:var(--p-code)"><b>Status Code</b><code>201 Created<span class="lab">code</span></code></p>
+        <p class="m" style="--l:var(--p-key)"><b>authorization</b><code>Bearer aarav_<span class="mask">yourkeyhere</span><span class="lab">key</span></code></p>
+        <p class="m" style="--l:var(--p-pkg)"><b>content-type</b><code>application/json<span class="lab">the package's format</span></code></p>
       </div>
     </div>
   </div>
 </div>
-<p class="cap">Headers tab. The method is covered on purpose: in the lecture it is revealed in the CRUD quiz.</p>
-
-<h3>Find each part</h3>
 <div class="tw"><table><thead><tr><th>Part</th><th>Where in the Network tab</th><th>What you see</th></tr></thead><tbody>
-<tr><td><span class="part addr">address</span></td><td>Headers → Request URL</td><td>The machine and the door: <code>chatgpt.com</code> and <code>/backend-api/…/conversation</code></td></tr>
-<tr><td><span class="part act">action</span></td><td>Headers → Request Method</td><td>Guess first: Read or Create? Then look. The answer is in the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">lecture notes</a>.</td></tr>
-<tr><td><span class="part key">key</span></td><td>Headers → Request Headers → <code>authorization</code></td><td>Your logged-in session. Do not expand it. Do not copy it.</td></tr>
-<tr><td><span class="part pkg">package</span></td><td>Payload</td><td>JSON. Find your "hi" inside it, next to the model name and an id for the conversation.</td></tr>
-<tr><td><span class="part code">code</span></td><td>Headers → Status Code</td><td><span class="sc s2">200</span></td></tr>
+<tr><td><span class="part addr">address</span></td><td>Headers → Request URL</td><td class="mono">https://100x-curriculum.vercel.app/aarav/diagnoses</td></tr>
+<tr><td><span class="part act">action</span></td><td>Headers → Request Method</td><td><code>POST</code>: a Create</td></tr>
+<tr><td><span class="part key">key</span></td><td>Headers → Request Headers → <code>authorization</code></td><td><code>Bearer</code> and your Aarav key</td></tr>
+<tr><td><span class="part pkg">package</span></td><td><code>content-type</code>, then Payload</td><td><code>application/json</code>, then <code>{"workflow": "..."}</code></td></tr>
+<tr><td><span class="part code">code</span></td><td>Headers → Status Code</td><td><span class="sc s2">201</span></td></tr>
+<tr><td><span class="part pkg">reply package</span></td><td>Response</td><td>The diagnosis, and <code>you_sent</code></td></tr>
 </tbody></table></div>
-
-<div class="call"><p class="kick">Two things you never expand, copy or paste</p><p>The <code>authorization</code> header and the <code>cookie</code> header. Together they are your login. Anyone holding them is you, until they expire. Not into Discord, not into a screenshot, not into an AI chat asking it to "explain this request".</p></div>
-
-<h3>The reply arrives in pieces</h3>
-<p>Click Response, or EventStream if Chrome shows it. The content type of this reply is <code>text/event-stream</code>. The machine does not send one package at the end. It sends many small ones as the model writes, and the page adds each one to the screen. That is why ChatGPT's words appear one by one.</p>
-<div class="stream" aria-label="Simplified stream of reply pieces">data: {"message": {"content": {"parts": ["<b>Hi</b>"]}}}
-data: {"message": {"content": {"parts": ["<b>Hi!</b>"]}}}
-data: {"message": {"content": {"parts": ["<b>Hi! How can</b>"]}}}
-data: {"message": {"content": {"parts": ["<b>Hi! How can I help?</b>"]}}}
-data: [DONE]</div>
-<p class="cap">Simplified. The real stream carries more fields; the shape is the same.</p>
+<p>Now break it on purpose with the buttons in step 5 and watch the list. Each failed request shows its code in red, and its Response tab holds the hint that names the part to fix.</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Part 2: Your Own Groq Request</h2>
-<p>Open the <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex5">Request Builder, exercise 5</a>. Paste your Groq key, send Aarav's workflow, and get a 200. Then open the Network tab on the Builder itself and click the request named <code>completions</code>.</p>
+<p>Do this after step 8 of the Request Builder, <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Put a model behind it</a>.</p>
+<ol class="steps">
+  <li><b>Open DevTools, then Network, then Fetch/XHR, then clear the list.</b></li>
+  <li><b>Paste your Groq key</b> in step 8. A request named <code>models</code> appears: the Builder asking Groq which models your key can use.</li>
+  <li><b>Press Send.</b> A request named <code>completions</code> appears. Click it and read the parts below.</li>
+</ol>
 
 <div class="dt" role="img" aria-label="Mock of the Network panel with the Groq chat completions request selected">
   <div class="bar"><span>All</span><span class="on">Fetch/XHR</span><span class="tt">2 requests</span></div>
@@ -159,11 +151,11 @@ data: [DONE]</div>
 
 <h3>Now look at the key</h3>
 <p>Expand the <code>authorization</code> line on your own screen, not a shared one. Your key is there in plain text.</p>
-<div class="call prob"><p class="kick">The question this page exists to ask</p><p>The Builder is your private tool, so this is fine here. If Aarav's product were built the same way, every visitor could open this tab, copy his key, and spend his money. Where should the key live instead? Answer it before you read <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</p></div>
+<div class="call prob"><p class="kick">The question this page exists to ask</p><p>The Builder is your private tool, so this is fine here. If Aarav's product were built the same way, every visitor could open this tab, copy his key, and spend his money. Where should the key live instead? Answer it, then do step 9 of the <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s9">Request Builder</a> and read <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</p></div>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Part 3: The Space That Became %20</h2>
-<p>Open <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex3">exercise 3</a>, or paste <code>https://httpbin.org/get?text=hello</code> into Chrome's address bar. Then change <code>hello</code> to <code>hello world</code>. Edit the existing address; if you retype it from scratch, Chrome may run a Google search instead.</p>
+<p>Open step 2 of the <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s2">Request Builder</a> with DevTools open, or paste <code>https://httpbin.org/get?text=hello</code> into Chrome's address bar. Then change <code>hello</code> to <code>hello world</code>. Edit the existing address; if you retype it from scratch, Chrome may run a Google search instead.</p>
 <div class="dt" role="img" aria-label="Mock of the Network panel showing a Request URL with hello%20world">
   <div class="bar"><span class="on">All</span><span class="tt">1 request</span></div>
   <div class="body">
@@ -181,16 +173,68 @@ data: [DONE]</div>
 <p>An address cannot hold a space, so the browser translated it to <code>%20</code> before sending. Look at the Request URL here, not the reply: httpbin decodes the text back to <code>hello world</code> in its answer. Your code and your no-code tools will not always do this translation for you. When they do not, the machine replies <span class="sc s4">400</span>.</p>
 </section>
 
-<section class="s" id="s05"><h2><span class="n">05</span>Practise</h2>
+<section class="s" id="s05"><h2><span class="n">05</span>Part 4: A Real Product, ChatGPT</h2>
+<p>Now the same reading on a product used by hundreds of millions of people. The parts are the same; there is just more noise around them.</p>
+<p>Log in to ChatGPT in Chrome, open the Network tab, filter to Fetch/XHR, clear it, and send "hi". Several requests appear. One fires just before the message and carries a name like <code>chat-requirements</code>: the site checking you before it lets the message through. The one you want is named <code>conversation</code>. In recent builds its address ends in <code>/backend-api/f/conversation</code>. The exact name changes from time to time; look for the one sent at the moment you pressed Enter.</p>
+<p>If you are logged out, ChatGPT uses different addresses. Log in first.</p>
+
+<div class="dt" role="img" aria-label="Mock of the Chrome Network panel with ChatGPT's conversation request selected, Headers tab open">
+  <div class="bar"><span>All</span><span class="on">Fetch/XHR</span><span>Doc</span><span>JS</span><span class="tt">5 requests</span></div>
+  <div class="body">
+    <div class="list">
+      <div>chat-requirements<i>200</i></div>
+      <div class="sel">conversation<i>200</i></div>
+      <div>conversations?offset=0<i>200</i></div>
+      <div>lat/r<i>200</i></div>
+      <div>gizmos/bootstrap<i>200</i></div>
+    </div>
+    <div class="det">
+      <div class="tabs"><span class="on">Headers</span><span>Payload</span><span>Preview</span><span>Response</span></div>
+      <div class="kv">
+        <p class="m" style="--l:var(--p-addr)"><b>Request URL</b><code>https://chatgpt.com/backend-api/f/conversation<span class="lab">address</span></code></p>
+        <p class="m" style="--l:var(--p-act)"><b>Request Method</b><code>POST<span class="lab">action</span></code></p>
+        <p class="m" style="--l:var(--p-code)"><b>Status Code</b><code>200 OK<span class="lab">code</span></code></p>
+        <p><b>content-type</b><code>application/json</code></p>
+        <p class="m" style="--l:var(--p-key)"><b>authorization</b><code>Bearer <span class="mask">eyJhbGciOiJSUzI1NiIsInR5cCI6</span><span class="lab">key · never expand</span></code></p>
+        <p><b>cookie</b><code><span class="mask">__Secure-next-auth.session-token=</span> never expand</code></p>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="cap">Headers tab. Before you look at the method, guess: is asking ChatGPT a question a Read or a Create? It is the weather question from the CRUD quiz.</p>
+
+<h3>Find each part</h3>
+<div class="tw"><table><thead><tr><th>Part</th><th>Where in the Network tab</th><th>What you see</th></tr></thead><tbody>
+<tr><td><span class="part addr">address</span></td><td>Headers → Request URL</td><td>The machine and the door: <code>chatgpt.com</code> and <code>/backend-api/…/conversation</code></td></tr>
+<tr><td><span class="part act">action</span></td><td>Headers → Request Method</td><td><code>POST</code>. A Create: your message and a new reply are added to the conversation. The <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">lecture notes</a> explain why.</td></tr>
+<tr><td><span class="part key">key</span></td><td>Headers → Request Headers → <code>authorization</code></td><td>Your logged-in session. Do not expand it. Do not copy it.</td></tr>
+<tr><td><span class="part pkg">package</span></td><td>Payload</td><td>JSON. Find your "hi" inside it, next to the model name and an id for the conversation.</td></tr>
+<tr><td><span class="part code">code</span></td><td>Headers → Status Code</td><td><span class="sc s2">200</span></td></tr>
+</tbody></table></div>
+
+<div class="call"><p class="kick">Two things you never expand, copy or paste</p><p>The <code>authorization</code> header and the <code>cookie</code> header. Together they are your login. Anyone holding them is you, until they expire. Not into Discord, not into a screenshot, not into an AI chat asking it to "explain this request".</p></div>
+
+<h3>The reply arrives in pieces</h3>
+<p>Click Response, or EventStream if Chrome shows it. The content type of this reply is <code>text/event-stream</code>. The machine does not send one package at the end. It sends many small ones as the model writes, and the page adds each one to the screen. That is why ChatGPT's words appear one by one.</p>
+<div class="stream" aria-label="Simplified stream of reply pieces">data: {"message": {"content": {"parts": ["<b>Hi</b>"]}}}
+data: {"message": {"content": {"parts": ["<b>Hi!</b>"]}}}
+data: {"message": {"content": {"parts": ["<b>Hi! How can</b>"]}}}
+data: {"message": {"content": {"parts": ["<b>Hi! How can I help?</b>"]}}}
+data: [DONE]</div>
+<p class="cap">Simplified. The real stream carries more fields; the shape is the same.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Practise</h2>
 <ul class="ck" data-stage="nt">
+<li><input type="checkbox" id="n0"><label for="n0"><span class="t">Found all six parts in your own Aarav request</span><span class="h">Address, action, key, package, code, reply package.</span></label></li>
 <li><input type="checkbox" id="n1"><label for="n1"><span class="t">Found all five parts in ChatGPT's conversation request</span><span class="h">Without expanding authorization or cookie.</span></label></li>
 <li><input type="checkbox" id="n2"><label for="n2"><span class="t">Saw the reply stream in pieces</span><span class="h">Response or EventStream tab.</span></label></li>
 <li><input type="checkbox" id="n3"><label for="n3"><span class="t">Found your Groq request and its 200</span><span class="h">And your key in plain text, on your own screen.</span></label></li>
 <li><input type="checkbox" id="n4"><label for="n4"><span class="t">Saw %20 in a Request URL</span><span class="h">The space, translated.</span></label></li>
 <li><input type="checkbox" id="n5"><label for="n5"><span class="t">Opened the Network tab on one app you use every day</span><span class="h">Pick one request. Name its address, action and code. For any app, the Network tab is the truth.</span></label></li>
 </ul>
-<div class="stg"><span class="kick">Done</span><div class="bar"><i></i></div><span class="num">0 / 5</span><button class="reset" type="button">Reset</button></div>
-<p class="sig">The Network tab is the truth.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">keys</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">cards</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a></small></p>
+<div class="stg"><span class="kick">Done</span><div class="bar"><i></i></div><span class="num">0 / 6</span><button class="reset" type="button">Reset</button></div>
+<p class="sig">The Network tab is the truth.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">keys</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">troubleshooting</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a></small></p>
 </section>
 
   </main>

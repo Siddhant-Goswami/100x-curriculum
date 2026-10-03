@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Request Builder | 100xEngineers</title>
-<meta name="description" content="Lecture 4 playground: build a real HTTP request part by part (address, action, key, package), send it, and read the code and package that come back. Echo machines, Aarav's Diagnosis Service and Groq.">
+<meta name="description" content="Lecture 4 practice lab, step by step for code and no-code tracks: build a real HTTP request part by part (address, action, key, package), send it, and read the code and package that come back. Echo machines, Aarav's Diagnosis Service and Groq.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -98,6 +98,10 @@
 .cc .res .sc{margin-right:6px}
 .cc .verdict{font:500 12px var(--mono)}
 .cc .verdict.ok{color:var(--hum-ink)}.cc .verdict.no{color:var(--coral-ink)}
+html[data-l04="code"] .nc,html[data-l04="nocode"] .cd{display:none}
+.trkpick button[data-l04]{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:12px 14px}
+.trkpick button[data-l04][aria-pressed="true"]{border-color:var(--coral);background:var(--coral-soft)}
+section.s .steps .tw{max-width:none}
 .keyhint{font-size:13px;color:var(--ink2);margin:0 0 12px}
 </style>
 </head>
@@ -105,7 +109,7 @@
 <div id="prog" aria-hidden="true"></div>
 <header class="top"><div class="in">
   <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
-  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 <div class="wrap grid">
@@ -113,24 +117,30 @@
   <main>
 <details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
-  <p class="kick">Lecture 4 · API as the second interface · Playground</p>
+  <p class="kick">Lecture 4 · API as the second interface · Practice lab · Start today</p>
   <h1>Request Builder</h1>
-  <p class="dek">Build a real request one part at a time, send it to a real machine, and read what comes back.</p>
-  <div class="meta"><span>Works in any browser</span><span>Nothing to install</span><span>Your keys never leave this tab</span></div>
+  <p class="dek">Ten short steps, all in this browser tab. Each one ends with a checkpoint. Do them in order, then submit the practice set.</p>
+  <div class="meta"><span>About 90 minutes in total</span><span>Nothing to install</span><span>Keys stay in this tab</span></div>
 </div>
 
-<div class="call"><p class="kick">One list, all lecture</p><p>Every request carries four things: <span class="part addr">address</span> <span class="part act">action</span> <span class="part key">key</span> <span class="part pkg">package</span>. Every reply carries two: <span class="part code">code</span> and a <span class="part pkg">package</span>. The colours stay the same on every page.</p></div>
+<div class="call"><p class="kick">Where you are</p><p>In Round Three the machine taught you that every request carries four things, <span class="part addr">address</span> <span class="part act">action</span> <span class="part key">key</span> <span class="part pkg">package</span>, and every reply carries two, <span class="part code">code</span> and <span class="part pkg">package</span>. Now you send real requests with those parts, to real machines, and finally to a model.</p></div>
 
-<nav class="exnav" aria-label="Exercises"><a href="#ex1"><b>1</b>Echo</a><a href="#ex2"><b>2</b>The parts</a><a href="#ex3"><b>3</b>GET</a><a href="#ex4"><b>4</b>POST</a><a href="#ex5"><b>5</b>Groq</a><a href="#ex6"><b>6</b>Aarav, for real</a><a href="#ex7"><b>7</b>Every code</a></nav>
+<div class="trkpick" id="trk">
+  <p class="kick">Your track</p>
+  <p>Both tracks do every step here, in the browser. Your track adds one extra box per step: the same request in Python, or the same request in a no-code tool. Your choice is remembered on this device.</p>
+  <div class="opts">
+    <button type="button" data-l04="code"><b>Code track</b><small>Show the Python version of each request.</small></button>
+    <button type="button" data-l04="nocode"><b>No-code track</b><small>Show which box each part goes in.</small></button>
+  </div>
+  <p style="margin:10px 0 0!important"><button type="button" class="mini" data-l04="both">Show both</button></p>
+</div>
 
-<section class="s" id="ex1"><h2><span class="n">01</span>Echo: the face with no brain</h2>
-<p>This is your Lecture 3 UI. Type anything. It hands your words straight back, because the process is an echo. Where would the brain go, and how would this page reach it?</p>
-<div class="echo" id="echo"><div class="msgs" aria-live="polite"><div class="msg m">Tell me your weekly workflow.</div></div><form><input type="text" aria-label="Your message" placeholder="I open Jira every Friday…" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>
-<p>The brain lives on another machine. To reach it, this page has to send a message that the other machine can read. The rest of this page is that message.</p>
-</section>
+<div class="scorebox"><div class="score" data-for="all"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/10</b></div><div class="l"><strong>Checkpoints</strong>Saved on this device</div></div></div>
 
-<section class="s" id="ex2"><h2><span class="n">02</span>The parts: your Round Three message, translated</h2>
-<p>This is the message that won Round Three. Tap a coloured part to find it in the real HTTP request underneath. Same parts, different spelling.</p>
+<nav class="exnav" aria-label="Steps"><a href="#s1"><b>1</b>The parts</a><a href="#s2"><b>2</b>Read</a><a href="#s3"><b>3</b>Create</a><a href="#s4"><b>4</b>Round Three, for real</a><a href="#s5"><b>5</b>Break it</a><a href="#s6"><b>6</b>Whose fault</a><a href="#s7"><b>7</b>Real traffic</a><a href="#s8"><b>8</b>A model</a><a href="#s9"><b>9</b>Your key</a><a href="#s10"><b>10</b>Design</a></nav>
+
+<section class="s" id="s1"><h2><span class="n">01</span>The parts: your Round Three message, translated</h2>
+<p>This is the message that won Round Three. Below it is the same request written the way HTTP writes it. Tap a coloured part to find its twin.</p>
 <div class="gm" id="gm"><span class="a" data-p="a">CREATE</span> <span class="d" data-p="d">100x-curriculum.vercel.app/aarav/diagnoses</span> <span class="k" data-p="k">key: key-●●●●</span> <span class="p" data-p="p">{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</span></div>
 <div class="http" id="http"><span class="a" data-p="a">POST</span> <span class="d" data-p="d">/aarav/diagnoses</span> HTTP/1.1
 Host: <span class="d" data-p="d">100x-curriculum.vercel.app</span>
@@ -139,59 +149,157 @@ Host: <span class="d" data-p="d">100x-curriculum.vercel.app</span>
 
 <span class="p" data-p="p">{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</span></div>
 <div class="tw compact"><table><thead><tr><th>In the game</th><th>On the wire</th><th>Its name</th></tr></thead><tbody>
-<tr><td><span class="part act">CREATE</span></td><td class="mono">POST</td><td>Method. CRUD is what you want; the method is how HTTP spells it.</td></tr>
-<tr><td><span class="part addr">100x-curriculum.vercel.app/aarav/diagnoses</span></td><td class="mono">https:// + host + /aarav/diagnoses</td><td>URL, or endpoint. The host names the machine, the path names the door.</td></tr>
+<tr><td><span class="part act">CREATE</span></td><td class="mono">POST</td><td>Method. The CRUD action is what you want; the method is how HTTP spells it.</td></tr>
+<tr><td><span class="part addr">…/aarav/diagnoses</span></td><td class="mono">https:// + host + /aarav/diagnoses</td><td>URL, or endpoint. The host names the machine, the path names the door.</td></tr>
 <tr><td><span class="part key">key:</span></td><td class="mono">Authorization: Bearer …</td><td>A header. Written on the envelope, read without opening the letter.</td></tr>
 <tr><td><span class="part pkg">{"workflow": …}</span></td><td class="mono">Content-Type + body</td><td>The body, in JSON. The header says which format it is in.</td></tr>
 <tr><td><span class="part code">201</span></td><td class="mono">HTTP/1.1 201 Created</td><td>Status code, plus a reply package.</td></tr>
 </tbody></table></div>
+<ul class="ck"><li><input type="checkbox" id="c1"><label for="c1"><span class="t">Checkpoint: I can name the four parts of a request and the two parts of a reply, without looking</span></label></li></ul>
 </section>
 
-<section class="s" id="ex3"><h2><span class="n">03</span>GET: read, and watch the space</h2>
-<p>httpbin.org is a public echo machine: it sends back whatever it receives. Type a word, then a sentence with a space. Watch the address before you press Send. What happens to the space, and why?</p>
-<div id="b3"></div>
-<p>An address cannot hold a space, so it is translated to <code>%20</code>. This page and your browser do that for you. Your code and your no-code tools will not always do it, and a request with a raw space in the address is a classic 400.</p>
-</section>
-
-<section class="s" id="ex4"><h2><span class="n">04</span>POST: send a package</h2>
-<p>Same echo machine, a different door and a different action. This time you send a package: Aarav's Friday workflow, in JSON. Press Send, check for a 200, then find your text inside the reply.</p>
-<div id="b4"></div>
-<p>Look at the raw request: the <span class="part pkg">package</span> needs a header that says which format it is in, <code>Content-Type: application/json</code>. Without it the machine has to guess, and machines do not guess.</p>
-</section>
-
-<section class="s" id="ex5"><h2><span class="n">05</span>Groq: a model behind a deterministic door</h2>
-<p>Now the brain. Groq runs open-weight models on its own chips. You reach its model with the same four parts. <b>Groq with a q</b>, not Grok.</p>
+<section class="s" id="s2"><h2><span class="n">02</span>Read: your first request</h2>
+<p>A Read fetches something that already exists. httpbin.org is a public echo machine: it sends back whatever it receives, so you can see exactly what you sent.</p>
 <ol class="steps">
-  <li><b>Get a free key.</b> Open <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>, sign in with Google or GitHub, click Create API Key, name it <code>c8-lecture04</code>, and copy it. Groq shows it once.</li>
-  <li><b>Paste it below.</b> The model list loads from Groq itself. That load is a GET with your key: your first keyed request. Keep <code>openai/gpt-oss-120b</code>.</li>
-  <li><b>Press Send.</b> Hands up for a 200. Then press <b>Send the same request again</b> and compare the two answers.</li>
+  <li><b>Look at the four bands.</b> Address is filled in for you. Action is <b>Read · GET</b>. Key: none needed. Package: none, because a Read sends no package.</li>
+  <li><b>Press Send.</b> You should see a large <span class="sc s2">200</span>, and under <i>The part you want</i>, your text.</li>
+  <li><b>Type a sentence with a space</b> in the text box, like <code>hello world</code>, and watch the address. The space turns into <code>%20</code> before anything is sent. An address cannot hold a space, so it is translated. Your code and your tools will not always do this for you; a raw space in an address is a classic <span class="sc s4">400</span>.</li>
+  <li><b>Click Show the raw request.</b> This is the request as text: the action, the address, and nothing else.</li>
 </ol>
-<p class="keyhint">Your key stays in this tab's memory. It is not saved, and it is gone when you reload. Free tier: 30 requests a minute, counted per Groq account, not per key.</p>
-<div id="b5"></div>
-<div class="call prob"><p class="kick">The door is deterministic. What comes through it is probabilistic.</p><p>Same address, same action, same key, same package, different words. Two answers to the same request: which one is right, and who decides?</p></div>
-<h3>Find your own key</h3>
-<p>Open DevTools (right click, Inspect), go to Network, click the <code>chat/completions</code> request, then Request Headers. Your key is there in plain text. That is fine on your private tool. If Aarav's product worked like this, every visitor could read his key and spend his money. So where should the key live? <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys, and the box they live in</a>.</p>
+<div id="b3"></div>
+<details class="acc cd"><summary>Code track · the same request in Python</summary><div class="b"><p>Use the folder and terminal you set up in Lecture 3. Install the library once with <code>pip install requests</code> (Mac: <code>pip3</code>), save this as <code>step2.py</code>, and run <code>python step2.py</code>.</p><div data-py="s2"></div><p><code>params</code> builds the address for you, %20 included.</p></div></details>
+<details class="acc nc"><summary>No-code track · the same request in your tool</summary><div class="b"><p>Every no-code HTTP step, and every request an agent like Antigravity's builds for you, asks for the same boxes:</p><div class="tw compact"><table><tbody><tr><td><span class="part addr">URL</span></td><td class="mono">https://httpbin.org/get?text=hello%20world</td></tr><tr><td><span class="part act">Method</span></td><td class="mono">GET</td></tr><tr><td><span class="part key">Headers</span></td><td>None</td></tr><tr><td><span class="part pkg">Body</span></td><td>None</td></tr></tbody></table></div></div></details>
+<ul class="ck"><li><input type="checkbox" id="c2"><label for="c2"><span class="t">Checkpoint: a 200, and I saw a space become %20</span></label></li></ul>
 </section>
 
-<section class="s" id="ex6"><h2><span class="n">06</span>Aarav, for real</h2>
-<p>The machine from Round Three is real. It lives at <code>https://100x-curriculum.vercel.app/aarav</code> and checks the parts in the order you learned them: address, action, key, package. It issues its own keys.</p>
-<h3>Step 1 · Create a key</h3>
-<p>Creating a key is itself a Create: <code>POST /aarav/keys</code> with your name in the package.</p>
+<section class="s" id="s3"><h2><span class="n">03</span>Create: send a package</h2>
+<p>Same echo machine, a different door, a different action. This time you send something: Aarav's Friday workflow, as JSON.</p>
+<ol class="steps">
+  <li><b>Check the package band.</b> It holds <code>{"text": "…"}</code> and says <i>✓ valid JSON</i>. Try deleting a quote: it turns red. Put it back.</li>
+  <li><b>Press Send.</b> Look for <span class="sc s2">200</span>, then find your text at <code>json.text</code> in the reply.</li>
+  <li><b>Click Show the raw request.</b> A package needs one more header, <code>Content-Type: application/json</code>, so the machine knows which format to read. Machines do not guess.</li>
+  <li>If httpbin is slow, press <b>Use postman-echo instead</b>. Both echo your package back.</li>
+</ol>
+<div id="b4"></div>
+<details class="acc cd"><summary>Code track · the same request in Python</summary><div class="b"><div data-py="s3"></div><p><code>json=</code> turns the dictionary into JSON and adds the Content-Type header for you.</p></div></details>
+<details class="acc nc"><summary>No-code track · the same request in your tool</summary><div class="b"><div class="tw compact"><table><tbody><tr><td><span class="part addr">URL</span></td><td class="mono">https://httpbin.org/post</td></tr><tr><td><span class="part act">Method</span></td><td class="mono">POST</td></tr><tr><td><span class="part key">Headers</span></td><td class="mono">Content-Type: application/json</td></tr><tr><td><span class="part pkg">Body (JSON)</span></td><td class="mono">{"text": "I open Jira, …"}</td></tr></tbody></table></div><p>If your tool offers "Body type", pick JSON, not text or form. Sending JSON as plain text is a common reason for a 400.</p></div></details>
+<ul class="ck"><li><input type="checkbox" id="c3"><label for="c3"><span class="t">Checkpoint: a 200, and my text came back at json.text</span></label></li></ul>
+</section>
+
+<section class="s" id="s4"><h2><span class="n">04</span>Round Three, for real</h2>
+<p>The machine from Round Three is real. It lives at <code>https://100x-curriculum.vercel.app/aarav</code> and checks the parts in the order you learned them: address, action, key, package. It needs a key, and it issues its own.</p>
+<h3>Part A · Create a key</h3>
+<ol class="steps">
+  <li><b>Replace <code>your name</code></b> in the package with your name.</li>
+  <li><b>Press Send.</b> Expect <span class="sc s2">201</span>: something new was created, your key. It is copied into Part B's key box for you.</li>
+</ol>
 <div id="b6a"></div>
-<h3>Step 2 · Create a diagnosis</h3>
-<p>The winning Round Three request, for real. Press Send twice. Compare it with Groq: what is different about the second reply?</p>
+<h3>Part B · Create a diagnosis</h3>
+<ol class="steps">
+  <li><b>Check the key band</b> holds your <code>aarav_…</code> key. Press Show to check it pasted fully.</li>
+  <li><b>Press Send.</b> Expect <span class="sc s2">201</span> and a diagnosis of Aarav's Friday report.</li>
+  <li><b>Press Send the same request again.</b> The two replies sit side by side. They are identical: this machine follows rules. Remember that for step 8.</li>
+  <li>For the practice set: take a screenshot of the reply. The reply shows only the start of your key.</li>
+</ol>
 <div id="b6b"></div>
-<h3>Step 3 · Break it on purpose</h3>
-<p>Predict the code before each send. Then read the <span class="part code">code</span> and the hint, fix one thing, send again.</p>
-<div class="btnrow" id="breakers" style="margin:0 0 14px"></div>
-<h3>Step 4 · Read what you created</h3>
-<p>Switch the action to <b>Read · GET</b> and send. You created diagnoses a minute ago. Where are they?</p>
+<details class="acc cd"><summary>Code track · both requests in Python</summary><div class="b"><div data-py="s4"></div></div></details>
+<details class="acc nc"><summary>No-code track · both requests in your tool</summary><div class="b"><div class="tw compact"><table><thead><tr><th>Box</th><th>Part A · key</th><th>Part B · diagnosis</th></tr></thead><tbody><tr><td><span class="part addr">URL</span></td><td class="mono">…/aarav/keys</td><td class="mono">…/aarav/diagnoses</td></tr><tr><td><span class="part act">Method</span></td><td class="mono">POST</td><td class="mono">POST</td></tr><tr><td><span class="part key">Headers</span></td><td class="mono">Content-Type: application/json</td><td class="mono">Content-Type: application/json<br>Authorization: Bearer aarav_…</td></tr><tr><td><span class="part pkg">Body (JSON)</span></td><td class="mono">{"name": "your name"}</td><td class="mono">{"workflow": "I open Jira, …"}</td></tr></tbody></table></div><p>The value of the Authorization header is the word <code>Bearer</code>, one space, then the key. Many tools have an "Auth: Bearer token" option that writes this header for you.</p></div></details>
+<ul class="ck"><li><input type="checkbox" id="c4"><label for="c4"><span class="t">Checkpoint: a 201 key, then a 201 diagnosis, twice, identical</span><span class="h">Practice set item 1: the screenshot.</span></label></li></ul>
 </section>
 
-<section class="s" id="ex7"><h2><span class="n">07</span>Every code, caused by you</h2>
-<p>Each card sends one real request. Before you press Send, predict whose fault the reply will be. <span class="sc s2">2xx</span> worked. <span class="sc s4">4xx</span> you sent something wrong. <span class="sc s5">5xx</span> their machine broke.</p>
+<section class="s" id="s5"><h2><span class="n">05</span>Break it on purpose</h2>
+<p>Every failed request comes back with a code, and the code points at one part. Learn the codes by causing them, one part at a time.</p>
+<ol class="steps">
+  <li><b>Pick a button below.</b> It changes one part of the Part B request above.</li>
+  <li><b>Before you press Send, write down the code you expect.</b></li>
+  <li><b>Press Send</b> in Part B. The red box names the part and what to change.</li>
+  <li><b>Press Put it right</b>, then try the next button. Fill in the practice set table as you go: what you changed, the code you got, the part it points to.</li>
+</ol>
+<div class="btnrow" id="breakers" style="margin:0 0 14px"></div>
+<div class="tw compact"><table><thead><tr><th>Code</th><th>Means</th><th>Whose fault</th></tr></thead><tbody>
+<tr><td><span class="sc s4">400</span></td><td>Package unreadable, or a part is missing</td><td>Yours</td></tr>
+<tr><td><span class="sc s4">401</span></td><td>Key missing or wrong</td><td>Yours</td></tr>
+<tr><td><span class="sc s4">404</span></td><td>Nothing at that address</td><td>Yours</td></tr>
+<tr><td><span class="sc s4">405</span></td><td>That door does not take that action</td><td>Yours</td></tr>
+</tbody></table></div>
+<h3>Then: Read what you created</h3>
+<p>In Part B, switch the action to <b>Read · GET</b> and press Send. You created diagnoses a few minutes ago. The reply is <span class="sc s2">200</span> and an empty list. Where did they go? This machine has no database, so nothing it creates is kept. Where data should live is Lecture 6.</p>
+<details class="acc cd"><summary>Code track · break it in Python</summary><div class="b"><p>Change one thing at a time in your step 4 script (the address, the method, the key, the field name) and print what comes back:</p><div data-py="s5"></div></div></details>
+<details class="acc nc"><summary>No-code track · break it in your tool</summary><div class="b"><p>Change one box at a time in your Part B step: misspell the URL, switch the method to PUT, delete the Authorization header, rename the <code>workflow</code> field. Your tool shows the status code in its run log or output panel.</p></div></details>
+<ul class="ck"><li><input type="checkbox" id="c5"><label for="c5"><span class="t">Checkpoint: I caused a 400, 401, 404 and 405, and predicted at least two of them</span><span class="h">Practice set item 2: the table.</span></label></li></ul>
+</section>
+
+<section class="s" id="s6"><h2><span class="n">06</span>Whose fault? Every code</h2>
+<p>Each card sends one real request. Before you press Send, pick whose fault the reply will be. <span class="sc s2">2xx</span> worked. <span class="sc s4">4xx</span> you sent something wrong. <span class="sc s5">5xx</span> their machine broke.</p>
 <div class="codes" id="codes"></div>
-<p class="sig">Read the code, fix one thing, send again.<small>Next: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">the practice set</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">the cards</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">reading the Network tab</a></small></p>
+<ul class="ck"><li><input type="checkbox" id="c6"><label for="c6"><span class="t">Checkpoint: all eight cards sent, and I can say whose fault each family is</span></label></li></ul>
+</section>
+
+<section class="s" id="s7"><h2><span class="n">07</span>Read real traffic</h2>
+<p>Every request you sent here is visible in your browser's own tools. Real products work the same way. Reading this is how you check what an app actually sends.</p>
+<ol class="steps">
+  <li><b>Open DevTools.</b> Mac: <kbd>Cmd</kbd> <kbd>Option</kbd> <kbd>I</kbd>. Windows: <kbd>F12</kbd> or <kbd>Ctrl</kbd> <kbd>Shift</kbd> <kbd>I</kbd>. Or right click anywhere, Inspect.</li>
+  <li><b>Click the Network tab,</b> then the <b>Fetch/XHR</b> filter. Click the clear button (a circle with a line).</li>
+  <li><b>Scroll up to step 4, Part B, and press Send.</b> A row named <code>diagnoses</code> appears.</li>
+  <li><b>Click it and find each part:</b>
+    <div class="tw compact" style="margin-top:8px"><table><tbody>
+    <tr><td><span class="part addr">Address</span></td><td>Headers → Request URL</td></tr>
+    <tr><td><span class="part act">Action</span></td><td>Headers → Request Method</td></tr>
+    <tr><td><span class="part key">Key</span></td><td>Request Headers → authorization</td></tr>
+    <tr><td><span class="part pkg">Package</span></td><td>Payload (what you sent) and Response (what came back)</td></tr>
+    <tr><td><span class="part code">Code</span></td><td>Headers → Status Code</td></tr></tbody></table></div></li>
+  <li><b>Optional, a real product:</b> do the same on ChatGPT. <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">Reading the Network tab</a> walks through it, including the one header you must never expand or paste.</li>
+</ol>
+<ul class="ck"><li><input type="checkbox" id="c7"><label for="c7"><span class="t">Checkpoint: I found all five parts of my own request in DevTools</span></label></li></ul>
+</section>
+
+<section class="s" id="s8"><h2><span class="n">08</span>Put a model behind it</h2>
+<p>Aarav's UI has a face. It needs a brain: a model that reads his workflow and writes a plan. Groq runs open-weight models on its own chips, and you reach them with the same four parts. That is <b>Groq with a q</b>, not Grok.</p>
+<h3>Part A · Get a free Groq key (one time, about 3 minutes)</h3>
+<ol class="steps">
+  <li><b>Open <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a></b> in a new tab. It is a website, not a download.</li>
+  <li><b>Sign in</b> with Google or GitHub. No card needed.</li>
+  <li><b>Click Create API Key,</b> name it <code>c8-lecture04</code>, and click Submit.</li>
+  <li><b>Copy the key now.</b> Groq shows it once. Do not paste it anywhere except the box below.</li>
+</ol>
+<h3>Part B · Send your first request to a model</h3>
+<ol class="steps">
+  <li><b>Paste the key</b> into the key band. Wait a second: the model list loads from Groq itself. That load was a Read with your key, your first keyed request. If it says 401, the key was not copied fully.</li>
+  <li><b>Keep the model <code>openai/gpt-oss-120b</code></b> and the message as it is.</li>
+  <li><b>Press Send.</b> Expect <span class="sc s2">200</span>. The answer is at <code>choices[0].message.content</code>. The reply also carries a <code>reasoning</code> field, the model's scratchpad. Ignore it.</li>
+  <li><b>Press Send the same request again.</b> Same address, action, key and package. Different words. Compare that with Aarav's service in step 4.</li>
+</ol>
+<p class="keyhint">Your key stays in this tab's memory. It is not saved and is gone when you reload. Free tier: 30 requests a minute, counted per Groq account, so use your own account, not a friend's key.</p>
+<div id="b5"></div>
+<div class="call prob"><p class="kick">The door is deterministic. What comes through it is probabilistic.</p><p>Two answers to the same request. Which one is right, and who decides? Write one line on which you would trust, and why. That line is the start of a verifier.</p></div>
+<details class="acc cd"><summary>Code track · the same request in Python</summary><div class="b"><p>Put the key in an environment variable, never in the file. In the same terminal:</p><div class="osrow"><span class="kick">Your OS</span><div class="seg" data-seg="os"><button type="button" data-v="mac">Mac</button><button type="button" data-v="win">Windows</button></div></div><div class="cmd" data-os="mac"><span>export GROQ_API_KEY="paste-your-key-here"</span><button class="cp" type="button">Copy</button></div><div class="cmd" data-os="win"><span>$env:GROQ_API_KEY="paste-your-key-here"</span><button class="cp" type="button">Copy</button></div><p>Then save and run:</p><div data-py="s8"></div><p>This file becomes the body of your FastAPI route in the Lecture 5 practical.</p></div></details>
+<details class="acc nc"><summary>No-code track · the same request in your tool</summary><div class="b"><div class="tw compact"><table><tbody><tr><td><span class="part addr">URL</span></td><td class="mono">https://api.groq.com/openai/v1/chat/completions</td></tr><tr><td><span class="part act">Method</span></td><td class="mono">POST</td></tr><tr><td><span class="part key">Headers</span></td><td class="mono">Authorization: Bearer &lt;your Groq key&gt;<br>Content-Type: application/json</td></tr><tr><td><span class="part pkg">Body (JSON)</span></td><td class="mono">{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "Diagnose this workflow: …"}]}</td></tr></tbody></table></div><p>Store the key in your tool's secrets or credentials setting, not in the step itself. The answer comes back at <code>choices[0].message.content</code>; map that field to your output.</p></div></details>
+<ul class="ck"><li><input type="checkbox" id="c8"><label for="c8"><span class="t">Checkpoint: a 200 from Groq, two different answers, and one line on which I would trust</span><span class="h">Practice set item 3.</span></label></li></ul>
+</section>
+
+<section class="s" id="s9"><h2><span class="n">09</span>Find your key, and where it should live</h2>
+<ol class="steps">
+  <li><b>With DevTools open on Network,</b> press Send in step 8.</li>
+  <li><b>Click the <code>completions</code> row,</b> then Request Headers. Your Groq key is there in plain text.</li>
+  <li><b>Think it through.</b> This page is your private tool, so that is fine here. If Aarav's product worked like this, every visitor could open DevTools, read his key, and spend his money. So where should the key live?</li>
+</ol>
+<div class="ipo"><div class="bx"><p class="kick">Box 1</p><b>UI</b><small>what the user sees · no keys</small></div><span class="ar" aria-hidden="true">→</span><div class="bx"><p class="kick">Box 2</p><b>Backend</b><small>holds the key · keeps the data</small></div><span class="ar" aria-hidden="true">→</span><div class="bx"><p class="kick">Box 3</p><b>Groq</b><small>the model</small></div></div>
+<p>The UI calls your backend. Only the backend calls Groq, with the key kept on the server. The backend is also where data can be kept, which step 5 showed the page and Aarav's machine cannot do. Building that backend is the Lecture 5 practical, for both tracks. More in <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</p>
+<p>When you are done practising, you can delete the key at console.groq.com/keys and create a new one for Lecture 5.</p>
+<ul class="ck"><li><input type="checkbox" id="c9"><label for="c9"><span class="t">Checkpoint: I found my key in DevTools and can say which box it belongs in</span><span class="h">Practice set item 4: one sentence. Never a screenshot of a key.</span></label></li></ul>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Design your API</h2>
+<p>You have sent every kind of request. Now design the ones your own app needs. Here is Aarav's, as the example:</p>
+<div class="tw compact"><table><thead><tr><th>CRUD</th><th>Method</th><th>Address</th><th>Package in</th><th>Reply</th></tr></thead><tbody>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows</td><td class="mono">{"description": "..."}</td><td><span class="sc s2">201</span> + workflow id</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}</td><td>none</td><td><span class="sc s2">200</span> + the workflow</td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows/{id}/diagnoses</td><td>none; the backend sends the workflow to Groq</td><td><span class="sc s2">201</span> + diagnosis</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}/diagnoses</td><td>none</td><td><span class="sc s2">200</span> + past diagnoses</td></tr>
+</tbody></table></div>
+<p>Your version, with a blank template and what to submit, is in <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">the practice set</a>.</p>
+<ul class="ck"><li><input type="checkbox" id="c10"><label for="c10"><span class="t">Checkpoint: practice set posted in my track channel</span><span class="h">Before the Lecture 5 practical, Fri 9 Oct.</span></label></li></ul>
+<p class="sig">Next: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">the practice set</a>.<small>Stuck? <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a> · Curious why each part exists? <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a>, optional</small></p>
 </section>
 
   </main>
@@ -362,11 +470,6 @@ Builder.prototype.show=function(r, again){
   this.rep.innerHTML=h;
 };
 
-/* ---------- exercise 1: echo ---------- */
-(function(){ var box=document.getElementById('echo'), f=box.querySelector('form'), i=f.querySelector('input'), ms=box.querySelector('.msgs');
-  f.addEventListener('submit',function(e){ e.preventDefault(); var v=i.value.trim(); if(!v) return; ms.insertAdjacentHTML('beforeend','<div class="msg u">'+esc(v)+'</div><div class="msg m">You typed: '+esc(v)+'</div>'); i.value=''; });
-})();
-
 /* ---------- exercise 2: tap a part ---------- */
 (function(){ var all=[].slice.call(document.querySelectorAll('#gm span,#http span'));
   all.forEach(function(s){ s.addEventListener('click',function(){ var p=s.dataset.p, on=!s.classList.contains('hot'); all.forEach(function(x){ x.classList.toggle('hot', on && x.dataset.p===p); }); }); });
@@ -453,6 +556,29 @@ db=new Builder(document.getElementById('b6b'),{title:'Aarav \u00b7 /diagnoses', 
     box.appendChild(el);
   });
 })();
+
+/* ---------- track switch (code / no-code / both) ---------- */
+(function(){ var root=document.documentElement, k='l04.track', v='both';
+  try{ v=localStorage.getItem(k)||'both'; }catch(e){}
+  function set(x){ v=x; root.setAttribute('data-l04',x); try{ localStorage.setItem(k,x); }catch(e){} [].forEach.call(document.querySelectorAll('#trk [data-l04]'),function(b){ b.setAttribute('aria-pressed', b.dataset.l04===x && x!=='both'); }); }
+  [].forEach.call(document.querySelectorAll('#trk [data-l04]'),function(b){ b.addEventListener('click',function(){ set(b.dataset.l04); }); });
+  set(v);
+})();
+/* ---------- Python versions for the code track ---------- */
+(function(){
+  var PY={
+    s2:'import requests\n\nr = requests.get("https://httpbin.org/get", params={"text": "hello world"})\nprint(r.status_code)      # the code\nprint(r.url)              # the address: the space became %20\nprint(r.json()["args"])   # the package that came back',
+    s3:'import requests\n\nworkflow = "I open Jira, read the week\'s tickets, write a status report and post it on Slack. About 90 minutes."\nr = requests.post("https://httpbin.org/post", json={"text": workflow})\nprint(r.status_code)\nprint(r.json()["json"]["text"])',
+    s4:'import requests\n\nBASE = "https://100x-curriculum.vercel.app/aarav"\nworkflow = "I open Jira, read the week\'s tickets, write a status report and post it on Slack. About 90 minutes."\n\n# Part A: Create a key\nkey = requests.post(BASE + "/keys", json={"name": "your name"}).json()["key"]\n\n# Part B: Create a diagnosis, with the key in a header\nr = requests.post(\n    BASE + "/diagnoses",\n    headers={"Authorization": "Bearer " + key},\n    json={"workflow": workflow},\n)\nprint(r.status_code)\nprint(r.json()["diagnosis"])',
+    s5:'r = requests.put(BASE + "/diagnoses", headers={"Authorization": "Bearer " + key})\nprint(r.status_code)              # 405\nprint(r.json()["error"])          # which part, and the hint',
+    s8:'import os\nimport requests\n\nr = requests.post(\n    "https://api.groq.com/openai/v1/chat/completions",\n    headers={"Authorization": "Bearer " + os.environ["GROQ_API_KEY"]},\n    json={\n        "model": "openai/gpt-oss-120b",\n        "messages": [{"role": "user", "content": "Diagnose this workflow: I open Jira, read the week\'s tickets, write a status report and post it on Slack. About 90 minutes."}],\n    },\n)\nprint(r.status_code)\nprint(r.json()["choices"][0]["message"]["content"])'
+  };
+  var T={s2:'step2.py',s3:'step3.py',s4:'step4.py',s5:'step4.py · add at the end',s8:'step8.py'};
+  [].forEach.call(document.querySelectorAll('[data-py]'),function(el){ var id=el.dataset.py; el.innerHTML=window.c8code({title:T[id],code:PY[id]}); });
+})();
+/* ---------- old links (#ex1–#ex7) land on the new steps ---------- */
+(function(){ var map={ex1:'s1',ex2:'s1',ex3:'s2',ex4:'s3',ex5:'s8',ex6:'s4',ex7:'s6'}, h=location.hash.slice(1);
+  if(map[h]){ history.replaceState(null,'','#'+map[h]); var t=document.getElementById(map[h]); if(t) setTimeout(function(){ t.scrollIntoView(); },50); } })();
 })();
 </script>
 </body>

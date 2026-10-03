@@ -30,7 +30,7 @@
 <div id="prog" aria-hidden="true"></div>
 <header class="top"><div class="in">
   <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
-  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 <div class="wrap grid">
@@ -41,7 +41,7 @@
   <p class="kick">Guide · Lecture 4: API as the second interface · Both tracks</p>
   <h1>Keys</h1>
   <p class="dek">A key is the part of the request that says who sent it. Whoever holds it is you. This page is where it lives, and what to do the minute it escapes.</p>
-  <div class="meta"><span>Sat 3 Oct 2026</span><span>Cohort 8 · Module 2</span></div>
+  <div class="meta"><span>Post-lecture · both tracks</span><span>Goes with Request Builder step 9</span></div>
 </div>
 
 <div class="call"><p class="kick">The rule</p><p>A key lives in exactly one place: the backend, or an environment variable on your own machine. Never in page code, never in a chat, never in a screenshot. If it escapes, revoke it first and ask questions later.</p></div>
@@ -57,7 +57,7 @@
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>Where a Key Lives</h2>
-<p>The answer to the question from the lecture: you opened DevTools on the Request Builder and saw your own key in plain text. Anything a web page sends, any visitor can read. So the key cannot live in the page.</p>
+<p>In step 9 of the <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s9">Request Builder</a> you open DevTools and see your own key in plain text. Anything a web page sends, any visitor can read. So the key cannot live in the page.</p>
 <div class="flow bad" role="img" aria-label="Wrong: the UI holds the key and calls Groq directly; every visitor can read it">
   <div class="bx leak"><b>UI</b><small>holds the Groq key</small></div>
   <span class="ar">→</span>
@@ -77,7 +77,7 @@
 
 <h3>Where it goes, by situation</h3>
 <div class="tw"><table><thead><tr><th>Situation</th><th>Where the key lives</th></tr></thead><tbody>
-<tr><td>Trying a request today</td><td>The <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex5">Request Builder</a>. It holds the key in memory only, never saves it, and forgets it when you reload.</td></tr>
+<tr><td>Trying a request today</td><td>The <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Request Builder</a>. It holds the key in memory only, never saves it, and forgets it when you reload.</td></tr>
 <tr><td>A command in your terminal</td><td>An environment variable, such as <code>GROQ_API_KEY</code>. The command reads <code>$GROQ_API_KEY</code>, so the key never appears in the command itself. See the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit#s03">kit</a>.</td></tr>
 <tr><td>Your Python backend (code track)</td><td>A <code>.env</code> file on your machine that is listed in <code>.gitignore</code>, and the host's environment variables (Render) once deployed. The code reads <code>os.environ["GROQ_API_KEY"]</code>.</td></tr>
 <tr><td>Your no-code backend (no-code track)</td><td>The tool's secrets or credentials store, never pasted into a page or a prompt.</td></tr>
@@ -105,7 +105,7 @@
 
 <section class="s" id="s04"><h2><span class="n">04</span>Why Sharing a Key Shares Everything</h2>
 <p>Groq's free tier allows <code>openai/gpt-oss-120b</code> 30 requests a minute and 1,000 a day. Those limits belong to your <strong>account</strong>, not to the key. Creating five keys does not give you five times the limit. Giving your key to five friends means all six of you draw from one limit.</p>
-<p>When the limit runs out, the machine replies <span class="sc s4">429</span> Too many requests, with a <code>retry-after</code> header saying how many seconds to wait. In a room of a hundred people sharing one key, that happens within seconds. That is why everyone in the lecture made their own account.</p>
+<p>When the limit runs out, the machine replies <span class="sc s4">429</span> Too many requests, with a <code>retry-after</code> header saying how many seconds to wait. If a hundred people share one key, that happens within seconds. That is why everyone makes their own Groq account.</p>
 <p>Past the free tier, you pay per token. A shared key is a shared bill.</p>
 </section>
 
@@ -118,7 +118,7 @@
 <li><input type="checkbox" id="k5"><label for="k5"><span class="t">I mask keys in help posts</span><span class="h">The status code and the error text are what helpers need. Never the key.</span></label></li>
 </ul>
 <div class="stg"><span class="kick">Done</span><div class="bar"><i></i></div><span class="num">0 / 5</span><button class="reset" type="button">Reset</button></div>
-<p class="sig">Whoever bears the key gets in.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">reading the Network tab</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/office-hour-guide">office hour guide</a></small></p>
+<p class="sig">Whoever bears the key gets in.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">reading the Network tab</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">troubleshooting</a></small></p>
 </section>
 
   </main>
