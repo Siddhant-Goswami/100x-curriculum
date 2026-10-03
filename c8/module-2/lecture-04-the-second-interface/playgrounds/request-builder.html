@@ -200,7 +200,8 @@ Host: <span class="d" data-p="d">100x-curriculum.vercel.app</span>
 
 <script>
 (function(){
-var AARAV = 'https://100x-curriculum.vercel.app/aarav';
+/* Same server that served this page (production, a preview, or vercel dev); production when opened as a file */
+var AARAV = (location.protocol==='file:' ? 'https://100x-curriculum.vercel.app' : location.origin) + '/aarav';
 var GROQ = 'https://api.groq.com/openai/v1';
 var WF = "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes.";
 var GROQ_PROMPT = 'Diagnose this workflow. Reply in three short lines: repeated pattern, bottleneck, first AI step.\n\n' + WF;
