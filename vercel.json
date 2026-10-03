@@ -1,4 +1,7 @@
 {
   "cleanUrls": true,
-  "rewrites": [{ "source": "/", "destination": "/c8-module2-map" }]
+  "rewrites": [{ "source": "/", "destination": "/c8-module2-map" }],
+  "redirects": [
+    { "source": "/:page(beginner-kit|building-ui-notes|office-hour-guide|practice-set|tick-list|docs.css|docs.js)", "destination": "/c8/:page", "permanent": true }
+  ]
 }
