@@ -316,7 +316,7 @@ html.big .pkt span{font-size:16px}
     <p class="inv"><b>TCP/IP</b><small>1974 paper · Vint Cerf and Bob Kahn · ARPANET switched over on 1 Jan 1983</small></p>
     <p><b>IP</b> gives every machine an address, like 203.0.113.7, and every packet carries it. <b>TCP</b> numbers the packets, confirms each one that arrives, and asks again for what is missing. That is how you know it arrived.</p>
     <p>Neither one cares what is inside the packets. They only deliver.</p>
-    <div class="became"><span>This became</span><span class="part addr">address</span><span><code>aarav.example</code> turns into an IP address, as in Lecture 2</span></div>
+    <div class="became"><span>This became</span><span class="part addr">address</span><span><code>100x-curriculum.vercel.app</code> turns into an IP address, as in Lecture 2</span></div>
     <p class="prin"><span class="pill det">Protocol</span>Rules for delivery that ignore what is inside.</p>
   </div></details>
 </section>
@@ -470,7 +470,7 @@ html.big .pkt span{font-size:16px}
     $('#envn').textContent=count+' / 6';
     $$('.st6 button[data-go^="r"]').forEach(function(b){ b.classList.toggle('done',!!done[b.dataset.go.slice(1)]); });
     var E={
-      addr: done[3] ? (done[5] ? 'https://aarav.example/diagnoses' : '203.0.113.7 · which machine') : '—',
+      addr: done[3] ? (done[5] ? 'https://100x-curriculum.vercel.app/aarav/diagnoses' : '203.0.113.7 · which machine') : '—',
       act:  done[4] ? (done[5] ? 'CREATE → POST' : 'an action: POST') : '—',
       key:  done[4] ? 'Authorization: Bearer aarav_k3x9m2pq_5e1c0a' : '—',
       pkg:  done[6] ? '{"workflow": "I open Jira, read the week\'s tickets…"}' : done[2] ? 'characters as numbers (A = 65)' : done[1] ? 'a shared code' : '—',
@@ -617,7 +617,7 @@ html.big .pkt span{font-size:16px}
   var ch='https', METHOD={CREATE:'POST',READ:'GET',UPDATE:'PUT',DELETE:'DELETE'};
   function hState(){ return {addr:$('#hAddr').checked,key:$('#hKey').checked,act:$('#hAct').value,pkg:$('#hPkg').value}; }
   function hReply(s){
-    if(!s.addr) return [404,'Not found. Doors: /workflows /diagnoses','address','No address: the machine cannot tell which door you mean.'];
+    if(!s.addr) return [404,'Not found. Doors: /aarav/workflows /aarav/diagnoses','address','No address: the machine cannot tell which door you mean.'];
     if(s.act==='none') return [400,'Which action? CREATE READ UPDATE DELETE','action','No action: it found the door, but not what you want done.'];
     if(s.act==='UPDATE'||s.act==='DELETE') return [405,'This door takes CREATE, READ','action','The door exists, but it does not take that action.'];
     if(!s.key) return [401,'Who are you? Key needed','key','No key: the machine does not know who is asking.'];
@@ -629,8 +629,8 @@ html.big .pkt span{font-size:16px}
     var s=hState(), r=hReply(s), m=s.act==='none'?null:METHOD[s.act];
     var miss=function(t){ return '<span class="miss">'+t+'</span>'; };
     var lines=[];
-    lines.push((m?'<span class="t-act">'+m+'</span>':miss('(no action)'))+' '+(s.addr?'<span class="t-addr">/diagnoses</span>':miss('(no address)'))+' HTTP/1.1');
-    lines.push('Host: '+(s.addr?'<span class="t-addr">aarav.example</span>':miss('(none)')));
+    lines.push((m?'<span class="t-act">'+m+'</span>':miss('(no action)'))+' '+(s.addr?'<span class="t-addr">/aarav/diagnoses</span>':miss('(no address)'))+' HTTP/1.1');
+    lines.push('Host: '+(s.addr?'<span class="t-addr">100x-curriculum.vercel.app</span>':miss('(none)')));
     lines.push(s.key?'<span class="t-key">Authorization: Bearer aarav_k3x9m2pq_5e1c0a</span>':miss('(no key)'));
     if(s.pkg!=='none') lines.push('<span class="t-pkg">Content-Type: application/json</span>');
     lines.push('');

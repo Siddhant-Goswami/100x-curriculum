@@ -55,13 +55,13 @@
 
 <section class="s" id="s02"><h2><span class="n">02</span>Round Three: The Machine That Answers in Codes</h2>
 <p>In Lecture 2 the machine stayed silent and the room failed twice. In Round Three the machine answered every message with a number and at most five words. That one change turned failure into derivation: read the reply, fix one thing, send again.</p>
-<p>The slide said: Aarav's Diagnosis Service lives at <code>aarav.example</code>. It turns a description of a workflow into a diagnosis. Get a diagnosis of Aarav's Friday report. Instructions only through the Zoom chat, one line per message. The machine does not guess.</p>
+<p>The slide said: Aarav's Diagnosis Service lives at <code>100x-curriculum.vercel.app/aarav</code>. It turns a description of a workflow into a diagnosis. Get a diagnosis of Aarav's Friday report. Instructions only through the Zoom chat, one line per message. The machine does not guess.</p>
 <p>Here is what the machine replied, and what each reply forced the room to add:</p>
 <div class="tw"><table>
 <thead><tr><th>Reply</th><th>What the room had done</th><th>The part it forced</th></tr></thead>
 <tbody>
 <tr><td><span class="sc s4">429</span> Too many requests. One sender.</td><td>Everyone typed at once</td><td>One point of contact, from Lecture 2</td></tr>
-<tr><td><span class="sc s4">404</span> Not found. Doors: /workflows /diagnoses</td><td>No address, or the wrong one</td><td><span class="part addr">address</span></td></tr>
+<tr><td><span class="sc s4">404</span> Not found. Doors: /aarav/workflows /aarav/diagnoses</td><td>No address, or the wrong one</td><td><span class="part addr">address</span></td></tr>
 <tr><td><span class="sc s4">400</span> Which action? CREATE READ UPDATE DELETE</td><td>Said what they wanted in a sentence, but named no action</td><td><span class="part act">action</span></td></tr>
 <tr><td><span class="sc s4">405</span> This door takes CREATE, READ</td><td>Asked the diagnosis door to UPDATE or DELETE</td><td><span class="part act">action</span></td></tr>
 <tr><td><span class="sc s2">200</span> [] Nothing to read yet</td><td>Asked to READ a diagnosis that did not exist</td><td>Read only fetches what already exists</td></tr>
@@ -76,7 +76,7 @@
 <p>The winning message looked like this, sent by DM to the machine:</p>
 <div class="env">
   <div class="band act"><b>Action</b><code>CREATE</code></div>
-  <div class="band addr"><b>Address</b><code>aarav.example/diagnoses</code></div>
+  <div class="band addr"><b>Address</b><code>100x-curriculum.vercel.app/aarav/diagnoses</code></div>
   <div class="band key"><b>Key</b><code>key: ••••••••</code></div>
   <div class="band pkg"><b>Package</b><code>{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</code></div>
 </div>
@@ -97,7 +97,7 @@
 <p>A fixed number for every character that every machine agrees on. That is <strong>ASCII</strong>, from 1963: 128 characters in 7 bits, where <code>A</code> is 65. ASCII had no numbers for नमस्ते, so <strong>UTF-8</strong> (1992) extended the idea to every script. Every character in your package travels as one of these numbers.</p>
 
 <h3>3. A million machines on one network. A message is lost halfway. How does it find the right machine, and how do you know it arrived?</h3>
-<p>Give every machine an address, cut the message into numbered packets, confirm each one, and resend what is missing. <strong>IP</strong> does the addressing; <strong>TCP</strong> does the numbering, confirming and resending. Vint Cerf and Bob Kahn described it in 1974, and the ARPANET switched over on 1 January 1983. This became your <span class="part addr">address</span>: <code>aarav.example</code> is turned into an IP address, as you saw in Lecture 2. TCP/IP is a <strong>protocol</strong>: rules for delivery that do not care what is inside.</p>
+<p>Give every machine an address, cut the message into numbered packets, confirm each one, and resend what is missing. <strong>IP</strong> does the addressing; <strong>TCP</strong> does the numbering, confirming and resending. Vint Cerf and Bob Kahn described it in 1974, and the ARPANET switched over on 1 January 1983. This became your <span class="part addr">address</span>: <code>100x-curriculum.vercel.app/aarav</code> is turned into an IP address, as you saw in Lecture 2. TCP/IP is a <strong>protocol</strong>: rules for delivery that do not care what is inside.</p>
 
 <h3>4. Delivery works. But the receiving machine still does not know what you want. What else must the message say, and what should come back?</h3>
 <p>The message needs an action, a few lines written on the envelope (such as who you are), and a body. The reply needs a code that says how it went. That is <strong>HTTP</strong>, built by Tim Berners-Lee at CERN between 1989 and 1991, about 35 years ago. It gave you the <span class="part act">action</span>, the <span class="part key">key</span> (a header, written on the envelope so it can be checked without opening the letter) and the <span class="part code">code</span>.</p>
@@ -131,7 +131,7 @@
 <div class="tw"><table>
 <thead><tr><th>On the envelope</th><th>In the game</th><th>Its name in HTTP</th></tr></thead>
 <tbody>
-<tr><td><span class="part addr">address</span></td><td><code>aarav.example/diagnoses</code></td><td><strong>URL</strong>, or endpoint. <code>https://</code> is the rules, <code>aarav.example</code> is which machine, <code>/diagnoses</code> is which door (the path)</td></tr>
+<tr><td><span class="part addr">address</span></td><td><code>100x-curriculum.vercel.app/aarav/diagnoses</code></td><td><strong>URL</strong>, or endpoint. <code>https://</code> is the rules, <code>100x-curriculum.vercel.app/aarav</code> is which machine, <code>/diagnoses</code> is which door (the path)</td></tr>
 <tr><td><span class="part act">action</span></td><td>CREATE, READ, UPDATE, DELETE</td><td><strong>Method</strong>: POST, GET, PUT or PATCH, DELETE</td></tr>
 <tr><td><span class="part key">key</span></td><td><code>key: ••••</code></td><td>A <strong>header</strong>: <code>Authorization: Bearer &lt;key&gt;</code>. "Bearer" means whoever bears this key is let in</td></tr>
 <tr><td><span class="part pkg">package</span></td><td><code>{"workflow": "..."}</code></td><td>The <strong>body</strong>, in JSON, with the header <code>Content-Type: application/json</code></td></tr>

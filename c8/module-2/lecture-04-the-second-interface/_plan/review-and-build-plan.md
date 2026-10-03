@@ -275,3 +275,4 @@ Follow the format the Lecture 3 code-track pages already use (notes, practice se
 - Built and deployed: hub, Request Builder, The Wire, notes, practice set, cards, Network tab guide, keys, office hour guide, kit, and the map worksheet (`GUIDES.L4.all`). `round-three-console.html` stays local in `_plan/`.
 - The game's READ check now comes after the key check, matching the real API.
 - Not verified, because it needs a real Groq key or a logged-in browser: a Groq 200 through the Builder, and the name of ChatGPT's conversation request. Both are on the V2 pre-lecture checklist.
+- Update (3 Oct, later): the game now uses the real address everywhere: `100x-curriculum.vercel.app/aarav/diagnoses`, with 404 doors `/aarav/workflows /aarav/diagnoses`. `aarav.example` has been retired from the slides, the console, the V2 plan and the public pages.

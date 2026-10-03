@@ -30,7 +30,7 @@ Two principles carry over from Lecture 2, and this lecture proves each of them s
 | --- | --- | --- |
 | Lecture 05, "The Second Interface" | Lecture 4, "API as the second interface" | The map and sheet are the source of truth |
 | Actions READ, CREATE, CHANGE, REMOVE | **CREATE, READ, UPDATE, DELETE** | CRUD is the name used in every tutorial, tool and database (Lecture 6) |
-| `aarav.app` | `aarav.example` on slides; the real machine at `100x-curriculum.vercel.app/aarav` | aarav.app is someone else's live site. `.example` is reserved and never resolves |
+| `aarav.app` | The real machine's address, `100x-curriculum.vercel.app/aarav`, on the slides and in the game | aarav.app is someone else's live site. The game machine is real, so students can call it afterwards |
 | Model `llama-3.3-70b-versatile` | **`openai/gpt-oss-120b`**, fallback `openai/gpt-oss-20b` | Groq retired Llama 3.3 70B for free and developer tiers on 16 Aug 2026; it now returns 404 |
 | 405 for "no action named" | 400 for a missing action; 405 only when the door does not take that action | 405 means *method not allowed at this address* |
 | Checks: address, action, format, key | Checks: **address, action, key, package**, the order of the list | Real servers check credentials before the body; Groq does exactly this |
@@ -104,7 +104,7 @@ In Lecture 2 the machine stayed silent and the room failed twice. This time it a
 
 **Slide:**
 
-> Aarav's Diagnosis Service lives at **aarav.example**. It turns a description of a workflow into a diagnosis. Goal: get a diagnosis of Aarav's Friday report. Aarav's Friday: "I open Jira, read the week's tickets, write a status report and post it on Slack. It takes about 90 minutes."
+> Aarav's Diagnosis Service lives at **100x-curriculum.vercel.app/aarav**. It turns a description of a workflow into a diagnosis. Goal: get a diagnosis of Aarav's Friday report. Aarav's Friday: "I open Jira, read the week's tickets, write a status report and post it on Slack. It takes about 90 minutes."
 
 **Rules (on screen):**
 
@@ -122,7 +122,7 @@ Rule 4 is the test. Do not say "pick a point of contact". If they do it anyway, 
 | # | Check | If it fails, reply | Part it teaches |
 | --- | --- | --- | --- |
 | 0 | One person is sending | `429 Too many requests. One sender.` | One point of contact (Lecture 2) |
-| 1 | Contains `aarav.example/diagnoses` (or `/workflows`) | `404 Not found. Doors: /workflows /diagnoses` | Address |
+| 1 | Contains `100x-curriculum.vercel.app/aarav/diagnoses` (or `/aarav/workflows`) | `404 Not found. Doors: /aarav/workflows /aarav/diagnoses` | Address |
 | 2 | Names an action | `400 Which action? CREATE READ UPDATE DELETE` | Action |
 | 3 | Action allowed at this door (CREATE or READ) | `405 This door takes CREATE, READ` | Action |
 | 4 | Carries `key:` and the current key | `401 Who are you? Key needed` | Key |
@@ -140,7 +140,7 @@ The game is about which parts exist, not their order in the message, so accept t
 **A winning message (by DM to the host):**
 
 ```
-CREATE aarav.example/diagnoses key: key-7f3a {"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}
+CREATE 100x-curriculum.vercel.app/aarav/diagnoses key: key-7f3a {"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}
 ```
 
 **Diagnosis to read aloud:**
@@ -176,7 +176,7 @@ Open **The Wire** (`playgrounds/the-wire`) on screen. Each rung starts with a qu
 - Ask: "A million machines share one network. A message gets lost halfway. How does it find the right machine, and how do you know it arrived?"
 - Do: the message is cut into numbered packets. One is lost and two arrive out of order. Reorder them, and ask for the missing one again.
 - Name: IP gives every machine an address. TCP numbers the packets, confirms each one and resends what is missing (Cerf and Kahn, 1974; the ARPANET switched over on 1 Jan 1983).
-- It became the **address**: `aarav.example` becomes an IP address, as in Lecture 2.
+- It became the **address**: `100x-curriculum.vercel.app` becomes an IP address, as in Lecture 2.
 - Principle: a **protocol**, rules for delivery that ignore what is inside.
 
 **Rung 4: HTTP (1989 to 1991).**

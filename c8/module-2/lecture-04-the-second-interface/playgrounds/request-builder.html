@@ -131,7 +131,7 @@
 
 <section class="s" id="ex2"><h2><span class="n">02</span>The parts: your Round Three message, translated</h2>
 <p>This is the message that won Round Three. Tap a coloured part to find it in the real HTTP request underneath. Same parts, different spelling.</p>
-<div class="gm" id="gm"><span class="a" data-p="a">CREATE</span> <span class="d" data-p="d">aarav.example/diagnoses</span> <span class="k" data-p="k">key: key-●●●●</span> <span class="p" data-p="p">{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</span></div>
+<div class="gm" id="gm"><span class="a" data-p="a">CREATE</span> <span class="d" data-p="d">100x-curriculum.vercel.app/aarav/diagnoses</span> <span class="k" data-p="k">key: key-●●●●</span> <span class="p" data-p="p">{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</span></div>
 <div class="http" id="http"><span class="a" data-p="a">POST</span> <span class="d" data-p="d">/aarav/diagnoses</span> HTTP/1.1
 Host: <span class="d" data-p="d">100x-curriculum.vercel.app</span>
 <span class="k" data-p="k">Authorization: Bearer aarav_●●●●●●●●_●●●●●●</span>
@@ -140,7 +140,7 @@ Host: <span class="d" data-p="d">100x-curriculum.vercel.app</span>
 <span class="p" data-p="p">{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</span></div>
 <div class="tw compact"><table><thead><tr><th>In the game</th><th>On the wire</th><th>Its name</th></tr></thead><tbody>
 <tr><td><span class="part act">CREATE</span></td><td class="mono">POST</td><td>Method. CRUD is what you want; the method is how HTTP spells it.</td></tr>
-<tr><td><span class="part addr">aarav.example/diagnoses</span></td><td class="mono">https:// + host + /diagnoses</td><td>URL, or endpoint. The host names the machine, the path names the door.</td></tr>
+<tr><td><span class="part addr">100x-curriculum.vercel.app/aarav/diagnoses</span></td><td class="mono">https:// + host + /aarav/diagnoses</td><td>URL, or endpoint. The host names the machine, the path names the door.</td></tr>
 <tr><td><span class="part key">key:</span></td><td class="mono">Authorization: Bearer …</td><td>A header. Written on the envelope, read without opening the letter.</td></tr>
 <tr><td><span class="part pkg">{"workflow": …}</span></td><td class="mono">Content-Type + body</td><td>The body, in JSON. The header says which format it is in.</td></tr>
 <tr><td><span class="part code">201</span></td><td class="mono">HTTP/1.1 201 Created</td><td>Status code, plus a reply package.</td></tr>
