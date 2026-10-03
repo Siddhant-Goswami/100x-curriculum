@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Tick List | 100xEngineers</title>
+<meta name="description" content="Checklist and actions for the 100xEngineers Cohort 8 code track office hour: six setup ticks tonight, the template, the link, five deliverables this week, and where to post.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="docs.css">
+<script src="docs.js"></script>
+
+</head>
+<body data-page="tick-list">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Code track pages"><a href="building-ui-notes">Lecture notes</a><a href="practice-set">Practice set</a><a href="office-hour-guide">Office hour guide</a><a href="tick-list">Tick list</a><a href="beginner-kit">Beginner kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Checklist and actions · Companion to the office hour guide · Code track</p>
+  <h1>The Tick List</h1>
+  <p class="dek">Six ticks tonight, five deliverables this week, one thread to post in.</p>
+  <div class="meta"><span>1 October 2026</span><span>Ticks save on this device</span></div>
+</div>
+
+<div class="call"><p class="kick">The order is the rule</p><p>Spec before setup. Setup before template. Template on localhost before any link. Do not skip ahead; each stage is how you find out the previous one actually worked.</p></div>
+
+<div class="scorebox"><div class="score" data-for="all"><div class="ring"><svg viewBox="0 0 48 48"><circle class="bg" cx="24" cy="24" r="20"/><circle class="fg" cx="24" cy="24" r="20"/></svg><b>0/0</b></div><div class="l"><strong>Overall</strong>everything on this page</div></div><div class="score" data-for="spec"><div class="ring"><svg viewBox="0 0 48 48"><circle class="bg" cx="24" cy="24" r="20"/><circle class="fg" cx="24" cy="24" r="20"/></svg><b>0/0</b></div><div class="l"><strong>The spec</strong>Stage 0</div></div><div class="score" data-for="setup"><div class="ring"><svg viewBox="0 0 48 48"><circle class="bg" cx="24" cy="24" r="20"/><circle class="fg" cx="24" cy="24" r="20"/></svg><b>0/0</b></div><div class="l"><strong>Setup</strong>Stage 1 · tonight</div></div><div class="score" data-for="tpl"><div class="ring"><svg viewBox="0 0 48 48"><circle class="bg" cx="24" cy="24" r="20"/><circle class="fg" cx="24" cy="24" r="20"/></svg><b>0/0</b></div><div class="l"><strong>The template</strong>Stage 2</div></div><div class="score" data-for="link"><div class="ring"><svg viewBox="0 0 48 48"><circle class="bg" cx="24" cy="24" r="20"/><circle class="fg" cx="24" cy="24" r="20"/></svg><b>0/0</b></div><div class="l"><strong>The link</strong>Stage 3 · optional</div></div></div>
+
+<section class="s" id="s01" data-stage="spec"><h2><span class="n">1</span>Stage 0: The Spec <span class="pill coral">do this first</span></h2>
+<div class="stg"><span class="kick">How you know it is done</span><div class="bar"><i></i></div><span class="num">0 / 6</span></div>
+<ul class="ck">
+<li><input type="checkbox" id="sp1"><label for="sp1"><span class="t">North Star written</span><span class="h">Timeline, role, scale, specific thing. Someone outside the cohort could verify it.</span></label></li>
+<li><input type="checkbox" id="sp2"><label for="sp2"><span class="t">Observation from lived experience</span><span class="h">Something you watched happen, or do yourself every week (Track B).</span></label></li>
+<li><input type="checkbox" id="sp3"><label for="sp3"><span class="t">Hypothesis</span><span class="h">One sentence that can fail. If automated X, then user gets Y.</span></label></li>
+<li><input type="checkbox" id="sp4"><label for="sp4"><span class="t">One named user</span><span class="h">A real person, or you (Track B). Not a segment.</span></label></li>
+<li><input type="checkbox" id="sp5"><label for="sp5"><span class="t">At least one golden input and output pair</span><span class="h">Produced by doing the task manually. Both written out in full.</span></label></li>
+<li><input type="checkbox" id="sp6"><label for="sp6"><span class="t">Verifier</span><span class="h">Written criteria for what makes the output good. Who or what checks it.</span></label></li>
+</ul>
+</section>
+
+<section class="s" id="s02" data-stage="setup"><h2><span class="n">2</span>Stage 1: Setup <span class="pill">six ticks</span></h2>
+<div class="osrow"><span class="kick">Commands for</span><div class="seg" data-seg="os"><button type="button" data-v="win">Windows</button><button type="button" data-v="mac">Mac</button></div></div>
+<div class="stg"><span class="kick">The test for each tick</span><div class="bar"><i></i></div><span class="num">0 / 6</span></div>
+<ul class="ck">
+<li><input type="checkbox" id="st1"><label for="st1"><span class="t">1 · Python installed <small>(<a href="https://www.python.org/downloads/">download</a>)</small></span><span class="h"><span data-os="win"><code>python --version</code></span><span data-os="mac"><code>python3 --version</code></span> prints a number</span></label></li>
+<li><input type="checkbox" id="st2"><label for="st2"><span class="t">2 · An IDE installed</span><span class="h"><a href="https://code.visualstudio.com/download">VS Code</a>, <a href="https://antigravity.google/download">Antigravity</a> or <a href="https://cursor.com/download">Cursor</a> opened once</span></label></li>
+<li><input type="checkbox" id="st3"><label for="st3"><span class="t">3 · Folder + app.py</span><span class="h">Folder open in the IDE, app.py visible in the sidebar</span></label></li>
+<li><input type="checkbox" id="st4"><label for="st4"><span class="t">4 · <span data-os="win">pip install gradio</span><span data-os="mac">pip3 install gradio</span></span><span class="h">Ends with <code>Successfully installed gradio</code></span></label></li>
+<li><input type="checkbox" id="st5"><label for="st5"><span class="t">5 · <span data-os="win">python app.py</span><span data-os="mac">python3 app.py</span> runs</span><span class="h">Terminal prints <code>http://127.0.0.1:7860</code> and the browser shows the app</span></label></li>
+<li><input type="checkbox" id="st6"><label for="st6"><span class="t">6 · Error log started</span><span class="h">A text file with: error text, what you tried, what fixed it</span></label></li>
+</ul>
+<p>Step-by-step with the Hello World code: <a href="office-hour-guide#s07">guide, section 7</a>. Errors: <a href="office-hour-guide#s09">guide, section 9</a>.</p>
+</section>
+
+<section class="s" id="s03" data-stage="tpl"><h2><span class="n">3</span>Stage 2: The Template</h2>
+<div class="stg"><span class="kick">The test for each item</span><div class="bar"><i></i></div><span class="num">0 / 6</span></div>
+<ul class="ck">
+<li><input type="checkbox" id="tp1"><label for="tp1"><span class="t">Hello World ran</span><span class="h">Type a name, get Hello name back</span></label></li>
+<li><input type="checkbox" id="tp2"><label for="tp2"><span class="t">Chat template ran unchanged</span><span class="h">Click the example, get Aarav's plan back; type hi, get the follow-up question</span></label></li>
+<li><input type="checkbox" id="tp3"><label for="tp3"><span class="t">Your golden input pasted in</span><span class="h"><code>GOLDEN_INPUT</code> is your text</span></label></li>
+<li><input type="checkbox" id="tp4"><label for="tp4"><span class="t">Your golden output pasted in</span><span class="h"><code>GOLDEN_OUTPUT</code> is your text</span></label></li>
+<li><input type="checkbox" id="tp5"><label for="tp5"><span class="t">Trigger word changed</span><span class="h">The if statement looks for a word that always appears in your golden input</span></label></li>
+<li><input type="checkbox" id="tp6"><label for="tp6"><span class="t">Screenshot taken</span><span class="h">Browser showing your golden output in the chat</span></label></li>
+</ul>
+<p>The template, and a form that fills in your three changes: <a href="office-hour-guide#s08">guide, section 8</a>.</p>
+</section>
+
+<section class="s" id="s04" data-stage="link"><h2><span class="n">4</span>Stage 3: The Link <span class="pill">optional this week</span></h2>
+<div class="stg"><span class="kick">Notes</span><div class="bar"><i></i></div><span class="num">0 / 4</span></div>
+<ul class="ck">
+<li><input type="checkbox" id="lk1"><label for="lk1"><span class="t"><a href="https://huggingface.co/join">Hugging Face account</a> created today</span><span class="h">Required for everyone. The 30-day clock starts now.</span></label></li>
+<li><input type="checkbox" id="lk2"><label for="lk2"><span class="t">Space created (if account is 30+ days old)</span><span class="h"><a href="https://huggingface.co/new-space">New Space</a>: Gradio SDK, blank, ZeroGPU, paste app.py, commit</span></label></li>
+<li><input type="checkbox" id="lk3"><label for="lk3"><span class="t">Render service (if you need a link sooner)</span><span class="h"><a href="https://github.com/signup">GitHub</a> repo + requirements.txt + the PORT change, then <a href="https://render.com">Render</a></span></label></li>
+<li><input type="checkbox" id="lk4"><label for="lk4"><span class="t">Link opened on your phone</span><span class="h">If it opens on a different device, it is live</span></label></li>
+</ul>
+</section>
+
+<section class="s" id="s05" data-stage="week"><h2><span class="n">5</span>Actions This Week</h2>
+<div class="stg"><span class="kick">Five deliverables</span><div class="bar"><i></i></div><span class="num">0 / 5</span></div>
+<ul class="ck">
+<li><input type="checkbox" id="wk1"><label for="wk1"><span class="t">Post your one-page spec in the code track channel</span><span class="h">Deadline: before the next code lecture. Track B counts.</span></label></li>
+<li><input type="checkbox" id="wk2"><label for="wk2"><span class="t">Post a localhost screenshot and your error log</span><span class="h">In the same thread.</span></label></li>
+<li><input type="checkbox" id="wk3"><label for="wk3"><span class="t"><a href="https://huggingface.co/join">Create a Hugging Face account</a> today</span></label></li>
+<li><input type="checkbox" id="wk4"><label for="wk4"><span class="t">Run the task manually for 2 to 5 real users</span><span class="h">Or for yourself, five times, if Track B. Write down the inputs and outputs you produced; those are your golden pairs.</span></label></li>
+<li><input type="checkbox" id="wk5"><label for="wk5"><span class="t">Finish the <a href="https://courses.bigbinaryacademy.com/learn-python/">Big Binary Python prerequisite</a></span><span class="h">If any line of the template was unreadable to you.</span></label></li>
+</ul>
+<div class="call det"><p class="kick">Dates</p><p>Assignment 1 (First Proof) due <strong>Friday 9 October</strong>. Hackathon <strong>Saturday 17 to Monday 19 October</strong>, right after the deterministic section. Next code lecture adds the LLM API call to the template.</p></div>
+<div class="cards" id="countdown"></div>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">6</span>Where to Post, and How</h2>
+<div class="tw"><table><thead><tr><th>What</th><th>Where</th></tr></thead><tbody>
+<tr><td>Spec, template screenshot, error log, setup questions</td><td>Discord, code track channel <span class="pend">channel link</span></td></tr>
+<tr><td>North Star or observation feedback</td><td>Discord, support ticket (so it can be tracked)</td></tr>
+<tr><td>Assignment 1 submission (due Fri 9 Oct)</td><td>The submission form <span class="pend">form link</span> plus the assignments channel</td></tr>
+</tbody></table></div>
+<h3>A good help post has exactly three parts, in this order</h3>
+<div class="form" id="helppost">
+  <label><span class="kick">Error (exact text)</span><textarea id="hpErr" placeholder="ModuleNotFoundError: No module named 'gradio'" style="min-height:60px"></textarea></label>
+  <label><span class="kick">What I tried</span><textarea id="hpTry" placeholder="pip install gradio (said already installed), restarted the IDE" style="min-height:60px"></textarea></label>
+  <label><span class="kick">Screenshot</span><input id="hpShot" placeholder="[attached: terminal + the line in app.py]"></label>
+  <div class="btnrow"><button class="btn" type="button" id="hpCopy">Copy the post</button><span class="kick">Then paste it in the code track channel</span></div>
+</div>
+<div class="code" id="hpOut"><div class="hd"><span>help post · preview</span></div><pre id="hpPre" style="padding:14px;white-space:pre-wrap;font-size:13px"></pre></div>
+<p class="sig">Stuck longer than 20 minutes: post.<small>Pair with another first-time coder; swap screens. Do not wait for the next office hour.</small></p>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var $=function(s){return document.querySelector(s)};
+  function hp(){var e=$('#hpErr').value||"ModuleNotFoundError: No module named 'gradio'",t=$('#hpTry').value||'pip install gradio (said already installed), restarted the IDE',s=$('#hpShot').value||'[attached: terminal + the line in app.py]';var txt='Error (exact text):\n  '+e.replace(/\n/g,'\n  ')+'\n\nWhat I tried:\n  '+t.replace(/\n/g,'\n  ')+'\n\nScreenshot:\n  '+s;$('#hpPre').textContent=txt;return txt}
+  ['hpErr','hpTry','hpShot'].forEach(function(k){$('#'+k).addEventListener('input',hp)});hp();
+  $('#hpCopy').addEventListener('click',function(){c8copy($('#hpCopy'),hp())});
+  /* countdown */
+  var now=new Date();var items=[['Assignment 1 due','2026-10-09T23:59:59+05:30'],['Hackathon starts','2026-10-17T00:00:00+05:30']];
+  $('#countdown').innerHTML=items.map(function(x){var d=Math.ceil((new Date(x[1])-now)/86400000);var s=d>1?d+' days left':(d===1?'tomorrow':(d===0?'today':'passed'));return '<div class="card"><p class="kick">'+x[0]+'</p><h4>'+s+'</h4></div>'}).join('');
+});
+</script>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Code track</span><a href="/">Curriculum map</a><a href="index">All code-track pages</a></div></footer>
+</body>
+</html>
+

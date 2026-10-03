@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>First-Time Coder Kit | 100xEngineers</title>
+<meta name="description" content="Beginner resources for the 100xEngineers Cohort 8 code track: what to install, what to read once, the commands you will type, the words you will meet, deploy links and where to get unstuck.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="docs.css">
+<script src="docs.js"></script>
+
+</head>
+<body data-page="beginner-kit">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Code track pages"><a href="building-ui-notes">Lecture notes</a><a href="practice-set">Practice set</a><a href="office-hour-guide">Office hour guide</a><a href="tick-list">Tick list</a><a href="beginner-kit">Beginner kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Beginner resources · Companion to the office hour guide · Code track</p>
+  <h1>First-Time Coder Kit</h1>
+  <p class="dek">Every link and command mentioned in the lecture and office hour, with one line on what it is for.</p>
+  <div class="meta"><span>1 October 2026</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<div class="call"><p class="kick">How to use this</p><p>Install only what section 1 lists. Read section 2 once. Keep section 3 open while you type. Everything else is optional until a lecture points you at it.</p></div>
+
+<div class="osrow"><span class="kick">Your machine</span><div class="seg" data-seg="os"><button type="button" data-v="win">Windows</button><button type="button" data-v="mac">Mac</button></div><span class="kick">Commands below switch to match</span></div>
+
+<section class="s" id="s01"><h2><span class="n">1</span>Install These (and nothing else tonight)</h2>
+<div class="cards">
+  <div class="card coral"><p class="kick">The language</p><h4><a href="https://www.python.org/downloads/">Python 3</a></h4><p>The official page detects your OS. <span data-os="win">Windows: tick Add Python to PATH.</span><span data-os="mac">Mac: run the installer through.</span></p></div>
+  <div class="card coral"><p class="kick">The IDE · pick one only</p><h4><a href="https://code.visualstudio.com/download">VS Code</a></h4><p>Free. The default if unsure.</p><p style="margin-top:8px">Alternatives: <a href="https://antigravity.google/download">Google Antigravity</a>, free with generous limits · <a href="https://cursor.com/download">Cursor</a>, paid plan needed for its models, fine if you already have it.</p></div>
+  <div class="card coral"><p class="kick">The library</p><h4>Gradio</h4><p>Draws the chat or form interface. Installed from the terminal, not downloaded (<a href="https://www.gradio.app/guides/quickstart">docs</a>).</p><div class="cmd" data-os="win"><span>pip install gradio</span><button class="cp" type="button">Copy</button></div><div class="cmd" data-os="mac"><span>pip3 install gradio</span><button class="cp" type="button">Copy</button></div></div>
+</div>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">2</span>Read or Watch Once</h2>
+<div class="tw"><table><thead><tr><th>Resource</th><th>What it gives you</th></tr></thead><tbody>
+<tr><td>Post-read notes, Live Lecture 03: The First Interface <span class="pend">LMS link</span></td><td>Why an interface exists, and the input, process, output frame every later lecture reuses.</td></tr>
+<tr><td><a href="building-ui-notes">Post-read notes, Live Lecture 04: Building UI</a></td><td>The derivation of Aarav's interface and the first Gradio code. Sections 12, 13 and 16 are the setup sections.</td></tr>
+<tr><td><a href="practice-set">Practice Set: Replay Before You Render</a></td><td>The exercise this office hour was built on. Track A and Track B are defined here.</td></tr>
+<tr><td><a href="https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l">Aarav discovery document</a> (from the lecture)</td><td>The Track B starting point. Replace Aarav with yourself.</td></tr>
+<tr><td><a href="https://docs.google.com/document/d/1qg8zt7yHflGM7ojtnUBSPj2e_I3ACYapztGZQnzJa_c/edit?tab=t.0">Golden pair template</a> (from the lecture)</td><td>The format for input, output and verification plan.</td></tr>
+<tr><td><a href="https://courses.bigbinaryacademy.com/learn-python/">Big Binary Python prerequisite</a></td><td>Python syntax: variables, functions, if, return. Do it if the template was hard to read.</td></tr>
+<tr><td><a href="https://www.gradio.app/guides/quickstart">Gradio quickstart</a></td><td>The official two-minute version of Hello World with gr.Interface.</td></tr>
+<tr><td><a href="https://www.gradio.app/guides/creating-a-chatbot-fast">Gradio chatbot guide</a></td><td>gr.ChatInterface explained: the interface the template uses.</td></tr>
+<tr><td>Curriculum map: <a href="https://100x-curriculum.vercel.app/">100x-curriculum.vercel.app</a></td><td>Where you are. Node 3 of the deterministic section.</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">3</span>Commands You Will Type</h2>
+<div class="tw"><table><thead><tr><th>Command</th><th>What it does</th><th>When</th></tr></thead><tbody>
+<tr><td><div class="cmd" data-os="win"><span>python --version</span><button class="cp" type="button">Copy</button></div><div class="cmd" data-os="mac"><span>python3 --version</span><button class="cp" type="button">Copy</button></div></td><td>Prints the installed Python version</td><td>Tick 1. <span data-os="win">If not recognised: reinstall with Add Python to PATH.</span><span data-os="mac">If python3 is not found, try python.</span></td></tr>
+<tr><td><div class="cmd" data-os="win"><span>pip install gradio</span><button class="cp" type="button">Copy</button></div><div class="cmd" data-os="mac"><span>pip3 install gradio</span><button class="cp" type="button">Copy</button></div></td><td>Downloads Gradio and what it depends on</td><td>Tick 4. <span data-os="mac">pip3 if pip is not found.</span></td></tr>
+<tr><td><div class="cmd" data-os="win"><span>python -m pip install gradio</span><button class="cp" type="button">Copy</button></div><div class="cmd" data-os="mac"><span>python3 -m pip install gradio</span><button class="cp" type="button">Copy</button></div></td><td>Same install, forced to use the Python you run</td><td>When you see <code>No module named gradio</code></td></tr>
+<tr><td><div class="cmd" data-os="win"><span>python app.py</span><button class="cp" type="button">Copy</button></div><div class="cmd" data-os="mac"><span>python3 app.py</span><button class="cp" type="button">Copy</button></div></td><td>Runs your file and prints the local URL</td><td>Tick 5, and every time you change the file</td></tr>
+<tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd> (in the terminal)</td><td>Stops the running app</td><td>Before running again, and when you see <code>Address already in use</code></td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">4</span>Words You Will Meet</h2>
+<input class="search" id="wordsearch" type="search" placeholder="Filter the words…" aria-label="Filter words">
+<div class="gl" id="words">
+<div class="w"><b>Terminal</b><span>Where you type commands: Command Prompt or PowerShell on Windows, Terminal on Mac, or View, Terminal inside your IDE.</span></div>
+<div class="w"><b>IDE</b><span>A notepad for code that can also run it and show errors. VS Code is one.</span></div>
+<div class="w"><b>pip</b><span>Python's installer. pip install X fetches library X from the internet.</span></div>
+<div class="w"><b>Library</b><span>Code someone else wrote that you import. Gradio is a library.</span></div>
+<div class="w"><b>import</b><span>The line at the top of a file that loads a library. import gradio as gr lets you write gr.ChatInterface.</span></div>
+<div class="w"><b>def</b><span>Defines a function: a named block of code that takes inputs and returns an output.</span></div>
+<div class="w"><b>return</b><span>Hands the output back. The function stops at the first return it reaches.</span></div>
+<div class="w"><b>if</b><span>Runs the next indented lines only when the condition is true.</span></div>
+<div class="w"><b>String</b><span>Text inside quotes. GOLDEN_INPUT is a string.</span></div>
+<div class="w"><b>Variable</b><span>A name that holds a value. GOLDEN_OUTPUT is a variable holding a string.</span></div>
+<div class="w"><b>localhost</b><span>Your own computer, as a web address: http://127.0.0.1:7860.</span></div>
+<div class="w"><b>Port</b><span>The number after the colon. 7860 is Gradio's default; Render supplies its own through PORT.</span></div>
+<div class="w"><b>Traceback</b><span>Python's error report. Read the last line first; it names the error.</span></div>
+</div>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">5</span>Deploy Links (when you are ready, not before)</h2>
+<div class="cards">
+  <div class="card"><p class="kick">Shown in the office hour</p><h4>Hugging Face Spaces</h4><p><a href="https://huggingface.co/join">Sign up</a> · <a href="https://huggingface.co/new-space">new Space</a> · <a href="https://huggingface.co/docs/hub/spaces-sdks-gradio">Gradio on Spaces docs</a></p><p style="margin-top:8px">Free ZeroGPU, two Spaces, account must be 30 days old. Create the account today.</p></div>
+  <div class="card"><p class="kick">While you wait</p><h4>Render</h4><p><a href="https://render.com">render.com</a> · <a href="https://render.com/docs/free">free plan limits</a></p><p style="margin-top:8px">Free web service. Needs GitHub, requirements.txt, and the PORT change in demo.launch (<a href="office-hour-guide#s11">see guide</a>). Sleeps when idle.</p></div>
+  <div class="card"><p class="kick">Where your code lives</p><h4>GitHub</h4><p><a href="https://github.com/signup">github.com</a> · <a href="https://courses.bigbinaryacademy.com/git-and-github-essentials/">Git refresher</a></p><p style="margin-top:8px">Needed for Render. Covered in the Git lesson.</p></div>
+</div>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">6</span>Optional, From the Session</h2>
+<ul>
+  <li><strong>DHH, Rails World 2026 opening keynote</strong> <a href="https://www.youtube.com/watch?v=vDjW_dRyKXY">watch</a>. Why the person who built Ruby on Rails now writes 3% Ruby.</li>
+  <li><strong>Sridev's webinar on video generation with Opus 5.5</strong> <span class="pend">recording</span>. Optional. Relevant if your output is video.</li>
+  <li><strong>Siddhant's essay on language as the interface</strong> <span class="pend">link</span>. To be shared when ready.</li>
+</ul>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">7</span>Where to Get Unstuck</h2>
+<div class="tw"><table><thead><tr><th>Situation</th><th>Do this</th></tr></thead><tbody>
+<tr><td>Setup or template error, under 20 minutes in</td><td>Read the last line of the traceback, check <a href="office-hour-guide#s09">the error table in the guide</a>, try the fix once</td></tr>
+<tr><td>Same error after 20 minutes</td><td>Post in the code track channel <span class="pend">channel link</span>: exact error, what you tried, screenshot. <a href="tick-list#s06">Help-post builder</a>.</td></tr>
+<tr><td>Not sure if your spec is right</td><td>Post it in the code track channel; Siddhant picks examples from there</td></tr>
+<tr><td>North Star or observation question</td><td>Support ticket on Discord</td></tr>
+<tr><td>You fixed something</td><td>Reply in the thread. Your fix is someone else's blocker.</td></tr>
+</tbody></table></div>
+<p class="sig">Install section 1. Read section 2. Keep section 3 open.<small>Companions: <a href="office-hour-guide">office hour guide</a> · <a href="tick-list">tick list</a></small></p>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var s=document.getElementById('wordsearch');
+  s.addEventListener('input',function(){var q=s.value.toLowerCase();[].slice.call(document.querySelectorAll('#words .w')).forEach(function(w){w.style.display=!q||w.textContent.toLowerCase().indexOf(q)>-1?'':'none'})});
+});
+</script>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Code track</span><a href="/">Curriculum map</a><a href="index">All code-track pages</a></div></footer>
+</body>
+</html>
+

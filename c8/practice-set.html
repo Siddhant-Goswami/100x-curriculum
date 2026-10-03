@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Replay Before You Render | 100xEngineers</title>
+<meta name="description" content="Practice set after Live Lecture 04 of the 100xEngineers Cohort 8 code track: one real user, ten golden pairs, a verifier, a replay, and a chat running locally in Gradio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="docs.css">
+<script src="docs.js"></script>
+
+</head>
+<body data-page="practice-set">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Code track pages"><a href="building-ui-notes">Lecture notes</a><a href="practice-set">Practice set</a><a href="office-hour-guide">Office hour guide</a><a href="tick-list">Tick list</a><a href="beginner-kit">Beginner kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Practice set · Follows Live Lecture 04: Building UI · Code track</p>
+  <h1>Replay Before You Render</h1>
+  <p class="dek">One real user. Ten golden pairs. A chat running on your own machine.</p>
+  <div class="meta"><span>Post in the code track channel</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<div class="call"><p class="kick">The practice set in one sentence</p><p>Write a spec for one real user with 10 golden pairs and a numeric verifier, replay one pair to derive the interface, then run that interface locally in Gradio and compare it with a vibe-coded version.</p></div>
+
+<div class="trkpick">
+  <p class="kick">Which track are you on?</p>
+  <p>The page shows only your track's steps. Your choice is remembered on this device.</p>
+  <div class="opts">
+    <button type="button" data-v="a"><b>Track A · my own problem</b><small>I have a lived observation and a hypothesis. Preferred.</small></button>
+    <button type="button" data-v="b"><b>Track B · Aarav's documents</b><small>I do not have one yet. Run the loop on Aarav, then on myself.</small></button>
+  </div>
+  <p style="margin:10px 0 0!important"><button type="button" class="reset" data-v="all">Show both tracks</button></p>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Why This Exercise Exists</h2>
+<p>Aarav's status report was a proxy. The skill is not Gradio; it is deriving an interface from an output. In the lecture, 17 people voted for a search box and one follow-up question overturned it. You are going to run that same replay on your own user, where nobody hands you the answer.</p>
+<p>Lecture recap: <a href="building-ui-notes#s09">the vote that lost</a>.</p>
+</section>
+
+<section class="s trk a" id="s02"><h2><span class="n">02</span>Track A: Your Own Problem <span class="pill coral">preferred</span></h2>
+<ol class="steps">
+  <li><b>Write the spec.</b> Observation (no solution in it, readable by a stranger), North Star (6 months, a direction not a product), hypothesis with a number, a deadline and a stop rule, one named user with their designation, input, output.</li>
+  <li><b>Collect 10 golden pairs.</b> The exact text your user would type and the output that would solve their problem. Get them from the user, not from your head. If you are the user, check them with two people like you.</li>
+  <li><b>Write the verifier.</b> Baseline, threshold and the arithmetic, the way Aarav's was worked: 15 minutes to 5, 10 a day, 50 a week against a 1 hour bar. State what a failing output looks like in the same units.</li>
+  <li><b>Replay one pair.</b> Take your best golden output and write the first follow-up your user would ask after reading it. Then pick search, form or chat, with the one-line reason the replay gave you.</li>
+  <li><b>Build it in Gradio, locally.</b> Hello World first. Then the interface you picked, with an echo or placeholder process, and input and output types that match your spec.</li>
+  <li><b>Vibe code the same interface</b> with any tool you like, then write a three-line review: what each route gave you, and what the difference was.</li>
+</ol>
+</section>
+
+<section class="s trk b" id="s03"><h2><span class="n">03</span>Track B: Aarav's Documents</h2>
+<p>Use the <a href="https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l">discovery document</a> and <a href="https://docs.google.com/document/d/1qg8zt7yHflGM7ojtnUBSPj2e_I3ACYapztGZQnzJa_c/edit?tab=t.0">golden pairs</a>. Run the same loop with Aarav as the user and pair 1 (the Friday status report, around 3 hours) as your anchor.</p>
+<p>Two changes stop this from being a copy:</p>
+<div class="cards">
+  <div class="card coral"><p class="kick">Change 1</p><h4>Write 3 new pairs yourself</h4><p>For other repeated tasks Aarav could plausibly have, each with its own verifier.</p></div>
+  <div class="card coral"><p class="kick">Change 2</p><h4>Replay a different follow-up</h4><p>One that is not "What does backtesting mean?". If your replay still lands on chat, say why in your own words.</p></div>
+</div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Rules of the Build</h2>
+<details class="acc" open><summary>Gradio only.</summary><div class="b"><p>No deployment yet; the office hour takes your local app to a link.</p></div></details>
+<details class="acc"><summary>Predict before you run.</summary><div class="b"><p>Write down your interface pick before the replay, and the error you expect before your first <code>python app.py</code>. Keep both, even when wrong.</p></div></details>
+<details class="acc"><summary>Docs before chatbots.</summary><div class="b"><p>Learn <code>gr.Interface</code> and <code>gr.ChatInterface</code> from the <a href="https://gradio.app/docs">Gradio documentation</a>. Ask an LLM only after you have read the relevant page.</p></div></details>
+<details class="acc"><summary>AI is allowed, blind pasting is not.</summary><div class="b"><p>Use AI for hints and debugging. You must be able to point at the input, the process and the output in every line of your first-principles version. That version is the recall test, and it only works if you can explain it.</p></div></details>
+<details class="acc"><summary>Log every error.</summary><div class="b"><p>Message, cause, fix. Python not found and Gradio not installed count. This log is what the office hour reviews.</p></div></details>
+<details class="acc"><summary>Mask, do not withhold.</summary><div class="b"><p>Replace proprietary numbers with percentages or X, Y, Z, but share the spec.</p></div></details>
+<h3>The starting template, for reference</h3>
+<div id="tpl"></div>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>What to Submit</h2>
+<p>Tick each deliverable as it is ready. Ticks save on this device.</p>
+<ul class="ck" data-stage="sub">
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">Spec</span><span class="h">Observation, North Star, hypothesis with a number and a stop rule, one named user with designation, input, output.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">Golden dataset</span><span class="h">At least 10 input and output pairs, each input written as the user would type it. <span class="trk b">Track B: 3 new pairs of your own.</span></span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">Verifier</span><span class="h">Baseline, threshold, the arithmetic, and one example of an output that fails it.</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">Replay note</span><span class="h">Your pre-replay pick, the follow-up question, the final interface, and the one-line reason.</span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">Screenshots</span><span class="h">Hello World and your chosen interface, both running on localhost on your machine.</span></label></li>
+<li><input type="checkbox" id="d6"><label for="d6"><span class="t">Code</span><span class="h">Your app.py, with a comment marking input, process and output.</span></label></li>
+<li><input type="checkbox" id="d7"><label for="d7"><span class="t">Error log</span><span class="h">Every error hit, with cause and fix.</span></label></li>
+<li><input type="checkbox" id="d8"><label for="d8"><span class="t">Three-line review</span><span class="h">Vibe coded versus first principles: what each gave you, and the difference.</span></label></li>
+</ul>
+<div class="stg"><span class="kick">Deliverables ready</span><div class="bar"><i></i></div><span class="num">0 / 8</span><button class="reset" type="button">Reset</button></div>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Where to Post, and How to Get Unblocked</h2>
+<p>Post everything in the code track channel on Discord, not the general channels. Stuck on installation: post the exact error message and what you already tried. First-time coders: pair up with someone else starting out and compare errors; one person's fix is often another's blocker.</p>
+<p>The help-post format and the common errors are in <a href="office-hour-guide#s09">the office hour guide</a>.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>After Submission</h2>
+<p>The next office hour reviews your specs and error logs live, then deploys your local app to a shareable link.</p>
+<p class="sig">Replay before you render.<small>Companion pages: <a href="office-hour-guide">office hour guide</a> · <a href="tick-list">tick list</a> · <a href="beginner-kit">beginner kit</a></small></p>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('tpl').innerHTML=c8code({title:'app.py · chat echo',code:'import gradio as gr\ndef respond(message, history):\n    return "You typed: " + message\ngr.ChatInterface(fn=respond).launch()',tags:{1:['Input',document.documentElement.getAttribute('data-theme')==='dark'||matchMedia('(prefers-color-scheme:dark)').matches?'#EDEBE5':'#1B1B1B'],2:['Process → Output','#F2603C'],3:['Interface','#8A8A8A']}});
+  var all=document.querySelector('.trkpick .reset');
+  all.addEventListener('click',function(){document.documentElement.setAttribute('data-track','all');c8store.set('c8.track','all');[].slice.call(document.querySelectorAll('.trkpick button[data-v]:not(.reset)')).forEach(function(b){b.setAttribute('aria-pressed','false')})});
+});
+</script>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Code track</span><a href="/">Curriculum map</a><a href="index">All code-track pages</a></div></footer>
+</body>
+</html>
+

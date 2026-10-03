@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spec First, Then Forty Lines | 100xEngineers</title>
+<meta name="description" content="Office hour guide after Live Lecture 04 of the 100xEngineers Cohort 8 code track: the spec, the chat template on localhost, the errors to expect, and the road to a shareable link on Hugging Face Spaces or Render.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="docs.css">
+<script src="docs.js"></script>
+
+</head>
+<body data-page="office-hour-guide">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Code track pages"><a href="building-ui-notes">Lecture notes</a><a href="practice-set">Practice set</a><a href="office-hour-guide">Office hour guide</a><a href="tick-list">Tick list</a><a href="beginner-kit">Beginner kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Office hour guide · Follows Live Lecture 04: Building UI · Code track</p>
+  <h1>Spec First, Then Forty Lines</h1>
+  <p class="dek">From a one-page spec to a chat app on localhost, and the shortest road to a shareable link.</p>
+  <div class="meta"><span>Instructor: Siddhant Goswami</span><span>1 October 2026</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<div class="call"><p class="kick">The one thing to keep</p><p>Implementation is the last step. Write the spec (North Star, observation, hypothesis, one user, golden input and output pairs, a verifier) before you open an editor. Once the spec exists, the first version of your app is a template: the golden input and golden output pasted in as text, a four-line function that returns one or the other, and a chat interface Gradio gives you for free. Intelligence comes next week. The interface does not care where the answer comes from.</p></div>
+
+<section class="s" id="how"><h2>How to read this guide</h2>
+<div class="cards">
+  <div class="card"><p class="kick">Sections 1 to 6</p><h4>Replay of the office hour</h4><p>What the room worked through and the verdicts that came out of it.</p></div>
+  <div class="card coral"><p class="kick">Sections 7 to 11</p><h4>Hands-on, for first-time coders</h4><p>Setup, the template, the errors you will meet, and how to put the app on a link. Never run Python before? Read 7 to 10 slowly and tick <a href="tick-list">the tick list</a> as you go.</p></div>
+  <div class="card"><p class="kick">Section 12</p><h4>Before the next lecture</h4><p>What to post, and where.</p></div>
+</div>
+<p><a class="btn" href="#s07">Skip to the setup →</a></p>
+</section>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Where We Started: Show Me the Spec</h2>
+<p>The session opened with one request: paste your spec in the chat. Not code, not a UI sketch. The same document the lecture produced for Aarav: North Star, observation, hypothesis, one named user, golden input and output pairs, and a way to verify the output. Siddhant was explicit that the thinking behind writing code has not changed in ten years for him. What has gone down is the amount of code written by hand. The work of finding the right inputs, the right output, the process between them, and the right interface still happens every time, and it happens before implementation.</p>
+<div class="two">
+  <div class="card"><p class="kick">Track A</p><h4>Your own user</h4><p>You already have a lived observation and a hypothesis, so write the spec for your own user.</p></div>
+  <div class="card"><p class="kick">Track B</p><h4>Aarav, then yourself</h4><p>Take the Aarav discovery document from the lecture <span class="pend">LMS link</span>, replace Aarav with yourself, and write your own weekly workflow as the observation. Not a lesser option; it is the fastest way to have a spec tonight.</p></div>
+</div>
+<p>The persona was chosen because most of the room is in Aarav's position: consuming content, needing to scope one thing down and take a first action.</p>
+<p>One cadence rule was set for the rest of the code track. Every weekend lecture ends with a practice set that applies the lecture to your own problem. The pace of the cohort is proportional to the progress of the students: more resources and more advanced material arrive when practice sets show people can implement what was taught, and not before.</p>
+<div class="call"><p class="kick">Step one, always</p><p>If you are confused about where to spend effort, write the spec. It needs an observation, a hypothesis, one user, one golden dataset (made by doing the task manually), and one verifier. Nothing in the UI, the code, or the deploy sections of this guide applies until that page exists.</p></div>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Anand's Waveform: When the Right Interface Is Not Chat</h2>
+<p>Anand pasted the first full spec. North Star: an AI-powered power and performance engineering workflow that cuts analyst turnaround by at least 10x (or to within 24 hours), actively used by at least three engineering teams. Observation: for every active FSDB release, a PnP engineer manually studies the waveform to find the optimal window and the matching IP utilisation for downstream flows; arrivals are unplanned, so the task slips to the next day and results are verified by hand. Hypothesis: automate the window and compute utilisation step.</p>
+<p>Asked what interface he had in mind, Anand said chat. Siddhant pushed on the user rather than the answer. The users are engineers who already run commands somewhere. Engineers spend their day in a terminal, so a <strong>command-line interface</strong> dropped into the shell they already use will beat a new chat window on adoption and friction. Claude Code is the reference case: Claude Cowork shipped with nearly the same functionality and was far less popular at launch, because the people using Claude at the time were engineers who prefer a CLI.</p>
+<p>The verdict was not "use a CLI". It was: for a problem this niche, try at least two interfaces, start with the one that lives inside the environment the user already works in, and let the user decide. Derivation has to be validated with the end user; the instructor is not a PnP engineer and said so.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Vineeth's Agency: Counting Inputs Before Choosing a Box</h2>
+<p>Vineeth Vijayan's spec was the second one on the whiteboard. North Star: by February 2027, an AI-native creative agency that delivers a video content pipeline to startups and small brands on internal tooling, with clients able to self-serve variations or have the agency manage them. User: Benjamin, a UX designer turned entrepreneur. Input: a short brief (product, campaign, what the video must do), existing brand assets, one or two reference videos, approve or reject decisions per batch, and Rs 10,000 upfront. Output: at least two approved ad-ready videos from a batch of five, plus a brand profile and adapted template set that makes the next brief faster.</p>
+<p>Rather than jump to an interface, Siddhant ran the same exercise as the lecture: list each input and its type.</p>
+<div class="tw compact"><table><thead><tr><th>Input</th><th>Type</th><th>Note</th></tr></thead><tbody>
+<tr><td>0 · Payment</td><td class="mono">Rs 10,000</td><td>Could sit behind a Stripe gate. For an MVP, collect it manually and keep three inputs.</td></tr>
+<tr><td>1 · The brief</td><td class="mono">text</td><td>Product, campaign, what the video must do.</td></tr>
+<tr><td>2 · Brand assets</td><td class="mono">link / HTML · MP4 · JPEG, PNG · text</td><td>Not one type. A website, past videos, ad images, guidelines.</td></tr>
+<tr><td>3 · Reference videos</td><td class="mono">same mix as 2</td><td>Probably collapsible into input 2.</td></tr>
+</tbody></table></div>
+<p>Two scoping decisions came out of typing the inputs. First, <strong>heavy files cost money</strong>: text is close to free to store and process, video is not, so he capped video at 5 MB for now (an arbitrary number, chosen so the free tier survives). Second, the brand profile and template set are an output the system stores for next time rather than something the UI shows; on the second brief, Benjamin should only need to type text because his assets are already known. Vineeth had designed that in, and it was called out as the right instinct.</p>
+<p>Then the interface debate. A form can collect all three inputs and could email back five videos with two recommendations, so a form is not wrong. Mohit proposed a canvas (Figma or Magnific style) for side-by-side variations. Vineeth, unmuted, chose chat over form for one reason: <strong>follow-ups</strong>. If a client uploads an irrelevant video, a chat can ask for a replacement inside the same conversation; a form cannot. He added that Google Flow's early version worked because it had simple buckets for each element and told you what was missing, which is still chat with structure. Siddhant bought the argument. Follow-ups and revisions are the job in an agency, so the interface that makes follow-ups cheap wins.</p>
+<div class="call"><p class="kick">Why chat keeps winning</p><p>Two criteria decide most MVP interfaces: ease of use and cost of follow-up. Chat scores highest on both, because anyone who can use WhatsApp can use it and because a revision is just the next message. This is a pattern, not a law: when the output modality changes (watching five videos, comparing frames), you add rendering inside the conversation rather than abandoning it.</p></div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The Detour: Language Is the Interface</h2>
+<p>The chat-versus-form debate led into a thesis Siddhant started writing in 2023. Every piece of software in the last 50 to 60 years exists because humans could not explain things to machines. We built calculators, then CPUs, then programming languages, so that we could learn the machine's language and get work done. Around 2019 to 2020 transformers inverted this: machines began to understand ours. The inflection he pointed to this week is <a href="https://www.youtube.com/watch?v=vDjW_dRyKXY">DHH's opening keynote at Rails World 2026</a> on 23 September, eight days earlier. The person who built Ruby on Rails said that Ruby was 55% of his code last year and is 3% now; he writes in English and has, in his words, retired from writing code by hand.</p>
+<p>The same shift is visible in his own team. A year ago a full design team lived in Figma. In the last three months his designer has not opened it; he connects Figma to an LLM and brainstorms in language, because the end product is a deployed web or mobile app and the intermediate canvas existed only because engineering hours were expensive. The 100x video pipeline went from six hours per video to under 30 minutes from idea to published reel. The Fairfax refresher video he showed was made in Claude in one shot with Opus 5.5, not in Premiere or DaVinci, because he had 15 minutes before the client call.</p>
+<p>He was careful about the nuance most people miss. "Use English" does not mean "outsource your thinking". Karpathy's line was the anchor: <strong>you can outsource your thinking, but you cannot outsource your understanding</strong>. The reason this track still teaches Python, and he admitted the cognitive dissonance of holding both beliefs at once, is that the hardware in front of you does not compile English. Every prompt still becomes a deterministic language before it runs, and the translation gap is exactly where people who have never worked with a deterministic system get hurt: they expect the machine to behave like a person. Writing <code>def respond</code> today is how you learn to write the instruction well; tomorrow the syntax changes, the logic you had to think through does not.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>The Verifier Is Still Yours</h2>
+<p>What the Verifier's Rule says about all of this: even if AI builds every interface, judging which interface a user needs, what type each input is, and how the user should feel is a human decision. Claude can give opinions about an interface; it cannot tell you how to make your user feel something, because it has never felt anything.</p>
+<p>Anuj asked whether a verifier can be a person's opinion. The answer came with an example: a copy review built on David Ogilvy's principles, codified as 15 scoring parameters, handed to an LLM to score out of 100 with reasoning on how to improve. A verifier comes from domain expertise or lived experience and gets written down as criteria. Prateek asked whether, with golden pairs from domain experts, the verifier could be a semantic similarity check (does the output carry the same aspects as the golden output). Yes, and he should share the pairs in the code channel for feedback, anonymised if needed.</p>
+<p>The gap he still sees in almost every spec, including the ones on the whiteboard tonight: what makes the two approved videos good? What makes the plan for Aarav a good plan? Define that and write it down as the verifier before building. It is more important to the application than the interface.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>From the Q&amp;A: Solution-First, Gradio, Harnesses</h2>
+<details class="acc"><summary>Samarth: when do we do solution-first?</summary><div class="b"><p>When we know the right problem. Solutions keep evolving; a solution learned before the problem is a process you get attached to without knowing what turns the input into the output. Learn problem, inputs, output, process, then derive the solution, and the solution becomes a function of what is available that month.</p></div></details>
+<details class="acc"><summary>Antariksh: can Gradio replace React and Node?</summary><div class="b"><p>No, explicitly. Gradio is a medium to learn with, a stepping stone, not a production recommendation. The point of writing a terrible-looking UI in Python is to understand how a machine takes instructions.</p></div></details>
+<details class="acc"><summary>Antariksh: build a harness to bridge the gap?</summary><div class="b"><p>That is solution-first thinking and it is too early. Harnesses get derived at a specific point in the curriculum, after deterministic systems, probabilistic systems and the bridges between them. You are at base camp; there is no single step to the peak.</p></div></details>
+<details class="acc"><summary>Varun: is the 21-day tracker MVP what we work on for three months?</summary><div class="b"><p>No. Assignment 1 exists to train problem-first thinking. After it comes the hackathon (new problem statements, right after the deterministic section), then Assignment 2, then the capstone. You may carry your problem forward if you want to; nobody will stop you.</p></div></details>
+<details class="acc"><summary>Does the app store conversations?</summary><div class="b"><p>Not yet. Storage arrives in the database section.</p></div></details>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>The Setup: Four Things</h2>
+<p>Everything after this point is for the first-time coder. The lecture spent two hours on design and 20 minutes on setup, and for many people the night ended at setup. The process between you and a working app has four parts: a language the machine understands (Python), a place to write and read it (an IDE), one folder with one file, and two commands.</p>
+<div class="osrow"><span class="kick">Show commands for</span><div class="seg" data-seg="os"><button type="button" data-v="win">Windows</button><button type="button" data-v="mac">Mac</button></div></div>
+<ol class="steps">
+  <li><b>Install Python</b> from <a href="https://www.python.org/downloads/">python.org/downloads</a>. <span data-os="win">Windows: on the first installer screen tick "Add Python to PATH" before clicking Install.</span><span data-os="mac">Mac: run the installer through.</span> Test: open a terminal (<span data-os="win">Command Prompt or PowerShell</span><span data-os="mac">Terminal</span>) and type the version command. A version number is your tick.
+    <div class="cmd" data-os="win"><span>python --version</span><button class="cp" type="button">Copy</button></div>
+    <div class="cmd" data-os="mac"><span>python3 --version</span><button class="cp" type="button">Copy</button></div>
+    <span data-os="mac">If it says not found, try <code>python --version</code> as well.</span></li>
+  <li><b>Install an IDE.</b> It is a notepad for code. <a href="https://code.visualstudio.com/download">VS Code</a> is free; <a href="https://antigravity.google/download">Google Antigravity</a> is free with generous limits; <a href="https://cursor.com/download">Cursor</a> needs a paid plan for its models. Unsure: take VS Code. Do not spend tonight comparing them.</li>
+  <li><b>Make one folder and one file.</b> Create a folder (for example <code>100x test</code> on the desktop). In the IDE: File, Open Folder. Create a new file inside it called <code>app.py</code>. The .py tells the machine this is Python.</li>
+  <li><b>Run two commands</b> in the IDE's terminal (View, Terminal). The second prints a local URL, <code>http://127.0.0.1:7860</code>. Open it in your browser.
+    <div class="cmd" data-os="win"><span>pip install gradio</span><button class="cp" type="button">Copy</button></div>
+    <div class="cmd" data-os="win"><span>python app.py</span><button class="cp" type="button">Copy</button></div>
+    <div class="cmd" data-os="mac"><span>pip3 install gradio</span><button class="cp" type="button">Copy</button></div>
+    <div class="cmd" data-os="mac"><span>python3 app.py</span><button class="cp" type="button">Copy</button></div></li>
+</ol>
+<p>Start with Hello World (the same one in the <a href="https://www.gradio.app/guides/quickstart">Gradio quickstart</a>) before the chat template, so that the first thing you debug is your setup and not your logic:</p>
+<div id="hello"></div>
+<div class="lgnd"><span style="--l:#1B1B1B" class="lin">Input · the thing in the brackets</span><span style="--l:#F2603C">Process · the body</span><span style="--l:#E0A000">Output · what follows return</span><span style="--l:#8A8A8A">Interface · gr.Interface</span></div>
+<p>Read it as the lecture whiteboard. The thing in the brackets (name) is the input. What follows return is the output. The function is the process. <code>gr.Interface</code> is the interface between a human and this machine.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>The Template: Forty Lines, Four That Matter</h2>
+<p>This is the file Siddhant ran live. Save it as <code>app.py</code>, replacing Hello World, and run it again.</p>
+<div id="tpl"></div>
+<p>Everything in it is either the interface or text you already wrote on your whiteboard. <code>GOLDEN_INPUT</code> and <code>GOLDEN_OUTPUT</code> are Aarav's golden pair pasted in as Python strings. <a href="https://www.gradio.app/guides/creating-a-chatbot-fast">gr.ChatInterface</a> is the chat window; <code>examples</code> puts the golden input one click away so nobody has to type it. The only processing is the four lines inside respond: take the message, and if it contains the word jira return the golden output, otherwise ask a follow-up question. In Python this is how you move conditionally: if the condition is true the first return runs and nothing after it does; if it is false the first return is skipped.</p>
+<p>There is no intelligence yet. That is deliberate. The app mocks the intelligence with the golden pair so that you can test the whole loop (input in, output out, in the interface your user will actually see) before any model is involved. Next week the body of respond becomes a call to an LLM API and the answer stops depending on the word jira. The interface will not change, because the interface only cares about the input and the output and how they are presented.</p>
+<div class="call"><p class="kick">To make it yours</p><p>Change three things and nothing else. Replace GOLDEN_INPUT with your own golden input. Replace GOLDEN_OUTPUT with your own golden output. Change the word the if statement looks for to a word that will always appear in your golden input. Leave the interface alone.</p></div>
+<h3>Make it yours, here</h3>
+<p>Paste your golden pair and trigger word. The three lines change; the interface stays. Nothing leaves your browser.</p>
+<div class="form" id="builder">
+  <label><span class="kick">Your golden input · what your user types</span><textarea id="bIn" placeholder="Every Monday I open Jira to check my weekly to-dos..."></textarea></label>
+  <label><span class="kick">Your golden output · what would solve it</span><textarea id="bOut" placeholder="Repeatable steps I found:&#10;1. ..."></textarea></label>
+  <div class="row">
+    <label><span class="kick">Trigger word · always in your golden input</span><input id="bWord" placeholder="jira"></label>
+    <label><span class="kick">App title</span><input id="bTitle" placeholder="Aarav's Workflow Planner"></label>
+  </div>
+  <div class="warn" id="bWarn" hidden></div>
+  <div class="btnrow"><button class="btn" type="button" id="bGen">Generate my app.py</button><button class="btn ghost" type="button" id="bDl" hidden>Download app.py</button></div>
+</div>
+<div id="bOutCode"></div>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>The Errors You Should Expect</h2>
+<p>The machine does not guess. When it stops, it is because something was not told to it. Keep a log: the exact error text, what you tried, and what fixed it. The office hour reviews the log, not just the screenshot of success.</p>
+<input class="search" id="errsearch" type="search" placeholder="Paste the last line of your error here…" aria-label="Search errors">
+<details class="acc" data-q="python is not recognised command not found path python3"><summary><span class="err">python is not recognised / command not found</span></summary><div class="b"><span class="kick">Cause</span><p>PATH not set during install (Windows), or Mac uses python3.</p><span class="kick">Fix</span><p>Windows: reinstall and tick Add Python to PATH. Mac: use <code>python3</code> and <code>pip3</code>.</p></div></details>
+<details class="acc" data-q="no module named gradio modulenotfounderror pip"><summary><span class="err">No module named gradio</span></summary><div class="b"><span class="kick">Cause</span><p>pip installed into a different Python than the one running.</p><span class="kick">Fix</span><div class="cmd"><span>python -m pip install gradio</span><button class="cp" type="button">Copy</button></div><p>So pip and python match, then run again.</p></div></details>
+<details class="acc" data-q="address already in use port 7860 oserror"><summary><span class="err">Address already in use / port 7860</span></summary><div class="b"><span class="kick">Cause</span><p>The previous app is still running.</p><span class="kick">Fix</span><p>Close the old terminal or press <kbd>Ctrl</kbd>+<kbd>C</kbd> in it, then run again.</p></div></details>
+<details class="acc" data-q="indentationerror syntaxerror unexpected indent eol quote bracket"><summary><span class="err">IndentationError / SyntaxError</span></summary><div class="b"><span class="kick">Cause</span><p>A line was pasted with wrong spacing or a missing quote or bracket.</p><span class="kick">Fix</span><p>Re-copy the template exactly; Python counts the spaces at the start of a line.</p></div></details>
+<details class="acc" data-q="browser shows nothing blank page refused to connect localhost"><summary><span class="err">Browser shows nothing</span></summary><div class="b"><span class="kick">Cause</span><p>The URL was retyped wrong, or the terminal was closed.</p><span class="kick">Fix</span><p>Click the link the terminal printed; keep that terminal open while you test.</p></div></details>
+<p style="margin-top:16px">Stuck for more than 20 minutes: post in the code track channel on Discord <span class="pend">channel link</span>, not the general channel, with three things: the exact error message, what you already tried, and a screenshot. First-time coders should pair up; one person's fix is usually another person's blocker.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Putting It on a Link: Hugging Face Spaces</h2>
+<p>Build and test locally first. Everything you do online is the same file; the only difference is a link other people can open. When you are ready, <a href="https://huggingface.co/docs/hub/spaces-sdks-gradio">Hugging Face Spaces</a> is the lowest-cost, fastest route for a Gradio app, and it is the one Siddhant showed. Hugging Face owns Gradio, which is why the fit is exact.</p>
+<p>One policy change matters for this cohort and did not for earlier ones: after the NVIDIA acquisition, free hardware on Spaces is <strong>ZeroGPU</strong> only, you get two free Spaces, and a <strong>new account must be 30 days old</strong> before it can use them. The instruction from the room: <a href="https://huggingface.co/join">create your Hugging Face account</a> tonight, even if you deploy nothing. The 30 days fit the 21-day assignment window; by the time you have run the task manually and have something worth sharing, the account will be eligible. No one is asked to pay for a Space.</p>
+<div class="form" id="route">
+  <p class="kick" style="margin:0">Which route tonight?</p>
+  <div class="seg coral" id="hfage"><button type="button" data-v="old" aria-pressed="false">My Hugging Face account is 30+ days old</button><button type="button" data-v="new" aria-pressed="false">Newer than 30 days, or none yet</button></div>
+  <p id="routeMsg" style="margin:0;font-size:14px;color:var(--ink2)"></p>
+</div>
+<ol class="steps">
+  <li>Log in at <a href="https://huggingface.co/join">huggingface.co</a>. Click the plus button, New Space (or go straight to <a href="https://huggingface.co/new-space">huggingface.co/new-space</a>).</li>
+  <li>Name it (for example <code>c8-ui</code>). Choose the Gradio SDK. Start blank, not from a template (the templates are not trusted; you already have tested code).</li>
+  <li>Hardware: the free ZeroGPU option. Visibility: public if you are happy to share the link, private otherwise.</li>
+  <li>Click Create. On the next screen choose Create the app.py file, paste your tested app.py, and click Commit new file.</li>
+  <li>Wait for the build. The Space starts your app. From the three-dot menu choose Embed this Space to get the shareable link.</li>
+  <li>To change anything: edit app.py in the Space and commit again.</li>
+</ol>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>The Alternative While You Wait: Render</h2>
+<p>If your Hugging Face account is under 30 days old and you need a link before then, <a href="https://render.com/docs/free">Render's free web service plan</a> runs the same app. It needs two small additions because Render tells your app which port to use. First, replace the last line of app.py (<code>demo.launch()</code>) with this:</p>
+<div id="render"></div>
+<ol class="steps">
+  <li>Put app.py in a <a href="https://github.com/signup">GitHub</a> repository (a Git lesson already ran at the start of the module; refresher: <a href="https://courses.bigbinaryacademy.com/git-and-github-essentials/">Git and GitHub Essentials</a>). Add a second file named <code>requirements.txt</code> containing one line:
+    <div class="cmd"><span>gradio</span><button class="cp" type="button">Copy</button></div></li>
+  <li>On <a href="https://render.com">render.com</a>: New, Web Service, connect the repository. Build command: <code>pip install -r requirements.txt</code>. Start command: <code>python app.py</code>. Instance type: Free.</li>
+  <li>Deploy (<a href="https://render.com/docs/your-first-deploy">Render first-deploy guide</a>). Render gives you an https link. The free instance sleeps when idle, so the first open after a pause takes a minute; that is normal.</li>
+</ol>
+<p>Either route works. Pick one, get the link, and move on. The link is for your 2 to 5 users; it is not the assignment.</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Before the Next Lecture</h2>
+<ul class="ck" data-stage="next">
+<li><input type="checkbox" id="n1"><label for="n1"><span class="t">Spec on one page, posted in the code track channel</span><span class="h">North Star, observation, hypothesis, one named user, at least one golden input and output pair, and the verifier (what makes the output good, written as criteria). Track B is fine.</span></label></li>
+<li><input type="checkbox" id="n2"><label for="n2"><span class="t">A screenshot of the template running on localhost</span><span class="h">With your own golden pair in it, plus your error log, posted in the same thread.</span></label></li>
+<li><input type="checkbox" id="n3"><label for="n3"><span class="t">A Hugging Face account created today</span><span class="h">So the 30-day clock is running. Optional: a Render or Spaces link if you already qualify.</span></label></li>
+<li><input type="checkbox" id="n4"><label for="n4"><span class="t">Run the task manually for your 2 to 5 users this week</span><span class="h">The golden dataset and the verifier come out of doing the job by hand, not out of the code.</span></label></li>
+<li><input type="checkbox" id="n5"><label for="n5"><span class="t">If def and return looked strange, finish the Python prerequisite</span><span class="h"><a href="https://courses.bigbinaryacademy.com/learn-python/">Big Binary Python prerequisite</a>, before the next lecture. The lectures will not teach Python syntax.</span></label></li>
+</ul>
+<div class="stg"><span class="kick">Ticks save on this device</span><div class="bar"><i></i></div><span class="num">0 / 5</span><button class="reset" type="button">Reset</button></div>
+<p><strong>Next week:</strong> the body of respond becomes an LLM API call, which makes the app answer anything your user types and not just the word jira. Then Streamlit as a second interface, then the database so conversations are stored, then the hackathon on 17 to 19 October.</p>
+</section>
+
+<section class="s" id="vocab"><h2>Vocabulary installed tonight</h2>
+<div class="gl">
+<div class="w"><b>Spec</b><span>One page: North Star, observation, hypothesis, one user, golden pairs, verifier. Written before any code.</span></div>
+<div class="w"><b>Golden pair</b><span>One real input and the output you would be proud to return for it, produced by doing the task manually.</span></div>
+<div class="w"><b>Verifier</b><span>Written criteria for what makes an output good, from domain expertise. Can be scored by a person or a model.</span></div>
+<div class="w"><b>Input typing</b><span>Listing every input and its type (text, link, MP4, PNG) before choosing an interface. Mixed types change the interface.</span></div>
+<div class="w"><b>Command-line interface</b><span>An interface inside the terminal the user already works in. Wins on adoption when the user is an engineer.</span></div>
+<div class="w"><b>Follow-up cost</b><span>How cheap it is for the user to revise or add to a request. The main reason chat beats a form.</span></div>
+<div class="w"><b>Mocked intelligence</b><span>Returning the golden output from a stored string so the whole loop can be tested before any model is involved.</span></div>
+<div class="w"><b>Gradio</b><span>A Python library that gives you a chat or form interface in one line. A learning medium, not a production tool.</span></div>
+<div class="w"><b>localhost / 127.0.0.1</b><span>An address that means your own machine. Nobody else can open it.</span></div>
+<div class="w"><b>PATH</b><span>The list of places your operating system looks for programs. If Python is not on it, the terminal cannot find it.</span></div>
+<div class="w"><b>ZeroGPU</b><span>The only free hardware on Hugging Face Spaces now. Two Spaces per account, after the account is 30 days old.</span></div>
+<div class="w"><b>Outsource thinking, not understanding</b><span>Karpathy's line, used as the reason this track still teaches a deterministic language.</span></div>
+</div>
+</section>
+
+<section class="s" id="rabbit"><h2>Rabbit holes from the session</h2>
+<div class="tw"><table><thead><tr><th>Reference</th><th>Why it was pulled</th></tr></thead><tbody>
+<tr><td><a href="https://www.youtube.com/watch?v=vDjW_dRyKXY">DHH opening keynote, Rails World 2026</a></td><td>The pioneer of Rails saying his code is now 3% Ruby and that he writes in English. Recommended viewing for the whole room.</td></tr>
+<tr><td>Siddhant's essay on language as the interface and invisible software <span class="pend">link</span></td><td>The 2023 thesis the chat-versus-form debate keeps landing on. Still being written; to be shared separately.</td></tr>
+<tr><td>Sridev's Sunday webinar on video generation with Opus 5.5 <span class="pend">recording</span></td><td>Optional. Relevant to Vineeth and anyone whose output is video. Recording to be uploaded after the session.</td></tr>
+<tr><td><a href="https://courses.bigbinaryacademy.com/learn-python/">Big Binary Python prerequisite</a></td><td>The syntax exercise to finish if def and return were unfamiliar.</td></tr>
+<tr><td>Curriculum map: <a href="https://100x-curriculum.vercel.app/">100x-curriculum.vercel.app</a></td><td>Where tonight sits: node 3 of the deterministic section, with the hackathon bridge ahead.</td></tr>
+</tbody></table></div>
+<p class="sig">Write the spec. Paste the template. Get the tick. Intelligence is next week.<small>Companions: <a href="tick-list">the tick list</a> · <a href="beginner-kit">the beginner kit</a></small></p>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var dark=document.documentElement.getAttribute('data-theme')==='dark'||(!document.documentElement.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches);
+  var IPO={in:dark?'#EDEBE5':'#1B1B1B',proc:'#F2603C',out:'#E0A000',ui:'#8A8A8A'};
+  if(dark) document.querySelector('.lgnd .lin').style.setProperty('--l',IPO.in);
+  document.getElementById('hello').innerHTML=c8code({title:'app.py · Hello World',code:'import gradio as gr\ndef greet(name):\n    return "Hello " + name\ndemo = gr.Interface(fn=greet, inputs="text", outputs="text")\ndemo.launch()',tags:{1:['Input · name',IPO.in],2:['Process → Output',IPO.proc],3:['Interface',IPO.ui],4:['localhost',IPO.ui]}});
+  var TPL=function(inp,out,word,title){
+    var q=function(s){return s.replace(/\\/g,'\\\\').replace(/"/g,'\\"')};
+    var lines=inp.split(/\n/).filter(function(x){return x.trim()});
+    var inPy='GOLDEN_INPUT = (\n'+lines.map(function(l,i){return '    "'+q(l.trim())+(i<lines.length-1?' ':'')+'"'}).join('\n')+'\n)';
+    return 'import gradio as gr\n\n'+inPy+'\n\nGOLDEN_OUTPUT = """'+out.replace(/"""/g,'\\"\\"\\"')+'"""\n\n\ndef respond(message, history):\n    if "'+q(word.toLowerCase())+'" in message.lower():\n        return GOLDEN_OUTPUT\n    return ("Tell me your weekly workflow step by step: "\n            "what you open first, what you do next, and who gets the result.")\n\n\ndemo = gr.ChatInterface(\n    fn=respond,\n    examples=[GOLDEN_INPUT],\n    title="'+q(title)+'",\n)\n\ndemo.launch()\n';
+  };
+  var AIN='Every Monday I open Jira to check my weekly to-dos.\nI pick the high-priority ones, pull the numbers from our dashboard,\nwrite a short report for each, and send it to my manager on Slack.';
+  var AOUT='Repeatable steps I found:\n1. Open Jira and list this week\'s to-dos (every Monday)\n2. Pick the high-priority tasks (every Monday)\n3. Pull numbers from the dashboard (per task)\n4. Write a short report (per task)\n5. Send the report to your manager on Slack (per task)\n\nWhat to do with each step:\n1. Automate: a saved Jira filter lists them for you\n2. Keep human: you decide what matters this week\n3. Automate: export the same dashboard view each time\n4. Automate a first draft, keep human for the final edit\n5. Keep human until the draft is trusted\n\nThis week: save one Jira filter for your high-priority to-dos.';
+  var base=TPL(AIN,AOUT,'jira',"Aarav's Workflow Planner");
+  var bl=base.split('\n'); var tags={};
+  bl.forEach(function(l,i){
+    if(/^GOLDEN_INPUT/.test(l))tags[i]=['Change 1 · your golden input',IPO.proc];
+    if(/^GOLDEN_OUTPUT/.test(l))tags[i]=['Change 2 · your golden output',IPO.proc];
+    if(/^def respond/.test(l))tags[i]=['Process · four lines',IPO.in];
+    if(/^    if "/.test(l))tags[i]=['Change 3 · your trigger word',IPO.proc];
+    if(/return GOLDEN_OUTPUT/.test(l))tags[i]=['Output',IPO.out];
+    if(/^demo = gr\.ChatInterface/.test(l))tags[i]=['Interface',IPO.ui];
+    if(/examples=/.test(l))tags[i]=['One click away',IPO.ui];
+  });
+  document.getElementById('tpl').innerHTML=c8code({title:'app.py · the template',code:base,tags:tags});
+  document.getElementById('render').innerHTML=c8code({title:'app.py · last line, for Render',code:'import os\ndemo.launch(\n    server_name="0.0.0.0",\n    server_port=int(os.environ.get("PORT", 7860)),\n)',tags:{3:['Render supplies PORT',IPO.proc]}});
+
+  /* builder */
+  var $=function(s){return document.querySelector(s)};
+  var st=c8store.get('c8.builder',{}); ['bIn','bOut','bWord','bTitle'].forEach(function(k){if(st[k])$('#'+k).value=st[k];$('#'+k).addEventListener('input',function(){st[k]=$('#'+k).value;c8store.set('c8.builder',st)})});
+  var lastCode='';
+  $('#bGen').addEventListener('click',function(){
+    var i=$('#bIn').value.trim(),o=$('#bOut').value.trim(),w=$('#bWord').value.trim(),t=$('#bTitle').value.trim()||'My Workflow Planner';
+    var warn=$('#bWarn');warn.hidden=true;
+    if(!i||!o||!w){warn.textContent='Fill the golden input, the golden output and a trigger word first.';warn.hidden=false;return}
+    if(i.toLowerCase().indexOf(w.toLowerCase())<0){warn.textContent='Your trigger word "'+w+'" does not appear in your golden input. Clicking the example will get the follow-up question, not your golden output. Pick a word that is always in the input.';warn.hidden=false}
+    lastCode=TPL(i,o,w,t);
+    var ls=lastCode.split('\n'),tg={};ls.forEach(function(l,k){if(/^GOLDEN_INPUT/.test(l))tg[k]=['Your golden input',IPO.proc];if(/^GOLDEN_OUTPUT/.test(l))tg[k]=['Your golden output',IPO.proc];if(/^    if "/.test(l))tg[k]=['Your trigger word',IPO.proc]});
+    $('#bOutCode').innerHTML=c8code({title:'app.py · yours',code:lastCode,tags:tg});
+    $('#bDl').hidden=false; $('#bOutCode').scrollIntoView({behavior:'smooth',block:'start'});
+  });
+  $('#bDl').addEventListener('click',function(){var b=new Blob([lastCode],{type:'text/x-python'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='app.py';a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},1000)});
+
+  /* route picker */
+  var hf=c8store.get('c8.hfage',null);
+  function route(v){hf=v;c8store.set('c8.hfage',v);[].slice.call(document.querySelectorAll('#hfage button')).forEach(function(b){b.setAttribute('aria-pressed',b.dataset.v===v?'true':'false')});$('#routeMsg').innerHTML=v==='old'?'Use the Hugging Face Spaces steps below. Two free ZeroGPU Spaces, no payment.':'Create the account now so the clock starts, then follow <a href="#s11">Render, section 11</a> if you need a link before day 30.'}
+  [].slice.call(document.querySelectorAll('#hfage button')).forEach(function(b){b.addEventListener('click',function(){route(b.dataset.v)})});
+  if(hf)route(hf);
+});
+</script>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Code track</span><a href="/">Curriculum map</a><a href="index">All code-track pages</a></div></footer>
+</body>
+</html>
+

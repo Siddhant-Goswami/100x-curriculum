@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Building UI: Design to Code | 100xEngineers</title>
+<meta name="description" content="Post-read notes for Live Lecture 04 of the 100xEngineers Cohort 8 code track: derive the interface from the output, ten golden pairs, a verifier threshold, and four lines of Gradio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="docs.css">
+<script src="docs.js"></script>
+
+</head>
+<body data-page="building-ui-notes">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Code track pages"><a href="building-ui-notes">Lecture notes</a><a href="practice-set">Practice set</a><a href="office-hour-guide">Office hour guide</a><a href="tick-list">Tick list</a><a href="beginner-kit">Beginner kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Post-read notes · Live Lecture 04 · Code track</p>
+  <h1>Building UI: Design to Code</h1>
+  <p class="dek">From Aarav's Friday status report to four lines of Gradio, by way of a vote that lost.</p>
+  <div class="meta"><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span><span>Reading time ≈ 18 min</span></div>
+</div>
+
+<div class="call"><p class="kick">The one thing to keep</p><p>You do not choose an interface. You derive it from the output your user needs. Write the ideal input and ideal output first, replay what your user will do with that output, and the interface falls out of the replay. The room voted 17 to 13 for a search box, and one follow-up question about a single word in the plan overturned the vote. Code is the last step, and in Gradio it is four lines that restate the whiteboard.</p></div>
+
+<section class="s" id="how">
+<h2>How to read these notes</h2>
+<p class="lead">This was a design session that ended in code. Most of the two hours went on the part beginners skip: input, output, golden pairs, a verifier, and the reasoning behind one interface choice. The Gradio part is short on purpose.</p>
+<div class="cards">
+  <div class="card"><p class="kick">Read once, slowly</p><h4><a href="#s02">Sections 2 to 9</a></h4><p>With your own observation open beside them.</p></div>
+  <div class="card"><p class="kick">Come back to</p><h4><a href="#s11">Sections 11 to 13</a></h4><p>When you sit down to install and run.</p></div>
+  <div class="card"><p class="kick">Stands on</p><h4>Assignment 1, the Lecture 1 verifier game, yesterday's interface lecture</h4><p>Observation, hypothesis, one user. Two systems, a common language, a set of rules.</p></div>
+</div>
+</section>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The Room Check: Who Had Done Week 0</h2>
+<p>We opened with a hand count. The prerequisite for this session was one observation, one hypothesis and a conversation with at least one real user. More than 10 people in the room had done it; a single interview counted.</p>
+<p>Two framing points came before any design. First, you are not married to one observation. The Assignment 1 deadline is 9 October, and until then the more observations you try and the more people you speak to, the better you get at testing your assumptions against the world. Second, that is the skill that matters now. When building becomes a commodity, finding the right users and solving their problem is the part AI cannot yet do. That is why it is part one of the journey.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Start From One Person, Not a Persona</h2>
+<p>The worked example was Aarav, the business analyst at a mid-sized IT company in Pune, sitting at his desk with three tabs open, AI-aware and overwhelmed. The observation behind him: ambitious early career professionals in urban India arrive AI-aware and motivated, but fail at selection, scoping and first proof. They see AI at the category level (sales automation, HR tools, a productivity agent) and cannot turn it into one grounded workflow. Notice what the observation does not contain: a solution. An observation reports what you saw, from lived experience, and stops.</p>
+<p>The hypothesis then states the assumption and how to test it: they are stuck because they lack a method to go from broad AI possibility to one scoped workflow. The test: provide a structured workflow diagnosis system followed by a guided build sprint, and 60% of active students will identify one real user, map one repeated workflow, build a working AI-assisted version and present a credible demo within 90 days. At 10 people, that is 6 of 10.</p>
+<p>Then the move that shapes everything after it: do not solve for a category (marketers, cafe owners, doctors). Solve for one named person. Once it works for that one person, talk to more people like them. That is how the test base grows.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The Cheapest Test Is Three Boxes on a Whiteboard</h2>
+<p>The hypothesis names two solutions: the diagnosis system (part one) and the build sprint (part two). Siddhant took only part one and asked for the cheapest way to test it with Aarav. The answer on the whiteboard was three boxes.</p>
+<div class="ipo">
+  <div class="bx"><p class="kick">Input</p><b>A text field</b><small>Aarav describes a workflow he repeats, in 3 to 4 lines</small></div><div class="ar">→</div>
+  <div class="bx"><p class="kick">Process</p><b>A Done button</b><small>Whatever turns the description into a plan</small></div><div class="ar">→</div>
+  <div class="bx"><p class="kick">Output</p><b>A plan comes back</b><small>For automating part of the workflow</small></div>
+</div>
+<p>The input came from a message to Aarav: what is the one thing you repeat every day or every week, in 3 to 4 lines? Say he replies that he opens Jira, checks status, and emails his manager an update. That reply, compressed, is the input. The output is a plan for automating part of it. And the success test is not whether Aarav likes the plan. It is whether following it saves him time, say 1 hour a week. If it saves nothing, the impact is zero and the plan failed.</p>
+<p>No code was written and no system was designed. <strong>Designing</strong> meant understanding what the user needs and the minimum solution that tests it. It does not mean opening Figma.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Prateek's Observation, and the Stranger Test</h2>
+<p>Prateek posted his in chat: organizational project knowledge exists, but access depends on personal memory and network, so under deadline pressure people reuse the precedent they remember rather than the best fit, and nobody sees what was not found.</p>
+<div class="cards">
+  <div class="card coral"><p class="kick">Observation · too generic</p><p>Hand it to a stranger outside your industry: could they picture the problem? "Organization" does not say finance, healthcare or education, and an organization is not a person. Name the one person in the team who hits this most often, with their designation, and write the observation from their point of view.</p></div>
+  <div class="card coral"><p class="kick">Hypothesis · no number</p><p>"Noticeably faster" cannot be falsified. Add a measurement and a stop rule. Without one, you keep spending time with no signal for when to pivot.</p></div>
+  <div class="card"><p class="kick">Input and output · good</p><p>Senior experts with 10 years of experience retrieving a specific fact or project assumption, and getting back a concise, source-grounded answer they can check against the reference document. Specific and concise.</p></div>
+</div>
+<p>The format everyone was asked to post in the code track channel on Discord: <strong>observation, North Star, hypothesis, user, input, output.</strong></p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Ten Golden Pairs Before One Line of Code</h2>
+<p>One input and one output is an example. It is not enough to build against. Write at least 10 to 20 pairs; for production it can be 100 to 200. Each pair is the exact text a real user would type and the output that would solve their problem, gathered by talking to real users. If you cannot talk to your users, do not move ahead. If you are the user, write them yourself and check them with people like you.</p>
+<p>This is the <strong>golden dataset</strong>: ideal input and output pairs. The output you believe solves the user's problem, paired with its input, many times over. The same idea returns in the probabilistic module for evals and fine-tuning.</p>
+<p>Siddhant called back the Lecture 1 game: how do you verify an app that adds two numbers? You write 1 + 2 = 3 and a few more, paste them in, and compare. Same output, it works. Different output, it does not. The golden dataset is what lets you decide whether your verifier will be deterministic, probabilistic or a human in the loop.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>The Verifier Is a Threshold, Worked in Minutes</h2>
+<p>Say the email step is Aarav's biggest time sink: 15 minutes a day by hand. Drag the slider to see when the plan passes the 1 hour a week bar.</p>
+<div class="form" id="verif">
+  <label><span class="kick">Minutes the email step takes with the plan (was 15)</span><input type="range" min="0" max="15" value="5" id="vmin" style="accent-color:var(--coral)"></label>
+  <div class="two">
+    <div class="card"><p class="kick">Saved per day</p><h4 id="vday">10 min</h4></div>
+    <div class="card"><p class="kick">Saved per 5-day week</p><h4 id="vweek">50 min</h4><p id="vverd"></p></div>
+  </div>
+</div>
+<p>With the plan it takes 5. That saves 10 minutes a day, and over a 5-day week, 50 minutes, close to the 1 hour threshold. The plan passes. Now say the plan cuts it only to 10 minutes. That saves 5 a day, 25 minutes a week, below the threshold. Same plan shape, same tool, and it fails.</p>
+<div class="call"><p class="kick">The verifier rule</p><p>A good output is one that clears a number you wrote down before you built anything. The verifier is your codified definition of good, and it only exists if you know the user well enough to name the baseline and the threshold. Anyone can prompt a demo; without a threshold it is a demo, not impact.</p></div>
+<p>The written verifier for Aarav's first golden pair asked for four things in the output: a metric with a baseline, the named bottleneck, a test on past input with known answers, and a list of what is out of scope.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Test-Driven Development, Written in English</h2>
+<p>This is an old idea. <strong>Test-driven development (TDD)</strong> says write the test before the software; once the software passes your codified tests, you know it works. Siddhant used it heavily before AI and admitted it is hard to keep up, which is why few people do. What changes now is only the language: most of the tests you write will be in English. The philosophy does not change.</p>
+<p>He tied it back to day one: almost everyone uses AI, utilization sits under 20%, and the impact on real earnings is in single digits. Building without a verifier is how that gap stays wide.</p>
+<p>The spec now reads: observation, North Star, hypothesis, user, golden dataset, verifiers. Mask anything proprietary (use percentages or X, Y, Z) but share it, because that is what makes feedback possible. The North Star sits slightly outside the spec and tells you if you are still pointed the right way.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Two Systems, One Interface</h2>
+<p>Back to yesterday's question. Two systems: Aarav, a human, and a workflow diagnosis plan generator that can run on a machine. What sits between them? Anupma answered it: a <strong>user interface</strong>. It needs a common language (English, text fields) and a set of rules (the web's HTTP). Aarav's prerequisites are a PC, a browser and an internet connection.</p>
+<p>The golden pair Siddhant wrote live, pair 1, was concrete enough to design against:</p>
+<div class="call hum"><p class="kick">Golden pair 1 · input</p><p>"I'm a business analyst at a mid-sized IT company in Pune. Every Friday, I make the weekly status report for our client. I open Jira, filter tickets closed this week, copy them into a Word template, then go through email and Slack to find blockers... Takes around 3 hours. My manager usually edits the risk section because I miss things."</p></div>
+<p>From it: the input type is text and the output type is text. That has a useful side effect. If both ends are text, you can run a <strong>manual MVP</strong> before building anything: take Aarav's description on a call, write the plan yourself (with or without ChatGPT), send it as a document, and see if it saves him time.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>The Vote That Lost</h2>
+<p>Three candidate interfaces went on screen: a Google-style search box, a Google Form, and a chat. The room voted.</p>
+<div class="vote" role="img" aria-label="Votes: search box 17, form 3, chat 13. Chat won after the replay.">
+  <div class="row"><span class="l">Search box</span><div class="bar"><i data-w="100"></i></div><span class="n">17</span></div>
+  <div class="row"><span class="l">Form</span><div class="bar"><i data-w="18"></i></div><span class="n">3</span></div>
+  <div class="row win"><span class="l">Chat</span><div class="bar"><i data-w="76"></i></div><span class="n">13</span></div>
+</div>
+<div class="tw"><table><thead><tr><th>Interface</th><th>What the replay showed</th></tr></thead><tbody>
+<tr><td>Search box <span class="pill">text in, results out</span></td><td>No memory and no context. A follow-up means retyping the whole description, and an AI-generated plan may come back different each run.</td></tr>
+<tr><td>Form <span class="pill">many fields, uploads</span></td><td>Multiple fields Aarav does not need, and no way to ask about the plan once it arrives.</td></tr>
+<tr><td>Chat <span class="pill coral">winner</span></td><td>Holds context, supports follow-ups until Aarav is satisfied.</td></tr>
+</tbody></table></div>
+<p>Then Siddhant replayed the golden output: a day-by-day build plan with time saved as the metric. Aarav reads it and asks:</p>
+<div class="call"><p class="kick">The follow-up</p><p>"What does backtesting mean?"</p></div>
+<p>Exactly the kind of question Antriksh had just asked about golden datasets. How do you ask Google a follow-up? Swasti named the cost: Aarav would have to remember the plan, retype everything, and search again. Anupma named the missing property: no memory, no context. Bhavani added that it does not look like a conversation. The majority choice fell to one question, and the golden output is what surfaced it.</p>
+<div class="call"><p class="kick">The interface does not come first</p><p>Pick the interface after you replay the user's conversation with your ideal output, never before. The winning vote was made on intuition; the correct answer came from a single realistic follow-up.</p></div>
+<p>Rule of thumb for now: around 90% of first problems fit one of these three.</p>
+<div class="cards">
+  <div class="card"><p class="kick">Search</p><h4>One query, one answer back</h4></div>
+  <div class="card"><p class="kick">Form</p><h4>Many inputs</h4></div>
+  <div class="card"><p class="kick">Chat</p><h4>Follow-ups that need memory and context</h4></div>
+</div>
+<p>Build the cheapest one first, and do not add anything until it is verified. That is the <strong>V0</strong>, or MVP.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Vibe Code or First Principles: The Difference Is Control</h2>
+<p>Two routes to the same chat UI. Vibe code it: one prompt to Claude Code, Lovable, OpenAI or Gemini. Or write it from first principles in Python, with AI allowed, but understanding what every line does and why it is there. Both produce a working chat. The difference is control. Siddhant did not say which is better. Tonight's task is to do both and write a three-line review of what each gave you.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Why Python, and Why Gradio</h2>
+<p>The web is HTML. Styling and scripting languages grew around it, and JavaScript came from that; Python was never part of web development. Until about 2021, Siddhant taught UI in JavaScript, HTML and CSS, and the repeated feedback was that beginners had to learn three languages to ship one thing. In 2026, Python libraries bridge that gap, so one language covers the next 16 weeks.</p>
+<div class="tw"><table><thead><tr><th>Library</th><th>Use it for</th></tr></thead><tbody>
+<tr><td>Gradio</td><td>Chat, forms, search-style inputs: any interface without heavy charts. Siddhant's default. Part of Hugging Face and the open-source AI ecosystem; AUTOMATIC1111, the Stable Diffusion UI with about 165,000 GitHub stars, runs on it.</td></tr>
+<tr><td>Streamlit</td><td>Data-heavy front ends: dashboards and charts that update. Comes next week.</td></tr>
+</tbody></table></div>
+<p>Today's job is a chat that takes input and returns output, so Gradio.</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Four Lines That Are the Whiteboard</h2>
+<p>The Gradio Hello World takes a name and returns a greeting. Hover a line to see which box of the whiteboard it is.</p>
+<div id="hello"></div>
+<div class="lgnd"><span style="--l:#1B1B1B">Input · the thing in the brackets</span><span style="--l:#F2603C">Process · the body</span><span style="--l:#E0A000">Output · what follows return</span><span style="--l:#8A8A8A">Interface · gr.Interface</span></div>
+<p>Read it as the whiteboard. The function argument is the input. What follows return is the output. The function body is the <strong>process</strong> that turns one into the other, which here is almost nothing. <code>gr.Interface</code> is the interface from section 8: it declares the input type and the output type, the common language and the rules. <code>fn</code> just means function. This is the smiley exercise from yesterday, solved: you could not make Siddhant draw a smiley without a shared language and rules; Gradio gives you both for machines.</p>
+<p>For chat, swap the interface. Gradio's own chat example just echoes you:</p>
+<div id="echo"></div>
+<p>Same template: define the input, the output and the process, then hand the function to the interface. Later the process becomes a call to a model. For now, echo is enough.</p>
+<p>One instruction repeated: learn Gradio from <a href="https://gradio.app/docs">its documentation</a>, not from an LLM. Asking Claude gets you an answer; reading the docs gets you the rabbit holes in the left rail (website widgets, Slack bots, Discord bots). Siddhant's first app for the cohort was a Discord bot running on Gradio.</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Setting Up, and the Errors You Should Want Tonight</h2>
+<ol class="steps">
+  <li><b>Install Python</b> from the official site. Two or three steps for your operating system. More than 16 people in the room already had it.</li>
+  <li><b>Install one IDE.</b> Google Antigravity, Cursor or VS Code. An IDE is a notepad for code where you read and review before you push anything anywhere. VS Code is fully free; Antigravity is free with generous limits; Cursor has a paid plan for its models.</li>
+  <li><b>Make a folder</b> (Siddhant used <code>100x test</code> on the desktop), open it in the IDE, create <code>app.py</code> and paste the Hello World.</li>
+  <li><b>Run</b> <code>pip install gradio</code>, then <code>python app.py</code>, and open the local link it prints.</li>
+</ol>
+<p>You will hit errors: Python not found, Gradio not installed. That is the point. Solving them yourself is the start of the debugging muscle. If def, return and functions are unfamiliar, finish the <a href="https://courses.bigbinaryacademy.com/learn-python/">Python bigbinary prerequisite</a> first; lectures will not teach Python syntax. The next office hour reviews your work and your errors, then deploys it to a shareable link.</p>
+<p>Step-by-step setup with tests for each tick: <a href="office-hour-guide#s07">the office hour guide</a> and <a href="tick-list">the tick list</a>.</p>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>From the Q&amp;A</h2>
+<details class="acc"><summary>Charu: trackers in, exception table out, form or chat?</summary><div class="b"><p>Siddhant declined to answer without the spec. Interface design is contextual: who is the user, what is their goal, what do the ideal input and output look like. Walk your user's journey the way we walked Aarav's, then ask.</p></div></details>
+<details class="acc"><summary>Kandarp: my project is building WhatsApp agents.</summary><div class="b"><p>That is solution-first. Naming the solution in the first line leaves you choosing between options with nothing to decide by. Start from observation, input, output and process.</p></div></details>
+<details class="acc"><summary>My hypothesis changes after every interview.</summary><div class="b"><p>Then do not build yet. To learn the process, use Aarav's documents. Spend real build hours only on a problem you can test with real people.</p></div></details>
+<details class="acc"><summary>Saiteja: first time coding, from marketing.</summary><div class="b"><p>You have company: across cohorts the split moved from 50-50 to about 60-40 first-time coders. Confidence takes time and comes from projects. Siddhant's own start: in a first-year break he built one app a day, end to end, deployed to a link, for 30 days. Try one app a day with other first-timers; today's is Hello World.</p></div></details>
+<details class="acc"><summary>Neha: a WhatsApp study group?</summary><div class="b"><p>Not officially, since the cohort cannot moderate or take responsibility for it. Discord and email are where 100x does. On a complex North Star: DM it on Discord; the goal is only the next 6 months.</p></div></details>
+<details class="acc"><summary>Mayuresh: not sure my problem is big or monetizable.</summary><div class="b"><p>It does not have to be. The process matters more than this outcome. A Cohort 6 student, a non-coder from the no-code track, built 100+ apps in 3 months; he has since raised funding. Volume compounds only if the projects point the same way.</p></div></details>
+<details class="acc"><summary>Should the North Star be a product?</summary><div class="b"><p>No. It is a direction, not a product. Most reduce to a better job or upskilling (define the role) or building something of your own (define what and for whom).</p></div></details>
+</section>
+
+<section class="s" id="s15"><h2><span class="n">15</span>Vocabulary Installed Tonight</h2>
+<div class="gl">
+<div class="w"><b>Observation</b><span>What you saw a real person struggle with, from lived experience, with no solution in it.</span></div>
+<div class="w"><b>Hypothesis</b><span>Your assumed cause plus a test with a number, a deadline and a stop rule.</span></div>
+<div class="w"><b>Designing</b><span>Working out what the user needs and the minimum solution that tests it.</span></div>
+<div class="w"><b>Golden dataset</b><span>Ideal input and output pairs, from real users: 10 to 20 to start, 100 to 200 for production.</span></div>
+<div class="w"><b>Verifier</b><span>The check that decides if an output is good, usually a threshold against a baseline.</span></div>
+<div class="w"><b>TDD</b><span>Write the test before the software; now the test is often in English.</span></div>
+<div class="w"><b>Spec</b><span>Observation, North Star, hypothesis, user, golden dataset, verifiers.</span></div>
+<div class="w"><b>User interface</b><span>The interface between a human and a machine: a common language plus rules.</span></div>
+<div class="w"><b>Manual MVP</b><span>Running the input to output loop by hand before building any technology.</span></div>
+<div class="w"><b>V0 / MVP</b><span>The cheapest build that can test the hypothesis, and nothing more.</span></div>
+<div class="w"><b>Process</b><span>The function that turns input into output.</span></div>
+<div class="w"><b>IDE</b><span>An editor for reading, writing and reviewing code on your machine.</span></div>
+</div>
+</section>
+
+<section class="s" id="s16"><h2><span class="n">16</span>Action Block</h2>
+<ul class="ck" data-stage="act">
+<li><input type="checkbox" id="a1"><label for="a1"><span class="t">Post your spec in the code track channel</span><span class="h">Observation, North Star, hypothesis with a number, one named user, input, output.</span></label></li>
+<li><input type="checkbox" id="a2"><label for="a2"><span class="t">Write 10 golden pairs with a real user</span><span class="h">Plus one verifier with a baseline and a threshold.</span></label></li>
+<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Replay one pair and write the follow-up your user will ask</span><span class="h">Pick search, form or chat from it.</span></label></li>
+<li><input type="checkbox" id="a4"><label for="a4"><span class="t">Get Hello World running locally in Gradio, then the chat echo</span><span class="h">Keep a list of every error you hit and how you fixed it.</span></label></li>
+<li><input type="checkbox" id="a5"><label for="a5"><span class="t">Build the chat twice and write the three-line review</span><span class="h">Vibe coded and first principles.</span></label></li>
+</ul>
+<div class="stg"><span class="kick">Ticks save on this device</span><div class="bar"><i></i></div><span class="num">0 / 5</span><button class="reset" type="button">Reset</button></div>
+<p class="sig">Start from the output. The interface follows.<small>Next: <a href="practice-set">the practice set</a> turns this into one real user, ten golden pairs and a chat on your machine.</small></p>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var IPO={in:'#1B1B1B',proc:'#F2603C',out:'#E0A000',ui:'#8A8A8A'};
+  if(matchMedia('(prefers-color-scheme:dark)').matches||document.documentElement.getAttribute('data-theme')==='dark') IPO.in='#EDEBE5';
+  document.getElementById('hello').innerHTML=c8code({title:'app.py · Hello World',code:'import gradio as gr\ndef greet(name):\n    return "Hello " + name\ndemo = gr.Interface(fn=greet, inputs="text", outputs="text")\ndemo.launch()',tags:{0:['the library',IPO.ui],1:['Input · name',IPO.in],2:['Process → Output',IPO.proc],3:['Interface',IPO.ui],4:['localhost',IPO.ui]}});
+  document.getElementById('echo').innerHTML=c8code({title:'app.py · chat echo',code:'import gradio as gr\ndef respond(message, history):\n    return "You typed: " + message\ngr.ChatInterface(fn=respond).launch()',tags:{1:['Input · message',IPO.in],2:['Process → Output',IPO.proc],3:['Interface · chat',IPO.ui]}});
+  var r=document.getElementById('vmin');
+  function v(){var m=+r.value,d=15-m,w=d*5;document.getElementById('vday').textContent=d+' min';document.getElementById('vweek').textContent=w+' min';var ok=w>=60||w>=50;var el=document.getElementById('vverd');el.innerHTML=w>=60?'<span class="pill hum">passes · clears the 1 hour bar</span>':(w>=50?'<span class="pill hum">passes · close to the 1 hour bar, as worked in the lecture</span>':'<span class="pill coral">fails · below the 1 hour threshold</span>')}
+  r.addEventListener('input',v);v();
+});
+</script>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Code track</span><a href="/">Curriculum map</a><a href="index">All code-track pages</a></div></footer>
+</body>
+</html>
+
