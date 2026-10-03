@@ -48,6 +48,7 @@ var GUIDE_LINKS = {
   l04Get: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s2',
   l04Traffic: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s7',
   l04KeyStep: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s9',
+  l04Discord: 'https://discord.com/channels/1526146537778843658/1526146539276472427',
   l04Kit: '/c8/module-2/lecture-04-the-second-interface/post-lecture/kit',
   aaravApi: 'https://100x-curriculum.vercel.app/aarav',
   groqKeys: 'https://console.groq.com/keys',
@@ -300,10 +301,10 @@ GUIDES.L4 = { all: {
        {id:'where', t:'Found my key in DevTools and know which box it belongs in', how:'Step 9: UI, backend, model. The backend holds it.', link:'l04KeyStep', linkLabel:'Step 9'}
      ]},
     {id:'submit', name:'Practice set', short:'Submit', sub:'Before the Lecture 5 practical',
-     intro:'Five items, posted in your track channel. Step 10 of the Request Builder leads into it.',
+     intro:'Five items, posted in the Discord channel. Step 10 of the Request Builder leads into it.',
      ticks:[
        {id:'design', t:'Designed my API', how:'Every request: CRUD action, method, address, package in, reply with codes. At least one model call. Every key marked with its box.', link:'l04Practice', linkLabel:'Practice set'},
-       {id:'posted', t:'All five items posted in my track channel'}
+       {id:'posted', t:'All five items posted in the Discord channel', link:'l04Discord', linkLabel:'Discord channel'}
      ]}
   ],
   actions: [
