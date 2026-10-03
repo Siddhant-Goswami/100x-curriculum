@@ -15,8 +15,8 @@
 
   document.addEventListener('DOMContentLoaded',function(){
     /* nav current */
-    var here=location.pathname.replace(/\.html$/,'').split('/').pop();
-    $$('.top nav a').forEach(function(a){if(a.getAttribute('href').replace(/\.html$/,'')===here)a.setAttribute('aria-current','page')});
+    var norm=function(p){return p.replace(/\.html$/,'').replace(/\/index$/,'/').split('/').pop()};var here=norm(location.pathname);
+    $$('.top nav a').forEach(function(a){if(norm(a.getAttribute('href'))===here)a.setAttribute('aria-current','page')});
 
     /* theme button */
     var tb=$('#theme'); themeIcon();
