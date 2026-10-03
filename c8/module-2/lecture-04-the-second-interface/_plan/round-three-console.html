@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round Three Console</title>
+<!-- Facilitator only. Holds the game keys. Lives in _plan/, which is never deployed. Open it as a local file. -->
+<style>
+:root{--bg:#F4F3EF;--bg2:#EDEBE5;--card:#fff;--ink:#1B1B1B;--ink2:#5A5A5A;--ink3:#8A8A8A;--line:#E2E0DA;--coral:#F2603C;--coral-soft:#FDE9E2;--coral-ink:#B8431F;--det:#D98E00;--det-soft:#FBF0D6;--det-ink:#8A5A00;--prob:#6E4BE8;--prob-soft:#ECE6FB;--prob-ink:#5332C9;--hum:#1E9B57;--hum-soft:#E1F4E8;--hum-ink:#167A44;--mono:'JetBrains Mono',ui-monospace,Menlo,monospace;--sans:Inter,-apple-system,'Segoe UI',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#171614;--bg2:#1F1E1B;--card:#232220;--ink:#EDEBE5;--ink2:#B5B2AA;--ink3:#7E7B74;--line:#34322D;--coral-soft:#3A241D;--coral-ink:#F49A80;--det-soft:#332A14;--det-ink:#E8B44D;--prob-soft:#28213F;--prob-ink:#B3A1F5;--hum-soft:#17301F;--hum-ink:#6FCB92}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+button{font:inherit;color:inherit;cursor:pointer}
+header{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--card)}
+header h1{font:600 14px var(--mono);letter-spacing:.1em;text-transform:uppercase;margin:0}
+header .sp{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.timer{font:700 26px var(--mono);padding:2px 10px;border-radius:8px;background:var(--bg2)}
+.timer.warn{background:var(--det-soft);color:var(--det-ink)}.timer.stop{background:var(--coral-soft);color:var(--coral-ink)}
+.b{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 12px;font-size:13px}
+.b.p{background:var(--coral);border-color:var(--coral);color:#fff}
+.b:hover{border-color:var(--ink3)}
+main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:18px;padding:18px;max-width:1400px;margin:0 auto}
+@media (max-width:900px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:0 0 16px}
+.kick{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:0 0 8px}
+label{display:block;font-size:13px;font-weight:500;margin:0 0 10px}
+input[type=text],textarea{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;padding:9px 11px;font:14px var(--mono);margin-top:4px}
+textarea{min-height:90px;resize:vertical}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:500;padding:8px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.chk input{width:18px;height:18px}
+.reply{border-radius:12px;padding:18px;margin:0 0 10px;background:var(--bg2)}
+.reply .code{font:700 44px/1 var(--mono)}
+.reply .txt{font:600 22px var(--mono);margin-top:6px;overflow-wrap:anywhere}
+.reply.s2{background:var(--hum-soft);color:var(--hum-ink)}.reply.s4{background:var(--coral-soft);color:var(--coral-ink)}
+.reply .why{font:13px var(--sans);color:var(--ink2);margin-top:10px}
+.alert{border-radius:10px;padding:10px 14px;margin:0 0 10px;font-size:14px;background:var(--det-soft);color:var(--det-ink)}
+.alert b{font-family:var(--mono)}
+.keys{display:flex;gap:6px;flex-wrap:wrap}
+.keys span{font:500 13px var(--mono);padding:3px 8px;border-radius:6px;background:var(--bg2)}
+.keys span.cur{background:var(--prob-soft);color:var(--prob-ink);outline:2px solid var(--prob)}
+.keys span.rev{text-decoration:line-through;color:var(--ink3)}
+.log{display:grid;gap:6px;max-height:420px;overflow:auto}
+.log .e{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px}
+.log .e .c{font:700 14px var(--mono);grid-row:span 2}
+.log .e .m{font-family:var(--mono);color:var(--ink2);overflow-wrap:anywhere}
+.tag{display:inline-block;font:500 11px var(--mono);border-radius:5px;padding:1px 6px;margin-left:6px}
+.t-coord{background:var(--bg2)}.t-address{background:var(--det-soft);color:var(--det-ink)}.t-action{background:var(--coral-soft);color:var(--coral-ink)}.t-key{background:var(--prob-soft);color:var(--prob-ink)}.t-package{background:var(--hum-soft);color:var(--hum-ink)}.t-done{background:var(--hum);color:#fff}.t-read{background:var(--bg2)}
+.say{font-size:15px;line-height:1.55;background:var(--bg2);border-radius:10px;padding:12px 14px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+td,th{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+td code{font:12.5px var(--mono)}
+#proj{position:fixed;inset:0;background:var(--bg);z-index:10;display:none;padding:40px 6vw;overflow:auto}
+#proj.on{display:block}
+#proj h2{font:600 clamp(24px,3vw,40px) var(--sans);margin:0 0 24px}
+#proj .pl{display:grid;gap:12px}
+#proj .pe{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:center;font-size:clamp(16px,1.8vw,24px)}
+#proj .pe .c{font:700 clamp(28px,3vw,44px) var(--mono)}
+#proj .pe .tag{font-size:clamp(13px,1.3vw,18px);padding:3px 10px}
+#proj .close{position:fixed;top:16px;right:16px}
+#proj .end{margin-top:30px;font-size:clamp(18px,2vw,28px);font-weight:500;max-width:60ch}
+</style>
+</head>
+<body>
+<header>
+  <h1>Round Three · console</h1>
+  <span class="timer" id="timer">00:00</span>
+  <button class="b" id="tstart">Start game timer</button>
+  <span class="sp">
+    <button class="b" id="label">Label the chat (project)</button>
+    <button class="b" id="reset">Reset game</button>
+  </span>
+</header>
+<main>
+<div>
+  <div class="card">
+    <p class="kick">Incoming message</p>
+    <form id="f">
+      <div class="row" style="align-items:flex-end">
+        <label style="flex:1;min-width:180px;margin:0">Sender (Zoom name)<input type="text" id="sender" autocomplete="off" placeholder="Riya"></label>
+        <label class="chk"><input type="checkbox" id="dm"> Sent by DM to the machine</label>
+      </div>
+      <label style="margin-top:10px">Message, pasted from chat<textarea id="msg" placeholder="CREATE aarav.example/diagnoses key: key-7f3a {&quot;workflow&quot;: &quot;...&quot;}"></textarea></label>
+      <div class="row"><button class="b p" type="submit">Check (Enter)</button><span style="font-size:12.5px;color:var(--ink3)">Shift+Enter for a new line</span></div>
+    </form>
+  </div>
+  <div id="out"></div>
+  <div class="card">
+    <p class="kick">Chat so far</p>
+    <div class="log" id="log"><span style="color:var(--ink3);font-size:13px">Nothing yet.</span></div>
+  </div>
+</div>
+<div>
+  <div class="card">
+    <p class="kick">Keys</p>
+    <div class="keys" id="keys"></div>
+    <p style="font-size:13px;color:var(--ink2);margin:10px 0 0">When asked how to get a key, say once, out of character: <i>"Keys are issued in private. DM the machine."</i> Then DM the highlighted key to the point of contact.</p>
+    <div class="row" style="margin-top:10px"><span style="font-size:13px">Point of contact: <b id="poc">not locked</b></span><button class="b" id="lock" type="button">Lock last sender</button><button class="b" id="unlock" type="button">Unlock</button></div>
+  </div>
+  <div class="card">
+    <p class="kick">Diagnosis to read aloud on 201</p>
+    <div class="say">Repeated pattern: a weekly status report. Bottleneck: reading every ticket to find what changed. First AI step: draft the report from a Jira export; Aarav edits and posts it.</div>
+  </div>
+  <div class="card">
+    <p class="kick">Timebox (game clock, starts at lecture minute 3)</p>
+    <table><tr><td><code>00:00–01:00</code></td><td>Rule 4: sixty seconds to plan. Say nothing about a point of contact.</td></tr>
+    <tr><td><code>12:00</code></td><td>No 201 yet? One hint: <i>"Where did the key come from?"</i></td></tr>
+    <tr><td><code>15:00</code></td><td>Put the reply codes on screen.</td></tr>
+    <tr><td><code>17:00</code></td><td>Stop. Click <b>Label the chat</b> and close the game.</td></tr></table>
+  </div>
+  <div class="card">
+    <p class="kick">The contract, in order (first failure is the only reply)</p>
+    <table><thead><tr><th>#</th><th>Check</th><th>Reply</th></tr></thead><tbody>
+    <tr><td>0</td><td>One sender</td><td><code>429 Too many requests. One sender.</code></td></tr>
+    <tr><td>1</td><td>Address</td><td><code>404 Not found. Doors: /workflows /diagnoses</code></td></tr>
+    <tr><td>2</td><td>An action named</td><td><code>400 Which action? CREATE READ UPDATE DELETE</code></td></tr>
+    <tr><td>3</td><td>Action allowed</td><td><code>405 This door takes CREATE, READ</code></td></tr>
+    <tr><td>4</td><td>Current key</td><td><code>401 Who are you? Key needed</code> / <code>401 Key leaked. Revoked.</code></td></tr>
+    <tr><td>4c</td><td>READ</td><td><code>200 [] Nothing to read yet</code></td></tr>
+    <tr><td>5</td><td>Package</td><td><code>400 Can't read. Send {"workflow": "..."}</code></td></tr>
+    <tr><td>✓</td><td>All pass</td><td><code>201 Created</code> + diagnosis</td></tr></tbody></table>
+  </div>
+</div>
+</main>
+<div id="proj" role="dialog" aria-label="Labelled chat">
+  <button class="b close" id="pclose">Close (Esc)</button>
+  <h2>What the machine taught you, one error at a time</h2>
+  <div class="pl" id="plist"></div>
+  <p class="end">I did not teach you these parts. The machine did. That is what debugging feels like for the next four weeks: read the code, fix one thing, send again.</p>
+</div>
+<script>
+(function(){
+var KEYS=['key-7f3a','key-9b2c','key-4d1e','key-c08f'];
+var S;
+function fresh(){ return {cur:0, revoked:[], poc:null, log:[], t0:null}; }
+try{ S=JSON.parse(localStorage.getItem('r3console'))||fresh(); }catch(e){ S=fresh(); }
+function save(){ try{ localStorage.setItem('r3console',JSON.stringify(S)); }catch(e){} }
+var $=function(id){ return document.getElementById(id); };
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+var PART={coord:'coordination',address:'address',action:'action',key:'key',package:'format',done:'done',read:'read only fetches'};
+
+function check(sender, text, dm){
+  var t=text.toLowerCase().replace(/[“”]/g,'"').replace(/[‘’]/g,"'"), alerts=[];
+  var curKey=KEYS[S.cur];
+  /* a key posted in public is compromised the moment it appears, whatever the reply */
+  if(!dm && curKey && t.indexOf(curKey)>-1){
+    S.revoked.push(curKey); S.cur++;
+    alerts.push('Key <b>'+curKey+'</b> was posted in public chat. It is now revoked. '+(KEYS[S.cur]?'Next key to DM to the point of contact: <b>'+KEYS[S.cur]+'</b>.':'No spare keys left: invent one.'));
+  }
+  /* 0. one sender */
+  if(S.poc){ if(sender && sender.toLowerCase()!==S.poc.toLowerCase()) return r(429,'Too many requests. One sender.','coord',alerts); }
+  else { var recent=S.log.slice(-3).map(function(e){ return (e.sender||'').toLowerCase(); }); if(sender && recent.some(function(x){ return x && x!==sender.toLowerCase(); })) return r(429,'Too many requests. One sender.','coord',alerts, 'Two people are sending. When the room picks one, press "Lock last sender".'); }
+  /* 1. address */
+  var door = /aarav\.example\/diagnoses\b/.test(t) ? 'diagnoses' : /aarav\.example\/workflows\b/.test(t) ? 'workflows' : null;
+  if(!door) return r(404,'Not found. Doors: /workflows /diagnoses','address',alerts);
+  /* 2. action named */
+  var A={create:'create',post:'create',read:'read',get:'read',fetch:'read',update:'update',put:'update',patch:'update',change:'update',delete:'delete',remove:'delete'};
+  var m=t.match(/\b(create|read|update|delete|post|get|put|patch|fetch|change|remove)\b/), act=m?A[m[1]]:null;
+  if(!act) return r(400,'Which action? CREATE READ UPDATE DELETE','action',alerts);
+  /* 3. allowed */
+  if(act!=='create' && act!=='read') return r(405,'This door takes CREATE, READ','action',alerts);
+  /* 4. key */
+  var km=t.match(/key\s*[:=]?\s*(key-[0-9a-z]{4})/) || t.match(/\b(key-[0-9a-z]{4})\b/);
+  if(!km) return r(401,'Who are you? Key needed','key',alerts);
+  var k=km[1];
+  if(S.revoked.indexOf(k)>-1) return r(401,'Key leaked. Revoked.','key',alerts, KEYS[S.cur]?'DM '+KEYS[S.cur]+' to the point of contact, if not already sent.':'');
+  if(k!==KEYS[S.cur]) return r(401,'Who are you? Key needed','key',alerts,'Unknown key '+k+'.');
+  /* 4c. read */
+  if(act==='read') return r(200,'[] Nothing to read yet','read',alerts,'Read only fetches what already exists. 200 means the request was fine, not that they got what they wanted.');
+  /* 5. package */
+  var jm=text.replace(/[“”]/g,'"').match(/\{[\s\S]*\}/), pkg=null;
+  if(jm){ try{ pkg=JSON.parse(jm[0]); }catch(e){} }
+  if(!pkg || typeof pkg.workflow!=='string' || !pkg.workflow.trim()) return r(400,"Can't read. Send {\"workflow\": \"...\"}",'package',alerts);
+  if(door==='workflows') return r(201,'Workflow saved. Diagnosis: /diagnoses','done',alerts,'Correct, but not the goal. They need /diagnoses.');
+  return r(201,'Created','done',alerts,'Read the diagnosis aloud. Then stop the game and click Label the chat.');
+}
+function r(code,txt,part,alerts,note){ return {code:code,txt:txt,part:part,alerts:alerts||[],note:note||''}; }
+
+function render(res){
+  var fam=res.code>=400?'s4':'s2', why={coord:'Teaches: one point of contact (Lecture 2).',address:'Teaches: the address.',action:'Teaches: the action.',key:'Teaches: the key, and that keys travel privately.',package:'Teaches: the agreed format.',done:'Success.',read:'Teaches: Read only fetches what exists.'}[res.part];
+  var h=res.alerts.map(function(a){ return '<div class="alert">'+a+'</div>'; }).join('');
+  h+='<div class="reply '+fam+'"><div class="code">'+res.code+'</div><div class="txt">'+esc(res.txt)+'</div><div class="why">'+why+(res.note?' '+esc(res.note):'')+'</div><div class="row" style="margin-top:10px"><button class="b" id="copy" type="button">Copy reply for Zoom</button></div></div>';
+  $('out').innerHTML=h;
+  $('copy').addEventListener('click',function(){ var b=this; navigator.clipboard&&navigator.clipboard.writeText(res.code+' '+res.txt).then(function(){ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy reply for Zoom'; },1200); }); });
+}
+function paint(){
+  $('keys').innerHTML=KEYS.map(function(k,i){ return '<span class="'+(i===S.cur?'cur':'')+(S.revoked.indexOf(k)>-1?' rev':'')+'">'+k+'</span>'; }).join('');
+  $('poc').textContent=S.poc||'not locked';
+  $('log').innerHTML=S.log.length?S.log.slice().reverse().map(function(e){ return '<div class="e"><span class="c">'+e.code+'</span><span><b>'+esc(e.sender||'?')+'</b>'+(e.dm?' · DM':'')+' <span class="tag t-'+e.part+'">'+PART[e.part]+'</span> '+esc(e.txt)+'</span><span class="m">'+esc(e.text)+'</span></div>'; }).join(''):'<span style="color:var(--ink3);font-size:13px">Nothing yet.</span>';
+}
+$('f').addEventListener('submit',function(ev){ ev.preventDefault(); var text=$('msg').value.trim(); if(!text) return;
+  var sender=$('sender').value.trim(), dm=$('dm').checked, res=check(sender,text,dm);
+  S.log.push({sender:sender,dm:dm,text:text,code:res.code,txt:res.txt,part:res.part}); save(); render(res); paint();
+  $('msg').value=''; $('dm').checked=false; $('msg').focus();
+});
+$('msg').addEventListener('keydown',function(e){ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); $('f').requestSubmit(); } });
+$('lock').addEventListener('click',function(){ var last=S.log[S.log.length-1]; var n=(last&&last.sender)||$('sender').value.trim(); if(n){ S.poc=n; save(); paint(); } });
+$('unlock').addEventListener('click',function(){ S.poc=null; save(); paint(); });
+$('reset').addEventListener('click',function(){ if(!confirm('Reset keys, contact, log and timer?')) return; S=fresh(); save(); $('out').innerHTML=''; paint(); tick(); });
+/* timer */
+var iv;
+function tick(){ var el=$('timer'); if(!S.t0){ el.textContent='00:00'; el.className='timer'; return; } var s=Math.floor((Date.now()-S.t0)/1000), mm=Math.floor(s/60); el.textContent=String(mm).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); el.className='timer'+(s>=17*60?' stop':s>=12*60?' warn':''); }
+$('tstart').addEventListener('click',function(){ if(S.t0 && !confirm('Restart the timer?')) return; S.t0=Date.now(); save(); tick(); });
+iv=setInterval(tick,1000); tick();
+/* projector */
+function mk(t){ return t.replace(/key-[0-9a-z]{4}/gi,'key-●●●●'); }
+$('label').addEventListener('click',function(){
+  $('plist').innerHTML=S.log.map(function(e){ return '<div class="pe"><span class="c">'+e.code+'</span><span>'+esc(mk(e.txt))+' <span class="tag t-'+e.part+'">'+PART[e.part]+'</span></span></div>'; }).join('')||'<p>No messages logged.</p>';
+  $('proj').classList.add('on');
+});
+$('pclose').addEventListener('click',function(){ $('proj').classList.remove('on'); });
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('proj').classList.remove('on'); });
+paint();
+})();
+</script>
+</body>
+</html>

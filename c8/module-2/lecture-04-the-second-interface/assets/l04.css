@@ -1,0 +1,38 @@
+/* Lecture 4 · API as the second interface. Loaded after /c8/docs.css.
+   One colour per part of a request, used on every page, slide and playground:
+   address = amber, action = coral, key = violet, package = green, code = ink. */
+:root{
+  --p-addr:var(--det);--p-addr-soft:var(--det-soft);--p-addr-ink:var(--det-ink);
+  --p-act:var(--coral);--p-act-soft:var(--coral-soft);--p-act-ink:var(--coral-ink);
+  --p-key:var(--prob);--p-key-soft:var(--prob-soft);--p-key-ink:var(--prob-ink);
+  --p-pkg:var(--hum);--p-pkg-soft:var(--hum-soft);--p-pkg-ink:var(--hum-ink);
+  --p-code:var(--ink);--p-code-soft:var(--bg2);--p-code-ink:var(--ink);
+}
+
+/* part chips: <span class="part addr">address</span> */
+.part{display:inline-flex;align-items:center;gap:6px;font:500 12px var(--mono);letter-spacing:.02em;border-radius:6px;padding:2px 8px;white-space:nowrap;vertical-align:1px;background:var(--bg2);color:var(--ink2)}
+.part::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.part.addr{background:var(--p-addr-soft);color:var(--p-addr-ink)}
+.part.act{background:var(--p-act-soft);color:var(--p-act-ink)}
+.part.key{background:var(--p-key-soft);color:var(--p-key-ink)}
+.part.pkg{background:var(--p-pkg-soft);color:var(--p-pkg-ink)}
+.part.code{background:var(--p-code-soft);color:var(--p-code-ink)}
+
+/* status code badges by family: <span class="sc s2">201</span> */
+.sc{display:inline-block;font:700 13px var(--mono);border-radius:6px;padding:1px 7px;background:var(--bg2);color:var(--ink)}
+.sc.s2{background:var(--hum-soft);color:var(--hum-ink)}
+.sc.s4{background:var(--coral-soft);color:var(--coral-ink)}
+.sc.s5{background:var(--bg2);color:var(--ink2);outline:1px dashed var(--line2)}
+
+/* the envelope: one request drawn as four labelled bands */
+.env{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden;margin:0 0 18px}
+.env .band{display:grid;grid-template-columns:120px 1fr;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line)}
+.env .band:last-child{border-bottom:0}
+.env .band>b{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.env .band>code{background:none;border:0;padding:0;font-size:13px;overflow-wrap:anywhere}
+.env .band.addr{border-left:4px solid var(--p-addr)}.env .band.addr>b{color:var(--p-addr-ink)}
+.env .band.act{border-left:4px solid var(--p-act)}.env .band.act>b{color:var(--p-act-ink)}
+.env .band.key{border-left:4px solid var(--p-key)}.env .band.key>b{color:var(--p-key-ink)}
+.env .band.pkg{border-left:4px solid var(--p-pkg)}.env .band.pkg>b{color:var(--p-pkg-ink)}
+.env .band.code{border-left:4px solid var(--p-code)}
+@media (max-width:560px){.env .band{grid-template-columns:1fr;gap:2px}}

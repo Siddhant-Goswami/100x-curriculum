@@ -1,7 +1,28 @@
 {
   "cleanUrls": true,
-  "rewrites": [{ "source": "/", "destination": "/c8-module2-map" }],
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/c8-module2-map"
+    },
+    {
+      "source": "/aarav",
+      "destination": "/api/aarav"
+    },
+    {
+      "source": "/aarav/:path*/",
+      "destination": "/api/aarav?path=:path*"
+    },
+    {
+      "source": "/aarav/:path*",
+      "destination": "/api/aarav?path=:path*"
+    }
+  ],
   "redirects": [
-    { "source": "/:page(beginner-kit|building-ui-notes|office-hour-guide|practice-set|tick-list|docs.css|docs.js)", "destination": "/c8/:page", "permanent": true }
+    {
+      "source": "/:page(beginner-kit|building-ui-notes|office-hour-guide|practice-set|tick-list|docs.css|docs.js)",
+      "destination": "/c8/:page",
+      "permanent": true
+    }
   ]
 }

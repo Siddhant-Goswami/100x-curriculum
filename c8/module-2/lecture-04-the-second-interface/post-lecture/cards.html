@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Cards: API as the Second Interface | 100xEngineers</title>
+<meta name="description" content="Reference cards from Lecture 4 of the 100xEngineers Cohort 8 Module 2: the envelope, status codes, CRUD and HTTP methods, the ladder, the Groq request and key rules. Projector and print ready.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<script src="/c8/docs.js"></script>
+<style>
+.deck{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:16px;margin:0 0 24px}
+.lc{border:1px solid var(--line);border-radius:16px;background:var(--card);padding:22px 22px 18px;position:relative;min-width:0}
+.lc>.kick{color:var(--coral-ink);margin:0 0 4px}
+.lc>h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0 0 14px}
+.lc .tw{margin:0 0 12px}
+.lc table{font-size:14px}
+.lc p{margin:0 0 10px;font-size:14.5px;color:var(--ink2)}
+.lc p b{color:var(--ink);font-weight:500}
+.lc .foot{font:12px var(--mono);color:var(--ink3);margin-top:8px}
+.lc .rule{border-left:3px solid var(--coral);padding:6px 12px;background:var(--bg2);border-radius:0 8px 8px 0;font-size:14.5px;color:var(--ink);margin:0 0 10px}
+.lc ol{margin:0;padding-left:22px}
+.lc ol li{margin:0 0 8px;font-size:15px}
+.lc ol li::marker{color:var(--coral);font-family:var(--mono)}
+.lc .half{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.lc .half{grid-template-columns:1fr}.lc{padding:18px 16px 14px}}
+.lc .env{margin:0 0 10px}
+.lc .reply{margin-top:2px}
+.ladder{display:grid;gap:8px;margin:0 0 10px}
+.ladder .r{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px;background:var(--bg)}
+.ladder .r .i{font:500 12px var(--mono);color:var(--ink3)}
+.ladder .r b{font-weight:500;font-size:14.5px;display:block}
+.ladder .r small{color:var(--ink2);font-size:12.5px}
+.ladder .r .k{font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;border-radius:6px;padding:2px 7px;white-space:nowrap}
+.ladder .r .k.lang{background:var(--hum-soft);color:var(--hum-ink)}
+.ladder .r .k.prot{background:var(--det-soft);color:var(--det-ink)}
+.ptools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 20px}
+.ptools .hint{font:12px var(--mono);color:var(--ink3)}
+/* projector */
+.pbar{display:none}
+html.proj body{overflow:hidden}
+html.proj .deck{position:fixed;inset:0;z-index:100;background:var(--bg);display:block;margin:0;padding:0}
+html.proj .lc{display:none}
+html.proj .lc.on{display:flex;flex-direction:column;justify-content:center;position:absolute;inset:0;border:0;border-radius:0;padding:4vh 6vw 9vh;overflow:auto;background:var(--bg)}
+html.proj .lc.on>*{max-width:1200px;width:100%;margin-left:auto;margin-right:auto}
+html.proj .lc.on>h2{font-size:clamp(28px,4.2vw,56px);margin-bottom:3vh}
+html.proj .lc.on>.kick{font-size:clamp(12px,1.2vw,16px)}
+html.proj .lc.on table{font-size:clamp(15px,1.75vw,26px)}
+html.proj .lc.on td,html.proj .lc.on th{padding:.55em .8em}
+html.proj .lc.on th{font-size:.55em}
+html.proj .lc.on p,html.proj .lc.on .rule{font-size:clamp(15px,1.7vw,26px)}
+html.proj .lc.on ol li{font-size:clamp(17px,2.1vw,32px)}
+html.proj .lc.on .env .band{grid-template-columns:minmax(110px,14vw) 1fr;padding:1.2vh 1.4vw}
+html.proj .lc.on .env .band>b{font-size:clamp(11px,1.1vw,16px)}
+html.proj .lc.on .env .band>code{font-size:clamp(14px,1.6vw,24px)}
+html.proj .lc.on .ladder .r{padding:1.1vh 1.2vw}
+html.proj .lc.on .ladder .r b{font-size:clamp(15px,1.8vw,26px)}
+html.proj .lc.on .ladder .r small{font-size:clamp(12px,1.25vw,18px)}
+html.proj .lc.on .part,html.proj .lc.on .sc{font-size:.85em}
+html.proj .pbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:101;align-items:center;gap:12px;padding:10px 16px;font:12px var(--mono);color:var(--ink3);background:color-mix(in srgb,var(--bg) 90%,transparent);border-top:1px solid var(--line)}
+.pbar button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:5px 12px;font:500 12px var(--sans);color:var(--ink)}
+.pbar .sp{margin-left:auto}
+/* print: one card per page */
+@media print{
+  .top,footer,#prog,.hero .meta,.ptools,.pbar,.mtoc{display:none!important}
+  body{background:#fff;color:#000}
+  .hero{padding:0 0 12px}
+  .deck{display:block}
+  .lc{break-after:page;page-break-after:always;border:0;padding:0;margin:0}
+  .lc:last-child{break-after:auto;page-break-after:auto}
+  .lc .tw,.lc .env{break-inside:avoid}
+}
+</style>
+</head>
+<body data-page="l04-cards">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid" style="grid-template-columns:1fr">
+  <main>
+<div class="hero">
+  <p class="kick">Cards · Lecture 4: API as the second interface · Both tracks</p>
+  <h1>The Cards</h1>
+  <p class="dek">The six reference cards from the lecture: the envelope, the codes, CRUD, the ladder, the Groq request and the key rules. Keep one open while you build. Print them if you like paper.</p>
+  <div class="meta"><span>Sat 3 Oct 2026</span><span>Cohort 8 · Module 2</span></div>
+</div>
+<div class="ptools">
+  <button class="btn" type="button" id="projBtn">Projector</button>
+  <button class="btn ghost" type="button" onclick="window.print()">Print</button>
+  <span class="hint">Projector shows one card full screen. ← → to move, Esc to exit.</span>
+</div>
+
+<div class="deck" id="deck">
+
+<article class="lc" id="c-envelope" aria-labelledby="h-env">
+  <p class="kick">Card 1 · The envelope</p>
+  <h2 id="h-env">Every request carries four things. Every reply carries two.</h2>
+  <div class="env">
+    <div class="band addr"><b>Address</b><code>aarav.example/diagnoses</code></div>
+    <div class="band act"><b>Action</b><code>CREATE · spelled POST</code></div>
+    <div class="band key"><b>Key</b><code>Authorization: Bearer ••••••••</code></div>
+    <div class="band pkg"><b>Package</b><code>{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</code></div>
+  </div>
+  <p class="kick reply">The reply</p>
+  <div class="env">
+    <div class="band code"><b>Code</b><code>201 Created</code></div>
+    <div class="band pkg"><b>Package</b><code>{"diagnosis": {"repeated_pattern": "a weekly status report", "bottleneck": "reading every ticket", "first_ai_step": "draft from a Jira export"}}</code></div>
+  </div>
+  <p class="foot">Address = URL · Action = method · Key = a header · Package = the JSON body · Code = status code</p>
+</article>
+
+<article class="lc" id="c-codes" aria-labelledby="h-codes">
+  <p class="kick">Card 2 · Status codes</p>
+  <h2 id="h-codes">Read the first digit. It tells you whose fault it is.</h2>
+  <div class="tw compact"><table>
+    <thead><tr><th>Code</th><th>Means</th><th>Part to check</th><th>Whose fault</th></tr></thead>
+    <tbody>
+    <tr><td><span class="sc s2">200</span></td><td>Worked</td><td>—</td><td>Nobody</td></tr>
+    <tr><td><span class="sc s2">201</span></td><td>Worked, something new was created</td><td>—</td><td>Nobody</td></tr>
+    <tr><td><span class="sc s4">400</span></td><td>Package unreadable, or a part is missing</td><td><span class="part pkg">package</span></td><td>Yours</td></tr>
+    <tr><td><span class="sc s4">401</span></td><td>Key missing or wrong</td><td><span class="part key">key</span></td><td>Yours</td></tr>
+    <tr><td><span class="sc s4">404</span></td><td>Nothing at that address</td><td><span class="part addr">address</span></td><td>Yours</td></tr>
+    <tr><td><span class="sc s4">405</span></td><td>That door does not take that action</td><td><span class="part act">action</span></td><td>Yours</td></tr>
+    <tr><td><span class="sc s4">429</span></td><td>Too many requests</td><td>slow down</td><td>Yours</td></tr>
+    <tr><td><span class="sc s5">500</span></td><td>Their machine broke</td><td>—</td><td>Theirs</td></tr>
+    </tbody></table></div>
+  <div class="rule"><b>2xx</b> worked · <b>4xx</b> you sent something wrong, because the machine does not guess · <b>5xx</b> their machine failed</div>
+  <p class="foot">A 200 means your request was understood, not that you got what you wanted.</p>
+</article>
+
+<article class="lc" id="c-crud" aria-labelledby="h-crud">
+  <p class="kick">Card 3 · CRUD and HTTP methods</p>
+  <h2 id="h-crud">Four actions. The method is how each is spelled on the wire.</h2>
+  <div class="tw compact"><table>
+    <thead><tr><th>CRUD</th><th>Method</th><th>Aarav's example</th></tr></thead>
+    <tbody>
+    <tr><td>Read</td><td class="mono">GET</td><td>Opens his past diagnoses · <code>GET /diagnoses</code></td></tr>
+    <tr><td>Create</td><td class="mono">POST</td><td>Submits his Friday workflow · <code>POST /workflows</code></td></tr>
+    <tr><td>Update</td><td class="mono">PATCH</td><td>"weekly" becomes "every Friday" · <code>PATCH /workflows/7</code></td></tr>
+    <tr><td>Update</td><td class="mono">PUT</td><td>Resends the whole workflow · <code>PUT /workflows/7</code></td></tr>
+    <tr><td>Delete</td><td class="mono">DELETE</td><td>Removes an old workflow · <code>DELETE /workflows/7</code></td></tr>
+    <tr><td>Create</td><td class="mono">POST</td><td>Asks ChatGPT about the weather: a new reply is created</td></tr>
+    </tbody></table></div>
+  <div class="rule">Read what already exists: <b>GET</b>, nothing changes. Create something new: <b>POST</b>. Update it: <b>PUT</b> (all of it) or <b>PATCH</b> (part of it). Delete it: <b>DELETE</b>.</div>
+  <p class="foot">Companies do not always follow the convention. For any app, the Network tab is the truth.</p>
+</article>
+
+<article class="lc" id="c-ladder" aria-labelledby="h-ladder">
+  <p class="kick">Card 4 · The ladder</p>
+  <h2 id="h-ladder">Six problems. Each fix became a part of your request.</h2>
+  <div class="ladder">
+    <div class="r"><span class="i">1</span><span><b>Morse, 1844</b><small>A wire is on or off → a shared codebook</small></span><span class="k lang">language</span></div>
+    <div class="r"><span class="i">2</span><span><b>ASCII, 1963</b><small>No human operator → a number per character · the characters in your package</small></span><span class="k lang">language</span></div>
+    <div class="r"><span class="i">3</span><span><b>TCP/IP, 1974–83</b><small>Many machines, lost packets → <span class="part addr">address</span> + confirmed delivery</small></span><span class="k prot">protocol</span></div>
+    <div class="r"><span class="i">4</span><span><b>HTTP, 1989–91</b><small>What do you want? → <span class="part act">action</span> <span class="part key">key</span> <span class="part code">code</span> · HTTPS seals it</small></span><span class="k prot">protocol</span></div>
+    <div class="r"><span class="i">5</span><span><b>REST, 2000</b><small>Fifty vocabularies → nouns as addresses, CRUD as verbs</small></span><span class="k prot">protocol</span></div>
+    <div class="r"><span class="i">6</span><span><b>JSON, 2001</b><small>Python and JavaScript must agree → the <span class="part pkg">package</span></small></span><span class="k lang">language</span></div>
+  </div>
+  <div class="rule">An interface = a common language + a protocol. Every rung is Input → Process → Output.</div>
+</article>
+
+<article class="lc" id="c-groq" aria-labelledby="h-groq">
+  <p class="kick">Card 5 · The Groq request</p>
+  <h2 id="h-groq">A model behind the same four parts.</h2>
+  <div class="env">
+    <div class="band addr"><b>Address</b><code>https://api.groq.com/openai/v1/chat/completions</code></div>
+    <div class="band act"><b>Action</b><code>POST · Create: a new reply</code></div>
+    <div class="band key"><b>Key</b><code>Authorization: Bearer &lt;your gsk_ key&gt;</code></div>
+    <div class="band pkg"><b>Package</b><code>Content-Type: application/json<br>{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "…"}]}</code></div>
+    <div class="band code"><b>Reply</b><code>200 · text at choices[0].message.content (ignore "reasoning")</code></div>
+  </div>
+  <div class="half">
+    <p><b>Free tier.</b> 30 requests a minute, 1,000 a day on gpt-oss-120b. Limits are per account, not per key. Fallback model: <code>openai/gpt-oss-20b</code>.</p>
+    <p><b>The door is deterministic. What comes through it is probabilistic.</b> Same request twice, different words. Who decides which is right?</p>
+  </div>
+  <p class="foot">Groq with a q, not Grok · console.groq.com/keys · Llama 3.3 70B was retired on 16 Aug 2026</p>
+</article>
+
+<article class="lc" id="c-keys" aria-labelledby="h-keys">
+  <p class="kick">Card 6 · Key rules</p>
+  <h2 id="h-keys">A key is a password a machine can use. Treat it like one.</h2>
+  <ol>
+    <li>A key goes in a <b>header</b>, never in the address. Anyone can see an address.</li>
+    <li>Never paste a key in Discord, a screenshot, a help post or an AI chat. Mask it: <code>gsk_••••</code>.</li>
+    <li>A key in a web page's code ships to every visitor. Real keys live in the <b>backend</b>.</li>
+    <li>If a key leaks, <b>revoke it</b> and make a new one. Do not wait to find out.</li>
+    <li>Your ChatGPT <code>authorization</code> header is your login. Never expand it on a shared screen.</li>
+  </ol>
+</article>
+
+</div>
+<div class="pbar" id="pbar" aria-live="polite"><button type="button" id="pPrev">← Prev</button><button type="button" id="pNext">Next →</button><span id="pPos">1 / 6</span><span class="sp">Esc to exit</span><button type="button" id="pExit">Exit</button></div>
+
+<p class="sig">One list all lecture: address, action, key, package; reply = code, package.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">lecture notes</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a> · <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a></small></p>
+
+<script>
+(function(){
+  var html=document.documentElement, i=0, cards, pos;
+  function show(n){ if(!cards) return; i=(n+cards.length)%cards.length; cards.forEach(function(c,k){ c.classList.toggle('on',k===i); }); pos.textContent=(i+1)+' / '+cards.length; try{ history.replaceState(null,'','#'+cards[i].id); }catch(e){} }
+  function enter(){ html.classList.add('proj'); show(i); }
+  function exit(){ html.classList.remove('proj'); cards.forEach(function(c){ c.classList.remove('on'); }); }
+  document.addEventListener('DOMContentLoaded',function(){
+    cards=[].slice.call(document.querySelectorAll('#deck .lc')); pos=document.getElementById('pPos');
+    var h=location.hash.slice(1); cards.forEach(function(c,k){ if(c.id===h) i=k; });
+    document.getElementById('projBtn').addEventListener('click',enter);
+    document.getElementById('pExit').addEventListener('click',exit);
+    document.getElementById('pPrev').addEventListener('click',function(){ show(i-1); });
+    document.getElementById('pNext').addEventListener('click',function(){ show(i+1); });
+    cards.forEach(function(c,k){ c.addEventListener('dblclick',function(){ i=k; enter(); }); });
+    document.addEventListener('keydown',function(e){
+      if(!html.classList.contains('proj')) return;
+      if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); show(i+1); }
+      else if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); show(i-1); }
+      else if(e.key==='Escape'){ exit(); }
+    });
+  });
+})();
+</script>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
+</body>
+</html>

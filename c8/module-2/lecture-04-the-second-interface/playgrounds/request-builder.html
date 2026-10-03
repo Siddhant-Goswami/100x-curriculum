@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Request Builder | 100xEngineers</title>
+<meta name="description" content="Lecture 4 playground: build a real HTTP request part by part (address, action, key, package), send it, and read the code and package that come back. Echo machines, Aarav's Diagnosis Service and Groq.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<script src="/c8/docs.js"></script>
+<style>
+/* ---- builder ---- */
+.rb{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden;margin:0 0 18px}
+.rb .hd{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.rb .hd .kick{margin:0}
+.rb .hd .sp{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.band{display:grid;grid-template-columns:118px minmax(0,1fr);gap:12px;align-items:start;padding:12px 14px;border-bottom:1px solid var(--line);border-left:4px solid var(--line2)}
+.band>.lb{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;padding-top:9px}
+.band>.lb small{display:block;font:400 11px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink3);margin-top:2px}
+.band.addr{border-left-color:var(--p-addr)}.band.addr>.lb{color:var(--p-addr-ink)}
+.band.act{border-left-color:var(--p-act)}.band.act>.lb{color:var(--p-act-ink)}
+.band.key{border-left-color:var(--p-key)}.band.key>.lb{color:var(--p-key-ink)}
+.band.pkg{border-left-color:var(--p-pkg)}.band.pkg>.lb{color:var(--p-pkg-ink)}
+.band.off{opacity:.55}
+.band input[type=text],.band input[type=password],.band select,.band textarea{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:9px 11px;font:13.5px var(--mono);color:var(--ink)}
+.band textarea{min-height:110px;resize:vertical;line-height:1.5}
+.band .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.band .row>input{flex:1;min-width:0}
+.band .note{font-size:12.5px;color:var(--ink2);margin-top:6px;line-height:1.45}
+.band .note code{font-size:11.5px}
+.band .valid{font:500 11.5px var(--mono);margin-top:6px}
+.band .valid.ok{color:var(--hum-ink)}.band .valid.bad{color:var(--coral-ink)}
+.enc{font:13px var(--mono);word-break:break-all;background:var(--bg2);border-radius:8px;padding:8px 10px;margin-top:8px}
+.enc mark{background:var(--p-addr-soft);color:var(--p-addr-ink);border-radius:3px;padding:0 2px}
+.mini{border:1px solid var(--line);background:var(--card);border-radius:7px;padding:4px 9px;font:500 11.5px var(--sans);color:var(--ink2)}
+.mini:hover{border-color:var(--line2);color:var(--ink)}
+.mini[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.go{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+.go .btn[disabled]{opacity:.5;cursor:progress}
+.raw{display:none;border-bottom:1px solid var(--line)}
+.raw.on{display:block}
+.raw pre{margin:0;padding:12px 14px;background:var(--code-bg);color:var(--code-ink);font:12.5px/1.6 var(--mono);overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+.raw .ta{color:#F9B18F}.raw .tm{color:#FF8A65;font-weight:700}.raw .tk{color:#B3A1F5}.raw .tp{color:#8EE0A9}
+.raw .tabs{display:flex;gap:6px;padding:8px 14px;background:var(--bg2)}
+/* reply */
+.rep{padding:14px}
+.rep .empty{color:var(--ink3);font-size:14px}
+.rep .top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.big{font:700 clamp(44px,8vw,64px)/1 var(--mono);letter-spacing:-.02em;padding:6px 14px;border-radius:12px;background:var(--bg2)}
+.big.s2{background:var(--hum-soft);color:var(--hum-ink)}.big.s4{background:var(--coral-soft);color:var(--coral-ink)}.big.s5,.big.s0{background:var(--bg2);color:var(--ink2);outline:2px dashed var(--line2)}
+.rep .mean b{display:block;font-weight:500;font-size:16px}
+.rep .mean span{font-size:13.5px;color:var(--ink2)}
+.rep .mean .ms{font:12px var(--mono);color:var(--ink3)}
+.want{border:1px solid color-mix(in srgb,var(--p-pkg) 45%,var(--line));background:var(--p-pkg-soft);border-radius:10px;padding:10px 12px;margin:0 0 10px}
+.want .kick{color:var(--p-pkg-ink);margin-bottom:4px}
+.want div{white-space:pre-wrap;font-size:14.5px;line-height:1.55;overflow-wrap:anywhere}
+.fix{border:1px solid color-mix(in srgb,var(--coral) 40%,var(--line));background:var(--coral-soft);border-radius:10px;padding:10px 12px;margin:0 0 10px;font-size:14px}
+.fix .kick{color:var(--coral-ink);margin-bottom:4px}
+.json{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:12px 14px;font:12.5px/1.55 var(--mono);max-height:340px;overflow:auto;white-space:pre-wrap;word-break:break-word}
+.json .k{color:#82AAFF}.json .s{color:#C3E88D}.json .n{color:#F78C6C}.json .b{color:#C792EA}
+.twoans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 10px}
+@media (max-width:700px){.twoans{grid-template-columns:1fr}}
+.twoans>div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}
+.twoans .kick{margin-bottom:4px}
+.twoans p{white-space:pre-wrap;font-size:13.5px;margin:0!important;max-width:none!important}
+@media (max-width:560px){.band{grid-template-columns:1fr;gap:6px}.band>.lb{padding-top:0}}
+/* exercise nav */
+.exnav{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 22px}
+.exnav a{font:500 12.5px var(--sans);text-decoration:none;color:var(--ink2);border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px}
+.exnav a:hover{color:var(--ink);border-color:var(--line2)}
+.exnav a b{font:500 11px var(--mono);color:var(--coral);margin-right:6px}
+/* echo */
+.echo{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:14px;margin:0 0 18px}
+.echo .msgs{display:grid;gap:8px;margin-bottom:10px;min-height:40px}
+.echo .msg{max-width:85%;padding:8px 12px;border-radius:12px;font-size:14.5px}
+.echo .msg.u{justify-self:end;background:var(--ink);color:var(--bg)}
+.echo .msg.m{background:var(--bg2)}
+.echo form{display:flex;gap:8px}
+.echo input{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:9px 11px;font:14px var(--sans);color:var(--ink)}
+/* game message → request */
+.gm{font:14px/1.9 var(--mono);background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin:0 0 12px;overflow-wrap:anywhere}
+.gm span{border-radius:5px;padding:2px 4px;cursor:pointer;transition:outline-color .15s}
+.gm .a{background:var(--p-act-soft);color:var(--p-act-ink)}.gm .d{background:var(--p-addr-soft);color:var(--p-addr-ink)}.gm .k{background:var(--p-key-soft);color:var(--p-key-ink)}.gm .p{background:var(--p-pkg-soft);color:var(--p-pkg-ink)}
+.gm span.hot,.http span.hot{outline:2px solid currentColor;outline-offset:1px}
+.http{margin:0 0 12px;background:var(--code-bg);color:var(--code-ink);border-radius:var(--r);padding:14px 16px;font:13px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.http span{border-radius:4px;padding:1px 3px}
+.http .a{color:#FF8A65;font-weight:700}.http .d{color:#F9B18F}.http .k{color:#B3A1F5}.http .p{color:#8EE0A9}
+/* every code */
+.codes{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:0 0 18px}
+.cc{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:14px;display:grid;gap:8px;align-content:start}
+.cc .q{font-size:14px;font-weight:500}
+.cc .how{font:12px var(--mono);color:var(--ink3);overflow-wrap:anywhere}
+.cc .guess{display:flex;gap:6px;flex-wrap:wrap}
+.cc .res{font-size:13.5px;color:var(--ink2);min-height:1.4em}
+.cc .res .sc{margin-right:6px}
+.cc .verdict{font:500 12px var(--mono)}
+.cc .verdict.ok{color:var(--hum-ink)}.cc .verdict.no{color:var(--coral-ink)}
+.keyhint{font-size:13px;color:var(--ink2);margin:0 0 12px}
+</style>
+</head>
+<body data-page="l04-request-builder">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture 4 · API as the second interface · Playground</p>
+  <h1>Request Builder</h1>
+  <p class="dek">Build a real request one part at a time, send it to a real machine, and read what comes back.</p>
+  <div class="meta"><span>Works in any browser</span><span>Nothing to install</span><span>Your keys never leave this tab</span></div>
+</div>
+
+<div class="call"><p class="kick">One list, all lecture</p><p>Every request carries four things: <span class="part addr">address</span> <span class="part act">action</span> <span class="part key">key</span> <span class="part pkg">package</span>. Every reply carries two: <span class="part code">code</span> and a <span class="part pkg">package</span>. The colours stay the same on every page.</p></div>
+
+<nav class="exnav" aria-label="Exercises"><a href="#ex1"><b>1</b>Echo</a><a href="#ex2"><b>2</b>The parts</a><a href="#ex3"><b>3</b>GET</a><a href="#ex4"><b>4</b>POST</a><a href="#ex5"><b>5</b>Groq</a><a href="#ex6"><b>6</b>Aarav, for real</a><a href="#ex7"><b>7</b>Every code</a></nav>
+
+<section class="s" id="ex1"><h2><span class="n">01</span>Echo: the face with no brain</h2>
+<p>This is your Lecture 3 UI. Type anything. It hands your words straight back, because the process is an echo. Where would the brain go, and how would this page reach it?</p>
+<div class="echo" id="echo"><div class="msgs" aria-live="polite"><div class="msg m">Tell me your weekly workflow.</div></div><form><input type="text" aria-label="Your message" placeholder="I open Jira every Friday…" autocomplete="off"><button class="btn" type="submit">Send</button></form></div>
+<p>The brain lives on another machine. To reach it, this page has to send a message that the other machine can read. The rest of this page is that message.</p>
+</section>
+
+<section class="s" id="ex2"><h2><span class="n">02</span>The parts: your Round Three message, translated</h2>
+<p>This is the message that won Round Three. Tap a coloured part to find it in the real HTTP request underneath. Same parts, different spelling.</p>
+<div class="gm" id="gm"><span class="a" data-p="a">CREATE</span> <span class="d" data-p="d">aarav.example/diagnoses</span> <span class="k" data-p="k">key: key-●●●●</span> <span class="p" data-p="p">{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</span></div>
+<div class="http" id="http"><span class="a" data-p="a">POST</span> <span class="d" data-p="d">/aarav/diagnoses</span> HTTP/1.1
+Host: <span class="d" data-p="d">100x-curriculum.vercel.app</span>
+<span class="k" data-p="k">Authorization: Bearer aarav_●●●●●●●●_●●●●●●</span>
+<span class="p" data-p="p">Content-Type: application/json</span>
+
+<span class="p" data-p="p">{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</span></div>
+<div class="tw compact"><table><thead><tr><th>In the game</th><th>On the wire</th><th>Its name</th></tr></thead><tbody>
+<tr><td><span class="part act">CREATE</span></td><td class="mono">POST</td><td>Method. CRUD is what you want; the method is how HTTP spells it.</td></tr>
+<tr><td><span class="part addr">aarav.example/diagnoses</span></td><td class="mono">https:// + host + /diagnoses</td><td>URL, or endpoint. The host names the machine, the path names the door.</td></tr>
+<tr><td><span class="part key">key:</span></td><td class="mono">Authorization: Bearer …</td><td>A header. Written on the envelope, read without opening the letter.</td></tr>
+<tr><td><span class="part pkg">{"workflow": …}</span></td><td class="mono">Content-Type + body</td><td>The body, in JSON. The header says which format it is in.</td></tr>
+<tr><td><span class="part code">201</span></td><td class="mono">HTTP/1.1 201 Created</td><td>Status code, plus a reply package.</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="ex3"><h2><span class="n">03</span>GET: read, and watch the space</h2>
+<p>httpbin.org is a public echo machine: it sends back whatever it receives. Type a word, then a sentence with a space. Watch the address before you press Send. What happens to the space, and why?</p>
+<div id="b3"></div>
+<p>An address cannot hold a space, so it is translated to <code>%20</code>. This page and your browser do that for you. Your code and your no-code tools will not always do it, and a request with a raw space in the address is a classic 400.</p>
+</section>
+
+<section class="s" id="ex4"><h2><span class="n">04</span>POST: send a package</h2>
+<p>Same echo machine, a different door and a different action. This time you send a package: Aarav's Friday workflow, in JSON. Press Send, check for a 200, then find your text inside the reply.</p>
+<div id="b4"></div>
+<p>Look at the raw request: the <span class="part pkg">package</span> needs a header that says which format it is in, <code>Content-Type: application/json</code>. Without it the machine has to guess, and machines do not guess.</p>
+</section>
+
+<section class="s" id="ex5"><h2><span class="n">05</span>Groq: a model behind a deterministic door</h2>
+<p>Now the brain. Groq runs open-weight models on its own chips. You reach its model with the same four parts. <b>Groq with a q</b>, not Grok.</p>
+<ol class="steps">
+  <li><b>Get a free key.</b> Open <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>, sign in with Google or GitHub, click Create API Key, name it <code>c8-lecture04</code>, and copy it. Groq shows it once.</li>
+  <li><b>Paste it below.</b> The model list loads from Groq itself. That load is a GET with your key: your first keyed request. Keep <code>openai/gpt-oss-120b</code>.</li>
+  <li><b>Press Send.</b> Hands up for a 200. Then press <b>Send the same request again</b> and compare the two answers.</li>
+</ol>
+<p class="keyhint">Your key stays in this tab's memory. It is not saved, and it is gone when you reload. Free tier: 30 requests a minute, counted per Groq account, not per key.</p>
+<div id="b5"></div>
+<div class="call prob"><p class="kick">The door is deterministic. What comes through it is probabilistic.</p><p>Same address, same action, same key, same package, different words. Two answers to the same request: which one is right, and who decides?</p></div>
+<h3>Find your own key</h3>
+<p>Open DevTools (right click, Inspect), go to Network, click the <code>chat/completions</code> request, then Request Headers. Your key is there in plain text. That is fine on your private tool. If Aarav's product worked like this, every visitor could read his key and spend his money. So where should the key live? <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys, and the box they live in</a>.</p>
+</section>
+
+<section class="s" id="ex6"><h2><span class="n">06</span>Aarav, for real</h2>
+<p>The machine from Round Three is real. It lives at <code>https://100x-curriculum.vercel.app/aarav</code> and checks the parts in the order you learned them: address, action, key, package. It issues its own keys.</p>
+<h3>Step 1 · Create a key</h3>
+<p>Creating a key is itself a Create: <code>POST /aarav/keys</code> with your name in the package.</p>
+<div id="b6a"></div>
+<h3>Step 2 · Create a diagnosis</h3>
+<p>The winning Round Three request, for real. Press Send twice. Compare it with Groq: what is different about the second reply?</p>
+<div id="b6b"></div>
+<h3>Step 3 · Break it on purpose</h3>
+<p>Predict the code before each send. Then read the <span class="part code">code</span> and the hint, fix one thing, send again.</p>
+<div class="btnrow" id="breakers" style="margin:0 0 14px"></div>
+<h3>Step 4 · Read what you created</h3>
+<p>Switch the action to <b>Read · GET</b> and send. You created diagnoses a minute ago. Where are they?</p>
+</section>
+
+<section class="s" id="ex7"><h2><span class="n">07</span>Every code, caused by you</h2>
+<p>Each card sends one real request. Before you press Send, predict whose fault the reply will be. <span class="sc s2">2xx</span> worked. <span class="sc s4">4xx</span> you sent something wrong. <span class="sc s5">5xx</span> their machine broke.</p>
+<div class="codes" id="codes"></div>
+<p class="sig">Read the code, fix one thing, send again.<small>Next: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">the practice set</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">the cards</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">reading the Network tab</a></small></p>
+</section>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
+
+<script>
+(function(){
+var AARAV = 'https://100x-curriculum.vercel.app/aarav';
+var GROQ = 'https://api.groq.com/openai/v1';
+var WF = "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes.";
+var GROQ_PROMPT = 'Diagnose this workflow. Reply in three short lines: repeated pattern, bottleneck, first AI step.\n\n' + WF;
+var METHODS = [['GET','Read'],['POST','Create'],['PUT','Update'],['PATCH','Update'],['DELETE','Delete']];
+var MEAN = {
+  0:['No reply at all','The request never arrived: you are offline, the host is wrong, or the browser blocked it. Check the address first.'],
+  200:['Worked','Nobody\u2019s fault. Find the part you want in the reply package.'],
+  201:['Worked, and something new was created','Nobody\u2019s fault. A Create succeeded.'],
+  204:['Worked, nothing to send back','Nobody\u2019s fault.'],
+  400:['Package unreadable, or a part is missing','Yours. Read the hint, fix the package, send again.'],
+  401:['Key missing or wrong','Yours. Check the key, the word Bearer, and stray spaces.'],
+  403:['Key is fine, but not allowed here','Yours. This key cannot open this door.'],
+  404:['Nothing at that address','Yours. Check the address letter for letter, or the model name.'],
+  405:['That door does not take that action','Yours. Same address, different action.'],
+  413:['Package too big','Yours. Send less.'],
+  415:['Format not understood','Yours. Check the Content-Type header.'],
+  422:['Package read, but not acceptable','Yours. A field is wrong.'],
+  429:['Too many requests','Yours. Wait, then send again. The retry-after header says how long.'],
+  500:['Their machine broke','Theirs. Nothing to fix on your side.'],
+  502:['Their machine is unreachable','Theirs.'],503:['Their machine is overloaded or down','Theirs. Try again later.'],504:['Their machine took too long','Theirs.']
+};
+function fam(s){ return s>=500?'s5':s>=400?'s4':s>=200&&s<300?'s2':'s0'; }
+function mean(s){ return MEAN[s] || (s>=500?['Their machine failed','Theirs.']:s>=400?['You sent something it could not accept','Yours.']:['Status '+s,'']); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function mask(k){ if(!k) return ''; return k.length>10 ? k.slice(0,6)+'\u2022\u2022\u2022\u2022'+k.slice(-2) : '\u2022\u2022\u2022\u2022'; }
+function jsonHTML(o){
+  var s = typeof o==='string' ? o : JSON.stringify(o,null,2);
+  return esc(s).replace(/(&quot;|")((?:\\.|[^"\\])*)("\s*:)?/g,function(m,q,body,colon){ return colon ? '<span class="k">"'+body+'"</span>:' : '<span class="s">"'+body+'"</span>'; })
+    .replace(/\b(-?\d+(?:\.\d+)?)\b(?![^<]*<\/span>)/g,'<span class="n">$1</span>').replace(/\b(true|false|null)\b(?![^<]*<\/span>)/g,'<span class="b">$1</span>');
+}
+function get(o,path){ try{ return path.split('.').reduce(function(a,k){ var m=/^(\w+)\[(\d+)\]$/.exec(k); return m? a[m[1]][+m[2]] : a[k]; },o); }catch(e){ return undefined; } }
+
+/* ---------- one builder ---------- */
+function Builder(el, cfg){
+  var self=this; this.cfg=cfg; this.answers=[];
+  var mopts = (cfg.methods||METHODS.map(function(m){return m[0]})).map(function(m){ var c=METHODS.filter(function(x){return x[0]===m})[0]; return '<option value="'+m+'"'+(m===cfg.method?' selected':'')+'>'+c[1]+' \u00b7 '+m+'</option>'; }).join('');
+  var h='<div class="rb"><div class="hd"><span class="kick">'+esc(cfg.title||'Request')+'</span><span class="sp">'+(cfg.alt?'<button type="button" class="mini" data-alt>'+esc(cfg.alt.label)+'</button>':'')+'<button type="button" class="mini" data-raw aria-pressed="false">Show the raw request</button></span></div>';
+  /* address */
+  h+='<div class="band addr"><div class="lb">Address<small>where</small></div><div>';
+  if(cfg.query){ h+='<div class="row"><input type="text" data-q value="'+esc(cfg.query.value)+'" aria-label="Text to send"></div><div class="enc" data-enc></div><div class="note">The address is built for you: <code>'+esc(cfg.query.base)+'</code> + your text, translated.</div>'; }
+  else h+='<input type="text" data-url value="'+esc(cfg.url)+'" aria-label="Address" spellcheck="false">'+(cfg.urlNote?'<div class="note">'+cfg.urlNote+'</div>':'');
+  h+='</div></div>';
+  /* action */
+  h+='<div class="band act"><div class="lb">Action<small>what you want</small></div><div><select data-m aria-label="Action">'+mopts+'</select>'+(cfg.methodNote?'<div class="note">'+cfg.methodNote+'</div>':'')+'</div></div>';
+  /* key */
+  if(cfg.key!=='none'){
+    h+='<div class="band key"><div class="lb">Key<small>who you are</small></div><div><div class="row"><input type="password" data-k autocomplete="off" spellcheck="false" placeholder="'+esc(cfg.keyPlaceholder||'paste your key')+'" aria-label="Key"><button type="button" class="mini" data-show aria-pressed="false">Show</button></div><div class="note">Sent as the header <code>Authorization: Bearer &lt;key&gt;</code>. '+(cfg.keyNote||'Kept in this tab only.')+'</div></div></div>';
+  } else {
+    h+='<div class="band key off"><div class="lb">Key<small>who you are</small></div><div><div class="note" style="margin:8px 0 0">None needed. This machine answers anyone.</div></div></div>';
+  }
+  /* package */
+  if(cfg.groq){
+    h+='<div class="band pkg"><div class="lb">Package<small>the letter</small></div><div><label class="note" style="display:block;margin:0 0 6px">Model <select data-model style="margin-top:4px"><option value="openai/gpt-oss-120b">openai/gpt-oss-120b</option></select></label><label class="note" style="display:block;margin:0 0 6px">Message<textarea data-msg style="margin-top:4px">'+esc(GROQ_PROMPT)+'</textarea></label><div class="note">The package is built from these two boxes:</div><textarea data-pkg readonly style="min-height:120px"></textarea><div class="row" style="margin-top:6px"><button type="button" class="mini" data-edit aria-pressed="false">Edit the package by hand</button><span class="valid" data-v></span></div></div></div>';
+  } else if(cfg.pkg!=null){
+    h+='<div class="band pkg"><div class="lb">Package<small>the letter</small></div><div><textarea data-pkg spellcheck="false">'+esc(cfg.pkg)+'</textarea><div class="valid" data-v></div><div class="note">Sent with the header <code>Content-Type: application/json</code>.</div></div></div>';
+  } else {
+    h+='<div class="band pkg off"><div class="lb">Package<small>the letter</small></div><div><div class="note" style="margin:8px 0 0">None. A Read sends no package.</div></div></div>';
+  }
+  h+='<div class="raw"><div class="tabs"><button type="button" class="mini" data-view="http" aria-pressed="true">HTTP</button><button type="button" class="mini" data-view="curl" aria-pressed="false">curl</button><button type="button" class="mini" data-copyraw>Copy</button></div><pre data-rawpre></pre></div>';
+  h+='<div class="go"><button type="button" class="btn" data-send>Send</button>'+(cfg.again?'<button type="button" class="btn ghost" data-again>Send the same request again</button>':'')+'<span class="note" data-status style="font-size:12.5px;color:var(--ink3)"></span></div>';
+  h+='<div class="rep" aria-live="polite"><p class="empty">The reply appears here: a code, and a package.</p></div></div>';
+  el.innerHTML=h;
+  var $=function(s){ return el.querySelector(s); };
+  this.$=$; this.view='http';
+  this.url=$('[data-url]'); this.q=$('[data-q]'); this.m=$('[data-m]'); this.k=$('[data-k]'); this.pkg=$('[data-pkg]'); this.rep=$('.rep');
+  this.msg=$('[data-msg]'); this.model=$('[data-model]');
+  var upd=function(){ self.refresh(); };
+  [this.url,this.q,this.m,this.k,this.pkg,this.msg,this.model].forEach(function(x){ if(x){ x.addEventListener('input',upd); x.addEventListener('change',upd); } });
+  if($('[data-show]')) $('[data-show]').addEventListener('click',function(){ var on=self.k.type==='password'; self.k.type=on?'text':'password'; this.textContent=on?'Hide':'Show'; this.setAttribute('aria-pressed',on); });
+  $('[data-raw]').addEventListener('click',function(){ var r=$('.raw'), on=!r.classList.contains('on'); r.classList.toggle('on',on); this.setAttribute('aria-pressed',on); self.refresh(); });
+  [].slice.call(el.querySelectorAll('[data-view]')).forEach(function(b){ b.addEventListener('click',function(){ self.view=b.dataset.view; [].slice.call(el.querySelectorAll('[data-view]')).forEach(function(x){ x.setAttribute('aria-pressed',x===b); }); self.refresh(); }); });
+  $('[data-copyraw]').addEventListener('click',function(){ var t=$('[data-rawpre]').textContent, b=this; navigator.clipboard&&navigator.clipboard.writeText(t).then(function(){ b.textContent='Copied'; setTimeout(function(){ b.textContent='Copy'; },1200); }); });
+  if($('[data-edit]')) $('[data-edit]').addEventListener('click',function(){ var on=self.pkg.hasAttribute('readonly'); if(on) self.pkg.removeAttribute('readonly'); else self.pkg.setAttribute('readonly',''); self.manual=on; this.setAttribute('aria-pressed',on); this.textContent=on?'Rebuild from the boxes':'Edit the package by hand'; self.refresh(); });
+  if(cfg.alt) $('[data-alt]').addEventListener('click',function(){ var a=cfg.alt; self.url.value = self.url.value===a.url ? cfg.url : a.url; this.textContent = self.url.value===a.url ? a.back : a.label; self.refresh(); });
+  $('[data-send]').addEventListener('click',function(){ self.answers=[]; self.send(); });
+  if($('[data-again]')) $('[data-again]').addEventListener('click',function(){ self.send(true); });
+  this.refresh();
+}
+Builder.prototype.address=function(){
+  if(this.q){ return this.cfg.query.base + encodeURIComponent(this.q.value); }
+  return this.url.value.trim();
+};
+Builder.prototype.body=function(){
+  var m=this.m.value;
+  if(this.cfg.groq && !this.manual){
+    this.pkg.value = JSON.stringify({model:this.model.value, messages:[{role:'user', content:this.msg.value}]}, null, 2);
+  }
+  if(!this.pkg || m==='GET' || m==='DELETE') return null;
+  return this.pkg.value;
+};
+Builder.prototype.headers=function(){
+  var h={}, k=this.k&&this.k.value.trim();
+  if(k) h['Authorization']='Bearer '+k;
+  if(this.body()!=null) h['Content-Type']='application/json';
+  return h;
+};
+Builder.prototype.refresh=function(){
+  var self=this, url=this.address(), m=this.m.value, body=this.body(), hd=this.headers();
+  if(this.q){ var raw=this.cfg.query.base+this.q.value, enc=this.address(); this.$('[data-enc]').innerHTML=esc(this.cfg.query.base)+esc(encodeURIComponent(this.q.value)).replace(/(%[0-9A-F]{2})/g,'<mark>$1</mark>'); }
+  var v=this.$('[data-v]');
+  if(v && this.pkg){ try{ JSON.parse(this.pkg.value); v.className='valid ok'; v.textContent='\u2713 valid JSON'; }catch(e){ v.className='valid bad'; v.textContent='\u2717 not valid JSON: '+e.message; } }
+  [].forEach.call(this.$('.rb').querySelectorAll('.band.pkg'),function(b){ b.classList.toggle('off', body==null && !self.cfg.groq && self.pkg!=null && (m==='GET'||m==='DELETE')); });
+  if(!this.$('.raw').classList.contains('on')) return;
+  var u; try{ u=new URL(url); }catch(e){ this.$('[data-rawpre]').textContent='That address is not a valid URL yet.'; return; }
+  var out;
+  if(this.view==='http'){
+    out='<span class="tm">'+m+'</span> <span class="ta">'+esc(u.pathname+u.search)+'</span> HTTP/1.1\nHost: <span class="ta">'+esc(u.host)+'</span>\n';
+    if(hd.Authorization) out+='<span class="tk">Authorization: Bearer '+esc(mask(this.k.value.trim()))+'</span>\n';
+    if(hd['Content-Type']) out+='<span class="tp">Content-Type: application/json</span>\n';
+    if(body!=null) out+='\n<span class="tp">'+esc(body)+'</span>';
+  } else {
+    var sq=function(s){ return "'"+s.replace(/'/g,"'\"'\"'")+"'"; };
+    out='curl <span class="tm">-X '+m+'</span> <span class="ta">'+esc(sq(url))+'</span>';
+    if(hd.Authorization) out+=' \\\n  <span class="tk">-H "Authorization: Bearer $'+(this.cfg.groq?'GROQ_API_KEY':'KEY')+'"</span>';
+    if(hd['Content-Type']) out+=' \\\n  <span class="tp">-H "Content-Type: application/json"</span>';
+    if(body!=null) out+=' \\\n  <span class="tp">-d '+esc(sq(body.replace(/\n\s*/g,' ')))+'</span>';
+  }
+  this.$('[data-rawpre]').innerHTML=out;
+};
+Builder.prototype.send=async function(again){
+  var self=this, btns=this.$('.go').querySelectorAll('button'), st=this.$('[data-status]');
+  var url=this.address(), m=this.m.value, body=this.body(), hd=this.headers();
+  [].forEach.call(btns,function(b){ b.disabled=true; }); st.textContent='Sending\u2026';
+  var t0=performance.now(), r={status:0,text:'',json:null,headers:{}};
+  try{
+    var res=await fetch(url,{method:m,headers:hd,body:body==null?undefined:body,cache:'no-store'});
+    r.status=res.status; r.text=await res.text(); r.headers={'retry-after':res.headers.get('retry-after'),'allow':res.headers.get('allow')};
+    try{ r.json=JSON.parse(r.text); }catch(e){}
+  }catch(e){ r.err=e.message; }
+  r.ms=Math.round(performance.now()-t0);
+  [].forEach.call(btns,function(b){ b.disabled=false; }); st.textContent='';
+  this.show(r, again);
+  if(this.cfg.after) this.cfg.after(r, this);
+  return r;
+};
+Builder.prototype.show=function(r, again){
+  var mm=mean(r.status), cfg=this.cfg, h='<div class="top"><span class="big '+fam(r.status)+'">'+(r.status||'\u2014')+'</span><div class="mean"><b>'+esc(mm[0])+'</b><span>'+esc(mm[1])+'</span><div class="ms">'+r.ms+' ms'+(r.headers['retry-after']?' \u00b7 retry-after '+esc(r.headers['retry-after'])+' s':'')+(r.headers.allow?' \u00b7 allow: '+esc(r.headers.allow):'')+'</div></div></div>';
+  var j=r.json;
+  if(r.status>=400 && j){
+    var e=j.error||{}, msg=typeof e==='string'?e:(e.message||''), hint=e.hint||'', part=e.part||'';
+    if(msg||hint) h+='<div class="fix"><p class="kick">'+(part?'Fix the '+esc(part):'What the machine said')+'</p>'+esc(msg)+(hint?'<br><span style="color:var(--ink2)">'+esc(hint)+'</span>':'')+'</div>';
+  }
+  if(r.status===0) h+='<div class="fix"><p class="kick">Nothing came back</p>'+esc(r.err||'')+' Check the address. If it is right, the machine may be down: try the other echo machine.</div>';
+  if(r.status>=200 && r.status<300 && j && cfg.want){
+    var w=cfg.want(j);
+    if(w && w.value!=null){
+      if(cfg.again){ this.answers.push(String(w.value)); }
+      if(cfg.again && this.answers.length>1){
+        var a=this.answers.slice(-2);
+        h+='<div class="twoans"><div><p class="kick">Answer 1</p><p>'+esc(a[0])+'</p></div><div><p class="kick">Answer 2 \u00b7 same request</p><p>'+esc(a[1])+'</p></div></div>';
+        h+='<p class="note" style="font-size:13.5px;color:var(--ink2);margin:0 0 10px">'+(a[0]===a[1]?'Identical. This machine follows rules: same request, same reply.':'Different words. Same address, action, key and package. The door is deterministic; what comes through it is probabilistic.')+'</p>';
+      } else {
+        h+='<div class="want"><p class="kick">The part you want \u00b7 '+esc(w.label)+'</p><div>'+esc(typeof w.value==='string'?w.value:JSON.stringify(w.value,null,2))+'</div></div>';
+      }
+    }
+  }
+  if(r.text) h+='<p class="kick" style="margin:6px 0">The whole reply package</p><pre class="json">'+(j?jsonHTML(j):esc(r.text.slice(0,4000)))+'</pre>';
+  this.rep.innerHTML=h;
+};
+
+/* ---------- exercise 1: echo ---------- */
+(function(){ var box=document.getElementById('echo'), f=box.querySelector('form'), i=f.querySelector('input'), ms=box.querySelector('.msgs');
+  f.addEventListener('submit',function(e){ e.preventDefault(); var v=i.value.trim(); if(!v) return; ms.insertAdjacentHTML('beforeend','<div class="msg u">'+esc(v)+'</div><div class="msg m">You typed: '+esc(v)+'</div>'); i.value=''; });
+})();
+
+/* ---------- exercise 2: tap a part ---------- */
+(function(){ var all=[].slice.call(document.querySelectorAll('#gm span,#http span'));
+  all.forEach(function(s){ s.addEventListener('click',function(){ var p=s.dataset.p, on=!s.classList.contains('hot'); all.forEach(function(x){ x.classList.toggle('hot', on && x.dataset.p===p); }); }); });
+})();
+
+/* ---------- exercise 3, 4 ---------- */
+new Builder(document.getElementById('b3'),{title:'GET \u00b7 httpbin.org', query:{base:'https://httpbin.org/get?text=',value:'hello world'}, method:'GET', methods:['GET'], key:'none', pkg:null,
+  want:function(j){ return {label:'args.text', value:get(j,'args.text')}; }});
+new Builder(document.getElementById('b4'),{title:'POST \u00b7 httpbin.org', url:'https://httpbin.org/post', method:'POST', methods:['POST'], key:'none',
+  pkg:JSON.stringify({text:WF},null,2), alt:{label:'Use postman-echo instead', back:'Back to httpbin', url:'https://postman-echo.com/post'},
+  urlNote:'If httpbin is slow, switch machines with the button above. Both echo your package back.',
+  want:function(j){ return {label:'json.text', value:get(j,'json.text')}; }});
+
+/* ---------- exercise 5: Groq ---------- */
+var gb=new Builder(document.getElementById('b5'),{title:'POST \u00b7 Groq', url:GROQ+'/chat/completions', method:'POST', methods:['POST','GET'], key:'required', keyPlaceholder:'gsk_\u2026 from console.groq.com/keys', keyNote:'Never saved. Gone when you reload.', groq:true, again:true,
+  methodNote:'A new reply is added to the conversation: that is a Create, so POST.',
+  want:function(j){ var c=get(j,'choices[0].message.content'); return c!=null?{label:'choices[0].message.content', value:c}:null; },
+  after:function(r){ if(r.json && r.json.choices && r.json.choices[0] && r.json.choices[0].message && r.json.choices[0].message.reasoning){ gb.rep.insertAdjacentHTML('beforeend','<p class="note" style="font-size:12.5px;color:var(--ink3);margin:8px 0 0">The reply also carries a <code>reasoning</code> field: the model\u2019s scratchpad. The answer is in <code>content</code>.</p>'); } }});
+(function(){ var t, last='';
+  function load(){ var k=gb.k.value.trim(); if(!k || k===last) return; last=k;
+    fetch(GROQ+'/models',{headers:{Authorization:'Bearer '+k}}).then(function(res){ return res.json().then(function(j){ return {s:res.status,j:j}; }); }).then(function(x){
+      if(x.s!==200){ gb.show({status:x.s,json:x.j,text:JSON.stringify(x.j,null,2),headers:{},ms:0}); gb.rep.insertAdjacentHTML('afterbegin','<p class="note" style="font-size:13px;margin:0 0 8px">Loading the model list was a GET with your key, and it came back '+x.s+'.</p>'); return; }
+      var ids=(x.j.data||[]).filter(function(m){ return m.active!==false && !/whisper|orpheus|guard|tts|playai|distil/i.test(m.id); }).map(function(m){ return m.id; }).sort();
+      if(!ids.length) return;
+      var cur=gb.model.value, pick=ids.indexOf('openai/gpt-oss-120b')>-1?'openai/gpt-oss-120b':(ids.indexOf(cur)>-1?cur:ids[0]);
+      gb.model.innerHTML=ids.map(function(id){ return '<option'+(id===pick?' selected':'')+'>'+esc(id)+'</option>'; }).join('');
+      gb.refresh(); gb.$('[data-status]').textContent='Key accepted: '+ids.length+' models loaded from Groq.';
+    }).catch(function(){});
+  }
+  gb.k.addEventListener('input',function(){ clearTimeout(t); t=setTimeout(load,500); });
+})();
+
+/* ---------- exercise 6: Aarav ---------- */
+var kb, db;
+kb=new Builder(document.getElementById('b6a'),{title:'POST \u00b7 Aarav \u00b7 /keys', url:AARAV+'/keys', method:'POST', key:'none', pkg:JSON.stringify({name:'your name'},null,2),
+  want:function(j){ return j.key?{label:'key', value:j.key}:null; },
+  after:function(r){ if(r.json && r.json.key){ db.k.value=r.json.key; db.refresh(); kb.rep.insertAdjacentHTML('beforeend','<p class="note" style="font-size:13px;margin:8px 0 0">Your key has been placed in Step 2\u2019s key box. Keep it for the practice set; this machine shows it once.</p>'); } }});
+db=new Builder(document.getElementById('b6b'),{title:'Aarav \u00b7 /diagnoses', url:AARAV+'/diagnoses', method:'POST', key:'required', keyPlaceholder:'aarav_\u2026 from Step 1', again:true, pkg:JSON.stringify({workflow:WF},null,2),
+  want:function(j){ if(j.diagnosis){ var d=j.diagnosis; return {label:'diagnosis', value:'Repeated pattern: '+d.repeated_pattern+'\nBottleneck: '+d.bottleneck+'\nFirst AI step: '+d.first_ai_step+'\nTime: '+d.time}; } if(j.diagnoses) return {label:'diagnoses', value:'[] \u2014 '+j.note}; return null; }});
+(function(){
+  var good=JSON.stringify({workflow:WF},null,2), keep={};
+  function reset(){ db.url.value=AARAV+'/diagnoses'; db.m.value='POST'; db.pkg.value=good; if(keep.k!=null){ db.k.value=keep.k; keep.k=null; } }
+  var B=[
+    ['Wrong address',function(){ reset(); db.url.value=AARAV+'/diagnosis'; }],
+    ['Wrong action (PUT)',function(){ reset(); db.m.value='PUT'; }],
+    ['No key',function(){ reset(); keep.k=db.k.value; db.k.value=''; }],
+    ['Key without Bearer',function(){ reset(); }],
+    ['Broken JSON',function(){ reset(); db.pkg.value=good.replace('",\n','"\n').replace(/"\n\}$/,'\n}'); }],
+    ['Wrong field name',function(){ reset(); db.pkg.value=JSON.stringify({text:WF},null,2); }],
+    ['Put it right',function(){ reset(); }]
+  ];
+  var box=document.getElementById('breakers');
+  B.forEach(function(b){ var el=document.createElement('button'); el.type='button'; el.className='mini'; el.textContent=b[0]; el.addEventListener('click',function(){ b[1](); db.noBearer = b[0]==='Key without Bearer'; db.refresh(); document.getElementById('b6b').scrollIntoView({behavior:'smooth',block:'center'}); }); box.appendChild(el); });
+  var orig=db.headers.bind(db);
+  db.headers=function(){ var h=orig(); if(db.noBearer && h.Authorization) h.Authorization=h.Authorization.replace(/^Bearer /,''); return h; };
+  db.m.addEventListener('change',function(){ db.noBearer=false; });
+})();
+
+/* ---------- exercise 7: every code ---------- */
+(function(){
+  var cards=[
+    {c:200, q:'Read something that exists', how:'GET httpbin.org/get', who:'nobody', run:function(){ return fetch('https://httpbin.org/get'); }},
+    {c:201, q:'Create a key on Aarav', how:'POST /aarav/keys {"name": "drill"}', who:'nobody', run:function(){ return fetch(AARAV+'/keys',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"name": "drill"}'}); }},
+    {c:400, q:'Send Aarav broken JSON', how:'POST /aarav/keys {"name": "drill"', who:'yours', run:function(){ return fetch(AARAV+'/keys',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"name": "drill"'}); }},
+    {c:401, q:'Ask Groq with no key', how:'POST api.groq.com/\u2026/chat/completions', who:'yours', run:function(){ return fetch(GROQ+'/chat/completions',{method:'POST',headers:{'Content-Type':'application/json'},body:'{"model":"openai/gpt-oss-120b","messages":[{"role":"user","content":"hi"}]}'}); }},
+    {c:404, q:'Knock on a door that is not there', how:'GET /aarav/diagnosis (no s)', who:'yours', run:function(){ return fetch(AARAV+'/diagnosis'); }},
+    {c:405, q:'Delete at a door that only Creates and Reads', how:'DELETE /aarav/diagnoses', who:'yours', run:function(){ return fetch(AARAV+'/diagnoses',{method:'DELETE'}); }},
+    {c:429, q:'Too many requests (simulated)', how:'GET httpbin.org/status/429', who:'yours', run:function(){ return fetch('https://httpbin.org/status/429'); }},
+    {c:500, q:'Their machine breaks', how:'GET /aarav/broken', who:'theirs', run:function(){ return fetch(AARAV+'/broken'); }}
+  ];
+  var box=document.getElementById('codes');
+  cards.forEach(function(cd){
+    var el=document.createElement('div'); el.className='cc';
+    el.innerHTML='<div class="q">'+esc(cd.q)+'</div><div class="how">'+esc(cd.how)+'</div><div class="note" style="font-size:12.5px;color:var(--ink2)">Predict: whose fault?</div><div class="guess"><button type="button" class="mini" data-g="yours">Yours</button><button type="button" class="mini" data-g="theirs">Theirs</button><button type="button" class="mini" data-g="nobody">Nobody</button></div><button type="button" class="btn ghost" data-go style="justify-self:start">Send</button><div class="res" aria-live="polite"></div>';
+    var guess=null;
+    [].forEach.call(el.querySelectorAll('[data-g]'),function(b){ b.addEventListener('click',function(){ guess=b.dataset.g; [].forEach.call(el.querySelectorAll('[data-g]'),function(x){ x.setAttribute('aria-pressed',x===b); }); }); });
+    el.querySelector('[data-go]').addEventListener('click',function(){
+      var res=el.querySelector('.res'); res.textContent='Sending\u2026';
+      cd.run().then(function(r){ return r.text().then(function(t){ var j=null; try{ j=JSON.parse(t); }catch(e){} return {s:r.status,j:j}; }); }).then(function(x){
+        var mm=mean(x.s), e=x.j&&x.j.error, msg=e?(typeof e==='string'?e:e.message):'';
+        res.innerHTML='<span class="sc '+fam(x.s)+'">'+x.s+'</span>'+esc(mm[0])+(msg?' \u00b7 <i>'+esc(msg)+'</i>':'')+(guess?'<div class="verdict '+(guess===cd.who?'ok">\u2713 Right: ':'no">\u2717 Not quite: ')+esc(cd.who==='nobody'?'nobody\u2019s fault, it worked':cd.who)+'</div>':'<div class="verdict">Whose fault: '+esc(cd.who)+'</div>');
+      }).catch(function(err){ res.innerHTML='<span class="sc s5">\u2014</span>No reply: '+esc(err.message); });
+    });
+    box.appendChild(el);
+  });
+})();
+})();
+</script>
+</body>
+</html>

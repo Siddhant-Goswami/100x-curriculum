@@ -3,3 +3,6 @@
 .git
 DESIGN-SPEC.md
 skills-lock.json
+
+# Planning docs hold the hidden game contract and keys; never deploy them
+_plan/

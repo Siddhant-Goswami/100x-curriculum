@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keys | 100xEngineers</title>
+<meta name="description" content="Lecture 4, API as the second interface: what an API key is, where it lives, what to do the minute one leaks, and why the backend holds it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<script src="/c8/docs.js"></script>
+<style>
+.flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:8px;align-items:stretch;margin:0 0 10px}
+.flow .bx{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.flow .bx b{font-weight:500;font-size:15px}
+.flow .bx small{color:var(--ink2);font-size:12.5px;line-height:1.4}
+.flow .bx.hold{border-color:var(--p-key);background:var(--p-key-soft)}
+.flow .ar{align-self:center;color:var(--ink3);font:16px var(--mono)}
+.flow.bad .bx.leak{border-color:var(--coral);background:var(--coral-soft)}
+@media (max-width:600px){.flow{grid-template-columns:1fr}.flow .ar{transform:rotate(90deg);justify-self:center}}
+.cap{font-size:13px;color:var(--ink3);margin:0 0 20px}
+.never{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin:0 0 18px}
+.never div{border:1px dashed var(--coral);border-radius:10px;padding:10px 12px;font-size:14px;background:var(--card)}
+.never div b{display:block;font-weight:500;color:var(--coral-ink);font-size:12px;font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+</style>
+</head>
+<body data-page="l04-key-safety">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Guide · Lecture 4: API as the second interface · Both tracks</p>
+  <h1>Keys</h1>
+  <p class="dek">A key is the part of the request that says who sent it. Whoever holds it is you. This page is where it lives, and what to do the minute it escapes.</p>
+  <div class="meta"><span>Sat 3 Oct 2026</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<div class="call"><p class="kick">The rule</p><p>A key lives in exactly one place: the backend, or an environment variable on your own machine. Never in page code, never in a chat, never in a screenshot. If it escapes, revoke it first and ask questions later.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What a Key Is</h2>
+<p>In Round Three the machine replied <span class="sc s4">401</span> <code>Who are you? Key needed</code> until the request carried a key. When the key was posted in the public chat, it replied <code>401 Key leaked. Revoked.</code> Those two replies are the whole idea.</p>
+<p>The machine cannot see you. It sees text. A key is a long, unguessable piece of text that the machine issued to you, and only to you. When a request carries it, the machine treats the request as yours: your account, your limits, your bill.</p>
+<p>It travels on the envelope, not inside the letter, as a header:</p>
+<div class="env">
+  <div class="band key"><b>Key</b><code>Authorization: Bearer gsk_••••••••••••••••</code></div>
+</div>
+<p><code>Bearer</code> means exactly what it says: whoever <em>bears</em> this key gets in. The machine does not check who is holding it. That is why a leaked key is as good as a stolen login.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Where a Key Lives</h2>
+<p>The answer to the question from the lecture: you opened DevTools on the Request Builder and saw your own key in plain text. Anything a web page sends, any visitor can read. So the key cannot live in the page.</p>
+<div class="flow bad" role="img" aria-label="Wrong: the UI holds the key and calls Groq directly; every visitor can read it">
+  <div class="bx leak"><b>UI</b><small>holds the Groq key</small></div>
+  <span class="ar">→</span>
+  <div class="bx"><b>Groq</b><small>accepts whoever bears the key</small></div>
+  <span class="ar" aria-hidden="true"></span>
+  <div class="bx leak"><b>Every visitor</b><small>opens the Network tab and copies it</small></div>
+</div>
+<p class="cap">Wrong. The key ships to everyone who loads the page.</p>
+<div class="flow" role="img" aria-label="Right: the UI calls Aarav's backend, which holds the Groq key and calls Groq">
+  <div class="bx"><b>UI</b><small>sends the workflow. No key to Groq.</small></div>
+  <span class="ar">→</span>
+  <div class="bx hold"><b>Aarav's backend</b><small>holds the Groq key in an environment variable</small></div>
+  <span class="ar">→</span>
+  <div class="bx"><b>Groq</b><small>sees the backend's request</small></div>
+</div>
+<p class="cap">Right. The visitor's browser never sees the Groq key. This backend is what both tracks build in the Lecture 5 practical on Fri 9 Oct.</p>
+
+<h3>Where it goes, by situation</h3>
+<div class="tw"><table><thead><tr><th>Situation</th><th>Where the key lives</th></tr></thead><tbody>
+<tr><td>Trying a request today</td><td>The <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex5">Request Builder</a>. It holds the key in memory only, never saves it, and forgets it when you reload.</td></tr>
+<tr><td>A command in your terminal</td><td>An environment variable, such as <code>GROQ_API_KEY</code>. The command reads <code>$GROQ_API_KEY</code>, so the key never appears in the command itself. See the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit#s03">kit</a>.</td></tr>
+<tr><td>Your Python backend (code track)</td><td>A <code>.env</code> file on your machine that is listed in <code>.gitignore</code>, and the host's environment variables (Render) once deployed. The code reads <code>os.environ["GROQ_API_KEY"]</code>.</td></tr>
+<tr><td>Your no-code backend (no-code track)</td><td>The tool's secrets or credentials store, never pasted into a page or a prompt.</td></tr>
+</tbody></table></div>
+
+<h3>Never here</h3>
+<div class="never">
+  <div><b>Page code</b>Anything the browser loads, anyone can read.</div>
+  <div><b>Discord</b>Not in a help post, not in a DM. Mask it: <code>gsk_••••</code>.</div>
+  <div><b>An AI chat</b>Not even to ask why it fails. Paste the error, not the key.</div>
+  <div><b>A screenshot</b>Crop or blur before you post.</div>
+  <div><b>GitHub</b>Bots scan public repositories for keys within minutes.</div>
+</div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The Minute One Leaks</h2>
+<p>You will leak a key at some point. Everyone does. What matters is the next five minutes.</p>
+<ol class="steps">
+  <li><b>Revoke it.</b> Go to <a href="https://console.groq.com/keys">console.groq.com/keys</a> and delete the leaked key. From that moment, every request carrying it gets <span class="sc s4">401</span>, including the ones from whoever copied it.</li>
+  <li><b>Create a new one.</b> Same page, Create API key. Copy it once; Groq will not show it again.</li>
+  <li><b>Update where it is used.</b> Your environment variable, your <code>.env</code> file, your host's settings, your no-code tool's secrets. Anything still using the old key now fails with 401, which is how you find what you missed.</li>
+  <li><b>Remove the leak.</b> Delete the message or the screenshot. This is the last step, not the first: once a key has been seen, assume it was copied.</li>
+</ol>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Why Sharing a Key Shares Everything</h2>
+<p>Groq's free tier allows <code>openai/gpt-oss-120b</code> 30 requests a minute and 1,000 a day. Those limits belong to your <strong>account</strong>, not to the key. Creating five keys does not give you five times the limit. Giving your key to five friends means all six of you draw from one limit.</p>
+<p>When the limit runs out, the machine replies <span class="sc s4">429</span> Too many requests, with a <code>retry-after</code> header saying how many seconds to wait. In a room of a hundred people sharing one key, that happens within seconds. That is why everyone in the lecture made their own account.</p>
+<p>Past the free tier, you pay per token. A shared key is a shared bill.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Check Yourself</h2>
+<ul class="ck" data-stage="keys">
+<li><input type="checkbox" id="k1"><label for="k1"><span class="t">I have my own Groq key, from my own account</span><span class="h">Named so you know where it is used, such as <code>c8-lecture04</code>.</span></label></li>
+<li><input type="checkbox" id="k2"><label for="k2"><span class="t">My key is not in any chat, screenshot, page or repository</span><span class="h">Search your Discord messages for <code>gsk_</code> if unsure.</span></label></li>
+<li><input type="checkbox" id="k3"><label for="k3"><span class="t">I know where the revoke button is</span><span class="h">console.groq.com/keys. Find it now, before you need it.</span></label></li>
+<li><input type="checkbox" id="k4"><label for="k4"><span class="t">I can say why the UI must not hold the key</span><span class="h">Anything a page sends, any visitor can read in the Network tab.</span></label></li>
+<li><input type="checkbox" id="k5"><label for="k5"><span class="t">I mask keys in help posts</span><span class="h">The status code and the error text are what helpers need. Never the key.</span></label></li>
+</ul>
+<div class="stg"><span class="kick">Done</span><div class="bar"><i></i></div><span class="num">0 / 5</span><button class="reset" type="button">Reset</button></div>
+<p class="sig">Whoever bears the key gets in.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">reading the Network tab</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/office-hour-guide">office hour guide</a></small></p>
+</section>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
+</body>
+</html>

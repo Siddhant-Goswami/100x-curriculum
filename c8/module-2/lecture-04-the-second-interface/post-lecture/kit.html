@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture 4 Kit | 100xEngineers</title>
+<meta name="description" content="Every link, command and word from Lecture 4, API as the second interface: Groq, the Request Builder, Aarav's API, curl, Python requests, and the four boxes of every no-code HTTP step.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<script src="/c8/docs.js"></script>
+<style>
+html[data-os="mac"] div[data-os="mac"],html[data-os="win"] div[data-os="win"]{display:block}
+.code .ln code .v{color:#F9B18F}
+</style>
+</head>
+<body data-page="l04-kit">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Kit · Companion to Lecture 4: API as the second interface · Both tracks</p>
+  <h1>Lecture 4 Kit</h1>
+  <p class="dek">Every link, command and word from the lecture, with one line on what each is for.</p>
+  <div class="meta"><span>Sat 3 Oct 2026</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<div class="call"><p class="kick">How to use this</p><p>Nothing to install for today: the Request Builder runs in your browser. Section 1 is the links. Section 3 is for when you want the same requests in a terminal. Section 4 is the bridge to the Lecture 5 practical: Python for the code track, the four boxes for the no-code track.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">1</span>Links</h2>
+<div class="tw"><table><thead><tr><th>Link</th><th>What it is for</th></tr></thead><tbody>
+<tr><td><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a></td><td>Send real requests from your browser: the echo, GET, POST, Groq, Aarav, and every status code. Keeps your key in memory only.</td></tr>
+<tr><td><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a></td><td>The ladder from the lecture: Morse, ASCII, TCP/IP, HTTP, REST, JSON. Why each part of a request exists.</td></tr>
+<tr><td><a href="https://console.groq.com/keys">console.groq.com/keys</a></td><td>Create your free Groq key, and revoke it if it leaks. Sign in with Google or GitHub. Groq shows a key once.</td></tr>
+<tr><td><a href="https://console.groq.com/docs/models">Groq models</a></td><td>Which models exist today. Use <code>openai/gpt-oss-120b</code>.</td></tr>
+<tr><td><a href="https://console.groq.com/docs/rate-limits">Groq rate limits</a></td><td>How many requests your account gets: 30 a minute and 1,000 a day for gpt-oss-120b on the free tier.</td></tr>
+<tr><td><a href="https://console.groq.com/docs/deprecations">Groq deprecations</a></td><td>Retired models and their shutdown dates. Why <code>llama-3.3-70b-versatile</code> returns 404 since 16 Aug 2026.</td></tr>
+<tr><td><a href="https://100x-curriculum.vercel.app/aarav">100x-curriculum.vercel.app/aarav</a></td><td>Aarav's Diagnosis Service. The machine from Round Three, as a real API. Its doors are in section 2.</td></tr>
+<tr><td><a href="https://httpbin.org">httpbin.org</a></td><td>A public echo machine: sends back whatever it receives. <code>/get</code>, <code>/post</code>, and <code>/status/404</code> for any code. It does not reject broken JSON.</td></tr>
+<tr><td><a href="https://postman-echo.com/get?text=hello">postman-echo.com</a></td><td>A second echo machine, for when httpbin is slow or down.</td></tr>
+<tr><td><a href="https://hoppscotch.io">hoppscotch.io</a></td><td>A free API client in the browser, with no install. The same four boxes as the Builder, with more options.</td></tr>
+<tr><td><a href="https://developer.chrome.com/docs/devtools/network">Chrome DevTools: Network panel</a></td><td>The official guide to the tab you read in the lecture.</td></tr>
+<tr><td><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">Reading the Network tab</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/office-hour-guide">Office hour guide</a></td><td>The three guides for this lecture: find the parts, keep the key safe, fix the errors.</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">2</span>Aarav's Doors</h2>
+<p>Base address: <code>https://100x-curriculum.vercel.app/aarav</code>. Every reply echoes back the parts the machine read, under <code>you_sent</code>. Every error names the <code>part</code> to fix.</p>
+<div class="tw compact"><table><thead><tr><th>CRUD</th><th>Method</th><th>Address</th><th>Key</th><th>Package in</th><th>Reply</th></tr></thead><tbody>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/aarav</td><td>no</td><td>none</td><td><span class="sc s2">200</span> the list of doors</td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/aarav/keys</td><td>no</td><td class="mono">{"name": "Riya"}</td><td><span class="sc s2">201</span> your key</td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/aarav/diagnoses</td><td>yes</td><td class="mono">{"workflow": "..."}</td><td><span class="sc s2">201</span> a diagnosis</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/aarav/diagnoses</td><td>yes</td><td>none</td><td><span class="sc s2">200</span> an empty list: no memory yet</td></tr>
+<tr><td>Read, Update, Delete</td><td class="mono">GET PUT PATCH DELETE</td><td class="mono">/aarav/diagnoses/{id}</td><td>yes</td><td>any</td><td><span class="sc s4">404</span> nothing is stored</td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/aarav/workflows</td><td>yes</td><td class="mono">{"workflow": "..."}</td><td><span class="sc s2">201</span> an id, and a pointer to /diagnoses</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/aarav/workflows</td><td>yes</td><td>none</td><td><span class="sc s2">200</span> an empty list</td></tr>
+<tr><td>(practice)</td><td class="mono">any</td><td class="mono">/aarav/broken</td><td>no</td><td>none</td><td><span class="sc s5">500</span> their machine broke</td></tr>
+</tbody></table></div>
+<p>The key goes in a header: <code>Authorization: Bearer aarav_…</code>. The machine checks the parts in the order of the list: address, then action, then key, then package. The first part that fails is the only error you get.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">3</span>The Same Requests in a Terminal</h2>
+<p>Optional. curl sends a request from the terminal and prints the reply. It is already installed on Mac and on Windows 10 and 11.</p>
+<div class="osrow"><span class="kick">Your machine</span><div class="seg" data-seg="os"><button type="button" data-v="win">Windows</button><button type="button" data-v="mac">Mac</button></div><span class="kick">Commands below switch to match</span></div>
+<div data-os="win"><div class="call det"><p class="kick">Windows: two things first</p><p>In PowerShell, type <code>curl.exe</code>, not <code>curl</code>; plain <code>curl</code> can run a different PowerShell command. PowerShell also mangles JSON typed inside a command, so save each package in a small file and send the file with <code>--data "@file.json"</code>. Or install Git for Windows and use Git Bash, where the Mac commands work as written.</p></div></div>
+
+<h3>Read: GET from the echo</h3>
+<div class="cmd" data-os="mac"><span>curl "https://httpbin.org/get?text=hello%20world"</span><button class="cp" type="button">Copy</button></div>
+<div class="cmd" data-os="win"><span>curl.exe "https://httpbin.org/get?text=hello%20world"</span><button class="cp" type="button">Copy</button></div>
+<p>Add <code>-i</code> after curl to see the status code and the reply headers as well as the package.</p>
+
+<h3>Create: POST to the echo</h3>
+<div data-os="mac">
+<div class="code"><div class="hd"><span>Terminal · POST httpbin</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>curl -X POST https://httpbin.org/post \</code></div><div class="ln"><code>  -H "Content-Type: application/json" \</code></div><div class="ln"><code>  -d '{"text": "I open Jira, read the tickets, write a report, post it on Slack."}'</code></div></pre></div>
+</div>
+<div data-os="win">
+<p>Save this as <code>text.json</code> in the folder your terminal is in:</p>
+<div class="code"><div class="hd"><span>text.json</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>{"text": "I open Jira, read the tickets, write a report, post it on Slack."}</code></div></pre></div>
+<div class="cmd"><span>curl.exe -X POST https://httpbin.org/post -H "Content-Type: application/json" --data "@text.json"</span><button class="cp" type="button">Copy</button></div>
+</div>
+<p>Your text comes back at <code>json.text</code> in the reply.</p>
+
+<h3>Create a key at Aarav's</h3>
+<div data-os="mac">
+<div class="code"><div class="hd"><span>Terminal · POST /aarav/keys</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>curl -X POST https://100x-curriculum.vercel.app/aarav/keys \</code></div><div class="ln"><code>  -H "Content-Type: application/json" \</code></div><div class="ln"><code>  -d '{"name": "Riya"}'</code></div></pre></div>
+</div>
+<div data-os="win">
+<div class="code"><div class="hd"><span>name.json</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>{"name": "Riya"}</code></div></pre></div>
+<div class="cmd"><span>curl.exe -X POST https://100x-curriculum.vercel.app/aarav/keys -H "Content-Type: application/json" --data "@name.json"</span><button class="cp" type="button">Copy</button></div>
+</div>
+<p>The reply is <span class="sc s2">201</span> with your key. Put it in an environment variable for this terminal session, so it never appears inside a command:</p>
+<div class="cmd" data-os="mac"><span>export AARAV_KEY="paste-your-aarav-key-here"</span><button class="cp" type="button">Copy</button></div>
+<div class="cmd" data-os="win"><span>$env:AARAV_KEY="paste-your-aarav-key-here"</span><button class="cp" type="button">Copy</button></div>
+
+<h3>Create a diagnosis</h3>
+<div data-os="mac">
+<div class="code"><div class="hd"><span>Terminal · POST /aarav/diagnoses</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>curl -X POST https://100x-curriculum.vercel.app/aarav/diagnoses \</code></div><div class="ln"><code>  -H "Authorization: Bearer $AARAV_KEY" \</code></div><div class="ln"><code>  -H "Content-Type: application/json" \</code></div><div class="ln"><code>  -d '{"workflow": "I open Jira, read the week'"'"'s tickets, write a status report and post it on Slack. About 90 minutes."}'</code></div></pre></div>
+</div>
+<div data-os="win">
+<div class="code"><div class="hd"><span>workflow.json</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</code></div></pre></div>
+<div class="cmd"><span>curl.exe -X POST https://100x-curriculum.vercel.app/aarav/diagnoses -H "Authorization: Bearer $env:AARAV_KEY" -H "Content-Type: application/json" --data "@workflow.json"</span><button class="cp" type="button">Copy</button></div>
+</div>
+<p>Run it twice. The same diagnosis comes back both times: this machine follows rules.</p>
+
+<h3>Create a reply from Groq</h3>
+<div class="cmd" data-os="mac"><span>export GROQ_API_KEY="paste-your-groq-key-here"</span><button class="cp" type="button">Copy</button></div>
+<div class="cmd" data-os="win"><span>$env:GROQ_API_KEY="paste-your-groq-key-here"</span><button class="cp" type="button">Copy</button></div>
+<div data-os="mac">
+<div class="code"><div class="hd"><span>Terminal · POST Groq chat completions</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>curl https://api.groq.com/openai/v1/chat/completions \</code></div><div class="ln"><code>  -H "Authorization: Bearer $GROQ_API_KEY" \</code></div><div class="ln"><code>  -H "Content-Type: application/json" \</code></div><div class="ln"><code>  -d '{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "I open Jira, read the week'"'"'s tickets, write a status report and post it on Slack. About 90 minutes. Diagnose this workflow: repeated pattern, bottleneck, first AI step."}]}'</code></div></pre></div>
+</div>
+<div data-os="win">
+<div class="code"><div class="hd"><span>groq.json</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes. Diagnose this workflow: repeated pattern, bottleneck, first AI step."}]}</code></div></pre></div>
+<div class="cmd"><span>curl.exe https://api.groq.com/openai/v1/chat/completions -H "Authorization: Bearer $env:GROQ_API_KEY" -H "Content-Type: application/json" --data "@groq.json"</span><button class="cp" type="button">Copy</button></div>
+</div>
+<p>Run it twice. Different words come back each time. The door is deterministic; what comes through it is probabilistic. The text is at <code>choices[0].message.content</code>.</p>
+<p>An environment variable set this way lasts until you close the terminal. Do not paste keys into commands you share, and do not post your terminal history.</p>
+
+<h3>Every code on demand</h3>
+<div class="tw compact"><table><thead><tr><th>Command (Mac; on Windows use curl.exe)</th><th>You get</th></tr></thead><tbody>
+<tr><td class="mono">curl -i https://httpbin.org/status/404</td><td><span class="sc s4">404</span> nothing at that address</td></tr>
+<tr><td class="mono">curl -i https://httpbin.org/status/429</td><td><span class="sc s4">429</span> too many requests</td></tr>
+<tr><td class="mono">curl -i https://api.groq.com/openai/v1/models</td><td><span class="sc s4">401</span> no key: a real 401 from Groq</td></tr>
+<tr><td class="mono">curl -i -X DELETE https://100x-curriculum.vercel.app/aarav/diagnoses</td><td><span class="sc s4">405</span> this door does not take Delete</td></tr>
+<tr><td class="mono">curl -i https://100x-curriculum.vercel.app/aarav/broken</td><td><span class="sc s5">500</span> their machine broke</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">4</span>Bridges to the Lecture 5 Practical</h2>
+<h3>Code track: the Groq call in Python</h3>
+<p>The same request as the curl command, in Python. Next week this moves inside a FastAPI backend, which is where the key belongs. Install the library once with <code>pip install requests</code> (Mac: <code>pip3</code>), and set <code>GROQ_API_KEY</code> as above before you run it.</p>
+<div class="code"><div class="hd"><span>groq_call.py</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>import os</code></div><div class="ln"><code>import requests</code></div><div class="ln"><code> </code></div><div class="ln"><code>response = requests.post(</code></div><div class="ln tag" style="--l:#D98E00"><code>    "https://api.groq.com/openai/v1/chat/completions",</code><em>address</em></div><div class="ln tag" style="--l:#6E4BE8"><code>    headers={"Authorization": "Bearer " + os.environ["GROQ_API_KEY"]},</code><em>key</em></div><div class="ln tag" style="--l:#1E9B57"><code>    json={</code><em>package</em></div><div class="ln tag" style="--l:#1E9B57"><code>        "model": "openai/gpt-oss-120b",</code><em>package</em></div><div class="ln tag" style="--l:#1E9B57"><code>        "messages": [{"role": "user", "content": "I open Jira, read the week's tickets, write a status report and post it on Slack. Diagnose this workflow."}],</code><em>package</em></div><div class="ln tag" style="--l:#1E9B57"><code>    },</code><em>package</em></div><div class="ln"><code>)</code></div><div class="ln tag" style="--l:#8A8A8A"><code>print(response.status_code)</code><em>code</em></div><div class="ln tag" style="--l:#1E9B57"><code>print(response.json()["choices"][0]["message"]["content"])</code><em>reply package</em></div></pre></div>
+<div class="lgnd"><span style="--l:#D98E00">Address</span><span style="--l:#F2603C">Action: requests.post is POST</span><span style="--l:#6E4BE8">Key</span><span style="--l:#1E9B57">Package</span><span style="--l:#8A8A8A">Code</span></div>
+<p>The action is in the function name: <code>requests.post</code>. Passing <code>json=</code> turns the dictionary into JSON and adds <code>Content-Type: application/json</code> for you. <code>os.environ</code> reads the key from the environment, so it never sits in the file.</p>
+
+<h3>No-code track: the four boxes</h3>
+<p>Every HTTP step in every no-code tool asks for the same parts, under slightly different names. Fill them in the order of the list.</p>
+<div class="tw"><table><thead><tr><th>Part</th><th>The box in your tool</th><th>For Groq</th></tr></thead><tbody>
+<tr><td><span class="part addr">address</span></td><td>URL</td><td class="mono">https://api.groq.com/openai/v1/chat/completions</td></tr>
+<tr><td><span class="part act">action</span></td><td>Method</td><td class="mono">POST</td></tr>
+<tr><td><span class="part key">key</span></td><td>Headers (or Authentication: Bearer token)</td><td><code>Authorization</code> = <code>Bearer gsk_…</code>, from the tool's secrets store</td></tr>
+<tr><td><span class="part pkg">package</span></td><td>Body, type JSON (plus the header <code>Content-Type: application/json</code> if not added for you)</td><td class="mono">{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "..."}]}</td></tr>
+<tr><td><span class="part code">code</span></td><td>Response status</td><td><span class="sc s2">200</span></td></tr>
+<tr><td><span class="part pkg">reply package</span></td><td>Response body</td><td>The text at <code>choices[0].message.content</code></td></tr>
+</tbody></table></div>
+<p>In the Lecture 5 practical you build the backend in Antigravity with Rahul. Its agent will propose a plan; read the plan for these same parts before you approve it. If a step puts the Groq key in the page, reject that step.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">5</span>Words You Will Meet</h2>
+<div class="gl">
+<div class="w"><b>API</b><span>The interface between two machines: the agreed way one asks and the other answers.</span></div>
+<div class="w"><b>Endpoint</b><span>One door of an API: an address plus the actions it takes. <code>/aarav/diagnoses</code> is one.</span></div>
+<div class="w"><b>URL</b><span>The full address: the rules (<code>https://</code>), the machine, the path, and any query.</span></div>
+<div class="w"><b>Path</b><span>The door on the machine: the part after the domain, such as <code>/diagnoses</code>.</span></div>
+<div class="w"><b>Query string</b><span>Extra details on the address after a <code>?</code>, such as <code>?text=hello</code>. Spaces become <code>%20</code>.</span></div>
+<div class="w"><b>Method</b><span>How the action is spelled on the wire: GET, POST, PUT, PATCH, DELETE.</span></div>
+<div class="w"><b>CRUD</b><span>Create, Read, Update, Delete: the four actions. Create is POST, Read is GET, Update is PUT or PATCH, Delete is DELETE.</span></div>
+<div class="w"><b>Header</b><span>A line written on the envelope, not inside the letter. The machine reads it without opening the package.</span></div>
+<div class="w"><b>Authorization</b><span>The header that carries the key.</span></div>
+<div class="w"><b>Bearer</b><span>The word before the key. Whoever bears this key gets in.</span></div>
+<div class="w"><b>Body</b><span>The package inside the request or reply.</span></div>
+<div class="w"><b>JSON</b><span>A text format, not a language: keys and values in curly braces. Every language and tool can read it.</span></div>
+<div class="w"><b>Status code</b><span>The three-digit number at the top of every reply. It says what happened.</span></div>
+<div class="w"><b>2xx · 4xx · 5xx</b><span>2xx it worked. 4xx you sent something wrong. 5xx their machine failed.</span></div>
+<div class="w"><b>Request</b><span>What you send: address, action, key, package.</span></div>
+<div class="w"><b>Response</b><span>What comes back: a code and a package.</span></div>
+<div class="w"><b>Rate limit</b><span>How many requests an account may send per minute or day. Past it: 429.</span></div>
+<div class="w"><b>CORS</b><span>The browser's rule that a page may only call another site if that site allows it.</span></div>
+<div class="w"><b>HTTPS</b><span>HTTP inside a sealed envelope. Nobody between you and the machine can read the key.</span></div>
+<div class="w"><b>Stream</b><span>A reply sent in many small pieces as it is written, so words appear one by one.</span></div>
+<div class="w"><b>Model</b><span>The program that reads text and writes text back. Here, gpt-oss-120b, running on Groq's machines.</span></div>
+<div class="w"><b>Open-weight</b><span>A model whose trained numbers are published, so anyone can run it. Groq serves many.</span></div>
+<div class="w"><b>LPU</b><span>Groq's own chip for running models fast. Groq with a q, not Grok.</span></div>
+<div class="w"><b>Backend</b><span>The machine behind your UI. It holds the keys, calls the model, and will store the data.</span></div>
+</div>
+<p class="sig">Address, action, key, package. Code, package.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">reading the Network tab</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">keys</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/office-hour-guide">office hour guide</a></small></p>
+</section>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
+</body>
+</html>

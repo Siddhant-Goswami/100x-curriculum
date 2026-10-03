@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: API as the Second Interface | 100xEngineers</title>
+<meta name="description" content="Lecture notes for Lecture 4 of the 100xEngineers Cohort 8 Module 2: the six parts of every API request, derived from a machine's error replies and from six problems that built the internet, then Groq behind your own request.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<script src="/c8/docs.js"></script>
+</head>
+<body data-page="l04-notes">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Open the Request Builder</a><br><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a></div></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 4 · Both tracks</p>
+  <h1>API as the Second Interface</h1>
+  <p class="dek">How your UI talks to a machine it has never met, worked out from the machine's own error replies, then traced back through six problems that built the internet.</p>
+  <div class="meta"><span>Sat 3 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span><span>Reading time ≈ 20 min</span></div>
+</div>
+
+<div class="call"><p class="kick">The one thing to keep</p><p>Every request between two machines carries four things: an <span class="part addr">address</span> an <span class="part act">action</span> a <span class="part key">key</span> and a <span class="part pkg">package</span> in a format both sides agree on. Every reply carries two: a <span class="part code">code</span> and a <span class="part pkg">package</span>.</p></div>
+
+<section class="s" id="how">
+<h2>How to read these notes</h2>
+<p class="lead">You did not hear these six parts from a slide first. A machine taught them to you, one error at a time, and only then did each one get its name. These notes keep that order: the question or the failure comes first, and the name comes after.</p>
+<div class="cards">
+  <div class="card"><p class="kick">Read once, slowly</p><h4><a href="#s02">Sections 2 to 5</a></h4><p>The game, the six problems, and the six parts.</p></div>
+  <div class="card"><p class="kick">Do while reading</p><h4><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">The Request Builder</a></h4><p>Every request in these notes can be sent from there.</p></div>
+  <div class="card"><p class="kick">Stands on</p><h4>Lectures 1 to 3</h4><p>The verifier, interface = common language + protocol, and the UI you built last week.</p></div>
+</div>
+</section>
+
+<section class="s" id="s01"><h2><span class="n">01</span>A Face With No Brain</h2>
+<p>Last week your UI took Aarav's workflow and handed it straight back. It has a face and no brain. Type "I open Jira, read the week's tickets, write a status report and post it on Slack", and it says the same words back to you.</p>
+<p>The brain you want is a model that reads the workflow and writes a plan. That model does not live inside your page. It lives on another machine, owned by someone else, somewhere else. So the question for today is simple to ask: <strong>how does your UI talk to a machine it has never met?</strong></p>
+<div class="ipo">
+  <div class="bx"><p class="kick">Input</p><b>Aarav's workflow</b><small>typed into your UI</small></div><div class="ar">→</div>
+  <div class="bx"><p class="kick">Process</p><b>A model</b><small>on someone else's machine</small></div><div class="ar">→</div>
+  <div class="bx"><p class="kick">Output</p><b>A diagnosis</b><small>back in your UI</small></div>
+</div>
+<p>The arrow in the middle is the second interface. The first was the UI, between a person and a machine. The second is between two machines: the API.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Round Three: The Machine That Answers in Codes</h2>
+<p>In Lecture 2 the machine stayed silent and the room failed twice. In Round Three the machine answered every message with a number and at most five words. That one change turned failure into derivation: read the reply, fix one thing, send again.</p>
+<p>The slide said: Aarav's Diagnosis Service lives at <code>aarav.example</code>. It turns a description of a workflow into a diagnosis. Get a diagnosis of Aarav's Friday report. Instructions only through the Zoom chat, one line per message. The machine does not guess.</p>
+<p>Here is what the machine replied, and what each reply forced the room to add:</p>
+<div class="tw"><table>
+<thead><tr><th>Reply</th><th>What the room had done</th><th>The part it forced</th></tr></thead>
+<tbody>
+<tr><td><span class="sc s4">429</span> Too many requests. One sender.</td><td>Everyone typed at once</td><td>One point of contact, from Lecture 2</td></tr>
+<tr><td><span class="sc s4">404</span> Not found. Doors: /workflows /diagnoses</td><td>No address, or the wrong one</td><td><span class="part addr">address</span></td></tr>
+<tr><td><span class="sc s4">400</span> Which action? CREATE READ UPDATE DELETE</td><td>Said what they wanted in a sentence, but named no action</td><td><span class="part act">action</span></td></tr>
+<tr><td><span class="sc s4">405</span> This door takes CREATE, READ</td><td>Asked the diagnosis door to UPDATE or DELETE</td><td><span class="part act">action</span></td></tr>
+<tr><td><span class="sc s2">200</span> [] Nothing to read yet</td><td>Asked to READ a diagnosis that did not exist</td><td>Read only fetches what already exists</td></tr>
+<tr><td><span class="sc s4">401</span> Who are you? Key needed</td><td>No key</td><td><span class="part key">key</span></td></tr>
+<tr><td><span class="sc s4">401</span> Key leaked. Revoked.</td><td>Pasted the key in the public chat</td><td>Keys are secrets and travel privately</td></tr>
+<tr><td><span class="sc s4">400</span> Can't read. Send {"workflow": "..."}</td><td>Sent the workflow as a plain sentence</td><td><span class="part pkg">package</span> in an agreed format</td></tr>
+<tr><td><span class="sc s2">201</span> Created</td><td>Everything right, sent by DM</td><td>Done: a diagnosis came back</td></tr>
+</tbody></table></div>
+<p>Two of those replies deserve a second look.</p>
+<p><strong>The 200 that gave you nothing.</strong> Reading the diagnoses before any existed came back 200 with an empty list. The request was fine. It was the wrong request. A 200 means "your request was understood", not "you got what you wanted".</p>
+<p><strong>The leaked key.</strong> The key was handed out in private. The winning message had to carry it, so the winning message had to go privately too, by DM. Keep that in mind; it comes back as the S in HTTPS.</p>
+<p>The winning message looked like this, sent by DM to the machine:</p>
+<div class="env">
+  <div class="band act"><b>Action</b><code>CREATE</code></div>
+  <div class="band addr"><b>Address</b><code>aarav.example/diagnoses</code></div>
+  <div class="band key"><b>Key</b><code>key: ••••••••</code></div>
+  <div class="band pkg"><b>Package</b><code>{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</code></div>
+</div>
+<p>And the machine read back:</p>
+<div class="call det"><p class="kick">201 Created · the diagnosis</p><p>Repeated pattern: a weekly status report. Bottleneck: reading every ticket to find what changed. First AI step: draft the report from a Jira export; Aarav edits and posts it.</p></div>
+<p>Nobody taught the room these parts. The machine did, one error at a time. That is what debugging will feel like for the next four weeks: read the code, fix one thing, send again.</p>
+<p>The machine is real, by the way. It lives at <code>https://100x-curriculum.vercel.app/aarav</code> and replies with the same codes. You can replay the whole game against it from <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex6">exercise 6 of the Request Builder</a>.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Why These Six Parts: Six Problems That Built the Internet</h2>
+<p class="lead">The game showed that the parts exist. It did not show why. Each part is there because an earlier system failed in a specific way, and someone fixed it. Retrace the six problems and every part stops looking arbitrary.</p>
+<p>Try each question yourself before you read the answer. <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a> lets you feel each problem with your hands.</p>
+
+<h3>1. A wire can only be on or off. How do you send the word HELP down it?</h3>
+<p>You agree on a code in advance: short and long pulses for each letter. That was <strong>Morse code</strong>. The first public line ran from Washington to Baltimore in 1844, and the first message was "What hath God wrought". The catch: if the receiver does not hold the same codebook, the pulses are noise. Both ends need the same code. That is a <strong>common language</strong>.</p>
+
+<h3>2. Morse needs a trained human at each end. What would a machine need instead?</h3>
+<p>A fixed number for every character that every machine agrees on. That is <strong>ASCII</strong>, from 1963: 128 characters in 7 bits, where <code>A</code> is 65. ASCII had no numbers for नमस्ते, so <strong>UTF-8</strong> (1992) extended the idea to every script. Every character in your package travels as one of these numbers.</p>
+
+<h3>3. A million machines on one network. A message is lost halfway. How does it find the right machine, and how do you know it arrived?</h3>
+<p>Give every machine an address, cut the message into numbered packets, confirm each one, and resend what is missing. <strong>IP</strong> does the addressing; <strong>TCP</strong> does the numbering, confirming and resending. Vint Cerf and Bob Kahn described it in 1974, and the ARPANET switched over on 1 January 1983. This became your <span class="part addr">address</span>: <code>aarav.example</code> is turned into an IP address, as you saw in Lecture 2. TCP/IP is a <strong>protocol</strong>: rules for delivery that do not care what is inside.</p>
+
+<h3>4. Delivery works. But the receiving machine still does not know what you want. What else must the message say, and what should come back?</h3>
+<p>The message needs an action, a few lines written on the envelope (such as who you are), and a body. The reply needs a code that says how it went. That is <strong>HTTP</strong>, built by Tim Berners-Lee at CERN between 1989 and 1991, about 35 years ago. It gave you the <span class="part act">action</span>, the <span class="part key">key</span> (a header, written on the envelope so it can be checked without opening the letter) and the <span class="part code">code</span>.</p>
+<p>Remember the leaked key. <strong>HTTPS</strong> is HTTP inside an encrypted channel. The S seals the envelope, so nobody between you and the machine can read your key. In the game, that sealed envelope was your DM.</p>
+
+<h3>5. Company A calls it getDiagnosis, B calls it fetchDiag, C calls it retrieveDiagnosis. What goes wrong when you connect to fifty of them?</h3>
+<p>You learn fifty vocabularies. The fix is to make addresses nouns (<code>/diagnoses</code>) and use a handful of shared verbs on them: <strong>Create, Read, Update, Delete</strong>. That is the <strong>REST</strong> style, described by Roy Fielding in 2000. The four verbs are known as CRUD, a term from 1983. They come back in Lecture 6, where a database does the same four things to a table.</p>
+
+<h3>6. Aarav's UI is written in Python and the diagnosis machine in JavaScript. Why would both accept curly braces?</h3>
+<p>A .docx file opens in Word and in Google Docs. Two different programs, one agreed file format. For packages that format is <strong>JSON</strong>, from Douglas Crockford in 2001: plain text, keys and values in curly braces. It is a format, not a programming language, and every language and every no-code tool can read and write it. That is why it became the web's default package format. It was standardised in 2013 and 2017. This became your <span class="part pkg">package</span>.</p>
+
+<div class="tw"><table>
+<thead><tr><th>Problem</th><th>Invention</th><th>It became</th><th>Kind</th></tr></thead>
+<tbody>
+<tr><td>On/off wire</td><td>Morse, 1844</td><td>The idea of a shared code</td><td>Common language</td></tr>
+<tr><td>No human operator</td><td>ASCII, 1963</td><td>Every character in the package</td><td>Common language</td></tr>
+<tr><td>Many machines, lost messages</td><td>TCP/IP, 1974 to 1983</td><td><span class="part addr">address</span></td><td>Protocol</td></tr>
+<tr><td>What do you want?</td><td>HTTP, 1989 to 1991</td><td><span class="part act">action</span> <span class="part key">key</span> <span class="part code">code</span></td><td>Protocol</td></tr>
+<tr><td>Fifty vocabularies</td><td>REST, 2000</td><td>Nouns + CRUD</td><td>Protocol (a style)</td></tr>
+<tr><td>Python vs JavaScript</td><td>JSON, 2001</td><td><span class="part pkg">package</span></td><td>Common language</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The Two Principles, Proven Six Times</h2>
+<p>In Lecture 2 you met a definition: <strong>an interface is a common language plus a protocol.</strong> The six rungs split cleanly. Morse, ASCII and JSON are common languages: they agree on what the symbols mean. TCP/IP, HTTP and REST are protocols: they agree on the rules of the exchange. An API needs both.</p>
+<p>And every rung is the same shape: <strong>Input → Process → Output.</strong> A request is the input, the machine at the other end is the process, the reply is the output. The only new thing about an API is that the arrow crosses a wire.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>The Six Parts, Named</h2>
+<p>Draw the letter from Lecture 2 again. Everything on it now has an HTTP name.</p>
+<div class="tw"><table>
+<thead><tr><th>On the envelope</th><th>In the game</th><th>Its name in HTTP</th></tr></thead>
+<tbody>
+<tr><td><span class="part addr">address</span></td><td><code>aarav.example/diagnoses</code></td><td><strong>URL</strong>, or endpoint. <code>https://</code> is the rules, <code>aarav.example</code> is which machine, <code>/diagnoses</code> is which door (the path)</td></tr>
+<tr><td><span class="part act">action</span></td><td>CREATE, READ, UPDATE, DELETE</td><td><strong>Method</strong>: POST, GET, PUT or PATCH, DELETE</td></tr>
+<tr><td><span class="part key">key</span></td><td><code>key: ••••</code></td><td>A <strong>header</strong>: <code>Authorization: Bearer &lt;key&gt;</code>. "Bearer" means whoever bears this key is let in</td></tr>
+<tr><td><span class="part pkg">package</span></td><td><code>{"workflow": "..."}</code></td><td>The <strong>body</strong>, in JSON, with the header <code>Content-Type: application/json</code></td></tr>
+<tr><td><span class="part code">code</span></td><td>404, 405, 400, 401, 201</td><td><strong>Status code</strong></td></tr>
+<tr><td><span class="part pkg">package</span> back</td><td>The diagnosis</td><td>The <strong>response body</strong></td></tr>
+</tbody></table></div>
+<p>Everything on that envelope together is an <strong>HTTP API request</strong>. In Lecture 2 you named the API. Now you have opened it.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Status Codes: Read the First Digit</h2>
+<p>The machine does not guess. So when a request fails, the code tells you whose fault it is before you read anything else.</p>
+<div class="tw"><table>
+<thead><tr><th>Code</th><th>Means</th><th>Whose fault</th></tr></thead>
+<tbody>
+<tr><td><span class="sc s2">200</span></td><td>Worked</td><td>Nobody</td></tr>
+<tr><td><span class="sc s2">201</span></td><td>Worked, and something new was created</td><td>Nobody</td></tr>
+<tr><td><span class="sc s4">400</span></td><td>Package unreadable, or a part is missing</td><td>Yours</td></tr>
+<tr><td><span class="sc s4">401</span></td><td>Key missing or wrong</td><td>Yours</td></tr>
+<tr><td><span class="sc s4">404</span></td><td>Nothing at that address</td><td>Yours</td></tr>
+<tr><td><span class="sc s4">405</span></td><td>That door does not take that action</td><td>Yours</td></tr>
+<tr><td><span class="sc s4">429</span></td><td>Too many requests</td><td>Yours</td></tr>
+<tr><td><span class="sc s5">500</span></td><td>Their machine broke</td><td>Theirs</td></tr>
+</tbody></table></div>
+<p><strong>2xx</strong> worked. <strong>4xx</strong> means you sent something wrong. <strong>5xx</strong> means their machine failed. A 401 always points at the <span class="part key">key</span>; a 400 at the <span class="part pkg">package</span> or a missing part; a 404 at the <span class="part addr">address</span>; a 405 at the <span class="part act">action</span>.</p>
+<p>Cause every one of them yourself in <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex7">exercise 7 of the Request Builder</a>.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Your First Requests</h2>
+<p>The simplest API tool you own is the address bar. Paste <code>https://httpbin.org/get?text=hello</code> and press Enter. httpbin is a public echo machine: it sends back whatever it receives. You will see <code>"text": "hello"</code> inside <code>args</code>. Your browser just sent a GET.</p>
+<p>Now type <code>hello world</code> with a space. Addresses cannot hold spaces, so the browser translates the space to <code>%20</code> before sending: <code>hello%20world</code>. Your browser did that for you. Your code and your no-code tools will not always, and that is where a 400 comes from. <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex3">Exercise 3</a> shows the address rewriting itself as you type.</p>
+<p>A GET has no package. To send one, use POST: <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex4">exercise 4</a> sends Aarav's Friday workflow to <code>httpbin.org/post</code>, and your text comes back at <code>json.text</code>.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Create, Read, Update, Delete</h2>
+<p>The actions are always the same four words. The method is how each word is spelled on the wire.</p>
+<div class="tw"><table>
+<thead><tr><th>CRUD action</th><th>HTTP method</th><th>Aarav's example</th></tr></thead>
+<tbody>
+<tr><td>Read</td><td class="mono">GET</td><td>Opens the page listing his past diagnoses: <code>GET /diagnoses</code></td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td>Submits his Friday workflow for the first time: <code>POST /workflows</code></td></tr>
+<tr><td>Update</td><td class="mono">PATCH</td><td>Fixes one field, "weekly" to "every Friday": <code>PATCH /workflows/7</code></td></tr>
+<tr><td>Update</td><td class="mono">PUT</td><td>His UI resends the whole workflow with the fix: <code>PUT /workflows/7</code></td></tr>
+<tr><td>Delete</td><td class="mono">DELETE</td><td>Removes an old workflow: <code>DELETE /workflows/7</code></td></tr>
+</tbody></table></div>
+<p>PUT and PATCH are both Update. PUT replaces the whole thing; PATCH changes part of it.</p>
+<h3>The weather question</h3>
+<p>Aarav asks ChatGPT, "What's the weather in Bengaluru?" Which action is that? Most of the room said Read, because it feels like reading. ChatGPT's own Network tab says POST.</p>
+<p>Why: Aarav is creating something. A new message, and a new reply, are added to his conversation, and that reply did not exist before he asked. So it is a Create, and Create is spelled POST. Compare a weather service answering <code>GET /forecast?city=Bengaluru</code>: it is reading a forecast already sitting in its system. A forecast is computed too, and it is still a GET. The rule is not "POST when a model generates". It is:</p>
+<div class="call"><p class="kick">The rule</p><p>Read what already exists: GET, and nothing changes. Create something new: POST. Update it: PUT or PATCH. Delete it: DELETE.</p></div>
+<p>Companies do not always follow the convention. For any app, the Network tab is the truth.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Reading ChatGPT's Real Request</h2>
+<p>In Lecture 2 you opened the Network tab and were told you did not need to read it yet. Now you can. Send "hi" in ChatGPT with the Network tab open, filter to Fetch/XHR, and click the request named <code>conversation</code>.</p>
+<div class="tw"><table>
+<thead><tr><th>Part</th><th>Where you find it</th></tr></thead>
+<tbody>
+<tr><td><span class="part addr">address</span></td><td>Headers: Request URL</td></tr>
+<tr><td><span class="part act">action</span></td><td>Headers: Request Method. POST, for the reason above</td></tr>
+<tr><td><span class="part key">key</span></td><td>Request Headers: <code>authorization</code>. Never expand it on a shared screen: it is your login</td></tr>
+<tr><td><span class="part pkg">package</span></td><td>Payload: your "hi" inside the JSON</td></tr>
+<tr><td><span class="part code">code</span></td><td>Status: 200</td></tr>
+</tbody></table></div>
+<p>One difference from the game: the reply arrives in pieces, as a stream. That is why ChatGPT's words appear one by one. The step-by-step guide, with what never to paste anywhere, is on the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab">Network tab page</a>.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Groq: A Model Behind a Deterministic Door</h2>
+<p>Aarav's UI needs a brain. <strong>Groq</strong>, with a q, at groq.com, runs open-weight models on its own chips, called LPUs. It is not Grok, xAI's chatbot. The company is not open source; many of the models it serves are open-weight. A free key needs no card.</p>
+<ol class="steps">
+  <li><b>Make a key.</b> Go to <code>console.groq.com/keys</code>, sign in with Google or GitHub, and create a key named <code>c8-lecture04</code>. Copy it once; Groq will not show it again.</li>
+  <li><b>Send the request.</b> In <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex5">exercise 5</a>, paste the key into the masked field. The model list loads from Groq itself: that is your first GET with a key. Keep <code>openai/gpt-oss-120b</code>, paste Aarav's workflow, press Send.</li>
+  <li><b>Look for the 200.</b> The text sits at <code>choices[0].message.content</code>. Ignore the <code>reasoning</code> field; it is the model's scratchpad.</li>
+</ol>
+<p>The same request, part by part:</p>
+<div class="env">
+  <div class="band addr"><b>Address</b><code>https://api.groq.com/openai/v1/chat/completions</code></div>
+  <div class="band act"><b>Action</b><code>POST · Create: a new reply</code></div>
+  <div class="band key"><b>Key</b><code>Authorization: Bearer &lt;your key&gt;</code></div>
+  <div class="band pkg"><b>Package</b><code>Content-Type: application/json<br>{"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "&lt;Aarav's workflow&gt;"}]}</code></div>
+  <div class="band code"><b>Reply</b><code>200 · text at choices[0].message.content</code></div>
+</div>
+<p>And as one command, for the code track to recognise next week:</p>
+<div id="curl"></div>
+<p>The free tier allows 30 requests a minute and 1,000 a day on <code>openai/gpt-oss-120b</code>. The limits apply per account, not per key, so a shared key runs out in seconds. If the model ever misbehaves, use <code>openai/gpt-oss-20b</code>. Models do retire: Llama 3.3 70B was switched off for free accounts on 16 August 2026, and every request to it now returns 404.</p>
+
+<h3>Why does Groq's address say openai?</h3>
+<p>Groq is not OpenAI. So why <code>/openai/v1</code>? Because once enough programs speak one format, competitors adopt it so your code works unchanged. ASCII won that way, HTTP won that way, JSON won that way. The AI world is doing the same with this <code>messages</code> package. Keep that in mind: when a model needs to talk to tools it has never seen, the answer will again be an agreed JSON format and a protocol.</p>
+
+<h3>The door is deterministic. What comes through it is probabilistic.</h3>
+<p>Send the same request to Aarav's service twice and you get the same diagnosis twice. That machine follows rules. Send the same request to Groq twice: same address, same action, same key, same package, and different words come back.</p>
+<div class="two">
+  <div class="card"><p class="kick">Aarav's service · rules</p><h4>Same request, same reply</h4><p>Every time. You can check it with an exact match.</p></div>
+  <div class="card coral"><p class="kick">Groq · a model</p><h4>Same request, different reply</h4><p>The door is identical. What comes through it is not.</p></div>
+</div>
+<p>So which of the two answers is right, and who decides? That is the Lecture 1 question again: if you cannot write the verifier, you cannot build the system. It is the bridge from this part of the map to the next.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Why the Key and the Data Live in a Backend</h2>
+<p>Open DevTools on the Request Builder, go to Network, click the Groq request, and read the Request Headers. Your key is there in plain text. On your own private tool that is fine. If Aarav's product worked like that, every visitor could read his key and spend his money.</p>
+<p>Now Create three diagnoses on Aarav's service and Read them back with <code>GET /aarav/diagnoses</code>. You get a 200 and an empty list: the machine has no memory. Refresh the Request Builder and everything on the page is gone too. Neither the page nor that machine remembers anything.</p>
+<p>Both problems have the same answer: a third box.</p>
+<div class="ipo">
+  <div class="bx"><p class="kick">UI</p><b>Aarav's page</b><small>no keys, no stored data</small></div><div class="ar">→</div>
+  <div class="bx"><p class="kick">Backend</p><b>Aarav's server</b><small>holds the Groq key, stores the data</small></div><div class="ar">→</div>
+  <div class="bx"><p class="kick">Model</p><b>Groq</b><small>reads the workflow, writes the plan</small></div>
+</div>
+<p>The UI never calls Groq directly. The frontend cannot protect a key, because a key in a page's code ships to every visitor. And it cannot keep data, because a refresh wipes it. That is what an API is for. The worked design:</p>
+<div class="tw"><table>
+<thead><tr><th>CRUD</th><th>Method</th><th>Address</th><th>Package in</th><th>Reply</th></tr></thead>
+<tbody>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows</td><td class="mono">{"description": "..."}</td><td>201 + workflow id</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}</td><td>none</td><td>200 + the workflow</td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows/{id}/diagnoses</td><td>none; the backend sends the workflow to Groq</td><td>201 + diagnosis</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}/diagnoses</td><td>none</td><td>200 + past diagnoses</td></tr>
+</tbody></table></div>
+<p>Where would that last Read get its data from? That question is Lecture 6.</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>What Comes Next</h2>
+<div class="cards">
+  <div class="card coral"><p class="kick">Before Fri 9 Oct</p><h4><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set: Design your API</a></h4><p>Replay Round Three for real, break it on purpose, then design every request your own app needs.</p></div>
+  <div class="card"><p class="kick">Fri 9 Oct · Lecture 5</p><h4>Build the backend</h4><p>Code track: Python and FastAPI, deployed on Render. No-code track, with Rahul: Antigravity.</p></div>
+  <div class="card"><p class="kick">Sat 10 Oct · Lecture 6</p><h4>Databases</h4><p>Where the data that a refresh wipes should live.</p></div>
+  <div class="card"><p class="kick">Sat 17 Oct</p><h4>The MVP, deployed</h4><p>End to end, in a real user's hands, right before the hackathon.</p></div>
+</div>
+<p>Assignment 1 is due <strong>Fri 9 Oct</strong>, on its own track.</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Words You Met</h2>
+<div class="gl">
+  <div class="w"><b>API</b><span>The interface between two machines: a common language plus a protocol.</span></div>
+  <div class="w"><b>Request</b><span>Address, action, key, package.</span></div>
+  <div class="w"><b>Response</b><span>Code and package.</span></div>
+  <div class="w"><b>URL / endpoint</b><span>The address: the rules (https), the machine (domain) and the door (path).</span></div>
+  <div class="w"><b>Method</b><span>How the action is spelled: GET, POST, PUT, PATCH, DELETE.</span></div>
+  <div class="w"><b>CRUD</b><span>Create, Read, Update, Delete: the four actions on anything stored.</span></div>
+  <div class="w"><b>Header</b><span>A line written on the envelope, read without opening the letter. The key goes here.</span></div>
+  <div class="w"><b>Bearer</b><span>Whoever bears this key is let in. Written as Authorization: Bearer &lt;key&gt;.</span></div>
+  <div class="w"><b>Body</b><span>The package inside the envelope.</span></div>
+  <div class="w"><b>JSON</b><span>A text format, not a language: keys and values in curly braces.</span></div>
+  <div class="w"><b>Status code</b><span>Three digits on the reply. 2xx worked, 4xx yours, 5xx theirs.</span></div>
+  <div class="w"><b>HTTP</b><span>The protocol for requests and replies on the web.</span></div>
+  <div class="w"><b>HTTPS</b><span>HTTP in a sealed envelope, so nobody on the way can read your key.</span></div>
+  <div class="w"><b>REST</b><span>A design style: nouns as addresses, CRUD as verbs. Not a protocol.</span></div>
+  <div class="w"><b>%20</b><span>A space, encoded so it fits in an address.</span></div>
+  <div class="w"><b>Rate limit</b><span>How many requests you may send in a minute or a day. Break it and you get 429.</span></div>
+  <div class="w"><b>Backend</b><span>The machine between your UI and everything else. It holds keys and stores data.</span></div>
+  <div class="w"><b>Groq</b><span>A company serving open-weight models on its own LPU chips. Not Grok.</span></div>
+</div>
+<p class="sig">Read the code, fix one thing, send again.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">cards</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a></small></p>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var cmd=['curl https://api.groq.com/openai/v1/chat/completions \\','  -H "Authorization: Bearer $GROQ_API_KEY" \\','  -H "Content-Type: application/json" \\',"  -d '{\"model\": \"openai/gpt-oss-120b\", \"messages\": [{\"role\": \"user\", \"content\": \"I open Jira, read the week'\"'\"'s tickets, write a status report and post it on Slack. About 90 minutes. Diagnose this workflow: repeated pattern, bottleneck, first AI step.\"}]}'"].join('\n');
+  document.getElementById('curl').innerHTML=c8code({title:'terminal · the Groq request',code:cmd,tags:{0:['Address + action (POST)','#D98E00'],1:['Key','#6E4BE8'],2:['Format','#1E9B57'],3:['Package','#1E9B57']}});
+});
+</script>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
+</body>
+</html>

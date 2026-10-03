@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Read the Code, Fix One Thing | 100xEngineers</title>
+<meta name="description" content="Office hour guide after Lecture 4, API as the second interface: replay Round Three against the real Aarav API, get everyone's first Groq 200, review practice-set API designs, and fix the errors you should expect.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<script src="/c8/docs.js"></script>
+<style>
+.hp{background:var(--code-bg);color:var(--code-ink);border-radius:var(--r);padding:14px 16px;font:13px/1.65 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 18px}
+.hp b{color:#F9B18F;font-weight:500}
+details.acc summary .sc{margin-right:2px}
+</style>
+</head>
+<body data-page="l04-office-hour-guide">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Office hour guide · Follows Lecture 4: API as the second interface · Both tracks</p>
+  <h1>Read the Code, Fix One Thing</h1>
+  <p class="dek">One session to get every student from "my request failed" to a 201 from Aarav and a 200 from Groq, and to review the API designs before the Lecture 5 practical.</p>
+  <div class="meta"><span>For mentors and students</span><span>Before Fri 9 Oct</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<div class="call"><p class="kick">The one thing to keep</p><p>The machine does not guess. Every failed request comes back with a code, and the code names the part to fix: 404 address, 405 action, 401 key, 400 package, 429 too many. Read the code out loud, change one thing, send again. Do not change two things at once.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The Session Plan</h2>
+<p>60 to 90 minutes. Three blocks, in this order. Each block ends with something every student can show.</p>
+<div class="tw"><table><thead><tr><th>Min</th><th>Block</th><th>Everyone leaves with</th></tr></thead><tbody>
+<tr><td class="mono">0–20</td><td><b>Replay Round Three for real.</b> In the <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex6">Request Builder, exercise 6</a>, Create a key with <code>POST /aarav/keys</code>, then Create a diagnosis with <code>POST /aarav/diagnoses</code>. Then break it on purpose: one 400, one 401, one 404, one 405.</td><td><span class="sc s2">201</span> and a diagnosis, plus four errors they caused and can name</td></tr>
+<tr><td class="mono">20–45</td><td><b>Everyone's first Groq 200.</b> Own account, own key at <a href="https://console.groq.com/keys">console.groq.com/keys</a>, <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex5">exercise 5</a>. Send the same request twice and compare. Then open the Network tab and find the key in plain text.</td><td><span class="sc s2">200</span>, two different answers to one request, and the reason the backend holds the key</td></tr>
+<tr><td class="mono">45–90</td><td><b>Review API designs.</b> Students share their <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a> table. Use the review checklist in section 04. Two or three on screen, the rest in the channel.</td><td>A table of requests they will build in the Lecture 5 practical</td></tr>
+</tbody></table></div>
+<p>If a student has no key yet, block two comes first for them. If a student cannot get any request through, start with the browser address bar: <code>https://httpbin.org/get?text=hello</code>. If that fails too, the problem is the network, not the request.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The Errors You Should Expect</h2>
+<p>Search by the code or the words in the error. Each entry names the part, the usual cause and the fix.</p>
+<input class="search" id="errsearch" type="search" placeholder="Type the code or paste the error message…" aria-label="Search errors">
+
+<details class="acc" data-q="401 invalid api key invalid_api_key space bearer groq whitespace"><summary><span class="sc s4">401</span><span class="err">Invalid API Key (Groq)</span></summary><div class="b"><span class="kick">Part</span><p><span class="part key">key</span></p><span class="kick">Cause</span><p>A space or a line break was copied with the key, the key was mistyped, the header reads <code>Authorization: gsk_…</code> without <code>Bearer </code>, or the key was revoked.</p><span class="kick">Fix</span><p>Paste the key again from the source, with nothing around it. The header must read <code>Authorization: Bearer gsk_…</code>, with one space after Bearer. If you deleted the key in the console, create a new one.</p></div></details>
+
+<details class="acc" data-q="401 key not recognised aarav who are you key needed bearer"><summary><span class="sc s4">401</span><span class="err">Key not recognised / Who are you? Key needed (Aarav)</span></summary><div class="b"><span class="kick">Part</span><p><span class="part key">key</span></p><span class="kick">Cause</span><p>No key at all, a key without <code>Bearer </code>, a Groq key sent to Aarav (or an Aarav key sent to Groq), or a key put in the address as <code>?key=</code>. The reply's <code>hint</code> field says which.</p><span class="kick">Fix</span><p>Create a key with <code>POST https://100x-curriculum.vercel.app/aarav/keys</code> and the package <code>{"name": "your name"}</code>. Send it as <code>Authorization: Bearer aarav_…</code>. Keys go on the envelope, never in the address: anyone can read an address.</p></div></details>
+
+<details class="acc" data-q="400 content-type application/json missing header text/plain"><summary><span class="sc s4">400</span><span class="err">Add the header Content-Type: application/json</span></summary><div class="b"><span class="kick">Part</span><p><span class="part pkg">package</span></p><span class="kick">Cause</span><p>The package was sent without saying what format it is in. Many tools default to plain text or form data.</p><span class="kick">Fix</span><p>Add the header <code>Content-Type: application/json</code>. In a no-code HTTP step, pick "JSON" as the body type rather than "Text" or "Raw".</p></div></details>
+
+<details class="acc" data-q="400 can't read json parse unexpected token comma quote invalid json body"><summary><span class="sc s4">400</span><span class="err">Can't read / Unexpected token / invalid JSON</span></summary><div class="b"><span class="kick">Part</span><p><span class="part pkg">package</span></p><span class="kick">Cause</span><p>A missing comma between fields, a missing closing quote or brace, a comma after the last field, or curly "smart" quotes pasted from a document or a chat app.</p><span class="kick">Fix</span><p>Start from the Builder's pre-filled package and change only the text inside the quotes. Keys and text values use straight double quotes: <code>{"workflow": "..."}</code>. If your text contains a double quote, write it as <code>\"</code>.</p></div></details>
+
+<details class="acc" data-q="400 workflow missing empty field required"><summary><span class="sc s4">400</span><span class="err">The workflow field is missing or empty (Aarav)</span></summary><div class="b"><span class="kick">Part</span><p><span class="part pkg">package</span></p><span class="kick">Cause</span><p>The JSON is valid but the field is named something else (<code>"text"</code>, <code>"description"</code>, <code>"Workflow"</code>), or the value is empty.</p><span class="kick">Fix</span><p>The name must match exactly, in lower case: <code>{"workflow": "I open Jira…"}</code>. Agreed format means both sides use the same names.</p></div></details>
+
+<details class="acc" data-q="404 model not found does not exist decommissioned llama-3.3-70b-versatile retired typo"><summary><span class="sc s4">404</span><span class="err">The model does not exist or you do not have access to it (Groq)</span></summary><div class="b"><span class="kick">Part</span><p><span class="part pkg">package</span>, the <code>model</code> field</p><span class="kick">Cause</span><p>A typo in the model name, or a retired model. <code>llama-3.3-70b-versatile</code> was retired for free and developer accounts on 16 Aug 2026, and many tutorials still use it.</p><span class="kick">Fix</span><p>Use <code>openai/gpt-oss-120b</code>, or <code>openai/gpt-oss-20b</code> as the fallback. The Builder's dropdown loads only the models your key can use, so it cannot offer a retired one.</p></div></details>
+
+<details class="acc" data-q="404 not found wrong path address doors url typo"><summary><span class="sc s4">404</span><span class="err">Not found. Doors: …</span></summary><div class="b"><span class="kick">Part</span><p><span class="part addr">address</span></p><span class="kick">Cause</span><p>A typo in the path, a missing <code>/aarav</code>, <code>/diagnosis</code> instead of <code>/diagnoses</code>, or a path that does not exist on that machine. <code>GET /aarav/diagnoses/{id}</code> also returns 404, because this machine stores nothing yet.</p><span class="kick">Fix</span><p>Read the doors listed in the reply and copy one. <code>GET https://100x-curriculum.vercel.app/aarav</code> lists them all.</p></div></details>
+
+<details class="acc" data-q="405 method not allowed this door takes allow header wrong method put delete patch"><summary><span class="sc s4">405</span><span class="err">This door takes CREATE (POST) and READ (GET)</span></summary><div class="b"><span class="kick">Part</span><p><span class="part act">action</span></p><span class="kick">Cause</span><p>The address exists but does not take that action. For example, Update or Delete on <code>/aarav/diagnoses</code>, or a GET to Groq's chat address.</p><span class="kick">Fix</span><p>Check the reply's <code>Allow</code> header and pick one of those methods. Ask which CRUD action you mean first, then spell it: Create is POST, Read is GET.</p></div></details>
+
+<details class="acc" data-q="429 too many requests rate limit retry-after shared key limit"><summary><span class="sc s4">429</span><span class="err">Too many requests / rate limit reached</span></summary><div class="b"><span class="kick">Part</span><p>rate</p><span class="kick">Cause</span><p>More than 30 requests a minute (or 1,000 a day) on one Groq account. Usually a key shared by a group, or a script sending in a loop. Limits belong to the account, not the key.</p><span class="kick">Fix</span><p>Wait the number of seconds in the <code>retry-after</code> header. Each student uses their own account. Creating more keys on the same account does not help.</p></div></details>
+
+<details class="acc" data-q="cors blocked by cors policy failed to fetch file:// no access-control-allow-origin works in builder not my page"><summary><span class="err">Blocked by CORS policy / Failed to fetch</span></summary><div class="b"><span class="kick">Part</span><p>none: the browser stopped the request before it left</p><span class="kick">Cause</span><p>Browsers only let a page call another site if that site says it allows it. Groq, Aarav and httpbin allow it, so the Builder works. A page opened as a <code>file://</code> path, an extension that blocks requests, a typo in the address (which reaches a site that does not allow it), or a site that does not allow browser calls at all will fail here. There is no status code, because no request reached the machine.</p><span class="kick">Fix</span><p>Check the address first. Open the Console tab: the exact message names the site. Try the same request from the Builder or with curl. If it works there, the request is fine and the browser is the blocker. Backends are not subject to CORS, which is one more reason the call to Groq moves to a backend.</p></div></details>
+
+<details class="acc" data-q="no-code body sent as text string raw form escaped quotes json body type"><summary><span class="err">The no-code tool sends the body as text, not JSON</span></summary><div class="b"><span class="kick">Part</span><p><span class="part pkg">package</span></p><span class="kick">Cause</span><p>The HTTP step's body type is set to Text, Raw or Form. The machine receives a string with escaped quotes, or form fields, and replies 400.</p><span class="kick">Fix</span><p>Set the body type to JSON and add <code>Content-Type: application/json</code> if the tool does not add it. Paste the package from the Builder, which you know works. Compare both in the Network tab or the tool's request log.</p></div></details>
+
+<details class="acc" data-q="reasoning only empty content groq gpt-oss reply blank choices message"><summary><span class="err">The Groq reply shows only "reasoning" / the content looks empty</span></summary><div class="b"><span class="kick">Part</span><p><span class="part pkg">reply package</span></p><span class="kick">Cause</span><p><code>openai/gpt-oss-120b</code> is a reasoning model. Its reply has a <code>reasoning</code> field, the model's scratchpad, next to the answer. Reading the wrong field, or running out of tokens while it is still reasoning, leaves the answer empty.</p><span class="kick">Fix</span><p>Read <code>choices[0].message.content</code> and ignore <code>reasoning</code>. If <code>content</code> is empty and <code>finish_reason</code> is <code>length</code>, remove any small <code>max_tokens</code> limit and send again.</p></div></details>
+
+<details class="acc" data-q="500 internal server error broken their machine 502 503"><summary><span class="sc s5">500</span><span class="err">Internal server error</span></summary><div class="b"><span class="kick">Part</span><p>server: theirs, not yours</p><span class="kick">Cause</span><p>Their machine failed. <code>/aarav/broken</code> returns this on purpose for practice.</p><span class="kick">Fix</span><p>Nothing in your request to fix. Wait and try again, or check the service's status page. 4xx is yours; 5xx is theirs.</p></div></details>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The Help Post</h2>
+<p>A good help post has exactly three parts, in this order. Helpers need the code and the error. They never need your key.</p>
+<div class="hp"><b>Status code and error (exact text):</b>
+  401 {"error":{"message":"Invalid API Key","code":"invalid_api_key"}}
+
+<b>What I tried:</b>
+  Pasted the key again, checked there is a space after Bearer
+
+<b>The request, key masked:</b>
+  POST https://api.groq.com/openai/v1/chat/completions
+  Authorization: Bearer gsk_••••
+  Content-Type: application/json
+  {"model": "openai/gpt-oss-120b", "messages": [{"role": "user", "content": "..."}]}</div>
+<p>Post in your track channel on Discord <span class="pend">channel link</span>. If you fixed it yourself, reply in the thread with the fix. Your fix is someone else's blocker.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Reviewing an API Design</h2>
+<p>The <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a> asks for a table of every request the student's app needs. Review it against these five checks, one at a time. Ask the question before you point at the answer.</p>
+<ul class="ck" data-stage="review">
+<li><input type="checkbox" id="r1"><label for="r1"><span class="t">CRUD verbs match the action</span><span class="h"><span class="kick">Ask</span>Does this read what exists, or create something new? Read is GET and changes nothing. Create is POST. Update is PUT (whole) or PATCH (part). Delete is DELETE. Asking a model for an answer is a Create.</span></label></li>
+<li><input type="checkbox" id="r2"><label for="r2"><span class="t">Addresses are nouns</span><span class="h"><span class="kick">Ask</span>Where is the verb? <code>/workflows</code> and <code>/workflows/{id}/diagnoses</code>, not <code>/getWorkflow</code> or <code>/createDiagnosis</code>. The method is the verb.</span></label></li>
+<li><input type="checkbox" id="r3"><label for="r3"><span class="t">Every key sits in a backend box</span><span class="h"><span class="kick">Ask</span>Which box holds the Groq key? If the answer is the UI, every visitor can read it. Draw UI → backend → model.</span></label></li>
+<li><input type="checkbox" id="r4"><label for="r4"><span class="t">At least one request calls a model</span><span class="h"><span class="kick">Ask</span>Which request makes the backend call Groq, and what package does it send?</span></label></li>
+<li><input type="checkbox" id="r5"><label for="r5"><span class="t">Codes are listed for every request</span><span class="h"><span class="kick">Ask</span>What comes back when it works (200 or 201), and what when the package is wrong (400), the key is missing (401), or the thing does not exist (404)?</span></label></li>
+</ul>
+<div class="stg"><span class="kick">Checks passed</span><div class="bar"><i></i></div><span class="num">0 / 5</span><button class="reset" type="button">Reset</button></div>
+<h3>The worked example from the lecture</h3>
+<div class="tw compact"><table><thead><tr><th>CRUD</th><th>Method</th><th>Address</th><th>Package in</th><th>Reply</th></tr></thead><tbody>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows</td><td class="mono">{"description": "..."}</td><td><span class="sc s2">201</span> + workflow id</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}</td><td>none</td><td><span class="sc s2">200</span> + the workflow</td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows/{id}/diagnoses</td><td>none; the backend sends the workflow to Groq</td><td><span class="sc s2">201</span> + diagnosis</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}/diagnoses</td><td>none</td><td><span class="sc s2">200</span> + past diagnoses</td></tr>
+</tbody></table></div>
+<p>A common gap: a design reads past diagnoses but never says where they are stored. That is the right question to leave open. It is Lecture 6, databases, on Sat 10 Oct.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Before the Lecture 5 Practical</h2>
+<p>Fri 9 Oct. The code track builds this backend in Python with FastAPI and deploys it on Render. The no-code track builds it in Antigravity with Rahul, with a hosted builder and Supabase as the fallback. Both start from the same table.</p>
+<ul>
+<li>Post your API design in your track channel <span class="pend">channel link</span>.</li>
+<li>Have your own Groq key working in the Builder.</li>
+<li>Assignment 1 is due the same day, Fri 9 Oct. It does not depend on the practice set.</li>
+</ul>
+<p class="sig">Read the code, fix one thing, send again.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">keys</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a></small></p>
+</section>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
+</body>
+</html>

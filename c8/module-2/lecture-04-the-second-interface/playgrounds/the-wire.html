@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Wire | 100xEngineers</title>
+<meta name="description" content="Lecture 4 playground: six problems that built the internet, from Morse code to JSON. Each one became a part of the request you send to an API.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<style>
+html{scroll-padding-top:120px}
+section.rung,#close{scroll-margin-top:120px}
+
+/* sticky strip: stepper + part chips */
+.wstrip{position:sticky;top:52px;z-index:40;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.wstrip .in{max-width:1120px;margin:0 auto;padding:8px 16px;display:flex;gap:10px;align-items:center}
+.st6{display:flex;gap:4px;align-items:center}
+.st6 button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line2);background:var(--card);font:500 13px var(--mono);color:var(--ink2);display:grid;place-items:center;padding:0;transition:background .15s,border-color .15s,color .15s}
+.st6 button.done{background:var(--hum-soft);border-color:var(--hum);color:var(--hum-ink)}
+.st6 button[aria-current="step"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.st6 .cl{width:auto;border-radius:999px;padding:0 10px;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.wprog{font:500 11px var(--mono);color:var(--ink3);white-space:nowrap}
+.chips{display:none;gap:4px;margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.chips .part{opacity:.3;transition:opacity .3s}
+.chips .part.on{opacity:1}
+@media (min-width:760px){.chips{display:flex}}
+@media (max-width:420px){.st6 button{width:30px;height:30px}.wprog{display:none}}
+
+/* layout: envelope aside on wide screens */
+.lay{display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+.lay>aside{margin:0 0 8px}
+@media (min-width:1100px){
+  .lay{grid-template-columns:minmax(0,1fr) 290px;gap:40px}
+  .lay>aside{grid-column:2;grid-row:1;position:sticky;top:124px;align-self:start;margin:28px 0 0}
+  .lay>main{grid-column:1;grid-row:1}
+}
+.envhd{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin:0 0 8px}
+.envhd .kick{margin:0}
+.env .band>code{color:var(--ink3);transition:color .3s}
+.env .band.on>code{color:var(--ink)}
+.env .band:not(.on)>b{opacity:.45}
+.envnote{font-size:12.5px;color:var(--ink3);margin:0}
+
+.hbtns{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}
+
+/* rung blocks */
+.q{border-left:3px solid var(--ink);padding:4px 0 4px 16px;margin:0 0 18px}
+.q .kick{display:block;margin-bottom:4px}
+.q p{font:500 clamp(18px,2.4vw,22px)/1.4 var(--sans);letter-spacing:-.01em;margin:0!important;max-width:60ch}
+.lab{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:16px;margin:0 0 14px}
+.lab .kick{display:block;margin:0 0 8px}
+.lab p{font-size:14.5px}
+.fb{font-size:14px;color:var(--ink2);min-height:1.5em;margin:10px 0 0}
+.fb.ok{color:var(--hum-ink)}
+.fb.bad{color:var(--coral-ink)}
+details.reveal{border:1px dashed var(--line2);border-radius:var(--r);margin:0 0 10px;background:transparent}
+details.reveal[open]{border-style:solid;border-color:var(--line);background:var(--card)}
+details.reveal summary{list-style:none;cursor:pointer;padding:12px 16px;font:500 14px var(--sans);color:var(--ink2);display:flex;align-items:center;gap:10px}
+details.reveal summary::-webkit-details-marker{display:none}
+details.reveal summary::before{content:"?";width:22px;height:22px;border-radius:50%;border:1px solid var(--line2);display:grid;place-items:center;font:500 12px var(--mono);flex:none}
+details.reveal[open] summary::before{content:"✓";background:var(--hum);border-color:var(--hum);color:#fff}
+.rv{padding:0 16px 16px}
+.rv .inv{font-size:18px!important;margin:0 0 8px!important}
+.rv .inv b{font-weight:600}
+.rv .inv small{font:500 12px var(--mono);color:var(--ink3);margin-left:6px;letter-spacing:.04em}
+.became{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;border-top:1px solid var(--line);padding-top:12px;margin-top:12px;font-size:14px}
+.became>span:first-child{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.prin{font-size:14px;margin:10px 0 0!important;color:var(--ink2)}
+.prin .pill{margin-right:6px}
+
+/* rung 1: morse */
+.mgrid{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:stretch}
+@media (max-width:640px){.mgrid{grid-template-columns:1fr}}
+.mside{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg);min-width:0}
+.mside .kick{margin-bottom:6px}
+.mout{font:500 20px/1.4 var(--mono);min-height:1.5em;overflow-wrap:anywhere;letter-spacing:.06em}
+.mout.big{font-size:30px;letter-spacing:.12em}
+.mid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.lamp{width:22px;height:22px;border-radius:50%;background:var(--bg2);border:1px solid var(--line2);transition:background .05s,box-shadow .05s}
+.lamp.on{background:var(--det);border-color:var(--det);box-shadow:0 0 0 6px color-mix(in srgb,var(--det) 25%,transparent)}
+.mkey{width:96px;height:96px;border-radius:50%;border:0;background:var(--ink);color:var(--bg);font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;box-shadow:0 4px 0 var(--line2);transition:transform .05s,box-shadow .05s}
+.mkey.down{transform:translateY(3px);box-shadow:0 1px 0 var(--line2)}
+.mtab{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:4px;margin:12px 0 0;transition:opacity .3s}
+.mtab span{font:12px var(--mono);border:1px solid var(--line);border-radius:6px;padding:3px 6px;display:flex;justify-content:space-between;gap:4px;background:var(--card)}
+.mtab span b{font-weight:600}
+.mtab.gone{opacity:.15}
+.tog{display:inline-flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}
+.tog input{width:18px;height:18px;accent-color:var(--coral)}
+
+/* rung 2: ascii */
+.ain{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:10px 12px;font:18px var(--mono);color:var(--ink)}
+.atab{display:grid;gap:4px;margin:12px 0 0;max-height:320px;overflow:auto}
+.arow{display:grid;grid-template-columns:44px 70px minmax(0,1fr);gap:10px;align-items:center;font:13px var(--mono);border-bottom:1px solid var(--line);padding:5px 2px}
+.arow .c{font-size:20px;text-align:center}
+.arow .n{color:var(--ink)}
+.arow .bits{color:var(--ink2);overflow-wrap:anywhere}
+.arow.no .n{color:var(--coral-ink)}
+.arow.no .bits{color:var(--prob-ink)}
+.asum{font:12.5px var(--mono);color:var(--ink3);margin:8px 0 0}
+
+/* rung 3: packets */
+.tray{display:flex;flex-wrap:wrap;gap:8px;min-height:64px;border:1px dashed var(--line2);border-radius:10px;padding:8px;background:var(--bg);margin:0 0 10px}
+.tray:empty::after{content:attr(data-empty);font-size:13px;color:var(--ink3);align-self:center;padding:0 4px}
+.pkt{border:1px solid var(--line2);border-radius:9px;background:var(--card);padding:6px 10px;text-align:left;display:grid;gap:2px;max-width:100%;transition:transform .2s var(--e-out),border-color .15s}
+.pkt small{font:10.5px var(--mono);color:var(--p-addr-ink);letter-spacing:.03em}
+.pkt span{font-size:14px}
+.pkt i{font:600 11px var(--mono);font-style:normal;color:var(--ink);background:var(--bg2);border-radius:5px;padding:0 5px;justify-self:start}
+.pkt.placed{border-color:var(--hum);background:var(--hum-soft)}
+.pkt.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.pkt.new{animation:up .5s var(--e-out) both}
+.rebuilt-text{font-size:15px;min-height:1.5em;margin:4px 0 0}
+
+/* rung 4: http */
+.hctl{display:grid;gap:10px;grid-template-columns:1fr 1fr}
+@media (max-width:640px){.hctl{grid-template-columns:1fr}}
+.hctl label{display:grid;gap:5px;font-size:13.5px;font-weight:500}
+.hctl label.tog{display:flex;align-items:center;gap:8px}
+.hctl select{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:9px 10px;font:14px var(--sans);color:var(--ink);width:100%}
+.hctl .tog{border:1px solid var(--line);border-radius:9px;padding:9px 10px;background:var(--bg)}
+.raw{font:13px/1.65 var(--mono);border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:12px 14px;margin:12px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.raw .miss{color:var(--ink3);font-style:italic}
+.t-addr{color:var(--p-addr-ink)}.t-act{color:var(--p-act-ink);font-weight:600}.t-key{color:var(--p-key-ink)}.t-pkg{color:var(--p-pkg-ink)}
+.rep{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0 0;background:var(--card)}
+.rcode{font:700 40px/1 var(--mono);color:var(--ink2)}
+.rcode.s2{color:var(--hum-ink)}.rcode.s4{color:var(--coral-ink)}
+.rmsg{font:500 15px var(--mono)}
+.rpart{grid-column:2;font-size:13px;color:var(--ink3)}
+.wire{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0 0;font-size:13.5px}
+.wire .seen{font:13px var(--mono);border-radius:6px;padding:2px 8px;background:var(--bg2);overflow-wrap:anywhere}
+.wire .seen.leak{background:var(--coral-soft);color:var(--coral-ink)}
+
+/* rung 5: rest */
+.verbs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px;min-height:36px}
+.verb{border:1px solid var(--line2);border-radius:8px;background:var(--bg);padding:5px 10px;font:13px var(--mono);display:inline-flex;gap:6px;align-items:baseline}
+.verb small{font:10.5px var(--sans);color:var(--ink3)}
+.verb[aria-pressed="true"]{border-color:var(--coral);background:var(--coral-soft);color:var(--coral-ink)}
+.verb.shake{animation:shake .3s}
+.bkts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+@media (max-width:760px){.bkts{grid-template-columns:1fr 1fr}}
+.bkt{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:10px;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:120px}
+.bkt .bn{font:600 15px var(--sans);display:none}
+.bkt .bm{font:500 12px var(--mono);color:var(--p-act-ink);display:none}
+.bkt.named .bn,.bkt.named .bm{display:block}
+.bkt .bd{font-size:13px;color:var(--ink2);line-height:1.4}
+.bkt .bl{display:flex;flex-wrap:wrap;gap:4px}
+.bkt .bl span{font:11px var(--mono);background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.bkt.target{border-color:var(--coral)}
+
+/* rung 6: json */
+.jgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px}
+@media (max-width:760px){.jgrid{grid-template-columns:1fr}}
+.jin{width:100%;min-height:120px;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:10px 12px;font:14px/1.5 var(--mono);color:var(--ink);resize:vertical}
+.jst{font:500 14px var(--mono);margin:8px 0 0}
+.jst.ok{color:var(--hum-ink)}.jst.bad{color:var(--coral-ink)}
+.caret{font:12.5px/1.4 var(--mono);background:var(--bg2);border-radius:8px;padding:8px 10px;margin:6px 0 0;overflow-x:auto;white-space:pre}
+.reads{display:grid;gap:6px;margin:8px 0 0}
+.reads div{font:12.5px var(--mono);border:1px solid var(--line);border-radius:8px;padding:6px 8px;overflow-wrap:anywhere;background:var(--bg)}
+.reads div b{display:block;font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.adhoc{font:13px/1.5 var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px;overflow-wrap:anywhere}
+
+/* close */
+.kinds{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 18px}
+@media (max-width:640px){.kinds{grid-template-columns:1fr}}
+.kinds .card ul{margin:6px 0 0;padding-left:18px;font-size:14px}
+.kinds .card li{margin:0 0 4px}
+
+/* projector size */
+html.big body{font-size:19px}
+html.big .q p{font-size:clamp(24px,3vw,30px)}
+html.big section.s>h2{font-size:clamp(28px,3.6vw,38px)}
+html.big .lab p,html.big .fb,html.big details.reveal summary,html.big .became,html.big .prin{font-size:17px}
+html.big .rv .inv{font-size:22px!important}
+html.big .mout{font-size:26px}
+html.big .rmsg{font-size:18px}
+html.big .raw{font-size:15px}
+html.big .pkt span{font-size:16px}
+</style>
+</head>
+<body data-page="l04-the-wire">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<div class="wstrip"><div class="in">
+  <nav class="st6" aria-label="Rungs">
+    <button type="button" data-go="r1" aria-label="Rung 1">1</button>
+    <button type="button" data-go="r2" aria-label="Rung 2">2</button>
+    <button type="button" data-go="r3" aria-label="Rung 3">3</button>
+    <button type="button" data-go="r4" aria-label="Rung 4">4</button>
+    <button type="button" data-go="r5" aria-label="Rung 5">5</button>
+    <button type="button" data-go="r6" aria-label="Rung 6">6</button>
+    <button type="button" class="cl" data-go="close" aria-label="Close: the two principles">Close</button>
+  </nav>
+  <span class="wprog" id="wprog">0 of 6</span>
+  <div class="chips" aria-hidden="true">
+    <span class="part addr" data-chip="addr">address</span><span class="part act" data-chip="act">action</span><span class="part key" data-chip="key">key</span><span class="part pkg" data-chip="pkg">package</span><span class="part code" data-chip="code">code</span>
+  </div>
+</div></div>
+
+<div class="wrap">
+<div class="hero">
+  <p class="kick">Playground · Lecture 4 · API as the second interface</p>
+  <h1>The Wire</h1>
+  <p class="dek">Six problems, six inventions. Each one became a part of the request you sent in Round Three.</p>
+  <div class="meta"><span>Six rungs</span><span>About 14 minutes live</span><span>Replay any time</span></div>
+  <div class="hbtns">
+    <button type="button" class="btn ghost" id="bigBtn" aria-pressed="false">Projector size</button>
+    <button type="button" class="btn ghost" id="allBtn">Show every answer</button>
+  </div>
+</div>
+
+<div class="lay">
+<aside aria-label="Your request, so far">
+  <div class="envhd"><span class="kick">Your request, so far</span><span class="kick" id="envn">0 / 6</span></div>
+  <div class="env" id="env">
+    <div class="band addr" data-band="addr"><b>Address</b><code>—</code></div>
+    <div class="band act" data-band="act"><b>Action</b><code>—</code></div>
+    <div class="band key" data-band="key"><b>Key</b><code>—</code></div>
+    <div class="band pkg" data-band="pkg"><b>Package</b><code>—</code></div>
+    <div class="band code" data-band="code"><b>Reply code</b><code>—</code></div>
+  </div>
+  <p class="envnote">Each rung fills in a part. By rung 6 this is the message that won Round Three.</p>
+</aside>
+
+<main>
+<section class="s" id="intro">
+  <p class="lead">In Round Three the machine taught you six parts, one error at a time. Why does a request have exactly these parts? Because each one fixed a failure of the one before it.</p>
+  <p>Every rung starts with a question. Answer it in the chat before you touch anything. The name of the invention comes last.</p>
+</section>
+
+<!-- RUNG 1 · MORSE -->
+<section class="s rung" id="r1" data-rung="1">
+  <h2><span class="n">RUNG 1</span>A wire that is only on or off</h2>
+  <div class="q"><span class="kick">Ask first</span><p>A wire can only be on or off. How do you send the word HELP down it?</p></div>
+  <div class="lab">
+    <span class="kick">Try it · send HI</span>
+    <p>Press the key. A short press is a dot, a long press is a dash. Pause to end a letter. On a keyboard, hold the space bar.</p>
+    <div class="mgrid">
+      <div class="mside"><p class="kick">Sender taps</p><div class="mout" id="mSend" aria-live="polite"></div></div>
+      <div class="mid">
+        <span class="lamp" id="mLamp" aria-hidden="true"></span>
+        <button type="button" class="mkey" id="mKey" aria-label="Telegraph key. Short press for a dot, long press for a dash">Key</button>
+      </div>
+      <div class="mside"><p class="kick">Receiver reads</p><div class="mout big" id="mRecv" aria-live="polite"></div></div>
+    </div>
+    <div class="btnrow" style="margin-top:12px">
+      <button type="button" class="btn ghost" id="mPlay">Send HI for me</button>
+      <button type="button" class="btn ghost" id="mClear">Clear</button>
+      <label class="tog"><input type="checkbox" id="mBook" checked> Receiver holds the codebook</label>
+    </div>
+    <div class="mtab" id="mTab" aria-label="The codebook"></div>
+    <p class="fb" id="mFb" aria-live="polite"></p>
+  </div>
+  <details class="reveal" data-for="1"><summary>Reveal what humans invented</summary><div class="rv">
+    <p class="inv"><b>Morse code</b><small>1844 · Samuel Morse and Alfred Vail</small></p>
+    <p>A shared codebook of dots and dashes. The first public line ran from Washington to Baltimore on 24 May 1844. The message was "What hath God wrought."</p>
+    <p>Turn the codebook off and the same pulses still arrive. They just mean nothing. Both ends must hold the same codebook, or the message is noise.</p>
+    <div class="became"><span>This became</span><span class="part pkg">package</span><span>the idea of a shared code under every character you send</span></div>
+    <p class="prin"><span class="pill coral">Common language</span>Both sides agree on what each signal means.</p>
+  </div></details>
+</section>
+
+<!-- RUNG 2 · ASCII -->
+<section class="s rung" id="r2" data-rung="2">
+  <h2><span class="n">RUNG 2</span>No human at either end</h2>
+  <div class="q"><span class="kick">Ask first</span><p>Morse needs a trained human at each end. What would a machine need instead?</p></div>
+  <div class="lab">
+    <span class="kick">Try it · type anything</span>
+    <p>Every character becomes a number, and every number becomes on and off.</p>
+    <input class="ain" id="aIn" value="HI" aria-label="Text to turn into numbers" autocomplete="off" spellcheck="false">
+    <div class="btnrow" style="margin-top:10px">
+      <button type="button" class="btn ghost" data-ascii="Aarav">Try Aarav</button>
+      <button type="button" class="btn ghost" data-ascii="नमस्ते">Try नमस्ते</button>
+    </div>
+    <div class="atab" id="aTab" aria-live="polite"></div>
+    <p class="asum" id="aSum"></p>
+    <p class="fb" id="aFb" aria-live="polite"></p>
+  </div>
+  <details class="reveal" data-for="2"><summary>Reveal what humans invented</summary><div class="rv">
+    <p class="inv"><b>ASCII</b><small>1963 · American Standards Association, committee X3.4</small></p>
+    <p>A fixed number for every character, agreed by every machine. A is 65. Seven bits, so 128 characters. No operator needed: a machine reads the bits and knows the letter.</p>
+    <p>128 slots had no room for नमस्ते. UTF-8 (1992, Ken Thompson and Rob Pike) keeps ASCII as it is and uses more bytes for every other script. That is why A is still 65 today.</p>
+    <div class="became"><span>This became</span><span class="part pkg">package</span><span>every character inside it</span></div>
+    <p class="prin"><span class="pill coral">Common language</span>A format machines agree on, with no human in the middle.</p>
+  </div></details>
+</section>
+
+<!-- RUNG 3 · TCP/IP -->
+<section class="s rung" id="r3" data-rung="3">
+  <h2><span class="n">RUNG 3</span>A million machines, one network</h2>
+  <div class="q"><span class="kick">Ask first</span><p>A million machines share one network. A message gets lost halfway. How does it find the right machine, and how do you know it arrived?</p></div>
+  <div class="lab">
+    <span class="kick">Try it · rebuild Aarav's message</span>
+    <p>The network cut Aarav's message into packets. They took different roads. Tap them in the right order.</p>
+    <p class="kick" style="margin:10px 0 6px">Arrived, in the order the network delivered them</p>
+    <div class="tray" id="tArr" data-empty="Nothing left in the tray."></div>
+    <p class="kick" style="margin:10px 0 6px">Rebuilt</p>
+    <div class="tray" id="tReb" data-empty="Tap a packet above to place it here."></div>
+    <p class="rebuilt-text" id="tText"></p>
+    <div class="btnrow" style="margin-top:8px">
+      <button type="button" class="btn ghost" id="tNum">Number every packet</button>
+      <button type="button" class="btn ghost" id="tAsk" disabled>Ask for the missing packet again</button>
+      <button type="button" class="btn ghost" id="tReset">Start over</button>
+    </div>
+    <p class="fb" id="tFb" aria-live="polite"></p>
+  </div>
+  <details class="reveal" data-for="3"><summary>Reveal what humans invented</summary><div class="rv">
+    <p class="inv"><b>TCP/IP</b><small>1974 paper · Vint Cerf and Bob Kahn · ARPANET switched over on 1 Jan 1983</small></p>
+    <p><b>IP</b> gives every machine an address, like 203.0.113.7, and every packet carries it. <b>TCP</b> numbers the packets, confirms each one that arrives, and asks again for what is missing. That is how you know it arrived.</p>
+    <p>Neither one cares what is inside the packets. They only deliver.</p>
+    <div class="became"><span>This became</span><span class="part addr">address</span><span><code>aarav.example</code> turns into an IP address, as in Lecture 2</span></div>
+    <p class="prin"><span class="pill det">Protocol</span>Rules for delivery that ignore what is inside.</p>
+  </div></details>
+</section>
+
+<!-- RUNG 4 · HTTP -->
+<section class="s rung" id="r4" data-rung="4">
+  <h2><span class="n">RUNG 4</span>Delivered, but what do you want?</h2>
+  <div class="q"><span class="kick">Ask first</span><p>Delivery works. But the receiving machine still does not know what you want. What else must the message say, and what should come back?</p></div>
+  <div class="lab">
+    <span class="kick">Try it · build the message until the machine says 201</span>
+    <p>Turn each part on or off and watch the reply. The machine checks in order: address, action, key, package.</p>
+    <div class="hctl">
+      <label class="tog"><input type="checkbox" id="hAddr"> Write the address</label>
+      <label class="tog"><input type="checkbox" id="hKey"> Add the key</label>
+      <label>Action
+        <select id="hAct">
+          <option value="none">(no action)</option>
+          <option value="CREATE">CREATE · POST</option>
+          <option value="READ">READ · GET</option>
+          <option value="UPDATE">UPDATE · PUT</option>
+          <option value="DELETE">DELETE · DELETE</option>
+        </select>
+      </label>
+      <label>Package
+        <select id="hPkg">
+          <option value="ok">{"workflow": "I open Jira…"}</option>
+          <option value="bad">{"workflow": "I open Jira…   (broken)</option>
+          <option value="none">(no package)</option>
+        </select>
+      </label>
+    </div>
+    <div class="raw" id="hRaw" aria-label="The request, as it travels"></div>
+    <div class="rep" aria-live="polite"><span class="rcode" id="hCode">—</span><span class="rmsg" id="hMsg"></span><span class="rpart" id="hPart"></span></div>
+    <div class="wire">
+      <span>Sent over</span>
+      <span class="seg" role="group" aria-label="Channel"><button type="button" data-ch="http" aria-pressed="false">http</button><button type="button" data-ch="https" aria-pressed="true">https</button></span>
+      <span>Anyone between you and the machine reads:</span><span class="seen" id="hSeen"></span>
+    </div>
+    <p class="fb" id="hFb" aria-live="polite"></p>
+  </div>
+  <details class="reveal" data-for="4"><summary>Reveal what humans invented</summary><div class="rv">
+    <p class="inv"><b>HTTP</b><small>1989 to 1991 · Tim Berners-Lee at CERN · about 35 years ago</small></p>
+    <p>A request carries an action (the method), an address, headers written on the envelope, and a body inside it. A reply carries a status code and a body. Every API you call today still works this way.</p>
+    <p><b>HTTPS</b> is HTTP inside a sealed envelope. Switch to http above and anyone between you and the machine can read your key. The S seals it. That was your DM in Round Three.</p>
+    <div class="became"><span>This became</span><span class="part act">action</span><span class="part key">key</span><span class="part code">code</span><span>the key is a header, written on the envelope</span></div>
+    <p class="prin"><span class="pill det">Protocol</span>Input → Process → Output, across a wire.</p>
+  </div></details>
+</section>
+
+<!-- RUNG 5 · REST -->
+<section class="s rung" id="r5" data-rung="5">
+  <h2><span class="n">RUNG 5</span>Fifty companies, fifty words</h2>
+  <div class="q"><span class="kick">Ask first</span><p>Company A calls it getDiagnosis, B calls it fetchDiag, C calls it retrieveDiagnosis. What goes wrong when you connect to 50 of them?</p></div>
+  <div class="lab">
+    <span class="kick">Try it · sort twelve names into four buckets</span>
+    <p>Tap a name, then tap the bucket it belongs in. Three companies already need twelve words.</p>
+    <div class="verbs" id="vPool" aria-label="Names to sort"></div>
+    <div class="bkts" id="vBkts"></div>
+    <p class="fb" id="vFb" aria-live="polite"></p>
+  </div>
+  <details class="reveal" data-for="5"><summary>Reveal what humans invented</summary><div class="rv">
+    <p class="inv"><b>REST</b><small>2000 · Roy Fielding's PhD dissertation</small></p>
+    <p>Addresses are nouns: <code>/diagnoses</code>, <code>/workflows/7</code>. A handful of shared verbs act on them: <b>Create, Read, Update, Delete</b>. On the wire they are spelled POST, GET, PUT or PATCH, and DELETE. Learn four words once, and every REST API speaks them.</p>
+    <p>CRUD is a term from 1983. It comes back in Lecture 6, where a database does the same four things to a table.</p>
+    <div class="became"><span>This became</span><span class="part addr">address</span><span class="part act">action</span><span><code>/diagnoses</code> plus CREATE</span></div>
+    <p class="prin"><span class="pill det">Protocol</span>An agreement on how to use HTTP. Strictly a design style, not a protocol of its own.</p>
+  </div></details>
+</section>
+
+<!-- RUNG 6 · JSON -->
+<section class="s rung" id="r6" data-rung="6">
+  <h2><span class="n">RUNG 6</span>Two programs, one package</h2>
+  <div class="q"><span class="kick">Ask first</span><p>The machine said 400 until you used curly braces. Aarav's UI might be written in Python and the diagnosis machine in JavaScript. Why would both accept curly braces?</p></div>
+  <div class="lab">
+    <span class="kick">Try it · break the package, then fix it</span>
+    <div class="jgrid">
+      <div>
+        <textarea class="jin" id="jIn" aria-label="The package" spellcheck="false"></textarea>
+        <div class="btnrow" style="margin-top:8px">
+          <button type="button" class="btn ghost" data-jbreak="brace">Drop the closing brace</button>
+          <button type="button" class="btn ghost" data-jbreak="single">Use single quotes</button>
+          <button type="button" class="btn ghost" data-jbreak="comma">Add a field, forget the comma</button>
+          <button type="button" class="btn ghost" data-jbreak="reset">Reset</button>
+        </div>
+        <p class="jst" id="jSt" aria-live="polite"></p>
+        <pre class="caret" id="jCaret" hidden></pre>
+        <div class="reads" id="jReads"></div>
+      </div>
+      <div>
+        <p class="kick" style="margin:0 0 6px">The same data, in a format someone made up</p>
+        <div class="adhoc">WORKFLOW&gt;&gt;I open Jira, read the week's tickets, write a status report and post it on Slack;;TIME&gt;&gt;90min;;</div>
+        <p style="font-size:14px;margin:10px 0 0">Would a Python program and a JavaScript program both read this? Who wrote the rules for <code>&gt;&gt;</code> and <code>;;</code>? What happens when the workflow itself contains <code>;;</code>?</p>
+      </div>
+    </div>
+    <p class="fb" id="jFb" aria-live="polite"></p>
+  </div>
+  <details class="reveal" data-for="6"><summary>Reveal what humans invented</summary><div class="rv">
+    <p class="inv"><b>JSON</b><small>2001 · Douglas Crockford · standardised as ECMA-404 (2013) and RFC 8259 (2017)</small></p>
+    <p>Plain text: keys and values in curly braces, every key in double quotes. JSON is a <b>format, not a language</b>. A .docx opens in Word and in Google Docs because both agree on the file format. JSON works the same way: every programming language and every no-code tool reads it, which is why it became the web's default package format.</p>
+    <p>The error you just caused is the 400 from Round Three: "Can't read."</p>
+    <div class="became"><span>This became</span><span class="part pkg">package</span><span><code>{"workflow": "..."}</code></span></div>
+    <p class="prin"><span class="pill coral">Common language</span>For the contents of the envelope.</p>
+  </div></details>
+</section>
+
+<!-- CLOSE -->
+<section class="s" id="close">
+  <h2><span class="n">CLOSE</span>Six inventions, two principles</h2>
+  <p>Look at the envelope. Every part of your Round Three message is there, and each one exists because something failed without it.</p>
+  <div class="kinds">
+    <div class="card coral"><p class="kick">Common language</p><h4>What the signals mean</h4><ul><li>Rung 1 · Morse code</li><li>Rung 2 · ASCII, then UTF-8</li><li>Rung 6 · JSON</li></ul></div>
+    <div class="card"><p class="kick" style="color:var(--det-ink)">Protocol</p><h4>How the signals travel</h4><ul><li>Rung 3 · TCP/IP</li><li>Rung 4 · HTTP, then HTTPS</li><li>Rung 5 · REST, a style for using HTTP</li></ul></div>
+  </div>
+  <div class="call"><p class="kick">From Lecture 2, now proven six times</p><p>An interface is a common language plus a protocol.</p></div>
+  <p>And every rung was the same shape:</p>
+  <div class="ipo">
+    <div class="bx"><p class="kick">Input</p><b>The request</b><small>address, action, key, package</small></div>
+    <span class="ar" aria-hidden="true">→</span>
+    <div class="bx"><p class="kick">Process</p><b>The machine</b><small>on the other end of the wire</small></div>
+    <span class="ar" aria-hidden="true">→</span>
+    <div class="bx"><p class="kick">Output</p><b>The reply</b><small>code and package</small></div>
+  </div>
+  <h3>One question to keep</h3>
+  <p>Groq is not OpenAI, yet Groq's address says <code>/openai/v1</code>. Once enough programs speak one format, competitors adopt it, so code written for one works on the other. ASCII won that way. HTTP won that way. JSON won that way. Now the AI world is doing it with the <code>messages</code> package.</p>
+  <p>In a few weeks a model will need to talk to tools it has never seen. Same answer: an agreed JSON format and a protocol.</p>
+  <p class="sig">Every part is there because something failed without it.<small>Next: send a real request in the <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a> · read it all again in the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">lecture notes</a></small></p>
+</section>
+</main>
+</div>
+</div>
+
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+  var esc=function(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')};
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ls={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+  /* ---------- progress across rungs ---------- */
+  var done={};
+  function markDone(n){
+    if(done[n]) return; done[n]=true;
+    var d=$('details.reveal[data-for="'+n+'"]'); if(d && !d.open) d.open=true;
+    paint();
+  }
+  function paint(){
+    var count=Object.keys(done).length;
+    $('#wprog').textContent=count+' of 6';
+    $('#envn').textContent=count+' / 6';
+    $$('.st6 button[data-go^="r"]').forEach(function(b){ b.classList.toggle('done',!!done[b.dataset.go.slice(1)]); });
+    var E={
+      addr: done[3] ? (done[5] ? 'https://aarav.example/diagnoses' : '203.0.113.7 · which machine') : '—',
+      act:  done[4] ? (done[5] ? 'CREATE → POST' : 'an action: POST') : '—',
+      key:  done[4] ? 'Authorization: Bearer aarav_k3x9m2pq_5e1c0a' : '—',
+      pkg:  done[6] ? '{"workflow": "I open Jira, read the week\'s tickets…"}' : done[2] ? 'characters as numbers (A = 65)' : done[1] ? 'a shared code' : '—',
+      code: done[4] ? '201 Created' : '—'
+    };
+    var on={addr:!!done[3],act:!!done[4],key:!!done[4],pkg:!!(done[1]||done[2]||done[6]),code:!!done[4]};
+    Object.keys(E).forEach(function(k){
+      var band=$('[data-band="'+k+'"]'); band.classList.toggle('on',on[k]); $('code',band).textContent=E[k];
+      var chip=$('[data-chip="'+k+'"]'); if(chip) chip.classList.toggle('on',on[k]);
+    });
+  }
+  $$('details.reveal').forEach(function(d){ d.addEventListener('toggle',function(){ if(d.open) markDone(+d.dataset.for); }); });
+  $('#allBtn').addEventListener('click',function(){ for(var i=1;i<=6;i++) markDone(i); });
+
+  /* ---------- projector size ---------- */
+  var bigBtn=$('#bigBtn');
+  function setBig(v){ document.documentElement.classList.toggle('big',v); bigBtn.setAttribute('aria-pressed',v?'true':'false'); ls.set('l04.wire.big',v?'1':'0'); }
+  setBig(ls.get('l04.wire.big')==='1');
+  bigBtn.addEventListener('click',function(){ setBig(!document.documentElement.classList.contains('big')); });
+
+  /* ---------- stepper + keyboard ---------- */
+  var ORDER=['r1','r2','r3','r4','r5','r6','close'], active=null;
+  function go(id){ var el=document.getElementById(id); if(el) el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); }
+  $$('.st6 button').forEach(function(b){ b.addEventListener('click',function(){ go(b.dataset.go); }); });
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ active=e.target.id; $$('.st6 button').forEach(function(b){ if(b.dataset.go===active) b.setAttribute('aria-current','step'); else b.removeAttribute('aria-current'); }); } }); },{rootMargin:'-35% 0px -60% 0px'});
+  ORDER.forEach(function(id){ io.observe(document.getElementById(id)); });
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='ArrowLeft' && e.key!=='ArrowRight') return;
+    if(e.altKey||e.ctrlKey||e.metaKey||e.shiftKey) return;
+    if(e.target.matches('input,textarea,select,[contenteditable]')) return;
+    var i=ORDER.indexOf(active); if(i<0) i=e.key==='ArrowRight'?-1:1;
+    var n=Math.max(0,Math.min(ORDER.length-1,i+(e.key==='ArrowRight'?1:-1)));
+    e.preventDefault(); go(ORDER[n]);
+  });
+
+  /* ---------- rung 1: morse ---------- */
+  var MORSE={A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..'};
+  var BACK={}; Object.keys(MORSE).forEach(function(k){ BACK[MORSE[k]]=k; });
+  $('#mTab').innerHTML=Object.keys(MORSE).map(function(k){ return '<span><b>'+k+'</b>'+MORSE[k].replace(/\./g,'·').replace(/-/g,'–')+'</span>'; }).join('');
+  var mKey=$('#mKey'), mLamp=$('#mLamp'), letters=[], cur='', t0=0, gapT=null, playing=false;
+  var show=function(s){ return s.replace(/\./g,'·').replace(/-/g,'–'); };
+  function mRender(){
+    var all=letters.concat(cur?[cur]:[]);
+    $('#mSend').textContent=all.map(show).join('  ');
+    var book=$('#mBook').checked, fb=$('#mFb');
+    if(book){
+      var txt=letters.map(function(l){ return BACK[l]||'?'; }).join('')+(cur?'…':'');
+      $('#mRecv').textContent=txt;
+      if(/HI/.test(letters.map(function(l){return BACK[l]||'?';}).join(''))){ fb.className='fb ok'; fb.textContent='The receiver read HI. Both ends held the same codebook.'; markDone(1); }
+      else if(letters.length){ fb.className='fb'; fb.textContent='H is four dots, I is two. Pause between letters.'; }
+      else { fb.className='fb'; fb.textContent=''; }
+    } else {
+      $('#mRecv').textContent=all.length ? all.map(function(l){ return l.replace(/\./g,'▪').replace(/-/g,'▬'); }).join(' ') : '';
+      fb.className='fb bad'; fb.textContent=all.length ? 'The same pulses arrive. Without the codebook they mean nothing.' : 'The codebook is gone. Send something and see what the receiver gets.';
+    }
+    $('#mTab').classList.toggle('gone',!book);
+  }
+  function commit(){ if(cur){ letters.push(cur); cur=''; if(letters.length>12) letters=letters.slice(-12); mRender(); } }
+  function press(){ if(playing) return; clearTimeout(gapT); t0=performance.now(); mKey.classList.add('down'); mLamp.classList.add('on'); }
+  function release(){ if(!t0) return; var d=performance.now()-t0; t0=0; mKey.classList.remove('down'); mLamp.classList.remove('on'); cur+=(d<220?'.':'-'); if(cur.length>6) cur=cur.slice(-6); mRender(); gapT=setTimeout(commit,750); }
+  mKey.addEventListener('pointerdown',function(e){ e.preventDefault(); mKey.focus(); try{mKey.setPointerCapture(e.pointerId)}catch(_){} press(); });
+  mKey.addEventListener('pointerup',release);
+  mKey.addEventListener('pointercancel',release);
+  mKey.addEventListener('contextmenu',function(e){ e.preventDefault(); });
+  function spaceTarget(t){ return t===mKey || ((t===document.body||t===document.documentElement) && active==='r1'); }
+  document.addEventListener('keydown',function(e){ if(e.code!=='Space'||!spaceTarget(e.target)) return; e.preventDefault(); if(!e.repeat) press(); });
+  document.addEventListener('keyup',function(e){ if(e.code!=='Space'||!spaceTarget(e.target)) return; e.preventDefault(); release(); });
+  $('#mClear').addEventListener('click',function(){ letters=[]; cur=''; clearTimeout(gapT); mRender(); });
+  $('#mBook').addEventListener('change',mRender);
+  $('#mPlay').addEventListener('click',function(){
+    if(playing) return; letters=[]; cur=''; clearTimeout(gapT); mRender();
+    var seq=['....','..'];
+    if(reduce){ letters=seq.slice(); mRender(); return; }
+    playing=true; var steps=[];
+    seq.forEach(function(l,li){ l.split('').forEach(function(s){ steps.push({s:s,l:li}); }); steps.push({gap:true}); });
+    var i=0;
+    (function next(){
+      if(i>=steps.length){ playing=false; return; }
+      var st=steps[i++];
+      if(st.gap){ commit(); setTimeout(next,320); return; }
+      mLamp.classList.add('on'); mKey.classList.add('down');
+      setTimeout(function(){ mLamp.classList.remove('on'); mKey.classList.remove('down'); cur+=st.s; mRender(); setTimeout(next,140); }, st.s==='.'?130:380);
+    })();
+  });
+  mRender();
+
+  /* ---------- rung 2: ascii ---------- */
+  var aIn=$('#aIn'), aTouched=false;
+  function aRender(){
+    var chars=Array.from(aIn.value).slice(0,40), enc=new TextEncoder(), bytes=0, non=0;
+    $('#aTab').innerHTML=chars.map(function(ch){
+      var cp=ch.codePointAt(0), b=enc.encode(ch); bytes+=b.length;
+      if(cp<128){ return '<div class="arow"><span class="c">'+(ch===' '?'␣':esc(ch))+'</span><span class="n">'+cp+'</span><span class="bits">'+cp.toString(2).padStart(7,'0')+'</span></div>'; }
+      non++;
+      return '<div class="arow no"><span class="c">'+esc(ch)+'</span><span class="n">no ASCII</span><span class="bits">UTF-8: '+[].map.call(b,function(x){return x.toString(2).padStart(8,'0');}).join(' ')+'</span></div>';
+    }).join('');
+    $('#aSum').textContent=chars.length+' characters · '+bytes+' bytes in UTF-8'+(non?' · '+non+' with no ASCII number':'');
+    var fb=$('#aFb');
+    if(non){ fb.className='fb bad'; fb.textContent='ASCII has 128 numbers, and none of them are for these characters. UTF-8 uses more bytes per character instead.'; }
+    else if(aTouched){ fb.className='fb ok'; fb.textContent='Every character is a fixed number. A machine reads the bits and knows the letter. No operator.'; }
+    else { fb.className='fb'; fb.textContent=''; }
+    if(aTouched) markDone(2);
+  }
+  aIn.addEventListener('input',function(){ aTouched=true; aRender(); });
+  $$('[data-ascii]').forEach(function(b){ b.addEventListener('click',function(){ aIn.value=b.dataset.ascii; aTouched=true; aRender(); }); });
+  aRender();
+
+  /* ---------- rung 3: tcp/ip ---------- */
+  var PK=["I open Jira,","read the week's tickets,","write a status report","and post it","on Slack.","About 90 minutes."];
+  var MISSING=4, ARRIVE=[3,6,1,5,2], arr, reb, numbered, resent;
+  function tInit(){ arr=ARRIVE.slice(); reb=[]; numbered=false; resent=false; tRender(); $('#tFb').className='fb'; $('#tFb').textContent=''; }
+  function pktHTML(n,placed,isNew){ return '<button type="button" class="pkt'+(placed?' placed':'')+(isNew?' new':'')+'" data-n="'+n+'"><small>to 203.0.113.7</small>'+(numbered?'<i>'+n+' of 6</i>':'')+'<span>'+esc(PK[n-1])+'</span></button>'; }
+  function tRender(newN){
+    $('#tArr').innerHTML=arr.map(function(n){ return pktHTML(n,false,n===newN); }).join('');
+    $('#tReb').innerHTML=reb.map(function(n){ return pktHTML(n,true); }).join('');
+    $('#tText').textContent=reb.length ? reb.map(function(n){return PK[n-1];}).join(' ') : '';
+    $('#tNum').disabled=numbered;
+    var ask=$('#tAsk'); ask.disabled=!numbered||resent; ask.textContent=numbered?'Ask for packet '+MISSING+' again':'Ask for the missing packet again';
+  }
+  $('#tArr').addEventListener('click',function(e){
+    var b=e.target.closest('.pkt'); if(!b) return; var n=+b.dataset.n, fb=$('#tFb');
+    if(!numbered){
+      arr.splice(arr.indexOf(n),1); reb.push(n); tRender();
+      if(!arr.length){ fb.className='fb bad'; fb.textContent='This is everything that arrived. Does it read right? Is anything missing? Nobody can tell. Try numbering the packets.'; }
+      else { fb.className='fb'; fb.textContent=''; }
+      return;
+    }
+    var need=reb.length+1;
+    if(n===need){ arr.splice(arr.indexOf(n),1); reb.push(n); tRender();
+      if(reb.length===6){ fb.className='fb ok'; fb.textContent='All six confirmed, in order. The receiver can now say: got 1 to 6.'; markDone(3); }
+      else { fb.className='fb'; fb.textContent=''; }
+    } else {
+      b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+      fb.className='fb bad';
+      fb.textContent=(need===MISSING && arr.indexOf(MISSING)<0) ? 'Packet '+MISSING+' never arrived. You know exactly which one to ask for.' : 'Not next. You need packet '+need+'.';
+    }
+  });
+  $('#tNum').addEventListener('click',function(){ numbered=true; arr=arr.concat(reb).sort(function(a,b){ return ARRIVE.indexOf(a)-ARRIVE.indexOf(b); }); reb=[]; tRender(); var fb=$('#tFb'); fb.className='fb'; fb.textContent='Now every packet says where it belongs. Count them: 1, 2, 3, 5, 6. Packet '+MISSING+' is missing.'; });
+  $('#tAsk').addEventListener('click',function(){ resent=true; arr.push(MISSING); tRender(MISSING); var fb=$('#tFb'); fb.className='fb ok'; fb.textContent='Packet '+MISSING+' sent again, and it arrived. Finish rebuilding.'; });
+  $('#tReset').addEventListener('click',tInit);
+  tInit();
+
+  /* ---------- rung 4: http ---------- */
+  var ch='https', METHOD={CREATE:'POST',READ:'GET',UPDATE:'PUT',DELETE:'DELETE'};
+  function hState(){ return {addr:$('#hAddr').checked,key:$('#hKey').checked,act:$('#hAct').value,pkg:$('#hPkg').value}; }
+  function hReply(s){
+    if(!s.addr) return [404,'Not found. Doors: /workflows /diagnoses','address','No address: the machine cannot tell which door you mean.'];
+    if(s.act==='none') return [400,'Which action? CREATE READ UPDATE DELETE','action','No action: it found the door, but not what you want done.'];
+    if(s.act==='UPDATE'||s.act==='DELETE') return [405,'This door takes CREATE, READ','action','The door exists, but it does not take that action.'];
+    if(!s.key) return [401,'Who are you? Key needed','key','No key: the machine does not know who is asking.'];
+    if(s.act==='READ') return [200,'[] Nothing to read yet','action','A 200, and nothing in it. Read only fetches what already exists. The request was fine; there is just nothing to read.'];
+    if(s.pkg!=='ok') return [400,'Can\'t read. Send {"workflow": "..."}','package','The package is missing or broken, so the machine cannot read it.'];
+    return [201,'Created. Your diagnosis is on its way','done','Every part is there. 201 means something new was created.'];
+  }
+  function hRender(){
+    var s=hState(), r=hReply(s), m=s.act==='none'?null:METHOD[s.act];
+    var miss=function(t){ return '<span class="miss">'+t+'</span>'; };
+    var lines=[];
+    lines.push((m?'<span class="t-act">'+m+'</span>':miss('(no action)'))+' '+(s.addr?'<span class="t-addr">/diagnoses</span>':miss('(no address)'))+' HTTP/1.1');
+    lines.push('Host: '+(s.addr?'<span class="t-addr">aarav.example</span>':miss('(none)')));
+    lines.push(s.key?'<span class="t-key">Authorization: Bearer aarav_k3x9m2pq_5e1c0a</span>':miss('(no key)'));
+    if(s.pkg!=='none') lines.push('<span class="t-pkg">Content-Type: application/json</span>');
+    lines.push('');
+    lines.push(s.pkg==='ok'?'<span class="t-pkg">{"workflow": "I open Jira, read the week\'s tickets…"}</span>':s.pkg==='bad'?'<span class="t-pkg">{"workflow": "I open Jira, read the week\'s tickets…</span>':miss('(no package)'));
+    $('#hRaw').innerHTML=lines.join('\n');
+    var c=$('#hCode'); c.textContent=r[0]; c.className='rcode s'+String(r[0])[0];
+    $('#hMsg').textContent=r[1];
+    $('#hPart').textContent=r[2]==='done'?'Every part checked.':'The machine stopped at: '+r[2];
+    var seen=$('#hSeen');
+    if(!s.key){ seen.className='seen'; seen.textContent=ch==='https'?'▒▒▒▒▒▒▒▒ (sealed)':'your whole message, but no secret in it yet'; }
+    else if(ch==='http'){ seen.className='seen leak'; seen.textContent='Authorization: Bearer aarav_k3x9m2pq_5e1c0a'; }
+    else { seen.className='seen'; seen.textContent='▒▒▒▒▒▒▒▒ (sealed)'; }
+    var fb=$('#hFb'); fb.className='fb'+(r[0]===201?' ok':''); fb.textContent=r[3]+(ch==='http'&&s.key?' And over plain http, your key just travelled where anyone could read it.':'');
+    if(r[0]===201) markDone(4);
+  }
+  ['#hAddr','#hKey','#hAct','#hPkg'].forEach(function(id){ $(id).addEventListener('change',hRender); });
+  $$('[data-ch]').forEach(function(b){ b.addEventListener('click',function(){ ch=b.dataset.ch; $$('[data-ch]').forEach(function(x){ x.setAttribute('aria-pressed',x===b?'true':'false'); }); hRender(); }); });
+  hRender();
+
+  /* ---------- rung 5: rest ---------- */
+  var VERBS=[['getDiagnosis','R','A'],['addWorkflow','C','A'],['editWorkflow','U','A'],['removeWorkflow','D','A'],['fetchDiag','R','B'],['newWorkflow','C','B'],['changeWorkflow','U','B'],['killWorkflow','D','B'],['retrieveDiagnosis','R','C'],['submitWorkflow','C','C'],['tweakWorkflow','U','C'],['purgeWorkflow','D','C']];
+  var BK=[['C','Create','POST','Makes something new that did not exist before.'],['R','Read','GET','Looks at what already exists. Changes nothing.'],['U','Update','PUT · PATCH','Changes something that already exists.'],['D','Delete','DELETE','Makes something stop existing.']];
+  var pool=VERBS.map(function(v,i){return i;}), placed={C:[],R:[],U:[],D:[]}, sel=null;
+  $('#vBkts').innerHTML=BK.map(function(b){ return '<button type="button" class="bkt" data-b="'+b[0]+'"><span class="bn">'+b[1]+'</span><span class="bm">'+b[2]+'</span><span class="bd">'+b[3]+'</span><span class="bl"></span></button>'; }).join('');
+  function vRender(){
+    $('#vPool').innerHTML=pool.map(function(i){ var v=VERBS[i]; return '<button type="button" class="verb" data-v="'+i+'" aria-pressed="'+(sel===i?'true':'false')+'">'+v[0]+'<small>Company '+v[2]+'</small></button>'; }).join('');
+    BK.forEach(function(b){ var el=$('.bkt[data-b="'+b[0]+'"]'); $('.bl',el).innerHTML=placed[b[0]].map(function(i){ return '<span>'+VERBS[i][0]+'</span>'; }).join(''); el.classList.toggle('target',sel!==null); el.classList.toggle('named',!pool.length); });
+  }
+  $('#vPool').addEventListener('click',function(e){ var b=e.target.closest('.verb'); if(!b) return; var i=+b.dataset.v; sel=(sel===i)?null:i; vRender(); var fb=$('#vFb'); fb.className='fb'; fb.textContent=sel===null?'':'Now tap the bucket for '+VERBS[i][0]+'.'; });
+  $('#vBkts').addEventListener('click',function(e){
+    var b=e.target.closest('.bkt'); if(!b||sel===null) return; var fb=$('#vFb'), v=VERBS[sel];
+    if(v[1]===b.dataset.b){ pool.splice(pool.indexOf(sel),1); placed[v[1]].push(sel); sel=null; vRender();
+      if(!pool.length){ fb.className='fb ok'; fb.textContent='Twelve names, four meanings. Learn the four once and every API speaks them: Create, Read, Update, Delete.'; markDone(5); }
+      else { fb.className='fb'; fb.textContent=pool.length+' left.'; }
+    } else {
+      fb.className='fb bad'; fb.textContent='Not quite. After '+v[0]+' runs, does something new exist, does something change, does something disappear, or is it only looked at?';
+      var vb=$('.verb[data-v="'+sel+'"]'); if(vb){ vb.classList.remove('shake'); void vb.offsetWidth; vb.classList.add('shake'); }
+    }
+  });
+  vRender();
+
+  /* ---------- rung 6: json ---------- */
+  var J0='{"workflow": "I open Jira, read the week\'s tickets, write a status report and post it on Slack. About 90 minutes."}';
+  var jIn=$('#jIn'), sawErr=false; jIn.value=J0;
+  function pyRepr(v){
+    if(v===null) return 'None'; if(v===true) return 'True'; if(v===false) return 'False';
+    if(typeof v==='number') return String(v);
+    if(typeof v==='string'){ var q=(v.indexOf("'")>-1 && v.indexOf('"')<0)?'"':"'"; return q+v.replace(/\\/g,'\\\\').split(q).join('\\'+q)+q; }
+    if(Array.isArray(v)) return '['+v.map(pyRepr).join(', ')+']';
+    return '{'+Object.keys(v).map(function(k){ return pyRepr(k)+': '+pyRepr(v[k]); }).join(', ')+'}';
+  }
+  function jsRepr(v){
+    if(v===null||typeof v!=='object') return JSON.stringify(v);
+    if(Array.isArray(v)) return '['+v.map(jsRepr).join(', ')+']';
+    return '{ '+Object.keys(v).map(function(k){ return (/^[A-Za-z_$][\w$]*$/.test(k)?k:JSON.stringify(k))+': '+jsRepr(v[k]); }).join(', ')+' }';
+  }
+  function errPos(msg,src){
+    var m=msg.match(/position (\d+)/); if(m) return +m[1];
+    m=msg.match(/line (\d+) column (\d+)/);
+    if(m){ var ln=+m[1], col=+m[2], lines=src.split('\n'), p=0; for(var i=0;i<ln-1&&i<lines.length;i++) p+=lines[i].length+1; return p+col-1; }
+    if(/end of (JSON )?(input|data)/i.test(msg)) return src.length;
+    return null;
+  }
+  function jRender(){
+    var src=jIn.value, st=$('#jSt'), cr=$('#jCaret'), rd=$('#jReads'), fb=$('#jFb');
+    try{
+      var v=JSON.parse(src);
+      st.className='jst ok'; st.textContent='Valid JSON. Both programs can read it.';
+      cr.hidden=true;
+      rd.innerHTML='<div><b>Python reads it as a dict</b>'+esc(pyRepr(v))+'</div><div><b>JavaScript reads it as an object</b>'+esc(jsRepr(v))+'</div>';
+      if(sawErr){ fb.className='fb ok'; fb.textContent='Fixed. Two different programs, one agreed format.'; markDone(6); }
+      else { fb.className='fb'; fb.textContent='Now break it with one of the buttons, or by hand.'; }
+    }catch(e){
+      sawErr=true;
+      st.className='jst bad'; st.textContent='400 Can\'t read · '+e.message;
+      var p=errPos(e.message,src);
+      if(p!==null){ var a=Math.max(0,p-30), snip=src.slice(a,p+12).replace(/\n/g,' '); cr.textContent=snip+'\n'+' '.repeat(Math.max(0,p-a))+'^ here'; cr.hidden=false; } else cr.hidden=true;
+      rd.innerHTML='';
+      fb.className='fb bad'; fb.textContent='This is the 400 from Round Three. Neither program can read it. Fix it.';
+    }
+  }
+  jIn.addEventListener('input',jRender);
+  $$('[data-jbreak]').forEach(function(b){ b.addEventListener('click',function(){
+    var k=b.dataset.jbreak;
+    if(k==='reset'){ jIn.value=J0; }
+    else if(k==='brace'){ jIn.value=J0.replace(/\}\s*$/,''); }
+    else if(k==='single'){ jIn.value="{'workflow': 'I open Jira, read the week tickets, write a status report and post it on Slack. About 90 minutes.'}"; }
+    else if(k==='comma'){ jIn.value=J0.replace(/\}\s*$/,' "minutes": 90}'); }
+    jRender();
+  }); });
+  jRender();
+
+  paint();
+})();
+</script>
+</body>
+</html>

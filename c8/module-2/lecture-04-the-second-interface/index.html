@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>API as the Second Interface | 100xEngineers</title>
+<meta name="description" content="Cohort 8 Module 2, Lecture 4: API as the second interface. Playgrounds, cards, notes, practice set and kit, for both tracks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<script src="/c8/docs.js"></script>
+<style>
+.cards a.card{text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.cards a.card:hover{border-color:var(--line2);transform:translateY(-1px)}
+.when{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
+.when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
+.when .kick{margin:0}
+</style>
+</head>
+<body data-page="l04-index">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards">Cards</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">Kit</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid" style="grid-template-columns:1fr">
+  <main>
+<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Lecture 4 · Sat 3 Oct 2026 · Both tracks</p>
+  <h1>API as the second interface</h1>
+  <p class="dek">Your UI has a face and no brain. The brain lives on another machine. This is how the two talk.</p>
+  <div class="meta"><span>Deterministic · The second interface</span><span>Lead: Siddhant</span><span>Next: Lecture 5 practical, Fri 9 Oct</span></div>
+</div>
+
+<div class="call"><p class="kick">The lecture in one line</p><p>Every request between two machines carries four things: an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span>, and a <span class="part pkg">package</span> in a format both sides agree on. Every reply carries two: a <span class="part code">code</span> and a <span class="part pkg">package</span>.</p></div>
+
+<div class="ipo"><div class="bx"><p class="kick">Input</p><b>The request</b><small>address, action, key, package</small></div><span class="ar" aria-hidden="true">→</span><div class="bx"><p class="kick">Process</p><b>Another machine</b><small>Aarav's service, or a model on Groq</small></div><span class="ar" aria-hidden="true">→</span><div class="bx"><p class="kick">Output</p><b>The reply</b><small>code, package</small></div></div>
+
+<div class="when"><p class="kick">01</p><h2>In the lecture</h2></div>
+<div class="cards">
+  <a class="card coral" href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder"><p class="kick">Playground</p><h4>Request Builder</h4><p>Build a request part by part and send it to a real machine: echo machines, Aarav's service, and a model on Groq.</p></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire"><p class="kick">Playground</p><h4>The Wire</h4><p>Six problems that built the internet, from Morse to JSON, and the part of your request each one became.</p></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/cards"><p class="kick">On screen</p><h4>Cards</h4><p>The envelope, status codes, CRUD and methods, the ladder, the Groq request, key rules. Printable.</p></a>
+</div>
+
+<div class="when"><p class="kick">02</p><h2>After the lecture</h2></div>
+<div class="cards">
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes"><p class="kick">Read</p><h4>Lecture notes</h4><p>The whole lecture, written as questions first and names second.</p></a>
+  <a class="card coral" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set"><p class="kick">Do · before Fri 9 Oct</p><h4>Practice set: Design your API</h4><p>Replay Round Three for real, break it on purpose, then design every request your own app needs.</p></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/network-tab"><p class="kick">Guide</p><h4>Reading the Network tab</h4><p>Find the six parts in ChatGPT's real traffic and in your own Groq request.</p></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety"><p class="kick">Guide</p><h4>Keys</h4><p>What Bearer means, where a key lives, and what to do the minute one leaks.</p></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/office-hour-guide"><p class="kick">Office hour</p><h4>Office hour guide</h4><p>The session plan, every error you should expect, and how to ask for help.</p></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit"><p class="kick">Keep open</p><h4>Kit</h4><p>Every link and command, the code track bridge in Python, the no-code bridge, and the words.</p></a>
+</div>
+
+<div class="when"><p class="kick">03</p><h2>The real machine</h2></div>
+<p>Aarav's Diagnosis Service from Round Three is a real API. Open it in your browser: <a href="https://100x-curriculum.vercel.app/aarav" target="_blank" rel="noopener"><code>100x-curriculum.vercel.app/aarav</code></a>. That is a Read, and it lists the doors. Create a key with <code>POST /aarav/keys</code>, then Create a diagnosis with <code>POST /aarav/diagnoses</code>. The <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#ex6">Request Builder</a> walks you through both.</p>
+
+<div class="when"><p class="kick">04</p><h2>Dates</h2></div>
+<div class="tw compact"><table><tbody>
+<tr><td>Assignment 1</td><td>Due Fri 9 Oct</td></tr>
+<tr><td>Practice set: Design your API</td><td>Post in your track channel before the Lecture 5 practical</td></tr>
+<tr><td>Lecture 5 · Building APIs and backend</td><td>Fri 9 Oct · Code track: Python, FastAPI, Render · No-code track: Antigravity</td></tr>
+<tr><td>Lecture 6 · Databases and domain modelling</td><td>Sat 10 Oct · Where should the diagnoses live?</td></tr>
+<tr><td>Lecture 8 · End to end MVP</td><td>Sat 17 Oct · A live URL in a real user's hands, then the hackathon</td></tr>
+</tbody></table></div>
+
+<p class="sig">The door is deterministic. What comes through it is probabilistic.<small><a href="/">Back to the curriculum map</a></small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
+</body>
+</html>
