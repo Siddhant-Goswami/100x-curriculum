@@ -81,7 +81,7 @@ td code{font:12.5px var(--mono)}
         <label style="flex:1;min-width:180px;margin:0">Sender (Zoom name)<input type="text" id="sender" autocomplete="off" placeholder="Riya"></label>
         <label class="chk"><input type="checkbox" id="dm"> Sent by DM to the machine</label>
       </div>
-      <label style="margin-top:10px">Message, pasted from chat<textarea id="msg" placeholder="CREATE 100x-curriculum.vercel.app/aarav/diagnoses key: key-7f3a {&quot;workflow&quot;: &quot;...&quot;}"></textarea></label>
+      <label style="margin-top:10px">Message, pasted from chat<textarea id="msg" placeholder="CREATE /aarav/diagnoses key: key-7f3a {&quot;workflow&quot;: &quot;...&quot;}"></textarea></label>
       <div class="row"><button class="b p" type="submit">Check (Enter)</button><span style="font-size:12.5px;color:var(--ink3)">Shift+Enter for a new line</span></div>
     </form>
   </div>
@@ -113,7 +113,7 @@ td code{font:12.5px var(--mono)}
     <p class="kick">The contract, in order (first failure is the only reply)</p>
     <table><thead><tr><th>#</th><th>Check</th><th>Reply</th></tr></thead><tbody>
     <tr><td>0</td><td>One sender</td><td><code>429 Too many requests. One sender.</code></td></tr>
-    <tr><td>1</td><td>Address</td><td><code>404 Not found. Doors: /aarav/workflows /aarav/diagnoses</code></td></tr>
+    <tr><td>1</td><td>Address (/aarav/diagnoses, host optional)</td><td><code>404 Not found. Doors: /aarav/workflows /aarav/diagnoses</code></td></tr>
     <tr><td>2</td><td>An action named</td><td><code>400 Which action? CREATE READ UPDATE DELETE</code></td></tr>
     <tr><td>3</td><td>Action allowed</td><td><code>405 This door takes CREATE, READ</code></td></tr>
     <tr><td>4</td><td>Current key</td><td><code>401 Who are you? Key needed</code> / <code>401 Key leaked. Revoked.</code></td></tr>
@@ -152,7 +152,7 @@ function check(sender, text, dm){
   if(S.poc){ if(sender && sender.toLowerCase()!==S.poc.toLowerCase()) return r(429,'Too many requests. One sender.','coord',alerts); }
   else { var recent=S.log.slice(-3).map(function(e){ return (e.sender||'').toLowerCase(); }); if(sender && recent.some(function(x){ return x && x!==sender.toLowerCase(); })) return r(429,'Too many requests. One sender.','coord',alerts, 'Two people are sending. When the room picks one, press "Lock last sender".'); }
   /* 1. address */
-  var door = /100x-curriculum\.vercel\.app\/aarav\/diagnoses\b/.test(t) ? 'diagnoses' : /100x-curriculum\.vercel\.app\/aarav\/workflows\b/.test(t) ? 'workflows' : null;
+  var door = /\baarav\/diagnoses\b/.test(t) ? 'diagnoses' : /\baarav\/workflows\b/.test(t) ? 'workflows' : null;
   if(!door) return r(404,'Not found. Doors: /aarav/workflows /aarav/diagnoses','address',alerts);
   /* 2. action named */
   var A={create:'create',post:'create',read:'read',get:'read',fetch:'read',update:'update',put:'update',patch:'update',change:'update',delete:'delete',remove:'delete'};

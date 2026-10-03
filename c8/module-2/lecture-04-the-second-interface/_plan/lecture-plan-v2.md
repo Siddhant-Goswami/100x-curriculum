@@ -104,7 +104,7 @@ In Lecture 2 the machine stayed silent and the room failed twice. This time it a
 
 **Slide:**
 
-> Aarav's Diagnosis Service lives at **100x-curriculum.vercel.app/aarav**. It turns a description of a workflow into a diagnosis. Goal: get a diagnosis of Aarav's Friday report. Aarav's Friday: "I open Jira, read the week's tickets, write a status report and post it on Slack. It takes about 90 minutes."
+> Aarav has built a Diagnosis Service. It turns a description of a workflow into a diagnosis. Goal: get a diagnosis of Aarav's Friday report. Aarav's Friday: "I open Jira, read the week's tickets, write a status report and post it on Slack. It takes about 90 minutes."
 
 **Rules (on screen):**
 
@@ -122,7 +122,7 @@ Rule 4 is the test. Do not say "pick a point of contact". If they do it anyway, 
 | # | Check | If it fails, reply | Part it teaches |
 | --- | --- | --- | --- |
 | 0 | One person is sending | `429 Too many requests. One sender.` | One point of contact (Lecture 2) |
-| 1 | Contains `100x-curriculum.vercel.app/aarav/diagnoses` (or `/aarav/workflows`) | `404 Not found. Doors: /aarav/workflows /aarav/diagnoses` | Address |
+| 1 | Contains `/aarav/diagnoses` (or `/aarav/workflows`), with or without the host | `404 Not found. Doors: /aarav/workflows /aarav/diagnoses` | Address |
 | 2 | Names an action | `400 Which action? CREATE READ UPDATE DELETE` | Action |
 | 3 | Action allowed at this door (CREATE or READ) | `405 This door takes CREATE, READ` | Action |
 | 4 | Carries `key:` and the current key | `401 Who are you? Key needed` | Key |
@@ -133,6 +133,8 @@ Rule 4 is the test. Do not say "pick a point of contact". If they do it anyway, 
 
 The game is about which parts exist, not their order in the message, so accept the parts in any order and any capitals. CREATE at `/workflows` with everything correct replies `201 Workflow saved. Diagnosis: /diagnoses`.
 
+**Finding the address.** The slide gives no address on purpose. The first message without one gets the 404, and its list of doors teaches the path. The full URL (`100x-curriculum.vercel.app/aarav/diagnoses`) is accepted too.
+
 **Getting the key.** When the room asks how, answer once, out of character: "Keys are issued in private. DM the machine." DM the point of contact `key-7f3a`. If anyone pastes it in the main chat, revoke it, reply `401 Key leaked. Revoked.`, and DM `key-9b2c`. The spares are `key-4d1e` and `key-c08f`.
 
 **The DM twist.** The winning message carries the key, so it must reach the machine **by DM**. If the room keeps leaking, give one hint at minute 15: "Where did the key come from?" Do not explain HTTPS yet; that happens on rung 4 of the ladder.
@@ -140,7 +142,7 @@ The game is about which parts exist, not their order in the message, so accept t
 **A winning message (by DM to the host):**
 
 ```
-CREATE 100x-curriculum.vercel.app/aarav/diagnoses key: key-7f3a {"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}
+CREATE /aarav/diagnoses key: key-7f3a {"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}
 ```
 
 **Diagnosis to read aloud:**
