@@ -35,9 +35,9 @@
 <section class="s" id="how">
 <h2>How These Notes Are Organised</h2>
 <div class="cards">
-  <div class="card"><p class="kick">Part 1 · Sections 1 to 5</p><h4>What we did in the lecture</h4><p>Round Three, the six parts, the CRUD quiz, and Aarav's workflow.</p></div>
-  <div class="card coral"><p class="kick">Part 2 · Section 6</p><h4>What you do this week</h4><p>Ten steps in the Request Builder, then the practice set.</p></div>
-  <div class="card"><p class="kick">Part 3 · Section 7</p><h4>Optional deep dive</h4><p>Why the six parts exist: six problems from Morse to JSON.</p></div>
+  <div class="card"><p class="kick">Part 1 · Sections 1 to 4</p><h4>What we did in the lecture</h4><p>Round Three, the six parts, and the CRUD quiz.</p></div>
+  <div class="card coral"><p class="kick">Part 2 · Section 5</p><h4>What you do this week</h4><p>Ten steps in the Request Builder, then the practice set.</p></div>
+  <div class="card"><p class="kick">Part 3 · Section 6</p><h4>Optional deep dive</h4><p>Why the six parts exist: six problems from Morse to JSON.</p></div>
 </div>
 </section>
 
@@ -120,27 +120,15 @@
 <tr><td>Removes an old workflow</td><td>Delete</td><td class="mono">DELETE /workflows/7</td></tr>
 </tbody></table></div>
 <p>PUT and PATCH are both Update. PUT replaces the whole thing; PATCH changes part of it.</p>
-<h3>The weather question</h3>
-<p>Aarav asks ChatGPT, "What's the weather in Bengaluru?" Which action is that? It feels like Read. It is not.</p>
-<p>Aarav is creating something. A new message, and a new reply, are added to his conversation, and that reply did not exist before he asked. So it is a Create, and Create is spelled POST. Compare a weather service answering <code>GET /forecast?city=Bengaluru</code>: it is reading a forecast already sitting in its system. A forecast is computed too, and it is still a GET.</p>
+<h3>Google search versus asking an LLM</h3>
+<p>Search for something on Google and look at the address bar: <code>google.com/search?q=…</code>. That is a GET. Ask ChatGPT the same thing, or call a model through an API, and the request is a POST. Why is one a Read and the other a Create?</p>
+<p>Google is reading. The pages it searches already sit in its index, and your search fetches results from what is already there. Your question fits in the address, and nothing new is stored.</p>
+<p>The model is creating. Your message and a new reply are added to the conversation, and that reply did not exist before you asked. Ask the same question twice and you get two different replies. Your prompt also travels as a package in the body, because it can be long and private, and an address is neither. So generation is a Create, and Create is spelled POST.</p>
 <div class="call"><p class="kick">The rule</p><p>Read what already exists: GET, and nothing changes. Create something new: POST. Update it: PUT or PATCH. Delete it: DELETE.</p></div>
 <p>Companies do not always follow the convention. For any app, its real traffic is the truth. You will read real traffic yourself in <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s7">step 7 of the Request Builder</a>.</p>
 </section>
 
-<section class="s" id="s05"><h2><span class="n">05</span>Aarav's Workflow, as an API</h2>
-<p>Aarav's Friday was the worked example: a status report written by hand every week, about 90 minutes each time. Put a brain behind his UI and you can list every request his app needs, in the same four parts.</p>
-<div class="tw"><table>
-<thead><tr><th>CRUD</th><th>Method</th><th>Address</th><th>Package in</th><th>Reply</th></tr></thead>
-<tbody>
-<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows</td><td class="mono">{"description": "..."}</td><td><span class="sc s2">201</span> + workflow id</td></tr>
-<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}</td><td>none</td><td><span class="sc s2">200</span> + the workflow</td></tr>
-<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows/{id}/diagnoses</td><td>none; the backend sends the workflow to a model</td><td><span class="sc s2">201</span> + diagnosis</td></tr>
-<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}/diagnoses</td><td>none</td><td><span class="sc s2">200</span> + past diagnoses</td></tr>
-</tbody></table></div>
-<p>Addresses are nouns (<code>/workflows</code>, <code>/diagnoses</code>). The four CRUD actions do the work. You will write the same table for your own app in the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a>.</p>
-</section>
-
-<section class="s" id="s06"><h2><span class="n">06</span>What You Do This Week</h2>
+<section class="s" id="s05"><h2><span class="n">05</span>What You Do This Week</h2>
 <p class="lead">The lecture stopped at the parts. This week you send real requests yourself, in the browser, for both tracks. Do the steps in order; each one has a checkpoint.</p>
 <ol class="steps">
   <li><b><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s2">Read: your first GET, and the space</a>.</b> The address bar is already an API tool. You will also see why a space becomes <code>%20</code>, and why a raw space causes a 400.</li>
@@ -154,17 +142,18 @@
   <li><b><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s10">Design your API</a>.</b> Write Aarav's table for your own app, then submit the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a>.</li>
 </ol>
 <div class="cards">
-  <div class="card coral"><p class="kick">Before Fri 9 Oct</p><h4><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a></h4><p>Submit what the steps produce. Discussed in next week's office hour, <span class="pend">date to be added</span>.</p></div>
+  <div class="card coral"><p class="kick">Tue 6 Oct · Office hour</p><h4><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting#s04">Office hour</a></h4><p>Milestone: steps 1 to 8 done and a draft of your API table. The question template, checklist and what to bring are on the troubleshooting page.</p></div>
+  <div class="card"><p class="kick">Before Fri 9 Oct</p><h4><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a></h4><p>Submit what the steps produce.</p></div>
   <div class="card"><p class="kick">Fri 9 Oct · Lecture 5</p><h4>Build the backend</h4><p>Code track: Python and FastAPI, deployed on Render. No-code track: Antigravity.</p></div>
   <div class="card"><p class="kick">Fri 9 Oct</p><h4>Assignment 1</h4><p>Due on its own track. The practice set does not depend on it.</p></div>
 </div>
 </section>
 
-<section class="s" id="s07"><h2><span class="n">07</span>Optional Deep Dive: Why These Six Parts?</h2>
+<section class="s" id="s06"><h2><span class="n">06</span>Optional Deep Dive: Why These Six Parts?</h2>
 <p>Round Three showed that the parts exist. It did not show why. Each part is there because an earlier system failed in a specific way: a wire that is only on or off (Morse code), machines without a human operator (ASCII), a million machines and lost messages (TCP/IP gave the address), a machine that does not know what you want (HTTP gave the action, the key and the code), fifty companies with fifty verb lists (REST gave nouns and CRUD), and two programs in different languages (JSON gave the package). <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/the-wire">The Wire</a> lets you work through each problem before you see its answer. It takes about 20 minutes and is not required for the practice set.</p>
 </section>
 
-<section class="s" id="s08"><h2><span class="n">08</span>Words You Met</h2>
+<section class="s" id="s07"><h2><span class="n">07</span>Words You Met</h2>
 <div class="gl">
   <div class="w"><b>API</b><span>The interface between two machines: a common language plus a protocol.</span></div>
   <div class="w"><b>Request</b><span>Address, action, key, package.</span></div>

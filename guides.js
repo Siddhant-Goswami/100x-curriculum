@@ -269,7 +269,7 @@ GUIDES.L4 = { all: {
   keep: 'Every request between two machines carries four things: an address, an action, a key, and a package in a format both sides agree on. Every reply carries two: a code and a package. You did not memorise these; the machine taught them to you in Round Three, one error at a time. This week you send real requests with them, from the Request Builder, ending with a model behind your request.',
   ideas: [
     ['4xx is yours, 5xx is theirs.', 'The machine does not guess. A 400, 401, 404 or 405 means one part of your request was wrong, and the code tells you which.'],
-    ['Create, Read, Update, Delete.', 'What you want is a CRUD action. The HTTP method is how it is spelled on the wire: POST, GET, PUT or PATCH, DELETE. Asking ChatGPT about the weather is a Create, because a new reply is added to your conversation.'],
+    ['Create, Read, Update, Delete.', 'What you want is a CRUD action. The HTTP method is how it is spelled on the wire: POST, GET, PUT or PATCH, DELETE. A Google search is a GET, but asking an LLM is a POST: a Create, because a new reply is added to your conversation.'],
     ['The door is deterministic. What comes through it is probabilistic.', 'Aarav\'s service returns the same diagnosis twice. A model on Groq returns different words to the same request. Which one is right, and who decides? That is the verifier.'],
     ['The key and the data live in a backend.', 'A key in a web page ships to every visitor, and a page forgets everything on refresh. UI, then backend, then the model. That backend is what both tracks build in the Lecture 5 practical.']
   ],
@@ -308,7 +308,7 @@ GUIDES.L4 = { all: {
   ],
   actions: [
     {id:'a1', t:'Keep going on Assignment 1', how:'Due Fri 9 Oct, on its own track.'},
-    {id:'oh', t:'Bring your practice set to next week\'s office hour', how:'Plus any request that would not work, with its status code.'},
+    {id:'oh', t:'Office hour, Tue 6 Oct: steps 1 to 8 done and a draft API table', how:'Bring one question in the template, and any request that would not work, with its status code.', link:'l04Trouble', linkLabel:'Office hour'},
     {id:'wire', t:'Optional: The Wire', how:'Why a request has exactly these parts, from Morse code to JSON.', link:'l04Wire', linkLabel:'The Wire'}
   ],
   next: 'Next: Lecture 5 practical, Fri 9 Oct. The code track builds the backend in Python with FastAPI and deploys it on Render; the no-code track builds it in Antigravity. The backend holds the Groq key and sits between your UI and the model. Lecture 6, Sat 10 Oct: where should the diagnoses live?',
