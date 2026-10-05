@@ -309,7 +309,7 @@ GUIDES.L4 = { all: {
   ],
   actions: [
     {id:'a1', t:'Keep going on Assignment 1', how:'Due Fri 9 Oct, on its own track.'},
-    {id:'oh', t:'Office hour, Tue 6 Oct, 8:30 pm IST: steps 1 to 8 done and a draft API table', how:'Bring one question in the template, and any request that would not work, with its status code.', link:'l04Trouble', linkLabel:'Office hour'},
+    {id:'oh', t:'Office hour, Thu 8 Oct, 8:30 pm IST: steps 1 to 8 done and a draft API table', how:'Bring one question in the template, and any request that would not work, with its status code.', link:'l04Trouble', linkLabel:'Office hour'},
     {id:'wire', t:'Optional: The Wire', how:'Why a request has exactly these parts, from Morse code to JSON.', link:'l04Wire', linkLabel:'The Wire'}
   ],
   next: 'Next: Lecture 5 practical, Fri 9 Oct. The code track builds the backend in Python with FastAPI and deploys it on Render; the no-code track builds it in Antigravity. The backend holds the Groq key and sits between your UI and the model. Lecture 6, Sat 10 Oct: where should the diagnoses live?',
