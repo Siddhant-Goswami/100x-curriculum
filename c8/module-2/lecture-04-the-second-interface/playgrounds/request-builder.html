@@ -178,7 +178,6 @@ Host: <span class="d" data-p="d">100x-curriculum.vercel.app</span>
   <li><b>Check the package band.</b> It holds <code>{"text": "…"}</code> and says <i>✓ valid JSON</i>. Try deleting a quote: it turns red. Put it back.</li>
   <li><b>Press Send.</b> Look for <span class="sc s2">200</span>, then find your text at <code>json.text</code> in the reply.</li>
   <li><b>Click Show the raw request.</b> A package needs one more header, <code>Content-Type: application/json</code>, so the machine knows which format to read. Machines do not guess.</li>
-  <li>If httpbin is slow, press <b>Use postman-echo instead</b>. Both echo your package back.</li>
 </ol>
 <div id="b4"></div>
 <details class="acc cd"><summary>Code track · the same request in Python</summary><div class="b"><div data-py="s3"></div><p><code>json=</code> turns the dictionary into JSON and adds the Content-Type header for you.</p></div></details>
@@ -452,7 +451,7 @@ Builder.prototype.show=function(r, again){
     var e=j.error||{}, msg=typeof e==='string'?e:(e.message||''), hint=e.hint||'', part=e.part||'';
     if(msg||hint) h+='<div class="fix"><p class="kick">'+(part?'Fix the '+esc(part):'What the machine said')+'</p>'+esc(msg)+(hint?'<br><span style="color:var(--ink2)">'+esc(hint)+'</span>':'')+'</div>';
   }
-  if(r.status===0) h+='<div class="fix"><p class="kick">Nothing came back</p>'+esc(r.err||'')+' Check the address. If it is right, the machine may be down: try the other echo machine.</div>';
+  if(r.status===0) h+='<div class="fix"><p class="kick">Nothing came back</p>'+esc(r.err||'')+' Check the address. If it is right, the machine may be down: wait a minute and send again.</div>';
   if(r.status>=200 && r.status<300 && j && cfg.want){
     var w=cfg.want(j);
     if(w && w.value!=null){
@@ -479,8 +478,7 @@ Builder.prototype.show=function(r, again){
 new Builder(document.getElementById('b3'),{title:'GET \u00b7 httpbin.org', query:{base:'https://httpbin.org/get?text=',value:'hello world'}, method:'GET', methods:['GET'], key:'none', pkg:null,
   want:function(j){ return {label:'args.text', value:get(j,'args.text')}; }});
 new Builder(document.getElementById('b4'),{title:'POST \u00b7 httpbin.org', url:'https://httpbin.org/post', method:'POST', methods:['POST'], key:'none',
-  pkg:JSON.stringify({text:WF},null,2), alt:{label:'Use postman-echo instead', back:'Back to httpbin', url:'https://postman-echo.com/post'},
-  urlNote:'If httpbin is slow, switch machines with the button above. Both echo your package back.',
+  pkg:JSON.stringify({text:WF},null,2),
   want:function(j){ return {label:'json.text', value:get(j,'json.text')}; }});
 
 /* ---------- exercise 5: Groq ---------- */
