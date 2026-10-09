@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Building APIs and Backend | 100xEngineers</title>
+<meta name="description" content="Cohort 8 Module 2, Lecture 5 (code track): Building APIs and backend. The practice set: a raw requests.post to an LLM inside your Gradio chat, checked against your golden pair.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<script src="/c8/docs.js"></script>
+<style>
+.cards a.card{text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.cards a.card:hover{border-color:var(--line2);transform:translateY(-1px)}
+.when{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
+.when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
+.when .kick{margin:0}
+</style>
+</head>
+<body data-page="l05-index">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L5">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 · Groq step</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a><a href="/#L5">Map</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid" style="grid-template-columns:1fr">
+  <main>
+<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Lecture 5 · Fri 9 Oct 2026 · Code track · After the lecture</p>
+  <h1>Building APIs and backend</h1>
+  <p class="dek">Your chat app still echoes. This week it sends a raw request to a model, and you prove the reply helps your user.</p>
+  <div class="meta"><span>Python · requests · Gradio · Groq</span><span>Post in the Discord code channel</span></div>
+</div>
+
+<div class="call"><p class="kick">The practical in one line</p><p>Four parts get you to any machine on the internet: an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span> and a <span class="part pkg">package</span>. A 200 proves the call worked. Only your verifier proves the reply helps.</p></div>
+
+<div class="when"><p class="kick">01</p><h2>Why the raw request</h2></div>
+<div class="tw compact"><table><tbody>
+<tr><td>The cushion broke</td><td>The SDK in Groq's quickstart worked until its default model returned a 404. The raw request is what you fall back on, and what lets you swap providers by changing one URL and one key.</td></tr>
+<tr><td>A working answer still failed</td><td>A reply that handed a business analyst a plan full of Python came back 200. The status code was right; the reply did not help.</td></tr>
+</tbody></table></div>
+
+<div class="when"><p class="kick">02</p><h2>Your path this week</h2></div>
+<ol class="steps">
+  <li><b><a href="/c8/module-2/lecture-05-building-apis/practice-set#s03">Send the raw request in the browser</a>.</b> The four parts to Groq, with your prompt and your user's real input. Predict the status code before every send; break it on purpose twice.</li>
+  <li><b><a href="/c8/module-2/lecture-05-building-apis/practice-set#s02">Rip off the cushion in Python</a>.</b> Replace the echo in your Lecture 3 Gradio chat with <code>requests.post</code>. No SDK. The diff is the process and nothing else.</li>
+  <li><b><a href="/c8/module-2/lecture-05-building-apis/practice-set#s05">Verify against your golden pair</a>.</b> One-line verdict, one prompt change, run it again.</li>
+  <li><b><a href="/c8/module-2/lecture-05-building-apis/practice-set#s07">Submit six things</a></b> on the Discord code channel. Track B (Aarav's workflow) is there if your Assignment 1 is not finished.</li>
+</ol>
+
+<div class="when"><p class="kick">03</p><h2>When you need it</h2></div>
+<div class="cards">
+  <a class="card" href="/c8/module-2/lecture-05-building-apis/practice-set"><p class="kick">Do this</p><h4>Practice set</h4><p>The live request, your prediction log, the verification note and the six deliverables, on one page.</p></a>
+  <a class="card" href="/#L5"><p class="kick">Track progress</p><h4>Tick list on the map</h4><p>The Lecture 5 stop on the curriculum map, with the steps as a tick list.</p></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting"><p class="kick">Stuck</p><h4>Troubleshooting</h4><p>Search an error and see which part it points to.</p></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety"><p class="kick">Guide</p><h4>Keys</h4><p>Where a key lives, and what to do the minute one leaks.</p></a>
+</div>
+
+<div class="when"><p class="kick">04</p><h2>Next</h2></div>
+<p>The next practical builds your own API, and with it the question Adnan raised: who else can see your key, and how much protection your app actually needs.</p>
+
+<p class="sig">A 200 means the machine understood you. It does not mean you helped anyone.<small><a href="/#L5">Back to the curriculum map</a></small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 5: Building APIs and backend</span><a href="/#L5">Curriculum map</a><a href="/c8/module-2/lecture-05-building-apis/">All Lecture 5 pages</a></div></footer>
+</body>
+</html>

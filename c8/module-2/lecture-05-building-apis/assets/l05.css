@@ -1,0 +1,70 @@
+/* Lecture 5 · Building APIs and backend. Loaded after /c8/docs.css and the Lecture 4 part colours (l04.css):
+   address = amber, action = coral, key = violet, package = green. */
+
+/* the live request: four labelled bands, each one editable */
+.lab{border:1px solid var(--line);border-radius:var(--r);background:var(--card);overflow:hidden;margin:0 0 18px}
+.lab .lh{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.lab .lh .sp{margin-left:auto}
+.lab .band{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:start;padding:10px 14px;border-bottom:1px solid var(--line)}
+.lab .band>b{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;padding-top:9px}
+.lab .band.addr{border-left:4px solid var(--p-addr)}.lab .band.addr>b{color:var(--p-addr-ink)}
+.lab .band.act{border-left:4px solid var(--p-act)}.lab .band.act>b{color:var(--p-act-ink)}
+.lab .band.key{border-left:4px solid var(--p-key)}.lab .band.key>b{color:var(--p-key-ink)}
+.lab .band.pkg{border-left:4px solid var(--p-pkg)}.lab .band.pkg>b{color:var(--p-pkg-ink)}
+.lab .fx{font:13px var(--mono);color:var(--ink);padding:8px 0;overflow-wrap:anywhere}
+.lab input,.lab textarea,.lab select,.ver textarea,.ver input,.anyapi input{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 11px;font:13px var(--mono);color:var(--ink)}
+.lab textarea,.ver textarea{min-height:76px;resize:vertical;line-height:1.5}
+.lab .sub{display:grid;gap:8px}
+.lab .sub label{display:grid;gap:4px;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.lab .note{font:12px var(--sans);color:var(--ink3);margin:2px 0 0}
+.lab .pk{text-transform:none;letter-spacing:0;font-weight:400;background:var(--bg2);border-radius:9px;padding:10px 12px;font:12px/1.55 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;margin:0;color:var(--ink2);max-height:180px;overflow:auto}
+.lab .send{display:grid;gap:12px;padding:14px;background:var(--bg2)}
+.lab .send .q{font:500 13.5px var(--sans)}
+.pred{display:flex;flex-wrap:wrap;gap:6px}
+.pred button{border:1px solid var(--line2);background:var(--card);border-radius:8px;padding:5px 11px;font:500 13px var(--mono);color:var(--ink)}
+.pred button[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+.brk{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--ink2)}
+.brk button{border:1px dashed var(--line2);background:transparent;border-radius:8px;padding:4px 10px;font:500 12.5px var(--sans);color:var(--ink2)}
+.brk button[aria-pressed="true"]{border-style:solid;border-color:var(--coral);background:var(--coral-soft);color:var(--coral-ink)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.reply{border-top:1px solid var(--line);padding:14px;display:none}
+.reply.on{display:block}
+.reply .rh{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px;font-size:14px}
+.reply .verdict{font-size:13.5px;color:var(--ink2)}
+.reply .verdict b{color:var(--ink)}
+.reply .ans{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:12px 14px;white-space:pre-wrap;font-size:14px;line-height:1.6;max-height:420px;overflow:auto}
+.reply details{margin-top:10px;font-size:13px}
+.reply details pre{background:var(--code-bg);color:var(--code-ink);border-radius:9px;padding:10px 12px;font:12px/1.5 var(--mono);overflow:auto;max-height:260px;white-space:pre-wrap;overflow-wrap:anywhere}
+.reply .btnrow{margin-top:10px}
+
+/* the prediction log */
+.plog td{vertical-align:top}
+.plog td input,.plog td select{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:7px;padding:5px 8px;font:12.5px var(--mono);color:var(--ink)}
+.plog .hit{color:var(--hum-ink);font:500 12px var(--mono)}
+.plog .miss{color:var(--coral-ink);font:500 12px var(--mono)}
+.plog .x{border:0;background:transparent;color:var(--ink3);font-size:16px;line-height:1;padding:2px 6px}
+.plog .x:hover{color:var(--coral-ink)}
+.plog .empty td{color:var(--ink3);font-style:italic}
+.need{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.need span{font:500 12px var(--mono);border-radius:6px;padding:3px 9px;background:var(--bg2);color:var(--ink3)}
+.need span.ok{background:var(--hum-soft);color:var(--hum-ink)}
+.need span.ok::before{content:"✓ "}
+
+/* verification note */
+.ver{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:16px;margin:0 0 18px;display:grid;gap:14px}
+.ver .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.ver .pair{grid-template-columns:1fr}.lab .band{grid-template-columns:1fr;gap:4px}.lab .band>b{padding-top:0}}
+.ver label{display:grid;gap:6px;font-size:13.5px;font-weight:500}
+.ver label small{font-weight:400;color:var(--ink3)}
+.ver .mini{border:0;background:none;color:var(--coral-ink);font:500 12px var(--sans);padding:0;justify-self:start;text-decoration:underline;text-underline-offset:3px}
+.ver .saved{font-size:12px;color:var(--ink3)}
+
+/* the stretch: four questions for any machine */
+.anyapi{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;align-items:center;border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:16px;margin:0 0 18px}
+.anyapi b{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.anyapi b.addr{color:var(--p-addr-ink)}.anyapi b.act{color:var(--p-act-ink)}.anyapi b.key{color:var(--p-key-ink)}.anyapi b.pkg{color:var(--p-pkg-ink)}
+@media (max-width:560px){.anyapi{grid-template-columns:1fr}}
+
+.hold{border:1px solid var(--ink);border-radius:var(--r);padding:18px 20px;margin:26px 0 18px}
+.hold p{margin:0}
+.call .sb{display:block;margin-top:8px;font-size:14px;color:var(--ink2)}

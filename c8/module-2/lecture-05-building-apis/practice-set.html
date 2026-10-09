@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Practice Set: Building APIs | 100xEngineers</title>
+<meta name="description" content="Code track practice set after Lecture 5 of the 100xEngineers Cohort 8 Module 2: replace the echo in your Gradio chat with a raw requests.post to an LLM, predict every status code, and prove the reply helps by checking it against your golden pair.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<script src="/c8/docs.js"></script>
+</head>
+<body data-page="l05-practice-set">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L5">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 · Groq step</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a><a href="/#L5">Map</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="#s03">Open the raw request</a><br><a href="#s04">Prediction log</a><br><a href="/#L5">Tick list on the map</a></div></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Practice set · Follows Lecture 5 · Code track</p>
+  <h1>Building APIs</h1>
+  <p class="dek">One chat app. One raw POST request. Proof against your golden pair.</p>
+  <div class="meta"><span>Lecture 5 · Building APIs and backend · Fri 9 Oct 2026</span><span>Post in the Discord code channel</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<div class="call"><p class="kick">The assignment in one sentence</p><p>Replace the echo in your Gradio chat with a raw <code>requests.post</code> to an LLM, carrying your own prompt and your user's real input, and prove the reply is useful by checking it against your golden pair.</p></div>
+
+<div class="scorebox">
+  <div class="score" data-for="steps"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/5</b></div><div class="l"><strong>The five steps</strong>Section 02</div></div>
+  <div class="score" id="logScore"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/4</b></div><div class="l"><strong>Prediction log</strong>Three requests, two failures</div></div>
+  <div class="score" data-for="sub"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/6</b></div><div class="l"><strong>Deliverables</strong>Section 07</div></div>
+</div>
+
+<div class="trkpick">
+  <p class="kick">Which track are you on?</p>
+  <p>The page shows only your track's version of each step. Your choice is remembered on this device.</p>
+  <div class="opts">
+    <button type="button" data-v="a"><b>Track A · my own observation</b><small>My Assignment 1 is done: I have a user, a golden pair and a prompt to write. Preferred.</small></button>
+    <button type="button" data-v="b"><b>Track B · Aarav's workflow diagnoser</b><small>My Assignment 1 is not finished. Same five steps with Aarav as the user, so nobody is blocked.</small></button>
+  </div>
+  <p style="margin:10px 0 0!important"><button type="button" class="reset" data-v="all">Show both tracks</button></p>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Why This Exercise Exists</h2>
+<p>Aarav's workflow diagnoser was a proxy. The skill is reading any machine through four questions, its <span class="part addr">address</span>, <span class="part act">action</span>, <span class="part key">key</span> and <span class="part pkg">package</span>, and wiring it into an app without leaning on someone else's code.</p>
+<p>The SDK in Groq's quickstart worked until its default model returned a 404. The raw request is what you fall back on when the cushion breaks, and what lets you swap providers by changing one URL and one key.</p>
+<p>The second skill is judgement. In the lecture, a working answer still failed because it handed a business analyst a plan full of Python. <strong>A 200 status code proves the call worked. Only your verifier proves the reply helps.</strong></p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The Five Steps</h2>
+<div class="trk b"><div class="call prob"><p class="kick">Track B · Aarav as the user</p><p>His weekly status workflow is the input. A plan to automate part of it is the output. Start from the lecture's prompt:</p><p style="margin-top:8px"><em>"Here is the workflow of an analyst working at an IT company in India. Diagnose and generate a plan to automate this work, or a part of the work."</em></p><span class="sb">Your verification target is the flaw found live: the plan drifts into technical jargon Aarav cannot use. Track B is the floor. Your own user is the point.</span></div></div>
+<p>Tick each step when it is done. Ticks save on this device and are separate from the tick list on the map.</p>
+<div data-stage="steps">
+<ul class="ck">
+<li><input type="checkbox" id="p1"><label for="p1"><span class="t">1. Start from the echo</span><span class="h">Run your Lecture 3 Gradio chat. Confirm it returns your input unchanged: no process yet.</span></label></li>
+<li><input type="checkbox" id="p2"><label for="p2"><span class="t">2. Test the machine before the code</span><span class="h">In <a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a>, send a POST to <code>https://api.groq.com/openai/v1/chat/completions</code> with your key and a body naming <code>openai/gpt-oss-20b</code>. Write the status code you expect before you press send. <a href="#s03">Practise it on this page first.</a></span></label></li>
+<li><input type="checkbox" id="p3"><label for="p3"><span class="t">3. Write your prompt</span><span class="h"><span class="trk a">One instruction that encodes what you learned doing Assignment 1 by hand.</span><span class="trk b">Start from the lecture's prompt above.</span> Send prompt plus your user's real input in the browser first and read the reply as your user would.</span></label></li>
+<li><input type="checkbox" id="p4"><label for="p4"><span class="t">4. Rip off the cushion</span><span class="h">In Python, replace the echo with <code>requests.post</code>, using the same address, action, key and package. Return only the content field. No Groq or OpenAI SDK in the final file.</span></label></li>
+<li><input type="checkbox" id="p5"><label for="p5"><span class="t">5. Verify</span><span class="h"><span class="trk a">Run your golden input through the app. Compare the reply to your golden output, write a one-line verdict, change the prompt once based on what the comparison showed, and run it again.</span><span class="trk b">Find the jargon in the plan. Fix it with one prompt change (no jargon, one step at a time, the minimum action needed now) and show the before and after.</span> <a href="#s05">Use the verification note.</a></span></label></li>
+</ul>
+<div class="stg"><span class="kick">Steps done</span><div class="bar"><i></i></div><span class="num">0 / 5</span></div>
+</div>
+
+<h3>Step 1 · Where you start</h3>
+<div id="echo"></div>
+<h3>Step 4 · The shape of the change</h3>
+<p>The diff from the echo app should be the process and nothing else. Every blank below is one of the four parts; the values are the ones you already sent in <a href="#s03">the raw request</a>. Write the code yourself: it is short enough that writing it is the learning.</p>
+<div id="shape"></div>
+<p>The key comes from an environment variable, never from the file. Set it in the terminal before you run the app, or keep it in a <code>.env</code> file listed in <code>.gitignore</code>.</p>
+<div class="osrow"><span class="kick">Your machine</span><div class="seg" data-seg="os" role="group" aria-label="Operating system"><button type="button" data-v="mac">Mac</button><button type="button" data-v="win">Windows</button></div></div>
+<div class="cmd" data-os="mac"><span>export GROQ_API_KEY=gsk_your_key_here</span><button class="cp" type="button">Copy</button></div>
+<div class="cmd" data-os="win"><span>$env:GROQ_API_KEY="gsk_your_key_here"</span><button class="cp" type="button">Copy</button></div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The Raw Request, Live</h2>
+<p>This is the same request you send from httpie.io/app in step 2, laid out as the four parts. It goes from your browser straight to Groq. Use it to write your prompt and practise predictions; the screenshot you submit still comes from httpie.io/app.</p>
+<p><b>Predict before you run.</b> The Send button stays off until you pick the status code you expect. Every send is added to your <a href="#s04">prediction log</a>.</p>
+<div class="lab" id="lab">
+  <div class="lh"><span>POST · Groq chat completions</span><span class="sp" id="labMeta">Free tier: 30 requests a minute</span></div>
+  <div class="band addr"><b>Address</b><div class="fx">https://api.groq.com/openai/v1/chat/completions</div></div>
+  <div class="band act"><b>Action</b><div class="fx">POST · a Create: each call creates a new reply</div></div>
+  <div class="band key"><b>Key</b><div class="sub"><input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="gsk_… from console.groq.com/keys"><p class="note">Sent as <code>Authorization: Bearer &lt;key&gt;</code>. Held in this tab's memory only: never saved, gone when you reload. <a href="https://console.groq.com/keys" target="_blank" rel="noopener">Get a key</a>.</p></div></div>
+  <div class="band pkg"><b>Package</b><div class="sub">
+    <label>model<input id="model" type="text" value="openai/gpt-oss-20b" spellcheck="false"></label>
+    <label>Your prompt · one instruction<textarea id="prompt" spellcheck="true" placeholder="One instruction that encodes what you learned doing Assignment 1 by hand."></textarea></label>
+    <label>Your user's real input<textarea id="input" spellcheck="true" placeholder="Paste what your user would actually type."></textarea></label>
+    <p class="note"><button type="button" class="mini" id="loadB" style="border:0;background:none;color:var(--coral-ink);padding:0;text-decoration:underline;text-underline-offset:3px;font:500 12px var(--sans)">Load Aarav's prompt and workflow (Track B)</button></p>
+    <label>The package on the wire<pre class="pk" id="pk"></pre></label>
+  </div></div>
+  <div class="send">
+    <div class="brk"><span>Break one part on purpose for this send:</span>
+      <button type="button" data-brk="" aria-pressed="true">Nothing</button>
+      <button type="button" data-brk="model">Wrong model name</button>
+      <button type="button" data-brk="nokey">Missing key</button>
+      <button type="button" data-brk="badkey">Wrong key</button>
+    </div>
+    <div><p class="q" style="margin:0 0 8px">What status code do you expect?</p>
+      <div class="pred" id="pred"><button type="button" data-c="200">200</button><button type="button" data-c="201">201</button><button type="button" data-c="400">400</button><button type="button" data-c="401">401</button><button type="button" data-c="404">404</button><button type="button" data-c="429">429</button><button type="button" data-c="500">5xx</button></div></div>
+    <div class="btnrow"><button type="button" class="btn" id="send" disabled>Send</button><span class="note" id="sendNote" style="font-size:13px;color:var(--ink3)">Pick a prediction first.</span></div>
+  </div>
+  <div class="reply" id="reply">
+    <div class="rh"><span class="sc" id="rCode">—</span><span class="verdict" id="rVerdict"></span></div>
+    <div class="ans" id="rAns"></div>
+    <div class="btnrow"><button type="button" class="btn ghost" id="toActual">Use this reply as my actual output</button><button type="button" class="btn ghost" id="toAfter">Use it as the reply after my change</button></div>
+    <details><summary>The full reply package</summary><pre id="rRaw"></pre></details>
+  </div>
+</div>
+<details class="acc"><summary>What each code means here</summary><div class="b">
+<div class="tw compact"><table><tbody>
+<tr><td><span class="sc s2">200</span></td><td>Groq understood you and sent a reply. It does not mean the reply helps anyone: that is section 05.</td></tr>
+<tr><td><span class="sc s4">400</span></td><td>The <span class="part pkg">package</span> is wrong: broken JSON or a missing field.</td></tr>
+<tr><td><span class="sc s4">401</span></td><td>The <span class="part key">key</span> is missing, mistyped, or sent without <code>Bearer</code>.</td></tr>
+<tr><td><span class="sc s4">404</span></td><td>The model named in the package does not exist, or the address is wrong. Read the message: it says which.</td></tr>
+<tr><td><span class="sc s4">429</span></td><td>Too many requests this minute on your account. Wait and send again.</td></tr>
+<tr><td><span class="sc s5">5xx</span></td><td>Their machine, not yours. Try again later.</td></tr>
+</tbody></table></div>
+<p>Status code says whose fault; the message says what. Try the fix the error points to before pasting anything into an LLM. More in <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a>.</p></div></details>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Prediction Log</h2>
+<p>At least three requests, each with the status code you predicted before sending and the one you got. At least two are deliberate failures: a wrong model name and a missing or wrong key. Sends from section 03 land here on their own; add rows by hand for requests you send from httpie.io/app or Python.</p>
+<div class="need" id="need"><span data-n="three">Three requests</span><span data-n="model">A wrong model name</span><span data-n="key">A missing or wrong key</span><span data-n="pred">A prediction on every row</span></div>
+<div class="tw plog"><table>
+<thead><tr><th style="width:26%">Request</th><th style="width:11%">Predicted</th><th style="width:11%">Actual</th><th>Error message, for failures</th><th style="width:30px"></th></tr></thead>
+<tbody id="logBody"></tbody></table></div>
+<div class="btnrow"><button type="button" class="btn ghost" id="addRow">Add a row by hand</button><button type="button" class="btn ghost" id="copyLog">Copy the log as text</button><button type="button" class="btn ghost" id="clearLog">Clear the log</button></div>
+<p class="note" style="font-size:13px;color:var(--ink3);margin-top:10px">The log saves on this device. Keys are never written to it.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Verify Against Your Golden Pair</h2>
+<p>A 200 means the machine understood you. Your golden pair tells you whether the reply helps. <span class="trk a">Put your golden output beside the actual reply, write a one-line verdict, change the prompt once, and run it again.</span><span class="trk b">Aarav's golden pair from Lecture 3 is loaded with the Track B button below. The target is jargon: words Aarav cannot act on.</span></p>
+<div class="ver" id="ver">
+  <div class="btnrow"><button type="button" class="btn ghost" id="vLoadB">Load Aarav's golden pair (Track B)</button><button type="button" class="btn ghost" id="vSend">Send my golden input from section 03</button></div>
+  <div class="pair">
+    <label>Golden input<small>What your user typed, word for word.</small><textarea data-v="gin"></textarea></label>
+    <label>Golden output<small>What a useful reply looks like, written by you by hand.</small><textarea data-v="gout"></textarea></label>
+  </div>
+  <div class="pair">
+    <label>Actual output, before the change<small>The reply your app returned.</small><textarea data-v="before"></textarea></label>
+    <label>Actual output, after the change<small>The reply once the prompt was changed.</small><textarea data-v="after"></textarea></label>
+  </div>
+  <label>One-line verdict<small>Does the actual output do what the golden output does, for this user?</small><input data-v="verdict" type="text"></label>
+  <label>The one prompt change<small>What you changed, and which part of the comparison made you change it.</small><input data-v="change" type="text"></label>
+  <div class="btnrow"><button type="button" class="btn" id="copyVer">Copy the verification note</button><span class="saved" id="verSaved">Saves on this device as you type.</span></div>
+</div>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Rules of the Build</h2>
+<details class="acc" open><summary>Predict before you run.</summary><div class="b"><p>Every request in the prediction log gets its expected status code written down first. Include at least two deliberate failures: a wrong model name and a missing or wrong key. Record what each actually returned.</p></div></details>
+<details class="acc"><summary>Read the error before you ask.</summary><div class="b"><p>Status code says whose fault; the message says what. Try the fix the error points to before pasting anything into an LLM.</p></div></details>
+<details class="acc"><summary>Minimum path.</summary><div class="b"><p>No extra parameters, no chat history handling, no changed interface, no renamed functions. The diff from the echo app should be the process and nothing else.</p></div></details>
+<details class="acc"><summary>Keys never in code or screenshots.</summary><div class="b"><p>Use an environment variable or a <code>.env</code> file listed in <code>.gitignore</code>. Blur the key in every image you post. If a key leaks, revoke it and create a new one: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</p></div></details>
+<details class="acc"><summary>Stay inside the free tier.</summary><div class="b"><p>Groq allows 30 requests per minute. You will not need more.</p></div></details>
+<details class="acc"><summary>LLM help: hints and debugging yes; generating the solution no.</summary><div class="b"><p>Think for the first minute on your own. Pasting this brief in and copying the code out defeats the exercise; the code is short enough that writing it is the learning.</p></div></details>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>What to Submit</h2>
+<p>Tick each deliverable when it is ready.</p>
+<div data-stage="sub">
+<ul class="ck">
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">App screenshot</span><span class="h">The Gradio chat running locally, with your user's real input and the model's reply visible. Key not visible.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">Code file</span><span class="h">One Python file (repo link or paste) using <code>requests.post</code>, with a comment labelling the address, action, key and package. No SDK import.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">Raw request screenshot</span><span class="h">httpie.io/app showing POST, the full endpoint, and a 200 response, key blurred.</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">Prediction log</span><span class="h">At least three requests (two deliberate failures), each with predicted status code, actual status code, and the error message for failures. <a href="#s04">Copy it from section 04.</a></span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">Verification note</span><span class="h">Golden output beside actual output, a one-line verdict, the one prompt change you made, and the reply after the change. <a href="#s05">Copy it from section 05.</a></span></label></li>
+<li><input type="checkbox" id="d6"><label for="d6"><span class="t">The 201 question</span><span class="h">Two sentences: why did the chat completions call return 200 and not 201?</span></label></li>
+</ul>
+<div class="stg"><span class="kick">Deliverables ready</span><div class="bar"><i></i></div><span class="num">0 / 6</span><button class="reset" type="button">Reset ticks</button></div>
+</div>
+<h3>The 201 question</h3>
+<div class="ver"><label>Why did the chat completions call return 200 and not 201?<small>Two sentences, in your own words. A starting point: what a 201 meant on Aarav's service in <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Lecture 4</a>, and whether Groq kept anything after it replied.</small><textarea data-v="q201"></textarea></label></div>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Stretch: Any Machine, Four Lines</h2>
+<ul>
+  <li>Pick one free API from the <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener">public-apis repository</a> on GitHub (<a href="https://mediastack.com" target="_blank" rel="noopener">MediaStack</a> is a fine start). Answer the four questions for it in writing before writing any code.</li>
+  <li>Call it with <code>requests</code> and print one field from the JSON response.</li>
+  <li>Optional swap test: point your chat app at another OpenAI-compatible endpoint by changing only the URL, key and model name. Note what else, if anything, had to change.</li>
+</ul>
+<div class="anyapi" id="anyapi">
+  <b>API</b><input data-v="aName" type="text" placeholder="Which API, and its docs link">
+  <b class="addr">Address</b><input data-v="aAddr" type="text" placeholder="The full URL you will call">
+  <b class="act">Action</b><input data-v="aAct" type="text" placeholder="The method, and the CRUD action it spells">
+  <b class="key">Key</b><input data-v="aKey" type="text" placeholder="Does it need one? Where does it go: header or query?">
+  <b class="pkg">Package</b><input data-v="aPkg" type="text" placeholder="What you send, and the one field you will print from the reply">
+  <b>Swap test</b><input data-v="aSwap" type="text" placeholder="Optional: what else had to change besides URL, key and model">
+</div>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Where to Post and How to Get Unblocked</h2>
+<p>Post everything on the C8 Discord code channel. Reviews go to the earliest submissions first. Questions go on the channel, not in DMs; Monday and Tuesday are the reply slots. Bring anything still stuck to next week's office hour, where we run this exercise together.</p>
+<p>A short video on hosting your own API locally is coming on the LMS; it is not needed for this set.</p>
+<p><b>After submission:</b> the next practical builds your own API, and with it the question Adnan raised: who else can see your key, and how much protection your app actually needs.</p>
+<div class="hold"><p class="kick">Hold this</p><p>A 200 means the machine understood you. It does not mean you helped anyone. Four lines get you to any machine on the internet; your golden pair tells you whether the trip was worth it.</p></div>
+<p class="sig">Four lines to any machine.<small>Companion pages: <a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a> · <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 Groq step</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">troubleshooting</a> · <a href="/#L5">tick list on the map</a></small></p>
+</section>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 5: Building APIs and backend</span><a href="/#L5">Curriculum map</a><a href="/c8/module-2/lecture-05-building-apis/">All Lecture 5 pages</a></div></footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+  var store=window.c8store, URL_='https://api.groq.com/openai/v1/chat/completions';
+  var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')};
+  var ink=document.documentElement.getAttribute('data-theme')==='dark'||(!document.documentElement.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches)?'#EDEBE5':'#1B1B1B';
+
+  /* "show both tracks" */
+  $('.trkpick .reset').addEventListener('click',function(){document.documentElement.setAttribute('data-track','all');store.set('c8.track','all');$$('.trkpick button[data-v]:not(.reset)').forEach(function(b){b.setAttribute('aria-pressed','false')})});
+
+  /* step 1 and step 4 code */
+  $('#echo').innerHTML=c8code({title:'app.py · the echo from Lecture 3',code:'import gradio as gr\ndef respond(message, history):\n    return "You typed: " + message\ngr.ChatInterface(fn=respond).launch()',tags:{1:['Input',ink],2:['Process → Output · this line is what changes','#F2603C'],3:['Interface · leave it alone','#8A8A8A']}});
+  $('#shape').innerHTML=c8code({title:'app.py · the shape after step 4 · fill the blanks',code:[
+    'import os',
+    'import requests',
+    'import gradio as gr',
+    '',
+    'PROMPT = "..."  # your one instruction from step 3',
+    '',
+    'def respond(message, history):',
+    '    r = requests.___(  # action',
+    '        ___,  # address',
+    '        headers=___,  # key, read from os.environ',
+    '        json=___,  # package: model + PROMPT + message',
+    '    )',
+    '    return ___  # only the content field',
+    '',
+    'gr.ChatInterface(fn=respond).launch()'].join('\n'),
+    tags:{7:['Action','#F2603C'],8:['Address','#D98E00'],9:['Key','#6E4BE8'],10:['Package','#1E9B57'],12:['Output','#8A8A8A']}});
+
+  /* ---------- the live request ---------- */
+  var TRACK_B_PROMPT='Here is the workflow of an analyst working at an IT company in India. Diagnose and generate a plan to automate this work, or a part of the work.';
+  var AARAV_IN='Every Monday I open Jira to check my weekly to-dos. I pick the high-priority ones, pull the numbers from our dashboard, write a short report for each, and send it to my manager on Slack.';
+  var AARAV_OUT="Repeatable steps I found:\n1. Open Jira and list this week's to-dos (every Monday)\n2. Pick the high-priority tasks (every Monday)\n3. Pull numbers from the dashboard (per task)\n4. Write a short report (per task)\n5. Send the report to your manager on Slack (per task)\n\nWhat to do with each step:\n1. Automate: a saved Jira filter lists them for you\n2. Keep human: you decide what matters this week\n3. Automate: export the same dashboard view each time\n4. Automate a first draft, keep human for the final edit\n5. Keep human until the draft is trusted\n\nThis week: save one Jira filter for your high-priority to-dos.";
+  var K='c8.l05.', key=$('#key'), model=$('#model'), prompt=$('#prompt'), input=$('#input'), pk=$('#pk');
+  prompt.value=store.get(K+'prompt',''); input.value=store.get(K+'input',''); model.value=store.get(K+'model','openai/gpt-oss-20b');
+  var brk='', pred=null, last=null, sending=false;
+
+  function content(){ var p=prompt.value.trim(), i=input.value.trim(); return p&&i ? p+'\n\n'+i : (p||i); }
+  function body(m){ return {model:m, messages:[{role:'user', content:content()}]}; }
+  function drawPkg(){ pk.textContent=JSON.stringify(body(model.value.trim()),null,2); }
+  function canSend(){ var ok=pred!==null && !sending && content().length>0; $('#send').disabled=!ok;
+    $('#sendNote').textContent = sending?'Sending…' : !content()?'Write a prompt or an input first.' : pred===null?'Pick a prediction first.' : (!key.value.trim()&&brk!=='nokey')?'No key yet: you predicted '+pred+'. Send and see.':'Predicted '+(pred==='500'?'5xx':pred)+'. Send when ready.'; }
+  [prompt,input,model].forEach(function(el){ el.addEventListener('input',function(){ store.set(K+el.id, el.value); drawPkg(); canSend(); }); });
+  key.addEventListener('input',canSend);
+  $('#loadB').addEventListener('click',function(){ prompt.value=TRACK_B_PROMPT; input.value=AARAV_IN; store.set(K+'prompt',prompt.value); store.set(K+'input',input.value); drawPkg(); canSend(); });
+  $$('.brk button').forEach(function(b){ b.addEventListener('click',function(){ brk=b.dataset.brk; $$('.brk button').forEach(function(x){ x.setAttribute('aria-pressed',x===b?'true':'false'); }); canSend(); }); });
+  $$('#pred button').forEach(function(b){ b.addEventListener('click',function(){ pred=b.dataset.c; $$('#pred button').forEach(function(x){ x.setAttribute('aria-pressed',x===b?'true':'false'); }); canSend(); }); });
+
+  function fam(c){ return c>=200&&c<300?'s2':c>=400&&c<500?'s4':'s5'; }
+  function hit(p,c){ return p==='500' ? c>=500 : String(c)===p; }
+  $('#send').addEventListener('click',function(){
+    if(pred===null) return;
+    var m=model.value.trim(), k=key.value.trim(), label=brk==='model'?'Wrong model name':brk==='nokey'?'Missing key':brk==='badkey'?'Wrong key':'Prompt + input';
+    if(brk==='model') m=m+'-nope';
+    var headers={'Content-Type':'application/json'};
+    if(brk==='badkey') headers.Authorization='Bearer gsk_wrongkey0000000000000000';
+    else if(brk!=='nokey' && k) headers.Authorization='Bearer '+k;
+    var p=pred; sending=true; canSend();
+    fetch(URL_,{method:'POST',headers:headers,body:JSON.stringify(body(m))}).then(function(r){
+      return r.text().then(function(t){ var j=null; try{ j=JSON.parse(t); }catch(e){} return {code:r.status, json:j, text:t}; });
+    }).then(function(res){
+      var c=res.code, j=res.json, ans=j&&j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content, err=j&&j.error&&j.error.message;
+      if(!k && brk!=='nokey' && brk!=='badkey') label+=' (no key pasted)';
+      show(c,p,ans,err||(!ans&&res.text)||'',res.text,j);
+      /* a failure only counts for the part it actually reached: a 401 never got as far as the model name */
+      var kind = c===401 ? 'key' : (brk==='model' && c>=400 && c<500) ? 'model' : '';
+      addLog({req:label+' · '+m, pred:p, act:String(c), msg:c>=400?(err||res.text.slice(0,200)):'', kind:kind});
+    }).catch(function(e){
+      show(0,p,null,'No reply reached the page: '+e.message+'. Check you are online, then send again.','',null);
+      addLog({req:label+' · '+m, pred:p, act:'none', msg:'No reply: '+e.message, kind:''});
+    }).then(function(){ sending=false; pred=null; $$('#pred button').forEach(function(x){ x.setAttribute('aria-pressed','false'); }); canSend(); });
+  });
+  function show(c,p,ans,err,raw,j){
+    var rc=$('#rCode'); rc.className='sc '+fam(c); rc.textContent=c||'no reply';
+    var shown=p==='500'?'5xx':p;
+    $('#rVerdict').innerHTML = c ? (hit(p,c)?'<b>Prediction right.</b> You said '+shown+'.':'<b>Prediction missed.</b> You said '+shown+'. Read the message: what did you not expect?') + (c>=200&&c<300?' The call worked. Whether the reply helps is section 05.':'') : '';
+    $('#rAns').textContent = ans || err || '';
+    $('#rRaw').textContent = j ? JSON.stringify(j,null,2) : raw;
+    last = ans || null;
+    $('#toActual').style.display=$('#toAfter').style.display = ans?'':'none';
+    $('#reply').classList.add('on');
+  }
+  $('#toActual').addEventListener('click',function(){ setV('before',last); location.hash='#s05'; });
+  $('#toAfter').addEventListener('click',function(){ setV('after',last); location.hash='#s05'; });
+
+  /* ---------- prediction log ---------- */
+  var log=store.get(K+'log',[]);
+  function saveLog(){ store.set(K+'log',log); drawLog(); }
+  function addLog(r){ log.push(r); saveLog(); }
+  function drawLog(){
+    var tb=$('#logBody');
+    tb.innerHTML = log.length ? log.map(function(r,i){
+      var ok=r.pred&&r.act&&r.act!=='none' ? hit(r.pred,+r.act) : null;
+      return '<tr data-i="'+i+'"><td><input data-f="req" value="'+esc(r.req)+'" aria-label="Request"></td>'+
+        '<td><input data-f="pred" value="'+esc(r.pred==='500'?'5xx':r.pred)+'" aria-label="Predicted code"></td>'+
+        '<td><input data-f="act" value="'+esc(r.act)+'" aria-label="Actual code">'+(ok===null?'':'<span class="'+(ok?'hit':'miss')+'">'+(ok?'match':'missed')+'</span>')+'</td>'+
+        '<td><input data-f="msg" value="'+esc(r.msg)+'" aria-label="Error message"></td>'+
+        '<td><button type="button" class="x" data-del="'+i+'" aria-label="Delete row">×</button></td></tr>';
+    }).join('') : '<tr class="empty"><td colspan="5">Nothing yet. Send a request in section 03, or add a row by hand.</td></tr>';
+    checkLog();
+  }
+  function checkLog(){
+    var n=log.filter(function(r){ return r.act; }).length,
+        hasModel=log.some(function(r){ return r.kind==='model' || !r.kind && /model/i.test(r.req) && /^4/.test(r.act) && r.act!=='401'; }),
+        hasKey=log.some(function(r){ return r.kind==='key' || /key/i.test(r.req) && r.act==='401'; }),
+        allPred=log.length>0 && log.every(function(r){ return r.pred; });
+    var need={three:n>=3, model:hasModel, key:hasKey, pred:allPred};
+    Object.keys(need).forEach(function(k){ $('#need [data-n="'+k+'"]').classList.toggle('ok',need[k]); });
+    var done=Object.keys(need).filter(function(k){ return need[k]; }).length, sc=$('#logScore');
+    $('.fg',sc).style.strokeDashoffset=126-126*(done/4); $('.ring b',sc).textContent=done+'/4';
+  }
+  $('#logBody').addEventListener('input',function(e){ var f=e.target.dataset.f, tr=e.target.closest('tr'); if(!f||!tr) return; var v=e.target.value; if(f==='pred'&&/^5/.test(v)) v='500'; log[+tr.dataset.i][f]=v; store.set(K+'log',log); });
+  $('#logBody').addEventListener('change',checkLog);
+  $('#logBody').addEventListener('click',function(e){ var d=e.target.closest('[data-del]'); if(d){ log.splice(+d.dataset.del,1); saveLog(); } });
+  $('#addRow').addEventListener('click',function(){ addLog({req:'',pred:'',act:'',msg:'',kind:''}); var ins=$$('#logBody tr:last-child input'); if(ins[0]) ins[0].focus(); });
+  $('#clearLog').addEventListener('click',function(){ if(confirm('Clear every row of the prediction log?')){ log=[]; saveLog(); } });
+  $('#copyLog').addEventListener('click',function(){
+    var t='Prediction log\n'+log.map(function(r,i){ return (i+1)+'. '+(r.req||'Request')+' | predicted '+(r.pred==='500'?'5xx':r.pred||'?')+' | actual '+(r.act||'?')+(r.msg?' | '+r.msg:''); }).join('\n');
+    window.c8copy(this,t);
+  });
+
+  /* ---------- verification note, 201 question, stretch: all saved as you type ---------- */
+  var V=store.get(K+'ver',{});
+  function setV(k,v){ V[k]=v||''; store.set(K+'ver',V); var el=$('[data-v="'+k+'"]'); if(el) el.value=V[k]; }
+  $$('[data-v]').forEach(function(el){ if(el.tagName==='BUTTON') return; el.value=V[el.dataset.v]||''; el.addEventListener('input',function(){ V[el.dataset.v]=el.value; store.set(K+'ver',V); }); });
+  $('#vLoadB').addEventListener('click',function(){ setV('gin',AARAV_IN); setV('gout',AARAV_OUT); });
+  $('#vSend').addEventListener('click',function(){ var g=(V.gin||'').trim(); if(!g){ $('[data-v="gin"]').focus(); return; } input.value=g; store.set(K+'input',g); drawPkg(); canSend(); location.hash='#s03'; });
+  $('#copyVer').addEventListener('click',function(){
+    var t='Verification note\n\nGolden input:\n'+(V.gin||'')+'\n\nGolden output:\n'+(V.gout||'')+'\n\nActual output (before):\n'+(V.before||'')+'\n\nVerdict: '+(V.verdict||'')+'\n\nThe one prompt change: '+(V.change||'')+'\n\nActual output (after):\n'+(V.after||'');
+    window.c8copy(this,t);
+  });
+
+  drawPkg(); canSend(); drawLog();
+});
+</script>
+</body>
+</html>

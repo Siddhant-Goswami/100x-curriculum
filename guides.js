@@ -53,7 +53,18 @@ var GUIDE_LINKS = {
   aaravApi: 'https://100x-curriculum.vercel.app/aarav',
   groqKeys: 'https://console.groq.com/keys',
   groqModels: 'https://console.groq.com/docs/models',
-  groqLimits: 'https://console.groq.com/docs/rate-limits'
+  groqLimits: 'https://console.groq.com/docs/rate-limits',
+  /* Lecture 5 · Building APIs and backend (code track; pages live in c8/module-2/lecture-05-building-apis) */
+  l05Hub: '/c8/module-2/lecture-05-building-apis/',
+  l05Practice: '/c8/module-2/lecture-05-building-apis/practice-set',
+  l05Steps: '/c8/module-2/lecture-05-building-apis/practice-set#s02',
+  l05Raw: '/c8/module-2/lecture-05-building-apis/practice-set#s03',
+  l05Log: '/c8/module-2/lecture-05-building-apis/practice-set#s04',
+  l05Verify: '/c8/module-2/lecture-05-building-apis/practice-set#s05',
+  l05Submit: '/c8/module-2/lecture-05-building-apis/practice-set#s07',
+  l05Stretch: '/c8/module-2/lecture-05-building-apis/practice-set#s08',
+  httpie: 'https://httpie.io/app',
+  publicApis: 'https://github.com/public-apis/public-apis'
 };
 
 var HELLO_WORLD = [
@@ -346,4 +357,81 @@ GUIDES.L4 = { all: {
     ['Rate limit', 'How many requests you may send in a window. Past it, 429.']
   ],
   kw: 'api http https rest json crud create read update delete get post put patch status code 200 201 400 401 404 405 429 500 header authorization bearer key groq gpt-oss network tab devtools request builder practice lab practice set aarav diagnosis troubleshooting'
+}};
+
+/* Lecture 5 · Building APIs and backend · code track practical (9 October 2026).
+   Source: the practice set Google Doc "100x_C8_PracticeSet_No_Cushions" (it calls this Live Lecture 06; the map numbers it 5). */
+GUIDES.L5 = { code: {
+  name: 'No cushions',
+  sub: 'After the practical · 9 October 2026 · code track',
+  deadline: 'Practice set',
+  due: 'Due date to be announced',
+  keep: 'Replace the echo in your Gradio chat with a raw requests.post to an LLM, carrying your own prompt and your user\'s real input, and prove the reply is useful by checking it against your golden pair. A 200 means the machine understood you. It does not mean you helped anyone.',
+  ideas: [
+    ['Four questions read any machine.', 'Address, action, key, package. Answer them and you can wire any API into an app without leaning on someone else\'s code.'],
+    ['The raw request is the fallback.', 'The SDK in Groq\'s quickstart worked until its default model returned a 404. The raw request is what you fall back on when the cushion breaks, and what lets you swap providers by changing one URL and one key.'],
+    ['A 200 is not a verdict.', 'A working answer still failed because it handed a business analyst a plan full of Python. The status code proves the call worked. Only your verifier proves the reply helps.'],
+    ['Minimum path.', 'No extra parameters, no chat history handling, no changed interface, no renamed functions. The diff from the echo app is the process and nothing else.']
+  ],
+  rule: 'Predict the status code before every request. Track A uses your own observation (preferred); Track B uses Aarav\'s workflow diagnoser if your Assignment 1 is not finished. Same five steps either way.',
+  stages: [
+    {id:'machine', name:'Test the machine', short:'Machine', sub:'Steps 1 to 3 · before any code',
+     intro:'Start from what you have, then talk to the model in the browser before writing Python.',
+     ticks:[
+       {id:'echo', t:'My Lecture 3 Gradio chat runs and echoes my input unchanged', how:'Step 1. No process yet.', link:'l05Steps', linkLabel:'Step 1'},
+       {id:'raw', t:'A POST to Groq from httpie.io/app, with my prediction written first', how:'Step 2. https://api.groq.com/openai/v1/chat/completions, model openai/gpt-oss-20b, key in the Authorization header.', links:[['httpie','httpie.io/app'],['l05Raw','Practise on the page']]},
+       {id:'prompt', t:'My prompt plus my user\'s real input sent in the browser, reply read as my user would', how:'Step 3. Track B: start from the lecture\'s prompt for Aarav.', link:'l05Raw', linkLabel:'The raw request'}
+     ]},
+    {id:'cushion', name:'Rip off the cushion', short:'Code', sub:'Step 4 · Python',
+     intro:'Same address, action, key and package, now in Python. Write it yourself: the code is short enough that writing it is the learning.',
+     ticks:[
+       {id:'post', t:'The echo replaced with requests.post, returning only the content field', how:'No Groq or OpenAI SDK in the final file. A comment labels the address, action, key and package.', link:'l05Steps', linkLabel:'The shape of the change'},
+       {id:'env', t:'The key read from an environment variable, never written in the file', how:'Or a .env file listed in .gitignore. Blur the key in every image you post.', cmd:'export GROQ_API_KEY=gsk_your_key_here'},
+       {id:'fails', t:'Two deliberate failures logged: a wrong model name and a missing or wrong key', how:'Predicted code, actual code and the error message for each.', link:'l05Log', linkLabel:'Prediction log'}
+     ]},
+    {id:'verify', name:'Verify', short:'Verify', sub:'Step 5 · your golden pair',
+     intro:'Track B: the target is the jargon in the plan. Fix it with one prompt change: no jargon, one step at a time, the minimum action needed now.',
+     ticks:[
+       {id:'golden', t:'My golden input run through the app, reply beside my golden output', link:'l05Verify', linkLabel:'Verification note'},
+       {id:'verdict', t:'A one-line verdict, one prompt change, and the reply after the change'}
+     ]},
+    {id:'submit', name:'Practice set', short:'Submit', sub:'Six deliverables',
+     intro:'Post everything on the Discord code channel. Reviews go to the earliest submissions first.',
+     ticks:[
+       {id:'shots', t:'App screenshot and raw request screenshot, key not visible', how:'The Gradio chat with your user\'s real input and the reply; httpie.io/app showing POST, the full endpoint and a 200.'},
+       {id:'files', t:'Code file, prediction log and verification note', link:'l05Submit', linkLabel:'What to submit'},
+       {id:'q201', t:'Two sentences: why did the chat completions call return 200 and not 201?'},
+       {id:'posted', t:'All six posted on the Discord code channel', link:'discordCode', linkLabel:'Discord code channel'}
+     ]}
+  ],
+  actions: [
+    {id:'stretch', t:'Stretch: any machine, four lines', how:'Pick a free API from the public-apis repository, answer the four questions in writing, call it with requests and print one field.', links:[['publicApis','public-apis'],['l05Stretch','Stretch']]},
+    {id:'swap', t:'Optional swap test', how:'Point your chat app at another OpenAI-compatible endpoint by changing only the URL, key and model name. Note what else had to change.'},
+    {id:'oh', t:'Bring anything still stuck to next week\'s office hour', how:'We run this exercise together there. Questions go on the channel, not in DMs; Monday and Tuesday are the reply slots.'}
+  ],
+  next: 'Next: the next practical builds your own API, and with it the question Adnan raised: who else can see your key, and how much protection your app actually needs. A short video on hosting your own API locally is coming on the LMS; it is not needed for this set.',
+  errors: [
+    ['401', 'Key missing, mistyped, a space copied with it, or Bearer missing', 'The header is Authorization: Bearer <key>. Check the environment variable is set in the same terminal that runs the app'],
+    ['404', 'Model name typo or a retired model, or a wrong address', 'Read the message: it says which. The model is openai/gpt-oss-20b'],
+    ['400', 'Broken package: a missing field or the wrong shape for messages', 'Compare your json= with the package shown on the practice set page'],
+    ['429', 'More than 30 requests in a minute on your Groq account', 'Wait a minute. You will not need more'],
+    ['KeyError: \'choices\'', 'The request failed, so the reply has error instead of choices', 'Print r.status_code and r.json() first. Status code says whose fault; the message says what']
+  ],
+  read: [
+    ['Lecture 5 hub', 'l05Hub', 'Why the raw request, your path this week, what is next.'],
+    ['Practice set', 'l05Practice', 'The live request, prediction log, verification note and the six deliverables.'],
+    ['httpie.io/app', 'httpie', 'Where the raw request screenshot comes from.'],
+    ['Lecture 4 Groq step', 'l04Groq', 'Refresher: your first keyed request to Groq.'],
+    ['Troubleshooting', 'l04Trouble', 'Search an error; see the part it points to and the fix.'],
+    ['Keys', 'l04Keys', 'Where a key lives, and what to do when one leaks.']
+  ],
+  words: [
+    ['SDK', 'Someone else\'s code wrapped around an API. A cushion: convenient until it breaks.'],
+    ['requests.post', 'The Python call that sends a POST: address, headers with the key, and a JSON package.'],
+    ['Environment variable', 'A value set outside your code, read with os.environ. Where the key lives.'],
+    ['Content field', 'choices[0].message.content: the model\'s reply inside the package Groq sends back.'],
+    ['Golden pair', 'One real input and the output you wrote by hand. The verifier for every reply.'],
+    ['OpenAI-compatible', 'An API that takes the same package at the same path, so a swap is a new URL, key and model.']
+  ],
+  kw: 'building apis backend requests post raw request sdk cushion groq gpt-oss-20b httpie gradio echo golden pair verify verifier prediction log 200 201 401 404 environment variable env key practice set track b aarav jargon public apis stretch'
 }};

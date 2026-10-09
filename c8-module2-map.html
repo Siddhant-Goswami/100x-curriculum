@@ -1094,7 +1094,7 @@ function workHTML(s){
     h+='<div class="tlist">'+g.actions.map(function(a){ return tickHTML(s,'week',a); }).join('')+'</div>';
   }
   var nextCode = LECS.filter(function(l){ return l.n>s.n && l.code; })[0], hk=ST.HK;
-  var dates=[]; if(nextCode) dates.push([g.deadline||'Spec deadline','Before Lecture '+nextCode.n+' · '+fmt(nextCode.date)]);
+  var dates=[]; if(nextCode) dates.push([g.deadline||'Spec deadline', g.due||('Before Lecture '+nextCode.n+' · '+fmt(nextCode.date))]);
   dates.push(['Assignment 1','Due '+fmt(FIRST_PROOF)]); if(hk) dates.push(['Hackathon',fmt(hk.date)+' to '+fmt(hk.end)+' · right after Deterministic']);
   h+='<dl class="ag" style="margin-top:12px">'+dates.map(function(r){ return '<dt>'+esc(r[0])+'</dt><dd>'+esc(r[1])+'</dd>'; }).join('')+'</dl>';
   if(g.next) h+='<p class="rule">'+esc(g.next)+'</p>';

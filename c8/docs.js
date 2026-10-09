@@ -63,7 +63,7 @@
     }
     boxes.forEach(function(b,i){var id=b.id||('ck'+i);b.checked=!!saved[id];b.addEventListener('change',function(){saved[id]=b.checked;store.set(key,saved);paint()})});
     if(boxes.length) paint();
-    $$('.reset').forEach(function(r){r.addEventListener('click',function(){if(!confirm('Clear every tick on this page?'))return;saved={};store.set(key,saved);boxes.forEach(function(b){b.checked=false});paint()})});
+    $$('.reset:not([data-v])').forEach(function(r){r.addEventListener('click',function(){if(!confirm('Clear every tick on this page?'))return;saved={};store.set(key,saved);boxes.forEach(function(b){b.checked=false});paint()})});
 
     /* track picker */
     $$('.trkpick button[data-v]:not(.reset)').forEach(function(b){
