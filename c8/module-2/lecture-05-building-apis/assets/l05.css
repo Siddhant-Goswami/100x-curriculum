@@ -70,8 +70,8 @@
 .call .sb{display:block;margin-top:8px;font-size:14px;color:var(--ink2)}
 
 /* overview: passenger vs driver whiteboard sketch inside the callout */
-.call.drive{display:grid;gap:8px}
-.wb{display:block;width:100%;height:auto;color:var(--ink);background:var(--bg2);border-radius:12px;margin:0 0 10px}
+.call.drive{display:grid;gap:8px;border-left:1px solid var(--line);background:var(--card)}
+.wb{display:block;width:100%;height:auto;color:var(--ink);background:none;margin:0 0 10px}
 .wb .ln *{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 .wb .ln .dash{stroke:var(--line2);stroke-dasharray:6 9}
 .wb .ln .soft{fill:var(--coral-soft);stroke:var(--coral)}

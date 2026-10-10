@@ -401,7 +401,7 @@ button.pill.terr:active{transform:scale(.97)}
 .help kbd{display:inline-block;min-width:22px;text-align:center;padding:2px 6px;border-radius:6px;border:1px solid var(--line);border-bottom-width:2px;background:var(--bg);font:600 11px var(--mono)}
 .help dd{margin:0;color:var(--ink2)}
 
-/* ---------- Worksheet: a tick list that sits on a stop ---------- */
+/* ---------- Worksheet: a checklist that sits on a stop ---------- */
 .wks{margin-top:6px}
 /* the lecture's own pages, first thing on the card: <a class="hub"> */
 .hub{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:12px 14px;border-radius:12px;background:var(--coral);color:#fff;text-decoration:none;transition:transform .15s,box-shadow .15s}
@@ -1009,7 +1009,7 @@ function status(s){
 function cpOpen(s){ return s.due ? true : days(TODAY,s.date)<=0; }
 function cpDone(s){ return cpOpen(s) && sget('c8m2-cp-'+s.id)==='1'; }
 
-/* ============ Worksheets: a tick list that sits on a stop (guides.js) ============ */
+/* ============ Worksheets: a checklist that sits on a stop (guides.js) ============ */
 var GUIDES = window.GUIDES || {}, GUIDE_LINKS = window.GUIDE_LINKS || {}, COPYTXT = {};
 function guideFor(s){ var g=GUIDES[s.id]; if(!g) return null; return g.all || (track && g[track]) || null; }
 function tickKey(s,st,t){ return 'c8m2-tick-'+s.id+'-'+st+'-'+t; }
@@ -1091,7 +1091,7 @@ function workHTML(s){
   var h='<div class="wks" id="work">';
   h+='<h3>In the lecture</h3><div class="law"><b>THE ONE THING TO KEEP</b>'+esc(g.keep)+'</div>';
   h+='<div class="ideas">'+g.ideas.map(function(x){ return '<div><b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span></div>'; }).join('')+'</div>';
-  h+='<div class="wh"><h3>The tick list</h3><span class="wn" data-wn><b>'+P.done+'</b> of '+P.total+'</span></div>';
+  h+='<div class="wh"><h3>The checklist</h3><span class="wn" data-wn><b>'+P.done+'</b> of '+P.total+'</span></div>';
   h+='<p class="rule">'+esc(g.rule)+'</p>';
   h+=ladderHTML(g,P);
   h+=g.stages.map(function(st,i){ return stageHTML(s,g,st,i,P); }).join('');
@@ -1122,13 +1122,13 @@ function refreshWork(s){
   var g=guideFor(s), P=g?workProgress(s,g):null, pill=document.getElementById('tickPill');
   if(!P){ if(pill) pill.remove(); return; }
   if(!pill){ var pills=$('.pills',pbody); if(pills){ pills.insertAdjacentHTML('beforeend','<button type="button" class="pill" id="tickPill" data-go="work"></button>'); pill=document.getElementById('tickPill'); } }
-  if(pill){ pill.textContent='☑ Tick list · '+P.done+' of '+P.total; pill.classList.toggle('ok',P.done===P.total); }
+  if(pill){ pill.textContent='☑ Checklist · '+P.done+' of '+P.total; pill.classList.toggle('ok',P.done===P.total); }
   var wn=$('[data-wn]',pbody); if(wn) wn.innerHTML='<b>'+P.done+'</b> of '+P.total;
   var an=$('[data-an]',pbody); if(an) an.innerHTML='<b>'+P.aDone+'</b> of '+P.aTotal;
   var lad=$('[data-ladder]',pbody); if(lad) lad.outerHTML=ladderHTML(g,P);
   g.stages.forEach(function(st,i){ var pr=P.stages[i], el=document.getElementById('stg-'+st.id); if(!el) return; el.classList.toggle('done',pr.done===pr.total); el.classList.toggle('cur',P.cur===i); var sc=$('[data-sc]',el); if(sc) sc.textContent=pr.done+'/'+pr.total; });
 }
-function tickPillHTML(s){ var P=workProgress(s); return P ? '<button type="button" class="pill'+(P.done===P.total?' ok':'')+'" id="tickPill" data-go="work">☑ Tick list · '+P.done+' of '+P.total+'</button>' : ''; }
+function tickPillHTML(s){ var P=workProgress(s); return P ? '<button type="button" class="pill'+(P.done===P.total?' ok':'')+'" id="tickPill" data-go="work">☑ Checklist · '+P.done+' of '+P.total+'</button>' : ''; }
 function onTick(input){
   var p=input.dataset.tick.split(':'), s=ST[p[0]]; if(!s) return;
   sset(tickKey(s,p[1],p[2]), input.checked?'1':null);
@@ -1300,7 +1300,7 @@ function renderPin(s){
   if(P && P.done){ var rr=16.5, f=P.done/P.total, a=f*2*Math.PI, ex=(19+rr*Math.sin(a)).toFixed(2), ey=(19-rr*Math.cos(a)).toFixed(2);
     ring = '<svg class="ring" viewBox="0 0 38 38" aria-hidden="true"><circle class="bg" cx="19" cy="19" r="'+rr+'"/>'+(f>=1 ? '<circle class="fg" cx="19" cy="19" r="'+rr+'"/>' : '<path class="fg" d="M19 '+(19-rr)+' A'+rr+' '+rr+' 0 '+(f>0.5?1:0)+' 1 '+ex+' '+ey+'"/>')+'</svg>'; }
   el.innerHTML = ring+'<span class="dot"><span class="num">'+esc(s.num)+'</span></span>'+(s.done?FLAG:'')+'<span class="pl halo"><b>'+esc(s.t)+'</b><i class="'+(st.hot?'hot':'')+'">'+esc(st.txt)+(P?' · '+P.done+'/'+P.total+' ticks':'')+'</i></span>';
-  el.setAttribute('aria-label', label+': '+s.t+'. '+st.txt+(s.done?'. Checkpoint.':'')+(P?' Tick list '+P.done+' of '+P.total+'.':''));
+  el.setAttribute('aria-label', label+': '+s.t+'. '+st.txt+(s.done?'. Checkpoint.':'')+(P?' Checklist '+P.done+' of '+P.total+'.':''));
 }
 /* You are here + time cursor */
 var MEP = pointAt(S_TODAY);
@@ -1725,7 +1725,7 @@ TRAVEL.forEach(function(s){
   tools.split(/,\s*/).forEach(function(tl){ tl=tl.trim(); if(tl) INDEX.push({toolOf:s, label:tl, sub:'Tool · '+s.t, ic:'⚙', c:s.cont, hay:tl.toLowerCase(), go:function(){ selectStop(s.id); }}); });
 });
 Object.keys(GUIDES).forEach(function(id){ var s=ST[id]; if(!s) return; Object.keys(GUIDES[id]).forEach(function(tr){ var g=GUIDES[id][tr];
-  INDEX.push({label:'Tick list: '+g.name, sub:'Worksheet · Lecture '+s.n+(tr==='all'?'':' · '+(tr==='code'?'code':'no-code')+' track'), ic:'☑', c:s.cont, hay:('tick list worksheet '+g.name+' '+(g.kw||'')).toLowerCase(), go:function(){ if(tr!=='all' && track!==tr) setTrack(tr); selectStop(id); setTimeout(function(){ var w=document.getElementById('work'); if(w) w.scrollIntoView({block:'start'}); }, 120); }}); }); });
+  INDEX.push({label:'Checklist: '+g.name, sub:'Worksheet · Lecture '+s.n+(tr==='all'?'':' · '+(tr==='code'?'code':'no-code')+' track'), ic:'☑', c:s.cont, hay:('checklist worksheet '+g.name+' '+(g.kw||'')).toLowerCase(), go:function(){ if(tr!=='all' && track!==tr) setTrack(tr); selectStop(id); setTimeout(function(){ var w=document.getElementById('work'); if(w) w.scrollIntoView({block:'start'}); }, 120); }}); }); });
 REGIONS.forEach(function(r){ INDEX.push({label:r.name, sub:'Region · '+CONTS[r.c].name, ic:'◌', c:CONTS[r.c], hay:(r.name+' '+r.desc).toLowerCase(), go:function(){ selectRegion(r.id); }}); });
 Object.keys(CONTS).forEach(function(k){ var C=CONTS[k]; INDEX.push({label:C.name, sub:'Territory · '+C.verif, ic:'◆', c:C, hay:(C.name+' '+C.sub+' '+C.verif).toLowerCase(), go:function(){ selectCont(k); }}); });
 [['North Star','Destination · four elements, the mom test','★','north star goal destination mom test',function(){ act('star'); }],

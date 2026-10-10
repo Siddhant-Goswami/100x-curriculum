@@ -1,7 +1,7 @@
 /* Worksheets that sit on a stop of the Module 2 map.
    Keyed by stop id, then by track ('code', 'nocode', or 'all'). The map renders whatever is here;
    lecture titles, tools and outcomes still come from the Google Sheet. Edit text here, not in the HTML.
-   Source: the Office Hour Guide, Tick List, Beginner Resources, Practice Set and Post-Read Notes for
+   Source: the Office Hour Guide, Checklist, Beginner Resources, Practice Set and Post-Read Notes for
    Building UI (code track, 1 October 2026). */
 var GUIDE_LINKS = {
   /* Fill these in when the links exist. Empty means the item renders as plain text. */
@@ -255,7 +255,7 @@ GUIDES.L3 = { code: {
     ["Sridev's webinar on video generation with Opus 5.5", 'webinar', 'Optional. Relevant if your output is video. Recording to be uploaded.'],
     ["Siddhant's essay on language as the interface", 'essay', 'The 2023 thesis the chat-versus-form debate keeps landing on. To be shared when ready.']
   ],
-  kw: 'tick list checklist spec setup template link gradio python pip localhost hugging face spaces hello world golden pair verifier error log ide vs code antigravity cursor office hour worksheet deploy'
+  kw: 'checklist spec setup template link gradio python pip localhost hugging face spaces hello world golden pair verifier error log ide vs code antigravity cursor office hour worksheet deploy'
 }};
 
 /* Lecture 4 · API as the second interface · combined, both tracks (3 October 2026).
