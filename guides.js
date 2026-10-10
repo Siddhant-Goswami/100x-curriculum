@@ -24,14 +24,9 @@ var GUIDE_LINKS = {
   gradioQuick: 'https://www.gradio.app/guides/quickstart',
   gradioChat: 'https://www.gradio.app/guides/creating-a-chatbot-fast',
   bigbinaryPython: 'https://courses.bigbinaryacademy.com/learn-python/',
-  bigbinaryGit: 'https://courses.bigbinaryacademy.com/git-and-github-essentials/',
   hfJoin: 'https://huggingface.co/join',
   hfNewSpace: 'https://huggingface.co/new-space',
   hfGradioDocs: 'https://huggingface.co/docs/hub/spaces-sdks-gradio',
-  render: 'https://render.com',
-  renderFree: 'https://render.com/docs/free',
-  renderFirst: 'https://render.com/docs/your-first-deploy',
-  github: 'https://github.com/signup',
   dhh: 'https://www.youtube.com/watch?v=vDjW_dRyKXY',
   /* Lecture 4 · API as the second interface (pages live in c8/module-2/lecture-04-the-second-interface) */
   l04Hub: '/c8/module-2/lecture-04-the-second-interface/',
@@ -48,7 +43,6 @@ var GUIDE_LINKS = {
   l04Get: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s2',
   l04Traffic: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s7',
   l04KeyStep: '/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s9',
-  l04Discord: 'https://discord.com/channels/1526146537778843658/1526146539276472427',
   l04Kit: '/c8/module-2/lecture-04-the-second-interface/post-lecture/kit',
   aaravApi: 'https://100x-curriculum.vercel.app/aarav',
   groqKeys: 'https://console.groq.com/keys',
@@ -56,6 +50,8 @@ var GUIDE_LINKS = {
   groqLimits: 'https://console.groq.com/docs/rate-limits',
   /* Lecture 5 · Building APIs and backend (code track; pages live in c8/module-2/lecture-05-building-apis) */
   l05Hub: '/c8/module-2/lecture-05-building-apis/',
+  l05Notes: '/c8/module-2/lecture-05-building-apis/notes',
+  l05Trouble: '/c8/module-2/lecture-05-building-apis/troubleshooting',
   l05Practice: '/c8/module-2/lecture-05-building-apis/practice-set',
   l05Steps: '/c8/module-2/lecture-05-building-apis/practice-set#s02',
   l05Raw: '/c8/module-2/lecture-05-building-apis/practice-set#s03',
@@ -114,13 +110,6 @@ var CHAT_TEMPLATE = [
   'demo.launch()'
 ].join('\n');
 
-var RENDER_LAUNCH = [
-  'import os',
-  'demo.launch(',
-  '    server_name="0.0.0.0",',
-  '    server_port=int(os.environ.get("PORT", 7860)),',
-  ')'
-].join('\n');
 
 var GUIDES = {};
 
@@ -172,7 +161,6 @@ GUIDES.L3 = { code: {
      ticks:[
        {id:'hf', t:'Hugging Face account created today', how:'Required for everyone. New accounts must be 30 days old before they can use a free Space, so the clock starts now.', link:'hfJoin', linkLabel:'huggingface.co/join'},
        {id:'space', t:'Space created (if the account is 30+ days old)', how:'New Space: Gradio SDK, start blank, ZeroGPU hardware, paste your tested app.py, commit. "Embed this Space" gives the link.', link:'hfNewSpace', linkLabel:'huggingface.co/new-space'},
-       {id:'render', t:'Render service (if you need a link sooner)', how:'GitHub repo + requirements.txt (one line: gradio) + the PORT change below. Build: pip install -r requirements.txt. Start: python app.py. Free instance; sleeps when idle.', link:'render', linkLabel:'render.com'},
        {id:'phone', t:'Link opened on your phone', how:'If it opens on a different device, it is live.'}
      ]}
   ],
@@ -227,7 +215,7 @@ GUIDES.L3 = { code: {
     ['String', 'Text inside quotes. GOLDEN_INPUT is a string.'],
     ['Variable', 'A name that holds a value. GOLDEN_OUTPUT is a variable holding a string.'],
     ['localhost', 'Your own computer, as a web address: http://127.0.0.1:7860. Nobody else can open it.'],
-    ['Port', "The number after the colon. 7860 is Gradio's default; Render supplies its own through PORT."],
+    ['Port', "The number after the colon. 7860 is Gradio's default."],
     ['PATH', 'The list of places your operating system looks for programs. If Python is not on it, the terminal cannot find it.'],
     ['Traceback', "Python's error report. Read the last line first; it names the error."],
     ['Spec', 'One page: North Star, observation, hypothesis, one user, golden pairs, verifier. Written before any code.'],
@@ -237,9 +225,7 @@ GUIDES.L3 = { code: {
     ['ZeroGPU', 'The only free hardware on Hugging Face Spaces now. Two Spaces per account, after the account is 30 days old.']
   ],
   deploy: [
-    ['Hugging Face Spaces', [['hfJoin','Sign up'],['hfNewSpace','New Space'],['hfGradioDocs','Gradio on Spaces docs']], 'Shown in the office hour. Free ZeroGPU, two Spaces, account must be 30 days old. Create the account today.'],
-    ['Render', [['render','render.com'],['renderFree','Free plan limits'],['renderFirst','First deploy guide']], 'Free web service. Needs GitHub, requirements.txt, and the PORT change in demo.launch. Sleeps when idle.'],
-    ['GitHub', [['github','github.com'],['bigbinaryGit','Git refresher']], 'Where your code lives for Render. Covered in the Git lesson.']
+    ['Hugging Face Spaces', [['hfJoin','Sign up'],['hfNewSpace','New Space'],['hfGradioDocs','Gradio on Spaces docs']], 'Shown in the office hour. Free ZeroGPU, two Spaces, account must be 30 days old. Create the account today.']
   ],
   unstuck: [
     ['Setup or template error, under 20 minutes in', 'Read the last line of the traceback, check the errors table above, try the fix once.'],
@@ -269,7 +255,7 @@ GUIDES.L3 = { code: {
     ["Sridev's webinar on video generation with Opus 5.5", 'webinar', 'Optional. Relevant if your output is video. Recording to be uploaded.'],
     ["Siddhant's essay on language as the interface", 'essay', 'The 2023 thesis the chat-versus-form debate keeps landing on. To be shared when ready.']
   ],
-  kw: 'tick list checklist spec setup template link gradio python pip localhost hugging face spaces render hello world golden pair verifier error log ide vs code antigravity cursor office hour worksheet deploy'
+  kw: 'tick list checklist spec setup template link gradio python pip localhost hugging face spaces hello world golden pair verifier error log ide vs code antigravity cursor office hour worksheet deploy'
 }};
 
 /* Lecture 4 · API as the second interface · combined, both tracks (3 October 2026).
@@ -316,7 +302,7 @@ GUIDES.L4 = { all: {
      intro:'Five items, posted in the Discord channel. Step 10 of the Request Builder leads into it.',
      ticks:[
        {id:'design', t:'Designed my API', how:'Every request: CRUD action, method, address, package in, reply with codes. At least one model call. Every key marked with its box.', link:'l04Practice', linkLabel:'Practice set'},
-       {id:'posted', t:'All five items posted in the Discord channel', link:'l04Discord', linkLabel:'Discord channel'}
+       {id:'posted', t:'All five items posted in the Discord channel'}
      ]}
   ],
   actions: [
@@ -324,7 +310,7 @@ GUIDES.L4 = { all: {
     {id:'oh', t:'Office hour, Thu 8 Oct, 8:30 pm IST: steps 1 to 8 done and a draft API table', how:'Bring one question in the template, and any request that would not work, with its status code.', link:'l04Trouble', linkLabel:'Office hour'},
     {id:'wire', t:'Optional: The Wire', how:'Why a request has exactly these parts, from Morse code to JSON.', link:'l04Wire', linkLabel:'The Wire'}
   ],
-  next: 'Next: Lecture 5 practical, Fri 9 Oct. The code track builds the backend in Python with FastAPI and deploys it on Render; the no-code track builds it in Antigravity. The backend holds the Groq key and sits between your UI and the model. Lecture 6, Sat 10 Oct: where should the diagnoses live?',
+  next: 'Next: Lecture 5 practical, Fri 9 Oct. The code track sends a raw request from the Gradio chat to the model in Python; the no-code track builds it in Antigravity. The backend holds the Groq key and sits between your UI and the model. Lecture 6, Sat 10 Oct: where should the diagnoses live?',
   errors: [
     ['401 from Groq', 'Key missing or mistyped, a space copied with it, or Bearer missing', 'Paste the key again. The header is Authorization: Bearer <key>'],
     ['404 from Groq', 'Model name typo, or a retired model (Llama 3.3 70B was retired on 16 Aug 2026)', 'Pick openai/gpt-oss-120b from the dropdown'],
@@ -363,7 +349,7 @@ GUIDES.L4 = { all: {
 /* Lecture 5 · Building APIs and backend · code track practical (9 October 2026).
    Source: the practice set Google Doc "100x_C8_PracticeSet_No_Cushions" (it calls this Live Lecture 06; the map numbers it 5). */
 GUIDES.L5 = { code: {
-  hub: {link:'l05Hub', title:'Open the Lecture 5 pages', sub:'Practice set with the live request, prediction log and verification note', more:[['l05Practice','Practice set'],['l05Raw','The raw request'],['l05Submit','What to submit']]},
+  hub: {link:'l05Hub', title:'Open the Lecture 5 pages', sub:'Practice set with the live request, prediction log and verification note', more:[['l05Notes','Notes'],['l05Practice','Practice set'],['l05Trouble','Troubleshooting']]},
   name: 'No cushions',
   sub: 'After the practical · 9 October 2026 · code track',
   deadline: 'Practice set',
@@ -371,7 +357,7 @@ GUIDES.L5 = { code: {
   keep: 'Connect your Gradio app to an LLM with a raw requests.post, and prove the reply helps by checking it against your golden pair. A 200 means the machine understood you, not that you helped anyone.',
   ideas: [
     ['Four questions read any machine.', 'Address, action, key, package. Answer them and you can wire any API into an app without leaning on someone else\'s code.'],
-    ['A library is a comfortable seat.', 'Passengers get stuck when the car breaks, as Groq\'s quickstart did with a 404. Drivers go to the endpoint, key and body.'],
+    ['A passenger only needs a comfortable seat. A driver must understand the controls to operate the car.', 'Libraries and SDKs like Groq and Gradio offer comfort, but abstract away how things work. When something breaks, the passenger is stuck. The driver knows where to look. In software, that means understanding the source of truth: the endpoint, API key, request body, and response. Convenience helps you move faster. Understanding gives you control.'],
     ['A 200 is not a verdict.', 'A working answer still failed because it did not solve the problem. The status code proves the call worked. Only your verifier proves the reply helps.'],
     ['Minimum path.', 'No extra parameters, no chat history handling, no changed interface, no renamed functions. The diff from the echo app is the process and nothing else.']
   ],
@@ -388,7 +374,7 @@ GUIDES.L5 = { code: {
      intro:'Same address, action, key and package, now in Python. Write it yourself: the code is short enough that writing it is the learning.',
      ticks:[
        {id:'post', t:'The echo replaced with requests.post, returning only the content field', how:'No Groq or OpenAI SDK in the final file. The address, action, key and package all in one file.', link:'l05Steps', linkLabel:'The shape of the change'},
-       {id:'env', t:'The key read from an environment variable, never written in the file', how:'Or a .env file listed in .gitignore. Blur the key in every image you post.', cmd:'export GROQ_API_KEY=gsk_your_key_here'},
+       {id:'env', t:'The key read from an environment variable, never written in the file', how:'Set it in the terminal. Blur the key in every image you post.', cmd:'export GROQ_API_KEY=gsk_your_key_here'},
        {id:'fails', t:'Two deliberate failures logged: a wrong model name and a missing or wrong key', how:'Predicted code, actual code and the error message for each.', link:'l05Log', linkLabel:'Prediction log'}
      ]},
     {id:'verify', name:'Verify', short:'Verify', sub:'Step 5 · your golden pair',
@@ -420,15 +406,16 @@ GUIDES.L5 = { code: {
     ['KeyError: \'choices\'', 'The request failed, so the reply has error instead of choices', 'Print r.status_code and r.json() first. Status code says whose fault; the message says what']
   ],
   read: [
-    ['Lecture 5 hub', 'l05Hub', 'Why the raw request, your path this week, what is next.'],
+    ['Lecture 5 overview', 'l05Hub', 'Why the raw request, your path this week.'],
+    ['Notes', 'l05Notes', 'The lecture, section by section.'],
     ['Practice set', 'l05Practice', 'The live request, prediction log, verification note and the six deliverables.'],
     ['httpie.io/app', 'httpie', 'Where the raw request screenshot comes from.'],
     ['Lecture 4 Groq step', 'l04Groq', 'Refresher: your first keyed request to Groq.'],
-    ['Troubleshooting', 'l04Trouble', 'Search an error; see the part it points to and the fix.'],
+    ['Troubleshooting', 'l05Trouble', 'Search an error; see the part it points to and the fix.'],
     ['Keys', 'l04Keys', 'Where a key lives, and what to do when one leaks.']
   ],
   words: [
-    ['SDK', 'Someone else\'s car around an API. Comfortable to ride in; you are stuck when it breaks.'],
+    ['SDK', 'Someone else\'s code wrapped around an API: comfort that hides how things work.'],
     ['requests.post', 'The Python call that sends a POST: address, headers with the key, and a JSON package.'],
     ['Environment variable', 'A value set outside your code, read with os.environ. Where the key lives.'],
     ['Content field', 'choices[0].message.content: the model\'s reply inside the package Groq sends back.'],

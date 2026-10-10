@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: APIs, Rip Off the Cushion | 100xEngineers</title>
+<meta name="description" content="Lecture notes for Lecture 5 of the 100xEngineers Cohort 8 Module 2 code track: from an echo chat with no process to a raw POST request that plans Aarav's week.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<script src="/c8/docs.js"></script>
+</head>
+<body data-page="l05-notes">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L5">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Overview</a><a href="/c8/module-2/lecture-05-building-apis/notes">Notes</a><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a><a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a></div></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 5 · Code track</p>
+  <h1>APIs: Rip Off the Cushion</h1>
+  <p class="dek">From an echo chat with no process to a raw POST request that plans Aarav's week.</p>
+  <div class="meta"><span>Fri 9 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<div class="call"><p class="kick">The one thing to keep</p><p>An LLM is not magic inside your app. It is a machine at an address, and you reach it like any API: an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span> and a <span class="part pkg">package</span>. The process is your prompt plus your user's input, sent to that address. None of it counts until your verifier says the output helps the person you built it for.</p></div>
+
+<p>Read once end to end, then rebuild <a href="#s10">section 10</a> and <a href="#s13">section 13</a> on your own machine.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Where We Left Off: A Chat That Repeats You</h2>
+<p>The Gradio app from the last code lecture: <code>message</code> is the input, the <code>return</code> line is the output, and there is nothing in between.</p>
+<div id="c1"></div>
+<p>What you have to find is the <b>process</b>: the step that turns your user's input into an output they can use. You cannot write the process for a problem you have not done by hand.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The Verifier Most People Skipped</h2>
+<p>A spec has three parts: the <b>person</b>, the <b>golden dataset</b> (ideal input and ideal output, written after talking to real users) and the <b>verifier</b>, a written condition that tells you whether an output is good. If you cannot tell a good output from a bad one in your user's domain, do not build yet.</p>
+<p>Adding two numbers, an exam result and a refund decision gave three families: verification by rule, by judgment, and unverifiable. A system that gives the same output for the same input every time is <b>deterministic</b>, and this part of Module 2 lives there.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Why Learn It When Agents Can Write It</h2>
+<div class="call"><p class="kick">Thinking can be outsourced. Understanding cannot.</p><p>We are not learning code to write it faster by hand. We are learning how deterministic systems behave, because a system you do not understand is a system you cannot verify: an agent, a mobile app or legacy enterprise software.</p></div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Filling the Process With One Line</h2>
+<p>With the manual work for Aarav done, the process fits in one line of pseudocode:</p>
+<div id="c2"></div>
+<p>The <b>prompt</b> is the valuable part: the instruction refined after talking to real Aaravs. The task was to make that line real with a Groq key (<a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>) and GPT OSS 120B, free at 30 requests per minute.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Four Minutes, and What the Machine Said</h2>
+<div class="tw compact"><table><tbody>
+<tr><td>Deep</td><td>An OpenAI client pointed at the Groq address. Errors: missing API key, then <code>gr</code> not defined. Every error is a hint about what broke.</td></tr>
+<tr><td>Anand</td><td><code>LLM</code> was never defined, so the call could not run.</td></tr>
+<tr><td>Bhavani</td><td>It ran: the only working answer of the first three. It also carried things nobody asked for and no prompt at all.</td></tr>
+<tr><td>Abhinand</td><td>Cleanest: template kept, process filled. But the interface was swapped, names changed for no reason, and the prompt was the docs' default.</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Working Is Not the Same as Useful</h2>
+<p>Bhavani's code passed; the plan did not. It was full of code, and Aarav is a business analyst who cannot read Python yet. If the most complex technology on Earth does not deliver value to the end user, it was a waste of everyone's time.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>The Minimum Path</h2>
+<p>Under time pressure with one clear instruction, nobody changes the interface or adds ten parameters. Extra, unrequested structure is the fingerprint of pasting the task into an AI without understanding. Ask first: what is the smallest change that makes this work?</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Go to the Source, and Read the 404</h2>
+<p>Go to the official source before any AI. Groq's quickstart (<code>pip install groq</code>, export <code>GROQ_API_KEY</code>, a short script) failed as pasted:</p>
+<div class="call prob"><p class="kick">Error 404</p><p>The model <code>llama-3.3-70b-versatile</code> does not exist or you do not have access to it.</p></div>
+<p>404 is the client's mistake and means <i>not found</i>. Not found what? The message says: the model. Change the name to GPT OSS and run again. The status code tells you whose fault it is; the message tells you what.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Free Is a Design Decision</h2>
+<p>Groq's free tier: 30 requests per minute, roughly 200,000 tokens and 1,000 requests a day. With a per-user quota, that powers a real MVP for one or two users at zero cost.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Where Is the URL? Four Principles in the Code</h2>
+<p>Tested live in <a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a> (a browser address bar only sends GET). <code>api.groq.com</code> on its own failed: DNS finds a server, it does not tell the server what you want. The API reference gives the full endpoint:</p>
+<div class="cmd"><span>POST  https://api.groq.com/openai/v1/chat/completions</span><button class="cp" type="button">Copy</button></div>
+<p>The whole Groq API, tested without writing code. You can do this in the browser right now.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Prompt + Input = Package</h2>
+<p>The message content became a plain instruction followed by Aarav's real workflow:</p>
+<p><em>"Here is the workflow of an analyst working at an IT company in India. Diagnose and generate a plan to automate this work, or a part of the work."</em> [Aarav's workflow pasted below]</p>
+<p>Both share one <code>content</code> field, but the instruction is yours and stays the same; the workflow is his and changes every time. The loop: chat UI captures input, prompt plus input goes to the LLM API, JSON comes back, you extract <code>content</code>, Gradio renders it to Aarav. Judge it against the golden pair, not "looks good".</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>The Cushion: What a Library Hides</h2>
+<p>In the SDK code that worked, neither the URL nor POST is visible: both are hidden behind <b>abstraction</b>.</p>
+<p>A passenger only needs a comfortable seat. A driver must understand the controls to operate the car.</p>
+<p>Libraries and SDKs like Groq and Gradio offer comfort, but abstract away how things work.</p>
+<p>When something breaks, the passenger is stuck. The driver knows where to look.</p>
+<p>In software, that means understanding the source of truth: <strong>the endpoint, API key, request body, and response.</strong></p>
+<p><strong>Convenience helps you move faster. Understanding gives you control.</strong></p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Ripping Off the Cushion: requests.post</h2>
+<p>Same as the browser test, now in Python, with every principle visible:</p>
+<div id="c3"></div>
+<ul>
+  <li><b>The key</b> comes from your environment. Set it with <code>export GROQ_API_KEY=...</code> in the terminal; it vanishes on restart.</li>
+  <li><b>The content</b> is static prompt plus dynamic <code>message</code>. That one line in front of Aarav's text is the P in input, process, output.</li>
+  <li>If <code>import requests</code> fails, run <code>pip install requests</code>.</li>
+</ul>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>Reading the Plan as Aarav Would</h2>
+<p>The plan used Aarav's real week: open Jira, read the tickets, write the status, post on Slack. Useful. Then it drifted into architecture, databases and languages: jargon. The verifier produced a prompt change: no jargon, one step at a time, the minimum action needed now. One JQL line on day one, Python on day two, the Jira API by week four.</p>
+</section>
+
+<section class="s" id="s15"><h2><span class="n">15</span>Any Machine, Four Lines</h2>
+<p>The raw version is provider-agnostic: swap the URL and key for OpenAI's and the same code runs. No new package, no dependence on anyone's SDK.</p>
+<div class="call"><p class="kick">The four questions for any machine</p><p>What is the address? What is the action? Do I need a key, and how do I get it? What package does it expect? Answer those and about four lines connect your app to any machine on the internet.</p></div>
+<p>Practice targets: the <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener">public-apis list</a>.</p>
+</section>
+
+<section class="s" id="s16"><h2><span class="n">16</span>From the Q&amp;A</h2>
+<div class="tw compact"><table><tbody>
+<tr><td>Make my API run a shell script?</td><td>Bash and Python speak different languages. You need a common language and rules: an interface problem, the one this module keeps solving. Send your script for a specific answer.</td></tr>
+<tr><td>The key showed in the network inspector</td><td>Covered when you build your own API. Security comes in levels, chosen by what is at stake: a to-do app and a Fortune 500 company do not need the same lock.</td></tr>
+<tr><td>Host my own API locally?</td><td>A recorded video is coming. Watch it, then bring the question to office hours.</td></tr>
+<tr><td>Feedback</td><td>Your best feedback comes from your own Aarav. Queries on Discord, not DMs; Monday and Tuesday are the reply slots.</td></tr>
+</tbody></table></div>
+</section>
+
+<section class="s" id="s17"><h2><span class="n">17</span>Words You Met</h2>
+<div class="gl">
+  <div class="w"><b>Process</b><span>The step that turns input into output: your prompt plus the user's message, sent to an LLM.</span></div>
+  <div class="w"><b>Golden dataset</b><span>Ideal input and output pairs, written from doing the job by hand.</span></div>
+  <div class="w"><b>Verifier</b><span>A written condition that says whether an output is good enough for the user.</span></div>
+  <div class="w"><b>Deterministic system</b><span>Same input, same output, every time. Verifiable by rule.</span></div>
+  <div class="w"><b>Endpoint</b><span>The full address of one resource, path included. The domain alone is not enough.</span></div>
+  <div class="w"><b>DNS</b><span>Domain Name System: finds which server a domain points to.</span></div>
+  <div class="w"><b>Status code</b><span>The machine's verdict: 2xx worked, 4xx your mistake, 5xx theirs.</span></div>
+  <div class="w"><b>Abstraction</b><span>Hiding detail so you work at a higher level. Comfort that costs understanding.</span></div>
+  <div class="w"><b>SDK</b><span>A provider's code wrapped around address, action, key and package.</span></div>
+  <div class="w"><b>Environment variable</b><span>Where keys live, outside your code, so they never reach a screenshot.</span></div>
+  <div class="w"><b>Rate limit</b><span>Requests allowed per minute or day. Groq free: 30 per minute.</span></div>
+  <div class="w"><b>JQL</b><span>Jira Query Language, which the plan suggested for pulling Aarav's tickets.</span></div>
+</div>
+</section>
+
+<section class="s" id="s18"><h2><span class="n">18</span>Before the Next Office Hour</h2>
+<ol class="steps">
+  <li><b>Submit Assignment 1</b> if you have not. The deadline was 9 October; the late window is open with a penalty.</li>
+  <li><b>Run the raw request in <a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a>.</b> POST, full endpoint, your key, a working model. Predict the status code first.</li>
+  <li><b>Rebuild section 13</b> for your own observation (or Aarav's), with your prompt and your user's real input.</li>
+  <li><b>Check one output against your golden pair</b> and write one prompt change the check forced.</li>
+  <li><b>Post a screenshot</b> of the working app on the Discord code channel. Earliest posts are reviewed first.</li>
+</ol>
+<p class="sig">Convenience helps you move faster. Understanding gives you control.<small><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a> · <a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a></small></p>
+</section>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 5: Building APIs and backend</span><a href="/#L5">Curriculum map</a><a href="/c8/module-2/lecture-05-building-apis/">All Lecture 5 pages</a></div></footer>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('c1').innerHTML=c8code({title:'app.py · the echo',code:'import gradio as gr\n\ndef reply(message, history):\n    return "You typed: " + message      # input goes straight back out\n\ngr.ChatInterface(reply).launch()'});
+  document.getElementById('c2').innerHTML=c8code({title:'the process · pseudocode',code:'def reply(message, history):\n    response = LLM(message, prompt, model)   # the process (pseudocode)\n    return response'});
+  document.getElementById('c3').innerHTML=c8code({title:'app.py · no cushion',code:[
+    'import os','import requests','import gradio as gr','',
+    'URL = "https://api.groq.com/openai/v1/chat/completions"   # address',
+    'PROMPT = ("Here is the workflow of an analyst working at an IT "',
+    '          "company in India. Diagnose and generate a plan to "',
+    '          "automate this work, or a part of the work.\\n\\n")','',
+    'def reply(message, history):',
+    '    r = requests.post(                                    # action',
+    '        URL,',
+    '        headers={"Authorization":                         # key',
+    '                 "Bearer " + os.environ["GROQ_API_KEY"]},',
+    '        json={"model": "openai/gpt-oss-20b",              # package',
+    '              "messages": [{"role": "user",',
+    '                            "content": PROMPT + message}]},',
+    '    )',
+    '    # extract only what Aarav needs',
+    '    return r.json()["choices"][0]["message"]["content"]','',
+    'gr.ChatInterface(reply).launch()'].join('\n')});
+});
+</script>
+</body>
+</html>

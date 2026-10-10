@@ -1052,18 +1052,14 @@ var VIS = {
       '<p class="vc"><b>To make it yours, change three things and nothing else.</b> Replace GOLDEN_INPUT with your golden input, GOLDEN_OUTPUT with your golden output, and the word the if statement looks for with one that always appears in your input. Leave the interface alone. Next week the body of respond becomes an LLM call; the interface will not change.</p></div>';
   },
   deploy: function(){
-    var svg = '<svg class="dep" viewBox="0 0 356 190" role="img" aria-label="From localhost to a link: your machine, then Hugging Face Spaces or Render, then a link that opens on your phone">'+
-      '<path d="M110 95 C 130 95, 126 48, 146 48"/><path d="M110 95 C 130 95, 126 142, 146 142"/><path d="M270 48 C 290 48, 284 95, 302 95"/><path d="M270 142 C 290 142, 284 95, 302 95"/>'+
-      '<rect x="2" y="66" width="108" height="58" rx="12"/><text x="56" y="84" text-anchor="middle" class="c">LOCALHOST</text><text x="56" y="100" text-anchor="middle" class="k">127.0.0.1:7860</text><text x="56" y="114" text-anchor="middle" class="s">only you can open it</text>'+
-      '<rect x="146" y="20" width="124" height="56" rx="12" class="hot"/><text x="208" y="38" text-anchor="middle" class="k">Hugging Face Spaces</text><text x="208" y="52" text-anchor="middle" class="s">ZeroGPU · free · 2 Spaces</text><text x="208" y="65" text-anchor="middle" class="s">account 30 days old</text>'+
-      '<rect x="146" y="114" width="124" height="56" rx="12"/><text x="208" y="132" text-anchor="middle" class="k">Render</text><text x="208" y="146" text-anchor="middle" class="s">requirements.txt + PORT</text><text x="208" y="159" text-anchor="middle" class="s">free · sleeps when idle</text>'+
-      '<circle cx="313" cy="95" r="10"/><text x="313" y="98.5" text-anchor="middle" class="k" style="font-size:9px">★</text><text x="313" y="124" text-anchor="middle" class="c">A LINK</text><text x="313" y="137" text-anchor="middle" class="s">on your phone</text>'+
+    var svg = '<svg class="dep" viewBox="0 0 356 130" role="img" aria-label="From localhost to a link: your machine, then Hugging Face Spaces, then a link that opens on your phone">'+
+      '<path d="M110 65 L146 65"/><path d="M270 65 L302 65"/>'+
+      '<rect x="2" y="36" width="108" height="58" rx="12"/><text x="56" y="54" text-anchor="middle" class="c">LOCALHOST</text><text x="56" y="70" text-anchor="middle" class="k">127.0.0.1:7860</text><text x="56" y="84" text-anchor="middle" class="s">only you can open it</text>'+
+      '<rect x="146" y="37" width="124" height="56" rx="12" class="hot"/><text x="208" y="55" text-anchor="middle" class="k">Hugging Face Spaces</text><text x="208" y="69" text-anchor="middle" class="s">ZeroGPU · free · 2 Spaces</text><text x="208" y="82" text-anchor="middle" class="s">account 30 days old</text>'+
+      '<circle cx="313" cy="65" r="10"/><text x="313" y="68.5" text-anchor="middle" class="k" style="font-size:9px">★</text><text x="313" y="94" text-anchor="middle" class="c">A LINK</text><text x="313" y="107" text-anchor="middle" class="s">on your phone</text>'+
       '</svg>';
-    return '<div class="vis"><div class="vk">From localhost to a link · same file, two routes</div>'+svg+
-      '<p class="vc"><b>Spaces</b> is the route shown in the office hour: New Space, Gradio SDK, start blank, ZeroGPU, paste your tested app.py, commit. Hugging Face owns Gradio, so the fit is exact. New accounts wait 30 days, which is why the account is created tonight.</p>'+
-      '<p class="vc"><b>Render</b> works before the 30 days are up. Put app.py and a one-line requirements.txt in a GitHub repo, and replace the last line of app.py so Render can choose the port:</p>'+
-      codeHTML(RENDER_LAUNCH, {3:['Render supplies PORT',IPO.proc,true]}, 'render', '', '', 'app.py · last line')+
-      '<div class="tx" style="display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px">'+cmdChip('req','requirements.txt → gradio',true)+cmdChip('build','pip install -r requirements.txt')+cmdChip('start','python app.py')+'</div></div>';
+    return '<div class="vis"><div class="vk">From localhost to a link · same file</div>'+svg+
+      '<p class="vc"><b>Spaces</b> is the route shown in the office hour: New Space, Gradio SDK, start blank, ZeroGPU, paste your tested app.py, commit. Hugging Face owns Gradio, so the fit is exact. New accounts wait 30 days, which is why the account is created tonight.</p></div>';
   }
 };
 function tickHTML(s,stId,t){

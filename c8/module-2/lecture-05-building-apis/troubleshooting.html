@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Troubleshooting: Lecture 5 | 100xEngineers</title>
+<meta name="description" content="Lecture 5 troubleshooting: the errors you will meet sending a raw requests.post to Groq from your Gradio chat, the part each points to, and the fix.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<script src="/c8/docs.js"></script>
+<style>
+details.acc summary .sc{margin-right:2px}
+</style>
+</head>
+<body data-page="l05-troubleshooting">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L5">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Overview</a><a href="/c8/module-2/lecture-05-building-apis/notes">Notes</a><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a><a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Troubleshooting · Lecture 5 · Code track</p>
+  <h1>When the request fails</h1>
+  <p class="dek">Status code says whose fault. The message says what. Read both before you ask.</p>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The Errors You Should Expect</h2>
+<input class="search" id="errsearch" type="search" placeholder="Type the code or paste the error message…" aria-label="Search errors">
+
+<details class="acc" data-q="401 invalid api key bearer environment variable groq_api_key"><summary><span class="sc s4">401</span><span class="err">Invalid API Key</span></summary><div class="b"><span class="kick">Part</span><p><span class="part key">key</span></p><span class="kick">Cause</span><p>Key missing, mistyped, a space copied with it, or <code>Bearer </code> missing.</p><span class="kick">Fix</span><p>The header is <code>Authorization: Bearer &lt;key&gt;</code>. Check the environment variable is set in the same terminal that runs the app.</p></div></details>
+
+<details class="acc" data-q="keyerror groq_api_key os.environ environment variable not set"><summary><span class="err">KeyError: 'GROQ_API_KEY'</span></summary><div class="b"><span class="kick">Part</span><p><span class="part key">key</span></p><span class="kick">Cause</span><p>The variable is not set in this terminal. <code>export</code> vanishes when the terminal closes.</p><span class="kick">Fix</span><p>Set it again before <code>python app.py</code>.</p></div></details>
+
+<details class="acc" data-q="404 model does not exist not found llama-3.3-70b-versatile retired quickstart"><summary><span class="sc s4">404</span><span class="err">The model does not exist or you do not have access to it</span></summary><div class="b"><span class="kick">Part</span><p><span class="part pkg">package</span>, the <code>model</code> field</p><span class="kick">Cause</span><p>A typo, or a retired model. Groq's own quickstart still ships <code>llama-3.3-70b-versatile</code>.</p><span class="kick">Fix</span><p>Use <code>openai/gpt-oss-20b</code>. One word, read straight from the error.</p></div></details>
+
+<details class="acc" data-q="404 not found url address endpoint api.groq.com path"><summary><span class="sc s4">404</span><span class="err">Not found: wrong address</span></summary><div class="b"><span class="kick">Part</span><p><span class="part addr">address</span></p><span class="kick">Cause</span><p>The domain alone, or a typo in the path. <code>api.groq.com</code> on its own is not an endpoint.</p><span class="kick">Fix</span><p><code>https://api.groq.com/openai/v1/chat/completions</code></p></div></details>
+
+<details class="acc" data-q="400 bad request messages json package missing field"><summary><span class="sc s4">400</span><span class="err">Bad request</span></summary><div class="b"><span class="kick">Part</span><p><span class="part pkg">package</span></p><span class="kick">Cause</span><p>A missing field or the wrong shape for <code>messages</code>.</p><span class="kick">Fix</span><p>Compare your <code>json=</code> with the package on the <a href="/c8/module-2/lecture-05-building-apis/practice-set#s03">practice set</a>.</p></div></details>
+
+<details class="acc" data-q="429 rate limit too many requests"><summary><span class="sc s4">429</span><span class="err">Too many requests</span></summary><div class="b"><span class="kick">Cause</span><p>More than 30 requests in a minute on your Groq account.</p><span class="kick">Fix</span><p>Wait a minute. You will not need more.</p></div></details>
+
+<details class="acc" data-q="keyerror choices r.json response error"><summary><span class="err">KeyError: 'choices'</span></summary><div class="b"><span class="kick">Cause</span><p>The request failed, so the reply has <code>error</code> instead of <code>choices</code>.</p><span class="kick">Fix</span><p>Print <code>r.status_code</code> and <code>r.json()</code> first, then find the code above.</p></div></details>
+
+<details class="acc" data-q="modulenotfounderror no module named requests import"><summary><span class="err">ModuleNotFoundError: No module named 'requests'</span></summary><div class="b"><span class="kick">Fix</span><p><code>pip install requests</code></p></div></details>
+
+<details class="acc" data-q="nameerror gr not defined gradio import"><summary><span class="err">NameError: name 'gr' is not defined</span></summary><div class="b"><span class="kick">Cause</span><p>Gradio was never imported.</p><span class="kick">Fix</span><p>Add <code>import gradio as gr</code> at the top.</p></div></details>
+
+<details class="acc" data-q="5xx 500 502 503 server error"><summary><span class="sc s5">5xx</span><span class="err">Server error</span></summary><div class="b"><span class="kick">Cause</span><p>Their machine, not yours.</p><span class="kick">Fix</span><p>Try again later.</p></div></details>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Still Stuck</h2>
+<p>Post the status code, the exact message and what you tried on the Discord code channel, key masked. Replies Mon and Tue. More: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Lecture 4 troubleshooting</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</p>
+</section>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 5: Building APIs and backend</span><a href="/#L5">Curriculum map</a><a href="/c8/module-2/lecture-05-building-apis/">All Lecture 5 pages</a></div></footer>
+</body>
+</html>

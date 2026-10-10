@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Troubleshooting: Building UI | 100xEngineers</title>
+<meta name="description" content="Lecture 3 troubleshooting for the code track: the setup and Gradio errors you should expect, the cause and the fix, and how to ask for help.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+</head>
+<body data-page="l03-troubleshooting">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 3 pages"><a href="/c8/">Overview</a><a href="/c8/building-ui-notes">Notes</a><a href="/c8/practice-set">Practice set</a><a href="/c8/troubleshooting">Troubleshooting</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Troubleshooting · Lecture 3: Building UI · Code track</p>
+  <h1>Troubleshooting: when the app will not run</h1>
+  <p class="dek">Python not found, Gradio not installed: you will hit these. Solving them yourself is the start of the debugging muscle.</p>
+</div>
+
+<div class="call"><p class="kick">How to read an error</p><p>The machine does not guess. Read the last line of the traceback, find it below, try the fix once. Log the exact error, what you tried and what fixed it.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The Errors You Should Expect</h2>
+<input class="search" id="errsearch" type="search" placeholder="Paste the last line of your error here…" aria-label="Search errors">
+<details class="acc" data-q="python is not recognised command not found path python3"><summary><span class="err">python is not recognised / command not found</span></summary><div class="b"><span class="kick">Cause</span><p>PATH not set during install (Windows), or Mac uses python3.</p><span class="kick">Fix</span><p>Windows: reinstall and tick Add Python to PATH. Mac: use <code>python3</code> and <code>pip3</code>.</p></div></details>
+<details class="acc" data-q="no module named gradio modulenotfounderror pip"><summary><span class="err">No module named gradio</span></summary><div class="b"><span class="kick">Cause</span><p>pip installed into a different Python than the one running.</p><span class="kick">Fix</span><div class="cmd"><span>python -m pip install gradio</span><button class="cp" type="button">Copy</button></div><p>So pip and python match, then run again.</p></div></details>
+<details class="acc" data-q="address already in use port 7860 oserror"><summary><span class="err">Address already in use / port 7860</span></summary><div class="b"><span class="kick">Cause</span><p>The previous app is still running.</p><span class="kick">Fix</span><p>Close the old terminal or press <kbd>Ctrl</kbd>+<kbd>C</kbd> in it, then run again.</p></div></details>
+<details class="acc" data-q="indentationerror syntaxerror unexpected indent eol quote bracket"><summary><span class="err">IndentationError / SyntaxError</span></summary><div class="b"><span class="kick">Cause</span><p>A line was pasted with wrong spacing or a missing quote or bracket.</p><span class="kick">Fix</span><p>Re-copy the template exactly; Python counts the spaces at the start of a line.</p></div></details>
+<details class="acc" data-q="browser shows nothing blank page refused to connect localhost"><summary><span class="err">Browser shows nothing</span></summary><div class="b"><span class="kick">Cause</span><p>The URL was retyped wrong, or the terminal was closed.</p><span class="kick">Fix</span><p>Click the link the terminal printed; keep that terminal open while you test.</p></div></details>
+<details class="acc" data-q="def return function syntax unfamiliar python basics"><summary><span class="err">def, return and functions are unfamiliar</span></summary><div class="b"><span class="kick">Cause</span><p>Lectures do not teach Python syntax.</p><span class="kick">Fix</span><p>Finish the <a href="https://courses.bigbinaryacademy.com/learn-python/" target="_blank" rel="noopener">Python bigbinary prerequisite</a> first.</p></div></details>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Still Stuck</h2>
+<div class="tw compact"><table><tbody>
+<tr><td>Under 20 minutes in</td><td>Read the last line of the traceback, check the list above, try the fix once.</td></tr>
+<tr><td>Same error after 20 minutes</td><td>Post in the code track channel on Discord, not general: the exact error, what you tried, a screenshot.</td></tr>
+<tr><td>You fixed something</td><td>Reply in the thread. Your fix is someone else's blocker.</td></tr>
+</tbody></table></div>
+<p>First-time coders: pair up, and keep the <a href="/c8/beginner-kit">beginner kit</a> open.</p>
+</section>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Code track</span><a href="/">Curriculum map</a><a href="/c8/">All code-track pages</a></div></footer>
+</body>
+</html>

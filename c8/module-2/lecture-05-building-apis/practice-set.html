@@ -17,7 +17,7 @@
 <div id="prog" aria-hidden="true"></div>
 <header class="top"><div class="in">
   <a class="brand" href="/#L5">100x<b>·</b>C8 Module 2</a>
-  <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 · Groq step</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a><a href="/#L5">Map</a></nav>
+  <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Overview</a><a href="/c8/module-2/lecture-05-building-apis/notes">Notes</a><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a><a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 <div class="wrap grid">
@@ -49,8 +49,12 @@
 </div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Why This Exercise Exists</h2>
-<p>A library is a comfortable seat: you ride as a passenger. When the car breaks (Groq's quickstart model returned a 404), the passenger is stuck. The driver knows the four parts: <span class="part addr">address</span>, <span class="part act">action</span>, <span class="part key">key</span>, <span class="part pkg">package</span>.</p>
-<p><strong>A 200 proves the call worked. Only your verifier proves the reply helps.</strong></p>
+<p>A passenger only needs a comfortable seat. A driver must understand the controls to operate the car.</p>
+<p>Libraries and SDKs like Groq and Gradio offer comfort, but abstract away how things work.</p>
+<p>When something breaks, the passenger is stuck. The driver knows where to look.</p>
+<p>In software, that means understanding the source of truth: <strong>the endpoint, API key, request body, and response.</strong></p>
+<p><strong>Convenience helps you move faster. Understanding gives you control.</strong></p>
+<p>A 200 proves the call worked. Only your verifier proves the reply helps.</p>
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>The Five Steps</h2>
@@ -71,14 +75,13 @@
 <h3>Step 4 · The shape of the change</h3>
 <p>Each blank is one of the four parts, with the values from <a href="#s03">the raw request</a>. Write it yourself.</p>
 <div id="shape"></div>
-<p>The key comes from an environment variable or a <code>.env</code> file in <code>.gitignore</code>, never from the code.</p>
 <div class="osrow"><span class="kick">Your machine</span><div class="seg" data-seg="os" role="group" aria-label="Operating system"><button type="button" data-v="mac">Mac</button><button type="button" data-v="win">Windows</button></div></div>
 <div class="cmd" data-os="mac"><span>export GROQ_API_KEY=gsk_your_key_here</span><button class="cp" type="button">Copy</button></div>
 <div class="cmd" data-os="win"><span>$env:GROQ_API_KEY="gsk_your_key_here"</span><button class="cp" type="button">Copy</button></div>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>The Raw Request, Live</h2>
-<p>Step 2's request, sent from this page to Groq. Pick your predicted status code to unlock Send; every send goes to the <a href="#s04">prediction log</a>. Your screenshot still comes from httpie.io/app.</p>
+<p>Step 2's request, sent from this page to Groq. Pick your predicted status code to unlock Send; every send goes to the <a href="#s04">prediction log</a>. Your screenshot still comes from <a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a>.</p>
 <div class="lab" id="lab">
   <div class="lh"><span>POST · Groq chat completions</span><span class="sp" id="labMeta">Free tier: 30 requests a minute</span></div>
   <div class="band addr"><b>Address</b><div class="fx">https://api.groq.com/openai/v1/chat/completions</div></div>
@@ -118,7 +121,7 @@
 <tr><td><span class="sc s4">429</span></td><td>Too many requests this minute on your account. Wait and send again.</td></tr>
 <tr><td><span class="sc s5">5xx</span></td><td>Their machine, not yours. Try again later.</td></tr>
 </tbody></table></div>
-<p>Status code says whose fault; the message says what. Try the fix the error points to before pasting anything into an LLM. More in <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a>.</p></div></details>
+<p>Status code says whose fault; the message says what. Try the fix the error points to before pasting anything into an LLM. More in <a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a>.</p></div></details>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Prediction Log</h2>
@@ -152,7 +155,7 @@
 <details class="acc" open><summary>Predict before you run.</summary><div class="b"><p>Every request in the prediction log gets its expected status code written down first. Include at least two deliberate failures: a wrong model name and a missing or wrong key. Record what each actually returned.</p></div></details>
 <details class="acc"><summary>Read the error before you ask.</summary><div class="b"><p>Status code says whose fault; the message says what. Try the fix the error points to before pasting anything into an LLM.</p></div></details>
 <details class="acc"><summary>Minimum path.</summary><div class="b"><p>No extra parameters, no chat history handling, no changed interface, no renamed functions. The diff from the echo app should be the process and nothing else.</p></div></details>
-<details class="acc"><summary>Keys never in code or screenshots.</summary><div class="b"><p>Use an environment variable or a <code>.env</code> file listed in <code>.gitignore</code>. Blur the key in every image you post. If a key leaks, revoke it and create a new one: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</p></div></details>
+<details class="acc"><summary>Keys never in code or screenshots.</summary><div class="b"><p>Set it in the terminal, never in the file. Blur the key in every image you post. If a key leaks, revoke it and create a new one: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</p></div></details>
 <details class="acc"><summary>Stay inside the free tier.</summary><div class="b"><p>Groq allows 30 requests per minute. You will not need more.</p></div></details>
 <details class="acc"><summary>LLM help: hints and debugging yes; generating the solution no.</summary><div class="b"><p>Think for the first minute on your own. Pasting this brief in and copying the code out defeats the exercise; the code is short enough that writing it is the learning.</p></div></details>
 </section>
@@ -162,7 +165,7 @@
 <ul class="ck">
 <li><input type="checkbox" id="d1"><label for="d1"><span class="t">App screenshot</span><span class="h">The Gradio chat running locally, with your user's real input and the model's reply visible. Key not visible.</span></label></li>
 <li><input type="checkbox" id="d2"><label for="d2"><span class="t">Code file</span><span class="h">One Python file (repo link or paste) using <code>requests.post</code>, with the address, action, key and package. No SDK import.</span></label></li>
-<li><input type="checkbox" id="d3"><label for="d3"><span class="t">Raw request screenshot</span><span class="h">httpie.io/app showing POST, the full endpoint, and a 200 response, key blurred.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">Raw request screenshot</span><span class="h"><a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a> showing POST, the full endpoint, and a 200 response, key blurred.</span></label></li>
 <li><input type="checkbox" id="d4"><label for="d4"><span class="t">Prediction log</span><span class="h">At least three requests (two deliberate failures), each with predicted status code, actual status code, and the error message for failures. <a href="#s04">Copy it from section 04.</a></span></label></li>
 <li><input type="checkbox" id="d5"><label for="d5"><span class="t">Verification note</span><span class="h">Golden output beside actual output, a one-line verdict, the one prompt change you made, and the reply after the change. <a href="#s05">Copy it from section 05.</a></span></label></li>
 <li><input type="checkbox" id="d6"><label for="d6"><span class="t">The 201 question</span><span class="h">Two sentences: why did the chat completions call return 200 and not 201?</span></label></li>
@@ -175,7 +178,7 @@
 
 <section class="s" id="s08"><h2><span class="n">08</span>Stretch: Any Machine, Four Lines</h2>
 <ul>
-  <li>Pick one free API from the <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener">public-apis repository</a> on GitHub (<a href="https://mediastack.com" target="_blank" rel="noopener">MediaStack</a> is a fine start). Answer the four questions for it in writing before writing any code.</li>
+  <li>Pick one free API from the <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener">public-apis list</a> (<a href="https://mediastack.com" target="_blank" rel="noopener">MediaStack</a> is a fine start). Answer the four questions for it in writing before writing any code.</li>
   <li>Call it with <code>requests</code> and print one field from the JSON response.</li>
   <li>Optional swap test: point your chat app at another OpenAI-compatible endpoint by changing only the URL, key and model name. Note what else, if anything, had to change.</li>
 </ul>
@@ -193,7 +196,7 @@
 <p>Post on the C8 Discord code channel; earliest posts are reviewed first. Questions on the channel, not DMs (replies Mon and Tue). Still stuck: next week's office hour.</p>
 <p><b>Next:</b> building your own API, and how much protection it actually needs.</p>
 <div class="hold"><p class="kick">Hold this</p><p>A 200 means the machine understood you. It does not mean you helped anyone. Four lines get you to any machine on the internet; your golden pair tells you whether the trip was worth it for a human.</p></div>
-<p class="sig">Four lines to any machine.<small>Companion pages: <a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a> · <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 Groq step</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">troubleshooting</a> · <a href="/#L5">tick list on the map</a></small></p>
+<p class="sig">Four lines to any machine.<small>Companion pages: <a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a> · <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 Groq step</a> · <a href="/c8/module-2/lecture-05-building-apis/troubleshooting">troubleshooting</a> · <a href="/#L5">tick list on the map</a></small></p>
 </section>
 
   </main>
