@@ -357,7 +357,7 @@ GUIDES.L5 = { code: {
   keep: 'Connect your Gradio app to an LLM with a raw requests.post, and prove the reply helps by checking it against your golden pair. A 200 means the machine understood you, not that you helped anyone.',
   ideas: [
     ['Four questions read any machine.', 'Address, action, key, package. Answer them and you can wire any API into an app without leaning on someone else\'s code.'],
-    ['A passenger only needs a comfortable seat. A driver must understand the controls to operate the car.', 'Libraries and SDKs like Groq and Gradio offer comfort, but abstract away how things work. When something breaks, the passenger is stuck. The driver knows where to look. In software, that means understanding the source of truth: the endpoint, API key, request body, and response. Convenience helps you move faster. Understanding gives you control.'],
+    ['A passenger only needs a comfortable seat. A driver must understand the controls to operate the car.', 'Libraries and SDKs like Groq offer comfort, but abstract away how things work. When something breaks, the passenger is stuck. The driver knows where to look. In software, that means understanding the source of truth: the endpoint, API key, request body, and response. Convenience helps you move faster. Understanding gives you control.'],
     ['A 200 is not a verdict.', 'A working answer still failed because it did not solve the problem. The status code proves the call worked. Only your verifier proves the reply helps.'],
     ['Minimum path.', 'No extra parameters, no chat history handling, no changed interface, no renamed functions. The diff from the echo app is the process and nothing else.']
   ],
