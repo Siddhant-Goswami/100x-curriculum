@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Troubleshooting: Lecture 6 | 100xEngineers</title>
+<meta name="description" content="Lecture 6 troubleshooting: the checks that fail in the Modelling Lab, what each means, and the fix. Plus the lab itself: saving, resetting, sheets.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+</head>
+<body data-page="l06-troubleshooting">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L6">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 6 pages"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Overview</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Notes</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Troubleshooting · Lecture 6 · Both tracks</p>
+  <h1>When a check is a cross</h1>
+  <p class="dek">Every cross in the lab names a table or a column. Read it, fix that one thing, check again.</p>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The Crosses You Should Expect</h2>
+<input class="search" id="errsearch" type="search" placeholder="Paste the check, or type a word from it…" aria-label="Search">
+
+<details class="acc" data-q="no table for missing table thing entity"><summary><span class="err">No table for …</span></summary><div class="b"><span class="kick">Cause</span><p>The brief names a thing you have not given a table, or your table's name is too far from it (the checker accepts singular, plural and common synonyms).</p><span class="kick">Fix</span><p>Add the table, or rename yours to the noun the brief uses.</p></div></details>
+
+<details class="acc" data-q="has no key id address row"><summary><span class="err">… has no key</span></summary><div class="b"><span class="kick">Cause</span><p>No column is marked <b>key</b>. Every row needs an address so other rows can point at it.</p><span class="kick">Fix</span><p>Add an <code>id</code> column and tick key. The builder does this for every new table; you removed it.</p></div></details>
+
+<details class="acc" data-q="has no pointer to without it the link does not exist foreign"><summary><span class="err">… has no pointer to …</span></summary><div class="b"><span class="kick">Cause</span><p>The link exists in the brief but not in your tables. The many side needs a column holding the other table's key.</p><span class="kick">Fix</span><p>On the many side, add a column named the other table singular plus <code>_id</code>, tick <b>points to</b>, and pick the table.</p></div></details>
+
+<details class="acc" data-q="is a pointer but does not point to pick the table which table"><summary><span class="err">… is a pointer but does not point to …</span></summary><div class="b"><span class="kick">Cause</span><p>You ticked <b>points to</b> but left the dropdown on "which table?", or picked the wrong one.</p><span class="kick">Fix</span><p>Open the dropdown under the column and pick the table the brief names. If it is not in the list, that table has no name yet.</p></div></details>
+
+<details class="acc" data-q="should be a pointer tick points to"><summary><span class="err">… should be a pointer to …</span></summary><div class="b"><span class="kick">Cause</span><p>The column is there, with the right name, but it is a plain column. A name alone does not make a link.</p><span class="kick">Fix</span><p>Tick <b>points to</b> on it and pick the table.</p></div></details>
+
+<details class="acc" data-q="points the wrong way one cell cannot hold many remove it"><summary><span class="err">… points the wrong way</span></summary><div class="b"><span class="kick">Cause</span><p>The one side carries a pointer to its many side: a <code>pet_id</code> on owners. One cell cannot hold many pets.</p><span class="kick">Fix</span><p>Remove that column. The many side already carries the link.</p></div></details>
+
+<details class="acc" data-q="link missing one many relationship"><summary><span class="err">Link missing: …</span></summary><div class="b"><span class="kick">Cause</span><p>The table is there but has no pointer to the other side.</p><span class="kick">Fix</span><p>Same as "has no pointer to": add the column on the many side, tick points to, pick the table.</p></div></details>
+
+<details class="acc" data-q="must be marked unique one row each one-to-one analytics"><summary><span class="err">… must be marked unique</span></summary><div class="b"><span class="kick">Cause</span><p>The brief says exactly one row per parent (one summary per post). A plain pointer allows many.</p><span class="kick">Fix</span><p>Tick <b>unique</b> on the pointer column. A second row for the same parent is then refused.</p></div></details>
+
+<details class="acc" data-q="is missing and that is the point of this brief quantity grade start_date status content critical"><summary><span class="err">… is missing …, and that is the point of this brief</span></summary><div class="b"><span class="kick">Cause</span><p>The one column the brief is about (quantity, grade, start date, status) is not on the table where it belongs.</p><span class="kick">Fix</span><p>Re-read the brief's last line. The column describes exactly that row, usually the pairing row.</p></div></details>
+
+<details class="acc" data-q="two tables share the name duplicate columns called"><summary><span class="err">Two tables share the name … / … has two columns called …</span></summary><div class="b"><span class="kick">Fix</span><p>Rename or remove the duplicate. Pointers cannot tell twins apart.</p></div></details>
+
+<details class="acc" data-q="pointer with no table to point at"><summary><span class="err">… is a pointer with no table to point at</span></summary><div class="b"><span class="kick">Cause</span><p>The dropdown is still on "which table?", or the table it pointed at was deleted or renamed.</p><span class="kick">Fix</span><p>Pick the table again.</p></div></details>
+
+<details class="acc" data-q="could use a column suggestion not counted"><summary><span class="err">… could use a … column</span></summary><div class="b"><span class="kick">Cause</span><p>A suggestion, shown with a dot. It never blocks done.</p><span class="kick">Fix</span><p>Add it if the brief's product would need it. Otherwise ignore.</p></div></details>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The Lab Itself</h2>
+<details class="acc" data-q="progress lost saving device browser localstorage private incognito"><summary><span class="err">My progress disappeared</span></summary><div class="b"><span class="kick">Cause</span><p>The lab saves in this browser on this device. A private window, another browser, cleared site data or another device starts empty.</p><span class="kick">Fix</span><p>Use the same browser. Take your screenshots as you go.</p></div></details>
+<details class="acc" data-q="reveal will not open pause and think locked"><summary><span class="err">The reveal will not open</span></summary><div class="b"><span class="kick">Fix</span><p>Write at least a few words in the box above it. It opens as soon as there is an answer.</p></div></details>
+<details class="acc" data-q="dashed section 5 model pieces missing place it"><summary><span class="err">Section 5 shows dashed boxes</span></summary><div class="b"><span class="kick">Cause</span><p>Section 5 only draws what you placed. A dashed table or column is one you have not tagged, placed or linked yet.</p><span class="kick">Fix</span><p>Click "place it" on the dashed piece; it takes you to the section that places it.</p></div></details>
+<details class="acc" data-q="csv sheets download open google sheets excel"><summary><span class="err">What do I do with the downloaded sheets?</span></summary><div class="b"><p>One CSV per table, with two sample rows. Open them in Google Sheets or Excel to see your model as sheets. Next week the no-code track can import them into Supabase as a starting point.</p></div></details>
+<details class="acc" data-q="reset start again wipe"><summary><span class="err">I want to start over</span></summary><div class="b"><p>"Start again" on a builder resets only that brief. "Reset the whole lab" at the bottom of section 7 wipes everything on this device, including checkpoints.</p></div></details>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Still Stuck</h2>
+<p>Post a screenshot of the cross and your tables in the Discord channel. Office hour Thu 15 Oct, 8:30 pm IST. More: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">notes</a> · <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">practice set</a>.</p>
+</section>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Databases and domain modelling</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>
+</body>
+</html>

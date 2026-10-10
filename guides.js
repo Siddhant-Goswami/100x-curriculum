@@ -60,7 +60,23 @@ var GUIDE_LINKS = {
   l05Submit: '/c8/module-2/lecture-05-building-apis/practice-set#s07',
   l05Stretch: '/c8/module-2/lecture-05-building-apis/practice-set#s08',
   httpie: 'https://httpie.io/app',
-  publicApis: 'https://github.com/public-apis/public-apis'
+  publicApis: 'https://github.com/public-apis/public-apis',
+  /* Lecture 6 · Databases and domain modelling (both tracks; pages live in c8/module-2/lecture-06-databases-and-domain-modelling) */
+  l06Hub: '/c8/module-2/lecture-06-databases-and-domain-modelling/',
+  l06Notes: '/c8/module-2/lecture-06-databases-and-domain-modelling/notes',
+  l06Practice: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set',
+  l06Submit: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03',
+  l06Trouble: '/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting',
+  l06Lab: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab',
+  l06Feel: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s0',
+  l06Things: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s1',
+  l06Facts: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s2',
+  l06Links: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s3',
+  l06Files: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s4',
+  l06Model: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s5',
+  l06Arena: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s6',
+  l06Yours: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s7',
+  l04ApiTable: '/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set#s04'
 };
 
 var HELLO_WORLD = [
@@ -423,4 +439,92 @@ GUIDES.L5 = { code: {
     ['OpenAI-compatible', 'An API that takes the same package at the same path, so a swap is a new URL, key and model.']
   ],
   kw: 'building apis backend requests post raw request sdk cushion groq gpt-oss-20b httpie gradio echo golden pair verify verifier prediction log 200 201 401 404 environment variable env key practice set track b aarav jargon public apis stretch'
+}};
+
+/* Lecture 6 · Databases and domain modelling · combined session, both tracks (10 October 2026).
+   Source: the Modelling Lab (forked from the C7 memory-lab) and the Lecture 6 row of the sheet. */
+GUIDES.L6 = { all: {
+  hub: {link:'l06Hub', title:'Open the Lecture 6 pages', sub:'The Modelling Lab, practice set, notes and troubleshooting', more:[['l06Lab','The Modelling Lab'],['l06Practice','Practice set'],['l06Notes','Notes']]},
+  name: 'Three questions, then tables',
+  sub: 'After the lecture · 10 October 2026 · both tracks',
+  deadline: 'Practice set',
+  due: 'Before the office hour, Thu 15 Oct, 8:30 pm IST',
+  keep: 'You cannot store what you cannot describe. Before any tool, answer three questions about your user\'s world: what are the things, what does each thing have, how do they connect. Things become tables, facts become columns, links become pointers on the many side. The lab makes you place every one of them for Aarav by hand, then for your own app. Next week the same tables go into Supabase.',
+  ideas: [
+    ['Memory dies. Storage survives.', 'Everything a running app holds lives in memory, and memory dies with the app. Storage is a place outside the app that keeps rows. The lab lets you watch messages vanish, then come back from rows.'],
+    ['The Create, Read, Update, Delete test.', 'A noun is a thing if the app can create, find, change and delete one on its own, and can have many. "High-priority" fails. A conversation passes.'],
+    ['The many side points back.', 'One-to-many is most of every model. The pointer sits on the many side: conversation_id on messages. Many-to-many needs a third table, one row per pairing, and the facts of the pairing live there.'],
+    ['History is a row, not a cell.', 'A diagnosis is its own table so that regenerating the plan keeps the old one. A cell can hold one value; a row can hold a past.'],
+    ['Rows for facts, files for bytes.', 'A screenshot cannot go in a cell. It goes in file storage, and the row keeps the link, the name, and which message it came with.']
+  ],
+  rule: 'This is a practice set, not an assignment. Write before you reveal: every Pause and think needs a line from you. Do not open Supabase this week; the model is a paper exercise on purpose.',
+  stages: [
+    {id:'aarav', name:'Aarav\'s model', short:'Aarav', sub:'Lab sections 0 to 5',
+     intro:'The student is the builder; Aarav is the user. Tag the things in his chat, place the facts, pick the shape of every pair and place the pointer, sort rows from files. Section 5 draws the model from what you placed.',
+     ticks:[
+       {id:'feel', t:'Messages vanished on reopen, then came back from rows', how:'Section 0. Switch "save to a table" on for the second run.', link:'l06Feel', linkLabel:'Section 0'},
+       {id:'things', t:'Six things found in Aarav\'s chat', how:'users, conversations, messages, workflows, diagnoses, tools. And a reason why "high-priority" is not one.', link:'l06Things', linkLabel:'Section 1'},
+       {id:'facts', t:'Every fact placed on its table, the screenshot held back', link:'l06Facts', linkLabel:'Section 2'},
+       {id:'links', t:'Five pairs shaped and their pointers placed; the trace lights up end to end', how:'workflow and tools is the many-to-many: a third table, workflow_tools.', link:'l06Links', linkLabel:'Section 3'},
+       {id:'files', t:'Eight cards sorted into rows or files', link:'l06Files', linkLabel:'Section 4'},
+       {id:'model', t:'Aarav\'s model drawn with no dashed pieces, and the three questions ticked', how:'Beside it: your Lecture 4 API table, each address lit against its table.', link:'l06Model', linkLabel:'Section 5'}
+     ]},
+    {id:'arena', name:'The Arena', short:'Arena', sub:'Lab section 6',
+     intro:'Six briefs, one move each. Done means every structural check is a tick; suggestions do not count.',
+     ticks:[
+       {id:'b1', t:'Aarav\'s workflow diagnoser, from a blank page', how:'The canonical model. These are the Lecture 7 tables.', link:'l06Arena', linkLabel:'The Arena'},
+       {id:'b2', t:'Pet clinic, music library, corner bakery', how:'One-to-many; thing or fact; many-to-many with a quantity on the pairing.'},
+       {id:'b3', t:'University grades, hospital assignments', how:'The fact of a pairing; history as a row.'}
+     ]},
+    {id:'yours', name:'Your model', short:'Yours', sub:'Lab section 7',
+     intro:'Track A: your Assignment 1 observation. Track B: load Aarav\'s model and add one table of your own.',
+     ticks:[
+       {id:'q3', t:'Three questions my data must answer, written first', link:'l06Yours', linkLabel:'Section 7'},
+       {id:'tables', t:'My tables drawn, every pointer on the many side'},
+       {id:'self', t:'Five self-checks ticked, including one wrong state the model refuses'},
+       {id:'files2', t:'Files my app stores, and the column with each link ("none" is fine)'},
+       {id:'bridge', t:'My Lecture 4 API table with a table name beside every address', link:'l04ApiTable', linkLabel:'Your API table'}
+     ]},
+    {id:'submit', name:'Practice set', short:'Submit', sub:'Before Thu 15 Oct, 8:30 pm IST',
+     intro:'Five items, posted in the Discord channel. Earliest posts are reviewed first.',
+     ticks:[
+       {id:'d1', t:'Screenshot of Aarav\'s model with no dashed pieces', link:'l06Submit', linkLabel:'What to submit'},
+       {id:'d2', t:'Screenshot of the Arena at 6 / 6'},
+       {id:'d3', t:'My blueprint as text, plus its picture'},
+       {id:'d4', t:'Rows or files, and the bridge, for my app'},
+       {id:'posted', t:'All five posted in the Discord channel'}
+     ]}
+  ],
+  actions: [
+    {id:'oh', t:'Office hour, Thu 15 Oct, 8:30 pm IST', how:'Bring your model picture and the one pair you were unsure about. We walk through the models people posted.'},
+    {id:'stretch', t:'Stretch: LinkedIn post automation', how:'A status cell and a one-to-one with a unique pointer.', link:'l06Arena', linkLabel:'The Arena'}
+  ],
+  next: 'Next: Lecture 7, Fri 16 Oct. The same tables, typed into Supabase, and a row that survives a refresh. Code track: FastAPI to Supabase. No-code track: Antigravity to Supabase.',
+  errors: [
+    ['No table for …', 'The brief names a thing you have not given a table, or the name is too far from the brief\'s noun', 'Add it, or rename yours to the noun the brief uses'],
+    ['… has no pointer to …', 'The link is in the brief but not in your tables', 'On the many side, add <other table>_id, tick points to, pick the table'],
+    ['… points the wrong way', 'The one side carries a pointer to its many side', 'Remove it. One cell cannot hold many; the many side already has the link'],
+    ['… must be marked unique', 'The brief says one row per parent and a plain pointer allows many', 'Tick unique on the pointer'],
+    ['… is missing …, and that is the point of this brief', 'The column the brief is about is not on the row it describes', 'Re-read the brief\'s last line; usually it belongs on the pairing row'],
+    ['Section 5 shows dashed boxes', 'Section 5 only draws what you placed', 'Click "place it" on the dashed piece']
+  ],
+  read: [
+    ['Lecture 6 overview', 'l06Hub', 'The three questions and your path this week.'],
+    ['The Modelling Lab', 'l06Lab', 'Eight sections. Everything happens here.'],
+    ['Notes', 'l06Notes', 'The lab\'s ideas without the doing.'],
+    ['Practice set', 'l06Practice', 'The five deliverables and the rules.'],
+    ['Troubleshooting', 'l06Trouble', 'Every cross the checker can show, and the fix.'],
+    ['Lecture 4 practice set, your API table', 'l04ApiTable', 'The addresses that become tables.']
+  ],
+  words: [
+    ['Domain model', 'The smallest description of your user\'s world that still answers the product\'s questions.'],
+    ['Thing', 'Created, read, updated and deleted on its own; many of them. Gets a table. The formal word is entity.'],
+    ['Fact', 'What you need to recreate one of the thing. Gets a column. The formal word is attribute.'],
+    ['Key', 'The row\'s address, usually id. Never repeats.'],
+    ['Pointer', 'A column on the many side holding another row\'s key. The formal word is foreign key.'],
+    ['Third table', 'One row per pairing when both sides are many. The facts of the pairing live there.'],
+    ['Unique', 'No two rows share the value. A unique pointer makes a one-to-one.'],
+    ['File storage', 'Where bytes live. The row keeps the link.']
+  ],
+  kw: 'database domain modelling modeling entities entity attribute attributes relationships relationship one-to-many many-to-many one-to-one primary key foreign key pointer join table third table supabase memory storage persistence rows files storage bucket er diagram modelling lab arena aarav practice set'
 }};

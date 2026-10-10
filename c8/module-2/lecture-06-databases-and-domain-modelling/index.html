@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Databases and Domain Modelling | 100xEngineers</title>
+<meta name="description" content="Cohort 8 Module 2, Lecture 6 (both tracks): Databases and domain modelling. Feel an app forget, then model Aarav's world and your own app as things, facts and links, before any table exists.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+.cards a.card{text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.cards a.card:hover{border-color:var(--line2);transform:translateY(-1px)}
+.when{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
+.when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
+.when .kick{margin:0}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 18px}
+@media (max-width:640px){.three{grid-template-columns:1fr}}
+.three div{border:1px solid var(--line);border-radius:10px;background:var(--card);padding:14px 16px}
+.three div b{display:block;font-weight:500;font-size:15px;margin:4px 0 2px}
+.three div span{font-size:13.5px;color:var(--ink2)}
+.three .thing{border-top:3px solid var(--q-thing)}.three .fact{border-top:3px solid var(--q-fact)}.three .link{border-top:3px solid var(--q-link)}
+</style>
+</head>
+<body data-page="l06-index">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L6">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 6 pages"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Overview</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Notes</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid" style="grid-template-columns:1fr">
+  <main>
+<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Lecture 6 · Sat 10 Oct 2026 · Both tracks</p>
+  <h1>Databases and domain modelling</h1>
+  <p class="dek">Your app can think. Now teach it to remember.</p>
+</div>
+
+<div class="call"><p class="kick">The lecture in one line</p><p>You cannot store what you cannot describe. Before any tool, answer three questions about your user's world, and the tables fall out of the answers.</p></div>
+
+<div class="three">
+  <div class="thing"><p class="kick">1</p><b>What are the things?</b><span>Nouns the app must create, find, change and delete on their own. Each gets a table.</span></div>
+  <div class="fact"><p class="kick">2</p><b>What does each thing have?</b><span>The facts you need to recreate one. Each is a column.</span></div>
+  <div class="link"><p class="kick">3</p><b>How do they connect?</b><span>One-to-one, one-to-many, many-to-many. A pointer on the many side.</span></div>
+</div>
+
+<div class="when"><p class="kick">01</p><h2>Your path this week</h2></div>
+<ol class="steps">
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s0">Feel the app forget, then see rows survive</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s1">Build Aarav's model by hand, sections 1 to 5</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s6">Pass the six Arena briefs</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s7">Model your own app</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03">Submit the practice set before Thu 15 Oct, 8:30 pm IST</a></li>
+</ol>
+
+<div class="when"><p class="kick">02</p><h2>When you need it</h2></div>
+<div class="cards">
+  <a class="card" href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab"><p class="kick">Do this</p><h4>The Modelling Lab</h4></a>
+  <a class="card" href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes"><p class="kick">Read</p><h4>Notes</h4></a>
+  <a class="card" href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set"><p class="kick">Submit</p><h4>Practice set</h4></a>
+  <a class="card" href="/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting"><p class="kick">Stuck</p><h4>Troubleshooting</h4></a>
+  <a class="card" href="/#L6"><p class="kick">Track progress</p><h4>Checklist on the map</h4></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set#s04"><p class="kick">Refresher</p><h4>Lecture 4 · your API table</h4></a>
+</div>
+
+<p class="sig">A table is useless until you know the shape of what goes in it.<small>Next: Lecture 7, Fri 16 Oct. These tables, typed into Supabase, and a row that survives a refresh.</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Databases and domain modelling</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>
+</body>
+</html>

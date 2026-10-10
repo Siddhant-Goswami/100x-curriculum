@@ -1,0 +1,345 @@
+/* ============================================================
+   100xEngineers Design System — colors_and_type.css
+   Drop-in token sheet + semantic classes.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* ---------- Brand color ---------- */
+  --accent:           #F96846;   /* 100x coral — primary accent, never washed across whole sections */
+  --accent-hover:     #E8542F;
+  --accent-press:     #C53D1B;
+  --accent-tint:      #FFEEE9;   /* peach — highlight sections, hovered selection */
+  --accent-tint-2:    rgba(249, 104, 70, 0.08); /* coral @ 8% for overlays */
+  --accent-tint-3:    rgba(249, 104, 70, 0.16);
+
+  /* ---------- Surfaces ---------- */
+  --bg:               #FFFFFF;   /* page background */
+  --surface-1:        #F9F9F9;   /* card background (lighter) */
+  --surface-2:        #F5F5F5;   /* card background (heavier) */
+  --surface-inverse:  #1A1A1A;   /* dark surfaces — used sparingly, e.g. code blocks, footer */
+
+  /* ---------- Borders ---------- */
+  --border:           #E5E5E5;   /* hairline default */
+  --border-strong:    #1A1A1A;   /* hover lift to full contrast */
+  --border-coral:     var(--accent);
+
+  /* ---------- Text ---------- */
+  --fg:               #1A1A1A;   /* primary text */
+  --fg-2:             #666666;   /* secondary text */
+  --fg-muted:         #666666;   /* muted text, readable on white and peach */
+  --fg-inverse:       #FFFFFF;   /* on dark surfaces */
+  --fg-on-accent:     #1A1A1A;   /* dark text keeps coral controls WCAG-readable */
+
+  /* ---------- Semantic feedback ---------- */
+  --success:          #22C55E;
+  --success-tint:     #ECFDF3;
+  --error:            #EF4444;
+  --error-tint:       #FEF2F2;
+  --warning:          #F59E0B;
+  --warning-tint:     #FFFBEB;
+
+  /* ---------- Type families ---------- */
+  --font-display:     'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:        'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono:        'JetBrains Mono', 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ---------- Type scale ---------- */
+  --fs-display-xl:    96px;   /* hero numerals / massive marketing */
+  --fs-display:       72px;
+  --fs-h1:            56px;
+  --fs-h2:            40px;
+  --fs-h3:            28px;
+  --fs-h4:            20px;
+  --fs-body-lg:       18px;
+  --fs-body:          16px;
+  --fs-body-sm:       14px;
+  --fs-caption:       13px;
+  --fs-eyebrow:       12px;   /* mono, uppercase, +0.12em tracking */
+
+  --lh-tight:         1.05;   /* big display */
+  --lh-snug:          1.2;    /* headings */
+  --lh-body:          1.55;   /* paragraphs */
+  --lh-relaxed:       1.7;
+
+  /* ---------- Spacing scale (8px base, with 4px half-step) ---------- */
+  --space-0:          0;
+  --space-1:          4px;
+  --space-2:          8px;
+  --space-3:          12px;
+  --space-4:          16px;
+  --space-5:          24px;
+  --space-6:          32px;
+  --space-7:          48px;
+  --space-8:          64px;
+  --space-9:          96px;
+  --space-10:         128px;
+  --space-11:         160px;
+
+  /* ---------- Radii ---------- */
+  --r-sm:             6px;
+  --r-md:             8px;    /* buttons, inputs */
+  --r-lg:             12px;   /* cards */
+  --r-xl:             16px;   /* feature cards */
+  --r-2xl:            24px;
+  --r-pill:           999px;
+
+  /* ---------- Shadows ---------- */
+  --shadow-xs:        0 1px 2px rgba(26, 26, 26, 0.04);
+  --shadow-sm:        0 1px 3px rgba(26, 26, 26, 0.06), 0 1px 2px rgba(26, 26, 26, 0.04);
+  --shadow-md:        0 4px 12px rgba(26, 26, 26, 0.08);
+  --shadow-lg:        0 12px 32px rgba(26, 26, 26, 0.10);
+  --shadow-xl:        0 24px 64px rgba(26, 26, 26, 0.14);
+  --shadow-coral:     0 8px 24px rgba(249, 104, 70, 0.24);
+  --shadow-focus:     0 0 0 2px #FFFFFF, 0 0 0 4px var(--accent);
+
+  /* ---------- Motion ---------- */
+  --ease:             cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out:         cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast:         120ms;
+  --dur:              180ms;
+  --dur-slow:         260ms;
+
+  /* ---------- Layout ---------- */
+  --container:        1280px;
+  --gutter:           24px;
+  --nav-h:            64px;
+}
+
+/* ============================================================
+   Base / reset
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+img, svg, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+/* ============================================================
+   Semantic type classes
+   ============================================================ */
+.display-xl,
+.display,
+.h1, .h2, .h3, .h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--fg);
+  text-wrap: balance;
+}
+.display-xl { font-size: var(--fs-display-xl); line-height: var(--lh-tight); letter-spacing: -0.035em; }
+.display    { font-size: var(--fs-display);    line-height: var(--lh-tight); letter-spacing: -0.03em; }
+.h1         { font-size: var(--fs-h1);         line-height: var(--lh-snug); }
+.h2         { font-size: var(--fs-h2);         line-height: var(--lh-snug); }
+.h3         { font-size: var(--fs-h3);         line-height: var(--lh-snug); letter-spacing: -0.015em; }
+.h4         { font-size: var(--fs-h4);         line-height: var(--lh-snug); letter-spacing: -0.01em; font-weight: 600; }
+
+.body-lg    { font-family: var(--font-body); font-size: var(--fs-body-lg); line-height: var(--lh-body); color: var(--fg); }
+.body       { font-family: var(--font-body); font-size: var(--fs-body);    line-height: var(--lh-body); color: var(--fg); }
+.body-sm    { font-family: var(--font-body); font-size: var(--fs-body-sm); line-height: var(--lh-body); color: var(--fg-2); }
+.caption    { font-family: var(--font-body); font-size: var(--fs-caption); line-height: 1.4;          color: var(--fg-2); }
+.muted      { color: var(--fg-muted); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.eyebrow--accent { color: var(--accent-press); }
+
+.mono       { font-family: var(--font-mono); font-size: 14px; }
+.numeral    {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+code, .code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 1px 6px;
+  color: var(--fg);
+}
+pre.code, pre .code {
+  display: block;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--r-md);
+  background: var(--surface-inverse);
+  color: var(--fg-inverse);
+  border: none;
+  line-height: 1.6;
+  overflow: auto;
+}
+
+/* ============================================================
+   Components — Buttons
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--fs-body);
+  line-height: 1;
+  padding: 14px 20px;
+  border-radius: var(--r-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease),
+              border-color var(--dur) var(--ease),
+              color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              transform 80ms var(--ease);
+  user-select: none;
+  white-space: nowrap;
+}
+.btn:active { transform: scale(0.98); }
+.btn:focus-visible { outline: none; box-shadow: var(--shadow-focus); }
+.btn:disabled { opacity:.48; cursor:not-allowed; box-shadow:none; transform:none; }
+
+.btn--primary {
+  background: var(--accent);
+  color: var(--fg-on-accent);
+  border-color: var(--accent);
+}
+.btn--primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); box-shadow: var(--shadow-coral); }
+.btn--primary:active { background: var(--accent-press); border-color: var(--accent-press); color:#FFFFFF; }
+
+.btn--secondary {
+  background: var(--bg);
+  color: var(--fg);
+  border-color: var(--border);
+}
+.btn--secondary:hover { border-color: var(--border-strong); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--fg);
+  border-color: transparent;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+.btn--ghost:hover { background: var(--surface-1); }
+
+.btn--dark {
+  background: var(--fg);
+  color: var(--fg-inverse);
+  border-color: var(--fg);
+}
+.btn--dark:hover { background: #000; border-color: #000; }
+
+.btn--sm { padding: 10px 14px; font-size: var(--fs-body-sm); }
+.btn--lg { padding: 18px 28px; font-size: var(--fs-body-lg); }
+
+/* ============================================================
+   Components — Pills / Badges
+   ============================================================ */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  font-weight: 500;
+  line-height: 1;
+}
+.pill--coral   { background: var(--accent-tint); border-color: transparent; color: var(--accent-press); }
+.pill--dark    { background: var(--fg); border-color: var(--fg); color: var(--fg-inverse); }
+.pill--success { background: var(--success-tint); border-color: transparent; color: #15803D; }
+.pill--error   { background: var(--error-tint);   border-color: transparent; color: #B91C1C; }
+
+.dot { width: 6px; height: 6px; border-radius: var(--r-pill); background: currentColor; }
+
+/* ============================================================
+   Components — Cards
+   ============================================================ */
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              transform var(--dur) var(--ease);
+}
+.card--feature { background: var(--accent-tint); border-color: transparent; }
+.card--surface { background: var(--surface-1); border-color: transparent; box-shadow: none; }
+.card--dark    { background: var(--fg); color: var(--fg-inverse); border-color: var(--fg); }
+.card--lift:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   Components — Form inputs
+   ============================================================ */
+.input, .textarea, .select {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: 1.4;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.input::placeholder, .textarea::placeholder { color: var(--fg-muted); }
+.input:hover, .textarea:hover, .select:hover { border-color: var(--border-strong); }
+.input:focus, .textarea:focus, .select:focus { outline: none; border-color: var(--accent); box-shadow: var(--shadow-focus); }
+
+.label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--fs-body-sm);
+  font-weight: 500;
+  color: var(--fg);
+  margin-bottom: 6px;
+}
+.help { font-size: var(--fs-caption); color: var(--fg-2); margin-top: 6px; }
+.help--error { color: var(--error); }
+
+/* ============================================================
+   Layout helpers (kept minimal — kits build their own)
+   ============================================================ */
+.container { max-width: var(--container); margin: 0 auto; padding: 0 var(--gutter); }
+.stack > * + * { margin-top: var(--space-4); }
+.row { display: flex; align-items: center; gap: var(--space-3); }
+.grid { display: grid; gap: var(--space-5); }
+
+/* dot-grid background utility */
+.bg-dots {
+  background-image: radial-gradient(circle, rgba(26,26,26,0.10) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0;
+}
+.bg-peach { background: var(--accent-tint); }
+.bg-surface { background: var(--surface-1); }

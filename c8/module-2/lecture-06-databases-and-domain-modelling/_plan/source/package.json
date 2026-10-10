@@ -1,0 +1,8 @@
+{
+  "name": "the-modeling-lab",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check js/data.js && node --check js/grader.js && node --check js/app.js && node --test"
+  }
+}

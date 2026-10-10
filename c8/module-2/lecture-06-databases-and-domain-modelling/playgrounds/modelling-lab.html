@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Modelling Lab | 100xEngineers</title>
+<meta name="description" content="Lecture 6 practice lab for both tracks: feel an app forget, then build Aarav's data model by hand, one question at a time: what are the things, what does each have, how do they connect. Then model your own app.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+</head>
+<body data-page="l06-lab">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L6">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 6 pages"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Overview</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Notes</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting">Troubleshooting</a><br><a href="/#L6">Checklist on the map</a></div></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture 6 · Databases and domain modelling · Practice lab · Both tracks</p>
+  <h1>The Modelling Lab</h1>
+  <p class="dek">Your app can think. Now teach it to remember. Eight short sections, all in this tab. Each ends with a checkpoint.</p>
+  <div class="meta"><span>About 90 minutes</span><span>Nothing to install</span><span>Saves on this device</span></div>
+</div>
+
+<div class="call"><p class="kick">Where you are</p><p>You built the app. Aarav is your user: an analyst who pastes his Monday workflow and gets back a plan. It works, he closes the tab, and on Tuesday everything is gone. Before any tool is opened, you answer three questions about his world: <span class="q thing">what are the things</span> <span class="q fact">what does each have</span> <span class="q link">how do they connect</span>. Next week these answers become tables in Supabase.</p></div>
+
+<div class="scorebox"><div class="score" data-for="cp"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/8</b></div><div class="l"><strong>Checkpoints</strong>Saved on this device</div></div></div>
+
+<nav class="exnav" aria-label="Sections"><a href="#s0"><b>0</b>Feel it</a><a href="#s1"><b>1</b>The things</a><a href="#s2"><b>2</b>What each has</a><a href="#s3"><b>3</b>How they connect</a><a href="#s4"><b>4</b>Rows or files</a><a href="#s5"><b>5</b>Aarav's model</a><a href="#s6"><b>6</b>The Arena</a><a href="#s7"><b>7</b>Your model</a></nav>
+
+<!-- ============ 0 ============ -->
+<section class="s" id="s0"><h2><span class="n">00</span>Feel it: the app forgets</h2>
+<p>Be Aarav. Send a message, close the app, reopen it. Then switch saving on and do it again.</p>
+<div class="demo" id="demo">
+  <div class="top"><span class="st"><i></i><span>app running</span></span><span id="demoMem">in memory: 0 messages</span><label class="sw"><input type="checkbox" id="demoSave"> save to a table</label></div>
+  <div class="body">
+    <div class="chat"><div class="msgs"></div><form><input type="text" placeholder="Type as Aarav…" aria-label="Message"><button type="submit" class="btn small">Send</button></form></div>
+    <div class="sheet"><p class="kick">The table</p><div class="in"></div></div>
+  </div>
+  <div class="acts"><button type="button" class="btn ghost small" id="demoAarav">Paste Aarav's workflow</button><button type="button" class="btn ghost small" id="demoRestart">Close and reopen the app</button><button type="button" class="btn ghost small" id="demoClear">Empty the table</button><span id="demoNote"></span></div>
+</div>
+<div class="think" data-k="t0"><p class="kick">Pause and think</p><p>With saving on, what did the table need to know about each message to bring it back?</p><input type="text" placeholder="One line, in your words"><details class="rev"><summary>Reveal</summary><div class="b"><p>Who said it, what was said, and when. One <b>row</b> per message, one <b>column</b> per fact. Everything a running app holds lives in memory, and memory dies when the app stops. Storage is a place outside the app that keeps rows after the app is gone. But a table is useless until you know the <b>shape</b> of what goes in it. That shape is what you model next.</p></div></details><p class="mine"></p></div>
+<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c0"><label for="c0"><span class="t">Checkpoint: I saw messages vanish, then saw them come back from rows</span></label></li></ul></div>
+</section>
+
+<!-- ============ 1 ============ -->
+<section class="s" id="s1"><h2><span class="n">01</span>Question 1: what are the things?</h2>
+<p>Nouns are clues. The test is <b>Create, Read, Update, Delete</b>: can the app make one, find one, change one, remove one, on its own, and can there be many? If yes, it is a <span class="q thing">thing</span> and gets its own table. If it only describes a thing, it is a <span class="q fact">fact</span>. Tap each underlined word in Aarav's chat and say which.</p>
+<div class="tx" id="tx">
+  <div class="day">signed in as <span class="tag" data-t="aarav">Aarav</span></div>
+  <div class="day"><span class="tag" data-t="conv1">Monday's conversation</span></div>
+  <div class="bub u"><span class="mlab" data-t="msg1">this bubble</span>Here is <span class="tag" data-t="wf">my weekly workflow</span>: every Monday I open <span class="tag" data-t="jira">Jira</span> to check my to-dos. I pick the <span class="tag" data-t="hiprio">high-priority</span> ones, pull the numbers from our <span class="tag" data-t="dash">dashboard</span>, write a short report for each, and send it to <span class="tag" data-t="manager">my manager</span> on <span class="tag" data-t="slack">Slack</span>.</div>
+  <div class="ct" style="align-self:flex-end"><span class="tag" data-t="time">9:12 am</span></div>
+  <div class="att"><span class="tag" data-t="file">jira-board.png</span></div>
+  <div class="bub a"><span class="mlab" data-t="msg2">this bubble</span>Here is <span class="tag" data-t="plan">your plan</span>:
+1. Let Jira list the to-dos (saved filter)
+2. You pick what matters
+3. Export the dashboard the same way each week
+4. Draft the report with the app
+5. Send on Slack yourself, for now</div>
+  <div class="day"><span class="tag" data-t="conv2">Tuesday's conversation</span></div>
+  <div class="bub u">Can you redo the plan in a more <span class="tag" data-t="casual">casual</span> tone?</div>
+  <div class="bub a"><span class="tag" data-t="plan2">Quick version</span>: let Jira do the listing, you do the picking. Export the dashboard the same way, draft with the app, keep the Slack send in your hands until you trust the draft.</div>
+</div>
+<div class="fbk" id="txFb">Tap a word to begin.</div><p class="kick" id="txCount">0 / 16 placed</p>
+<p class="kick">The things you have found</p>
+<div class="found" id="txFound"></div>
+<div class="two">
+  <div class="qc" data-k="conv"></div>
+  <div class="qc" data-k="email"></div>
+</div>
+<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c1"><label for="c1"><span class="t">Checkpoint: all six things found, and I can say why "high-priority" is not one</span></label></li></ul></div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="s" id="s2"><h2><span class="n">02</span>Question 2: what does each thing have?</h2>
+<p>A <span class="q fact">fact</span> is what you need to recreate one of the thing. Facts become the <b>columns</b> of its table. Tap a card, then tap the table it describes. One card does not fit in any cell: hold it.</p>
+<div class="bank" id="factBank"></div>
+<div class="boxes" id="factBoxes">
+  <div class="ebox" data-box="users"><div class="h">users</div><div class="in"></div></div>
+  <div class="ebox" data-box="conversations"><div class="h">conversations</div><div class="in"></div></div>
+  <div class="ebox" data-box="messages"><div class="h">messages</div><div class="in"></div></div>
+  <div class="ebox" data-box="workflows"><div class="h">workflows</div><div class="in"></div></div>
+  <div class="ebox" data-box="diagnoses"><div class="h">diagnoses</div><div class="in"></div></div>
+  <div class="ebox hold" data-box="hold"><div class="h">hold for section 4</div><div class="in"></div></div>
+</div>
+<div class="fbk" id="factFb">Every table already has an <code>id</code>: section 3 says why.</div><p class="kick" id="factCount">0 / 9 placed</p>
+<div class="think" data-k="t2"><p class="kick">Pause and think</p><p>Aarav picks a tone for each plan. Today, tone is a fact on the diagnosis. What would have to change in the product for tone to become a thing with its own table?</p><input type="text" placeholder="One line"><details class="rev"><summary>Reveal</summary><div class="b"><p>If users could save named tones and reuse them across plans, a tone would be created, found, edited and deleted on its own. It would gain identity and a life, so it would become a thing. The word does not decide. <b>What the product needs to do with it decides.</b> That is the whole skill: drawing the line between a thing and a fact, for this app.</p></div></details><p class="mine"></p></div>
+<div class="two">
+  <div class="qc" data-k="tone"></div>
+  <div class="qc" data-k="attach"></div>
+</div>
+<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c2"><label for="c2"><span class="t">Checkpoint: every fact placed, and the tone answer written</span></label></li></ul></div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="s" id="s3"><h2><span class="n">03</span>Question 3: how do they connect?</h2>
+<p>A spreadsheet stores facts about one thing. A database stores facts <i>and</i> how things link. Every link has one of three shapes:</p>
+<div class="row3">
+  <div class="fence"><div class="link" style="grid-column:1/-1"><p class="kick">one-to-one</p><b>Each side has exactly one</b><span>Rare. Worth a second look: it may be one table.</span></div></div>
+  <div class="fence"><div class="link" style="grid-column:1/-1"><p class="kick">one-to-many</p><b>One parent, many children</b><span>Most of every model. The many side carries a pointer back.</span></div></div>
+  <div class="fence"><div class="link" style="grid-column:1/-1"><p class="kick">many-to-many</p><b>Both sides have many</b><span>No single cell can hold "many". A third table does, one row per pairing.</span></div></div>
+</div>
+<p>Pick the shape for each pair in Aarav's app. When it is right, place the pointer: every row has an address called <code>id</code> (its <b>key</b>), and a link is just a column on the <b>many side</b> holding the other row's key. The convention is the other table's name, singular, plus <code>_id</code>.</p>
+<div class="pairs" id="pairs"></div>
+<div class="fbk"><span class="muted" id="pairCount">0 / 5 linked</span> · Trace a message back to its owner:</div>
+<div class="trace" id="trace"></div>
+<div class="shape"><b>workflow</b><span class="ln">many</span><b class="mid">workflow_tools</b><span class="ln">many</span><b>tool</b></div>
+<p>The third table is where the facts of a <i>pairing</i> live. Not on either side.</p>
+<div class="two">
+  <div class="qc" data-k="often"></div>
+  <div class="qc" data-k="grade"></div>
+</div>
+<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c3"><label for="c3"><span class="t">Checkpoint: five links placed, and the trace lights up end to end</span></label></li></ul></div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="s" id="s4"><h2><span class="n">04</span>Rows or files?</h2>
+<div class="think" data-k="t4"><p class="kick">Pause and think</p><p>Aarav attaches a screenshot of his Jira board. Can it go in a column?</p><input type="text" placeholder="One line"><details class="rev"><summary>Reveal</summary><div class="b"><p>No. A cell holds a value you can type: text, a number, a date, yes or no. A screenshot is bytes. It goes in <b>file storage</b>, and the row keeps the <b>link</b> to it, plus the facts about it: which message it came with, its name, when it arrived. Rows for facts, files for everything large or binary, and a pointer between them.</p></div></details><p class="mine"></p></div>
+<p>Tap a card, then tap where it belongs.</p>
+<div class="bank" id="sortBank"></div>
+<div class="bins" id="sortBins">
+  <div class="bin" data-box="row"><div class="h"><b>A cell in a row</b><small>Text, numbers, dates, yes or no.</small></div><div class="in"></div></div>
+  <div class="bin" data-box="file"><div class="h"><b>A file in storage, with its link in a row</b><small>Images, documents, audio, video.</small></div><div class="in"></div></div>
+</div>
+<div class="fbk" id="sortFb">Eight cards.</div><p class="kick" id="sortCount">0 / 8 placed</p>
+<p>So Aarav's model gains one more table: <code>attachments</code>, with a pointer to its message, the file's link and the file's name. In Supabase next week: tables for rows, a storage bucket for files.</p>
+<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c4"><label for="c4"><span class="t">Checkpoint: all eight sorted, and I can say what the row keeps about a file</span></label></li></ul></div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="s" id="s5"><h2><span class="n">05</span>Aarav's model, from your own placements</h2>
+<p>Nothing below is pre-drawn. Each box is a thing you tagged in section 1, each column a fact you placed in section 2, each line a pointer you placed in section 3, and the attachments table comes from section 4. Dashed pieces link back to where they are placed.</p>
+<div id="er5State"></div>
+<div id="er5"></div>
+<h3>The bridge to Lecture 4</h3>
+<p>Your API table from the Lecture 4 practice set, beside the tables it lands on. Every noun in an address is a thing here. That is not a coincidence: the API is how a request reaches a row.</p>
+<div class="tw compact bridge" id="bridge"><table><thead><tr><th>Action</th><th>Method</th><th>Address</th><th>Table</th></tr></thead><tbody>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows</td><td data-t="workflows">workflows</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}</td><td data-t="workflows">workflows</td></tr>
+<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows/{id}/diagnoses</td><td data-t="diagnoses">diagnoses</td></tr>
+<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}/diagnoses</td><td data-t="diagnoses">diagnoses</td></tr>
+</tbody></table></div>
+<h3>Can the model answer the product's questions?</h3>
+<p>A model is done when it can answer what the product must ask. Three questions for Aarav's app. Tick each only when you can point at the exact tables and pointers that answer it.</p>
+<ul class="ck">
+<li><input type="checkbox" id="c5a"><label for="c5a"><span class="t">"Show me Aarav's last conversation, with every message in order"</span><span class="h">users → conversations by user_id, then messages by conversation_id, ordered by created_at.</span></label></li>
+<li><input type="checkbox" id="c5b"><label for="c5b"><span class="t">"Show every plan this workflow ever got, oldest first"</span><span class="h">diagnoses by workflow_id. History exists because a diagnosis is a row, not a cell on the workflow.</span></label></li>
+<li><input type="checkbox" id="c5c"><label for="c5c"><span class="t">"Which screenshot went with which message?"</span><span class="h">attachments by message_id; the file itself behind file_url.</span></label></li>
+</ul>
+<p class="sig">Close the tab now. Nothing is lost.<small>Next: the Arena, six briefs that drill one move each. Then your own app.</small></p>
+<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c5"><label for="c5"><span class="t">Checkpoint: every piece placed, and the three questions ticked</span></label></li></ul></div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="s" id="s6"><h2><span class="n">06</span>The Arena <span class="pill" id="arenaCount">0 / 6 done</span></h2>
+<p>Six briefs, one move each, starting with the app you are building. Build the tables, then <b>Check my model</b>. Every check is a tick or a cross; done means every structural check is a tick. Column suggestions do not count.</p>
+<div id="arena"></div>
+<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c6"><label for="c6"><span class="t">Checkpoint: six briefs done</span></label></li></ul></div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section class="s" id="s7"><h2><span class="n">07</span>Your model</h2>
+<p>The same three questions, pointed at the app you are actually building. Track A: your Assignment 1 observation. Track B: load Aarav's model and add one table of your own.</p>
+<div id="bp">
+<div class="qs" style="grid-template-columns:1fr">
+  <label>In one line, what does your app do?<input type="text" data-bp="desc" placeholder="e.g. A user pastes a messy weekly workflow and gets back a plan to automate part of it."></label>
+</div>
+<p class="kick">Three questions your data must answer</p>
+<div class="qs">
+  <label><span class="n">1</span><input type="text" data-bp="q1" placeholder="e.g. Show this user's last five plans"></label>
+  <label><span class="n">2</span><input type="text" data-bp="q2" placeholder="e.g. Which workflow did this plan come from?"></label>
+  <label><span class="n">3</span><input type="text" data-bp="q3" placeholder="e.g. Every message in one conversation, in order"></label>
+</div>
+<div class="fence">
+  <div class="thing"><p class="kick">1 · the things</p><b>Collect candidate nouns</b><span>Keep the ones the app must create, find, change and delete on their own, and can have many of.</span></div>
+  <div class="fact"><p class="kick">2 · what each has</p><b>The facts to recreate one</b><span>Those are its columns. A fact that only describes something else is not a table.</span></div>
+  <div class="link"><p class="kick">3 · how they connect</p><b>Name the shape of every pair</b><span>A pointer on the many side; unique if one-to-one; a third table if many-to-many.</span></div>
+</div>
+<div class="wtb"><button type="button" class="btn ghost small" id="bpAdd">+ table</button><button type="button" class="btn ghost small" id="bpAarav">Load Aarav's model (Track B)</button><button type="button" class="btn ghost small" id="bpReset">Start again</button><span class="sp">pointers go on the many side</span></div>
+<div id="bpBuilder"></div>
+<div class="btnrow" style="margin:14px 0"><button type="button" class="btn" id="bpEr">Picture</button><button type="button" class="btn ghost" id="bpSheets">Sheets</button><button type="button" class="btn ghost" id="bpCsv">Download the sheets</button><button type="button" class="btn ghost" id="bpCopy">Copy my blueprint as text</button></div>
+<div id="bpOut"></div>
+<h3>Rows or files, for your app</h3>
+<div class="qs" style="grid-template-columns:1fr"><label>Which files does your app store, and which column holds the link to each?<small>Write "none" if your app stores no files. That is a valid answer.</small><textarea data-bp="files" rows="2"></textarea></label></div>
+<h3>The bridge, for your app</h3>
+<div class="qs" style="grid-template-columns:1fr"><label>Your Lecture 4 API table, with a table name written beside every address<small>One address per line. If an address has no table, say what it does instead.</small><textarea data-bp="api" rows="4" placeholder="POST /workflows → workflows&#10;GET /workflows/{id}/diagnoses → diagnoses"></textarea></label></div>
+<h3>Before calling it done</h3>
+<ul class="ck">
+<li><input type="checkbox" id="c7a"><label for="c7a"><span class="t">My tables can answer question 1</span><span class="h">Point at the tables and pointers that answer it.</span></label></li>
+<li><input type="checkbox" id="c7b"><label for="c7b"><span class="t">My tables can answer question 2</span></label></li>
+<li><input type="checkbox" id="c7c"><label for="c7c"><span class="t">My tables can answer question 3</span></label></li>
+<li><input type="checkbox" id="c7d"><label for="c7d"><span class="t">Every pointer is on the many side, and every many-to-many has a third table</span></label></li>
+<li><input type="checkbox" id="c7e"><label for="c7e"><span class="t">I tried to create a wrong state and the model refuses it</span><span class="h">A message with no conversation, two plans overwriting each other, the same pairing twice.</span></label></li>
+</ul>
+</div>
+<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c7"><label for="c7"><span class="t">Checkpoint: my model drawn, three questions answered, files and bridge written</span></label></li></ul></div>
+<p class="sig">You cannot store what you cannot describe.<small>Now <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">submit the practice set</a>. Next week: these tables, typed into Supabase, and a row that survives a refresh.</small></p>
+<p><button type="button" class="reset" id="labReset">Reset the whole lab</button></p>
+</section>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Databases and domain modelling</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>
+<script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-data.js"></script>
+<script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-grader.js"></script>
+<script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-lab.js"></script>
+</body>
+</html>

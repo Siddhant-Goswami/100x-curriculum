@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Practice Set: Databases and Domain Modelling | 100xEngineers</title>
+<meta name="description" content="Practice set after Lecture 6 of the 100xEngineers Cohort 8 Module 2, both tracks: build Aarav's data model by hand in the Modelling Lab, pass six briefs, then model your own app and prove it answers your three questions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+</head>
+<body data-page="l06-practice-set">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L6">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 6 pages"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Overview</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Notes</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Open the Modelling Lab</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting">Troubleshooting</a><br><a href="/#L6">Checklist on the map</a></div></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Practice set · Follows Lecture 6 · Both tracks</p>
+  <h1>Databases and domain modelling</h1>
+  <p class="dek">Build Aarav's model by hand, pass six briefs, then model your own app and prove it answers your three questions.</p>
+  <div class="meta"><span>Lecture 6 · Sat 10 Oct 2026</span><span>Due before the office hour, Thu 15 Oct, 8:30 pm IST</span><span>Post in the Discord channel</span></div>
+</div>
+
+<div class="call"><p class="kick">The practice set in one sentence</p><p>Work through the eight sections of the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a>, keep what each produces, and finish with the tables of your own app, ready to type into Supabase next week.</p></div>
+
+<div class="scorebox">
+  <div class="score" data-for="sub"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/5</b></div><div class="l"><strong>Deliverables</strong>Section 03</div></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>How It Works</h2>
+<ol class="steps">
+  <li><b>This is a practice set, not an assignment.</b> It is practice for Lecture 7, where these tables go into Supabase. Nothing here is graded by a person; the lab's checks are ticks and crosses, and the only mark that matters is whether your own app's model can answer your own questions.</li>
+  <li><b>Open the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a>.</b> Everything happens in that page. Nothing to install. Do the sections in order, 0 to 7. Each ends with a checkpoint that saves on this device.</li>
+  <li><b>Keep what the sections produce.</b> Screenshots and short text, listed in section 03 below.</li>
+  <li><b>Post it in the Discord channel before Thu 15 Oct, 8:30 pm IST.</b> The office hour that evening walks through the models people posted. Plan for about 90 minutes in total.</li>
+</ol>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Code Track and No-Code Track</h2>
+<p>Same lab, same words, same deliverables. A table is a table whether Supabase is filled by a Python backend or by Antigravity. The lab offers plain types (text, number, yes/no, date and time, id); next week each maps to a Supabase column type in one click.</p>
+<div class="trkpick">
+  <p class="kick">Which track are you on?</p>
+  <div class="opts">
+    <button type="button" data-v="a"><b>Track A · my own observation</b><small>Assignment 1 done. Section 7 models your own app.</small></button>
+    <button type="button" data-v="b"><b>Track B · Aarav's workflow diagnoser</b><small>Assignment 1 not finished. Section 7 loads Aarav's model; you add one table of your own.</small></button>
+  </div>
+  <p style="margin:10px 0 0!important"><button type="button" class="reset" data-v="all">Show both tracks</button></p>
+</div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>What to Submit</h2>
+<p>Tick each deliverable when it is ready. Ticks save on this device.</p>
+<div data-stage="sub">
+<ul class="ck">
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. Aarav's model, from your own placements</span><span class="h"><span class="kick">Section 5</span>A screenshot of the picture with no dashed pieces, and the three questions ticked.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. The Arena: six briefs done</span><span class="h"><span class="kick">Section 6</span>A screenshot of the list showing 6 / 6 done. The stretch brief is optional.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. Your model</span><span class="h"><span class="kick">Section 7</span><span class="trk a">A screenshot of your picture, plus your three questions and the five self-checks ticked. Use "Copy my blueprint as text" for the text part.</span><span class="trk b">Aarav's model loaded, plus one table you added for your own idea, with its pointer in the right place. Copy the blueprint as text.</span></span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Rows or files, for your app</span><span class="h"><span class="kick">Section 7</span>One line per file your app stores and the column that holds its link. "None" is a valid answer.</span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">5. The bridge</span><span class="h"><span class="kick">Section 7</span>Your Lecture 4 API table with a table name beside every address.</span></label></li>
+</ul>
+<div class="stg"><span class="kick">Deliverables ready</span><div class="bar"><i></i></div><span class="num">0 / 5</span><button class="reset" type="button">Reset ticks</button></div>
+</div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Rules</h2>
+<details class="acc" open><summary>Write before you reveal.</summary><div class="b"><p>Every "Pause and think" box in the lab needs a line from you before the reveal opens. Keep what you wrote even when the reveal disagrees; that gap is the learning.</p></div></details>
+<details class="acc"><summary>Pointers on the many side. Always.</summary><div class="b"><p>One cell cannot hold many. If you ever want to put a list in a cell, you have found a thing that needs its own table.</p></div></details>
+<details class="acc"><summary>History is a row, not a cell.</summary><div class="b"><p>If the product must remember what was true before, the old value cannot be overwritten. Make it a row with a time on it.</p></div></details>
+<details class="acc"><summary>No tool yet.</summary><div class="b"><p>Do not open Supabase this week. The model is a paper exercise on purpose: tables you cannot describe in words you cannot build in any tool.</p></div></details>
+<details class="acc"><summary>LLM help: questions yes; the model no.</summary><div class="b"><p>Ask a model to explain a shape you do not get. Do not paste a brief in and copy tables out. The briefs are short enough that placing the pointers yourself is the learning.</p></div></details>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Where to Post and How to Get Unblocked</h2>
+<p>Post in the Discord channel; earliest posts are reviewed first. Questions on the channel, not DMs. Office hour Thu 15 Oct, 8:30 pm IST: bring your model picture and the one pair you were unsure about. Stuck on the lab itself: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting">troubleshooting</a>.</p>
+<p><b>Next:</b> Lecture 7, Fri 16 Oct. These tables, typed into Supabase, and a row that survives a refresh.</p>
+<div class="hold"><p class="kick">Hold this</p><p>You cannot store what you cannot describe. Three questions describe any product: the things, what each has, how they connect. Everything a database does is built on those answers.</p></div>
+<p class="sig">Rows for facts. Files for everything else. A pointer between them.<small>Companion pages: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Lecture 6</a> · <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">notes</a> · <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">the lab</a> · <a href="/#L6">checklist on the map</a></small></p>
+</section>
+
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Databases and domain modelling</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  var r=document.querySelector('.trkpick .reset'); if(r) r.addEventListener('click',function(){ document.documentElement.setAttribute('data-track','all'); window.c8store.set('c8.track','all'); [].slice.call(document.querySelectorAll('.trkpick button[data-v]:not(.reset)')).forEach(function(b){ b.setAttribute('aria-pressed','false'); }); });
+});
+</script>
+</body>
+</html>
