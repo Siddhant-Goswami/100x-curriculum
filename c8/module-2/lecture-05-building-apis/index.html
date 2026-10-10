@@ -34,19 +34,20 @@
   <h1>Building APIs and backend</h1>
 </div>
 
-<div class="call drive"><svg class="wb" viewBox="0 0 760 330" role="img" aria-label="Whiteboard sketch. Left, the passenger: asleep on a soft cushion labelled SDKs and Gradio; when something breaks, only question marks. Right, the driver: a dashboard with four dials, endpoint, API key, request body and response; when something breaks, check the four dials.">
+<div class="call drive"><svg class="wb" viewBox="0 0 760 330" role="img" aria-label="Whiteboard sketch. Left, the passenger: asleep in the back seat of a car on a soft cushion labelled SDKs and Gradio, someone else at the wheel; when something breaks, only question marks. Right, the driver: a dashboard with four dials, endpoint, API key, request body and response; when something breaks, check the four dials.">
   <defs><filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
   <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></marker></defs>
   <g class="ln" filter="url(#wob)">
     <path class="dash" d="M380 22 V312"/>
-    <!-- passenger: a reclined seat, a sleeper, a fat cushion -->
-    <path d="M78 96 Q66 160 92 226 L262 226 Q276 226 272 210 L268 196"/>
-    <path d="M92 226 L84 262 M252 226 L262 262"/>
-    <path class="soft" d="M108 196 Q100 176 124 174 L254 176 Q276 180 266 200 Q262 214 240 212 L128 212 Q108 212 108 196 Z"/>
-    <circle cx="118" cy="140" r="17"/>
-    <path d="M134 150 Q170 166 210 172 M210 172 L250 160 M196 168 L232 186"/>
-    <path d="M110 136 q4 -3 8 0 M122 136 q4 -3 8 0"/>
-    <path class="arw" d="M330 138 Q318 166 278 180" marker-end="url(#ah)"/>
+    <!-- passenger: side view of a car, someone else at the wheel, the passenger asleep on a cushion in the back -->
+    <path d="M40 230 V192 Q42 170 72 167 L118 162 L156 112 Q162 104 176 104 L262 104 Q276 104 286 116 L322 162 Q350 166 352 190 V230 H302 A24 24 0 0 0 254 230 H129 A24 24 0 0 0 81 230 Z"/>
+    <path d="M166 116 L136 160 L216 160 V116 Z M228 116 V160 L308 160 L282 121 Q278 116 270 116 Z"/>
+    <circle cx="105" cy="232" r="19"/><circle cx="278" cy="232" r="19"/>
+    <path d="M200 182 H216 M44 196 H56 M338 184 H350"/>
+    <path class="soft" d="M146 150 Q138 132 156 124 Q170 120 172 134 Q174 152 160 156 Q150 158 146 150 Z"/>
+    <circle cx="176" cy="142" r="11"/><path d="M170 141 q3 -2 5 0 M178 141 q3 -2 5 0 M184 150 L210 160"/>
+    <circle cx="256" cy="134" r="10"/><path d="M262 144 L282 150 M284 140 L288 158"/>
+    <path class="arw" d="M118 90 Q122 112 142 128" marker-end="url(#ah)"/>
     <!-- driver: dashboard with four dials and a wheel -->
     <rect x="404" y="84" width="332" height="128" rx="18"/>
     <circle class="c-addr" cx="450" cy="138" r="26"/><path class="c-addr" d="M450 138 L466 122"/>
@@ -57,9 +58,8 @@
   </g>
   <g class="tx">
     <text x="190" y="44" class="h">the passenger</text>
-    <text x="304" y="104" class="s" text-anchor="start">cushion:</text>
-    <text x="304" y="126" class="s" text-anchor="start">SDKs, Gradio</text>
-    <text x="146" y="114" class="s">z z z</text>
+    <text x="150" y="80" class="s">cushion: SDKs, Gradio</text>
+    <text x="210" y="98" class="s">z z z</text>
     <text x="190" y="300" class="s c-act">something breaks → ? ? ?</text>
     <text x="570" y="44" class="h">the driver</text>
     <text x="450" y="194" class="m c-addr">endpoint</text>
