@@ -406,7 +406,7 @@ GUIDES.L5 = { code: {
     ['KeyError: \'choices\'', 'The request failed, so the reply has error instead of choices', 'Print r.status_code and r.json() first. Status code says whose fault; the message says what']
   ],
   read: [
-    ['Lecture 5 overview', 'l05Hub', 'Why the raw request, your path this week.'],
+    ['Lecture 5 overview', 'l05Hub', 'Passenger or driver, your path this week.'],
     ['Notes', 'l05Notes', 'The lecture, section by section.'],
     ['Practice set', 'l05Practice', 'The live request, prediction log, verification note and the six deliverables.'],
     ['httpie.io/app', 'httpie', 'Where the raw request screenshot comes from.'],

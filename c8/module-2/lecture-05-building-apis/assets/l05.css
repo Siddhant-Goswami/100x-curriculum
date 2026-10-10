@@ -68,3 +68,17 @@
 .hold{border:1px solid var(--ink);border-radius:var(--r);padding:18px 20px;margin:26px 0 18px}
 .hold p{margin:0}
 .call .sb{display:block;margin-top:8px;font-size:14px;color:var(--ink2)}
+
+/* overview: passenger vs driver whiteboard sketch inside the callout */
+.call.drive{display:grid;gap:8px}
+.wb{display:block;width:100%;height:auto;color:var(--ink);background:var(--bg2);border-radius:12px;margin:0 0 10px}
+.wb .ln *{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.wb .ln .dash{stroke:var(--line2);stroke-dasharray:6 9}
+.wb .ln .soft{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .arw{stroke:var(--ink3);stroke-width:2}
+.wb .ln .c-addr{stroke:var(--p-addr)}.wb .ln .c-key{stroke:var(--p-key)}.wb .ln .c-pkg{stroke:var(--p-pkg)}.wb .ln .c-res{stroke:var(--ink2)}
+.wb .tx text{font-family:Caveat,cursive;fill:currentColor;text-anchor:middle}
+.wb .tx .h{font-size:32px;font-weight:700}
+.wb .tx .s{font-size:24px;font-weight:500;fill:var(--ink2)}
+.wb .tx .m{font-size:22px;font-weight:700}
+.wb .tx .c-addr{fill:var(--p-addr-ink)}.wb .tx .c-key{fill:var(--p-key-ink)}.wb .tx .c-pkg{fill:var(--p-pkg-ink)}.wb .tx .c-res{fill:var(--ink2)}.wb .tx .c-act{fill:var(--coral-ink)}
