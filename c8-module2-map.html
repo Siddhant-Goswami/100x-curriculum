@@ -218,9 +218,6 @@ button{font:inherit;color:inherit}
 .roundb[aria-expanded="true"]{color:var(--ink);background:var(--bg2)}
 .roundb svg{width:20px;height:20px}
 
-.mini{position:absolute;right:16px;top:64px;z-index:14;width:172px;height:86px;border-radius:12px;overflow:hidden;cursor:pointer;background:var(--bg)}
-.mini svg{width:100%;height:100%;display:block}
-.mini .vp{fill:rgba(242,96,60,.08);stroke:var(--coral);stroke-width:1.5;vector-effect:non-scaling-stroke}
 
 .layers{position:absolute;left:16px;bottom:112px;z-index:15}
 .layers .lb{display:flex;align-items:center;gap:10px;height:48px;padding:0 14px 0 6px;border:0;border-radius:14px;background:#fff;box-shadow:var(--float);cursor:pointer;transition:transform var(--d-micro) var(--e-out),background var(--d-micro)}
@@ -538,7 +535,7 @@ button.pill.terr:active{transform:scale(.97)}
 
 /* ---------- Mobile ---------- */
 @media (max-width:760px){
-  .crumbs,.mini,.status .wk{display:none}
+  .crumbs,.status .wk{display:none}
   .status{top:auto;bottom:calc(112px + var(--sab));right:auto;left:16px}
   .layers{bottom:calc(160px + var(--sab))}
   .top{width:calc(100vw - 32px)}
@@ -575,7 +572,7 @@ button.pill.terr:active{transform:scale(.97)}
 #drive{position:absolute;inset:0;width:100%;height:100%;display:none;z-index:1;outline:none;
   background:radial-gradient(90% 70% at 12% 0%,#FBE2CC 0%,rgba(251,226,204,0) 60%),radial-gradient(80% 60% at 100% 100%,#F7DCCB 0%,rgba(247,220,203,0) 60%),linear-gradient(165deg,#F7F0E7 0%,#F3EEE6 55%,#F4E9DF 100%)}
 body.drive #drive{display:block}
-body.drive #stage,body.drive .ctrls,body.drive #mini,body.drive #crumbs,body.drive #scrub,body.drive #intro,body.drive #help{visibility:hidden}
+body.drive #stage,body.drive .ctrls,body.drive #crumbs,body.drive #scrub,body.drive #intro,body.drive #help{visibility:hidden}
 body.drive .layers{bottom:16px}
 body.drive #viewChip{display:none}
 .dload{position:fixed;inset:0;z-index:60;display:none;place-items:center;background:radial-gradient(90% 70% at 12% 0%,#FBE2CC 0%,rgba(251,226,204,0) 60%),linear-gradient(165deg,#F7F0E7,#F3EEE6 55%,#F4E9DF)}
@@ -657,7 +654,6 @@ body.drive .dkeys{display:flex}
     <button class="chip" type="button" id="viewChip" hidden title="Drive through the module in 3D (M)">▶ Drive mode</button>
     <button class="chip" type="button" id="flagChip" data-act="checkpoints" aria-label="Checkpoints cleared"><span class="flags" id="flags"></span><span id="flagN">0/6</span></button>
   </div>
-  <div class="mini float" id="mini" aria-hidden="true"><svg id="miniSvg" preserveAspectRatio="xMidYMid meet"></svg></div>
 
   <aside class="panel float" id="panel" aria-labelledby="ptitle" tabindex="-1">
     <div class="band"></div>
@@ -1265,7 +1261,7 @@ function addItem(html, x, y, lmin, lmax, cls, attrs){
 /* Level 0: Input, Process, Output */
 var ioIn = addItem('<span class="k">Input</span><span class="t">You, today</span><span class="d">Your observation. A real person, a real problem, from your own life.</span>', 280, 900, 0, 0, 'io', {tag:'button','data-act':'in','aria-label':'Input: where you stand'});
 var ioOut = addItem('<span class="k">Output</span><span class="t">North Star</span><span class="d">A six-month goal someone else could verify on the date.</span>', NSX, 900, 0, 0, 'io', {tag:'button','data-act':'star','aria-label':'Output: your North Star'});
-var coverLbl = addItem('<span class="t">Process</span><span class="d">Everything between where you stand and where you want to be. Know what to build, then three kinds of step, with a bridge at every border.</span><button class="btn coral" type="button" data-act="open">Open the process</button>', FRAME.x+FRAME.w/2, 900, 0, 0, 'cl');
+var coverLbl = addItem('<span class="t">Process</span><span class="d">Everything between where you stand and where you want to be</span><button class="btn coral" type="button" data-act="open">Explore</button>', FRAME.x+FRAME.w/2, 900, 0, 0, 'cl');
 /* Level 1+: endpoints */
 var nsText = function(){ var v=sget('c8m2-northstar'); return v ? v : 'Write yours'; };
 var obsText = function(){ var v=sget('c8m2-observation'); return v ? v : 'Your observation'; };
@@ -1401,7 +1397,7 @@ function openProcess(){ if(DRIVE.on && DRIVE.overview){ DRIVE.overview(); return
 function locate(){ if(needTrack(locate)) return; flyTo(MEP[0],MEP[1],Math.max(T.k,1.0)); pulseItem(meItem); }
 function pulseItem(it){ if(reduced||!it.el.animate) return; it.el.firstChild.animate([{transform:'scale(1)'},{transform:'scale(1.6)'},{transform:'scale(1)'}],{duration:600,easing:'cubic-bezier(.65,0,.35,1)'}); }
 
-/* ============ Chrome: crumbs, minimap, status ============ */
+/* ============ Chrome: crumbs, status ============ */
 var crumbs = document.getElementById('crumbs');
 var lastCrumb='';
 function contAt(p){ var best=null; Object.keys(CONTS).forEach(function(k){ if(d3.polygonContains(CONTS[k].hull,p)) best=CONTS[k]; }); return best; }
@@ -1416,16 +1412,7 @@ function updateChrome(){
   }
   if(html!==lastCrumb){ crumbs.innerHTML=html; lastCrumb=html; }
   gateCheck();
-  var tl=T.invert([0,0]), br=T.invert([stage.clientWidth,stage.clientHeight]);
-  miniVp.attr('x',tl[0]).attr('y',tl[1]).attr('width',br[0]-tl[0]).attr('height',br[1]-tl[1]);
 }
-var mini = d3.select('#miniSvg').attr('viewBox',[-100,-60,W+200,H+120].join(' '));
-Object.keys(CONTS).forEach(function(k){ mini.append('path').attr('d',closed(CONTS[k].hull)).attr('fill',CONTS[k].soft).attr('stroke',CONTS[k].c).attr('stroke-width',8); });
-mini.append('path').attr('d',routeD).attr('fill','none').attr('stroke','#A9A59C').attr('stroke-width',10).attr('stroke-dasharray','8 40');
-mini.append('circle').attr('cx',MEP[0]).attr('cy',MEP[1]).attr('r',50).attr('fill','#F2603C');
-mini.append('circle').attr('cx',NSX).attr('cy',900).attr('r',50).attr('fill','#1B1B1B');
-var miniVp = mini.append('rect').attr('class','vp');
-document.getElementById('mini').addEventListener('click', function(e){ var r=this.getBoundingClientRect(), vb=[-100,-60,W+200,H+120]; var s=Math.min(r.width/vb[2], r.height/vb[3]); var ox=(r.width-vb[2]*s)/2, oy=(r.height-vb[3]*s)/2; var x=vb[0]+(e.clientX-r.left-ox)/s, y=vb[1]+(e.clientY-r.top-oy)/s; flyTo(x,y,Math.max(T.k,K0*1.4)); });
 
 function updateStatus(){
   var wc = document.getElementById('weekChip');
