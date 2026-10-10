@@ -30,40 +30,30 @@
 <div class="wrap grid" style="grid-template-columns:1fr">
   <main>
 <div class="hero">
-  <p class="kick">Cohort 8 · Module 2 · Lecture 5 · Fri 9 Oct 2026 · Code track · After the lecture</p>
+  <p class="kick">Cohort 8 · Module 2 · Lecture 5 · Fri 9 Oct 2026 · Code track</p>
   <h1>Building APIs and backend</h1>
-  <p class="dek">Your chat app still echoes. This week it sends a raw request to a model, and you prove the reply helps your user.</p>
-  <div class="meta"><span>Python · requests · Gradio · Groq</span><span>Post in the Discord code channel</span></div>
+  <p class="dek">Swap the echo for a raw request to a model. Prove the reply helps your user.</p>
 </div>
 
-<div class="call"><p class="kick">The practical in one line</p><p>Four parts get you to any machine on the internet: an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span> and a <span class="part pkg">package</span>. A 200 proves the call worked. Only your verifier proves the reply helps.</p></div>
+<div class="call"><p class="kick">Why the raw request</p><p>A library is a comfortable seat: you ride as a passenger. When the car breaks, as Groq's quickstart did with a 404, the passenger is stuck. The driver goes to the <span class="part addr">address</span>, <span class="part act">action</span>, <span class="part key">key</span> and <span class="part pkg">package</span>.</p></div>
 
-<div class="when"><p class="kick">01</p><h2>Why the raw request</h2></div>
-<div class="tw compact"><table><tbody>
-<tr><td>The cushion broke</td><td>The SDK in Groq's quickstart worked until its default model returned a 404. The raw request is what you fall back on, and what lets you swap providers by changing one URL and one key.</td></tr>
-<tr><td>A working answer still failed</td><td>A reply that handed a business analyst a plan full of Python came back 200. The status code was right; the reply did not help.</td></tr>
-</tbody></table></div>
-
-<div class="when"><p class="kick">02</p><h2>Your path this week</h2></div>
+<div class="when"><p class="kick">01</p><h2>Your path this week</h2></div>
 <ol class="steps">
-  <li><b><a href="/c8/module-2/lecture-05-building-apis/practice-set#s03">Send the raw request in the browser</a>.</b> The four parts to Groq, with your prompt and your user's real input. Predict the status code before every send; break it on purpose twice.</li>
-  <li><b><a href="/c8/module-2/lecture-05-building-apis/practice-set#s02">Rip off the cushion in Python</a>.</b> Replace the echo in your Lecture 3 Gradio chat with <code>requests.post</code>. No SDK. The diff is the process and nothing else.</li>
-  <li><b><a href="/c8/module-2/lecture-05-building-apis/practice-set#s05">Verify against your golden pair</a>.</b> One-line verdict, one prompt change, run it again.</li>
-  <li><b><a href="/c8/module-2/lecture-05-building-apis/practice-set#s07">Submit six things</a></b> on the Discord code channel. Track B (Aarav's workflow) is there if your Assignment 1 is not finished.</li>
+  <li><a href="/c8/module-2/lecture-05-building-apis/practice-set#s03">Send the raw request in the browser</a></li>
+  <li><a href="/c8/module-2/lecture-05-building-apis/practice-set#s02">Rip off the cushion in Python</a></li>
+  <li><a href="/c8/module-2/lecture-05-building-apis/practice-set#s05">Verify against your golden pair</a></li>
+  <li><a href="/c8/module-2/lecture-05-building-apis/practice-set#s07">Submit on the Discord code channel</a></li>
 </ol>
 
-<div class="when"><p class="kick">03</p><h2>When you need it</h2></div>
+<div class="when"><p class="kick">02</p><h2>When you need it</h2></div>
 <div class="cards">
-  <a class="card" href="/c8/module-2/lecture-05-building-apis/practice-set"><p class="kick">Do this</p><h4>Practice set</h4><p>The live request, your prediction log, the verification note and the six deliverables, on one page.</p></a>
-  <a class="card" href="/#L5"><p class="kick">Track progress</p><h4>Tick list on the map</h4><p>The Lecture 5 stop on the curriculum map, with the steps as a tick list.</p></a>
-  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting"><p class="kick">Stuck</p><h4>Troubleshooting</h4><p>Search an error and see which part it points to.</p></a>
-  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety"><p class="kick">Guide</p><h4>Keys</h4><p>Where a key lives, and what to do the minute one leaks.</p></a>
+  <a class="card" href="/c8/module-2/lecture-05-building-apis/practice-set"><p class="kick">Do this</p><h4>Practice set</h4></a>
+  <a class="card" href="/#L5"><p class="kick">Track progress</p><h4>Tick list on the map</h4></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting"><p class="kick">Stuck</p><h4>Troubleshooting</h4></a>
+  <a class="card" href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety"><p class="kick">Guide</p><h4>Keys</h4></a>
 </div>
 
-<div class="when"><p class="kick">04</p><h2>Next</h2></div>
-<p>The next practical builds your own API, and with it the question Adnan raised: who else can see your key, and how much protection your app actually needs.</p>
-
-<p class="sig">A 200 means the machine understood you. It does not mean you helped anyone.<small><a href="/#L5">Back to the curriculum map</a></small></p>
+<p class="sig">A 200 means the machine understood you. It does not mean you helped anyone.<small>Next: building your own API, and how much protection it actually needs.</small></p>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 5: Building APIs and backend</span><a href="/#L5">Curriculum map</a><a href="/c8/module-2/lecture-05-building-apis/">All Lecture 5 pages</a></div></footer>

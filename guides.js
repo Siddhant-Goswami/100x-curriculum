@@ -368,11 +368,11 @@ GUIDES.L5 = { code: {
   sub: 'After the practical · 9 October 2026 · code track',
   deadline: 'Practice set',
   due: 'Due date to be announced',
-  keep: 'Replace the echo in your Gradio chat with a raw requests.post to an LLM, carrying your own prompt and your user\'s real input, and prove the reply is useful by checking it against your golden pair. A 200 means the machine understood you. It does not mean you helped anyone.',
+  keep: 'Connect your Gradio app to an LLM with a raw requests.post, and prove the reply helps by checking it against your golden pair. A 200 means the machine understood you, not that you helped anyone.',
   ideas: [
     ['Four questions read any machine.', 'Address, action, key, package. Answer them and you can wire any API into an app without leaning on someone else\'s code.'],
-    ['The raw request is the fallback.', 'The SDK in Groq\'s quickstart worked until its default model returned a 404. The raw request is what you fall back on when the cushion breaks, and what lets you swap providers by changing one URL and one key.'],
-    ['A 200 is not a verdict.', 'A working answer still failed because it handed a business analyst a plan full of Python. The status code proves the call worked. Only your verifier proves the reply helps.'],
+    ['A library is a comfortable seat.', 'Passengers get stuck when the car breaks, as Groq\'s quickstart did with a 404. Drivers go to the endpoint, key and body.'],
+    ['A 200 is not a verdict.', 'A working answer still failed because it did not solve the problem. The status code proves the call worked. Only your verifier proves the reply helps.'],
     ['Minimum path.', 'No extra parameters, no chat history handling, no changed interface, no renamed functions. The diff from the echo app is the process and nothing else.']
   ],
   rule: 'Predict the status code before every request. Track A uses your own observation (preferred); Track B uses Aarav\'s workflow diagnoser if your Assignment 1 is not finished. Same five steps either way.',
@@ -387,12 +387,12 @@ GUIDES.L5 = { code: {
     {id:'cushion', name:'Rip off the cushion', short:'Code', sub:'Step 4 · Python',
      intro:'Same address, action, key and package, now in Python. Write it yourself: the code is short enough that writing it is the learning.',
      ticks:[
-       {id:'post', t:'The echo replaced with requests.post, returning only the content field', how:'No Groq or OpenAI SDK in the final file. A comment labels the address, action, key and package.', link:'l05Steps', linkLabel:'The shape of the change'},
+       {id:'post', t:'The echo replaced with requests.post, returning only the content field', how:'No Groq or OpenAI SDK in the final file. The address, action, key and package all in one file.', link:'l05Steps', linkLabel:'The shape of the change'},
        {id:'env', t:'The key read from an environment variable, never written in the file', how:'Or a .env file listed in .gitignore. Blur the key in every image you post.', cmd:'export GROQ_API_KEY=gsk_your_key_here'},
        {id:'fails', t:'Two deliberate failures logged: a wrong model name and a missing or wrong key', how:'Predicted code, actual code and the error message for each.', link:'l05Log', linkLabel:'Prediction log'}
      ]},
     {id:'verify', name:'Verify', short:'Verify', sub:'Step 5 · your golden pair',
-     intro:'Track B: the target is the jargon in the plan. Fix it with one prompt change: no jargon, one step at a time, the minimum action needed now.',
+     intro:'Track B: the target is the jargon in the plan. Fix it with a prompt: no jargon, one step at a time, the minimum action needed now.',
      ticks:[
        {id:'golden', t:'My golden input run through the app, reply beside my golden output', link:'l05Verify', linkLabel:'Verification note'},
        {id:'verdict', t:'A one-line verdict, one prompt change, and the reply after the change'}
@@ -411,7 +411,7 @@ GUIDES.L5 = { code: {
     {id:'swap', t:'Optional swap test', how:'Point your chat app at another OpenAI-compatible endpoint by changing only the URL, key and model name. Note what else had to change.'},
     {id:'oh', t:'Bring anything still stuck to next week\'s office hour', how:'We run this exercise together there. Questions go on the channel, not in DMs; Monday and Tuesday are the reply slots.'}
   ],
-  next: 'Next: the next practical builds your own API, and with it the question Adnan raised: who else can see your key, and how much protection your app actually needs. A short video on hosting your own API locally is coming on the LMS; it is not needed for this set.',
+  next: 'Next: building your own API, and how much protection it actually needs.',
   errors: [
     ['401', 'Key missing, mistyped, a space copied with it, or Bearer missing', 'The header is Authorization: Bearer <key>. Check the environment variable is set in the same terminal that runs the app'],
     ['404', 'Model name typo or a retired model, or a wrong address', 'Read the message: it says which. The model is openai/gpt-oss-20b'],
@@ -428,7 +428,7 @@ GUIDES.L5 = { code: {
     ['Keys', 'l04Keys', 'Where a key lives, and what to do when one leaks.']
   ],
   words: [
-    ['SDK', 'Someone else\'s code wrapped around an API. A cushion: convenient until it breaks.'],
+    ['SDK', 'Someone else\'s car around an API. Comfortable to ride in; you are stuck when it breaks.'],
     ['requests.post', 'The Python call that sends a POST: address, headers with the key, and a JSON package.'],
     ['Environment variable', 'A value set outside your code, read with os.environ. Where the key lives.'],
     ['Content field', 'choices[0].message.content: the model\'s reply inside the package Groq sends back.'],

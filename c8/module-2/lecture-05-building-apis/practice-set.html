@@ -31,7 +31,7 @@
   <div class="meta"><span>Lecture 5 · Building APIs and backend · Fri 9 Oct 2026</span><span>Post in the Discord code channel</span><span>Cohort 8 · Module 2</span></div>
 </div>
 
-<div class="call"><p class="kick">The assignment in one sentence</p><p>Replace the echo in your Gradio chat with a raw <code>requests.post</code> to an LLM, carrying your own prompt and your user's real input, and prove the reply is useful by checking it against your golden pair.</p></div>
+<div class="call"><p class="kick">The assignment in one sentence</p><p>Connect your Gradio app with a raw <code>requests.post</code> to an LLM, carrying your own prompt and your user's real input, and prove the reply is useful by checking it against your golden pair.</p></div>
 
 <div class="scorebox">
   <div class="score" data-for="steps"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/5</b></div><div class="l"><strong>The five steps</strong>Section 02</div></div>
@@ -41,30 +41,27 @@
 
 <div class="trkpick">
   <p class="kick">Which track are you on?</p>
-  <p>The page shows only your track's version of each step. Your choice is remembered on this device.</p>
-  <div class="opts">
-    <button type="button" data-v="a"><b>Track A · my own observation</b><small>My Assignment 1 is done: I have a user, a golden pair and a prompt to write. Preferred.</small></button>
-    <button type="button" data-v="b"><b>Track B · Aarav's workflow diagnoser</b><small>My Assignment 1 is not finished. Same five steps with Aarav as the user, so nobody is blocked.</small></button>
+    <div class="opts">
+    <button type="button" data-v="a"><b>Track A · my own observation</b><small>Assignment 1 done. Preferred.</small></button>
+    <button type="button" data-v="b"><b>Track B · Aarav's workflow diagnoser</b><small>Assignment 1 not finished.</small></button>
   </div>
   <p style="margin:10px 0 0!important"><button type="button" class="reset" data-v="all">Show both tracks</button></p>
 </div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Why This Exercise Exists</h2>
-<p>Aarav's workflow diagnoser was a proxy. The skill is reading any machine through four questions, its <span class="part addr">address</span>, <span class="part act">action</span>, <span class="part key">key</span> and <span class="part pkg">package</span>, and wiring it into an app without leaning on someone else's code.</p>
-<p>The SDK in Groq's quickstart worked until its default model returned a 404. The raw request is what you fall back on when the cushion breaks, and what lets you swap providers by changing one URL and one key.</p>
-<p>The second skill is judgement. In the lecture, a working answer still failed because it handed a business analyst a plan full of Python. <strong>A 200 status code proves the call worked. Only your verifier proves the reply helps.</strong></p>
+<p>A library is a comfortable seat: you ride as a passenger. When the car breaks (Groq's quickstart model returned a 404), the passenger is stuck. The driver knows the four parts: <span class="part addr">address</span>, <span class="part act">action</span>, <span class="part key">key</span>, <span class="part pkg">package</span>.</p>
+<p><strong>A 200 proves the call worked. Only your verifier proves the reply helps.</strong></p>
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>The Five Steps</h2>
-<div class="trk b"><div class="call prob"><p class="kick">Track B · Aarav as the user</p><p>His weekly status workflow is the input. A plan to automate part of it is the output. Start from the lecture's prompt:</p><p style="margin-top:8px"><em>"Here is the workflow of an analyst working at an IT company in India. Diagnose and generate a plan to automate this work, or a part of the work."</em></p><span class="sb">Your verification target is the flaw found live: the plan drifts into technical jargon Aarav cannot use. Track B is the floor. Your own user is the point.</span></div></div>
-<p>Tick each step when it is done. Ticks save on this device and are separate from the tick list on the map.</p>
+<div class="trk b"><div class="call prob"><p class="kick">Track B · Aarav as the user</p><p>Input: his weekly workflow. Output: a plan to automate part of it. Starting prompt:</p><p style="margin-top:8px"><em>"Here is the workflow of an analyst working at an IT company in India. Diagnose and generate a plan to automate this work, or a part of the work."</em></p><span class="sb">Target: the plan drifts into jargon Aarav cannot use.</span></div></div>
 <div data-stage="steps">
 <ul class="ck">
 <li><input type="checkbox" id="p1"><label for="p1"><span class="t">1. Start from the echo</span><span class="h">Run your Lecture 3 Gradio chat. Confirm it returns your input unchanged: no process yet.</span></label></li>
 <li><input type="checkbox" id="p2"><label for="p2"><span class="t">2. Test the machine before the code</span><span class="h">In <a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a>, send a POST to <code>https://api.groq.com/openai/v1/chat/completions</code> with your key and a body naming <code>openai/gpt-oss-20b</code>. Write the status code you expect before you press send. <a href="#s03">Practise it on this page first.</a></span></label></li>
-<li><input type="checkbox" id="p3"><label for="p3"><span class="t">3. Write your prompt</span><span class="h"><span class="trk a">One instruction that encodes what you learned doing Assignment 1 by hand.</span><span class="trk b">Start from the lecture's prompt above.</span> Send prompt plus your user's real input in the browser first and read the reply as your user would.</span></label></li>
+<li><input type="checkbox" id="p3"><label for="p3"><span class="t">3. Write your prompt</span><span class="h"><span class="trk a">One instruction that encodes what you learned doing Assignment 1 by hand.</span><span class="trk b">Start from the lecture's prompt above.</span> Send a prompt plus your user's real input in the browser first and read the reply as your user would.</span></label></li>
 <li><input type="checkbox" id="p4"><label for="p4"><span class="t">4. Rip off the cushion</span><span class="h">In Python, replace the echo with <code>requests.post</code>, using the same address, action, key and package. Return only the content field. No Groq or OpenAI SDK in the final file.</span></label></li>
-<li><input type="checkbox" id="p5"><label for="p5"><span class="t">5. Verify</span><span class="h"><span class="trk a">Run your golden input through the app. Compare the reply to your golden output, write a one-line verdict, change the prompt once based on what the comparison showed, and run it again.</span><span class="trk b">Find the jargon in the plan. Fix it with one prompt change (no jargon, one step at a time, the minimum action needed now) and show the before and after.</span> <a href="#s05">Use the verification note.</a></span></label></li>
+<li><input type="checkbox" id="p5"><label for="p5"><span class="t">5. Verify</span><span class="h"><span class="trk a">Run your golden input through the app. Compare the reply to your golden output, write a one-line verdict, change the prompt once based on what the comparison showed, and run it again.</span><span class="trk b">Find the jargon in the plan. Fix it with a prompt (no jargon, one step at a time, the minimum action needed now) and show the before and after.</span> <a href="#s05">Use the verification note.</a></span></label></li>
 </ul>
 <div class="stg"><span class="kick">Steps done</span><div class="bar"><i></i></div><span class="num">0 / 5</span></div>
 </div>
@@ -72,17 +69,16 @@
 <h3>Step 1 · Where you start</h3>
 <div id="echo"></div>
 <h3>Step 4 · The shape of the change</h3>
-<p>The diff from the echo app should be the process and nothing else. Every blank below is one of the four parts; the values are the ones you already sent in <a href="#s03">the raw request</a>. Write the code yourself: it is short enough that writing it is the learning.</p>
+<p>Each blank is one of the four parts, with the values from <a href="#s03">the raw request</a>. Write it yourself.</p>
 <div id="shape"></div>
-<p>The key comes from an environment variable, never from the file. Set it in the terminal before you run the app, or keep it in a <code>.env</code> file listed in <code>.gitignore</code>.</p>
+<p>The key comes from an environment variable or a <code>.env</code> file in <code>.gitignore</code>, never from the code.</p>
 <div class="osrow"><span class="kick">Your machine</span><div class="seg" data-seg="os" role="group" aria-label="Operating system"><button type="button" data-v="mac">Mac</button><button type="button" data-v="win">Windows</button></div></div>
 <div class="cmd" data-os="mac"><span>export GROQ_API_KEY=gsk_your_key_here</span><button class="cp" type="button">Copy</button></div>
 <div class="cmd" data-os="win"><span>$env:GROQ_API_KEY="gsk_your_key_here"</span><button class="cp" type="button">Copy</button></div>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>The Raw Request, Live</h2>
-<p>This is the same request you send from httpie.io/app in step 2, laid out as the four parts. It goes from your browser straight to Groq. Use it to write your prompt and practise predictions; the screenshot you submit still comes from httpie.io/app.</p>
-<p><b>Predict before you run.</b> The Send button stays off until you pick the status code you expect. Every send is added to your <a href="#s04">prediction log</a>.</p>
+<p>Step 2's request, sent from this page to Groq. Pick your predicted status code to unlock Send; every send goes to the <a href="#s04">prediction log</a>. Your screenshot still comes from httpie.io/app.</p>
 <div class="lab" id="lab">
   <div class="lh"><span>POST · Groq chat completions</span><span class="sp" id="labMeta">Free tier: 30 requests a minute</span></div>
   <div class="band addr"><b>Address</b><div class="fx">https://api.groq.com/openai/v1/chat/completions</div></div>
@@ -126,17 +122,16 @@
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Prediction Log</h2>
-<p>At least three requests, each with the status code you predicted before sending and the one you got. At least two are deliberate failures: a wrong model name and a missing or wrong key. Sends from section 03 land here on their own; add rows by hand for requests you send from httpie.io/app or Python.</p>
+<p>Three requests minimum, two of them deliberate failures. Sends from section 03 land here; add the rest by hand.</p>
 <div class="need" id="need"><span data-n="three">Three requests</span><span data-n="model">A wrong model name</span><span data-n="key">A missing or wrong key</span><span data-n="pred">A prediction on every row</span></div>
 <div class="tw plog"><table>
 <thead><tr><th style="width:26%">Request</th><th style="width:11%">Predicted</th><th style="width:11%">Actual</th><th>Error message, for failures</th><th style="width:30px"></th></tr></thead>
 <tbody id="logBody"></tbody></table></div>
 <div class="btnrow"><button type="button" class="btn ghost" id="addRow">Add a row by hand</button><button type="button" class="btn ghost" id="copyLog">Copy the log as text</button><button type="button" class="btn ghost" id="clearLog">Clear the log</button></div>
-<p class="note" style="font-size:13px;color:var(--ink3);margin-top:10px">The log saves on this device. Keys are never written to it.</p>
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Verify Against Your Golden Pair</h2>
-<p>A 200 means the machine understood you. Your golden pair tells you whether the reply helps. <span class="trk a">Put your golden output beside the actual reply, write a one-line verdict, change the prompt once, and run it again.</span><span class="trk b">Aarav's golden pair from Lecture 3 is loaded with the Track B button below. The target is jargon: words Aarav cannot act on.</span></p>
+<p><span class="trk a">Golden output beside the reply, a one-line verdict, one prompt change, run again.</span><span class="trk b">Load Aarav's golden pair below. The target is jargon.</span></p>
 <div class="ver" id="ver">
   <div class="btnrow"><button type="button" class="btn ghost" id="vLoadB">Load Aarav's golden pair (Track B)</button><button type="button" class="btn ghost" id="vSend">Send my golden input from section 03</button></div>
   <div class="pair">
@@ -163,11 +158,10 @@
 </section>
 
 <section class="s" id="s07"><h2><span class="n">07</span>What to Submit</h2>
-<p>Tick each deliverable when it is ready.</p>
 <div data-stage="sub">
 <ul class="ck">
 <li><input type="checkbox" id="d1"><label for="d1"><span class="t">App screenshot</span><span class="h">The Gradio chat running locally, with your user's real input and the model's reply visible. Key not visible.</span></label></li>
-<li><input type="checkbox" id="d2"><label for="d2"><span class="t">Code file</span><span class="h">One Python file (repo link or paste) using <code>requests.post</code>, with a comment labelling the address, action, key and package. No SDK import.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">Code file</span><span class="h">One Python file (repo link or paste) using <code>requests.post</code>, with the address, action, key and package. No SDK import.</span></label></li>
 <li><input type="checkbox" id="d3"><label for="d3"><span class="t">Raw request screenshot</span><span class="h">httpie.io/app showing POST, the full endpoint, and a 200 response, key blurred.</span></label></li>
 <li><input type="checkbox" id="d4"><label for="d4"><span class="t">Prediction log</span><span class="h">At least three requests (two deliberate failures), each with predicted status code, actual status code, and the error message for failures. <a href="#s04">Copy it from section 04.</a></span></label></li>
 <li><input type="checkbox" id="d5"><label for="d5"><span class="t">Verification note</span><span class="h">Golden output beside actual output, a one-line verdict, the one prompt change you made, and the reply after the change. <a href="#s05">Copy it from section 05.</a></span></label></li>
@@ -196,10 +190,9 @@
 </section>
 
 <section class="s" id="s09"><h2><span class="n">09</span>Where to Post and How to Get Unblocked</h2>
-<p>Post everything on the C8 Discord code channel. Reviews go to the earliest submissions first. Questions go on the channel, not in DMs; Monday and Tuesday are the reply slots. Bring anything still stuck to next week's office hour, where we run this exercise together.</p>
-<p>A short video on hosting your own API locally is coming on the LMS; it is not needed for this set.</p>
-<p><b>After submission:</b> the next practical builds your own API, and with it the question Adnan raised: who else can see your key, and how much protection your app actually needs.</p>
-<div class="hold"><p class="kick">Hold this</p><p>A 200 means the machine understood you. It does not mean you helped anyone. Four lines get you to any machine on the internet; your golden pair tells you whether the trip was worth it.</p></div>
+<p>Post on the C8 Discord code channel; earliest posts are reviewed first. Questions on the channel, not DMs (replies Mon and Tue). Still stuck: next week's office hour.</p>
+<p><b>Next:</b> building your own API, and how much protection it actually needs.</p>
+<div class="hold"><p class="kick">Hold this</p><p>A 200 means the machine understood you. It does not mean you helped anyone. Four lines get you to any machine on the internet; your golden pair tells you whether the trip was worth it for a human.</p></div>
 <p class="sig">Four lines to any machine.<small>Companion pages: <a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a> · <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 Groq step</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">troubleshooting</a> · <a href="/#L5">tick list on the map</a></small></p>
 </section>
 
