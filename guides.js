@@ -275,6 +275,7 @@ GUIDES.L3 = { code: {
 /* Lecture 4 · API as the second interface · combined, both tracks (3 October 2026).
    Source: c8/module-2/lecture-04-the-second-interface/_plan/lecture-plan-v2.md */
 GUIDES.L4 = { all: {
+  hub: {link:'l04Hub', title:'Open the Lecture 4 pages', sub:'Request Builder, practice set, notes and troubleshooting', more:[['l04Builder','Request Builder'],['l04Practice','Practice set'],['l04Notes','Notes']]},
   name: 'Four things in, two things out',
   sub: 'After the lecture · 3 October 2026 · both tracks',
   deadline: 'Practice set',
@@ -362,6 +363,7 @@ GUIDES.L4 = { all: {
 /* Lecture 5 · Building APIs and backend · code track practical (9 October 2026).
    Source: the practice set Google Doc "100x_C8_PracticeSet_No_Cushions" (it calls this Live Lecture 06; the map numbers it 5). */
 GUIDES.L5 = { code: {
+  hub: {link:'l05Hub', title:'Open the Lecture 5 pages', sub:'Practice set with the live request, prediction log and verification note', more:[['l05Practice','Practice set'],['l05Raw','The raw request'],['l05Submit','What to submit']]},
   name: 'No cushions',
   sub: 'After the practical · 9 October 2026 · code track',
   deadline: 'Practice set',

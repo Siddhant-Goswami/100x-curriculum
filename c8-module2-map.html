@@ -403,6 +403,16 @@ button.pill.terr:active{transform:scale(.97)}
 
 /* ---------- Worksheet: a tick list that sits on a stop ---------- */
 .wks{margin-top:6px}
+/* the lecture's own pages, first thing on the card: <a class="hub"> */
+.hub{display:flex;align-items:center;gap:12px;margin:0 0 14px;padding:12px 14px;border-radius:12px;background:var(--coral);color:#fff;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.hub:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(242,96,60,.3)}
+.hub span{flex:1;display:flex;flex-direction:column;gap:2px}
+.hub b{font:600 14px/1.3 var(--sans)}
+.hub i{font:normal 12px/1.4 var(--sans);opacity:.9}
+.hub em{font-style:normal;font-size:18px}
+.hubs{display:flex;flex-wrap:wrap;gap:6px;margin:-6px 0 14px}
+.hubs a{font:500 12px var(--sans);padding:4px 10px;border-radius:8px;border:1px solid var(--line, #E2E0DA);color:inherit;text-decoration:none}
+.hubs a:hover{border-color:var(--coral);color:var(--coral)}
 .wks .wh{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
 .wks .wh h3{margin-bottom:6px}
 .wks .wn{font:600 11px var(--mono);color:var(--ink3);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -1528,8 +1538,14 @@ function agendaHTML(s){
   return '<h3>Agenda</h3><dl class="ag">'+rows.map(function(r){ return '<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>'; }).join('')+'</dl>';
 }
 /* Everything on the card that changes with the track lives in one box, so a switch never rebuilds the field note. */
+/* A worksheet with hub:{link,title,sub,more:[[link,label]]} gets a button to the lecture's own pages at the top of the card. */
+function hubHTML(s){
+  var g=guideFor(s), hb=g&&g.hub; if(!hb||!gl(hb.link)) return '';
+  return '<a class="hub" href="'+esc(gl(hb.link))+'"><span><b>'+esc(hb.title)+'</b><i>'+esc(hb.sub||'')+'</i></span><em aria-hidden="true">→</em></a>'+
+    (hb.more&&hb.more.length?'<div class="hubs">'+hb.more.filter(function(m){ return gl(m[0]); }).map(function(m){ return '<a href="'+esc(gl(m[0]))+'">'+esc(m[1])+'</a>'; }).join('')+'</div>':'');
+}
 function trackBitsHTML(s){
-  var h = (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + loHTML(s) + toolsHTML(s);
+  var h = hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + loHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
   if(cl) h += '<div class="cliff"><b>THE CLIFF</b>'+esc(cl)+'</div>';
   h += workHTML(s);
