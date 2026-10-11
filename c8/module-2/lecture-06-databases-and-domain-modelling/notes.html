@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lecture Notes: Databases and Domain Modelling | 100xEngineers</title>
-<meta name="description" content="Lecture 6 notes, both tracks: memory versus storage, the three questions of domain modelling, things and facts, the three shapes of a link, keys and pointers, history as a row, rows versus files, and Aarav's model as it lands in Supabase.">
+<meta name="description" content="Lecture 6 notes, both tracks: the whiteboard so far, where each piece of an app should live, an app that can think but cannot remember, the storage box derived from a single file, why it lives on your server, and how to decide what is worth storing with things, facts and links.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -25,71 +25,76 @@
 <details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
   <p class="kick">Lecture notes · Lecture 6 · Both tracks</p>
-  <h1>You cannot store what you cannot describe</h1>
-  <p class="dek">From an app that forgets on refresh to the tables that remember Aarav's world.</p>
+  <h1>It can think. It cannot remember.</h1>
+  <p class="dek">Where each piece of an app lives, the storage box we added, and the question it leaves open: what is worth storing?</p>
   <div class="meta"><span>Sat 10 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span></div>
 </div>
 
-<div class="call"><p class="kick">The one thing to keep</p><p>A database is useless until you can say what shape the thing you are storing has. Three questions give the shape: <span class="q thing">what are the things</span>, <span class="q fact">what does each thing have</span>, <span class="q link">how do they connect</span>. Answer them on paper and the tables fall out. Read once, then do the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">lab</a>; these notes are the lab's ideas without the doing.</p></div>
+<div class="call"><p class="kick">The one thing to keep</p><p>Storage is just a way to remember. Keep it on your server, where the user cannot wipe it and nobody else can read it. Store only what your app needs to answer its questions next time. The <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a> turns "what is worth storing?" into three questions you can answer.</p></div>
 
-<section class="s" id="s01"><h2><span class="n">01</span>Where We Left Off: a 200 and a Plan That Vanishes</h2>
-<p>Lecture 5 ended with a working loop: Aarav pastes his workflow, your prompt and his words go to the model, a plan comes back and the UI shows it. The call returned a 200. Then Aarav closes the tab. On Tuesday the plan, the chat, everything he said is gone. The app worked and remembered nothing.</p>
+<section class="s" id="s01"><h2><span class="n">01</span>The Whiteboard So Far</h2>
+<p>Three weeks, one diagram. Aarav types his workflow into the UI on <b>his machine</b>: the first interface. The UI sends it to <b>your server</b>, where the diagnose function lives: the second interface, an API. Your server sends it on to the <b>LLM on Groq's machine</b>, which you do not own. The plan comes back the same way.</p>
+<p>That is two API calls, and each needs the same four things: <b>address, action, key, package</b>. Learn the four, not the tool. The same four connect email (Resend: <code>POST /emails</code> with from, to and subject) or data from Instagram and Google Maps (Apify). You never built an LLM. You called a machine that has one.</p>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>Memory Dies. Storage Survives.</h2>
-<p>Everything a running program holds lives in <b>memory</b>, and memory dies the moment the program stops. Lecture 4 said the frontend cannot store data; Lecture 5's backend cannot either, not on its own. Storage is a place <i>outside</i> the running app, on disk, that keeps rows after the app is gone. That place is a <b>database</b>.</p>
-<p>In the lab you switch "save to a table" on and watch each message become a row with who said it, what and when. Close the app, reopen it, the rows come back. Nothing about the model changed. Only where the words lived.</p>
+<section class="s" id="s02"><h2><span class="n">02</span>Outsource Your Thinking, Not Your Understanding</h2>
+<p>Anyone can vibe-code this app in a few prompts. The difference shows when it breaks. Groq's docs still list a Llama 3 model that has been retired, so an app built from them gets a 404. Pasting the error back works for a few rounds. Every round you skip understanding adds to a debt, and at some prompt the model can no longer fix what you cannot explain.</p>
+<p>The whiteboard is what interviewers, clients and investors ask you to draw: where does each piece live, and why?</p>
 </section>
 
-<section class="s" id="s03"><h2><span class="n">03</span>The Real Skill Is Describing the Shape</h2>
-<p>A table has columns, and before you can save a message you must say which columns a message needs. You cannot save a shape you have never described. So before any tool, three plain questions about your user's world:</p>
-<ol>
-  <li><b>What are the things?</b> Candidates become tables.</li>
-  <li><b>What does each thing have?</b> Facts become columns.</li>
-  <li><b>How do the things connect?</b> Links become pointers between rows.</li>
-</ol>
-<p>This is <b>domain modelling</b>: the domain is your user's world, and the model is the smallest description of it that still answers the product's questions.</p>
-</section>
-
-<section class="s" id="s04"><h2><span class="n">04</span>Question 1: The Create, Read, Update, Delete Test</h2>
-<p>Nouns are clues, not answers. The test for a thing is the one you met in Lecture 4: can the app <b>Create</b> one, <b>Read</b> one, <b>Update</b> one, <b>Delete</b> one, on its own, and can there be many? Aarav is a user. Each chat is a conversation. Each bubble is a message. His weekly workflow is a thing; so is every diagnosis the app writes about it, because tomorrow it writes another and the old one must survive. Jira and Slack are tools, and tools appear in many workflows.</p>
-<p>"High-priority" fails the test. It is a word inside a message; the app never creates or deletes it on its own. His manager fails too: a person in Aarav's life, not a row in your app. Over-splitting into tables is the most common beginner move, and the test is how you refuse it.</p>
-</section>
-
-<section class="s" id="s05"><h2><span class="n">05</span>Question 2: Facts, and the Boundary</h2>
-<p>A fact is what you need to recreate one of the thing. For a message: who said it, what was said, when. Strip the message away and "content" means nothing; that is the signature of a fact. Facts become columns.</p>
-<p>The whole skill is drawing one boundary. Aarav picks a tone for each plan. Today tone is a fact on the diagnosis. If users could save and reuse named tones, a tone would gain identity and a life, and it would become a thing with its own table. The word does not decide. <b>What the product needs to do with it decides.</b></p>
-</section>
-
-<section class="s" id="s06"><h2><span class="n">06</span>Question 3: Three Shapes of a Link</h2>
-<p>A spreadsheet stores facts about one thing. A database stores facts <i>and</i> how things link. Every link you can phrase has one of three shapes:</p>
-<div class="tw compact"><table><thead><tr><th>Shape</th><th>In Aarav's app</th><th>How it is stored</th></tr></thead><tbody>
-<tr><td>One-to-one</td><td>Rare. Worth a second look: the two may be one table.</td><td>A pointer marked <b>unique</b>.</td></tr>
-<tr><td>One-to-many</td><td>One user, many conversations. One conversation, many messages. One workflow, many diagnoses.</td><td>A pointer on the <b>many side</b>: <code>user_id</code> on conversations, <code>conversation_id</code> on messages.</td></tr>
-<tr><td>Many-to-many</td><td>A workflow uses many tools; Jira appears in many workflows.</td><td>No single cell can hold "many". A <b>third table</b>, one row per pairing: <code>workflow_tools</code>.</td></tr>
+<section class="s" id="s03"><h2><span class="n">03</span>Where Should Each Piece Live?</h2>
+<p>Why does the LLM sit outside your server? Because of its size. Anyone can download the model files from Hugging Face, but they need more memory than your server or Aarav's laptop has.</p>
+<div class="tw compact"><table><thead><tr><th>Model</th><th>Needs</th><th>Where it can live</th></tr></thead><tbody>
+<tr><td>GPT-OSS-120B, the model behind Aarav's plans</td><td>About 65 GB of memory, plus GPUs</td><td>Someone else's machine, reached by API</td></tr>
+<tr><td>A 7-billion-parameter image model</td><td>About 8 to 14 GB of memory</td><td>Your own server</td></tr>
+<tr><td>A 421-million-parameter model</td><td>About 2.5 GB</td><td>Even the user's machine</td></tr>
 </tbody></table></div>
-<p>One-to-many is most of every model you will ever draw. The rule to carry: <b>the many side points back</b>.</p>
+<p>Anything you ship to the user's machine has to fit that machine. This curriculum site has no server at all, because static pages fit everywhere. Size is one deciding factor, and the class added more: network speed (YouTube drops to 360p on a slow connection) and how often something is used (WhatsApp keeps gigabytes of chats on your phone).</p>
+<div class="hold"><p class="kick">Open thread</p><p>Write down what you use to decide where a piece lives. We close this thread at the end of the deterministic module, when the same decision is tested with 1 user and with 10.</p></div>
 </section>
 
-<section class="s" id="s07"><h2><span class="n">07</span>Keys: Every Row Needs an Address</h2>
-<p>Two messages both say "okay". How does the app tell them apart? It cannot, unless every row has an address that never repeats: a <b>key</b>, usually a column called <code>id</code>. Like an apartment number in a building, it lets anything else point at this exact row later.</p>
-<p>A link is then just a column on the many side holding the other row's key. <code>conversation_id = 7</code> on a message means "I belong to conversation 7". That column is a <b>pointer</b> (the formal word is foreign key). Follow the pointers and you can trace any message back to its conversation and up to the user who owns it.</p>
+<section class="s" id="s04"><h2><span class="n">04</span>Aarav's App Forgets</h2>
+<p>On Monday Aarav pastes his workflow and gets a plan. On Tuesday he reopens the app and types "I implemented the plan, but hit a problem." The call returns a 200 and the model replies, but it has no idea which plan he means. Every request starts from nothing.</p>
 </section>
 
-<section class="s" id="s08"><h2><span class="n">08</span>The Fact of a Pairing</h2>
-<p>How often does Aarav use a tool in a workflow? Jira is daily in one workflow and monthly in another. The fact belongs to neither the tool nor the workflow; it belongs to the <i>pairing</i>, so it lives on the <code>workflow_tools</code> row. The same move puts a grade on an enrollment and a quantity on an order line. Ask what each value describes, and put it there.</p>
+<section class="s" id="s05"><h2><span class="n">05</span>Derive It Before You Name It</h2>
+<p>The rule in class was to solve this without saying "database". The plainest answers were the best. Keep a <code>memory.txt</code>. After every reply, write down who said what, with the date and time. On the next request, send the file along with the prompt, so the model reads yesterday before it answers today.</p>
+<p>Real products do the same. Claude's memory, in its settings, is plain text it writes about you. Claude Code remembers a project through one file, CLAUDE.md, with nothing more than read, write and edit. The missing box on the whiteboard is <b>storage</b>: anything that keeps things and gives them back. Today that is a file. Later it is a sheet or a database. Start with the file and move up only when it breaks. Paying for a database to solve a file-sized problem is the expensive kind of wrong.</p>
 </section>
 
-<section class="s" id="s09"><h2><span class="n">09</span>History Is a Row, Not a Cell</h2>
-<p>Why is a diagnosis its own table instead of a <code>plan</code> column on the workflow? Because Aarav will ask for the plan again, in a casual tone, and the old one must survive. A cell can hold one value; writing a new one erases the old. If the product must remember what was true before, make it a row with a time on it. The current one is the newest row. The hospital brief in the lab drills exactly this.</p>
+<section class="s" id="s06"><h2><span class="n">06</span>Where Does Storage Live?</h2>
+<p>The file is tiny, so why not keep it on Aarav's machine? Browsers allow it. Open ChatGPT, then Inspect → Application → Storage: it keeps about 12 MB on your laptop. Clear it and the data is gone, and you are logged out.</p>
+<p>That shows two problems. <b>The user can wipe it</b>, and then the app forgets again. <b>Anyone can read it</b>, so nothing private can live there. Your API key is the smallest thing you own and the most sensitive. On the client, anyone can copy it and spend money on your account. One classmate's vibe-coded app sent its key to the browser, and a stranger spent the $10 of credit on it.</p>
+<p>So the storage, and the key, live on <b>your server</b>. The server reaches the file through the file system (read, write, edit), and that is an interface too. Size alone does not decide where a piece lives. Privacy and security decide too.</p>
 </section>
 
-<section class="s" id="s10"><h2><span class="n">10</span>Rows or Files</h2>
-<p>Aarav attaches a screenshot of his Jira board. A cell holds a value you can type: text, a number, a date, yes or no. A screenshot is bytes. It goes in <b>file storage</b>, and a row keeps the <b>link</b> to it plus the facts about it: which message it came with, its name, when it arrived. Rows for facts, files for everything large or binary, and a pointer between them. In Supabase that is a table and a storage bucket.</p>
+<section class="s" id="s07"><h2><span class="n">07</span>The Open Question: What Is Worth Storing?</h2>
+<p>Store too much and you pay for it, or get sued for it. Store too little and the app forgets. The answer from class: <b>the least you need to carry on next time</b>.</p>
+<p>The lab makes that precise. Write the questions your app must answer tomorrow, such as "Aarav's last plan" or "every plan this workflow ever got". Whatever those questions need is worth storing. Nothing else is.</p>
 </section>
 
-<section class="s" id="s11"><h2><span class="n">11</span>Aarav's Model, and the Bridge to Lecture 4</h2>
-<p>Eight tables, every one placed by hand in the lab:</p>
+<section class="s" id="s08"><h2><span class="n">08</span>In the Lab: Three Questions Give the Shape</h2>
+<p><code>memory.txt</code> stored one shape: who, what, when. Aarav's app needs more than that: his conversations, his workflows, and every plan each workflow got. The <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">lab</a> asks three questions about his world:</p>
+<ol>
+  <li><span class="q thing">What are the things?</span> Can the app create, read, update and delete one on its own, and can there be many? A conversation passes. "High-priority" fails, because it is a word inside a message. Each thing gets a <b>table</b>.</li>
+  <li><span class="q fact">What does each thing have?</span> The facts you need to recreate one. For a message: who said it, what, and when. Each fact is a <b>column</b>. Tone is a fact on a plan today. If users could save named tones, it would become a thing. What the product does with it decides.</li>
+  <li><span class="q link">How do they connect?</span> One-to-one (rare), one-to-many (most links), or many-to-many (a third table).</li>
+</ol>
+<p>This is <b>domain modelling</b>: the smallest description of your user's world that still answers the product's questions.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Keys and Pointers</h2>
+<p>Every row needs an address that never repeats: its <b>key</b>, a column called <code>id</code>. A link is a column on the <b>many side</b> that holds the other row's key. <code>conversation_id = 7</code> on a message means "I belong to conversation 7". That column is a <b>pointer</b> (the formal word is foreign key).</p>
+<p>When both sides are many, no single cell can hold "many". A workflow uses many tools, and Jira appears in many workflows. A third table, <code>workflow_tools</code>, holds one row per pairing, and facts about the pairing, such as how often, live on that row.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Two Rules That Save You Later</h2>
+<p><b>History is a row, not a cell.</b> A plan saved in a cell gets erased by the next plan. Give each diagnosis its own row with a time on it, the same timestamp idea as <code>memory.txt</code>.</p>
+<p><b>Rows for facts, files for bytes.</b> A screenshot cannot go in a cell. It goes in file storage, and a row keeps its link, its name, and the message it came with.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Aarav's Model</h2>
+<p>Eight tables, each one placed by hand in the lab:</p>
 <div class="tw compact"><table><thead><tr><th>Table</th><th>Columns</th><th>Points to</th></tr></thead><tbody>
 <tr><td>users</td><td class="mono">id, name</td><td></td></tr>
 <tr><td>conversations</td><td class="mono">id, user_id, started_at</td><td>users</td></tr>
@@ -100,29 +105,27 @@
 <tr><td>tools</td><td class="mono">id, name</td><td></td></tr>
 <tr><td>workflow_tools</td><td class="mono">id, workflow_id, tool_id, how_often</td><td>workflows, tools</td></tr>
 </tbody></table></div>
-<p>Beside it, your API table from the Lecture 4 practice set: <code>POST /workflows</code> creates a row in workflows; <code>POST /workflows/{id}/diagnoses</code> creates a row in diagnoses. Every noun in an address is a thing in the model. The API is how a request reaches a row.</p>
+<p>Every noun in your Lecture 4 API addresses is a thing here. <code>POST /workflows</code> creates a row in workflows. The API is how a request reaches a row. The model is done when it answers your questions. "Aarav's last conversation, every message in order": follow user_id, then conversation_id, then sort by created_at.</p>
 </section>
 
-<section class="s" id="s12"><h2><span class="n">12</span>Done Means It Answers the Questions</h2>
-<p>A model is not done when it looks tidy. It is done when it can answer what the product must ask: "Aarav's last conversation, every message in order", "every plan this workflow ever got, oldest first", "which screenshot went with which message". Write your own three questions first, then check that your tables can answer each one by pointing at the exact pointers. Then try to create a wrong state, a message with no conversation or the same pairing twice, and make sure the model refuses it.</p>
-</section>
-
-<section class="s" id="s13"><h2><span class="n">13</span>Next: The Same Tables, in Supabase</h2>
-<p>Lecture 7, Fri 16 Oct. The code track connects the FastAPI backend to Supabase; the no-code track lets Antigravity do it. Both type the tables above into Supabase's table editor, column by column, and watch a row survive a refresh. Nothing new to model. That is the point of doing it on paper first.</p>
+<section class="s" id="s12"><h2><span class="n">12</span>Next: The Storage Box Gets Real</h2>
+<p>Lecture 7, Fri 16 Oct. The code track connects the FastAPI backend to Supabase. The no-code track has Antigravity do it. Both type these tables in and watch a row survive a refresh.</p>
 <h3>Words</h3>
 <div class="gl">
+  <div class="w"><b>Client side</b><span>The user's machine. The user can wipe anything stored there, and anyone can read it.</span></div>
+  <div class="w"><b>Server side</b><span>A machine you control. Keys and stored data live here.</span></div>
+  <div class="w"><b>Storage</b><span>Anything that keeps things and gives them back: a file, a sheet, a database.</span></div>
+  <div class="w"><b>Timestamp</b><span>The date and time saved with each entry, so you know when it was said.</span></div>
+  <div class="w"><b>High-level design</b><span>The whiteboard: every box, where it lives, and the calls between them.</span></div>
   <div class="w"><b>Domain model</b><span>The smallest description of your user's world that still answers the product's questions.</span></div>
-  <div class="w"><b>Thing (entity)</b><span>Something the app creates, reads, updates and deletes on its own, and can have many of. Gets a table.</span></div>
+  <div class="w"><b>Thing (entity)</b><span>Created, read, updated and deleted on its own, and there can be many. Gets a table.</span></div>
   <div class="w"><b>Fact (attribute)</b><span>What you need to recreate one of the thing. Gets a column.</span></div>
-  <div class="w"><b>Row</b><span>One instance of a thing. One message, one user.</span></div>
   <div class="w"><b>Key (primary key)</b><span>The row's address, usually id. Never repeats.</span></div>
   <div class="w"><b>Pointer (foreign key)</b><span>A column on the many side holding another row's key.</span></div>
   <div class="w"><b>Third table (join table)</b><span>One row per pairing when both sides are many.</span></div>
-  <div class="w"><b>Unique</b><span>No two rows may share this value. A unique pointer makes a one-to-one.</span></div>
-  <div class="w"><b>File storage</b><span>Where bytes live: images, documents, audio. The row keeps the link.</span></div>
-  <div class="w"><b>ER diagram</b><span>The picture: a box per table, a line per pointer.</span></div>
+  <div class="w"><b>File storage</b><span>Where bytes live. The row keeps the link.</span></div>
 </div>
-<p class="sig">You cannot store what you cannot describe.<small>Do the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">lab</a>, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">submit the practice set</a> before Thu 15 Oct, 8:30 pm IST.</small></p>
+<p class="sig">Decide what is worth storing before you pick where to store it.<small>Draw your whiteboard, do the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">lab</a>, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">submit the practice set</a> before Thu 15 Oct, 8:30 pm IST.</small></p>
 </section>
   </main>
 </div>

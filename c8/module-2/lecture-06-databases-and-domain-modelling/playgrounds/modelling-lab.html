@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Modelling Lab | 100xEngineers</title>
-<meta name="description" content="Lecture 6 practice lab for both tracks: feel an app forget, then build Aarav's data model by hand, one question at a time: what are the things, what does each have, how do they connect. Then model your own app.">
+<meta name="description" content="Lecture 6 practice lab for both tracks: decide what is worth storing. Feel an app forget, then build Aarav's data model by hand, one question at a time: what are the things, what does each have, how do they connect. Then model your own app.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -26,11 +26,11 @@
 <div class="hero">
   <p class="kick">Lecture 6 · Databases and domain modelling · Practice lab · Both tracks</p>
   <h1>The Modelling Lab</h1>
-  <p class="dek">Your app can think. Now teach it to remember. Eight short sections, all in this tab. Each ends with a checkpoint.</p>
+  <p class="dek">What is worth storing? Eight short sections answer it, first for Aarav and then for your app. Each ends with a checkpoint.</p>
   <div class="meta"><span>About 90 minutes</span><span>Nothing to install</span><span>Saves on this device</span></div>
 </div>
 
-<div class="call"><p class="kick">Where you are</p><p>You built the app. Aarav is your user: an analyst who pastes his Monday workflow and gets back a plan. It works, he closes the tab, and on Tuesday everything is gone. Before any tool is opened, you answer three questions about his world: <span class="q thing">what are the things</span> <span class="q fact">what does each have</span> <span class="q link">how do they connect</span>. Next week these answers become tables in Supabase.</p></div>
+<div class="call"><p class="kick">Where you are</p><p>You built the app. Aarav is your user. He gets a plan on Monday, and on Tuesday the app has forgotten it. The lecture added a storage box to the whiteboard and left one question in it: <b>what is worth storing?</b> <code>memory.txt</code> kept one shape: who said what, and when. Aarav's app needs more than that, so you answer three questions about his world: <span class="q thing">what are the things</span> <span class="q fact">what does each have</span> <span class="q link">how do they connect</span>. Next week these answers become tables in Supabase.</p></div>
 
 <div class="scorebox"><div class="score" data-for="cp"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/8</b></div><div class="l"><strong>Checkpoints</strong>Saved on this device</div></div></div>
 
@@ -47,7 +47,7 @@
   </div>
   <div class="acts"><button type="button" class="btn ghost small" id="demoAarav">Paste Aarav's workflow</button><button type="button" class="btn ghost small" id="demoRestart">Close and reopen the app</button><button type="button" class="btn ghost small" id="demoClear">Empty the table</button><span id="demoNote"></span></div>
 </div>
-<div class="think" data-k="t0"><p class="kick">Pause and think</p><p>With saving on, what did the table need to know about each message to bring it back?</p><input type="text" placeholder="One line, in your words"><details class="rev"><summary>Reveal</summary><div class="b"><p>Who said it, what was said, and when. One <b>row</b> per message, one <b>column</b> per fact. Everything a running app holds lives in memory, and memory dies when the app stops. Storage is a place outside the app that keeps rows after the app is gone. But a table is useless until you know the <b>shape</b> of what goes in it. That shape is what you model next.</p></div></details><p class="mine"></p></div>
+<div class="think" data-k="t0"><p class="kick">Pause and think</p><p>With saving on, what did the table need to know about each message to bring it back?</p><input type="text" placeholder="One line, in your words"><details class="rev"><summary>Reveal</summary><div class="b"><p>Who said it, what was said, and when: the same three things the class wrote into <code>memory.txt</code>. One <b>row</b> per message, one <b>column</b> per fact. Everything a running app holds lives in memory, and memory dies when the app stops. Storage is a place outside the app that keeps rows after the app is gone. But a table is useless until you know the <b>shape</b> of what goes in it. That shape is what you model next.</p></div></details><p class="mine"></p></div>
 <div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c0"><label for="c0"><span class="t">Checkpoint: I saw messages vanish, then saw them come back from rows</span></label></li></ul></div>
 </section>
 
@@ -169,12 +169,12 @@
 
 <!-- ============ 7 ============ -->
 <section class="s" id="s7"><h2><span class="n">07</span>Your model</h2>
-<p>The same three questions, pointed at the app you are actually building. Track A: your Assignment 1 observation. Track B: load Aarav's model and add one table of your own.</p>
+<p>The same three questions, pointed at the app on your whiteboard. What you build here is what goes in its storage box. Track A: your Assignment 1 observation. Track B: load Aarav's model and add one table of your own.</p>
 <div id="bp">
 <div class="qs" style="grid-template-columns:1fr">
   <label>In one line, what does your app do?<input type="text" data-bp="desc" placeholder="e.g. A user pastes a messy weekly workflow and gets back a plan to automate part of it."></label>
 </div>
-<p class="kick">Three questions your data must answer</p>
+<p class="kick">Three questions your data must answer. Whatever they need is worth storing.</p>
 <div class="qs">
   <label><span class="n">1</span><input type="text" data-bp="q1" placeholder="e.g. Show this user's last five plans"></label>
   <label><span class="n">2</span><input type="text" data-bp="q2" placeholder="e.g. Which workflow did this plan come from?"></label>
@@ -203,7 +203,7 @@
 </ul>
 </div>
 <div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c7"><label for="c7"><span class="t">Checkpoint: my model drawn, three questions answered, files and bridge written</span></label></li></ul></div>
-<p class="sig">You cannot store what you cannot describe.<small>Now <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">submit the practice set</a>. Next week: these tables, typed into Supabase, and a row that survives a refresh.</small></p>
+<p class="sig">You cannot store what you cannot describe.<small>Write these tables into your whiteboard's storage box, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s04">submit the practice set</a>. Next week: these tables, typed into Supabase, and a row that survives a refresh.</small></p>
 <p><button type="button" class="reset" id="labReset">Reset the whole lab</button></p>
 </section>
 

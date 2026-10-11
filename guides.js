@@ -65,7 +65,8 @@ var GUIDE_LINKS = {
   l06Hub: '/c8/module-2/lecture-06-databases-and-domain-modelling/',
   l06Notes: '/c8/module-2/lecture-06-databases-and-domain-modelling/notes',
   l06Practice: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set',
-  l06Submit: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03',
+  l06Board: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03',
+  l06Submit: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s04',
   l06Trouble: '/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting',
   l06Lab: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab',
   l06Feel: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s0',
@@ -442,23 +443,32 @@ GUIDES.L5 = { code: {
 }};
 
 /* Lecture 6 · Databases and domain modelling · combined session, both tracks (10 October 2026).
-   Source: the Modelling Lab (forked from the C7 memory-lab) and the Lecture 6 row of the sheet. */
+   Source: the lecture transcript, the Modelling Lab (forked from the C7 memory-lab) and the Lecture 6 row of the sheet. */
 GUIDES.L6 = { all: {
   hub: {link:'l06Hub', title:'Open the Lecture 6 pages', sub:'The Modelling Lab, practice set, notes and troubleshooting', more:[['l06Lab','The Modelling Lab'],['l06Practice','Practice set'],['l06Notes','Notes']]},
-  name: 'Three questions, then tables',
+  name: 'What is worth storing?',
   sub: 'After the lecture · 10 October 2026 · both tracks',
   deadline: 'Practice set',
   due: 'Before the office hour, Thu 15 Oct, 8:30 pm IST',
-  keep: 'You cannot store what you cannot describe. Before any tool, answer three questions about your user\'s world: what are the things, what does each thing have, how do they connect. Things become tables, facts become columns, links become pointers on the many side. The lab makes you place every one of them for Aarav by hand, then for your own app. Next week the same tables go into Supabase.',
+  keep: 'Aarav\'s app can think but cannot remember. Storage fixes that: start with a file, keep it on your server, and store only what your app\'s questions need. The lab turns "what is worth storing?" into three questions: what are the things, what does each have, how do they connect. Things become tables, facts become columns, links become pointers on the many side. Next week the same tables go into Supabase.',
   ideas: [
-    ['Memory dies. Storage survives.', 'Everything a running app holds lives in memory, and memory dies with the app. Storage is a place outside the app that keeps rows. The lab lets you watch messages vanish, then come back from rows.'],
+    ['It can think. It cannot remember.', 'Every request starts from nothing. The class fixed it without saying database: a memory.txt with who said what and when, sent back with the next prompt. That is storage.'],
+    ['Storage lives on your server.', 'The user can wipe anything on their machine, and anyone can read it. Keys and stored data stay on a machine you control. Size decides where a piece lives; so do privacy and security.'],
+    ['Your questions decide what is worth storing.', 'The least you need to carry on next time. Write the questions your app must answer, then store what they need and nothing else.'],
     ['The Create, Read, Update, Delete test.', 'A noun is a thing if the app can create, find, change and delete one on its own, and can have many. "High-priority" fails. A conversation passes.'],
     ['The many side points back.', 'One-to-many is most of every model. The pointer sits on the many side: conversation_id on messages. Many-to-many needs a third table, one row per pairing, and the facts of the pairing live there.'],
-    ['History is a row, not a cell.', 'A diagnosis is its own table so that regenerating the plan keeps the old one. A cell can hold one value; a row can hold a past.'],
-    ['Rows for facts, files for bytes.', 'A screenshot cannot go in a cell. It goes in file storage, and the row keeps the link, the name, and which message it came with.']
+    ['History is a row. Files hold bytes.', 'A diagnosis is its own table so a new plan never erases the old one. A screenshot goes in file storage, and a row keeps its link.']
   ],
   rule: 'This is a practice set, not an assignment. Write before you reveal: every Pause and think needs a line from you. Do not open Supabase this week; the model is a paper exercise on purpose.',
   stages: [
+    {id:'board', name:'Your whiteboard', short:'Board', sub:'Practice set section 03',
+     intro:'The lecture\'s diagram for your Assignment 1 app (Track B: Aarav\'s), with a question mark in the storage box.',
+     ticks:[
+       {id:'io', t:'User, input, process and output written down', link:'l06Board', linkLabel:'Your whiteboard'},
+       {id:'calls', t:'UI, backend and every API call drawn, each with address, action, key and package'},
+       {id:'store', t:'Storage box drawn on the server, with a question mark inside'},
+       {id:'where', t:'Beside it: what decided where each piece lives'}
+     ]},
     {id:'aarav', name:'Aarav\'s model', short:'Aarav', sub:'Lab sections 0 to 5',
      intro:'The student is the builder; Aarav is the user. Tag the things in his chat, place the facts, pick the shape of every pair and place the pointer, sort rows from files. Section 5 draws the model from what you placed.',
      ticks:[
@@ -483,20 +493,21 @@ GUIDES.L6 = { all: {
        {id:'tables', t:'My tables drawn, every pointer on the many side'},
        {id:'self', t:'Five self-checks ticked, including one wrong state the model refuses'},
        {id:'files2', t:'Files my app stores, and the column with each link ("none" is fine)'},
-       {id:'bridge', t:'My Lecture 4 API table with a table name beside every address', link:'l04ApiTable', linkLabel:'Your API table'}
+       {id:'bridge', t:'My Lecture 4 API table with a table name beside every address', link:'l04ApiTable', linkLabel:'Your API table'},
+       {id:'fill', t:'My whiteboard\'s storage box filled with my tables', link:'l06Board', linkLabel:'Your whiteboard'}
      ]},
     {id:'submit', name:'Practice set', short:'Submit', sub:'Before Thu 15 Oct, 8:30 pm IST',
-     intro:'Five items, posted in the Discord channel. Earliest posts are reviewed first.',
+     intro:'Four items, posted in the Discord assignments channel. Earliest posts are reviewed first.',
      ticks:[
-       {id:'d1', t:'Screenshot of Aarav\'s model with no dashed pieces', link:'l06Submit', linkLabel:'What to submit'},
-       {id:'d2', t:'Screenshot of the Arena at 6 / 6'},
-       {id:'d3', t:'My blueprint as text, plus its picture'},
-       {id:'d4', t:'Rows or files, and the bridge, for my app'},
-       {id:'posted', t:'All five posted in the Discord channel'}
+       {id:'d1', t:'My whiteboard, storage box filled', link:'l06Submit', linkLabel:'What to submit'},
+       {id:'d2', t:'Screenshot of Aarav\'s model with no dashed pieces'},
+       {id:'d3', t:'Screenshot of the Arena at 6 / 6'},
+       {id:'d4', t:'My model: picture, blueprint as text, files and bridge'},
+       {id:'posted', t:'All four posted in the Discord assignments channel'}
      ]}
   ],
   actions: [
-    {id:'oh', t:'Office hour, Thu 15 Oct, 8:30 pm IST', how:'Bring your model picture and the one pair you were unsure about. We walk through the models people posted.'},
+    {id:'oh', t:'Office hour, Thu 15 Oct, 8:30 pm IST', how:'Bring your whiteboard and the one pair you were unsure about. We walk through the models people posted.'},
     {id:'stretch', t:'Stretch: LinkedIn post automation', how:'A status cell and a one-to-one with a unique pointer.', link:'l06Arena', linkLabel:'The Arena'}
   ],
   next: 'Next: Lecture 7, Fri 16 Oct. The same tables, typed into Supabase, and a row that survives a refresh. Code track: FastAPI to Supabase. No-code track: Antigravity to Supabase.',
@@ -509,14 +520,15 @@ GUIDES.L6 = { all: {
     ['Section 5 shows dashed boxes', 'Section 5 only draws what you placed', 'Click "place it" on the dashed piece']
   ],
   read: [
-    ['Lecture 6 overview', 'l06Hub', 'The three questions and your path this week.'],
+    ['Lecture 6 overview', 'l06Hub', 'The lecture in one line and your path this week.'],
     ['The Modelling Lab', 'l06Lab', 'Eight sections. Everything happens here.'],
-    ['Notes', 'l06Notes', 'The lab\'s ideas without the doing.'],
-    ['Practice set', 'l06Practice', 'The five deliverables and the rules.'],
+    ['Notes', 'l06Notes', 'The lecture, from the whiteboard to what is worth storing.'],
+    ['Practice set', 'l06Practice', 'Your whiteboard and the four deliverables.'],
     ['Troubleshooting', 'l06Trouble', 'Every cross the checker can show, and the fix.'],
     ['Lecture 4 practice set, your API table', 'l04ApiTable', 'The addresses that become tables.']
   ],
   words: [
+    ['Storage', 'Anything that keeps things and gives them back: a file, a sheet, a database.'],
     ['Domain model', 'The smallest description of your user\'s world that still answers the product\'s questions.'],
     ['Thing', 'Created, read, updated and deleted on its own; many of them. Gets a table. The formal word is entity.'],
     ['Fact', 'What you need to recreate one of the thing. Gets a column. The formal word is attribute.'],
@@ -526,5 +538,5 @@ GUIDES.L6 = { all: {
     ['Unique', 'No two rows share the value. A unique pointer makes a one-to-one.'],
     ['File storage', 'Where bytes live. The row keeps the link.']
   ],
-  kw: 'database domain modelling modeling entities entity attribute attributes relationships relationship one-to-many many-to-many one-to-one primary key foreign key pointer join table third table supabase memory storage persistence rows files storage bucket er diagram modelling lab arena aarav practice set'
+  kw: 'database domain modelling modeling entities entity attribute attributes relationships relationship one-to-many many-to-many one-to-one primary key foreign key pointer join table third table supabase memory storage persistence rows files storage bucket er diagram modelling lab arena aarav practice set whiteboard high-level design hld memory.txt file client side server side worth storing api key gpt-oss'
 }};
