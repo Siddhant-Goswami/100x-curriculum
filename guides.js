@@ -459,7 +459,7 @@ GUIDES.L6 = { all: {
     ['The many side points back.', 'One-to-many is most of every model. The pointer sits on the many side: conversation_id on messages. Many-to-many needs a third table, one row per pairing, and the facts of the pairing live there.'],
     ['History is a row. Files hold bytes.', 'A diagnosis is its own table so a new plan never erases the old one. A screenshot goes in file storage, and a row keeps its link.']
   ],
-  rule: 'This is a practice set, not an assignment. Write before you reveal: every Pause and think needs a line from you. Do not open Supabase this week; the model is a paper exercise on purpose.',
+  rule: 'Write before you reveal: every Pause and think needs a line from you. Do not open Supabase this week; the model is a paper exercise on purpose.',
   stages: [
     {id:'board', name:'Your whiteboard', short:'Board', sub:'Practice set section 03',
      intro:'The lecture\'s diagram for your Assignment 1 app (Track B: Aarav\'s), with a question mark in the storage box.',
