@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture 6 on a Whiteboard | 100xEngineers</title>
+<meta name="description" content="Lecture 6, both tracks, drawn as a whiteboard: the first and second interfaces, why Aarav's app forgets, the storage box, and how things, facts and links give storage its shape.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+.partl{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--coral-ink);margin:40px 0 14px}
+.scene{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:20px 22px 18px;margin:0 0 22px}
+.scene>.kick{margin:0 0 4px}
+.scene h2{font:500 22px/1.25 var(--sans);letter-spacing:-.02em;margin:0 0 12px}
+.scene p{margin:0 0 8px;max-width:68ch}
+.scene p:last-child{margin-bottom:0}
+.wb .ln .c-act{stroke:var(--coral)}.wb .ln .c-pkg{stroke:var(--hum)}
+.wb .ln .c-thing{stroke:var(--q-thing)}.wb .ln .c-fact{stroke:var(--q-fact)}.wb .ln .c-link{stroke:var(--q-link)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-pkg{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-addr{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-key{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dot{fill:currentColor;stroke:none}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-thing{fill:var(--q-thing-ink)}.wb .tx .c-fact{fill:var(--q-fact-ink)}.wb .tx .c-link{fill:var(--q-link-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+.wb .tx .strike{text-decoration:line-through}
+.wb image{opacity:.96}
+/* present mode: one scene per screen, arrow keys to move */
+.pbtn{font:500 12px var(--mono);border:1px solid var(--line2);background:var(--card);border-radius:8px;padding:6px 12px;margin-left:10px;color:var(--ink)}
+#pnum{display:none}
+body.present .top,body.present .hero,body.present .partl,body.present .sig,body.present #prog{display:none}
+body.present .wrap{max-width:1400px}
+body.present main{padding:0}
+body.present .scene{display:none}
+body.present .scene.on{display:flex;flex-direction:column;justify-content:center;min-height:100vh;margin:0;border:0;border-radius:0;background:var(--bg);padding:24px 4vw}
+body.present .scene.on .wb{max-height:70vh}
+body.present .scene.on h2{font-size:30px}
+body.present .scene.on p{font-size:19px;max-width:80ch}
+body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 12px var(--mono);color:var(--ink3)}
+</style>
+</head>
+<body data-page="l06-story">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#L6">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="Lecture 6 pages"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Overview</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Notes</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared whiteboard defs: wobble filter, arrowheads, and the drawn objects every sketch reuses -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--hum)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <!-- laptop: screen with a browser bar, keyboard deck with three key rows and a space bar. 256 x 170 -->
+    <symbol id="laptop" style="overflow:visible">
+      <rect x="28" y="0" width="200" height="126" rx="10" vector-effect="non-scaling-stroke"/>
+      <path d="M28 126 L0 170 H256 L228 126 Z" vector-effect="non-scaling-stroke"/>
+      <path d="M28 22 H228" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+      <circle cx="42" cy="11" r="3" fill="currentColor" stroke="none"/><circle cx="54" cy="11" r="3" fill="currentColor" stroke="none"/><circle cx="66" cy="11" r="3" fill="currentColor" stroke="none"/>
+      <path d="M34 134 H222 M27 143 H229 M20 152 H236" stroke-width="5" stroke-dasharray="11 4" stroke-linecap="butt" vector-effect="non-scaling-stroke"/>
+      <path d="M96 162 H160" stroke-width="4" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a person. 52 x 128 -->
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a server: three slots with lights. 120 x 150 -->
+    <symbol id="rack" style="overflow:visible">
+      <rect x="0" y="0" width="120" height="150" rx="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 50 H120 M0 100 H120 M38 21 H104 M38 30 H84 M38 71 H104 M38 80 H84 M38 121 H104 M38 130 H84" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+      <circle cx="20" cy="25" r="6" vector-effect="non-scaling-stroke"/><circle cx="20" cy="75" r="6" vector-effect="non-scaling-stroke"/><circle cx="20" cy="125" r="6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a file with a folded corner. 86 x 112 -->
+    <symbol id="file" style="overflow:visible">
+      <path d="M0 0 H62 L86 24 V112 H0 Z" vector-effect="non-scaling-stroke"/>
+      <path d="M62 0 V24 H86 M14 46 H72 M14 62 H72 M14 78 H72 M14 94 H50" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a file of tables: the same file with a grid inside. 86 x 112 -->
+    <symbol id="tablefile" style="overflow:visible">
+      <path d="M0 0 H62 L86 24 V112 H0 Z" vector-effect="non-scaling-stroke"/>
+      <path d="M62 0 V24 H86 M12 38 H74 V96 H12 Z M12 52 H74 M12 66 H74 M12 81 H74 M34 38 V96" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a GPU card: two fans and a connector. 170 x 88 -->
+    <symbol id="gpu" style="overflow:visible">
+      <rect x="0" y="0" width="170" height="76" rx="6" vector-effect="non-scaling-stroke"/>
+      <circle cx="48" cy="38" r="26" vector-effect="non-scaling-stroke"/><circle cx="122" cy="38" r="26" vector-effect="non-scaling-stroke"/>
+      <circle cx="48" cy="38" r="6" vector-effect="non-scaling-stroke"/><circle cx="122" cy="38" r="6" vector-effect="non-scaling-stroke"/>
+      <path d="M48 12 Q60 30 48 38 M74 38 Q56 50 48 38 M122 12 Q134 30 122 38 M148 38 Q130 50 122 38" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+      <path d="M24 76 V88 H116 V76 M34 80 V86 M46 80 V86 M58 80 V86 M70 80 V86 M82 80 V86 M94 80 V86 M106 80 V86" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a memory stick: three chips and a row of pins. 130 x 52 -->
+    <symbol id="ram" style="overflow:visible">
+      <rect x="0" y="0" width="130" height="44" rx="3" vector-effect="non-scaling-stroke"/>
+      <rect x="12" y="10" width="28" height="20" rx="2" stroke-width="1.8" vector-effect="non-scaling-stroke"/><rect x="51" y="10" width="28" height="20" rx="2" stroke-width="1.8" vector-effect="non-scaling-stroke"/><rect x="90" y="10" width="28" height="20" rx="2" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+      <path d="M6 49 H124" stroke-width="7" stroke-dasharray="3 3" stroke-linecap="butt" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap grid" style="grid-template-columns:1fr">
+  <main>
+<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Lecture 6 · Both tracks</p>
+  <h1>Lecture 6, on a whiteboard</h1>
+  <p class="dek">Your app can think. Today it learns to remember.</p>
+  <p><button class="pbtn" id="present" type="button">Present ▸</button> <span class="kick" style="margin-left:8px">P to present · ← → to move · Esc to leave</span></p>
+</div>
+
+<p class="partl">Part 1 · The story so far</p>
+
+<!-- 01 · the first interface -->
+<div class="scene">
+<p class="kick">01 · Week 1</p>
+<h2>The first interface: UI</h2>
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="A person types into a laptop and sees the reply. The laptop shows a browser with a small chat app. This is the client, your machine. Input, process and output all happen in this one box.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="84" y="74"/>
+    <use href="#laptop" x="272" y="46"/>
+    <rect class="thin" x="380" y="80" width="108" height="24" rx="9"/>
+    <rect class="thin f-pkg" x="312" y="112" width="124" height="24" rx="9"/>
+    <rect class="thin" x="312" y="144" width="132" height="18" rx="6"/>
+    <rect class="thin f-act" x="450" y="144" width="40" height="18" rx="6"/>
+    <path class="arw" d="M146 112 Q208 84 262 100" marker-end="url(#ah)"/>
+    <path class="arw" d="M262 160 Q208 186 146 166" marker-end="url(#ah)"/>
+    <path class="dash" d="M246 26 H556 V230 H246 Z"/>
+    <path class="arw" d="M620 104 Q592 90 562 96" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="110" y="232" class="h">you</text>
+    <text x="204" y="80" class="s">types</text>
+    <text x="204" y="204" class="s">sees</text>
+    <text x="434" y="97" class="xs">plan my week</text>
+    <text x="374" y="129" class="xs c-pkg">here's a plan</text>
+    <text x="470" y="158" class="xs" style="font-size:15px">send</text>
+    <text x="401" y="262" class="m">the client: your machine</text>
+    <text x="672" y="108" class="s">the browser</text>
+    <text x="672" y="134" class="s">runs here</text>
+    <text x="672" y="186" class="xs">input → process</text>
+    <text x="672" y="210" class="xs">→ output</text>
+    <text x="672" y="234" class="xs">all in one box</text>
+  </g>
+</svg>
+<p>A human cannot talk to a machine directly. The interface is where the two meet. You built one: an app that runs in your browser, on your machine. That machine is the <b>client</b>.</p>
+</div>
+
+<!-- 02 · the limit -->
+<div class="scene">
+<p class="kick">02 · The limit</p>
+<h2>Some work does not fit in that box</h2>
+<svg class="wb" viewBox="0 0 760 360" role="img" aria-label="Left, a laptop with 16 GB of memory. Middle, a screenshot of OpenAI's gpt-oss-120b on Hugging Face: 117 billion parameters in 15 files, 65 GB. An arrow to the laptop is crossed out: 65 GB does not fit in 16 GB. An arrow to one H100 GPU with 80 GB: it fits.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#laptop" x="20" y="150"/>
+    <rect x="262" y="8" width="246" height="182" rx="8"/>
+    <path class="arw c-act" d="M300 214 Q280 196 256 186" marker-end="url(#ahc)"/>
+    <path class="c-act" d="M262 216 L280 234 M280 216 L262 234"/>
+    <path class="arw c-pkg" d="M512 120 Q590 120 626 170" marker-end="url(#ahg)"/>
+    <use href="#gpu" x="560" y="184"/>
+  </g>
+  <image href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/img/hf-gpt-oss-120b.png" x="268" y="14" width="234" height="168"/>
+  <g class="tx">
+    <text x="148" y="212" class="m">16 GB</text>
+    <text x="148" y="238" class="xs">of memory</text>
+    <text x="148" y="348" class="s">your laptop</text>
+    <text x="385" y="232" class="m c-act">117 billion parameters</text>
+    <text x="385" y="258" class="m c-act">15 files · 65 GB</text>
+    <text x="385" y="300" class="s c-act">65 GB &gt; 16 GB</text>
+    <text x="385" y="326" class="xs c-act">won't even load</text>
+    <text x="645" y="308" class="m">one H100 GPU</text>
+    <text x="645" y="334" class="s c-pkg">80 GB · it fits</text>
+    <text x="650" y="104" class="xs c-mute">a machine built for it</text>
+  </g>
+</svg>
+<p>The real file: OpenAI's <b>gpt-oss-120b</b> on Hugging Face. 117 billion parameters in 15 files, 65 GB in all. It needs one 80 GB GPU, like an NVIDIA H100. Your laptop has 16 GB.</p>
+<p>Size decides, not the word "LLM". Its little sibling, gpt-oss-20b, does run in 16 GB. The 120b does not.</p>
+</div>
+
+<!-- 03 · the second interface -->
+<div class="scene">
+<p class="kick">03 · Week 2</p>
+<h2>The second interface: API</h2>
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="The client, your laptop, sends a request to the server, another machine. The request carries four parts: address, action, key and package. The reply comes back with a code and a package.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#laptop" x="10" y="104"/>
+    <use href="#rack" x="604" y="76"/>
+    <rect x="290" y="18" width="228" height="112" rx="10"/>
+    <path class="arw c-act" d="M276 156 H590" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M590 204 H276" marker-end="url(#ahg)"/>
+    <rect x="304" y="218" width="216" height="64" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="138" y="90" class="h">client</text>
+    <text x="664" y="60" class="h">server</text>
+    <text x="138" y="304" class="xs">your machine</text>
+    <text x="664" y="252" class="xs">another machine</text>
+    <text x="306" y="44" class="m l c-addr">address</text><text x="418" y="44" class="xs l">/chat</text>
+    <text x="306" y="68" class="m l c-act">action</text><text x="418" y="68" class="xs l">POST</text>
+    <text x="306" y="92" class="m l c-key">key</text><text x="418" y="92" class="xs l">sk-…</text>
+    <text x="306" y="116" class="m l c-pkg">package</text><text x="418" y="116" class="xs l">{ "text": … }</text>
+    <text x="433" y="180" class="xs c-act">request</text>
+    <text x="320" y="244" class="m l c-res">code</text><text x="424" y="244" class="xs l">200</text>
+    <text x="320" y="268" class="m l c-pkg">package</text><text x="424" y="268" class="xs l">{ "reply": … }</text>
+  </g>
+</svg>
+<p>A phone call between machines. The client asks, the server answers. The server only does what the request says, so the request has to say it exactly: <span class="part addr">address</span>, <span class="part act">action</span>, <span class="part key">key</span>, <span class="part pkg">package</span>. The reply is a <span class="part code">code</span> and a <span class="part pkg">package</span>.</p>
+</div>
+
+<!-- 04 · what you built -->
+<div class="scene">
+<p class="kick">04 · Lecture 5</p>
+<h2>What you built: a server that calls another server</h2>
+<svg class="wb" viewBox="0 0 760 380" role="img" aria-label="Left to right: you, your app on a laptop (the client), your server, and GroqCloud's server, where the gpt-oss-120b files from Hugging Face run. Your server answers your app and calls GroqCloud, both over an API.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="0" y="150"/>
+    <use href="#laptop" transform="translate(70 152) scale(.7)"/>
+    <use href="#rack" x="356" y="130"/>
+    <use href="#rack" x="620" y="196"/>
+    <rect x="550" y="8" width="202" height="150" rx="8"/>
+    <path class="arw" d="M680 162 V188" marker-end="url(#ah)"/>
+    <path class="arw c-act" d="M262 198 H346" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M346 224 H262" marker-end="url(#ahg)"/>
+    <path class="arw c-act" d="M488 244 H608" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M608 270 H488" marker-end="url(#ahg)"/>
+    <path class="dash" d="M2 300 V310 H252 V300"/>
+  </g>
+  <image href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/img/hf-gpt-oss-120b.png" x="556" y="14" width="190" height="136"/>
+  <g class="tx">
+    <text x="160" y="138" class="s">client · your app</text>
+    <text x="416" y="116" class="s">your server</text>
+    <text x="304" y="186" class="m">API</text>
+    <text x="548" y="232" class="m">API</text>
+    <text x="692" y="182" class="xs l">runs here</text>
+    <text x="680" y="372" class="m">GroqCloud server</text>
+    <text x="416" y="304" class="xs c-act">a server to your app,</text>
+    <text x="416" y="328" class="xs c-act">a client to GroqCloud</text>
+    <text x="127" y="340" class="m">interface 1 · UI</text>
+  </g>
+</svg>
+<p>Your app is the client and your server answers it. Then your server turns client and calls GroqCloud, where the same gpt-oss-120b files from Hugging Face are loaded and answering. Client and server are roles, not machines.</p>
+</div>
+
+<!-- 05 · it forgets -->
+<div class="scene">
+<p class="kick">05 · The gap</p>
+<h2>It can think. It cannot remember.</h2>
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="Monday: Aarav sends his weekly workflow and gets a plan. He closes the tab and the server restarts. Tuesday: Aarav writes, Hey, I implemented the plan, and this is the problem. The app replies, Which plan?">
+  <g class="ln" filter="url(#wob)">
+    <rect x="20" y="56" width="290" height="200" rx="10"/>
+    <path class="thin" d="M20 80 H310"/>
+    <rect class="thin" x="112" y="94" width="184" height="30" rx="10"/>
+    <rect class="thin f-pkg" x="34" y="140" width="196" height="30" rx="10"/>
+    <path class="c-act" d="M400 128 A32 32 0 1 1 362 156" marker-end="url(#ahc)"/>
+    <rect x="450" y="56" width="290" height="200" rx="10"/>
+    <path class="thin" d="M450 80 H740"/>
+    <rect class="thin" x="484" y="92" width="244" height="56" rx="10"/>
+    <rect class="thin f-act" x="464" y="162" width="132" height="32" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="165" y="42" class="h">Monday</text>
+    <text x="595" y="42" class="h">Tuesday</text>
+    <text x="204" y="115" class="xs">here's my workflow…</text>
+    <text x="132" y="161" class="xs c-pkg">here's your plan ✓</text>
+    <text x="165" y="226" class="xs c-mute">200 OK · Aarav is happy</text>
+    <text x="380" y="214" class="xs c-act">close tab</text>
+    <text x="380" y="238" class="xs c-act">server restarts</text>
+    <text x="606" y="114" class="xs">Hey, I implemented the plan,</text>
+    <text x="606" y="137" class="xs">and this is the problem…</text>
+    <text x="530" y="184" class="xs c-act">Which plan?</text>
+    <text x="680" y="232" class="h c-mute">?  ?</text>
+    <text x="380" y="298" class="s c-act">every request starts from zero</text>
+  </g>
+</svg>
+<p>Monday, Aarav pastes his week and gets a plan. Tuesday, he comes back to follow up, and the app asks which plan. Nothing was ever written down.</p>
+</div>
+
+<!-- 06 · the missing box -->
+<div class="scene">
+<p class="kick">06 · Week 3 · this week</p>
+<h2>The missing box: storage</h2>
+<svg class="wb" viewBox="0 0 760 362" role="img" aria-label="The whole system so far. You, the client, your server. The server talks to two boxes: GroqCloud, which thinks, and a file called storage, which remembers. Brackets underneath: UI in week 1, API in week 2, storage this week.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="8" y="120"/>
+    <use href="#laptop" transform="translate(72 132) scale(.62)"/>
+    <use href="#rack" x="330" y="104"/>
+    <use href="#rack" transform="translate(612 14) scale(.8)"/>
+    <use href="#file" class="f-act" x="618" y="188"/>
+    <path class="arw" d="M244 180 H318" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw" d="M462 150 L600 90" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw c-act" d="M462 212 L606 240" marker-start="url(#ahc)" marker-end="url(#ahc)"/>
+    <path class="dash" d="M4 268 V278 H240 V268"/>
+    <path class="dash" d="M252 268 V278 H470 V268"/>
+  </g>
+  <g class="tx">
+    <text x="152" y="118" class="s">client</text>
+    <text x="390" y="90" class="s">server</text>
+    <text x="528" y="106" class="xs">think</text>
+    <text x="520" y="256" class="xs c-act">save · fetch</text>
+    <text x="660" y="160" class="m">GroqCloud · thinks</text>
+    <text x="661" y="326" class="m c-act">storage · remembers</text>
+    <text x="661" y="350" class="xs c-act">this week</text>
+    <text x="122" y="306" class="m">UI</text>
+    <text x="122" y="330" class="xs">week 1</text>
+    <text x="361" y="306" class="m">API</text>
+    <text x="361" y="330" class="xs">week 2</text>
+  </g>
+</svg>
+<p>Your server gets one more box to talk to. GroqCloud thinks. Storage remembers. For now, picture it as a file that lives outside the app.</p>
+</div>
+
+<p class="partl">Part 2 · Memory and storage</p>
+
+<!-- 07 · memory dies -->
+<div class="scene">
+<p class="kick">07 · Why it forgot</p>
+<h2>Memory dies. Storage survives.</h2>
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="Left, while the app runs: messages sit in memory inside the server, and a storage file sits outside it. Right, after a restart: memory is wiped, the storage file is still there.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="24" y="58" width="196" height="196" rx="12"/>
+    <use href="#ram" class="c-pkg" x="57" y="108"/>
+    <use href="#file" x="250" y="104"/>
+    <path class="dash" d="M380 40 V286"/>
+    <rect x="410" y="58" width="196" height="196" rx="12"/>
+    <use href="#ram" x="443" y="108"/>
+    <path class="c-act" d="M440 100 L578 170 M578 100 L440 170"/>
+    <use href="#file" class="c-pkg" x="636" y="104"/>
+  </g>
+  <g class="tx">
+    <text x="190" y="34" class="h">while it runs</text>
+    <text x="570" y="34" class="h">after a restart</text>
+    <text x="122" y="88" class="xs">your server</text>
+    <text x="122" y="200" class="m">memory</text>
+    <text x="122" y="226" class="xs c-pkg">3 messages</text>
+    <text x="293" y="248" class="m">storage</text>
+    <text x="293" y="272" class="xs">outside, on disk</text>
+    <text x="508" y="88" class="xs">your server</text>
+    <text x="508" y="200" class="m">memory</text>
+    <text x="508" y="226" class="xs c-act">wiped</text>
+    <text x="679" y="248" class="m">storage</text>
+    <text x="679" y="272" class="xs c-pkg">still there ✓</text>
+  </g>
+</svg>
+<p>Everything a running app holds lives in memory, and memory dies when the app stops. Storage sits outside the app, on disk, and keeps things after the app is gone. Nothing about the model changes. Only where the words live.</p>
+</div>
+
+<!-- 08 · storage needs a shape -->
+<div class="scene">
+<p class="kick">08 · What goes in the file?</p>
+<h2>Storage needs a shape</h2>
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="Left, a file called chat.txt with every message run together, and questions: who said it, when, which chat? Right, the same messages as a table: columns who, what, when, one row per message.">
+  <g class="ln" filter="url(#wob)">
+    <path d="M24 30 H214 L254 70 V300 H24 Z"/>
+    <path class="thin" d="M214 30 V70 H254"/>
+    <path class="arw" d="M272 160 H336" marker-end="url(#ah)"/>
+    <rect x="356" y="56" width="384" height="172" rx="6"/>
+    <path class="thin" d="M356 92 H740 M356 137 H740 M356 182 H740 M436 56 V228 M630 56 V228"/>
+  </g>
+  <g class="tx">
+    <text x="139" y="22" class="xs">chat.txt</text>
+    <text x="40" y="96" class="xxs l">hey here's my workflow every</text>
+    <text x="40" y="118" class="xxs l">monday i open jira… here's</text>
+    <text x="40" y="140" class="xxs l">your plan 1. let jira list the</text>
+    <text x="40" y="162" class="xxs l">to-dos… can you redo the plan</text>
+    <text x="40" y="184" class="xxs l">casual… quick version let jira</text>
+    <text x="40" y="206" class="xxs l">do the listing…</text>
+    <text x="139" y="244" class="xs c-act">who said it? when?</text>
+    <text x="139" y="268" class="xs c-act">which chat?</text>
+    <text x="304" y="146" class="xs">shape it</text>
+    <text x="396" y="81" class="m c-fact">who</text>
+    <text x="533" y="81" class="m c-fact">what</text>
+    <text x="685" y="81" class="m c-fact">when</text>
+    <text x="396" y="121" class="xs">Aarav</text><text x="533" y="121" class="xs">here's my workflow…</text><text x="685" y="121" class="xs">Mon 9:12</text>
+    <text x="396" y="166" class="xs">app</text><text x="533" y="166" class="xs">here's your plan…</text><text x="685" y="166" class="xs">Mon 9:12</text>
+    <text x="396" y="211" class="xs">Aarav</text><text x="533" y="211" class="xs">redo it, casual?</text><text x="685" y="211" class="xs">Tue 10:03</text>
+    <text x="548" y="264" class="s">one row per message</text>
+    <text x="548" y="292" class="s c-fact">one column per fact</text>
+  </g>
+</svg>
+<p>To bring a message back, storage has to know who said it, what was said, and when. One row per message, one column per fact. That shape is a <b>table</b>. And you cannot store a shape you have never described.</p>
+</div>
+
+<p class="partl">Part 3 · Describe the shape</p>
+
+<!-- 09 · three questions -->
+<div class="scene">
+<p class="kick">09 · Domain modelling</p>
+<h2>Three questions: things, facts, links</h2>
+<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="Three sticky notes. Things: what are the things? They become tables. Facts: what does each thing have? They become columns. Links: how do they connect? They become pointers.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-addr" x="30" y="20" width="214" height="160" rx="6" transform="rotate(-2 137 100)"/>
+    <rect class="f-pkg" x="273" y="20" width="214" height="160" rx="6" transform="rotate(1.5 380 100)"/>
+    <rect class="f-key" x="516" y="20" width="214" height="160" rx="6" transform="rotate(-1 623 100)"/>
+  </g>
+  <g class="tx">
+    <text x="137" y="58" class="h c-thing">things</text>
+    <text x="137" y="96" class="xs">What are</text><text x="137" y="120" class="xs">the things?</text>
+    <text x="137" y="160" class="s c-thing">→ tables</text>
+    <text x="380" y="58" class="h c-fact">facts</text>
+    <text x="380" y="96" class="xs">What does each</text><text x="380" y="120" class="xs">thing have?</text>
+    <text x="380" y="160" class="s c-fact">→ columns</text>
+    <text x="623" y="58" class="h c-link">links</text>
+    <text x="623" y="96" class="xs">How do they</text><text x="623" y="120" class="xs">connect?</text>
+    <text x="623" y="160" class="s c-link">→ pointers</text>
+    <text x="380" y="224" class="s">answer them on paper, and the tables fall out</text>
+  </g>
+</svg>
+<p>The domain is your user's world. The model is the smallest description of it that still answers the product's questions. Paper first, no tool yet.</p>
+</div>
+
+<!-- 10 · Aarav's chat, taken apart -->
+<div class="scene">
+<p class="kick">10 · Take Aarav's chat apart</p>
+<h2>Every word is a thing, a fact, or neither</h2>
+<svg class="wb" viewBox="0 0 760 440" role="img" aria-label="Left, Aarav's chat: Monday's conversation with his weekly workflow (Jira, the dashboard, Slack), sent at 9:12 am with jira-board.png, the app's plan, and Tuesday's conversation asking for a more casual tone. Right, a table pulling the parts out. Things: user, conversation, message, workflow, plan, tool. Facts: name, text, who sent it, time sent, tone. Links: one user to many chats, one chat to many messages, one workflow to many plans, workflows to tools. Neither: high-priority, his manager.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="16" y="16" width="350" height="412" rx="10"/>
+    <path class="thin" d="M16 42 H366"/>
+    <rect class="thin" x="88" y="72" width="266" height="142" rx="10"/>
+    <rect class="thin f-act" x="88" y="222" width="122" height="22" rx="6"/>
+    <rect class="thin" x="28" y="256" width="256" height="76" rx="10"/>
+    <path class="dash" d="M28 346 H354"/>
+    <rect class="thin" x="118" y="374" width="236" height="46" rx="10"/>
+    <rect x="392" y="16" width="352" height="290" rx="6"/>
+    <path class="thin" d="M392 52 H744 M510 16 V306 M626 16 V306"/>
+  </g>
+  <g class="tx">
+    <text x="191" y="35" class="xxs">signed in as <tspan class="c-thing">Aarav</tspan></text>
+    <text x="191" y="62" class="xxs c-mute">Monday's <tspan class="c-thing">conversation</tspan></text>
+    <text x="102" y="94" class="xxs l c-ink">Here's my weekly <tspan class="c-thing">workflow</tspan>:</text>
+    <text x="102" y="116" class="xxs l c-ink">every Monday I open <tspan class="c-thing">Jira</tspan>,</text>
+    <text x="102" y="138" class="xxs l c-ink">pick the <tspan class="c-mute strike">high-priority</tspan> to-dos,</text>
+    <text x="102" y="160" class="xxs l c-ink">pull numbers from the <tspan class="c-thing">dashboard</tspan>,</text>
+    <text x="102" y="182" class="xxs l c-ink">write a report, send it to my</text>
+    <text x="102" y="204" class="xxs l c-ink"><tspan class="c-mute strike">manager</tspan> on <tspan class="c-thing">Slack</tspan>.</text>
+    <text x="149" y="238" class="xxs c-act">jira-board.png</text>
+    <text x="354" y="238" class="xxs r c-fact">9:12 am</text>
+    <text x="42" y="278" class="xxs l c-ink">Here's your <tspan class="c-thing">plan</tspan>:</text>
+    <text x="42" y="300" class="xxs l">1. Let Jira list the to-dos</text>
+    <text x="42" y="322" class="xxs l">2. You pick what matters …</text>
+    <text x="191" y="366" class="xxs c-mute">Tuesday's <tspan class="c-thing">conversation</tspan></text>
+    <text x="132" y="393" class="xxs l c-ink">Can you redo the plan in a</text>
+    <text x="132" y="413" class="xxs l c-ink">more <tspan class="c-fact">casual</tspan> tone?</text>
+    <text x="451" y="42" class="m c-thing">things</text>
+    <text x="568" y="42" class="m c-fact">facts</text>
+    <text x="685" y="42" class="m c-link">links</text>
+    <text x="451" y="80" class="xs">user</text>
+    <text x="451" y="106" class="xs">conversation</text>
+    <text x="451" y="132" class="xs">message</text>
+    <text x="451" y="158" class="xs">workflow</text>
+    <text x="451" y="184" class="xs">plan</text>
+    <text x="451" y="210" class="xs">tool</text>
+    <text x="451" y="234" class="xxs c-mute">Jira, dashboard,</text>
+    <text x="451" y="254" class="xxs c-mute">Slack</text>
+    <text x="568" y="80" class="xs">name</text>
+    <text x="568" y="106" class="xs">text</text>
+    <text x="568" y="132" class="xs">who sent it</text>
+    <text x="568" y="158" class="xs">time sent</text>
+    <text x="568" y="184" class="xs">tone</text>
+    <text x="685" y="78" class="xxs">1 user →</text><text x="685" y="98" class="xxs">many chats</text>
+    <text x="685" y="130" class="xxs">1 chat →</text><text x="685" y="150" class="xxs">many messages</text>
+    <text x="685" y="182" class="xxs">1 workflow →</text><text x="685" y="202" class="xxs">many plans</text>
+    <text x="685" y="234" class="xxs">workflows ↔</text><text x="685" y="254" class="xxs">tools</text>
+    <text x="568" y="342" class="xs c-mute">neither: high-priority, his manager</text>
+    <text x="568" y="370" class="xs c-act">a file: jira-board.png (later)</text>
+  </g>
+</svg>
+<p>Pull every noun out of the chat and sort it. Most are things. Some only describe a thing: those are facts. Two are neither: "high-priority" is a word inside a message, and his manager is a person in Aarav's life, not in your app.</p>
+</div>
+
+<!-- 11 · question 1 -->
+<div class="scene">
+<p class="kick">11 · Question 1</p>
+<h2>Is it a thing? The Create, Read, Update, Delete test</h2>
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="A checklist. Message, conversation and Jira pass: the app can create, read, update and delete each on its own, and there can be many. They are things. High-priority and his manager fail: neither.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="40" y="16" width="680" height="240" rx="6"/>
+    <path class="thin" d="M40 56 H720 M40 96 H720 M40 136 H720 M40 176 H720 M40 216 H720 M236 16 V256 M306 16 V256 M376 16 V256 M446 16 V256 M516 16 V256 M600 16 V256"/>
+  </g>
+  <g class="tx">
+    <text x="138" y="44" class="m">candidate</text>
+    <text x="271" y="44" class="m">C</text><text x="341" y="44" class="m">R</text><text x="411" y="44" class="m">U</text><text x="481" y="44" class="m">D</text>
+    <text x="558" y="44" class="xs">many?</text><text x="660" y="44" class="m">verdict</text>
+    <text x="138" y="83" class="xs">a message</text>
+    <text x="271" y="83" class="xs c-pkg">✓</text><text x="341" y="83" class="xs c-pkg">✓</text><text x="411" y="83" class="xs c-pkg">✓</text><text x="481" y="83" class="xs c-pkg">✓</text><text x="558" y="83" class="xs c-pkg">✓</text><text x="660" y="83" class="m c-thing">thing</text>
+    <text x="138" y="123" class="xs">a conversation</text>
+    <text x="271" y="123" class="xs c-pkg">✓</text><text x="341" y="123" class="xs c-pkg">✓</text><text x="411" y="123" class="xs c-pkg">✓</text><text x="481" y="123" class="xs c-pkg">✓</text><text x="558" y="123" class="xs c-pkg">✓</text><text x="660" y="123" class="m c-thing">thing</text>
+    <text x="138" y="163" class="xs">Jira, a tool</text>
+    <text x="271" y="163" class="xs c-pkg">✓</text><text x="341" y="163" class="xs c-pkg">✓</text><text x="411" y="163" class="xs c-pkg">✓</text><text x="481" y="163" class="xs c-pkg">✓</text><text x="558" y="163" class="xs c-pkg">✓</text><text x="660" y="163" class="m c-thing">thing</text>
+    <text x="138" y="203" class="xs">"high-priority"</text>
+    <text x="271" y="203" class="xs c-act">✗</text><text x="341" y="203" class="xs c-act">✗</text><text x="411" y="203" class="xs c-act">✗</text><text x="481" y="203" class="xs c-act">✗</text><text x="558" y="203" class="xs c-mute">–</text><text x="660" y="203" class="m c-mute">neither</text>
+    <text x="138" y="243" class="xs">his manager</text>
+    <text x="271" y="243" class="xs c-act">✗</text><text x="341" y="243" class="xs c-act">✗</text><text x="411" y="243" class="xs c-act">✗</text><text x="481" y="243" class="xs c-act">✗</text><text x="558" y="243" class="xs c-mute">–</text><text x="660" y="243" class="m c-mute">neither</text>
+    <text x="380" y="290" class="s">on its own, and can there be many?</text>
+  </g>
+</svg>
+<p>Nouns are clues, not answers. A thing is something the app can create, read, update and delete on its own, and there can be many. The most common beginner move is splitting into too many tables. This test is how you refuse.</p>
+</div>
+
+<!-- 12 · question 2 -->
+<div class="scene">
+<p class="kick">12 · Question 2</p>
+<h2>What does each thing have?</h2>
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Left, a message card: who, Aarav; what, here's my workflow; when, Monday 9:12 am. Facts are what you need to recreate one. Right, a plan with tone casual. Today tone is a fact. If users could save and reuse named tones, tones become a thing of their own.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="24" y="34" width="300" height="196" rx="8"/>
+    <path class="thin" d="M24 84 H324"/>
+    <path class="dash" d="M360 24 V286"/>
+    <rect class="f-card" x="396" y="34" width="150" height="116" rx="8"/>
+    <path class="thin" d="M396 84 H546"/>
+    <path class="arw" d="M556 92 H604" marker-end="url(#ah)"/>
+    <rect class="dash ink" x="614" y="34" width="126" height="116" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="174" y="68" class="h c-thing">a message</text>
+    <text x="44" y="122" class="s l"><tspan class="c-fact">who:</tspan> Aarav</text>
+    <text x="44" y="162" class="s l"><tspan class="c-fact">what:</tspan> here's my workflow…</text>
+    <text x="44" y="202" class="s l"><tspan class="c-fact">when:</tspan> Mon 9:12 am</text>
+    <text x="174" y="266" class="s">facts: what you need to recreate one</text>
+    <text x="471" y="68" class="m c-thing">a plan</text>
+    <text x="471" y="124" class="s"><tspan class="c-fact">tone:</tspan> casual</text>
+    <text x="677" y="68" class="m c-thing">tones</text>
+    <text x="677" y="108" class="xs">casual</text>
+    <text x="677" y="132" class="xs">formal</text>
+    <text x="568" y="192" class="xs">today: a fact on the plan</text>
+    <text x="568" y="220" class="xs">if users save and reuse tones:</text>
+    <text x="568" y="248" class="xs c-thing">it becomes a thing</text>
+  </g>
+</svg>
+<p>A fact is what you need to recreate one of the thing. Take the message away and "content" means nothing; that is how you know it is a fact. The word does not decide where it goes. What the product needs to do with it decides.</p>
+</div>
+
+<!-- 13 · question 3 -->
+<div class="scene">
+<p class="kick">13 · Question 3</p>
+<h2>How do they connect? Three shapes</h2>
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Three shapes of a link. One-to-one: rare, maybe one table. One-to-many: one chat, many messages, a pointer on the many side. Many-to-many: workflows and tools cross, so a third table holds the pairs.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="34" y="96" width="84" height="44" rx="6"/><rect x="152" y="96" width="84" height="44" rx="6"/>
+    <path class="c-link" d="M118 118 H152"/>
+    <path class="dash" d="M256 30 V280"/><path class="dash" d="M506 30 V280"/>
+    <rect x="276" y="120" width="84" height="44" rx="6"/>
+    <rect x="420" y="62" width="68" height="36" rx="6"/><rect x="420" y="124" width="68" height="36" rx="6"/><rect x="420" y="186" width="68" height="36" rx="6"/>
+    <path class="c-link" d="M360 142 L420 80 M360 142 L420 142 M360 142 L420 204"/>
+    <rect x="526" y="72" width="78" height="36" rx="6"/><rect x="526" y="152" width="78" height="36" rx="6"/>
+    <rect x="662" y="56" width="80" height="36" rx="6"/><rect x="662" y="110" width="80" height="36" rx="6"/><rect x="662" y="164" width="80" height="36" rx="6"/>
+    <path class="c-link" d="M604 90 L662 74 M604 90 L662 128 M604 90 L662 182 M604 170 L662 74 M604 170 L662 182"/>
+  </g>
+  <g class="tx">
+    <text x="135" y="44" class="m">one-to-one</text>
+    <text x="76" y="124" class="xs">user</text><text x="194" y="124" class="xs">profile</text>
+    <text x="135" y="190" class="xs">rare</text>
+    <text x="135" y="216" class="xs">worth a second look:</text>
+    <text x="135" y="240" class="xs">maybe one table?</text>
+    <text x="381" y="44" class="m">one-to-many</text>
+    <text x="318" y="148" class="xs">chat</text>
+    <text x="454" y="86" class="xxs">msg</text><text x="454" y="148" class="xxs">msg</text><text x="454" y="210" class="xxs">msg</text>
+    <text x="381" y="256" class="xs c-link">a pointer on the many side</text>
+    <text x="631" y="44" class="m">many-to-many</text>
+    <text x="565" y="96" class="xxs">Monday</text><text x="565" y="176" class="xxs">Friday</text>
+    <text x="702" y="80" class="xxs">Jira</text><text x="702" y="134" class="xxs">dashboard</text><text x="702" y="188" class="xxs">Slack</text>
+    <text x="631" y="256" class="xs c-link">a third table</text>
+  </g>
+</svg>
+<p>Every link you can say out loud has one of three shapes. One-to-many is most of every model you will ever draw. The rule to carry: <b>the many side points back</b>.</p>
+</div>
+
+<!-- 14 · keys and pointers -->
+<div class="scene">
+<p class="kick">14 · Keys and pointers</p>
+<h2>Every row needs an address</h2>
+<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="Two tables. Conversations: ids 7 and 8. Messages: ids 101 to 104, each with a conversation_id. Two messages both say okay; their ids tell them apart. Arrows from conversation_id back to the conversation rows: the many side points back.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="24" y="40" width="226" height="116" rx="6"/>
+    <path class="thin" d="M24 76 H250 M24 116 H250 M84 40 V156"/>
+    <rect x="330" y="40" width="410" height="196" rx="6"/>
+    <path class="thin" d="M330 76 H740 M330 116 H740 M330 156 H740 M330 196 H740 M400 40 V236 M560 40 V236"/>
+    <path class="arw c-link" d="M444 176 Q330 170 258 102" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M444 216 Q330 220 258 140" marker-end="url(#ahv)"/>
+  </g>
+  <g class="tx">
+    <text x="137" y="30" class="m c-thing">conversations</text>
+    <text x="54" y="64" class="xs c-addr">id</text><text x="167" y="64" class="xs">started</text>
+    <text x="54" y="102" class="xs">7</text><text x="167" y="102" class="xs">Mon 9:12</text>
+    <text x="54" y="142" class="xs">8</text><text x="167" y="142" class="xs">Tue 10:03</text>
+    <text x="535" y="30" class="m c-thing">messages</text>
+    <text x="365" y="64" class="xs c-addr">id</text><text x="480" y="64" class="xs c-link">conversation_id</text><text x="650" y="64" class="xs">text</text>
+    <text x="365" y="102" class="xs">101</text><text x="480" y="102" class="xs">7</text><text x="650" y="102" class="xs">here's my workflow…</text>
+    <text x="365" y="142" class="xs">102</text><text x="480" y="142" class="xs">7</text><text x="650" y="142" class="xs">here's your plan…</text>
+    <text x="365" y="182" class="xs">103</text><text x="480" y="182" class="xs">7</text><text x="650" y="182" class="xs c-act">okay</text>
+    <text x="365" y="222" class="xs">104</text><text x="480" y="222" class="xs">8</text><text x="650" y="222" class="xs c-act">okay</text>
+    <text x="137" y="196" class="xs c-addr">id: the row's address,</text>
+    <text x="137" y="220" class="xs c-addr">never repeats</text>
+    <text x="535" y="272" class="s c-link">conversation_id: a pointer</text>
+    <text x="535" y="302" class="s c-link">the many side points back</text>
+  </g>
+</svg>
+<p>Two messages both say "okay". The app tells them apart by a <b>key</b>: an id that never repeats, like an apartment number. A link is then just a column on the many side that holds the other row's key. <code>conversation_id = 7</code> means "I belong to conversation 7".</p>
+</div>
+
+<!-- 15 · many-to-many -->
+<div class="scene">
+<p class="kick">15 · Many-to-many</p>
+<h2>When both sides are many, add a third table</h2>
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Workflows on the left, tools on the right, and workflow_tools in the middle: one row per pairing, with how_often on each row. How often Aarav uses Jira belongs to the pairing.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="16" y="40" width="190" height="116" rx="6"/>
+    <path class="thin" d="M16 76 H206 M16 116 H206 M58 40 V156"/>
+    <rect x="232" y="40" width="300" height="196" rx="6"/>
+    <path class="thin" d="M232 76 H532 M232 116 H532 M232 156 H532 M232 196 H532 M332 40 V236 M420 40 V236"/>
+    <rect x="560" y="40" width="184" height="156" rx="6"/>
+    <path class="thin" d="M560 76 H744 M560 116 H744 M560 156 H744 M602 40 V196"/>
+  </g>
+  <g class="tx">
+    <text x="111" y="30" class="m c-thing">workflows</text>
+    <text x="37" y="64" class="xs c-addr">id</text><text x="132" y="64" class="xs">name</text>
+    <text x="37" y="102" class="xs">1</text><text x="132" y="102" class="xs">Monday report</text>
+    <text x="37" y="142" class="xs">2</text><text x="132" y="142" class="xs">Friday review</text>
+    <text x="382" y="30" class="m c-link">workflow_tools</text>
+    <text x="282" y="64" class="xxs c-link">workflow_id</text><text x="376" y="64" class="xxs c-link">tool_id</text><text x="476" y="64" class="xxs c-fact">how_often</text>
+    <text x="282" y="102" class="xs">1</text><text x="376" y="102" class="xs">1</text><text x="476" y="102" class="xs">daily</text>
+    <text x="282" y="142" class="xs">1</text><text x="376" y="142" class="xs">2</text><text x="476" y="142" class="xs">weekly</text>
+    <text x="282" y="182" class="xs">1</text><text x="376" y="182" class="xs">3</text><text x="476" y="182" class="xs">weekly</text>
+    <text x="282" y="222" class="xs">2</text><text x="376" y="222" class="xs">1</text><text x="476" y="222" class="xs">monthly</text>
+    <text x="652" y="30" class="m c-thing">tools</text>
+    <text x="581" y="64" class="xs c-addr">id</text><text x="673" y="64" class="xs">name</text>
+    <text x="581" y="102" class="xs">1</text><text x="673" y="102" class="xs">Jira</text>
+    <text x="581" y="142" class="xs">2</text><text x="673" y="142" class="xs">dashboard</text>
+    <text x="581" y="182" class="xs">3</text><text x="673" y="182" class="xs">Slack</text>
+    <text x="111" y="190" class="xs">a workflow uses</text><text x="111" y="214" class="xs">many tools</text>
+    <text x="652" y="226" class="xs">Jira is in</text><text x="652" y="250" class="xs">many workflows</text>
+    <text x="382" y="276" class="s c-fact">how often? a fact of the pairing</text>
+  </g>
+</svg>
+<p>No single cell can hold "many". So a third table holds one row per pairing. How often Aarav uses Jira belongs to neither Jira nor the workflow. It belongs to the pairing, so it lives on that row. Ask what each value describes, and put it there.</p>
+</div>
+
+<!-- 16 · history is a row -->
+<div class="scene">
+<p class="kick">16 · History</p>
+<h2>History is a row, not a cell</h2>
+<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="Left, the plan kept in a single cell: the casual plan overwrote Monday's formal plan, which is gone. Right, a diagnoses table with two rows for workflow 1, the formal plan on Monday and the casual plan on Tuesday. Both survive; the newest is current.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="24" y="40" width="290" height="80" rx="6"/>
+    <path class="thin" d="M24 76 H314 M84 40 V120"/>
+    <path class="dash" d="M352 24 V250"/>
+    <rect x="388" y="40" width="352" height="120" rx="6"/>
+    <path class="thin" d="M388 76 H740 M388 118 H740 M432 40 V160 M514 40 V160 M636 40 V160"/>
+  </g>
+  <g class="tx">
+    <text x="169" y="30" class="m">the plan in one cell</text>
+    <text x="54" y="64" class="xs c-addr">id</text><text x="199" y="64" class="xs">plan</text>
+    <text x="54" y="104" class="xs">1</text><text x="199" y="104" class="xs">casual plan</text>
+    <text x="169" y="160" class="xs c-act strike">Monday's formal plan</text>
+    <text x="169" y="186" class="xs c-act">overwritten, gone ✗</text>
+    <text x="564" y="30" class="m c-thing">diagnoses</text>
+    <text x="410" y="64" class="xs c-addr">id</text><text x="473" y="64" class="xxs c-link">workflow_id</text><text x="575" y="64" class="xs">plan</text><text x="688" y="64" class="xxs">created_at</text>
+    <text x="410" y="104" class="xs">1</text><text x="473" y="104" class="xs">1</text><text x="575" y="104" class="xs">formal plan</text><text x="688" y="104" class="xs">Mon 9:12</text>
+    <text x="410" y="146" class="xs">2</text><text x="473" y="146" class="xs">1</text><text x="575" y="146" class="xs">casual plan</text><text x="688" y="146" class="xs">Tue 10:03</text>
+    <text x="564" y="196" class="s c-pkg">both survive ✓</text>
+    <text x="564" y="226" class="xs">the newest row is the current one</text>
+  </g>
+</svg>
+<p>Aarav asks for the plan again, in a casual tone. A cell holds one value, so the new plan erases the old one. If the product must remember what was true before, make it a row with a time on it.</p>
+</div>
+
+<!-- 17 · rows or files -->
+<div class="scene">
+<p class="kick">17 · Rows or files</p>
+<h2>Rows for facts, files for bytes</h2>
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="A screenshot, jira-board.png, is bytes, so it goes into file storage. An attachments row keeps the link to it, which message it came with, and its name.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-act" x="24" y="60" width="140" height="100" rx="6"/>
+    <path class="c-act" d="M34 150 L74 106 L102 132 L124 114 L154 150"/>
+    <circle class="c-act" cx="134" cy="84" r="10"/>
+    <path class="arw" d="M174 110 H238" marker-end="url(#ah)"/>
+    <path d="M250 70 H384 L372 172 H262 Z M246 70 H388"/>
+    <rect class="thin f-act" x="292" y="96" width="50" height="38" rx="4"/>
+    <rect x="410" y="54" width="334" height="80" rx="6"/>
+    <path class="thin" d="M410 90 H744 M450 54 V134 M542 54 V134 M638 54 V134"/>
+    <path class="arw c-act" d="M590 138 Q520 196 388 150" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="94" y="186" class="xs c-act">jira-board.png</text>
+    <text x="94" y="210" class="xs">bytes, not words</text>
+    <text x="317" y="200" class="m">file storage</text>
+    <text x="577" y="42" class="m c-thing">attachments</text>
+    <text x="430" y="78" class="xxs c-addr">id</text><text x="496" y="78" class="xxs c-link">message_id</text><text x="590" y="78" class="xxs c-act">file_url</text><text x="691" y="78" class="xxs">file_name</text>
+    <text x="430" y="118" class="xs">1</text><text x="496" y="118" class="xs">101</text><text x="590" y="118" class="xxs">…/jira-board</text><text x="691" y="118" class="xxs">jira-board.png</text>
+    <text x="520" y="216" class="xs c-act">the row keeps the link</text>
+    <text x="380" y="276" class="s">rows for facts · files for bytes · a pointer between them</text>
+  </g>
+</svg>
+<p>A cell holds a value you can type: text, a number, a date, yes or no. A screenshot is bytes. It goes in file storage, and a row keeps the link plus the facts about it: which message it came with, its name, when it arrived.</p>
+</div>
+
+<p class="partl">Part 4 · Put it together</p>
+
+<!-- 18 · Aarav's chat in rows -->
+<div class="scene">
+<p class="kick">18 · The final tables</p>
+<h2>Aarav's chat, as rows</h2>
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three tables filled from Aarav's chat. Users: 1, Aarav. Conversations: 7 on Monday and 8 on Tuesday, both for user 1. Messages 101 to 105 each point to a conversation. Message 105, I implemented the plan, points back to conversation 7.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="16" y="40" width="190" height="76" rx="6"/>
+    <path class="thin" d="M16 76 H206 M62 40 V116"/>
+    <rect x="16" y="170" width="246" height="116" rx="6"/>
+    <path class="thin" d="M16 206 H262 M16 246 H262 M62 170 V286 M146 170 V286"/>
+    <rect x="306" y="40" width="438" height="236" rx="6"/>
+    <path class="thin" d="M306 76 H744 M306 116 H744 M306 156 H744 M306 196 H744 M306 236 H744 M360 40 V276 M478 40 V276 M544 40 V276"/>
+    <path class="arw c-link" d="M104 166 V122" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M302 136 Q290 180 268 222" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M302 256 Q288 248 268 232" marker-end="url(#ahv)"/>
+  </g>
+  <g class="tx">
+    <text x="111" y="30" class="m c-thing">users</text>
+    <text x="39" y="64" class="xs c-addr">id</text><text x="134" y="64" class="xs">name</text>
+    <text x="39" y="102" class="xs">1</text><text x="134" y="102" class="xs">Aarav</text>
+    <text x="200" y="160" class="m c-thing">conversations</text>
+    <text x="39" y="194" class="xs c-addr">id</text><text x="104" y="194" class="xxs c-link">user_id</text><text x="204" y="194" class="xxs">started</text>
+    <text x="39" y="232" class="xs">7</text><text x="104" y="232" class="xs">1</text><text x="204" y="232" class="xs">Mon 9:12</text>
+    <text x="39" y="272" class="xs">8</text><text x="104" y="272" class="xs">1</text><text x="204" y="272" class="xs">Tue 10:03</text>
+    <text x="525" y="30" class="m c-thing">messages</text>
+    <text x="333" y="64" class="xs c-addr">id</text><text x="419" y="64" class="xxs c-link">conversation_id</text><text x="511" y="64" class="xxs c-fact">role</text><text x="644" y="64" class="xxs c-fact">content</text>
+    <text x="333" y="102" class="xs">101</text><text x="419" y="102" class="xs">7</text><text x="511" y="102" class="xxs">aarav</text><text x="556" y="102" class="xxs l">here's my weekly workflow…</text>
+    <text x="333" y="142" class="xs">102</text><text x="419" y="142" class="xs">7</text><text x="511" y="142" class="xxs">app</text><text x="556" y="142" class="xxs l">here's your plan: 1. Let…</text>
+    <text x="333" y="182" class="xs">103</text><text x="419" y="182" class="xs">8</text><text x="511" y="182" class="xxs">aarav</text><text x="556" y="182" class="xxs l">redo the plan, casual?</text>
+    <text x="333" y="222" class="xs">104</text><text x="419" y="222" class="xs">8</text><text x="511" y="222" class="xxs">app</text><text x="556" y="222" class="xxs l">quick version: let Jira…</text>
+    <text x="333" y="262" class="xs">105</text><text x="419" y="262" class="xs c-act">7</text><text x="511" y="262" class="xxs">aarav</text><text x="556" y="262" class="xxs l c-act">I implemented the plan…</text>
+    <text x="380" y="318" class="s c-link">follow the pointers: message → conversation → user</text>
+  </g>
+</svg>
+<p>Monday and Tuesday, written down. Every message knows its conversation, and every conversation knows its user. Tuesday's follow-up, row 105, points back to Monday's conversation 7, where the plan lives.</p>
+</div>
+
+<!-- 19 · Tuesday replayed -->
+<div class="scene">
+<p class="kick">19 · How it all works</p>
+<h2>Tuesday again, with storage</h2>
+<svg class="wb" viewBox="0 0 760 360" role="img" aria-label="Six steps. 1, the client sends Aarav's follow-up. 2, the server saves it as row 105. 3, the server fetches conversation 7 from storage. 4, it sends the history and the new question to GroqCloud. 5, GroqCloud answers. 6, the client shows: In Monday's plan, step 3, let's fix the export.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#laptop" transform="translate(10 116) scale(.62)"/>
+    <use href="#rack" x="270" y="100"/>
+    <use href="#rack" transform="translate(624 14) scale(.8)"/>
+    <use href="#tablefile" class="f-act" x="626" y="208"/>
+    <path class="arw c-act" d="M174 152 H260" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M260 190 H174" marker-end="url(#ahg)"/>
+    <path class="arw c-act" d="M402 210 L612 244" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M612 290 L402 244" marker-end="url(#ahg)"/>
+    <path class="arw c-act" d="M402 134 L610 72" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M610 108 L402 170" marker-end="url(#ahg)"/>
+    <rect class="f-pkg" x="10" y="262" width="236" height="62" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="89" y="104" class="s">client</text>
+    <text x="330" y="88" class="s">server</text>
+    <text x="672" y="152" class="m">GroqCloud</text>
+    <text x="669" y="348" class="m c-act">storage</text>
+    <text x="217" y="140" class="xs c-act">1 send</text>
+    <text x="217" y="214" class="xs c-pkg">6 show</text>
+    <text x="528" y="214" class="xs c-act">2 save row 105</text>
+    <text x="496" y="300" class="xs c-pkg">3 fetch conversation 7</text>
+    <text x="474" y="88" class="xs c-act">4 history + new question</text>
+    <text x="548" y="152" class="xs c-pkg">5 answer</text>
+    <text x="24" y="287" class="xs l">In Monday's plan, step 3…</text>
+    <text x="24" y="311" class="xs l">let's fix the export.</text>
+  </g>
+</svg>
+<p>The same follow-up: "Hey, I implemented the plan, and this is the problem." Now the server saves it, fetches conversation 7 from storage, and sends the history with the new question to GroqCloud. The model still remembers nothing. Your system does.</p>
+</div>
+
+<!-- 20 · the reveal -->
+<div class="scene">
+<p class="kick">20 · Aarav's whole model</p>
+<h2>Storage with a shape has a name</h2>
+<svg class="wb" viewBox="0 0 760 370" role="img" aria-label="Eight tables and their pointers: users; conversations and workflows point to users; messages point to conversations; attachments point to messages; diagnoses point to workflows; workflow_tools point to workflows and tools. Together: a database.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="315" y="16" width="130" height="40" rx="6"/>
+    <rect x="110" y="106" width="150" height="40" rx="6"/><rect x="500" y="106" width="150" height="40" rx="6"/>
+    <rect x="110" y="196" width="150" height="40" rx="6"/><rect x="380" y="196" width="140" height="40" rx="6"/><rect x="580" y="196" width="160" height="40" rx="6"/>
+    <rect x="110" y="286" width="150" height="40" rx="6"/><rect x="595" y="286" width="130" height="40" rx="6"/>
+    <path class="arw c-link" d="M200 104 L340 60" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M560 104 L420 60" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M185 194 V150" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M185 284 V240" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M470 194 L545 150" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M640 194 L600 150" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M660 284 V240" marker-end="url(#ahv)"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="43" class="m c-thing">users</text>
+    <text x="185" y="133" class="m c-thing">conversations</text><text x="575" y="133" class="m c-thing">workflows</text>
+    <text x="185" y="223" class="m c-thing">messages</text><text x="450" y="223" class="m c-thing">diagnoses</text><text x="660" y="223" class="m c-link">workflow_tools</text>
+    <text x="185" y="313" class="m c-thing">attachments</text><text x="660" y="313" class="m c-thing">tools</text>
+    <text x="440" y="300" class="h c-act">= a database</text>
+  </g>
+</svg>
+<p>Eight tables, and the pointers between them, kept outside the app. That is a <b>database</b>. Every arrow is a many side pointing back.</p>
+</div>
+
+<!-- 21 · bridge to the API -->
+<div class="scene">
+<p class="kick">21 · Back to Lecture 4</p>
+<h2>The API is how a request reaches a row</h2>
+<svg class="wb" viewBox="0 0 760 260" role="img" aria-label="POST /workflows reaches the server and creates one row in workflows. POST /workflows/1/diagnoses creates one row in diagnoses with workflow_id 1. Every noun in an address is a thing in the model.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="16" y="24" width="262" height="66" rx="10"/>
+    <path class="arw" d="M286 57 H346" marker-end="url(#ah)"/>
+    <use href="#rack" transform="translate(356 20) scale(.5)"/>
+    <path class="arw" d="M424 57 H494" marker-end="url(#ah)"/>
+    <rect class="f-addr" x="504" y="30" width="236" height="54" rx="6"/>
+    <rect x="16" y="130" width="262" height="66" rx="10"/>
+    <path class="arw" d="M286 163 H346" marker-end="url(#ah)"/>
+    <use href="#rack" transform="translate(356 126) scale(.5)"/>
+    <path class="arw" d="M424 163 H494" marker-end="url(#ah)"/>
+    <rect class="f-addr" x="504" y="136" width="236" height="54" rx="6"/>
+  </g>
+  <g class="tx">
+    <text x="32" y="54" class="m l c-act">POST</text><text x="96" y="54" class="m l c-addr">/workflows</text>
+    <text x="32" y="78" class="xxs l">a new workflow</text>
+    <text x="622" y="54" class="m c-thing">workflows</text>
+    <text x="622" y="76" class="xxs">+ 1 new row</text>
+    <text x="32" y="160" class="m l c-act">POST</text><text x="96" y="160" class="xs l c-addr">/workflows/1/diagnoses</text>
+    <text x="32" y="184" class="xxs l">a new plan for workflow 1</text>
+    <text x="622" y="160" class="m c-thing">diagnoses</text>
+    <text x="622" y="182" class="xxs">+ 1 new row, workflow_id = 1</text>
+    <text x="380" y="242" class="s">every noun in an address is a thing in the model</text>
+  </g>
+</svg>
+<p>Your API table from the Lecture 4 practice set and these tables are one picture. The address names the thing. The action says what to do to its row.</p>
+</div>
+
+<!-- 22 · done means it answers -->
+<div class="scene">
+<p class="kick">22 · Check your model</p>
+<h2>Done means it answers the questions</h2>
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Three product questions and the pointer path that answers each. Aarav's last conversation, every message in order: users to conversations to messages. Every plan this workflow ever got: workflows to diagnoses, oldest first. Which screenshot went with which message: messages to attachments. Then try to break it: a message with no conversation is refused.">
+  <g class="ln" filter="url(#wob)">
+    <path class="dash" d="M20 76 H740 M20 136 H740 M20 196 H740"/>
+    <path class="arw" d="M420 40 H460" marker-end="url(#ah)"/>
+    <path class="arw" d="M420 100 H460" marker-end="url(#ah)"/>
+    <path class="arw" d="M420 160 H460" marker-end="url(#ah)"/>
+    <path class="arw c-act" d="M420 236 H460" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="24" y="46" class="xs l">"Aarav's last chat, every message in order"</text>
+    <text x="472" y="46" class="xs l c-link">users → conversations → messages ✓</text>
+    <text x="24" y="106" class="xs l">"every plan this workflow ever got"</text>
+    <text x="472" y="106" class="xs l c-link">workflows → diagnoses, oldest first ✓</text>
+    <text x="24" y="166" class="xs l">"which screenshot went with which message"</text>
+    <text x="472" y="166" class="xs l c-link">messages → attachments ✓</text>
+    <text x="24" y="242" class="xs l c-act">try to break it: a message with no conversation</text>
+    <text x="472" y="242" class="xs l c-act">refused ✗ it must point somewhere</text>
+  </g>
+</svg>
+<p>A model is not done when it looks tidy. It is done when it answers what the product must ask. Write your own three questions first, trace each answer along the pointers, then try to create a wrong state and make sure the model refuses it.</p>
+</div>
+
+<!-- 23 · your turn -->
+<div class="scene">
+<p class="kick">23 · Your turn</p>
+<h2>Five more briefs, one move each, then your own app</h2>
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Six cards. The pet clinic: one-to-many. The music library: thing or fact. The corner bakery: many-to-many. University grades: the fact of a pairing. Hospital assignments: history is a row. Your own app: the three questions.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="16" width="226" height="116" rx="8" transform="rotate(-1.5 133 74)"/>
+    <rect class="f-card" x="267" y="16" width="226" height="116" rx="8" transform="rotate(1 380 74)"/>
+    <rect class="f-card" x="514" y="16" width="226" height="116" rx="8" transform="rotate(-1 627 74)"/>
+    <rect class="f-card" x="20" y="156" width="226" height="116" rx="8" transform="rotate(1 133 214)"/>
+    <rect class="f-card" x="267" y="156" width="226" height="116" rx="8" transform="rotate(-1.5 380 214)"/>
+    <rect class="f-act" x="514" y="156" width="226" height="116" rx="8" transform="rotate(1.5 627 214)"/>
+  </g>
+  <g class="tx">
+    <text x="133" y="62" class="m">the pet clinic</text><text x="133" y="98" class="s c-link">one-to-many</text>
+    <text x="380" y="62" class="m">the music library</text><text x="380" y="98" class="s c-thing">thing or fact?</text>
+    <text x="627" y="62" class="m">the corner bakery</text><text x="627" y="98" class="s c-link">many-to-many</text>
+    <text x="133" y="202" class="m">university grades</text><text x="133" y="238" class="s c-fact">fact of a pairing</text>
+    <text x="380" y="202" class="m">hospital</text><text x="380" y="238" class="s">history is a row</text>
+    <text x="627" y="202" class="m c-act">your own app</text><text x="627" y="238" class="s">things · facts · links</text>
+  </g>
+</svg>
+<p>The Arena in the Modelling Lab. Aarav's brief is the one you just did; five more each drill one move from today. Then model your own app. Practice set due before Thu 15 Oct, 8:30 pm IST.</p>
+</div>
+
+<!-- 24 · the full picture -->
+<div class="scene">
+<p class="kick">24 · The full picture</p>
+<h2>Three weeks, three boxes</h2>
+<svg class="wb" viewBox="0 0 760 362" role="img" aria-label="The whole system. You, the client, your server, GroqCloud which thinks, and the database which remembers. UI in week 1, API in week 2, the database in week 3. Next week the tables go into Supabase.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="8" y="120"/>
+    <use href="#laptop" transform="translate(72 132) scale(.62)"/>
+    <use href="#rack" x="330" y="104"/>
+    <use href="#rack" transform="translate(612 14) scale(.8)"/>
+    <use href="#tablefile" class="f-act" x="618" y="188"/>
+    <path class="arw" d="M244 180 H318" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw" d="M462 150 L600 90" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw c-act" d="M462 212 L606 240" marker-start="url(#ahc)" marker-end="url(#ahc)"/>
+    <path class="dash" d="M4 268 V278 H240 V268"/>
+    <path class="dash" d="M252 268 V278 H470 V268"/>
+  </g>
+  <g class="tx">
+    <text x="152" y="118" class="s">client</text>
+    <text x="390" y="90" class="s">server</text>
+    <text x="660" y="160" class="m">GroqCloud · thinks</text>
+    <text x="661" y="326" class="m c-act">database · remembers</text>
+    <text x="661" y="350" class="xs c-act">week 3 · Supabase next</text>
+    <text x="122" y="306" class="m">UI</text>
+    <text x="122" y="330" class="xs">week 1</text>
+    <text x="361" y="306" class="m">API</text>
+    <text x="361" y="330" class="xs">week 2</text>
+  </g>
+</svg>
+<p>UI for humans. API for machines. A database for memory. Lecture 7, Fri 16 Oct: these exact tables, typed into Supabase, and a row that survives a refresh. Nothing new to model. That is why we did it on paper first.</p>
+</div>
+
+<p class="sig">You cannot store what you cannot describe.<small>Read the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">notes</a>, then do the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a>.</small></p>
+<div id="pnum" aria-live="polite"></div>
+  </main>
+</div>
+<script>
+/* present mode: one scene per screen. P or the button to start, arrows or space to move, Esc to leave */
+(function(){
+  var scenes=[].slice.call(document.querySelectorAll('.scene')),i=0,num=document.getElementById('pnum');
+  function show(n){i=Math.max(0,Math.min(scenes.length-1,n));scenes.forEach(function(s,k){s.classList.toggle('on',k===i)});num.textContent=(i+1)+' / '+scenes.length;window.scrollTo(0,0)}
+  function start(){document.body.classList.add('present');var r=scenes.findIndex(function(s){return s.getBoundingClientRect().bottom>80});show(r<0?0:r)}
+  function stop(){document.body.classList.remove('present');scenes[i].scrollIntoView({block:'start'})}
+  document.getElementById('present').addEventListener('click',start);
+  document.addEventListener('keydown',function(e){
+    var on=document.body.classList.contains('present');
+    if(!on){if((e.key==='p'||e.key==='P')&&!e.metaKey&&!e.ctrlKey)start();return}
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){e.preventDefault();show(i+1)}
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();show(i-1)}
+    else if(e.key==='Escape'||e.key==='p'||e.key==='P')stop();
+  });
+})();
+</script>
+</body>
+</html>
