@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Modelling Lab | 100xEngineers</title>
-<meta name="description" content="Lecture 6 practice lab: decide what is worth storing. Feel an app forget, then build Aarav's data model by hand, one question at a time: what are the things, what does each have, how do they connect. Then model your own app.">
+<meta name="description" content="Lecture 6 practice lab: decide what is worth storing. Feel an app forget, then build Aarav's data model by hand, one question at a time: what are the things worth storing, what does each have, how do they connect. Then model your own app.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -30,14 +30,14 @@
   <div class="meta"><span>About 90 minutes</span><span>Nothing to install</span><span>Saves on this device</span></div>
 </div>
 
-<div class="call"><p class="kick">Where you are</p><p>You built the app. Aarav is your user. He gets a plan on Monday, and on Tuesday the app has forgotten it. The lecture added a storage box to the whiteboard and left one question in it: <b>what is worth storing?</b> <code>memory.txt</code> kept one shape: who said what, and when. Aarav's app needs more than that, so you answer three questions about his world: <span class="q thing">what are the things</span> <span class="q fact">what does each have</span> <span class="q link">how do they connect</span>. Next week these answers become tables in Supabase.</p></div>
+<div class="call"><p class="kick">Where you are</p><p>You built the app. Aarav is your user. He gets a plan on Monday, and on Tuesday the app has forgotten it. The lecture added a storage box to the whiteboard and left one question in it: <b>what is worth storing?</b> <code>memory.txt</code> kept one shape: who said what, and when. Aarav's app needs more than that, so you answer three questions about his world: <span class="q thing">what are the things worth storing</span> <span class="q fact">what does each have</span> <span class="q link">how do they connect</span>. Next week these answers become tables in Supabase.</p></div>
 
 <div class="scorebox"><div class="score" data-for="cp"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/8</b></div><div class="l"><strong>Checkpoints</strong>Saved on this device</div></div></div>
 
 <nav class="exnav" aria-label="Sections"><a href="#s1"><b>1</b>The things</a><a href="#s2"><b>2</b>What each has</a><a href="#s3"><b>3</b>How they connect</a><a href="#s4"><b>4</b>Rows or files</a><a href="#s5"><b>5</b>Aarav's model</a><a href="#s6"><b>6</b>The Arena</a><a href="#s7"><b>7</b>Your model</a></nav>
 
 <!-- ============ 1 ============ -->
-<section class="s" id="s1"><h2><span class="n">01</span>Question 1: what are the things?</h2>
+<section class="s" id="s1"><h2><span class="n">01</span>Question 1: what are the things worth storing?</h2>
 <p>Nouns are clues. The test is <b>Create, Read, Update, Delete</b>: can the app make one, find one, change one, remove one, on its own, and can there be many? If yes, it is a <span class="q thing">thing</span> and gets its own table. If it only describes a thing, it is a <span class="q fact">fact</span>. Tap each underlined word in Aarav's chat and say which.</p>
 <div class="tx" id="tx">
   <div class="day">signed in as <span class="tag" data-t="aarav">Aarav</span></div>
