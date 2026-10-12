@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aarav, Discovery to MVP | 100xEngineers</title>
+<meta name="description" content="A worked example of What to build: one full run of the Discovery to MVP coach, from Aarav's observation to a discovery document and a 21-day manual MVP plan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+</head>
+<body data-page="wtb-aarav-example">
+<div id="prog" aria-hidden="true"></div>
+<header class="top"><div class="in">
+  <a class="brand" href="/#b2">100x<b>·</b>C8 Module 2</a>
+  <nav aria-label="What to build pages"><a href="/#b2">Discovery to hypothesis</a><a href="/#b3">Assignment 1</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap grid">
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p></div></aside>
+  <main>
+<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">What to build · Discovery to MVP · Worked example</p>
+  <h1>Aarav, from observation to MVP plan</h1>
+  <p class="dek">One full run of the Discovery to MVP coach, condensed. Read what each phase produced, then run it on your own observation.</p>
+</div>
+
+<div class="call"><p class="kick">The one thing to keep</p><p>Every phase must produce evidence or surface an assumption. If it does neither, it is theatre. Prove the outcome by hand with real people before any software exists: if humans can deliver it, you know what to automate; if they cannot, software would not have saved you.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>How the Coach Works</h2>
+<ol class="steps">
+  <li><b>Entry gate.</b> Do you have a real observed problem, not a solution you like? If not, run the <a href="https://github.com/Siddhant-Goswami/100x-LLM/blob/main/prompts/OPT_COACH.md" target="_blank" rel="noopener">OPT Coach</a> first.</li>
+  <li><b>Discovery, phases 1 to 5.</b> Observation, subject, evidence audit, causal chain, a hypothesis that can fail.</li>
+  <li><b>Stress test, phase 6.</b> Rank the riskiest assumptions, a Mom Test interview, three synthetic personas.</li>
+  <li><b>Manual MVP, phase 7.</b> A 21-day pilot by hand: who, what, price, metrics, success criteria, kill conditions.</li>
+  <li><b>Output.</b> A discovery document and a manual MVP plan. About 90 to 150 minutes, one question at a time.</li>
+</ol>
+<div class="call prob"><p class="kick">The one rule: no simulated outcomes</p><p>The coach simulates a practice interview and practice personas, because those teach a skill. It never simulates the result of your pilot. A fake "Cohort 1 report" is fluent fiction built from your own assumptions. Twenty-one real days teach more than twenty-one simulations.</p></div>
+<div class="cards">
+  <a class="card coral" href="https://drive.google.com/file/d/1whXRBIFPSQn8iSIy5JIrVfZEHGmgVGX7/view?usp=sharing" target="_blank" rel="noopener"><p class="kick">Run it</p><h4>The skill file</h4></a>
+  <a class="card" href="https://claude.ai/share/00c923f0-4a34-4892-90dc-714eff1b44b2" target="_blank" rel="noopener"><p class="kick">Watch it</p><h4>Aarav's full chat with the coach</h4></a>
+</div>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The User: Aarav</h2>
+<p>26, Pune. B.Tech from a tier-2 college, three years as a business analyst at an IT services company. Not non-technical, not deeply technical. It is 12:38 am and he has spent eleven minutes on one resume bullet that describes work AI already does.</p>
+<p>He has tried everything: ChatGPT, Claude, Cursor, n8n, agent tutorials. He has 11 saved startup ideas, 3 half-finished projects, 19 bookmarked tutorials and a folder called "AI Projects Final" with nothing final in it. The loop: <b>anxiety → tutorial → tool → idea → overthinking → more anxiety.</b></p>
+<p>His problem is not laziness or information. It is <b>high ambition, low clarity</b>. He does not need another tool or 100 ideas. He needs one real workflow worth solving, and proof he can build for it.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The Discovery Document</h2>
+
+<h3>1 · Observation</h3>
+<p>Early-career professionals in urban India arrive AI-aware and motivated, but fail at <b>selection, scoping and first proof</b>. They see AI at the category level ("sales automation") and skip defining the user, the repeated task, the bottleneck, the inputs, the outputs and the success metric. Every project starts vague and collapses back into consumption: many saved ideas, zero shipped proof.</p>
+
+<h3>2 · Subject</h3>
+<div class="tw compact"><table><tbody>
+<tr><td>Who</td><td>22 to 30, urban India, graduates in early roles: analyst, junior dev, marketer, ops, freelancer.</td></tr>
+<tr><td>Behaviour</td><td>3 to 7 AI videos a week, 5 to 15 saves, 1 to 2 new tools. Shipping close to zero.</td></tr>
+<tr><td>Money</td><td>₹4L to ₹20L salary. Would pay ₹15,000 to ₹40,000 for clarity, structure and proof, not content.</td></tr>
+<tr><td>Feeling</td><td>Late, scattered, unconverted. Buys after a rupture: a peer lands an AI role, a manager asks him to build.</td></tr>
+<tr><td>Constraints</td><td>Cannot quit, cannot spend a year on fundamentals, needs visible progress fast.</td></tr>
+<tr><td>Stage</td><td>3 to 9 months in the loop.</td></tr>
+</tbody></table></div>
+<p><b>Smallest win in 60 to 90 days:</b> one specific workflow, mapped, its bottleneck found, a small AI-assisted version tested on real inputs, presented as a demo and case study.</p>
+<p><b>Out of scope:</b> passive learners with no urgency, and validated founders who need scale, not diagnosis.</p>
+
+<h3>3 · Evidence audit</h3>
+<div class="tw compact"><table><thead><tr><th>Bucket</th><th>Evidence</th><th>Confidence</th></tr></thead><tbody>
+<tr><td>Direct</td><td>Students fail at selection and scoping; capstone quality tracks problem clarity; structure and reminders raise submissions.</td><td>High</td></tr>
+<tr><td>Adjacent</td><td>AI awareness outpaces applied skill (Pluralsight, LinkedIn); workplace adoption is messy (Microsoft Work Trend Index).</td><td>Medium-high</td></tr>
+<tr><td>Passive</td><td>Vocabulary spreads faster than artifacts; 84% use or plan to use AI tools, agent use still a minority.</td><td>Medium</td></tr>
+<tr><td>Inference</td><td><b>Load-bearing:</b> one diagnosed workflow plus one working proof is worth paying for.</td><td>Low to medium</td></tr>
+</tbody></table></div>
+
+<h3>4 · Causal chain</h3>
+<ol>
+  <li>AI changes fast → pressure to upgrade, urgency without direction.</li>
+  <li>The internet rewards novelty → option overload.</li>
+  <li><b>No method to diagnose a workflow → he cannot filter options; every idea stays vague. Intervention point.</b></li>
+  <li>Vague idea → no boundary for the build → scope collapse.</li>
+  <li>Building feels risky → back to tutorials → motion without proof.</li>
+  <li>No artifact → self-image stays "learner".</li>
+  <li>Any trigger (a peer's demo, a manager's ask) restarts the loop.</li>
+</ol>
+<p>Only link 3 is addressed. Saying which links you will not touch is part of the answer.</p>
+
+<h3>5 · Hypothesis</h3>
+<div class="call"><p class="kick">Falsifiable</p><p>We believe AI-aware early-career professionals with no shipped proof are stuck because they lack a method to turn broad AI possibility into one scoped workflow. If we provide a workflow diagnosis system and a guided build sprint, <b>at least 60% of active students will map one real workflow, build a working AI-assisted version and present a credible demo within 90 days.</b></p></div>
+<details class="acc"><summary><span class="err">What would prove it wrong, and what it does not claim</span></summary><div class="b">
+<span class="kick">Wrong if</span>
+<ul>
+  <li>Fewer than 40% produce a credible demo in 90 days.</li>
+  <li>Students finish diagnosis but still do not build: execution is the real bottleneck.</li>
+  <li>Students do not see the proof as a career win.</li>
+  <li>Students mainly want jobs or income, not proof.</li>
+  <li>Students cannot find real workflows even with guidance.</li>
+</ul>
+<span class="kick">Does not claim</span>
+<p>Jobs, placements or revenue; that one proof ends the anxiety; that diagnosis removes execution difficulty; that coders, no-coders and founders need the same build help.</p>
+</div></details>
+
+<h3>6 · Stress test scorecard</h3>
+<div class="tw compact"><table><thead><tr><th>Assumption</th><th>What the interview and personas said</th><th>Status</th></tr></thead><tbody>
+<tr><td>Selection and scoping is the main bottleneck</td><td>The interviewee stopped at defining the user, not at building. Two of three personas confirmed.</td><td>Validated</td></tr>
+<tr><td>A rupture event turns a browser into a buyer</td><td>The rupture (a peer's LinkedIn post) led to more consumption, not a purchase.</td><td>Weakened: needs a visible path right after the rupture</td></tr>
+<tr><td>One workflow proof is worth the program</td><td>Hunger for completion is real; "one workflow proof" sounds thin.</td><td>Weakened: package it as a portfolio artifact</td></tr>
+</tbody></table></div>
+
+<h3>7 · Top risks going into the MVP</h3>
+<ul>
+  <li>Students diagnose and still do not build. Then the product needs a heavier build sprint.</li>
+  <li>The proof does not land as a career win without repackaging.</li>
+  <li>Aarav avoids talking to real users because it feels riskier than another video. If fewer than 6 finish their conversations by Day 5, the thesis is revised.</li>
+</ul>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The Manual MVP Plan</h2>
+<p class="lead">21 days, 10 users, ₹21,000. No software built.</p>
+
+<h3>Who</h3>
+<p>Past 100xEngineers students and first and second degree connections. One screening question:</p>
+<div class="call"><p>"Tell me about the last AI project you seriously tried to build. What triggered it, what did you do first, where exactly did you stop, and what did you do after?"</p></div>
+<p>Accept only a specific stalled attempt. Reject "I've been exploring AI", validated founders and passive learners. Screen 12 to 14 to land 10.</p>
+
+<h3>What, day by day</h3>
+<div class="tw compact"><table><thead><tr><th>Days</th><th>Action</th><th>Output</th></tr></thead><tbody>
+<tr><td>0</td><td>Paid intake and screening</td><td>10 paid students</td></tr>
+<tr><td>1 to 2</td><td>Diagnosis call, then rank 5 to 7 real workflows on frequency, pain, access, AI fit, proof speed</td><td>One workflow, one user</td></tr>
+<tr><td>3 to 5</td><td>Talk to 2 people in that workflow. No pitching, only study the current process</td><td>Real evidence</td></tr>
+<tr><td>6 to 7</td><td>Map the workflow, scope the smallest AI version. <b>Gate:</b> one user, task, bottleneck, input, output, metric</td><td>One-page build brief</td></tr>
+<tr><td>8 to 14</td><td>Build sprint, code or no-code. Works on 3 realistic inputs</td><td>Testable prototype</td></tr>
+<tr><td>15 to 16</td><td>Show it to 1 to 2 real users; write a before-and-after proof statement</td><td>Proof of value</td></tr>
+<tr><td>17 to 21</td><td>Case study, 3 to 5 minute Loom, review, Demo Day</td><td>"AI Workflow Proof 01" folder</td></tr>
+</tbody></table></div>
+<p>Missed the Day 7 gate: a 20-minute rescue call (narrow to a weekly task, take a standard archetype, or step back to observer). Still unscoped by Day 9: out of the sprint.</p>
+
+<h3>Price</h3>
+<p>₹21,000 upfront. Full refund until Day 2 if no viable workflow is found. No refunds after Day 3. Did every step and still no proof: 7 more days of support, free.</p>
+
+<h3>Success criteria, fixed before Day 1</h3>
+<div class="tw compact"><table><thead><tr><th>Measure, at n = 10</th><th>Weak</th><th>Mixed</th><th>Strong</th></tr></thead><tbody>
+<tr><td>Complete a proof by Day 21</td><td>&lt; 5</td><td>5 to 6</td><td>7+</td></tr>
+<tr><td>Cross the Day 7 gate and reach a prototype</td><td>&lt; 6</td><td>6 to 7</td><td>8+</td></tr>
+<tr><td>"Would you show this to an employer or client?" Yes</td><td>&lt; 5</td><td>5 to 6</td><td>8+</td></tr>
+<tr><td>Name proof, not placement, as the reason at intake</td><td>&lt; 5</td><td>5 to 6</td><td>7+</td></tr>
+<tr><td>Leave Day 6 with a scoped workflow</td><td>&lt; 7</td><td>7 to 8</td><td>9+</td></tr>
+</tbody></table></div>
+<p><b>Strong</b> (3+ strong, none weak): run Cohort 2 at ₹35,000. <b>Mixed:</b> fix the phase that broke, rerun with 10. <b>Weak</b> (2+ weak): stop and go back to the evidence audit.</p>
+
+<h3>Kill conditions, checked during the pilot</h3>
+<div class="tw compact"><table><thead><tr><th>Tripwire</th><th>When</th><th>What it means</th></tr></thead><tbody>
+<tr><td>Fewer than 7 paid</td><td>Before Day 1</td><td>The offer is not compelling. Do not start.</td></tr>
+<tr><td>Fewer than 6 log 2 real conversations</td><td>Day 5</td><td>The bottleneck is avoiding real users.</td></tr>
+<tr><td>Fewer than 6 scoped after rescue</td><td>Day 9</td><td>The diagnosis method is weak.</td></tr>
+<tr><td>Fewer than 5 submit any prototype</td><td>Day 14</td><td>Execution is the bottleneck. Thesis wrong.</td></tr>
+</tbody></table></div>
+<p>If one trips, stop and write it down. Do not improvise a rescue; it is the most useful data the pilot produces.</p>
+
+<details class="acc"><summary><span class="err">Cohort 2: is the founder the product?</span></summary><div class="b">
+<p>Two to three weeks later, a senior mentor runs the same playbook. The founder trains them, reviews recordings and attends Demo Day silently, but never rescues a student. If completions drop more than 20%, the founder was carrying the outcome: turn what they did into scripts and rubrics, and rerun. Cohort 1 must hand over every template, script and rubric it used.</p>
+</div></details>
+<details class="acc"><summary><span class="err">What the pilot is explicitly not doing</span></summary><div class="b">
+<ul>
+  <li>No new software, no automation of delivery, no course, no platform.</li>
+  <li>No students without a recent stalled attempt; no passive learners or validated founders.</li>
+  <li>No promises of jobs, income or revenue.</li>
+  <li>No building before a scoped workflow; no skipping user conversations.</li>
+  <li>No dashboards, logins, databases, agents or full SaaS. No polish.</li>
+  <li>No prototype counts without user feedback; no case study without a working demo.</li>
+  <li>No moving the success criteria once the pilot starts, and no scaling before n = 10 produces evidence.</li>
+</ul>
+</div></details>
+
+<div class="call"><p class="kick">The sentence at the end</p><p>Whatever the outcome, this pilot will tell us whether 10 genuine Aaravs will pay to go from AI confusion to one real workflow proof in 21 days, or whether the real bottleneck is deeper than workflow diagnosis.</p></div>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Now Yours</h2>
+<ol class="steps">
+  <li><a href="https://drive.google.com/file/d/1whXRBIFPSQn8iSIy5JIrVfZEHGmgVGX7/view?usp=sharing" target="_blank" rel="noopener">Run the coach on your own observation</a></li>
+  <li><a href="/#b2">Write your hypothesis that can fail</a></li>
+  <li><a href="/#b3">Run your manual MVP by hand for Assignment 1</a></li>
+</ol>
+<p>Aarav's pilot is a founder's plan with 10 paying users. Assignment 1 is smaller: 2 to 5 real people, by hand, in 21 days. Keep the same discipline: criteria and kill conditions written before Day 1.</p>
+</section>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · What to build: Discovery to MVP</span><a href="/#b2">Curriculum map</a></div></footer>
+</body>
+</html>

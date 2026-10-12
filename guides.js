@@ -15,6 +15,7 @@ var GUIDE_LINKS = {
   postRead: 'https://docs.google.com/document/d/1Lg8tmLADqTH9w7Cej0n7TcXa-Bd8m7u0VbaQXDbz5ns/edit?usp=sharing',
   practiceSet: 'https://docs.google.com/document/d/1J-Qi-nan-fYTur1LFu88AFSkyuBMNjHdlZKM7SdzdWM/edit?usp=sharing',
   aarav: 'https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l',
+  wtbExample: '/c8/module-2/what-to-build/aarav-example',  /* What to build: Aarav's Discovery to MVP, worked example */
   golden: 'https://docs.google.com/document/d/1qg8zt7yHflGM7ojtnUBSPj2e_I3ACYapztGZQnzJa_c/edit?tab=t.0',
   python: 'https://www.python.org/downloads/',
   vscode: 'https://code.visualstudio.com/download',
@@ -461,13 +462,13 @@ GUIDES.L6 = { all: {
   ],
   rule: 'Write before you reveal: every Pause and think needs a line from you. Do not open Supabase this week; the model is a paper exercise on purpose.',
   stages: [
-    {id:'board', name:'Your whiteboard', short:'Board', sub:'Practice set section 03',
-     intro:'The lecture\'s diagram for your Assignment 1 app (Track B: Aarav\'s), with a question mark in the storage box.',
+    {id:'board', name:'Your HLD', short:'HLD', sub:'Practice set section 03',
+     intro:'The high-level design from class, drawn for your Assignment 1 app (Track B: Aarav\'s, from memory), with a question mark in the storage box.',
      ticks:[
-       {id:'io', t:'User, input, process and output written down', link:'l06Board', linkLabel:'Your whiteboard'},
-       {id:'calls', t:'UI, backend and every API call drawn, each with address, action, key and package'},
+       {id:'io', t:'The user, with input and output marked', link:'l06Board', linkLabel:'Your HLD'},
+       {id:'calls', t:'Numbered, nested boxes, and every API call drawn with its address and where the key lives'},
        {id:'store', t:'Storage box drawn on the server, with a question mark inside'},
-       {id:'where', t:'Beside it: what decided where each piece lives'}
+       {id:'where', t:'A dashed zone per machine, and why each box lives there'}
      ]},
     {id:'aarav', name:'Aarav\'s model', short:'Aarav', sub:'Lab sections 0 to 5',
      intro:'The student is the builder; Aarav is the user. Tag the things in his chat, place the facts, pick the shape of every pair and place the pointer, sort rows from files. Section 5 draws the model from what you placed.',
@@ -494,12 +495,12 @@ GUIDES.L6 = { all: {
        {id:'self', t:'Five self-checks ticked, including one wrong state the model refuses'},
        {id:'files2', t:'Files my app stores, and the column with each link ("none" is fine)'},
        {id:'bridge', t:'My Lecture 4 API table with a table name beside every address', link:'l04ApiTable', linkLabel:'Your API table'},
-       {id:'fill', t:'My whiteboard\'s storage box filled with my tables', link:'l06Board', linkLabel:'Your whiteboard'}
+       {id:'fill', t:'My HLD\'s storage box filled with my tables', link:'l06Board', linkLabel:'Your HLD'}
      ]},
     {id:'submit', name:'Practice set', short:'Submit', sub:'Before Thu 15 Oct, 8:30 pm IST',
      intro:'Four items, posted in the Discord assignments channel. Earliest posts are reviewed first.',
      ticks:[
-       {id:'d1', t:'My whiteboard, storage box filled', link:'l06Submit', linkLabel:'What to submit'},
+       {id:'d1', t:'My HLD, storage box filled', link:'l06Submit', linkLabel:'What to submit'},
        {id:'d2', t:'Screenshot of Aarav\'s model with no dashed pieces'},
        {id:'d3', t:'Screenshot of the Arena at 6 / 6'},
        {id:'d4', t:'My model: picture, blueprint as text, files and bridge'},
@@ -507,7 +508,7 @@ GUIDES.L6 = { all: {
      ]}
   ],
   actions: [
-    {id:'oh', t:'Office hour, Thu 15 Oct, 8:30 pm IST', how:'Bring your whiteboard and the one pair you were unsure about. We walk through the models people posted.'},
+    {id:'oh', t:'Office hour, Thu 15 Oct, 8:30 pm IST', how:'Bring your HLD and the one pair you were unsure about. We walk through the models people posted.'},
     {id:'stretch', t:'Stretch: LinkedIn post automation', how:'A status cell and a one-to-one with a unique pointer.', link:'l06Arena', linkLabel:'The Arena'}
   ],
   next: 'Next: Lecture 7, Fri 16 Oct. The same tables, typed into Supabase, and a row that survives a refresh. Code track: FastAPI to Supabase. No-code track: Antigravity to Supabase.',
@@ -523,7 +524,7 @@ GUIDES.L6 = { all: {
     ['Lecture 6 overview', 'l06Hub', 'The lecture in one line and your path this week.'],
     ['The Modelling Lab', 'l06Lab', 'Eight sections. Everything happens here.'],
     ['Notes', 'l06Notes', 'The lecture, from the whiteboard to what is worth storing.'],
-    ['Practice set', 'l06Practice', 'Your whiteboard and the four deliverables.'],
+    ['Practice set', 'l06Practice', 'Your HLD and the four deliverables.'],
     ['Troubleshooting', 'l06Trouble', 'Every cross the checker can show, and the fix.'],
     ['Lecture 4 practice set, your API table', 'l04ApiTable', 'The addresses that become tables.']
   ],

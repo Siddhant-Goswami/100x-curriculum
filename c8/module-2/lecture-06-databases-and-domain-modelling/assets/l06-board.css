@@ -1,0 +1,41 @@
+/* Lecture 6 · hand-drawn whiteboard figures on the notes and practice set.
+   Same look as whiteboard.html: Caveat text, wobble filter, currentColor strokes. */
+.wbx{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:16px 18px 12px;margin:20px 0 18px}
+.wbx>.kick{margin:0 0 2px}
+.wbx>h3{font:500 18px/1.3 var(--sans);letter-spacing:-.01em;margin:0 0 10px}
+.wbx .sc{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.wbx .wb{min-width:640px}
+.wbx>p.cap{font-size:14.5px;color:var(--ink2);margin:6px 0 0;max-width:72ch}
+.wb{display:block;width:100%;height:auto;color:var(--ink);background:none;margin:0}
+.wb .ln *{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.wb .ln .dash{stroke:var(--line2);stroke-dasharray:6 9}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .arw{stroke:var(--ink3);stroke-width:2}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-pkg{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-key{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dot{fill:currentColor;stroke:none}
+.wb .tx text{font-family:Caveat,cursive;fill:currentColor;text-anchor:middle}
+.wb .tx .h{font-size:32px;font-weight:700}
+.wb .tx .s{font-size:24px;font-weight:500;fill:var(--ink2)}
+.wb .tx .m{font-size:22px;font-weight:700}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:13.5px;font-weight:500}
+.wb .tx .l{text-anchor:start}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-key{fill:var(--prob-ink)}.wb .tx .c-pkg{fill:var(--hum-ink)}.wb .tx .c-mute{fill:var(--ink3)}
+
+/* how to read the HLD: three short keys under the figure */
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 0}
+.keys div{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.45;color:var(--ink2)}
+.keys b{display:block;color:var(--ink);font-weight:600;margin-bottom:2px}
+@media (max-width:700px){.keys{grid-template-columns:1fr}}
+
+/* the one question, set big */
+.bigq{border:1.5px dashed var(--coral);border-radius:var(--r);background:var(--coral-soft);padding:18px 20px;margin:22px 0 18px}
+.bigq .kick{color:var(--coral-ink);margin:0 0 4px}
+.bigq .qq{font:700 34px/1.1 Caveat,cursive;color:var(--coral-ink);margin:0 0 8px}
+.bigq p{margin:0;max-width:68ch}
+.wb .ln .dsh{stroke-dasharray:7 8}

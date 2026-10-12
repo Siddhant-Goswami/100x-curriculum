@@ -1527,8 +1527,10 @@ function hubHTML(s){
   return '<a class="hub" href="'+esc(gl(hb.link))+'"><span><b>'+esc(hb.title)+'</b><i>'+esc(hb.sub||'')+'</i></span><em aria-hidden="true">→</em></a>'+
     (hb.more&&hb.more.length?'<div class="hubs">'+hb.more.filter(function(m){ return gl(m[0]); }).map(function(m){ return '<a href="'+esc(gl(m[0]))+'">'+esc(m[1])+'</a>'; }).join('')+'</div>':'');
 }
+/* What to build: the worked Aarav example sits on the discovery stop, the Assignment 1 bridge and the camp cards. */
+function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>See a worked example: Aarav, Discovery to MVP</b><i>The full coach run, condensed: discovery document and 21-day manual MVP plan</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function trackBitsHTML(s){
-  var h = hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + loHTML(s) + toolsHTML(s);
+  var h = (s.id==='b2'||s.id==='b3' ? wtbExampleHTML() : '') + hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + loHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
   if(cl) h += '<div class="cliff"><b>THE CLIFF</b>'+esc(cl)+'</div>';
   h += workHTML(s);
@@ -1565,13 +1567,14 @@ function rowHTML(s){
 }
 function regionCard(r){
   var C=CONTS[r.c];
-  var h = '<h2 id="ptitle">'+esc(r.name)+'</h2><div class="pills"><button type="button" class="pill terr" data-cont="'+C.id+'">'+esc(C.name)+' · '+esc(C.verif)+'</button></div><p>'+esc(r.desc)+'</p><h3>Stops</h3><div class="rows">'+r.stops.map(function(id){ return rowHTML(ST[id]); }).join('')+'</div>';
+  var h = '<h2 id="ptitle">'+esc(r.name)+'</h2><div class="pills"><button type="button" class="pill terr" data-cont="'+C.id+'">'+esc(C.name)+' · '+esc(C.verif)+'</button></div><p>'+esc(r.desc)+'</p>'+(r.c==='camp'?wtbExampleHTML():'')+'<h3>Stops</h3><div class="rows">'+r.stops.map(function(id){ return rowHTML(ST[id]); }).join('')+'</div>';
   openPanel('region:'+r.id, C.name+' · Region', C, h);
 }
 function contCard(C){
   var stops = TRAVEL.filter(function(s){ return s.cont===C; });
   var h = '<h2 id="ptitle">'+esc(C.name)+'</h2><div class="pills"><span class="pill terr">'+esc(C.verif)+'</span><span class="pill">'+esc(C.sub.split(' · ')[1])+'</span></div><p>'+esc(C.desc)+'</p>';
   h += '<div class="law"><b>THE QUESTION HERE</b>'+esc(C.q)+(C.id==='camp'?' If you cannot test it by hand, do not build it.':' Ask it of every step: how do I verify whether this output is correct?')+'</div>';
+  if(C.id==='camp') h += wtbExampleHTML();
   REGIONS.filter(function(r){ return r.c===C.id; }).forEach(function(r){ h += '<div class="grp" style="--ci:'+C.ci+';--soft:'+C.soft+'">'+esc(r.name)+'</div><div class="rows">'+r.stops.map(function(id){ return rowHTML(ST[id]); }).join('')+'</div>'; });
   openPanel('cont:'+C.id, 'Territory · '+stops.length+(stops.length===1?' stop':' stops'), C, h);
 }
