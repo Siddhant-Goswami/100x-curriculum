@@ -77,7 +77,7 @@
 
     /* Aarav: every mention in the prose links to his persona story, once per paragraph, list item or cell */
     var AARAV_STORY='https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.q14ehbx3chsg';
-    var skip='a,button,code,pre,kbd,samp,script,style,textarea,input,select,option,label,summary,svg,h1,h2,.top,footer,.toc,.mtoc,[role=button],[contenteditable],[draggable],[data-nolink]';
+    var skip='a,button,code,pre,kbd,samp,script,style,textarea,input,select,option,label,summary,svg,h1,h2,.top,footer,.toc,.mtoc,.kick,.tag,.q,.pill,.chip,[role=button],[contenteditable],[draggable],[data-nolink]';
     var done=new Set(), hits=[], tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentElement;return /\bAarav/.test(n.nodeValue)&&p&&!p.closest(skip)?1:3}});
     while(tw.nextNode()) hits.push(tw.currentNode);
     hits.forEach(function(n){
