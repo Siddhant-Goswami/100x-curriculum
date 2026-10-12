@@ -237,10 +237,10 @@
 .checks li.ok::before{content:"✓";color:var(--hum-ink);background:var(--hum-soft)}
 .checks li.sug::before{content:"·";color:var(--ink3);background:var(--bg2)}
 .checks li.sug{color:var(--ink2)}
-.done{border:1px solid color-mix(in srgb,var(--hum) 50%,var(--line));background:var(--hum-soft);border-radius:10px;padding:12px 14px;margin:0 0 12px;font-size:15px;display:flex;gap:12px;align-items:center}
-.done::before{content:"✓";font:700 14px var(--mono);color:#fff;background:var(--hum);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none}
-.done.not{background:var(--card);border-color:var(--line)}
-.done.not::before{content:"…";background:var(--bg2);color:var(--ink2)}
+div.done{border:1px solid color-mix(in srgb,var(--hum) 50%,var(--line));background:var(--hum-soft);border-radius:10px;padding:12px 14px;margin:0 0 12px;font-size:15px;display:flex;gap:12px;align-items:center}
+div.done::before{content:"✓";font:700 14px var(--mono);color:#fff;background:var(--hum);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none}
+div.done.not{background:var(--card);border-color:var(--line)}
+div.done.not::before{content:"…";background:var(--bg2);color:var(--ink2)}
 
 /* the Arena list */
 .briefs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px;margin:0 0 14px}

@@ -39,3 +39,8 @@
 .bigq .qq{font:700 34px/1.1 Caveat,cursive;color:var(--coral-ink);margin:0 0 8px}
 .bigq p{margin:0;max-width:68ch}
 .wb .ln .dsh{stroke-dasharray:7 8}
+.wb .ln .badge{fill:var(--ink);stroke:var(--ink);stroke-width:1.6}
+.wb .ln .badge.act{fill:var(--coral);stroke:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--card)}
+.wb .tx .bn.act{fill:#fff}
+.wb .ln .c-key{stroke:var(--prob)}

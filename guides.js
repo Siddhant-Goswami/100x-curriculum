@@ -70,7 +70,6 @@ var GUIDE_LINKS = {
   l06Submit: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03',
   l06Trouble: '/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting',
   l06Lab: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab',
-  l06Feel: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s0',
   l06Things: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s1',
   l06Facts: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s2',
   l06Links: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s3',
@@ -463,17 +462,16 @@ GUIDES.L6 = { all: {
   rule: 'Write before you reveal: every Pause and think needs a line from you. Do not open Supabase this week; the model is a paper exercise on purpose.',
   stages: [
     {id:'board', name:'Your HLD', short:'HLD', sub:'Top of the practice set',
-     intro:'The high-level design from class, drawn for your Assignment 1 app (no app yet? Aarav\'s, from memory), with a question mark in the storage box.',
+     intro:'The high-level design from class, drawn for your Assignment 1 app (no app yet? Aarav\'s, from memory), with storage drawn as a file on the server.',
      ticks:[
        {id:'io', t:'The user, with input and output marked', link:'l06Board', linkLabel:'Your HLD'},
        {id:'calls', t:'Numbered, nested boxes, and every API call drawn with its address and where the key lives'},
-       {id:'store', t:'Storage box drawn on the server, with a question mark inside'},
+       {id:'store', t:'Storage drawn as a file on the server'},
        {id:'where', t:'A dashed zone per machine, and why each box lives there'}
      ]},
-    {id:'aarav', name:'Aarav\'s model', short:'Aarav', sub:'Lab sections 0 to 5',
+    {id:'aarav', name:'Aarav\'s model', short:'Aarav', sub:'Lab sections 1 to 5',
      intro:'The student is the builder; Aarav is the user. Tag the things in his chat, place the facts, pick the shape of every pair and place the pointer, sort rows from files. Section 5 draws the model from what you placed.',
      ticks:[
-       {id:'feel', t:'Messages vanished on reopen, then came back from rows', how:'Section 0. Switch "save to a table" on for the second run.', link:'l06Feel', linkLabel:'Section 0'},
        {id:'things', t:'Six things found in Aarav\'s chat', how:'users, conversations, messages, workflows, diagnoses, tools. And a reason why "high-priority" is not one.', link:'l06Things', linkLabel:'Section 1'},
        {id:'facts', t:'Every fact placed on its table, the screenshot held back', link:'l06Facts', linkLabel:'Section 2'},
        {id:'links', t:'Five pairs shaped and their pointers placed; the trace lights up end to end', how:'workflow and tools is the many-to-many: a third table, workflow_tools.', link:'l06Links', linkLabel:'Section 3'},
