@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded',function(){
     $('#bpSheets',root).addEventListener('click',function(){ out.innerHTML=sheetsHTML(bld.get()); });
     $('#bpCsv',root).addEventListener('click',function(){ downloadCSVs(bld.get()); });
     $('#bpAarav',root).addEventListener('click',function(){
-      if(!confirm('Replace your tables with Aarav\'s model from section 5? (Track B)')) return;
+      if(!confirm('Replace your tables with Aarav\'s model from section 5?')) return;
       S.schemas.myapp=D.AARAV_MODEL.map(function(m){ return {id:uid('t'),name:m.name,columns:m.cols.map(function(c){ return {id:uid('c'),name:c[0],type:c[1]?'id':(c[0].indexOf('_at')>-1?'date and time':'text'),primary:c[1]==='pk',foreign:c[1]==='fk',fkRef:c[2]||'',required:true,unique:false}; })}; });
       /* point refs at ids */
       var byName={}; S.schemas.myapp.forEach(function(t){ byName[t.name]=t.id; }); S.schemas.myapp.forEach(function(t){ t.columns.forEach(function(c){ if(c.foreign&&byName[c.fkRef]) c.fkRef=byName[c.fkRef]; }); });

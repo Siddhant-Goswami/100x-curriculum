@@ -55,8 +55,8 @@ var GUIDE_LINKS = {
   l05Trouble: '/c8/module-2/lecture-05-building-apis/troubleshooting',
   l05Practice: '/c8/module-2/lecture-05-building-apis/practice-set',
   l05Steps: '/c8/module-2/lecture-05-building-apis/practice-set#s02',
-  l05Raw: '/c8/module-2/lecture-05-building-apis/practice-set#s03',
-  l05Log: '/c8/module-2/lecture-05-building-apis/practice-set#s04',
+  l05Raw: '/c8/module-2/lecture-05-building-apis/practice-set#hld',
+  l05Log: '/c8/module-2/lecture-05-building-apis/practice-set#s03',
   l05Verify: '/c8/module-2/lecture-05-building-apis/practice-set#s05',
   l05Submit: '/c8/module-2/lecture-05-building-apis/practice-set#s07',
   l05Stretch: '/c8/module-2/lecture-05-building-apis/practice-set#s08',
@@ -66,8 +66,8 @@ var GUIDE_LINKS = {
   l06Hub: '/c8/module-2/lecture-06-databases-and-domain-modelling/',
   l06Notes: '/c8/module-2/lecture-06-databases-and-domain-modelling/notes',
   l06Practice: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set',
-  l06Board: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03',
-  l06Submit: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s04',
+  l06Board: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#hld',
+  l06Submit: '/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03',
   l06Trouble: '/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting',
   l06Lab: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab',
   l06Feel: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s0',
@@ -443,12 +443,12 @@ GUIDES.L5 = { code: {
   kw: 'building apis backend requests post raw request sdk cushion groq gpt-oss-20b httpie gradio echo golden pair verify verifier prediction log 200 201 401 404 environment variable env key practice set track b aarav jargon public apis stretch'
 }};
 
-/* Lecture 6 · Databases and domain modelling · combined session, both tracks (10 October 2026).
+/* Lecture 6 · Databases and domain modelling · combined session (10 October 2026).
    Source: the lecture transcript, the Modelling Lab (forked from the C7 memory-lab) and the Lecture 6 row of the sheet. */
 GUIDES.L6 = { all: {
   hub: {link:'l06Hub', title:'Open the Lecture 6 pages', sub:'The Modelling Lab, practice set, notes and troubleshooting', more:[['l06Lab','The Modelling Lab'],['l06Practice','Practice set'],['l06Notes','Notes']]},
   name: 'What is worth storing?',
-  sub: 'After the lecture · 10 October 2026 · both tracks',
+  sub: 'After the lecture · 10 October 2026',
   deadline: 'Practice set',
   due: 'Before the office hour, Thu 15 Oct, 8:30 pm IST',
   keep: 'Aarav\'s app can think but cannot remember. Storage fixes that: start with a file, keep it on your server, and store only what your app\'s questions need. The lab turns "what is worth storing?" into three questions: what are the things, what does each have, how do they connect. Things become tables, facts become columns, links become pointers on the many side. Next week the same tables go into Supabase.',
@@ -462,8 +462,8 @@ GUIDES.L6 = { all: {
   ],
   rule: 'Write before you reveal: every Pause and think needs a line from you. Do not open Supabase this week; the model is a paper exercise on purpose.',
   stages: [
-    {id:'board', name:'Your HLD', short:'HLD', sub:'Practice set section 03',
-     intro:'The high-level design from class, drawn for your Assignment 1 app (Track B: Aarav\'s, from memory), with a question mark in the storage box.',
+    {id:'board', name:'Your HLD', short:'HLD', sub:'Top of the practice set',
+     intro:'The high-level design from class, drawn for your Assignment 1 app (no app yet? Aarav\'s, from memory), with a question mark in the storage box.',
      ticks:[
        {id:'io', t:'The user, with input and output marked', link:'l06Board', linkLabel:'Your HLD'},
        {id:'calls', t:'Numbered, nested boxes, and every API call drawn with its address and where the key lives'},
@@ -488,7 +488,7 @@ GUIDES.L6 = { all: {
        {id:'b3', t:'University grades, hospital assignments', how:'The fact of a pairing; history as a row.'}
      ]},
     {id:'yours', name:'Your model', short:'Yours', sub:'Lab section 7',
-     intro:'Track A: your Assignment 1 observation. Track B: load Aarav\'s model and add one table of your own.',
+     intro:'Your Assignment 1 app. No app yet? Load Aarav\'s model and add one table of your own.',
      ticks:[
        {id:'q3', t:'Three questions my data must answer, written first', link:'l06Yours', linkLabel:'Section 7'},
        {id:'tables', t:'My tables drawn, every pointer on the many side'},
@@ -511,7 +511,7 @@ GUIDES.L6 = { all: {
     {id:'oh', t:'Office hour, Thu 15 Oct, 8:30 pm IST', how:'Bring your HLD and the one pair you were unsure about. We walk through the models people posted.'},
     {id:'stretch', t:'Stretch: LinkedIn post automation', how:'A status cell and a one-to-one with a unique pointer.', link:'l06Arena', linkLabel:'The Arena'}
   ],
-  next: 'Next: Lecture 7, Fri 16 Oct. The same tables, typed into Supabase, and a row that survives a refresh. Code track: FastAPI to Supabase. No-code track: Antigravity to Supabase.',
+  next: 'Next: Lecture 7, Fri 16 Oct. The same tables, typed into Supabase, and a row that survives a refresh.',
   errors: [
     ['No table for …', 'The brief names a thing you have not given a table, or the name is too far from the brief\'s noun', 'Add it, or rename yours to the noun the brief uses'],
     ['… has no pointer to …', 'The link is in the brief but not in your tables', 'On the many side, add <other table>_id, tick points to, pick the table'],

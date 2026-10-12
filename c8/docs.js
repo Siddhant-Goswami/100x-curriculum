@@ -75,6 +75,18 @@
     var sr=$('#errsearch');
     if(sr) sr.addEventListener('input',function(){var q=sr.value.toLowerCase();$$('details.acc[data-q]').forEach(function(d){var hit=!q||d.dataset.q.toLowerCase().indexOf(q)>-1;d.style.display=hit?'':'none';if(q&&hit)d.open=true})});
 
+    /* Aarav: every mention in the prose links to his persona story, once per paragraph, list item or cell */
+    var AARAV_STORY='https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.q14ehbx3chsg';
+    var skip='a,button,code,pre,kbd,samp,script,style,textarea,input,select,option,label,summary,svg,h1,h2,.top,footer,.toc,.mtoc,[role=button],[contenteditable],[draggable],[data-nolink]';
+    var done=new Set(), hits=[], tw=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode:function(n){var p=n.parentElement;return /\bAarav/.test(n.nodeValue)&&p&&!p.closest(skip)?1:3}});
+    while(tw.nextNode()) hits.push(tw.currentNode);
+    hits.forEach(function(n){
+      var blk=n.parentElement.closest('p,li,td,th,dd,dt,h3,h4,blockquote,figcaption,div')||document.body; if(done.has(blk)) return;
+      var m=/\bAarav\b/.exec(n.nodeValue); if(!m) return; done.add(blk);
+      var a=document.createElement('a'); a.className='aarav'; a.href=AARAV_STORY; a.target='_blank'; a.rel='noopener'; a.title='Who is Aarav? Read his story'; a.textContent='Aarav';
+      var rest=n.splitText(m.index); rest.nodeValue=rest.nodeValue.slice(5); n.parentNode.insertBefore(a,rest);
+    });
+
     /* vote bars animate on view */
     var v=$('.vote');
     if(v){new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){$$('.bar i',v).forEach(function(i){i.style.width=i.dataset.w+'%'});o.disconnect()}})},{threshold:.3}).observe(v)}

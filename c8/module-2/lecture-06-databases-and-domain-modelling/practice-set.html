@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Practice Set: Databases and Domain Modelling | 100xEngineers</title>
-<meta name="description" content="Practice set after Lecture 6 of the 100xEngineers Cohort 8 Module 2, both tracks: draw your app's high-level design, then decide what is worth storing in the Modelling Lab, for Aarav and then for your own app.">
+<meta name="description" content="Practice set after Lecture 6 of the 100xEngineers Cohort 8 Module 2, draw your app's high-level design, then decide what is worth storing in the Modelling Lab, for Aarav and then for your own app.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -54,43 +54,15 @@
   <main>
 <details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
-  <p class="kick">Practice set · Follows Lecture 6 · Both tracks</p>
-  <h1>Databases and domain modelling</h1>
-  <p class="dek">Draw your app's high-level design with a question mark in the storage box. Then fill it in the Modelling Lab, first for Aarav, then for your app.</p>
-  <div class="meta"><span>Lecture 6 · Sat 10 Oct 2026</span><span>Due before the office hour, Thu 15 Oct, 8:30 pm IST</span><span>Post in the Discord assignments channel</span></div>
+  <p class="kick">Practice set · Lecture 6 · Databases and domain modelling</p>
+  <h1>Draw your app's HLD</h1>
+  <p class="dek">Every box, where it lives, and the calls between them. Then fill its storage box in the Modelling Lab.</p>
+  <div class="meta"><span>Due before the office hour, Thu 15 Oct, 8:30 pm IST</span></div>
 </div>
 
-<div class="call"><p class="kick">From the lecture to the lab</p><p>The lecture ended on one question: <b>what is worth storing?</b> Draw your high-level design and leave that box blank. Answer the question for Aarav in the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a>, then for your own app, and write the answer into the box.</p></div>
-
-<div class="scorebox">
-  <div class="score" data-for="sub"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/4</b></div><div class="l"><strong>Deliverables</strong>Section 04</div></div>
-</div>
-
-<section class="s" id="s01"><h2><span class="n">01</span>How It Works</h2>
-<ol class="steps">
-  <li><b><a href="#s03">Draw your HLD</a>.</b> About 20 minutes.</li>
-  <li><b>Do the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a>, sections 0 to 7.</b> About 90 minutes. Each section ends with a checkpoint that saves on this device.</li>
-  <li><b>Fill the storage box and post the <a href="#s04">four items</a></b> before Thu 15 Oct, 8:30 pm IST.</li>
-</ol>
-</section>
-
-<section class="s" id="s02"><h2><span class="n">02</span>Code Track and No-Code Track</h2>
-<p>Same lab, same deliverables. A table is a table whether a Python backend or Antigravity fills it.</p>
-<div class="trkpick">
-  <p class="kick">Which track are you on?</p>
-  <div class="opts">
-    <button type="button" data-v="a"><b>Track A · my own observation</b><small>Assignment 1 done. Draw and model your own app.</small></button>
-    <button type="button" data-v="b"><b>Track B · Aarav's workflow diagnoser</b><small>Assignment 1 not finished. Draw Aarav's app; section 7 loads his model and you add one table.</small></button>
-  </div>
-  <p style="margin:10px 0 0!important"><button type="button" class="reset" data-v="all">Show both tracks</button></p>
-</div>
-</section>
-
-<section class="s" id="s03"><h2><span class="n">03</span>Draw Your HLD</h2>
-<p>A high-level design (HLD) shows every box in an app, whose machine it lives on, and the calls between them. This is Aarav's, from class. Read it, then draw yours.</p>
-<figure class="wbx">
-<p class="kick">High-level design · Aarav's app</p>
-<h3>Every box, where it lives, and the calls between them</h3>
+<figure class="wbx" id="hld">
+<p class="kick">High-level design (HLD)</p>
+<h3>Aarav's app, as drawn in class</h3>
 <div class="sc"><svg class="wb" viewBox="0 0 1040 500" role="img" aria-label="High-level design of Aarav's app, in three zones. Aarav's machine: box 1 his laptop, holding box 2 Chrome, holding box 3 the UI. Aarav types his workflow in (input) and reads the plan (output). Your server: box 4 the server, which holds the Groq key, and box 5 the endpoint POST /diagnose, which turns a workflow into a plan. Groq's machine: box 6 the LLM, GPT-OSS-120B, at POST /chat/completions. Call 1 carries the workflow from the UI to POST /diagnose and the plan back. Call 2 carries the prompt and the key from the server to the LLM and the plan back. Box 7, storage, sits on your server under the endpoint, with save and fetch arrows and a question mark inside: a file, for now.">
   <g class="ln" filter="url(#wob)">
     <!-- zones: whose machine each box lives on -->
@@ -167,57 +139,50 @@
   <div><b>Arrows are API calls</b>Address, action, key, package. The address sits in the box the arrow reaches.</div>
 </div>
 </figure>
-<h3>Your turn</h3>
-<p>Draw the same picture for your Assignment 1 app (Track B: Aarav's, from memory). Paper or any drawing app.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Draw Yours</h2>
+<p>The same picture for your Assignment 1 app. No app yet? Draw Aarav's from memory. Paper or any drawing app.</p>
 <ul>
-  <li><b>The user:</b> what goes in (input) and what comes out (output)</li>
+  <li><b>The user:</b> input in, output out</li>
   <li><b>Numbered boxes, nested:</b> machine › program › piece</li>
-  <li><b>A dashed zone per machine:</b> the user's, yours, or someone else's</li>
-  <li><b>Every arrow is an API call:</b> its address and action in the box it reaches, and where the key lives</li>
+  <li><b>A dashed zone per machine:</b> the user's, yours, or someone else's, and why each box lives there</li>
+  <li><b>Every arrow is an API call:</b> its address in the box it reaches, and where the key lives</li>
   <li><b>Storage:</b> a box on your server with a question mark inside</li>
-  <li><b>Under each zone:</b> why those boxes live there (too big, private, or holds a key)</li>
 </ul>
-<div class="bigq"><p class="kick">Your question mark</p><p class="qq">What is worth storing?</p><p>Not everything that passes through your server. Only what your app needs to answer its questions next time, such as "Aarav's last plan". Store too much and you pay for it. Store too little and the app forgets.</p></div>
-<h3>Then: the Modelling Lab</h3>
-<p>The <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a> turns that question into three: <span class="q thing">what are the things?</span> <span class="q fact">what does each have?</span> <span class="q link">how do they connect?</span> Answer them for Aarav in sections 1 to 5, then for your app in section 7. Write your tables into the box in place of the question mark.</p>
+<div class="bigq"><p class="kick">Your question mark</p><p class="qq">What is worth storing?</p><p>Only what your app needs to answer its questions next time, such as "Aarav's last plan". Store too much and you pay for it. Store too little and the app forgets.</p></div>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Fill the Box in the Modelling Lab</h2>
+<p>The lab splits the question into three: <span class="q thing">what are the things?</span> <span class="q fact">what does each have?</span> <span class="q link">how do they connect?</span> Answer them for Aarav in sections 1 to 5, then for your app in section 7. Your tables replace the question mark.</p>
 <p><a class="btn coral" href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Open the Modelling Lab</a></p>
 </section>
 
-<section class="s" id="s04"><h2><span class="n">04</span>What to Submit</h2>
-<p>Tick each deliverable when it is ready. Ticks save on this device.</p>
+<section class="s" id="s03"><h2><span class="n">03</span>What to Submit</h2>
 <div data-stage="sub">
 <ul class="ck">
-<li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. Your HLD, storage box filled</span><span class="h"><span class="kick">Section 03 and lab section 7</span>A photo or screenshot. The storage box lists the tables from item 4.</span></label></li>
-<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. Aarav's model, from your own placements</span><span class="h"><span class="kick">Lab section 5</span>A screenshot of the picture with no dashed pieces, and the three questions ticked.</span></label></li>
-<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. The Arena: six briefs done</span><span class="h"><span class="kick">Lab section 6</span>A screenshot of the list showing 6 / 6 done. The stretch brief is optional.</span></label></li>
-<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Your model</span><span class="h"><span class="kick">Lab section 7</span><span class="trk a">Your picture, your three questions, and the five self-checks ticked. Add "Copy my blueprint as text", plus the files and the bridge lines.</span><span class="trk b">Aarav's model loaded, plus one table you added for your own idea, with its pointer in the right place. Add "Copy my blueprint as text".</span></span></label></li>
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. Your HLD, storage box filled with your tables</span><span class="h">A photo or screenshot.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. Aarav's model</span><span class="h"><span class="kick">Lab section 5</span>Screenshot with no dashed pieces.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. The Arena at 6 / 6</span><span class="h"><span class="kick">Lab section 6</span>Screenshot of the list.</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Your model</span><span class="h"><span class="kick">Lab section 7</span>Your picture and "Copy my blueprint as text".</span></label></li>
 </ul>
-<div class="stg"><span class="kick">Deliverables ready</span><div class="bar"><i></i></div><span class="num">0 / 4</span><button class="reset" type="button">Reset ticks</button></div>
+<div class="stg"><span class="kick">Ready</span><div class="bar"><i></i></div><span class="num">0 / 4</span><button class="reset" type="button">Reset ticks</button></div>
 </div>
+<p>Post all four in the Discord assignments channel before Thu 15 Oct, 8:30 pm IST. Bring your HLD to the office hour. Stuck in the lab? See <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting">troubleshooting</a>.</p>
 </section>
 
-<section class="s" id="s05"><h2><span class="n">05</span>Rules</h2>
-<details class="acc" open><summary>Write before you reveal.</summary><div class="b"><p>Every "Pause and think" box in the lab needs a line from you before the reveal opens. Keep what you wrote, even when the reveal disagrees. That gap is where you learn.</p></div></details>
-<details class="acc"><summary>Your questions decide what is worth storing.</summary><div class="b"><p>Write your three questions before any table. A column that no question needs is a column you do not store.</p></div></details>
-<details class="acc"><summary>Pointers on the many side. Always.</summary><div class="b"><p>One cell cannot hold many. If you want to put a list in a cell, you have found a thing that needs its own table.</p></div></details>
-<details class="acc"><summary>History is a row, not a cell.</summary><div class="b"><p>If the product must remember what was true before, never overwrite the old value. Make it a row with a time on it.</p></div></details>
-<details class="acc"><summary>No tool yet.</summary><div class="b"><p>Do not open Supabase this week. The model is a paper exercise on purpose: if you cannot describe a table in words, you cannot build it in any tool.</p></div></details>
-<details class="acc"><summary>LLM help: questions yes; the model no.</summary><div class="b"><p>Ask a model to explain a shape you do not get. Do not paste a brief in and copy tables out. Placing the pointers yourself is the point.</p></div></details>
-</section>
-
-<section class="s" id="s06"><h2><span class="n">06</span>Where to Post and How to Get Unblocked</h2>
-<p>Post all four items in the Discord assignments channel. Earliest posts are reviewed first. Ask questions in the channel, not in DMs. At the office hour on Thu 15 Oct, 8:30 pm IST, bring your HLD and the one pair you were unsure about. Stuck on the lab itself? See <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting">troubleshooting</a>.</p>
-<p><b>Next:</b> Lecture 7, Fri 16 Oct. The storage box gets real: these tables, typed into Supabase, and a row that survives a refresh.</p>
-<p class="sig">Decide what is worth storing before you pick where to store it.<small>Companion pages: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Lecture 6</a> · <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">notes</a> · <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">the lab</a> · <a href="/#L6">checklist on the map</a></small></p>
+<section class="s" id="s04"><h2><span class="n">04</span>Rules</h2>
+<ul>
+  <li>Write a line before every reveal in the lab, and keep it even when the reveal disagrees.</li>
+  <li>Questions before tables. A column no question needs is not worth storing.</li>
+  <li>Pointers go on the many side. A list in a cell means a missing table.</li>
+  <li>History is a row, not a cell.</li>
+  <li>No Supabase this week. Ask an LLM to explain, not to model for you.</li>
+</ul>
+<p class="sig">Decide what is worth storing before you pick where to store it.<small>Next: Lecture 7, Fri 16 Oct. These tables go into Supabase.</small></p>
 </section>
 
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Databases and domain modelling</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-  var r=document.querySelector('.trkpick .reset'); if(r) r.addEventListener('click',function(){ document.documentElement.setAttribute('data-track','all'); window.c8store.set('c8.track','all'); [].slice.call(document.querySelectorAll('.trkpick button[data-v]:not(.reset)')).forEach(function(b){ b.setAttribute('aria-pressed','false'); }); });
-});
-</script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 /* Lecture 6 · Databases and domain modelling · The Modelling Lab.
-   Content and exercise data. Plain script, no modules. Both tracks read the same words.
+   Content and exercise data. Plain script, no modules. One set of words for every student.
    The student is the builder. Aarav is the user: an analyst at an IT company in India
    whose Monday workflow is Jira, dashboard, report, Slack (the golden pair from Lecture 3). */
 
@@ -10,7 +10,7 @@ L06.AARAV_IN = 'Every Monday I open Jira to check my weekly to-dos. I pick the h
 L06.AARAV_PLAN = "Repeatable steps I found:\n1. Open Jira and list this week's to-dos\n2. Pick the high-priority tasks\n3. Pull numbers from the dashboard\n4. Write a short report\n5. Send the report on Slack\n\nThis week: save one Jira filter for your high-priority to-dos.";
 L06.AARAV_PLAN_CASUAL = "Quick version: let Jira do the listing (one saved filter), you do the picking. Export the dashboard the same way each week, draft the report with the app, and keep the Slack send in your hands until you trust the draft.";
 
-/* ---------- column types offered in the builder: plain words, the same for both tracks ---------- */
+/* ---------- column types offered in the builder: plain words ---------- */
 L06.COL_TYPES = ['text','number','yes/no','date and time','id'];
 
 /* ---------- Section 1 · the things: the transcript with tappable words ----------

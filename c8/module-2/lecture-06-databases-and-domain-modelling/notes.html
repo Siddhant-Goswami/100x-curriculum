@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lecture Notes: Databases and Domain Modelling | 100xEngineers</title>
-<meta name="description" content="Lecture 6 notes, both tracks: the whiteboard so far, where each piece of an app should live, an app that can think but cannot remember, the storage box derived from a single file, why it lives on your server, the high-level design, and how to decide what is worth storing with things, facts and links.">
+<meta name="description" content="Lecture 6 notes: the whiteboard so far, where each piece of an app should live, an app that can think but cannot remember, the storage box derived from a single file, why it lives on your server, the high-level design, and how to decide what is worth storing with things, facts and links.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -50,11 +50,11 @@
   </defs>
 </svg>
 <div class="wrap grid">
-  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/whiteboard">The lecture on a whiteboard</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03">Draw your HLD</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">The Modelling Lab</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></div></div></aside>
+  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/whiteboard">The lecture on a whiteboard</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#hld">Draw your HLD</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">The Modelling Lab</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></div></div></aside>
   <main>
 <details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
-  <p class="kick">Lecture notes · Lecture 6 · Both tracks</p>
+  <p class="kick">Lecture notes · Lecture 6</p>
   <h1>It can think. It cannot remember.</h1>
   <p class="dek">Where each piece of an app lives, the storage box we added, and the question it leaves open: what is worth storing?</p>
   <div class="meta"><span>Sat 10 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span></div>
@@ -213,7 +213,7 @@
 </div>
 </figure>
 <p>Read it as one request. Aarav types his workflow into the UI (input). Call 1 takes it to <code>POST /diagnose</code> on your server. The server adds the key and makes call 2 to the LLM. The plan comes back the same way (output). Box 7 is new this week, and it is still a question mark.</p>
-<p>Now draw one for your own app: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03">your HLD</a> in the practice set.</p>
+<p>Now draw one for your own app: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#hld">your HLD</a> in the practice set.</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>The Question Mark: What Is Worth Storing?</h2>
@@ -257,7 +257,7 @@
 </section>
 
 <section class="s" id="s13"><h2><span class="n">13</span>Next: The Storage Box Gets Real</h2>
-<p>Lecture 7, Fri 16 Oct. The code track connects the FastAPI backend to Supabase. The no-code track has Antigravity do it. Both type these tables in and watch a row survive a refresh.</p>
+<p>Lecture 7, Fri 16 Oct. These tables go into Supabase, and a row survives a refresh.</p>
 <h3>Words</h3>
 <div class="gl">
   <div class="w"><b>Client side</b><span>The user's machine. The user can wipe anything stored there, and anyone can read it.</span></div>

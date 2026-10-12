@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Modelling Lab | 100xEngineers</title>
-<meta name="description" content="Lecture 6 practice lab for both tracks: decide what is worth storing. Feel an app forget, then build Aarav's data model by hand, one question at a time: what are the things, what does each have, how do they connect. Then model your own app.">
+<meta name="description" content="Lecture 6 practice lab: decide what is worth storing. Feel an app forget, then build Aarav's data model by hand, one question at a time: what are the things, what does each have, how do they connect. Then model your own app.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
   <main>
 <details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
-  <p class="kick">Lecture 6 · Databases and domain modelling · Practice lab · Both tracks</p>
+  <p class="kick">Lecture 6 · Databases and domain modelling · Practice lab</p>
   <h1>The Modelling Lab</h1>
   <p class="dek">What is worth storing? Eight short sections answer it, first for Aarav and then for your app. Each ends with a checkpoint.</p>
   <div class="meta"><span>About 90 minutes</span><span>Nothing to install</span><span>Saves on this device</span></div>
@@ -169,7 +169,7 @@
 
 <!-- ============ 7 ============ -->
 <section class="s" id="s7"><h2><span class="n">07</span>Your model</h2>
-<p>The same three questions, pointed at the app on your whiteboard. What you build here is what goes in its storage box. Track A: your Assignment 1 observation. Track B: load Aarav's model and add one table of your own.</p>
+<p>The same three questions, pointed at the app on your HLD. What you build here goes in its storage box. No app yet? Load Aarav's model and add one table of your own.</p>
 <div id="bp">
 <div class="qs" style="grid-template-columns:1fr">
   <label>In one line, what does your app do?<input type="text" data-bp="desc" placeholder="e.g. A user pastes a messy weekly workflow and gets back a plan to automate part of it."></label>
@@ -185,7 +185,7 @@
   <div class="fact"><p class="kick">2 · what each has</p><b>The facts to recreate one</b><span>Those are its columns. A fact that only describes something else is not a table.</span></div>
   <div class="link"><p class="kick">3 · how they connect</p><b>Name the shape of every pair</b><span>A pointer on the many side; unique if one-to-one; a third table if many-to-many.</span></div>
 </div>
-<div class="wtb"><button type="button" class="btn ghost small" id="bpAdd">+ table</button><button type="button" class="btn ghost small" id="bpAarav">Load Aarav's model (Track B)</button><button type="button" class="btn ghost small" id="bpReset">Start again</button><span class="sp">pointers go on the many side</span></div>
+<div class="wtb"><button type="button" class="btn ghost small" id="bpAdd">+ table</button><button type="button" class="btn ghost small" id="bpAarav">Load Aarav's model</button><button type="button" class="btn ghost small" id="bpReset">Start again</button><span class="sp">pointers go on the many side</span></div>
 <div id="bpBuilder"></div>
 <div class="btnrow" style="margin:14px 0"><button type="button" class="btn" id="bpEr">Picture</button><button type="button" class="btn ghost" id="bpSheets">Sheets</button><button type="button" class="btn ghost" id="bpCsv">Download the sheets</button><button type="button" class="btn ghost" id="bpCopy">Copy my blueprint as text</button></div>
 <div id="bpOut"></div>
@@ -203,7 +203,7 @@
 </ul>
 </div>
 <div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c7"><label for="c7"><span class="t">Checkpoint: my model drawn, three questions answered, files and bridge written</span></label></li></ul></div>
-<p class="sig">You cannot store what you cannot describe.<small>Write these tables into your whiteboard's storage box, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s04">submit the practice set</a>. Next week: these tables, typed into Supabase, and a row that survives a refresh.</small></p>
+<p class="sig">You cannot store what you cannot describe.<small>Write these tables into your HLD's storage box, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s04">submit the practice set</a>. Next week: these tables, typed into Supabase, and a row that survives a refresh.</small></p>
 <p><button type="button" class="reset" id="labReset">Reset the whole lab</button></p>
 </section>
 

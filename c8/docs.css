@@ -25,6 +25,8 @@ html{scroll-behavior:smooth;scroll-padding-top:72px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:var(--coral-ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 a:hover{color:var(--coral)}
+a.aarav{color:inherit;text-decoration-style:dotted;text-decoration-color:var(--coral)}
+a.aarav:hover{color:var(--coral-ink)}
 button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 code,kbd{font-family:var(--mono);font-size:.88em;background:var(--bg2);padding:.1em .4em;border-radius:5px;border:1px solid var(--line)}
