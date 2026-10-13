@@ -13,85 +13,85 @@ L06.AARAV_PLAN_CASUAL = "Quick version: let Jira do the listing (one saved filte
 /* ---------- column types offered in the builder: plain words ---------- */
 L06.COL_TYPES = ['text','number','yes/no','date and time','id'];
 
-/* ---------- Section 1 · the things: the transcript with tappable words ----------
+/* ---------- Level 1 · the things: the transcript with tappable words ----------
    role: 'thing' | 'fact' | 'neither' | 'file'
    ent:  the entity a thing becomes (or the entity a fact belongs to) */
 L06.TOKENS = {
-  aarav:   {role:'thing', ent:'users',         why:'Aarav signs in, has his own history, can be one of many. He is a <b>user</b>: a thing with its own row.'},
-  conv1:   {role:'thing', ent:'conversations', why:'A conversation starts, holds messages, can be reopened or deleted on its own. It is a thing.'},
-  conv2:   {role:'thing', ent:'conversations', why:'Tuesday is a second conversation. Two of them already: that is the sign of a thing, not a fact.'},
-  msg1:    {role:'thing', ent:'messages',      why:'Each message is written, shown, and can be deleted on its own. It is a thing, and it belongs to a conversation.'},
-  msg2:    {role:'thing', ent:'messages',      why:'The app\'s reply is a message too. Same thing, different role.'},
-  wf:      {role:'thing', ent:'workflows',     why:'His weekly workflow is the thing the app diagnoses. It is created once and diagnosed many times, so it is a thing.'},
-  plan:    {role:'thing', ent:'diagnoses',     why:'A diagnosis (the plan) is generated, kept, and generated again tomorrow with the old one still there. Its own thing.'},
-  plan2:   {role:'thing', ent:'diagnoses',     why:'A second diagnosis of the same workflow. The old one survives as history, so each is its own row.'},
-  jira:    {role:'thing', ent:'tools',         why:'Jira appears in many workflows, and a workflow uses many tools. It is a thing we will connect in section 3.'},
-  dash:    {role:'thing', ent:'tools',         why:'The dashboard is another tool. Many workflows mention it.'},
-  slack:   {role:'thing', ent:'tools',         why:'Slack: a tool, like Jira. Keep it as a thing for section 3.'},
-  casual:  {role:'fact',  ent:'diagnoses',     why:'"Casual" describes one diagnosis. It cannot be created or deleted on its own. It is a fact: the tone of that plan.'},
-  time:    {role:'fact',  ent:'messages',      why:'9:12 am describes when that message was sent. A fact about the message.'},
-  hiprio:  {role:'neither',                    why:'"High-priority" is a word inside his message. The app does not create, find or change it on its own. Neither.'},
-  manager: {role:'neither',                    why:'His manager is a person in Aarav\'s life, not in your app. The app never stores a row about her. Neither, for now.'},
-  file:    {role:'file',  ent:'attachments',   why:'The screenshot is a thing (an attachment) but its bytes are not a row. Hold that thought for section 4.'}
+  aarav:   {role:'thing', ent:'users',         why:'Aarav signs in, has his own history, can be one of many. He is a <b>user</b>: a thing with its own row.', nudge:'He signs in, has his own history, and the app will have many people like him.'},
+  conv1:   {role:'thing', ent:'conversations', why:'A conversation starts, holds messages, can be reopened or deleted on its own. It is a thing.', nudge:'A conversation starts, holds messages, and can be reopened or deleted on its own.'},
+  conv2:   {role:'thing', ent:'conversations', why:'Tuesday is a second conversation. Two of them already: that is the sign of a thing, not a fact.', nudge:'Tuesday is a second one of the same kind. Two of a kind is a clue.'},
+  msg1:    {role:'thing', ent:'messages',      why:'Each message is written, shown, and can be deleted on its own. It is a thing, and it belongs to a conversation.', nudge:'This whole bubble is written, shown and deleted on its own, and there are many.'},
+  msg2:    {role:'thing', ent:'messages',      why:'The app\'s reply is a message too. Same thing, different role.', nudge:"The app's reply is a bubble too."},
+  wf:      {role:'thing', ent:'workflows',     why:'His weekly workflow is the thing the app diagnoses. It is created once and diagnosed many times, so it is a thing.', nudge:'The app diagnoses this, again and again. Does it live on its own?'},
+  plan:    {role:'thing', ent:'diagnoses',     why:'A diagnosis (the plan) is generated, kept, and generated again tomorrow with the old one still there. Its own thing.', nudge:'Generate a new plan tomorrow, and this one should survive.'},
+  plan2:   {role:'thing', ent:'diagnoses',     why:'A second diagnosis of the same workflow. The old one survives as history, so each is its own row.', nudge:'A second plan for the same workflow. Should it overwrite the first?'},
+  jira:    {role:'thing', ent:'tools',         why:'Jira appears in many workflows, and a workflow uses many tools. It is a thing you connect in Level 3.', nudge:'Jira shows up in more than one workflow. Something many workflows share.'},
+  dash:    {role:'thing', ent:'tools',         why:'The dashboard is another tool. Many workflows mention it.', nudge:'Like Jira: a tool more than one workflow uses.'},
+  slack:   {role:'thing', ent:'tools',         why:'Slack: a tool, like Jira. Keep it as a thing for Level 3.', nudge:'Like Jira: a tool.'},
+  casual:  {role:'fact',  ent:'diagnoses',     why:'"Casual" describes one diagnosis. It cannot be created or deleted on its own. It is a fact: the tone of that plan.', nudge:'Can anyone create or delete a "casual" on its own, or does it describe one plan?'},
+  time:    {role:'fact',  ent:'messages',      why:'9:12 am describes when that message was sent. A fact about the message.', nudge:'Does a time live on its own, or does it say when one message was sent?'},
+  hiprio:  {role:'neither',                    why:'"High-priority" is a word inside his message. The app does not create, find or change it on its own. Neither.', nudge:'It is a word inside his message. Does the app ever create, find or change a "high-priority" on its own?'},
+  manager: {role:'neither',                    why:'His manager is a person in Aarav\'s life, not in your app. The app never stores a row about her. Neither, for now.', nudge:'Is his manager someone who uses your app?'},
+  file:    {role:'file',  ent:'attachments',   why:'The screenshot is a thing (an attachment) but its bytes are not a row. Hold that thought for Level 4.', nudge:'It has a life of its own, so it is more than a fact. But can you type its bytes into a cell?'}
 };
 L06.TOKEN_ORDER = ['aarav','conv1','msg1','wf','jira','hiprio','dash','manager','slack','msg2','plan','time','file','conv2','casual','plan2'];
 L06.TARGET_ENTITIES = ['users','conversations','messages','workflows','diagnoses','tools'];
 
-/* ---------- Section 2 · what each thing has: fact cards to place ---------- */
+/* ---------- Level 2 · what each thing has: fact cards to place ---------- */
 L06.FACTS = [
-  {id:'name',        ent:'users',         why:'The user\'s name describes the user.'},
-  {id:'role',        ent:'messages',      why:'Who sent it: Aarav or the app. A fact about one message.'},
-  {id:'content',     ent:'messages',      why:'The words in the bubble. Strip the message away and "content" means nothing.'},
-  {id:'created_at',  ent:'messages',      why:'When that message was sent.'},
-  {id:'started_at',  ent:'conversations', why:'When this chat began. One per conversation.'},
-  {id:'description', ent:'workflows',     why:'Aarav\'s workflow, in his words. It is what the app diagnoses.'},
-  {id:'plan',        ent:'diagnoses',     why:'The generated plan is the body of a diagnosis.'},
-  {id:'tone',        ent:'diagnoses',     why:'Formal or casual, for one diagnosis.'},
-  {id:'screenshot',  ent:'hold',          why:'A screenshot is not a fact you can type into a cell. Section 4 decides where it goes.'}
+  {id:'name',        ent:'users',         why:'The user\'s name describes the user.', nudge:'Whose name? Which block is a person?'},
+  {id:'role',        ent:'messages',      why:'Who sent it: Aarav or the app. A fact about one message.', nudge:'Who sent it: Aarav or the app. Sent what?'},
+  {id:'content',     ent:'messages',      why:'The words in the bubble. Strip the message away and "content" means nothing.', nudge:'The words in one bubble.'},
+  {id:'created_at',  ent:'messages',      why:'When that message was sent.', nudge:'When was what sent? Think of 9:12 am.'},
+  {id:'started_at',  ent:'conversations', why:'When this chat began. One per conversation.', nudge:'Something that starts once and then holds messages.'},
+  {id:'description', ent:'workflows',     why:'Aarav\'s workflow, in his words. It is what the app diagnoses.', nudge:"Aarav's weekly routine, in his own words. Which block is that?"},
+  {id:'plan',        ent:'diagnoses',     why:'The generated plan is the body of a diagnosis.', nudge:'The text the app generates. Which block is generated?'},
+  {id:'tone',        ent:'diagnoses',     why:'Formal or casual, for one diagnosis.', nudge:'Formal or casual describes one generated plan.'},
+  {id:'screenshot',  ent:'hold',          why:'A screenshot is not a fact you can type into a cell. Level 4 decides where it goes.', nudge:'Can you type a screenshot into a cell? Put it on the coral block.'}
 ];
 L06.FACT_ENTITIES = ['users','conversations','messages','workflows','diagnoses'];
 
-/* ---------- Section 3 · how they connect ----------
+/* ---------- Level 3 · how they connect ----------
    Every link is two questions asked both ways: qa (one ta, many tb?) and qb (one tb, many ta?).
    The two answers give the shape; na and nb are the nudges for a wrong answer. */
 L06.PAIRS = [
-  {id:'uc', a:'user',         b:'conversations', ta:'users',         tb:'conversations', shape:'one-to-many', fk:{table:'conversations', ref:'users',     name:'user_id'},
+  {id:'uc', a:'user',         b:'conversations', ta:'users',         tb:'conversations', shape:'one-to-many', fk:{table:'conversations', ref:'users',     name:'user_id'}, names:['users_id','conversation_id','user_id'],
    qa:'Can one user have many conversations?', ab:'yes', na:'Aarav chatted on Monday and again on Tuesday: two conversations, one user.',
    qb:'Can one conversation belong to many users?', ba:'no', nb:'Only Aarav sees his chats. Each conversation has exactly one owner.',
    why:'One Aarav, many chats over the weeks. Each chat belongs to one user.'},
-  {id:'cm', a:'conversation', b:'messages',      ta:'conversations', tb:'messages',      shape:'one-to-many', fk:{table:'messages',      ref:'conversations', name:'conversation_id'},
+  {id:'cm', a:'conversation', b:'messages',      ta:'conversations', tb:'messages',      shape:'one-to-many', fk:{table:'messages',      ref:'conversations', name:'conversation_id'}, names:['message_id','conversation_id','conversations_id'],
    qa:'Can one conversation have many messages?', ab:'yes', na:'Monday\'s chat alone holds his workflow and the app\'s plan: two messages already.',
    qb:'Can one message sit in many conversations?', ba:'no', nb:'A bubble appears in exactly one chat.',
    why:'One chat holds many bubbles. Each bubble sits in exactly one chat.'},
-  {id:'uw', a:'user',         b:'workflows',     ta:'users',         tb:'workflows',     shape:'one-to-many', fk:{table:'workflows',     ref:'users',     name:'user_id'},
+  {id:'uw', a:'user',         b:'workflows',     ta:'users',         tb:'workflows',     shape:'one-to-many', fk:{table:'workflows',     ref:'users',     name:'user_id'}, names:['user_id','workflow_id','users_id'],
    qa:'Can one user have many workflows?', ab:'yes', na:'Aarav can describe his Monday report and, later, his Friday review.',
    qb:'Can one workflow belong to many users?', ba:'no', nb:'Each workflow is described by one person, in his own words.',
    why:'Aarav can describe more than one weekly workflow. Each belongs to him.'},
-  {id:'wd', a:'workflow',     b:'diagnoses',     ta:'workflows',     tb:'diagnoses',     shape:'one-to-many', fk:{table:'diagnoses',     ref:'workflows', name:'workflow_id'},
+  {id:'wd', a:'workflow',     b:'diagnoses',     ta:'workflows',     tb:'diagnoses',     shape:'one-to-many', fk:{table:'diagnoses',     ref:'workflows', name:'workflow_id'}, names:['diagnosis_id','workflows_id','workflow_id'],
    qa:'Can one workflow have many plans?', ab:'yes', na:'Monday\'s formal plan and Tuesday\'s casual one are both plans for the same workflow.',
    qb:'Can one plan be about many workflows?', ba:'no', nb:'Each plan diagnoses exactly one workflow.',
    why:'Regenerate the plan and the old one stays. Many plans per workflow, each about one workflow. History is why this is not one-to-one.'},
-  {id:'wt', a:'workflow',     b:'tools',         ta:'workflows',     tb:'tools',         shape:'many-to-many', join:{table:'workflow_tools', cols:['workflow_id','tool_id']},
+  {id:'wt', a:'workflow',     b:'tools',         ta:'workflows',     tb:'tools',         shape:'many-to-many', join:{table:'workflow_tools', cols:['workflow_id','tool_id']}, joins:['tools','workflow_tools','workflows'], ptrs:['tool_ids','workflow_id','workflow_tools_id','tool_id'],
    qa:'Can one workflow use many tools?', ab:'yes', na:'His Monday workflow uses Jira, the dashboard and Slack.',
    qb:'Can one tool appear in many workflows?', ba:'yes', nb:'Jira shows up in his Monday report and in his Friday review.',
    why:'Both sides are "many", so neither block can hold one pointer. A third block does: one row per pairing.'}
 ];
 L06.SHAPES = ['one-to-one','one-to-many','many-to-many'];
 
-/* ---------- Section 4 · rows or files ---------- */
+/* ---------- Level 4 · rows or files ---------- */
 L06.STORE_CARDS = [
-  {id:'name',    t:'Aarav\'s name',                   where:'row',  why:'A short text. It fits in a cell.'},
-  {id:'text',    t:'The words in a message',          where:'row',  why:'Text, even a long one, is a cell.'},
-  {id:'time',    t:'When the message was sent',       where:'row',  why:'A date and time: a cell.'},
-  {id:'shot',    t:'A screenshot of his Jira board',  where:'file', why:'An image is bytes, not words. It goes in file storage; the row keeps the link.'},
-  {id:'pdf',     t:'A 20-page process document',      where:'file', why:'A PDF is a file. Store it once, point at it from a row.'},
-  {id:'voice',   t:'A voice note describing the week',where:'file', why:'Audio is a file. The row holds where it is, who sent it and when.'},
-  {id:'plan',    t:'The generated plan',              where:'row',  why:'Text the app wrote: a cell on the diagnoses row.'},
-  {id:'meta',    t:'The file\'s name and size',       where:'row',  why:'Facts about a file are still facts: cells on the attachments row, next to the link.'}
+  {id:'name',    t:'Aarav\'s name',                   where:'row',  why:'A short text. It fits in a cell.', nudge:'A short piece of text. Does text fit in a cell?'},
+  {id:'text',    t:'The words in a message',          where:'row',  why:'Text, even a long one, is a cell.', nudge:'Even a long text is still text you can type.'},
+  {id:'time',    t:'When the message was sent',       where:'row',  why:'A date and time: a cell.', nudge:'A date and time is a value you can type.'},
+  {id:'shot',    t:'A screenshot of his Jira board',  where:'file', why:'An image is bytes, not words. It goes in file storage; the row keeps the link.', nudge:'An image is bytes, not words.'},
+  {id:'pdf',     t:'A 20-page process document',      where:'file', why:'A PDF is a file. Store it once, point at it from a row.', nudge:'Twenty pages of PDF are bytes.'},
+  {id:'voice',   t:'A voice note describing the week',where:'file', why:'Audio is a file. The row holds where it is, who sent it and when.', nudge:'Audio is bytes.'},
+  {id:'plan',    t:'The generated plan',              where:'row',  why:'Text the app wrote: a cell on the diagnoses row.', nudge:'The app wrote it as text.'},
+  {id:'meta',    t:'The file\'s name and size',       where:'row',  why:'Facts about a file are still facts: cells on the attachments row, next to the link.', nudge:'A name and a size are values you can type, even though they describe a file.'}
 ];
 
-/* ---------- Section 5 · the assembled model (what the sections build towards) ----------
-   cols: [name, kind, ref]  kind: 'pk' | 'fk' | '' ; src: which section proves the student placed it */
+/* ---------- Level 5 · the assembled model (what the levels build towards) ----------
+   cols: [name, kind, ref]  kind: 'pk' | 'fk' | '' ; src: which level proves the student placed it */
 L06.AARAV_MODEL = [
   {name:'users',          src:{ent:'aarav'},  cols:[['id','pk'],['name','', null,{fact:'name'}]]},
   {name:'conversations',  src:{ent:'conv1'},  cols:[['id','pk'],['user_id','fk','users',{pair:'uc'}],['started_at','',null,{fact:'started_at'}]]},
@@ -103,15 +103,38 @@ L06.AARAV_MODEL = [
   {name:'workflow_tools', src:{pair:'wt'},    cols:[['id','pk'],['workflow_id','fk','workflows',{pair:'wt'}],['tool_id','fk','tools',{pair:'wt'}],['how_often','']]}
 ];
 
-/* the Lecture 4 API table beside its tables */
-L06.API_BRIDGE = [
-  ['Create','POST','/workflows','workflows'],
-  ['Read','GET','/workflows/{id}','workflows'],
-  ['Create','POST','/workflows/{id}/diagnoses','diagnoses'],
-  ['Read','GET','/workflows/{id}/diagnoses','diagnoses']
-];
+/* ---------- Level 5 · the boss: answer the product's questions by following the arrows ---------- */
+L06.BOSS = {
+  qs:[
+    {q:'Show me Aarav\'s last conversation, with every message in order', path:['users','conversations','messages'], why:'users → conversations by user_id, then messages by conversation_id, ordered by created_at.'},
+    {q:'Show every plan this workflow ever got, oldest first', path:['workflows','diagnoses'], why:'diagnoses by workflow_id. History exists because a plan is a row, not a cell on the workflow.'},
+    {q:'Which screenshot went with which message?', path:['messages','attachments'], why:'attachments by message_id. The file itself sits behind file_url.'}
+  ],
+  /* your Lecture 4 API table: each address lands on a block */
+  bridge:[['POST','/workflows','workflows'],['GET','/workflows/{id}','workflows'],['POST','/workflows/{id}/diagnoses','diagnoses'],['GET','/workflows/{id}/diagnoses','diagnoses']]
+};
 
-/* ---------- Section 6 · the Arena: six briefs, one move each, plus a stretch ----------
+/* ---------- bonus rounds: quick calls and pause-and-think lines ---------- */
+L06.QUIZ = {
+  conv:{p:'Is "conversation" a thing in your app?',scn:'Aarav chats on Monday. On Tuesday he opens a fresh conversation. Each can be started, reopened and deleted.',
+    o:[['Yes, it earns its own block',1,'Created, read, reopened, deleted, each on its own, and many over time. A thing with its own row.'],['No, it just describes Aarav',0,'A conversation is not a fact about Aarav. You can create and delete each one, and there are many.']]},
+  tone:{p:'Is "casual" a thing?',scn:'On Tuesday Aarav asks for the plan in a more casual tone. Tones are not saved or reused anywhere.',
+    o:[['No, it describes a plan',1,'Nobody creates or deletes a "casual" on its own. It is the tone of one plan: a fact, so a column, not a block.'],['Yes, give it its own block',0,'It has no life of its own. It only describes one plan.']]},
+  time:{p:'Thing or fact: "9:12 am"?',scn:'Aarav\'s message went out at 9:12 am. The app\'s reply came a minute later, with its own time.',
+    o:[['A fact on the message',1,'Each message has exactly one time it was sent. One column on messages: created_at.'],['Its own thing',0,'Nobody creates or deletes a time on its own. It only says when one message was sent.']]},
+  attach:{p:'Thing or fact: "attachment"?',scn:'Aarav uploads a screenshot and reuses it in different conversations.',
+    o:[['Its own thing',1,'Created and deleted on its own, reused across conversations. A row of its own, pointing at the message it came with. Where its bytes go is Level 4.'],['A fact on the message',0,'It outlives the message and is reused. That life of its own makes it a thing.']]},
+  often:{p:'Where does "how often" live?',scn:'For each tool in a workflow, Aarav says how often he uses it there. Jira is daily in one workflow and monthly in another.',
+    o:[['On the workflow_tools row',1,'It describes one workflow-tool pairing, so it sits on the pairing row. Not on the tool, not on the workflow.'],['On the tools block',0,'Jira is daily in one workflow and monthly in another. One cell on tools cannot hold both.'],['On the workflows block',0,'A workflow uses several tools, each with its own frequency. One cell cannot hold them all.']]}
+};
+L06.THINK = {
+  t2:{p:'Aarav picks a tone for each plan. Today, tone is a fact on the plan. What would have to change in the product for tone to become a thing with its own block?',
+      reveal:'If users could save named tones and reuse them across plans, a tone would be created, read, updated and deleted on its own. It would pass the Level 1 test, so it would become a thing. The word does not decide. <b>What the product needs to do with it decides.</b>'},
+  t4:{p:'Aarav attaches a screenshot of his Jira board. Can it go in a column?',
+      reveal:'No. A column holds a value you can type: text, a number, a date, yes or no. A screenshot is bytes. It goes in <b>file storage</b>, and a row keeps the <b>link</b> to it, plus the facts about it: which message it came with, its name, when it arrived.'}
+};
+
+/* ---------- Level 6 · the Arena: six briefs, one move each, plus a stretch ----------
    Rubric words: attrs with role 'pk' or 'fk'; critical:true means the exercise's teaching point.
    required:false attrs are suggestions, never counted. */
 L06.BRIEFS = [
@@ -134,7 +157,7 @@ L06.BRIEFS = [
       {label:'one user, many workflows', fk:{table:'workflows',ref:'users'}},
       {label:'one workflow, many diagnoses (history)', fk:{table:'diagnoses',ref:'workflows'}}
     ]},
-    hints:['Five things. You placed every one of them in sections 1 to 3.','History means diagnoses is its own table with a pointer to its workflow. A plan column on workflows would be overwritten.','A pointer always sits on the many side: conversations carries user_id, messages carries conversation_id.']
+    hints:['Five things. You placed every one of them in Levels 1 to 3.','History means diagnoses is its own table with a pointer to its workflow. A plan column on workflows would be overwritten.','A pointer always sits on the many side: conversations carries user_id, messages carries conversation_id.']
   },
   {
     id:'petclinic', order:2, move:'one-to-many',

@@ -18,8 +18,11 @@
   function refTable(schema,ref){ return schema.find(function(t){ return t.id===ref || nameEq(t.name,ref); }); }
   function fkPointsAt(col,refEntity,schema){ if(!isFk(col)) return false; var t=refTable(schema,col.fkRef); return !!t && matchesAny(t.name,entityTargets(refEntity)); }
 
-  /* returns {done, checks:[{ok, structural, html}], suggestions:[html]} */
-  function check(schema, brief){
+  /* returns {done, checks:[{ok, structural, html}], suggestions:[html]}
+     opts.reveal false (the first check of a brief) keeps the answers out of the crosses:
+     no example pointer name, no "the pointer goes on ...", no missing column name. */
+  function check(schema, brief, opts){
+    var reveal=!opts || opts.reveal!==false;
     var rubric=brief.rubric, checks=[], suggestions=[];
     var byName={}; rubric.entities.forEach(function(e){ byName[e.name]=e; });
     function add(ok,html,structural){ checks.push({ok:!!ok, html:html, structural:structural!==false}); }
@@ -51,11 +54,12 @@
           if(col && fkPointsAt(col,refEntity,schema)) add(true,'<code>'+esc(table.name)+'.'+esc(col.name)+'</code> points to <code>'+esc(attr.ref)+'</code>.');
           else if(col && isFk(col)) add(false,'<code>'+esc(table.name)+'.'+esc(col.name)+'</code> is a pointer but does not point to <code>'+esc(attr.ref)+'</code>. Pick the table.');
           else if(col) add(false,'<code>'+esc(table.name)+'.'+esc(col.name)+'</code> should be a pointer to <code>'+esc(attr.ref)+'</code>. Tick "points to" and pick the table.');
-          else add(false,'<code>'+esc(table.name)+'</code> has no pointer to <code>'+esc(attr.ref)+'</code> (for example <code>'+esc(attr.name)+'</code>). Without it the link does not exist.');
+          else if(reveal) add(false,'<code>'+esc(table.name)+'</code> has no pointer to <code>'+esc(attr.ref)+'</code> (for example <code>'+esc(attr.name)+'</code>). Without it the link does not exist.');
+          else add(false,'Nothing links <code>'+esc([table.name,attr.ref].sort()[0])+'</code> and <code>'+esc([table.name,attr.ref].sort()[1])+'</code> yet. Without a pointer the link does not exist.');
         } else if(col){
           if(attr.critical) add(true,'<code>'+esc(table.name)+'.'+esc(col.name)+'</code> is in the right place.');
         } else if(attr.critical){
-          add(false,'<code>'+esc(table.name)+'</code> is missing <b>'+esc(attr.name)+'</b>, and that is the point of this brief. It describes exactly this row.');
+          add(false,reveal?'<code>'+esc(table.name)+'</code> is missing <b>'+esc(attr.name)+'</b>, and that is the point of this brief. It describes exactly this row.':'A fact this brief is about is missing. Re-read the brief\'s last line: which row does it describe?');
         } else {
           suggestions.push('<code>'+esc(table.name)+'</code> could use a <b>'+esc(attr.name)+'</b> column.');
         }
@@ -68,7 +72,7 @@
       var refEntity=byName[rel.fk.ref]||{name:rel.fk.ref};
       if(!tbl) return;
       var fks=tbl.columns.filter(function(c){ return fkPointsAt(c,refEntity,schema); });
-      if(!fks.length){ add(false,'Link missing: <b>'+esc(rel.label)+'</b>. The pointer goes on <code>'+esc(rel.fk.table)+'</code>'+(rel.fk.unique?' and must be unique':'')+'.'); return; }
+      if(!fks.length){ add(false,'Link missing: <b>'+esc(rel.label)+'</b>. '+(reveal?'The pointer goes on <code>'+esc(rel.fk.table)+'</code>'+(rel.fk.unique?' and must be unique':'')+'.':'Which side has only one to point at?')); return; }
       if(rel.fk.unique){
         var uq=fks.some(function(c){ return c.unique; });
         if(!uq) add(false,'<b>'+esc(rel.label)+'</b> means one row each, so <code>'+esc(tbl.name)+'.'+esc(fks[0].name)+'</code> must be marked unique.');

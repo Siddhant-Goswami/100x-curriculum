@@ -12,6 +12,17 @@
 <link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
 <link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-board.css">
 <script src="/c8/docs.js"></script>
+<script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-data.js"></script>
+<script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-grader.js"></script>
+<script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-levels.js"></script>
+<script>
+/* deliverables 2 to 4 are earned in the lab, not ticked by hand: copy the lab's state into this page's ticks
+   before docs.js paints them (its DOMContentLoaded handler reads the same key) */
+(function(){ try{
+  var st=window.c8store, S=window.L06Lv.migrate(st.get('c8.l06.lab',{})), ck=st.get('c8.ck.l06-lab',{}), key='c8.ck.l06-practice-set', t=st.get(key,{});
+  var d=window.L06Lv.deliverables(S,ck); ['d2','d3','d4'].forEach(function(k){ t[k]=!!d[k]; }); st.set(key,t);
+}catch(e){} })();
+</script>
 </head>
 <body data-page="l06-practice-set">
 <div id="prog" aria-hidden="true"></div>
@@ -167,7 +178,7 @@
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>Fill the Box in the Modelling Lab</h2>
-<p>The lab splits the question into three: <span class="q thing">what are the things worth storing?</span> <span class="q fact">what does each have?</span> <span class="q link">how do they connect?</span> Answer them for Aarav in sections 1 to 5, then for your app in section 7. Your tables are what go in the file.</p>
+<p>The lab splits the question into three: <span class="q thing">what are the things worth storing?</span> <span class="q fact">what does each have?</span> <span class="q link">how do they connect?</span> Answer them for Aarav in Levels 1 to 5, then for your app in Level 7. Your tables are what go in the file.</p>
 <p><a class="btn coral" href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Open the Modelling Lab</a></p>
 </section>
 
@@ -175,9 +186,9 @@
 <div data-stage="sub">
 <ul class="ck">
 <li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. Your HLD, storage box filled with your tables</span><span class="h">A photo or screenshot.</span></label></li>
-<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. Aarav's model</span><span class="h"><span class="kick">Lab section 5</span>Screenshot with no dashed pieces.</span></label></li>
-<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. The Arena at 6 / 6</span><span class="h"><span class="kick">Lab section 6</span>Screenshot of the list.</span></label></li>
-<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Your model</span><span class="h"><span class="kick">Lab section 7</span>Your picture and "Copy my blueprint as text".</span></label></li>
+<li><input type="checkbox" id="d2" disabled><label for="d2"><span class="t">2. Aarav's model</span><span class="h"><span class="kick">Lab level 5 · ticks itself when you beat it</span>Screenshot the board with no dashed pieces.</span></label></li>
+<li><input type="checkbox" id="d3" disabled><label for="d3"><span class="t">3. The Arena at 6 / 6</span><span class="h"><span class="kick">Lab level 6 · ticks itself at 6 / 6</span>Screenshot of the briefs with their stars.</span></label></li>
+<li><input type="checkbox" id="d4" disabled><label for="d4"><span class="t">4. Your model</span><span class="h"><span class="kick">Lab level 7 · ticks itself when you finish it</span>Your picture and "Copy my blueprint as text".</span></label></li>
 </ul>
 <div class="stg"><span class="kick">Ready</span><div class="bar"><i></i></div><span class="num">0 / 4</span><button class="reset" type="button">Reset ticks</button></div>
 </div>

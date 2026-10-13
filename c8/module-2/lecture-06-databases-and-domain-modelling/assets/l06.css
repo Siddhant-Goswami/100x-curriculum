@@ -438,3 +438,130 @@ div.done.not::before{content:"…";background:var(--bg2);color:var(--ink2)}
 .exnav a{font:500 12.5px var(--sans);text-decoration:none;color:var(--ink2);border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px}
 .exnav a:hover{color:var(--ink);border-color:var(--line2)}
 .exnav a b{font:500 11px var(--mono);color:var(--coral);margin-right:6px}
+
+/* ================= one game, seven levels ================= */
+/* the level map: replaces the checkpoint ring and the section pills */
+.lvmap{margin:0 0 26px}
+.lvsum{font:13px var(--mono);color:var(--ink2);margin:0 0 10px}
+.lvsum b{color:var(--ink);font-weight:700}
+.lvsum .stars{letter-spacing:0}
+.lvtiles{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+@media (max-width:900px){.lvtiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:520px){.lvtiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lvt{display:flex;flex-direction:column;gap:2px;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 10px;min-height:92px;transition:border-color .15s,transform .15s}
+.lvt:hover{border-color:var(--ink3);transform:translateY(-1px)}
+.lvt .ln{font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.lvt b{font-weight:600;font-size:13.5px;line-height:1.25}
+.lvt .ls{margin-top:auto;font-size:13px}
+.lvt .lp,.lvt .lpr{font:11.5px var(--mono);color:var(--ink3)}
+.lvt.done{border-color:color-mix(in srgb,var(--hum) 55%,var(--line));background:var(--hum-soft)}
+.lvt.done .ln{color:var(--hum-ink)}
+.lvt.next{border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft)}
+.lvt.next .ln{color:var(--coral-ink)}
+.lvt.later{opacity:.72}
+
+/* level cards: art tiles for every level */
+.gc-art .gl{background:var(--q-link-soft);border:1.5px solid var(--q-link)}
+.gc-art .gx{background:var(--coral-soft);border:1.5px solid var(--coral)}
+.gc-need{font-size:13.5px;color:var(--coral-ink);margin:0 0 8px}
+.gcard:empty{display:none}
+
+/* side layout: a card or task on the left, the board on the right */
+.g-main.side{grid-template-columns:minmax(260px,380px) minmax(0,1fr)}
+.g-side,.g-stage{overflow:auto;padding:20px 24px}
+.g-side{border-right:1px solid var(--line);background:var(--card)}
+.g-stage{background:var(--bg2)}
+.g-stage .wbx{margin:0 0 12px}
+.g-stage .bins{margin:0 0 14px}
+@media (max-width:820px){.g-main.side{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}.g-side{border-right:0;border-bottom:1px solid var(--line);padding:12px 16px;max-height:46vh}.g-stage{padding:12px 16px}}
+.g-main.arena{grid-template-columns:minmax(260px,340px) minmax(0,1fr)}
+@media (max-width:820px){.g-main.arena .g-side{max-height:34vh}}
+.fcard{border:1.5px solid var(--q-fact);background:var(--q-fact-soft);border-radius:12px;padding:18px;margin:0 0 16px;box-shadow:var(--float)}
+.fname{display:block;font:700 26px var(--mono);color:var(--q-fact-ink);margin:0 0 8px;word-break:break-word}
+.fname.sm{font:600 19px/1.35 var(--sans);color:var(--ink)}
+.fcard p{margin:0;font-size:14.5px;color:var(--ink2)}
+.fcard .fcount{font:12px var(--mono);color:var(--ink3);margin-top:8px}
+.lv4 .fcard{border-color:var(--coral);background:var(--coral-soft)}
+.g-bank{margin:0}
+.g-bank .fc{font-size:12px;padding:4px 9px}
+.g-stage .bin{transition:border-color .15s,background .15s,transform .1s}
+.g-stage .bin:hover,.g-stage .bin:focus-visible{border-color:var(--coral);outline:none}
+.g-stage .bin.no,.board .tb.no{animation:shake .35s}
+.board .tb.lit .blk{fill:var(--q-link-soft);stroke:var(--q-link)}
+.board .tb.lit text.c-thing{fill:var(--q-link-ink)}
+.g-dock.no{background:var(--coral-soft)}
+.g-dock.no .g-msg{color:var(--ink)}
+
+/* level 3: questions and chips */
+.g-side .mini{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--bg);margin:6px 0 12px;padding:4px}
+.g-side .mini .wb{width:100%;min-width:0}
+.lv3 .g-main.side,.lv5 .g-main.side{grid-template-columns:minmax(320px,460px) minmax(0,1fr)}
+@media (max-width:820px){.lv3 .g-main.side,.lv5 .g-main.side{grid-template-columns:1fr}}
+.g-q{display:grid;gap:6px;margin:0 0 12px;font-size:14.5px}
+.g-chips{display:flex;gap:6px;flex-wrap:wrap}
+.g-chip{border:1.5px solid var(--line2);background:var(--bg);border-radius:999px;padding:6px 14px;font:500 13px var(--mono);color:var(--ink);cursor:pointer;transition:transform .1s,border-color .15s}
+.g-chip:hover{border-color:var(--ink);transform:translateY(-1px)}
+.g-chip.ok{background:var(--q-link);border-color:var(--q-link);color:#fff;cursor:default;transform:none}
+.g-chip.no{border-color:var(--coral);color:var(--coral-ink);text-decoration:line-through;opacity:.6;cursor:default;animation:shake .35s}
+.g-shape{font-size:14px;margin:0 0 12px;padding:10px 12px;border-radius:9px;background:var(--q-link-soft);color:var(--ink)}
+.g-shape b{color:var(--q-link-ink)}
+
+/* level 5: the boss */
+.g-big{font-size:20px;line-height:1.35;margin:4px 0 10px}
+.g-big code{font-size:17px}
+.g-path{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font:500 13px var(--mono)}
+.g-path span{border:1.5px dashed var(--line2);border-radius:8px;padding:5px 10px;color:var(--ink3);min-width:34px;text-align:center}
+.g-path span.on{border-style:solid;border-color:var(--q-link);background:var(--q-link-soft);color:var(--q-link-ink)}
+.g-path i{font-style:normal;color:var(--q-link)}
+
+/* bonus round, interstitials, intro extras */
+.g-over{overflow:auto}
+.g-card.wide{max-width:780px}
+.g-card.wide .wbx{margin:0 0 12px}
+.g-card p{font-size:15px}
+.g-need{color:var(--ink);font-size:15px}
+.g-scn{color:var(--ink2);margin:-6px 0 12px}
+.g-opts{display:grid;gap:8px}
+.g-opt{text-align:left;border:1.5px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 14px;font:15px var(--sans);color:var(--ink);cursor:pointer}
+.g-opt:hover{border-color:var(--ink3)}
+.g-opt.ok{border-color:var(--hum);background:var(--hum-soft)}
+.g-opt.no{border-color:var(--coral);background:var(--coral-soft);text-decoration:line-through;opacity:.7}
+.g-rev{margin:12px 0 0;font-size:14.5px;color:var(--ink);border-top:1px solid var(--line);padding-top:10px}
+.g-in{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:10px 12px;font:15px var(--sans);color:var(--ink);margin:4px 0 6px}
+.g-think{display:grid;gap:6px;margin:0 0 12px;font-size:14px;color:var(--ink2)}
+.g-think input{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:9px 12px;font:14px var(--sans);color:var(--ink)}
+.g-card.win .g-miss{font:12.5px var(--mono);color:var(--ink3);margin:0}
+.g-card.win .trace{justify-content:center;margin:10px 0}
+
+/* level 6: the Arena in the shell */
+.g-main.arena .g-side h3{margin:2px 0 8px;font-size:20px}
+.g-main.arena .story{font-size:15px;margin:0 0 8px}
+.g-main.arena .g-side ul{margin:0 0 14px;padding-left:20px;font-size:14px;color:var(--ink2)}
+.g-main.arena .hint summary::before{content:"hint "}
+.chiprow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;padding:10px;border:1px dashed var(--line2);border-radius:10px;background:var(--card)}
+.chiprow .lb{flex-basis:100%;font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.chiprow .empty{font-size:13px;color:var(--ink3)}
+.tgrid.can .tbl{cursor:copy;border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft)}
+.g-btnrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.lv6 .g-dock{flex-direction:column;gap:8px}
+.brief .row{display:flex;align-items:center;gap:8px;justify-content:space-between;margin-top:4px}
+.brief .row .mv{margin-top:0}
+
+/* ask-twice buttons */
+.armed{border-color:var(--coral)!important;color:var(--coral-ink)!important;background:var(--coral-soft)!important}
+
+/* the finish */
+.fin{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:18px 20px;margin:18px 0}
+.fin.win{text-align:center;border-color:color-mix(in srgb,var(--hum) 55%,var(--line));background:var(--hum-soft)}
+.fin .g-stars{font-size:40px;letter-spacing:6px;margin:0;line-height:1}
+.fin h3{margin:8px 0}
+.todo{list-style:none;padding:0;margin:8px 0;display:grid;gap:6px;font-size:14.5px}
+.todo li{display:flex;gap:10px;align-items:center}
+.todo li::before{content:"";width:16px;height:16px;border-radius:50%;border:1.5px solid var(--line2);flex:none}
+.todo li.ok{color:var(--ink3);text-decoration:line-through}
+.todo li.ok::before{background:var(--hum);border-color:var(--hum)}
+
+/* the hidden attribute wins over button and card display rules inside the game */
+.game [hidden]{display:none!important}
+.chiprow .fc.used{opacity:.55}
+.chiprow .fc.used[aria-pressed="true"]{opacity:1}

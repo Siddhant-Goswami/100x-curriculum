@@ -469,26 +469,26 @@ GUIDES.L6 = { all: {
        {id:'store', t:'Storage drawn as a file on the server'},
        {id:'where', t:'A dashed zone per machine, and why each box lives there'}
      ]},
-    {id:'aarav', name:'Aarav\'s model', short:'Aarav', sub:'Lab sections 1 to 5',
-     intro:'The student is the builder; Aarav is the user. Tag the things in his chat, place the facts, pick the shape of every pair and place the pointer, sort rows from files. Section 5 draws the model from what you placed.',
+    {id:'aarav', name:'Aarav\'s model', short:'Aarav', sub:'Lab levels 1 to 5',
+     intro:'The student is the builder; Aarav is the user. Five levels: call the things in his chat, stick on the facts, link every pair with its pointer, sort rows from files, then beat the boss level on the board you built.',
      ticks:[
-       {id:'things', t:'Six things found in Aarav\'s chat', how:'users, conversations, messages, workflows, diagnoses, tools. And a reason why "high-priority" is not one.', link:'l06Things', linkLabel:'Section 1'},
-       {id:'facts', t:'Every fact placed on its table, the screenshot held back', link:'l06Facts', linkLabel:'Section 2'},
-       {id:'links', t:'Five pairs shaped and their pointers placed; the trace lights up end to end', how:'workflow and tools is the many-to-many: a third table, workflow_tools.', link:'l06Links', linkLabel:'Section 3'},
-       {id:'files', t:'Eight cards sorted into rows or files', link:'l06Files', linkLabel:'Section 4'},
-       {id:'model', t:'Aarav\'s model drawn with no dashed pieces, and the three questions ticked', how:'Beside it: your Lecture 4 API table, each address lit against its table.', link:'l06Model', linkLabel:'Section 5'}
+       {id:'things', t:'Six things found in Aarav\'s chat', how:'users, conversations, messages, workflows, diagnoses, tools. And a reason why "high-priority" is not one.', link:'l06Things', linkLabel:'Level 1'},
+       {id:'facts', t:'Every fact placed on its table, the screenshot held back', link:'l06Facts', linkLabel:'Level 2'},
+       {id:'links', t:'Five pairs shaped and their pointers placed; the trace lights up end to end', how:'workflow and tools is the many-to-many: a third table, workflow_tools.', link:'l06Links', linkLabel:'Level 3'},
+       {id:'files', t:'Eight cards sorted into rows or files', link:'l06Files', linkLabel:'Level 4'},
+       {id:'model', t:'Boss level beaten: three product questions answered on your board, four API addresses landed', how:'The board has no dashed pieces.', link:'l06Model', linkLabel:'Level 5'}
      ]},
-    {id:'arena', name:'The Arena', short:'Arena', sub:'Lab section 6',
+    {id:'arena', name:'The Arena', short:'Arena', sub:'Lab level 6',
      intro:'Six briefs, one move each. Done means every structural check is a tick; suggestions do not count.',
      ticks:[
        {id:'b1', t:'Aarav\'s workflow diagnoser, from a blank page', how:'The canonical model. These are the Lecture 7 tables.', link:'l06Arena', linkLabel:'The Arena'},
        {id:'b2', t:'Pet clinic, music library, corner bakery', how:'One-to-many; thing or fact; many-to-many with a quantity on the pairing.'},
        {id:'b3', t:'University grades, hospital assignments', how:'The fact of a pairing; history as a row.'}
      ]},
-    {id:'yours', name:'Your model', short:'Yours', sub:'Lab section 7',
+    {id:'yours', name:'Your model', short:'Yours', sub:'Lab level 7',
      intro:'Your Assignment 1 app. No app yet? Load Aarav\'s model and add one table of your own.',
      ticks:[
-       {id:'q3', t:'Three questions my data must answer, written first', link:'l06Yours', linkLabel:'Section 7'},
+       {id:'q3', t:'Three questions my data must answer, written first', link:'l06Yours', linkLabel:'Level 7'},
        {id:'tables', t:'My tables drawn, every pointer on the many side'},
        {id:'self', t:'Five self-checks ticked, including one wrong state the model refuses'},
        {id:'files2', t:'Files my app stores, and the column with each link ("none" is fine)'},
@@ -516,11 +516,11 @@ GUIDES.L6 = { all: {
     ['… points the wrong way', 'The one side carries a pointer to its many side', 'Remove it. One cell cannot hold many; the many side already has the link'],
     ['… must be marked unique', 'The brief says one row per parent and a plain pointer allows many', 'Tick unique on the pointer'],
     ['… is missing …, and that is the point of this brief', 'The column the brief is about is not on the row it describes', 'Re-read the brief\'s last line; usually it belongs on the pairing row'],
-    ['Section 5 shows dashed boxes', 'Section 5 only draws what you placed', 'Click "place it" on the dashed piece']
+    ['Level 5 shows dashed boxes', 'Level 5 only draws what you placed', 'Click "place it" on the dashed piece']
   ],
   read: [
     ['Lecture 6 overview', 'l06Hub', 'The lecture in one line and your path this week.'],
-    ['The Modelling Lab', 'l06Lab', 'Eight sections. Everything happens here.'],
+    ['The Modelling Lab', 'l06Lab', 'Seven levels. Everything happens here.'],
     ['Notes', 'l06Notes', 'The lecture, from the whiteboard to what is worth storing.'],
     ['Practice set', 'l06Practice', 'Your HLD and the four deliverables.'],
     ['Troubleshooting', 'l06Trouble', 'Every cross the checker can show, and the fix.'],

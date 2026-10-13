@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Modelling Lab | 100xEngineers</title>
-<meta name="description" content="Lecture 6 practice lab: decide what is worth storing. Feel an app forget, then build Aarav's data model by hand, one question at a time: what are the things worth storing, what does each have, how do they connect. Then model your own app.">
+<meta name="description" content="Lecture 6 practice lab: decide what is worth storing, in seven levels. Find the things in Aarav's chat, fill them with facts, connect them, sort rows from files, test the model, then build new models in the Arena and your own.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -36,11 +36,11 @@
 <div class="hero">
   <p class="kick">Lecture 6 · Databases and domain modelling · Practice lab</p>
   <h1>The Modelling Lab</h1>
-  <p class="dek">What is worth storing? Seven short sections answer it, first for Aarav and then for your app. Each ends with a checkpoint.</p>
-  <div class="meta"><span>About 90 minutes</span><span>Nothing to install</span><span>Saves on this device</span></div>
+  <p class="dek">What is worth storing? Seven levels answer it, first for Aarav and then for your app.</p>
+  <div class="meta"><span>About 2 hours</span><span>Nothing to install</span><span>Saves on this device</span></div>
 </div>
 
-<div class="call"><p class="kick">Where you are</p><p>You built the app. Aarav is your user. He gets a plan on Monday, and on Tuesday the app has forgotten it. The lecture added a storage box to the whiteboard and left one question in it: <b>what is worth storing?</b> <code>memory.txt</code> kept one shape: who said what, and when. Aarav's app needs more shapes than that. You build them with three questions. Each answer is a brick, and each brick sits on the one before.</p></div>
+<div class="call"><p class="kick">Where you are</p><p>You built the app. Aarav is your user. On Monday he gets a plan, and on Tuesday the app has forgotten it. Three questions decide what is worth storing. Each answer is a brick that sits on the one before.</p></div>
 
 <figure class="wbx">
 <p class="kick">Three questions, three bricks</p>
@@ -73,121 +73,55 @@
     <text x="380" y="250" class="s c-fact">→ its columns</text>
     <text x="630" y="34" class="h c-link">3 · links</text>
     <text x="630" y="60" class="xs">How do they connect?</text>
-    <text x="630" y="97" class="xxs c-link">conversation_id</text>
+    <text x="630" y="97" class="xxs c-link">which chat?</text>
     <text x="571" y="141" class="xxs c-fact">started</text><text x="689" y="141" class="xxs c-fact">what · when</text>
     <text x="571" y="197" class="xs c-thing">chat</text><text x="689" y="197" class="xs c-thing">message</text>
     <text x="630" y="250" class="s c-link">→ a pointer</text>
   </g>
 </svg></div>
-<p class="cap">You cannot list a thing's facts before you have the thing, or connect two things before both exist. Sections 1 to 3 add one brick each to Aarav's board. Section 4 adds files, section 5 shows the finished board, and sections 6 and 7 use the same bricks on new apps. Next week the board becomes the real tables in your HLD's storage box.</p>
+<p class="cap">You cannot list a thing's facts before you have the thing, or connect two things before both exist. Levels 1 to 3 add one brick each to Aarav's board, Level 4 adds files, Level 5 tests the finished board, and Levels 6 and 7 use the same bricks on new apps.</p>
 </figure>
 
-<div class="scorebox"><div class="score" data-for="cp"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/8</b></div><div class="l"><strong>Checkpoints</strong>Saved on this device</div></div></div>
-
-<nav class="exnav" aria-label="Sections"><a href="#s1"><b>1</b>The things</a><a href="#s2"><b>2</b>What each has</a><a href="#s3"><b>3</b>How they connect</a><a href="#s4"><b>4</b>Rows or files</a><a href="#s5"><b>5</b>Aarav's model</a><a href="#s6"><b>6</b>The Arena</a><a href="#s7"><b>7</b>Your model</a></nav>
+<div class="lvmap" id="lvmap" aria-label="Levels"></div>
 
 <!-- ============ 1 ============ -->
-<section class="s" id="s1"><h2><span class="n">01</span>Question 1: what are the things worth storing?</h2>
+<section class="s" id="s1"><h2><span class="n">L1</span>Question 1: what are the things worth storing?</h2>
 <p class="bricks"><span class="q thing">things</span><span class="q fact off">facts</span><span class="q link off">links</span></p>
-<p>Start from Aarav's own words. Every noun is a candidate. To keep one, ask: can the app <b>create</b> one, <b>read</b> it, <b>update</b> it and <b>delete</b> it on its own, and can there be many? If yes, it is a <span class="q thing">thing</span> and becomes a block on the board. If it only describes a thing, it is a <span class="q fact">fact</span>. Some words are neither, and one is a file.</p>
-<div class="gcard" id="g1card" data-nolink>
-  <div class="gc-art" aria-hidden="true"><i class="gt"></i><i class="gt"></i><i class="gf"></i><i class="gq">?</i><i class="gt"></i><i class="gq">?</i></div>
-  <div class="gc-body">
-    <p class="kick">Game · Question 1</p>
-    <h3>Find the things</h3>
-    <p>Sixteen words hide in Aarav's chat. Call each one, and uncover the six blocks worth storing.</p>
-    <p class="gc-meta" id="g1meta">16 words · 6 hidden blocks · about 5 minutes</p>
-    <button type="button" class="btn" id="g1start">Start the game</button>
-  </div>
-</div>
-<div class="two">
-  <div class="qc" data-k="conv"></div>
-  <div class="qc" data-k="tone"></div>
-</div>
-<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c1"><label for="c1"><span class="t">Checkpoint: all six blocks on the board, and I can say why "high-priority" is not one</span></label></li></ul></div>
+<p>Start from Aarav's own words. Every noun is a candidate. The test: can the app <b>create</b> one, <b>read</b> it, <b>update</b> it and <b>delete</b> it on its own, and can there be many? Then it is a <span class="q thing">thing</span> and gets its own block. A word that only describes a thing is a <span class="q fact">fact</span>. Some words are neither, and one is a file.</p>
+<div class="gcard" data-level="1" data-nolink></div>
+<template id="tx1">
+  <div class="day">signed in as <span class="tag" data-t="aarav">Aarav</span></div>
+  <div class="day"><span class="tag" data-t="conv1">Monday's conversation</span></div>
+  <div class="bub u"><span class="mlab" data-t="msg1">this bubble</span>Here is <span class="tag" data-t="wf">my weekly workflow</span>: every Monday I open <span class="tag" data-t="jira">Jira</span> to check my to-dos. I pick the <span class="tag" data-t="hiprio">high-priority</span> ones, pull the numbers from our <span class="tag" data-t="dash">dashboard</span>, write a short report for each, and send it to <span class="tag" data-t="manager">my manager</span> on <span class="tag" data-t="slack">Slack</span>.</div>
+  <div class="ct" style="align-self:flex-end"><span class="tag" data-t="time">9:12 am</span></div>
+  <div class="att"><span class="tag" data-t="file">jira-board.png</span></div>
+  <div class="bub a"><span class="mlab" data-t="msg2">this bubble</span>Here is <span class="tag" data-t="plan">your plan</span>:
+1. Let Jira list the to-dos (saved filter)
+2. You pick what matters
+3. Export the dashboard the same way each week
+4. Draft the report with the app
+5. Send on Slack yourself, for now</div>
+  <div class="day"><span class="tag" data-t="conv2">Tuesday's conversation</span></div>
+  <div class="bub u">Can you redo the plan in a more <span class="tag" data-t="casual">casual</span> tone?</div>
+  <div class="bub a"><span class="tag" data-t="plan2">Quick version</span>: let Jira do the listing, you do the picking. Export the dashboard the same way, draft with the app, keep the Slack send in your hands until you trust the draft.</div>
+</template>
 </section>
 
 <!-- ============ 2 ============ -->
-<section class="s" id="s2"><h2><span class="n">02</span>Question 2: what does each thing have?</h2>
+<section class="s" id="s2"><h2><span class="n">L2</span>Question 2: what does each thing have?</h2>
 <p class="bricks"><span class="q thing">things</span><span class="q fact">facts</span><span class="q link off">links</span></p>
-<p>Your blocks are empty. To fill one, ask what you would need to write down to recreate it. <code>memory.txt</code> already answered this for a message: who said it, what they said, and when. Each answer is a <span class="q fact">fact</span>, and each fact becomes a <b>column</b> on its block. Tap a card, then tap its block. One card fits no column: put it on the coral block.</p>
-<div class="bank" id="factBank"></div>
-<figure class="wbx board" id="factFig">
+<p>To fill a block, ask what you would need to write down to recreate one. <code>memory.txt</code> already answered it for a message: who said it, what they said, and when. Each answer is a <span class="q fact">fact</span>, and each fact becomes a <b>column</b> on its block.</p>
+<div class="gcard" data-level="2" data-nolink></div>
+<figure class="wbx board">
 <p class="kick">Aarav's board · brick 2</p>
-<div class="sc" id="factBoard"></div>
+<div class="sc" id="board2"></div>
 </figure>
-<div class="fbk" id="factFb">Nine cards. Tap one, then its block.</div><p class="kick" id="factCount">0 / 9 placed</p>
-<div class="think" data-k="t2"><p class="kick">Pause and think</p><p>Aarav picks a tone for each plan. Today, tone is a fact on the plan. What would have to change in the product for tone to become a thing with its own block?</p><input type="text" placeholder="One line"><details class="rev"><summary>Reveal</summary><div class="b"><p>If users could save named tones and reuse them across plans, a tone would be created, read, updated and deleted on its own. It would pass the question 1 test, so it would become a thing. The word does not decide. <b>What the product needs to do with it decides.</b> That is the whole skill: drawing the line between a thing and a fact, for this app.</p></div></details><p class="mine"></p></div>
-<div class="two">
-  <div class="qc" data-k="time"></div>
-  <div class="qc" data-k="attach"></div>
-</div>
-<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c2"><label for="c2"><span class="t">Checkpoint: every fact placed, and the tone answer written</span></label></li></ul></div>
 </section>
 
 <!-- ============ 3 ============ -->
-<section class="s" id="s3"><h2><span class="n">03</span>Question 3: how do they connect?</h2>
+<section class="s" id="s3"><h2><span class="n">L3</span>Question 3: how do they connect?</h2>
 <p class="bricks"><span class="q thing">things</span><span class="q fact">facts</span><span class="q link">links</span></p>
-<p>Your blocks now hold facts, but they do not know about each other. Look at the messages: which conversation is each one in? Nothing on the row says. To connect two blocks, a row in one must be able to point at a row in the other.</p>
-<p><b>First, give every row an address.</b> To point at a row you need a way to name it, and its words cannot do it: two messages both say "okay". So number the rows. That number is the row's <b>id</b>, also called its <b>key</b>. It never repeats.</p>
-<figure class="wbx">
-<p class="kick">Step 1 · number the rows</p>
-<div class="sc"><svg class="wb" viewBox="0 0 760 292" role="img" aria-label="Two blocks side by side. Conversations: rows 7 and 8. Messages: rows 101 to 105. Messages 103 and 105 both say okay; only their ids tell them apart. Nothing on a message says which conversation it is in.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="blk" x="22" y="40" width="210" height="116" rx="6"/>
-    <path class="thin" d="M22 76 H232 M22 116 H232 M74 40 V156"/>
-    <rect class="blk" x="330" y="40" width="410" height="236" rx="6"/>
-    <path class="thin" d="M330 76 H740 M330 116 H740 M330 156 H740 M330 196 H740 M330 236 H740 M400 40 V276"/>
-    <path class="dash ink" d="M326 182 C292 182 280 132 240 124"/>
-    <path class="dash ink" d="M326 262 C286 262 276 150 240 142"/>
-  </g>
-  <g class="tx">
-    <text x="127" y="30" class="m c-thing">conversations</text>
-    <text x="48" y="64" class="xs c-thing">id</text><text x="153" y="64" class="xs c-fact">started</text>
-    <text x="48" y="102" class="xs">7</text><text x="153" y="102" class="xs">Mon 9:12</text>
-    <text x="48" y="142" class="xs">8</text><text x="153" y="142" class="xs">Tue 10:03</text>
-    <text x="535" y="30" class="m c-thing">messages</text>
-    <text x="365" y="64" class="xs c-thing">id</text><text x="570" y="64" class="xs c-fact">content</text>
-    <text x="365" y="102" class="xs">101</text><text x="570" y="102" class="xs">here's my weekly workflow…</text>
-    <text x="365" y="142" class="xs">102</text><text x="570" y="142" class="xs">here's your plan…</text>
-    <text x="365" y="182" class="xs c-act">103</text><text x="570" y="182" class="xs c-act">okay</text>
-    <text x="365" y="222" class="xs">104</text><text x="570" y="222" class="xs">redo it, casual?</text>
-    <text x="365" y="262" class="xs c-act">105</text><text x="570" y="262" class="xs c-act">okay</text>
-    <text x="290" y="210" class="h c-act">?</text>
-    <text x="127" y="196" class="xs c-act">which chat is</text><text x="127" y="220" class="xs c-act">each message in?</text>
-    <text x="127" y="256" class="xs c-thing">id: a number</text><text x="127" y="280" class="xs c-thing">that never repeats</text>
-  </g>
-</svg></div>
-</figure>
-<p><b>Then put a pointer on one side.</b> A pointer is a column that holds another row's id. Which side gets it? Try conversations: conversation 7 has three messages, and a column holds one value per row. Try messages: each message is in exactly one conversation, so one value is enough. The pointer goes on the side that has only one to point at. Name it after the other block, singular, plus <code>_id</code>.</p>
-<figure class="wbx">
-<p class="kick">Step 2 · the side with one to point at holds the pointer</p>
-<div class="sc"><svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Left, crossed out: a message_ids column on conversations would need 101, 102, 103 in one cell, and a cell holds one value. Right, correct: a conversation_id column on messages, one value per row: 7, 7, 7, 8.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="blk" x="24" y="50" width="330" height="116" rx="6"/>
-    <path class="thin" d="M24 86 H354 M24 126 H354 M76 50 V166"/>
-    <path class="dash" d="M378 24 V280"/>
-    <rect class="blk" x="402" y="50" width="338" height="196" rx="6"/>
-    <path class="thin" d="M402 86 H740 M402 126 H740 M402 166 H740 M402 206 H740 M454 50 V246 M594 50 V246"/>
-  </g>
-  <g class="tx">
-    <text x="189" y="40" class="m c-thing">conversations</text>
-    <text x="50" y="74" class="xs c-thing">id</text><text x="215" y="74" class="xs c-link">message_ids</text>
-    <text x="50" y="112" class="xs">7</text><text x="215" y="112" class="xs c-act">101, 102, 103, …</text>
-    <text x="50" y="152" class="xs">8</text><text x="215" y="152" class="xs c-act">104, …</text>
-    <text x="189" y="210" class="s c-act">✗ a cell holds one value</text>
-    <text x="189" y="238" class="xs">and chat 7 has many messages</text>
-    <text x="571" y="40" class="m c-thing">messages</text>
-    <text x="428" y="74" class="xs c-thing">id</text><text x="524" y="74" class="xs c-link">conversation_id</text><text x="667" y="74" class="xs c-fact">content</text>
-    <text x="428" y="112" class="xs">101</text><text x="524" y="112" class="xs c-link">7</text><text x="667" y="112" class="xs">my workflow…</text>
-    <text x="428" y="152" class="xs">102</text><text x="524" y="152" class="xs c-link">7</text><text x="667" y="152" class="xs">your plan…</text>
-    <text x="428" y="192" class="xs">103</text><text x="524" y="192" class="xs c-link">7</text><text x="667" y="192" class="xs">okay</text>
-    <text x="428" y="232" class="xs">104</text><text x="524" y="232" class="xs c-link">8</text><text x="667" y="232" class="xs">redo it, casual?</text>
-    <text x="571" y="278" class="s c-link">✓ each message has one chat</text>
-  </g>
-</svg></div>
-</figure>
-<p>So every link comes down to two questions, asked both ways. The two answers give the link its <b>shape</b>, and the shape says where the pointer goes.</p>
+<p>Your blocks hold facts, but they do not know about each other. To connect two blocks, a row in one must point at a row in the other. Every link comes down to two questions, asked both ways. The answers give the link its <b>shape</b>, and the shape says where the pointer goes.</p>
 <figure class="wbx">
 <p class="kick">Two questions, three shapes</p>
 <div class="sc"><svg class="wb" viewBox="0 0 760 296" role="img" aria-label="Three shapes. One-to-many: many messages per chat, yes; many chats per message, no; the pointer goes on the many side. Many-to-many: many tools per workflow, yes; many workflows per tool, yes; a third block holds the pairs. One-to-one: no and no; maybe it is one block.">
@@ -224,19 +158,58 @@
 </svg></div>
 <p class="cap">One-to-many is most of every model. When both answers are yes, neither block can hold one pointer, so a third block holds one row per pairing. One-to-one is rare: often the two blocks are really one.</p>
 </figure>
-<p>Now link Aarav's blocks. For each pair, answer both questions, then place the pointer. Each card draws the link as you go.</p>
-<div class="pairs" id="pairs"></div>
-<div class="fbk"><span class="muted" id="pairCount">0 / 5 linked</span> · Follow one message back to its owner:</div>
-<div class="trace" id="trace"></div>
-<figure class="wbx board">
-<p class="kick">Aarav's board · brick 3</p>
-<div class="sc" id="board3"></div>
-<p class="cap" id="board3Cap"></p>
-</figure>
-<p>The third block can hold more than two pointers. Anything that describes one pairing lives on its row, because it belongs to neither side alone.</p>
-<figure class="wbx">
-<p class="kick">The third block: one row per pairing</p>
-<div class="sc"><svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Workflows on the left, tools on the right, and workflow_tools in the middle: one row per pairing, with how_often on each row. How often Aarav uses Jira belongs to the pairing.">
+<div class="gcard" data-level="3" data-nolink></div>
+<template id="i-rows"><div class="sc"><svg class="wb" viewBox="0 0 760 292" role="img" aria-label="Two blocks side by side. Conversations: rows 7 and 8. Messages: rows 101 to 105. Messages 103 and 105 both say okay; only their ids tell them apart. Nothing on a message says which conversation it is in.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="blk" x="22" y="40" width="210" height="116" rx="6"/>
+    <path class="thin" d="M22 76 H232 M22 116 H232 M74 40 V156"/>
+    <rect class="blk" x="330" y="40" width="410" height="236" rx="6"/>
+    <path class="thin" d="M330 76 H740 M330 116 H740 M330 156 H740 M330 196 H740 M330 236 H740 M400 40 V276"/>
+    <path class="dash ink" d="M326 182 C292 182 280 132 240 124"/>
+    <path class="dash ink" d="M326 262 C286 262 276 150 240 142"/>
+  </g>
+  <g class="tx">
+    <text x="127" y="30" class="m c-thing">conversations</text>
+    <text x="48" y="64" class="xs c-thing">id</text><text x="153" y="64" class="xs c-fact">started</text>
+    <text x="48" y="102" class="xs">7</text><text x="153" y="102" class="xs">Mon 9:12</text>
+    <text x="48" y="142" class="xs">8</text><text x="153" y="142" class="xs">Tue 10:03</text>
+    <text x="535" y="30" class="m c-thing">messages</text>
+    <text x="365" y="64" class="xs c-thing">id</text><text x="570" y="64" class="xs c-fact">content</text>
+    <text x="365" y="102" class="xs">101</text><text x="570" y="102" class="xs">here's my weekly workflow…</text>
+    <text x="365" y="142" class="xs">102</text><text x="570" y="142" class="xs">here's your plan…</text>
+    <text x="365" y="182" class="xs c-act">103</text><text x="570" y="182" class="xs c-act">okay</text>
+    <text x="365" y="222" class="xs">104</text><text x="570" y="222" class="xs">redo it, casual?</text>
+    <text x="365" y="262" class="xs c-act">105</text><text x="570" y="262" class="xs c-act">okay</text>
+    <text x="290" y="210" class="h c-act">?</text>
+    <text x="127" y="196" class="xs c-act">which chat is</text><text x="127" y="220" class="xs c-act">each message in?</text>
+    <text x="127" y="256" class="xs c-thing">id: a number</text><text x="127" y="280" class="xs c-thing">that never repeats</text>
+  </g>
+</svg></div></template>
+<template id="i-side"><div class="sc"><svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Left, crossed out: a message_ids column on conversations would need 101, 102, 103 in one cell, and a cell holds one value. Right, correct: a conversation_id column on messages, one value per row: 7, 7, 7, 8.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="blk" x="24" y="50" width="330" height="116" rx="6"/>
+    <path class="thin" d="M24 86 H354 M24 126 H354 M76 50 V166"/>
+    <path class="dash" d="M378 24 V280"/>
+    <rect class="blk" x="402" y="50" width="338" height="196" rx="6"/>
+    <path class="thin" d="M402 86 H740 M402 126 H740 M402 166 H740 M402 206 H740 M454 50 V246 M594 50 V246"/>
+  </g>
+  <g class="tx">
+    <text x="189" y="40" class="m c-thing">conversations</text>
+    <text x="50" y="74" class="xs c-thing">id</text><text x="215" y="74" class="xs c-link">message_ids</text>
+    <text x="50" y="112" class="xs">7</text><text x="215" y="112" class="xs c-act">101, 102, 103, …</text>
+    <text x="50" y="152" class="xs">8</text><text x="215" y="152" class="xs c-act">104, …</text>
+    <text x="189" y="210" class="s c-act">✗ a cell holds one value</text>
+    <text x="189" y="238" class="xs">and chat 7 has many messages</text>
+    <text x="571" y="40" class="m c-thing">messages</text>
+    <text x="428" y="74" class="xs c-thing">id</text><text x="524" y="74" class="xs c-link">conversation_id</text><text x="667" y="74" class="xs c-fact">content</text>
+    <text x="428" y="112" class="xs">101</text><text x="524" y="112" class="xs c-link">7</text><text x="667" y="112" class="xs">my workflow…</text>
+    <text x="428" y="152" class="xs">102</text><text x="524" y="152" class="xs c-link">7</text><text x="667" y="152" class="xs">your plan…</text>
+    <text x="428" y="192" class="xs">103</text><text x="524" y="192" class="xs c-link">7</text><text x="667" y="192" class="xs">okay</text>
+    <text x="428" y="232" class="xs">104</text><text x="524" y="232" class="xs c-link">8</text><text x="667" y="232" class="xs">redo it, casual?</text>
+    <text x="571" y="278" class="s c-link">✓ each message has one chat</text>
+  </g>
+</svg></div></template>
+<template id="i-third"><div class="sc"><svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Workflows on the left, tools on the right, and workflow_tools in the middle: one row per pairing, with how_often on each row. How often Aarav uses Jira belongs to the pairing.">
   <g class="ln" filter="url(#wob)">
     <rect class="blk" x="16" y="40" width="190" height="116" rx="6"/>
     <path class="thin" d="M16 76 H206 M16 116 H206 M58 40 V156"/>
@@ -265,61 +238,31 @@
     <text x="652" y="226" class="xs">Jira is in</text><text x="652" y="250" class="xs">many workflows</text>
     <text x="382" y="276" class="s c-fact">how often? a fact of the pairing</text>
   </g>
-</svg></div>
-</figure>
-<div class="two">
-  <div class="qc" data-k="often"></div>
-  <div class="qc" data-k="grade"></div>
-</div>
-<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c3"><label for="c3"><span class="t">Checkpoint: five links placed, and the trace lights up end to end</span></label></li></ul></div>
+</svg></div></template>
 </section>
 
 <!-- ============ 4 ============ -->
-<section class="s" id="s4"><h2><span class="n">04</span>Rows or files?</h2>
+<section class="s" id="s4"><h2><span class="n">L4</span>Rows or files?</h2>
 <p class="bricks"><span class="q thing">things</span><span class="q fact">facts</span><span class="q link">links</span><span class="q file">files</span></p>
-<div class="think" data-k="t4"><p class="kick">Pause and think</p><p>Aarav attaches a screenshot of his Jira board. Can it go in a column?</p><input type="text" placeholder="One line"><details class="rev"><summary>Reveal</summary><div class="b"><p>No. A column holds a value you can type: text, a number, a date, yes or no. A screenshot is bytes. It goes in <b>file storage</b>, and a row keeps the <b>link</b> to it, plus the facts about it: which message it came with, its name, when it arrived. Rows for facts, files for everything large or binary, and a pointer between them.</p></div></details><p class="mine"></p></div>
-<p>Tap a card, then tap where it belongs.</p>
-<div class="bank" id="sortBank"></div>
-<div class="bins" id="sortBins">
-  <div class="bin" data-box="row"><div class="h"><b>A cell in a row</b><small>Text, numbers, dates, yes or no.</small></div><div class="in"></div></div>
-  <div class="bin" data-box="file"><div class="h"><b>A file in storage, with its link in a row</b><small>Images, documents, audio, video.</small></div><div class="in"></div></div>
-</div>
-<div class="fbk" id="sortFb">Eight cards.</div><p class="kick" id="sortCount">0 / 8 placed</p>
-<p>The screenshot you held in section 2 gets its block now, built from the same three bricks: <b>attachments</b> is a thing, the file's name and link are its facts, and <code>message_id</code> points at the message it came with. The bytes sit outside, in file storage. On your HLD both live in the storage box: tables for rows, file storage for files.</p>
+<p>A cell holds a value you can type. Some things Aarav's app keeps are bytes: images, documents, audio. They go in <b>file storage</b>, and a row keeps the link. On your HLD both live in the storage box.</p>
+<div class="gcard" data-level="4" data-nolink></div>
 <figure class="wbx board">
 <p class="kick">Aarav's board · the held block</p>
 <div class="sc" id="board4"></div>
 </figure>
-<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c4"><label for="c4"><span class="t">Checkpoint: all eight sorted, and I can say what the row keeps about a file</span></label></li></ul></div>
 </section>
 
 <!-- ============ 5 ============ -->
-<section class="s" id="s5"><h2><span class="n">05</span>Aarav's model, from your own placements</h2>
+<section class="s" id="s5"><h2><span class="n">L5</span>Can the model answer?</h2>
 <p class="bricks"><span class="q thing">things</span><span class="q fact">facts</span><span class="q link">links</span><span class="q file">files</span></p>
-<p>The same board, every brick in. Nothing below is pre-drawn: each block is a thing you found in section 1, each green line a fact from section 2, each arrow a pointer from section 3, and attachments comes from section 4. Grey pieces link back to where they are placed.</p>
+<p>The same board with every brick in, drawn only from your own placements. A model is done when it can answer what the product must ask, so the boss level asks.</p>
 <div id="er5State"></div>
 <figure class="wbx board"><div class="sc" id="er5"></div></figure>
-<h3>The bridge to Lecture 4</h3>
-<p>Your API table from the Lecture 4 practice set, beside the blocks it lands on. Every noun in an address is a thing here. That is not a coincidence: the API is how a request reaches a row.</p>
-<div class="tw compact bridge" id="bridge"><table><thead><tr><th>Action</th><th>Method</th><th>Address</th><th>Table</th></tr></thead><tbody>
-<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows</td><td data-t="workflows">workflows</td></tr>
-<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}</td><td data-t="workflows">workflows</td></tr>
-<tr><td>Create</td><td class="mono">POST</td><td class="mono">/workflows/{id}/diagnoses</td><td data-t="diagnoses">diagnoses</td></tr>
-<tr><td>Read</td><td class="mono">GET</td><td class="mono">/workflows/{id}/diagnoses</td><td data-t="diagnoses">diagnoses</td></tr>
-</tbody></table></div>
-<h3>Can the model answer the product's questions?</h3>
-<p>A model is done when it can answer what the product must ask. Three questions for Aarav's app. Tick each only when you can follow the arrows on the board that answer it.</p>
-<ul class="ck">
-<li><input type="checkbox" id="c5a"><label for="c5a"><span class="t">"Show me Aarav's last conversation, with every message in order"</span><span class="h">users → conversations by user_id, then messages by conversation_id, ordered by created_at.</span></label></li>
-<li><input type="checkbox" id="c5b"><label for="c5b"><span class="t">"Show every plan this workflow ever got, oldest first"</span><span class="h">diagnoses by workflow_id. History exists because a diagnosis is a row, not a cell on the workflow.</span></label></li>
-<li><input type="checkbox" id="c5c"><label for="c5c"><span class="t">"Which screenshot went with which message?"</span><span class="h">attachments by message_id; the file itself behind file_url.</span></label></li>
-</ul>
-<p class="sig">Close the tab now. Nothing is lost.<small>Next: the Arena, six briefs that drill one brick each. Then your own app.</small></p>
-<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c5"><label for="c5"><span class="t">Checkpoint: every piece placed, and the three questions ticked</span></label></li></ul></div>
+<div class="gcard" data-level="5" data-nolink></div>
 </section>
 
 <!-- ============ 6 ============ -->
-<section class="s" id="s6"><h2><span class="n">06</span>The Arena <span class="pill" id="arenaCount">0 / 6 done</span></h2>
+<section class="s" id="s6"><h2><span class="n">L6</span>The Arena <span class="pill" id="arenaCount">0 / 6 done</span></h2>
 <figure class="wbx">
 <p class="kick">Same bricks, new worlds</p>
 <div class="sc"><svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Six brief cards and the brick each one drills. Aarav's app: all three. The pet clinic: links, one-to-many. The music library: things, thing or fact. The corner bakery: links, a third block. University grades: facts, the fact of a pairing. Hospital: things, history is a row.">
@@ -341,14 +284,13 @@
   </g>
 </svg></div>
 </figure>
-<p>Six briefs, one brick each, starting with the app you are building. Build the blocks, then <b>Check my model</b>. Every check is a tick or a cross; done means every structural check is a tick. Column suggestions do not count.</p>
+<p>Six briefs, one brick each, starting with the app you are building. From here on a block is called a <b>table</b>, because that is what it becomes next week. Open a brief, build the tables, then check them. Done means every structural check is a tick; the column suggestions are extras.</p>
 <div id="arena"></div>
-<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c6"><label for="c6"><span class="t">Checkpoint: six briefs done</span></label></li></ul></div>
 </section>
 
 <!-- ============ 7 ============ -->
-<section class="s" id="s7"><h2><span class="n">07</span>Your model</h2>
-<p>The same three bricks, pointed at the app on your HLD. What you build here goes in its storage box. No app yet? Load Aarav's model and add one block of your own.</p>
+<section class="s" id="s7"><h2><span class="n">L7</span>Your model</h2>
+<p>The same three bricks, pointed at the app on your HLD. What you build here goes in its storage box. No app yet? Load Aarav's model and add one table of your own.</p>
 <div id="bp">
 <div class="qs" style="grid-template-columns:1fr">
   <label>In one line, what does your app do?<input type="text" data-bp="desc" placeholder="e.g. A user pastes a messy weekly workflow and gets back a plan to automate part of it."></label>
@@ -409,71 +351,18 @@
 <li><input type="checkbox" id="c7e"><label for="c7e"><span class="t">I tried to create a wrong state and the model refuses it</span><span class="h">A message with no conversation, two plans overwriting each other, the same pairing twice.</span></label></li>
 </ul>
 </div>
-<div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c7"><label for="c7"><span class="t">Checkpoint: my model drawn, three questions answered, files and bridge written</span></label></li></ul></div>
-<p class="sig">You cannot store what you cannot describe.<small>Write these tables into your HLD's storage box, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s04">submit the practice set</a>. Next week: these tables become real storage, and a row survives a refresh.</small></p>
-<p><button type="button" class="reset" id="labReset">Reset the whole lab</button></p>
+<div id="finish"></div>
+<p class="sig">You cannot store what you cannot describe.<small>Write these tables into your HLD's storage box, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s03">submit the practice set</a>. Next week: these tables become real storage, and a row survives a refresh.</small></p>
+<p><button type="button" class="reset" id="labReset" data-v="lab">Reset the whole lab</button></p>
 </section>
 
   
-<!-- ============ the Question 1 game: full screen, opened from the card in section 1 ============ -->
-<div class="game" id="g1" data-nolink role="dialog" aria-modal="true" aria-labelledby="g1title" hidden>
-  <header class="g-bar">
-    <div class="g-name"><span class="kick">Question 1</span><b id="g1title">Find the things</b></div>
-    <div class="g-score" aria-live="polite"><span class="pts"><b id="g1pts">0</b> pts</span><span class="streak" id="g1streak"></span><span class="miss">misses <b id="g1miss">0</b></span></div>
-    <div class="g-act"><button type="button" class="g-btn" id="g1restart">Restart</button><button type="button" class="g-btn exit" data-exit>Exit ✕</button></div>
-  </header>
-  <div class="g-prog"><i id="g1prog"></i></div>
-  <div class="g-main">
-    <section class="g-chat" aria-label="Aarav's chat"><p class="g-lab">Aarav's chat · point at an underlined word</p>
-<div class="tx" id="tx">
-  <div class="day">signed in as <span class="tag" data-t="aarav">Aarav</span></div>
-  <div class="day"><span class="tag" data-t="conv1">Monday's conversation</span></div>
-  <div class="bub u"><span class="mlab" data-t="msg1">this bubble</span>Here is <span class="tag" data-t="wf">my weekly workflow</span>: every Monday I open <span class="tag" data-t="jira">Jira</span> to check my to-dos. I pick the <span class="tag" data-t="hiprio">high-priority</span> ones, pull the numbers from our <span class="tag" data-t="dash">dashboard</span>, write a short report for each, and send it to <span class="tag" data-t="manager">my manager</span> on <span class="tag" data-t="slack">Slack</span>.</div>
-  <div class="ct" style="align-self:flex-end"><span class="tag" data-t="time">9:12 am</span></div>
-  <div class="att"><span class="tag" data-t="file">jira-board.png</span></div>
-  <div class="bub a"><span class="mlab" data-t="msg2">this bubble</span>Here is <span class="tag" data-t="plan">your plan</span>:
-1. Let Jira list the to-dos (saved filter)
-2. You pick what matters
-3. Export the dashboard the same way each week
-4. Draft the report with the app
-5. Send on Slack yourself, for now</div>
-  <div class="day"><span class="tag" data-t="conv2">Tuesday's conversation</span></div>
-  <div class="bub u">Can you redo the plan in a more <span class="tag" data-t="casual">casual</span> tone?</div>
-  <div class="bub a"><span class="tag" data-t="plan2">Quick version</span>: let Jira do the listing, you do the picking. Export the dashboard the same way, draft with the app, keep the Slack send in your hands until you trust the draft.</div>
-</div>
-    </section>
-    <section class="g-board" aria-label="Aarav's board"><div class="hboard" id="board1"></div></section>
-  </div>
-  <div class="g-dock" id="g1dock" aria-live="polite"></div>
-  <div class="g-over" id="g1intro">
-    <div class="g-card">
-      <p class="kick">How to play</p>
-      <h3>Find the things worth storing</h3>
-      <ol class="g-steps">
-        <li>Point at an underlined word in Aarav's chat (or tap it).</li>
-        <li>Call it right there: <span class="q thing">thing</span> gets its own block, <span class="q fact">fact</span> describes a thing, <span class="q">neither</span> is not worth storing.</li>
-        <li>Right calls fly onto the board. Uncover all six blocks.</li>
-      </ol>
-      <p class="g-tip">The test: can the app create, read, update and delete it on its own?</p>
-      <p class="g-rules">+10 a right call · +5 for a streak of three · misses cost stars</p>
-      <button type="button" class="btn" id="g1go">Let's start</button>
-    </div>
-  </div>
-  <div class="g-over" id="g1win" hidden>
-    <div class="g-card win">
-      <p class="kick">Board complete</p>
-      <p class="g-stars" id="g1stars"></p>
-      <h3 id="g1final"></h3>
-      <p id="g1sum"></p>
-      <div class="g-btns"><button type="button" class="btn" id="g1next">Next: Question 2 →</button><button type="button" class="btn ghost" id="g1again">Play again</button><button type="button" class="btn ghost" data-exit>Back to the lab</button></div>
-    </div>
-  </div>
-</div>
 </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Databases and domain modelling</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>
 <script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-data.js"></script>
 <script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-grader.js"></script>
+<script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-levels.js"></script>
 <script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-lab.js"></script>
 </body>
 </html>
