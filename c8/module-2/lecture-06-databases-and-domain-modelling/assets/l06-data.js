@@ -51,18 +51,30 @@ L06.FACTS = [
 ];
 L06.FACT_ENTITIES = ['users','conversations','messages','workflows','diagnoses'];
 
-/* ---------- Section 3 · how they connect ---------- */
+/* ---------- Section 3 · how they connect ----------
+   Every link is two questions asked both ways: qa (one ta, many tb?) and qb (one tb, many ta?).
+   The two answers give the shape; na and nb are the nudges for a wrong answer. */
 L06.PAIRS = [
-  {id:'uc', a:'user',         b:'conversations', shape:'one-to-many', fk:{table:'conversations', ref:'users',     name:'user_id'},
+  {id:'uc', a:'user',         b:'conversations', ta:'users',         tb:'conversations', shape:'one-to-many', fk:{table:'conversations', ref:'users',     name:'user_id'},
+   qa:'Can one user have many conversations?', ab:'yes', na:'Aarav chatted on Monday and again on Tuesday: two conversations, one user.',
+   qb:'Can one conversation belong to many users?', ba:'no', nb:'Only Aarav sees his chats. Each conversation has exactly one owner.',
    why:'One Aarav, many chats over the weeks. Each chat belongs to one user.'},
-  {id:'cm', a:'conversation', b:'messages',      shape:'one-to-many', fk:{table:'messages',      ref:'conversations', name:'conversation_id'},
+  {id:'cm', a:'conversation', b:'messages',      ta:'conversations', tb:'messages',      shape:'one-to-many', fk:{table:'messages',      ref:'conversations', name:'conversation_id'},
+   qa:'Can one conversation have many messages?', ab:'yes', na:'Monday\'s chat alone holds his workflow and the app\'s plan: two messages already.',
+   qb:'Can one message sit in many conversations?', ba:'no', nb:'A bubble appears in exactly one chat.',
    why:'One chat holds many bubbles. Each bubble sits in exactly one chat.'},
-  {id:'uw', a:'user',         b:'workflows',     shape:'one-to-many', fk:{table:'workflows',     ref:'users',     name:'user_id'},
+  {id:'uw', a:'user',         b:'workflows',     ta:'users',         tb:'workflows',     shape:'one-to-many', fk:{table:'workflows',     ref:'users',     name:'user_id'},
+   qa:'Can one user have many workflows?', ab:'yes', na:'Aarav can describe his Monday report and, later, his Friday review.',
+   qb:'Can one workflow belong to many users?', ba:'no', nb:'Each workflow is described by one person, in his own words.',
    why:'Aarav can describe more than one weekly workflow. Each belongs to him.'},
-  {id:'wd', a:'workflow',     b:'diagnoses',     shape:'one-to-many', fk:{table:'diagnoses',     ref:'workflows', name:'workflow_id'},
-   why:'Regenerate the plan and the old one stays. Many diagnoses per workflow, each about one workflow. History is why this is not one-to-one.'},
-  {id:'wt', a:'workflow',     b:'tools',         shape:'many-to-many', join:{table:'workflow_tools', cols:['workflow_id','tool_id']},
-   why:'A workflow uses Jira, the dashboard and Slack. Jira appears in many workflows. Both sides are "many", so neither side can hold one pointer: a third table does.'}
+  {id:'wd', a:'workflow',     b:'diagnoses',     ta:'workflows',     tb:'diagnoses',     shape:'one-to-many', fk:{table:'diagnoses',     ref:'workflows', name:'workflow_id'},
+   qa:'Can one workflow have many plans?', ab:'yes', na:'Monday\'s formal plan and Tuesday\'s casual one are both plans for the same workflow.',
+   qb:'Can one plan be about many workflows?', ba:'no', nb:'Each plan diagnoses exactly one workflow.',
+   why:'Regenerate the plan and the old one stays. Many plans per workflow, each about one workflow. History is why this is not one-to-one.'},
+  {id:'wt', a:'workflow',     b:'tools',         ta:'workflows',     tb:'tools',         shape:'many-to-many', join:{table:'workflow_tools', cols:['workflow_id','tool_id']},
+   qa:'Can one workflow use many tools?', ab:'yes', na:'His Monday workflow uses Jira, the dashboard and Slack.',
+   qb:'Can one tool appear in many workflows?', ba:'yes', nb:'Jira shows up in his Monday report and in his Friday review.',
+   why:'Both sides are "many", so neither block can hold one pointer. A third block does: one row per pairing.'}
 ];
 L06.SHAPES = ['one-to-one','one-to-many','many-to-many'];
 

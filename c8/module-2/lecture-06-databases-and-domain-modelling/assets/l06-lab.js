@@ -4,14 +4,110 @@
 document.addEventListener('DOMContentLoaded',function(){
   var $=function(s,r){return (r||document).querySelector(s)}, $$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
   var store=window.c8store, K='c8.l06.lab';
-  var S=store.get(K,{}); ['think','tags','facts','shapes','keys','quiz','sort','schemas','solved','bp'].forEach(function(k){ if(!S[k]||typeof S[k]!=='object') S[k]={}; });
+  var S=store.get(K,{}); ['think','tags','facts','shapes','dir','keys','quiz','sort','schemas','solved','bp'].forEach(function(k){ if(!S[k]||typeof S[k]!=='object') S[k]={}; });
   if(!Array.isArray(S.demoRows)) S.demoRows=[];
-  function save(){ store.set(K,S); drawModel(); }
+  function save(){ store.set(K,S); drawBoards(); }
   function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
   function uid(p){ return (p||'id')+'_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
   function el(h){ var t=document.createElement('template'); t.innerHTML=h.trim(); return t.content.firstElementChild; }
   var nameEq=window.L06Check.nameEq, isPk=window.L06Check.isPk, isFk=window.L06Check.isFk;
   var D=window.L06;
+
+  /* ================= what the student has placed so far ================= */
+  function tagRight(id){ var t=D.TOKENS[id]; var c=S.tags[id]; return !!c && (c===t.role || (t.role==='file'&&c==='thing')); }
+  function foundEnt(e){ return Object.keys(S.tags).some(function(id){ var t=D.TOKENS[id]; return t && t.ent===e && t.role==='thing' && S.tags[id]==='thing'; }); }
+  function pairById(id){ return D.PAIRS.find(function(p){ return p.id===id; }); }
+  function shapeKnown(p){ var d=S.dir[p.id]||{}; return d.ab===p.ab && d.ba===p.ba; }
+  function keyOk(p){
+    var k=S.keys[p.id]; if(!k) return false;
+    if(p.shape==='many-to-many') return !!(k.join && nameEq(k.join,p.join.table) || (k.join&&/workflow.*tool|tool.*workflow/i.test(k.join))) && nameEq(k.c1,p.join.cols[0]) && nameEq(k.c2,p.join.cols[1]);
+    return k.table===p.fk.table && nameEq(k.name,p.fk.name);
+  }
+  /* answers saved before the two-question cards count as answered */
+  D.PAIRS.forEach(function(p){ if(!S.dir[p.id] && S.shapes[p.id]===p.shape) S.dir[p.id]={ab:p.ab,ba:p.ba}; });
+
+  /* ================= the board: blocks drawn like the whiteboard =================
+     One picture of Aarav's model that grows with the bricks: blocks after section 1,
+     facts after 2, keys and pointers after 3, everything in 5. The same renderer draws
+     the link cards in section 3 and the Picture of any table builder. */
+  var BW=150, HD=36, RH=26, GX=[16,210,404,598], GAP=44;
+  function tH(t){ return HD+Math.max(t.cols.length,1)*RH+10; }
+  function rY(t,i){ return t.y+HD+5+i*RH+RH/2; }
+  function clip(s,n){ s=String(s); return s.length>n?s.slice(0,n-1)+'…':s; }
+  function isLink(s){ return typeof s==='string' && s.charAt(0)==='#'; }
+  function tblSVG(t){
+    var x=t.x, y=t.y, w=t.w, h=tH(t), cx=x+w/2, ghost=!!t.ghost;
+    var s='<g class="tb'+(t.box?' tgt':'')+(t.hold?' hold':'')+'"'+(t.box?' data-box="'+t.box+'" tabindex="0" role="button" aria-label="'+esc(t.title||t.name)+'"':'')+'>'+
+      '<g class="ln" filter="url(#wob)"><rect class="blk'+(t.hold?' dash c-act':ghost?' dash ink':'')+'" x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="6"/><path class="thin'+(t.hold||ghost?' dash ink':'')+'" d="M'+x+' '+(y+HD)+' H'+(x+w)+'"/></g><g class="tx">'+
+      '<text x="'+cx+'" y="'+(y+25)+'" class="'+((t.title||t.name).length>13?'xs':'m')+' '+(t.hold?'c-act':ghost?'c-mute':'c-thing')+'">'+esc(clip(t.title||t.name,18))+'</text>';
+    if(!t.cols.length){
+      var ey=rY(t,0)+6;
+      s+=isLink(t.ghost)?'<a href="'+t.ghost+'"><text x="'+cx+'" y="'+ey+'" class="xxs c-act">place it ↗</text></a>':'<text x="'+cx+'" y="'+ey+'" class="xxs c-mute">'+esc(t.empty||'')+'</text>';
+    }
+    t.cols.forEach(function(c,i){
+      var ty=rY(t,i)+6, cc=c.miss?'c-mute':c.k==='pk'?'c-thing':c.k==='fk'?'c-link':c.k==='file'?'c-act':'c-fact';
+      var txt='<text x="'+(x+12)+'" y="'+ty+'" class="xxs l '+cc+'">'+esc(clip(c.n,c.k==='pk'?14:18))+(isLink(c.miss)?' ↗':'')+'</text>';
+      s+=isLink(c.miss)?'<a href="'+c.miss+'">'+txt+'</a>':txt;
+      if(c.k==='pk'&&!c.miss) s+='<text x="'+(x+w-10)+'" y="'+ty+'" class="xxs r c-thing">key</text>';
+    });
+    return s+'</g></g>';
+  }
+  function arrowD(f,fi,t,ti){
+    var fy=rY(f,fi), ty=ti<0?t.y+HD/2:rY(t,ti), fc=f.x+f.w/2, tc=t.x+t.w/2, sx, ex, d;
+    if(Math.abs(fc-tc)<4){ sx=f.x; ex=t.x-3; return 'M'+sx+' '+fy+' C'+(sx-40)+' '+fy+' '+(ex-40)+' '+ty+' '+ex+' '+ty; }
+    if(tc<fc){ sx=f.x; ex=t.x+t.w+3; } else { sx=f.x+f.w; ex=t.x-3; }
+    d=(ex-sx)/2; return 'M'+sx+' '+fy+' C'+(sx+d)+' '+fy+' '+(ex-d)+' '+ty+' '+ex+' '+ty;
+  }
+  function arrowsFor(tables){
+    var out=[];
+    tables.forEach(function(t){ t.cols.forEach(function(c,i){
+      if(c.k!=='fk'||!c.ref) return; var tg=tables.find(function(x){ return x.name===c.ref; }); if(!tg) return;
+      out.push({f:t,fi:i,t:tg,ti:tg.cols.findIndex(function(x){ return x.k==='pk'; }),dash:!!c.miss||!!tg.ghost});
+    }); });
+    return out;
+  }
+  function boardSVG(tables,arrows,label,extra,w,h){
+    h=h||Math.max.apply(null,tables.map(function(t){ return t.y+tH(t); }))+14;
+    return '<svg class="wb" viewBox="0 0 '+(w||760)+' '+h+'" role="img" aria-label="'+esc(label)+'">'+tables.map(tblSVG).join('')+
+      '<g class="ln" filter="url(#wob)">'+arrows.map(function(a){ return '<path class="arw '+(a.dash?'dash ink':'c-link')+'" d="'+arrowD(a.f,a.fi,a.t,a.ti)+'"'+(a.dash?'':' marker-end="url(#ahv)"')+'/>'; }).join('')+'</g>'+(extra||'')+'</svg>';
+  }
+  function grid(tables,pos){
+    var rows={}; tables.forEach(function(t){ var p=pos(t); t.x=GX[p[0]]; t.w=t.w||BW; (rows[p[1]]=rows[p[1]]||[]).push(t); });
+    var y=14; Object.keys(rows).sort(function(a,b){ return a-b; }).forEach(function(r){ var mh=0; rows[r].forEach(function(t){ t.y=y; mh=Math.max(mh,tH(t)); }); y+=mh+GAP; });
+  }
+
+  /* Aarav's board at a stage: 1 blocks, 2 facts, 3 keys and pointers, 5 everything (grey pieces link back) */
+  var POS={users:[0,0],conversations:[1,0],messages:[2,0],attachments:[3,0],diagnoses:[0,1],workflows:[1,1],workflow_tools:[2,1],tools:[3,1]};
+  function aaravTables(stage,o){
+    o=o||{}; var reveal=stage>=5, tables=[];
+    D.AARAV_MODEL.forEach(function(m){
+      if(m.name==='attachments'&&stage<5){
+        if(stage===2) tables.push({name:'attachments',title:'hold for section 4',hold:true,box:o.targets?'hold':'',empty:'?',cols:D.FACTS.filter(function(f){ return f.ent==='hold'&&S.facts[f.id]==='hold'; }).map(function(f){ return {n:f.id,k:'file'}; })});
+        return;
+      }
+      if(m.name==='workflow_tools'&&stage<3) return;
+      var tOk=stage===2 || (m.src.ent ? foundEnt(D.TOKENS[m.src.ent].ent) : m.src.sort ? S.sort[m.src.sort]==='file' : m.src.pair ? keyOk(pairById(m.src.pair)) : true);
+      if(!tOk && !reveal && !m.src.ent) return;
+      var cols=[];
+      if(stage>1) m.cols.forEach(function(c){
+        var nm=c[0], kind=c[1], src=c[3]||{}, ok=true, lk='';
+        if(stage<3&&(kind||!src.fact)) return;
+        if(src.fact){ ok=S.facts[src.fact]===m.name; lk='#s2'; }
+        else if(src.pair){ ok=keyOk(pairById(src.pair)); lk='#s3'; }
+        else if(src.sort){ ok=S.sort[src.sort]===(src.sort==='meta'?'row':'file'); lk='#s4'; }
+        if(!ok&&!reveal) return;
+        cols.push({n:nm,k:kind||(nm==='file_url'?'file':''),ref:c[2]||'',miss:ok?'':lk});
+      });
+      tables.push({name:m.name,cols:cols,box:o.targets?m.name:'',ghost:tOk?'':(reveal?(m.src.ent?'#s1':m.src.sort?'#s4':'#s3'):'1'),
+        empty:tOk?(stage===1?'what does it have?':stage===2?(m.cols.some(function(c){ return c[3]&&c[3].fact; })?'+ facts':'just its name'):''):'not found yet'});
+    });
+    grid(tables,function(t){ return POS[t.name]; });
+    return tables;
+  }
+  function aaravBoard(stage,o){
+    var ts=aaravTables(stage,o);
+    return boardSVG(ts,stage>=3?arrowsFor(ts):[],'Aarav\'s board: '+ts.filter(function(t){ return !t.ghost; }).map(function(t){ return t.name+(t.cols.length?' ('+t.cols.filter(function(c){ return !c.miss; }).map(function(c){ return c.n; }).join(', ')+')':''); }).join('; '));
+  }
 
   /* ================= pause and think: one line unlocks the reveal ================= */
   $$('.think').forEach(function(box){
@@ -75,7 +171,7 @@ document.addEventListener('DOMContentLoaded',function(){
   /* ================= section 1 · tap the words ================= */
   (function(){
     var root=$('#tx'); if(!root) return;
-    var fb=$('#txFb'), found=$('#txFound');
+    var fb=$('#txFb');
     var pick=null;
     function closePick(){ if(pick){ pick.remove(); pick=null; } $$('.hot',root).forEach(function(x){ x.classList.remove('hot'); }); }
     function paint(){
@@ -83,11 +179,6 @@ document.addEventListener('DOMContentLoaded',function(){
         var id=x.dataset.t, c=S.tags[id]; x.classList.remove('thing','fact','neither','file');
         if(c){ var tok=D.TOKENS[id]; var right=(c===tok.role)||(tok.role==='file'&&c==='thing'); if(right) x.classList.add(tok.role); }
       });
-      var ents=D.TARGET_ENTITIES.map(function(e){
-        var got=Object.keys(S.tags).some(function(id){ var t=D.TOKENS[id]; return t && t.ent===e && (t.role==='thing') && S.tags[id]==='thing'; });
-        return '<span class="'+(got?'on':'')+'">'+e+'</span>';
-      }).join('');
-      found.innerHTML=ents;
       var right=D.TOKEN_ORDER.filter(function(id){ var t=D.TOKENS[id]; var c=S.tags[id]; return c && (c===t.role || (t.role==='file'&&c==='thing')); }).length;
       $('#txCount').textContent=right+' / '+D.TOKEN_ORDER.length+' placed';
     }
@@ -145,16 +236,31 @@ document.addEventListener('DOMContentLoaded',function(){
     paint();
   }
 
-  /* section 2 · facts */
-  if($('#factBank')) placer({
-    bank:'#factBank', box:'#factBoxes .ebox', fb:'#factFb', cards:D.FACTS,
-    label:function(c){ return c.id; },
-    placed:function(c){ return S.facts[c.id]||null; },
-    right:function(c,box){ return c.ent===box; },
-    set:function(c,box){ S.facts[c.id]=box; },
-    boxExtra:function(box){ return box==='hold'?'':'<span class="id">id</span>'; },
-    count:function(n){ $('#factCount').textContent=n+' / '+D.FACTS.length+' placed'; }
-  });
+  /* section 2 · facts snap onto the blocks on the board */
+  (function(){
+    var bank=$('#factBank'), mount=$('#factBoard'), fig=$('#factFig'), fb=$('#factFb'); if(!bank||!mount) return;
+    var picked=null;
+    function paint(){
+      var left=D.FACTS.filter(function(c){ return !S.facts[c.id]; });
+      if(picked && S.facts[picked]) picked=null;
+      bank.innerHTML=left.length?left.map(function(c){ return '<button type="button" class="fc" data-id="'+c.id+'" aria-pressed="'+(picked===c.id)+'">'+esc(c.id)+'</button>'; }).join(''):'<span class="empty">Every card is placed.</span>';
+      mount.innerHTML=aaravBoard(2,{targets:true});
+      fig.classList.toggle('can',!!picked);
+      $('#factCount').textContent=(D.FACTS.length-left.length)+' / '+D.FACTS.length+' placed';
+    }
+    function drop(box){
+      if(!picked){ fb.className='fbk'; fb.innerHTML='Tap a card first, then its block.'; return; }
+      var card=D.FACTS.find(function(c){ return c.id===picked; }), ok=card.ent===box;
+      fb.className='fbk '+(ok?'ok':'no');
+      fb.innerHTML=(ok?'<b>Yes.</b> ':'<b>Not there.</b> ')+card.why;
+      if(ok){ S.facts[card.id]=box; picked=null; save(); paint(); }
+      else { var c=$('.fc[data-id="'+card.id+'"]',bank); if(c){ c.classList.add('no'); setTimeout(function(){ c.classList.remove('no'); },400); } }
+    }
+    bank.addEventListener('click',function(e){ var b=e.target.closest('.fc'); if(!b) return; picked=picked===b.dataset.id?null:b.dataset.id; paint(); });
+    mount.addEventListener('click',function(e){ var g=e.target.closest('[data-box]'); if(g) drop(g.dataset.box); });
+    mount.addEventListener('keydown',function(e){ var g=e.target.closest('[data-box]'); if(g&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); drop(g.dataset.box); } });
+    paint();
+  })();
 
   /* section 4 · rows or files */
   if($('#sortBank')) placer({
@@ -167,49 +273,82 @@ document.addEventListener('DOMContentLoaded',function(){
     count:function(n){ $('#sortCount').textContent=n+' / '+D.STORE_CARDS.length+' placed'; }
   });
 
-  /* ================= section 3 · shapes and keys ================= */
+  /* ================= section 3 · two questions per pair, then the pointer, drawn as you go ================= */
+  var MINI={users:'name',conversations:'started_at',messages:'content',workflows:'description',diagnoses:'plan',tools:'name'};
+  function pairMini(p){
+    var known=shapeKnown(p), ok=known&&keyOk(p), m2m=p.shape==='many-to-many';
+    function blk(n,x,extra){ return {name:n,x:x,y:30,w:BW,cols:[{n:'id',k:'pk'},{n:MINI[n],k:''}].concat(extra||[])}; }
+    var A, B, ts, ex='', lab='';
+    if(m2m&&ok){
+      A=blk(p.ta,12); B=blk(p.tb,452);
+      var J={name:p.join.table,x:232,y:30,w:BW,cols:[{n:'id',k:'pk'},{n:p.join.cols[0],k:'fk',ref:p.ta},{n:p.join.cols[1],k:'fk',ref:p.tb}]};
+      ts=[A,J,B];
+      ex='<g class="tx"><text x="307" y="190" class="xs c-link">one row per pairing</text></g>';
+      lab=p.ta+' and '+p.tb+', joined by '+p.join.table;
+    } else {
+      A=blk(p.ta,60); B=blk(p.tb,404,ok?[{n:p.fk.name,k:'fk',ref:p.ta}]:[]);
+      ts=[A,B];
+      var aEnd=p.ba==='yes'?'many':'one', bEnd=p.ab==='yes'?'many':'one', ly=rY(A,0)+13;
+      if(ok){
+        ex='<g class="tx"><text x="'+(A.x+A.w+18)+'" y="'+(rY(A,0)-12)+'" class="xs l c-link">'+aEnd+'</text><text x="'+(B.x-12)+'" y="'+(rY(B,2)-12)+'" class="xs r c-link">'+bEnd+'</text>'+
+          '<text x="307" y="186" class="xs c-link">'+esc(p.fk.name)+' points back</text></g>';
+      } else {
+        /* no wobble filter here: a flat line has a zero-height box and the filter would erase it */
+        ex='<g class="ln"><path class="'+(known?'c-link':'dash ink')+'" d="M'+(A.x+A.w)+' '+ly+' H'+B.x+'"/></g><g class="tx">'+
+          (known?'<text x="'+(A.x+A.w+12)+'" y="'+(ly-10)+'" class="xs l c-link">'+aEnd+'</text><text x="'+(B.x-12)+'" y="'+(ly-10)+'" class="xs r c-link">'+bEnd+'</text>'+
+            '<text x="307" y="'+(ly+30)+'" class="xs '+(m2m?'c-act':'c-mute')+'">'+(m2m?'neither side can hold it':'which side holds the pointer?')+'</text>'
+          :'<text x="307" y="'+(ly+10)+'" class="h c-mute">?</text>')+'</g>';
+      }
+      lab=p.ta+' and '+p.tb+(ok?', linked by '+p.fk.name:'');
+    }
+    return boardSVG(ts,ok?arrowsFor(ts):[],lab,ex,614,ok?200:150);
+  }
   (function(){
     var root=$('#pairs'); if(!root) return;
-    function keyOk(p){
-      var k=S.keys[p.id]; if(!k) return false;
-      if(p.shape==='many-to-many') return !!(k.join && nameEq(k.join,p.join.table) || (k.join&&/workflow.*tool|tool.*workflow/i.test(k.join))) && nameEq(k.c1,p.join.cols[0]) && nameEq(k.c2,p.join.cols[1]);
-      return k.table===p.fk.table && nameEq(k.name,p.fk.name);
-    }
-    window.L06keyOk=keyOk;
+    function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
     function draw(){
       root.innerHTML='';
       D.PAIRS.forEach(function(p){
-        var shapeGot=S.shapes[p.id], right=shapeGot===p.shape;
-        var card=el('<div class="pair" data-p="'+p.id+'"><div class="who"><b>'+p.a+'</b><span class="ar">and</span><b>'+p.b+'</b></div>'+
-          '<div class="opts">'+D.SHAPES.map(function(s){ return '<button type="button" data-s="'+s+'" aria-pressed="'+(shapeGot===s?'true':'false')+'" class="'+(shapeGot===s?(right?'ok':'no'):'')+'">'+s+'</button>'; }).join('')+'</div>'+
-          '<div class="fb '+(right?'ok':'')+'">'+(shapeGot?(right?'<b>Yes.</b> '+p.why:'<b>Look again.</b> '+p.why):'')+'</div></div>');
-        if(right){
-          var k=S.keys[p.id]||{}; var ok=keyOk(p);
-          if(p.shape==='many-to-many'){
-            card.appendChild(el('<div class="key"><span class="lb">the third table</span><div class="row"><input type="text" data-k="join" placeholder="table name" value="'+esc(k.join||'')+'"><input type="text" data-k="c1" placeholder="first pointer" value="'+esc(k.c1||'')+'"><input type="text" data-k="c2" placeholder="second pointer" value="'+esc(k.c2||'')+'"><span class="'+(ok?'ok':'no')+'">'+(ok?'✓ one row per pairing':'name it, then its two pointers')+'</span></div></div>'));
+        var d=S.dir[p.id]||{}, known=shapeKnown(p), ok=known&&keyOk(p), k=S.keys[p.id]||{}, m2m=p.shape==='many-to-many';
+        var asks=[['ab',p.qa],['ba',p.qb]].map(function(q){
+          var got=d[q[0]], right=got===p[q[0]];
+          return '<div class="qrow" data-q="'+q[0]+'"><span>'+esc(q[1])+'</span><div class="opts">'+['yes','no'].map(function(v){ return '<button type="button" data-v="'+v+'" aria-pressed="'+(got===v)+'" class="'+(got===v?(right?'ok':'no'):'')+'">'+v+'</button>'; }).join('')+'</div></div>';
+        }).join('');
+        var fb=d.ab&&d.ab!==p.ab?'<b>Look again.</b> '+p.na : d.ba&&d.ba!==p.ba?'<b>Look again.</b> '+p.nb : known?'<b>'+cap(p.shape)+'.</b> '+p.why : '';
+        var card=el('<div class="pair'+(ok?' linked':'')+'" data-p="'+p.id+'"><div class="mini">'+pairMini(p)+'</div><div class="ask">'+asks+'</div><div class="fb '+(known?'ok':'')+'">'+fb+'</div></div>');
+        if(known){
+          if(m2m){
+            card.appendChild(el('<div class="key"><span class="lb">the third block</span><div class="row"><input type="text" data-k="join" placeholder="block name" value="'+esc(k.join||'')+'"><input type="text" data-k="c1" placeholder="pointer to '+p.ta+'" value="'+esc(k.c1||'')+'"><input type="text" data-k="c2" placeholder="pointer to '+p.tb+'" value="'+esc(k.c2||'')+'"><span class="'+(ok?'ok':'no')+'">'+(ok?'✓ one row per pairing':'name it, then its two pointers')+'</span></div></div>'));
           } else {
-            card.appendChild(el('<div class="key"><span class="lb">the pointer</span><div class="row"><span style="font-size:13px">goes on</span><select data-k="table"><option value="">which table?</option><option value="'+p.fk.ref+'" '+(k.table===p.fk.ref?'selected':'')+'>'+p.fk.ref+'</option><option value="'+p.fk.table+'" '+(k.table===p.fk.table?'selected':'')+'>'+p.fk.table+'</option></select><span style="font-size:13px">called</span><input type="text" data-k="name" placeholder="column name" value="'+esc(k.name||'')+'"><span class="'+(ok?'ok':'no')+'">'+(ok?'✓ on the many side':(k.table&&k.table!==p.fk.table?'one cell cannot hold many: other side':'pick the many side and name it'))+'</span></div></div>'));
+            var st=ok?'✓ on the many side':k.table&&k.table!==p.fk.table?'a column holds one value: try the other side':k.table?'name it: the other block, singular, plus _id':'pick the many side, then name it';
+            card.appendChild(el('<div class="key"><span class="lb">the pointer</span><div class="row"><span>goes on</span>'+[p.ta,p.tb].map(function(n){ return '<button type="button" class="tb'+(k.table===n?(n===p.fk.table?' ok':' no'):'')+'" data-tb="'+n+'" aria-pressed="'+(k.table===n)+'">'+n+'</button>'; }).join('')+'<span>called</span><input type="text" data-k="name" placeholder="column name" value="'+esc(k.name||'')+'"><span class="'+(ok?'ok':'no')+'">'+st+'</span></div></div>'));
           }
         }
         root.appendChild(card);
       });
-      var n=D.PAIRS.filter(function(p){ return S.shapes[p.id]===p.shape && keyOk(p); }).length;
+      var n=D.PAIRS.filter(function(p){ return shapeKnown(p) && keyOk(p); }).length;
       $('#pairCount').textContent=n+' / '+D.PAIRS.length+' linked';
       drawTrace();
     }
+    function setKey(id,f,v){ S.keys[id]=S.keys[id]||{}; S.keys[id][f]=v; save(); draw(); }
     root.addEventListener('click',function(e){
-      var b=e.target.closest('.opts button'); if(!b) return;
-      var id=b.closest('.pair').dataset.p; S.shapes[id]=b.dataset.s; save(); draw();
+      var b=e.target.closest('.qrow button'), tb=e.target.closest('[data-tb]');
+      if(b){
+        var id=b.closest('.pair').dataset.p, p=pairById(id);
+        S.dir[id]=S.dir[id]||{}; S.dir[id][b.closest('.qrow').dataset.q]=b.dataset.v;
+        if(shapeKnown(p)) S.shapes[id]=p.shape; else delete S.shapes[id];
+        save(); draw();
+      } else if(tb){ setKey(tb.closest('.pair').dataset.p,'table',tb.dataset.tb); }
     });
     root.addEventListener('change',function(e){
-      var f=e.target.closest('[data-k]'); if(!f) return;
-      var id=f.closest('.pair').dataset.p; S.keys[id]=S.keys[id]||{}; S.keys[id][f.dataset.k]=f.value.trim(); save(); draw();
+      var f=e.target.closest('input[data-k]'); if(!f) return;
+      setKey(f.closest('.pair').dataset.p,f.dataset.k,f.value.trim());
     });
     root.addEventListener('keydown',function(e){ if(e.key==='Enter'&&e.target.matches('input')){ e.preventDefault(); e.target.blur(); } });
     function drawTrace(){
       var t=$('#trace'); if(!t) return;
       var cm=keyOk(D.PAIRS[1]), uc=keyOk(D.PAIRS[0]);
-      t.innerHTML='<span class="nd">message #31</span><span class="ar">→</span><span class="nd '+(cm?'':'dim')+'">'+(cm?'conversation_id = 7':'conversation ?')+'</span><span class="ar">→</span><span class="nd '+(uc&&cm?'':'dim')+'">'+(uc&&cm?'user_id = 1 · Aarav':'user ?')+'</span>';
+      t.innerHTML='<span class="nd">message 101</span><span class="ar">→</span><span class="nd '+(cm?'':'dim')+'">'+(cm?'conversation_id = 7':'conversation ?')+'</span><span class="ar">→</span><span class="nd '+(uc&&cm?'':'dim')+'">'+(uc&&cm?'user_id = 1 · Aarav':'user ?')+'</span>';
     }
     draw();
   })();
@@ -303,46 +442,49 @@ document.addEventListener('DOMContentLoaded',function(){
       var url=URL.createObjectURL(new Blob([txt],{type:'text/csv;charset=utf-8'})); var a=document.createElement('a'); a.href=url; a.download=(t.name.replace(/[^a-z0-9_-]+/gi,'_')||'table')+'.csv'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){ URL.revokeObjectURL(url); },800);
     });
   }
-  function erHTML(schema,miss){
-    miss=miss||{};
-    var ts=schema.filter(function(t){ return t.name; }); if(!ts.length) return '<p class="er empty">Add a table to see the picture.</p>';
-    var boxes=ts.map(function(t){
-      var tm=miss[t.name]&&miss[t.name].table;
-      return '<div class="erb '+(tm?'miss':'')+'"><div class="h">'+esc(t.name)+(tm&&miss[t.name].link?'<a href="'+miss[t.name].link+'">place it</a>':'')+'</div><ul>'+t.columns.filter(function(c){return c.name}).map(function(c){
-        var m=miss[t.name]&&miss[t.name].cols&&miss[t.name].cols[c.name];
-        return '<li class="'+(m?'miss':'')+'">'+(isPk(c)?'<span class="kt pk">key</span>':'')+(isFk(c)?'<span class="kt fk">→</span>':'')+esc(c.name)+(m?'<a href="'+m+'">place it</a>':(c.unique&&!isPk(c)?'<span class="c">unique</span>':''))+'</li>'; }).join('')+'</ul></div>';
-    }).join('');
+  /* the Picture of any builder: the same blocks and arrows, four to a row */
+  function relsHTML(ts){
     var rels=[];
-    ts.forEach(function(t){ t.columns.forEach(function(c){ if(!isFk(c)||!c.fkRef) return; var tg=refOf(ts,c.fkRef); if(!tg) return; var one=c.unique; rels.push('<div class="r"><span>'+esc(tg.name)+'</span><span class="cr">'+(one?'1 ─── 1':'1 ──< many')+'</span><span>'+esc(t.name)+'</span><span class="v">via '+esc(c.name)+'</span></div>'); }); });
-    return '<div class="er"><div class="ents">'+boxes+'</div>'+(rels.length?'<div class="rels">'+rels.join('')+'</div>':'')+'</div>';
+    ts.forEach(function(t){ t.columns.forEach(function(c){ if(!isFk(c)||!c.fkRef) return; var tg=refOf(ts,c.fkRef); if(!tg) return; rels.push('<div class="r"><span>'+esc(tg.name)+'</span><span class="cr">'+(c.unique?'1 ─── 1':'1 ──< many')+'</span><span>'+esc(t.name)+'</span><span class="v">via '+esc(c.name)+'</span></div>'); }); });
+    return rels.length?'<div class="er"><div class="rels">'+rels.join('')+'</div></div>':'';
+  }
+  function pictureHTML(schema){
+    var ts=schema.filter(function(t){ return t.name; }); if(!ts.length) return '<p class="er empty">Add a table to see the picture.</p>';
+    var tables=ts.map(function(t,i){ return {name:t.name,i:i,cols:t.columns.filter(function(c){ return c.name; }).map(function(c){ var r=isFk(c)&&c.fkRef&&refOf(ts,c.fkRef); return {n:c.name+(c.unique&&!isPk(c)?' · unique':''),k:isPk(c)?'pk':isFk(c)?'fk':'',ref:r?r.name:''}; })}; });
+    grid(tables,function(t){ return [t.i%4,Math.floor(t.i/4)]; });
+    return '<figure class="wbx board pic"><div class="sc">'+boardSVG(tables,arrowsFor(tables),'Your tables and the pointers between them')+'</div></figure>'+relsHTML(ts);
   }
 
-  /* ================= section 5 · Aarav's model, drawn from what the student placed ================= */
-  function tagRight(id){ var t=D.TOKENS[id]; var c=S.tags[id]; return !!c && (c===t.role || (t.role==='file'&&c==='thing')); }
-  function drawModel(){
-    var mount=$('#er5'); if(!mount) return;
-    var schema=[], miss={}, missing=0, total=0;
-    D.AARAV_MODEL.forEach(function(m){
-      var tOk = m.src.ent ? tagRight(m.src.ent) : m.src.sort ? S.sort[m.src.sort]==='file' : m.src.pair ? (window.L06keyOk && window.L06keyOk(D.PAIRS.find(function(p){return p.id===m.src.pair}))) : true;
-      total++; if(!tOk){ missing++; miss[m.name]={table:true,cols:{},link:m.src.ent?'#s1':m.src.sort?'#s4':'#s3'}; }
-      var cols=m.cols.map(function(c){
-        var name=c[0], kind=c[1], ref=c[2], o=c[3]||{};
-        var ok=true, link='';
-        if(o.fact){ ok=S.facts[o.fact]===m.name; link='#s2'; }
-        else if(o.pair){ var p=D.PAIRS.find(function(x){return x.id===o.pair}); ok=!!(window.L06keyOk&&window.L06keyOk(p)); link='#s3'; }
-        else if(o.sort){ ok=S.sort[o.sort]===(o.sort==='meta'?'row':'file'); link='#s4'; }
-        if(!ok){ miss[m.name]=miss[m.name]||{cols:{}}; miss[m.name].cols=miss[m.name].cols||{}; miss[m.name].cols[name]=link; missing++; }
-        total++;
-        return {id:m.name+'.'+name,name:name,type:kind?'id':'text',primary:kind==='pk',foreign:kind==='fk',fkRef:ref||'',required:true,unique:false};
-      });
-      schema.push({id:m.name,name:m.name,columns:cols});
-      if(miss[m.name]&&miss[m.name].table) miss[m.name].cols=miss[m.name].cols||{};
-    });
-    mount.innerHTML=erHTML(schema,miss);
-    var st=$('#er5State'); if(st) st.innerHTML = missing ? '<div class="done not">'+missing+' of '+total+' pieces still to place. The dashed parts link back to the section that places them.</div>' : '<div class="done">Every box and line here came from your own placements in sections 1 to 4.</div>';
-    var br=$('#bridge'); if(br) $$('td[data-t]',br).forEach(function(td){ td.classList.toggle('lit',!(miss[td.dataset.t]&&miss[td.dataset.t].table)); });
+  /* section 4 · the block held in section 2, with its bytes outside in file storage */
+  function board4(){
+    var shot=S.sort.shot==='file', meta=S.sort.meta==='row';
+    var M={name:'messages',x:22,y:24,w:170,cols:[{n:'id',k:'pk'},{n:'conversation_id',k:'fk'},{n:'content',k:''}]};
+    var A={name:'attachments',x:282,y:24,w:180,ghost:shot?'':'1',empty:'sort the screenshot first',cols:shot?[{n:'id',k:'pk'},{n:'message_id',k:'fk',ref:'messages'},{n:'file_name',k:'',miss:meta?'':'1'},{n:'file_url',k:'file'}]:[]};
+    var ex=shot?'<g class="ln" filter="url(#wob)"><path d="M566 60 H700 L688 162 H578 Z M562 60 H704"/><rect class="thin f-act" x="608" y="86" width="50" height="38" rx="4"/><path class="thin c-act" d="M612 120 L626 104 L636 114 L644 106 L654 120"/>'+
+      '<path class="arw c-act" d="M'+(A.x+A.w)+' '+rY(A,3)+' C510 '+rY(A,3)+' 530 128 568 120" marker-end="url(#ahc)"/></g><g class="tx"><text x="633" y="192" class="m">file storage</text><text x="633" y="218" class="xs c-act">jira-board.png</text></g>':'';
+    var ts=[M,A];
+    return boardSVG(ts,arrowsFor(ts),shot?'The attachments block: id, message_id pointing at messages, file_name, and file_url pointing at jira-board.png in file storage.':'The attachments block appears once the screenshot is sorted.',ex,760,232);
   }
-  drawModel();
+
+  /* ================= every board on the page, redrawn after each placement ================= */
+  function drawBoards(){
+    var b1=$('#board1');
+    if(b1){ b1.innerHTML=aaravBoard(1); var n1=D.TARGET_ENTITIES.filter(foundEnt).length;
+      $('#board1Cap').textContent=n1===D.TARGET_ENTITIES.length?'All six blocks are on the board, each one a future table. They are empty: question 2 fills them.':n1+' of 6 blocks found. The grey ones are still hiding in Aarav\'s chat.'; }
+    var b3=$('#board3');
+    if(b3){ b3.innerHTML=aaravBoard(3); var n3=D.PAIRS.filter(function(p){ return shapeKnown(p)&&keyOk(p); }).length;
+      $('#board3Cap').textContent=(n3===D.PAIRS.length?'Every block is linked. ':n3+' of 5 links placed. ')+'Each arrow runs from a pointer on the many side to the key of the row it points at.'; }
+    var b4=$('#board4'); if(b4) b4.innerHTML=board4();
+    var m5=$('#er5');
+    if(m5){
+      var ts=aaravTables(5), missing=0, total=0;
+      ts.forEach(function(t){ total++; if(t.ghost) missing++; t.cols.forEach(function(c){ total++; if(c.miss) missing++; }); });
+      m5.innerHTML=boardSVG(ts,arrowsFor(ts),'Aarav\'s whole model: eight blocks and the pointers between them.');
+      var st=$('#er5State'); if(st) st.innerHTML=missing?'<div class="done not">'+missing+' of '+total+' pieces still to place. Grey pieces link back to the section that places them.</div>':'<div class="done">Every block, line and arrow here came from your own placements in sections 1 to 4.</div>';
+      var br=$('#bridge'); if(br) $$('td[data-t]',br).forEach(function(td){ var t=ts.find(function(x){ return x.name===td.dataset.t; }); td.classList.toggle('lit',!!t&&!t.ghost); });
+    }
+  }
+  drawBoards();
 
   /* ================= section 6 · the Arena ================= */
   (function(){
@@ -364,13 +506,13 @@ document.addEventListener('DOMContentLoaded',function(){
       $('#exBack',root).addEventListener('click',function(){ delete S.arenaEx; store.set(K,S); list(); });
       $('#exAdd',root).addEventListener('click',bld.add);
       $('#exReset',root).addEventListener('click',function(){ if(confirm('Back to the starter tables for this brief?')){ bld.reset(); out.innerHTML=''; } });
-      $('#exEr',root).addEventListener('click',function(){ out.innerHTML=erHTML(bld.get()); });
+      $('#exEr',root).addEventListener('click',function(){ out.innerHTML=pictureHTML(bld.get()); });
       $('#exSheets',root).addEventListener('click',function(){ out.innerHTML=sheetsHTML(bld.get()); });
       $('#exCsv',root).addEventListener('click',function(){ downloadCSVs(bld.get()); });
       $('#exCheck',root).addEventListener('click',function(){
         var r=window.L06Check.check(bld.get(),b);
         out.innerHTML=(r.done?'<div class="done">Done. Every structural check is a tick.</div>':'<div class="done not">Not yet. Fix the crosses, then check again.</div>')+
-          '<ul class="checks">'+r.checks.map(function(c){ return '<li class="'+(c.ok?'ok':'')+'">'+c.html+'</li>'; }).join('')+r.suggestions.map(function(s){ return '<li class="sug">'+s+'</li>'; }).join('')+'</ul>'+erHTML(bld.get());
+          '<ul class="checks">'+r.checks.map(function(c){ return '<li class="'+(c.ok?'ok':'')+'">'+c.html+'</li>'; }).join('')+r.suggestions.map(function(s){ return '<li class="sug">'+s+'</li>'; }).join('')+'</ul>'+pictureHTML(bld.get());
         if(r.done && !S.solved[b.id]){ S.solved[b.id]=true; save(); }
         out.scrollIntoView({behavior:'smooth',block:'start'});
       });
@@ -385,7 +527,7 @@ document.addEventListener('DOMContentLoaded',function(){
     var bld=makeBuilder($('#bpBuilder',root),'myapp',['users']), out=$('#bpOut',root);
     $('#bpAdd',root).addEventListener('click',bld.add);
     $('#bpReset',root).addEventListener('click',function(){ if(confirm('Clear your tables and start from users?')){ bld.reset(); out.innerHTML=''; } });
-    $('#bpEr',root).addEventListener('click',function(){ out.innerHTML=erHTML(bld.get()); out.scrollIntoView({behavior:'smooth',block:'start'}); });
+    $('#bpEr',root).addEventListener('click',function(){ out.innerHTML=pictureHTML(bld.get()); out.scrollIntoView({behavior:'smooth',block:'start'}); });
     $('#bpSheets',root).addEventListener('click',function(){ out.innerHTML=sheetsHTML(bld.get()); });
     $('#bpCsv',root).addEventListener('click',function(){ downloadCSVs(bld.get()); });
     $('#bpAarav',root).addEventListener('click',function(){

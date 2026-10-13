@@ -44,3 +44,18 @@
 .wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--card)}
 .wb .tx .bn.act{fill:#fff}
 .wb .ln .c-key{stroke:var(--prob)}
+
+/* the three question colours on the board: things amber, facts green, links violet */
+.wb .ln .c-thing{stroke:var(--q-thing)}.wb .ln .c-fact{stroke:var(--q-fact)}.wb .ln .c-link{stroke:var(--q-link)}
+.wb .ln .f-thing{fill:var(--q-thing-soft);stroke:var(--q-thing)}
+.wb .ln .f-fact{fill:var(--q-fact-soft);stroke:var(--q-fact)}
+.wb .ln .f-link{fill:var(--q-link-soft);stroke:var(--q-link)}
+.wb .ln .blk{fill:var(--card)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .r{text-anchor:end}
+.wb .tx .c-thing{fill:var(--q-thing-ink)}.wb .tx .c-fact{fill:var(--q-fact-ink)}.wb .tx .c-link{fill:var(--q-link-ink)}.wb .tx .c-ink{fill:var(--ink)}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-mute{fill:var(--ink3)}
+.wb .tx .strike{text-decoration:line-through}
+.wb a text{cursor:pointer}
+.wb a:hover text{text-decoration:underline}
