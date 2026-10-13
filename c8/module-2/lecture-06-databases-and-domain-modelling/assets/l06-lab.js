@@ -243,7 +243,6 @@ document.addEventListener('DOMContentLoaded',function(){
       main:'<section class="g-chat" aria-label="Aarav\'s chat"><p class="g-lab">Aarav\'s chat · point at an underlined word</p><div class="tx" id="tx"></div></section><section class="g-board" aria-label="Aarav\'s board"><div class="hboard" id="board1"></div></section>',
       idle:'Point at an underlined word in the chat (or tap it) and make your call.',
       intro:{h:'Find the things worth storing',steps:['Point at an underlined word in Aarav\'s chat (or tap it).','Call it right there: a <span class="q thing">thing</span> gets its own block, a <span class="q fact">fact</span> describes a thing.','Right calls fly onto the board. Uncover all six blocks.'],tip:'The test: can the app create, read, update and delete it on its own, and can there be many?'},
-      bonus:[{k:'conv'},{k:'tone'}],
       progress:function(){ var p=LV.progress(1,S); return p[0]/p[1]; },
       isDone:function(){ return LV.done(1,S); },
       summary:function(){ return 'Six blocks found and two facts stuck on.'; },

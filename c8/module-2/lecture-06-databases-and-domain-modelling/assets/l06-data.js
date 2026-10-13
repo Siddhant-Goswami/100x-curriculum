@@ -113,10 +113,6 @@ L06.BOSS = {
 
 /* ---------- bonus rounds: quick calls and pause-and-think lines ---------- */
 L06.QUIZ = {
-  conv:{p:'Is "conversation" a thing in your app?',scn:'Aarav chats on Monday. On Tuesday he opens a fresh conversation. Each can be started, reopened and deleted.',
-    o:[['Yes, it earns its own block',1,'Created, read, reopened, deleted, each on its own, and many over time. A thing with its own row.'],['No, it just describes Aarav',0,'A conversation is not a fact about Aarav. You can create and delete each one, and there are many.']]},
-  tone:{p:'Is "casual" a thing?',scn:'On Tuesday Aarav asks for the plan in a more casual tone. Tones are not saved or reused anywhere.',
-    o:[['No, it describes a plan',1,'Nobody creates or deletes a "casual" on its own. It is the tone of one plan: a fact, so a column, not a block.'],['Yes, give it its own block',0,'It has no life of its own. It only describes one plan.']]},
   time:{p:'Thing or fact: "9:12 am"?',scn:'Aarav\'s message went out at 9:12 am. The app\'s reply came a minute later, with its own time.',
     o:[['A fact on the message',1,'Each message has exactly one time it was sent. One column on messages: created_at.'],['Its own thing',0,'Nobody creates or deletes a time on its own. It only says when one message was sent.']]},
   attach:{p:'Thing or fact: "attachment"?',scn:'Aarav uploads a screenshot and reuses it in different conversations.',

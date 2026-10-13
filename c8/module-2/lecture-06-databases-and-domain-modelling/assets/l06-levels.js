@@ -6,9 +6,9 @@
   var D=root.L06, C=root.L06Check;
 
   var LEVELS=[
-    {n:1,sec:'s1',q:'Question 1',title:'Find the things',desc:'Thirteen words are highlighted in Aarav\'s chat. Call each one a thing or a fact and uncover the six blocks worth storing.',meta:'13 words · 6 hidden blocks · about 5 minutes'},
-    {n:2,sec:'s2',q:'Question 2',title:'Fill the blocks',desc:'Nine fact cards. Stick each one on the block it describes, and hold back the one that fits no column.',meta:'9 cards · 6 blocks · about 5 minutes'},
-    {n:3,sec:'s3',q:'Question 3',title:'Connect the blocks',desc:'Five pairs of blocks. Ask two questions about each pair, then place the pointer that links them.',meta:'5 pairs · about 15 minutes'},
+    {n:1,sec:'s1',title:'Find the things',desc:'Thirteen words are highlighted in Aarav\'s chat. Call each one a thing or a fact and uncover the six blocks worth storing.',meta:'13 words · 6 hidden blocks · about 5 minutes'},
+    {n:2,sec:'s2',title:'Fill the blocks',desc:'Nine fact cards. Stick each one on the block it describes, and hold back the one that fits no column.',meta:'9 cards · 6 blocks · about 5 minutes'},
+    {n:3,sec:'s3',title:'Connect the blocks',desc:'Five pairs of blocks. Ask two questions about each pair, then place the pointer that links them.',meta:'5 pairs · about 15 minutes'},
     {n:4,sec:'s4',q:'',title:'Rows or files',desc:'Eight things Aarav\'s app keeps. Sort each into a cell in a row, or a file in storage with its link in a row.',meta:'8 cards · about 4 minutes'},
     {n:5,sec:'s5',q:'Boss level',title:'Can the model answer?',desc:'Answer three of the product\'s questions by following the arrows on your board, then land four API addresses on their blocks.',meta:'3 questions · 4 addresses · about 6 minutes'},
     {n:6,sec:'s6',q:'',title:'The Arena',desc:'Six briefs, one brick each. Build the tables from a blank page, then check them.',meta:'6 briefs · about 45 minutes'},
