@@ -231,23 +231,35 @@ document.addEventListener('DOMContentLoaded',function(){
         if(id===sel) x.classList.add('sel');
       });
     }
-    function idle(msg,cls){ dock.className='g-dock'+(cls?' '+cls:''); dock.innerHTML='<p class="g-msg">'+(msg||'Tap an underlined word in the chat.')+'</p>'; }
-    function ask(id){
+    function idle(msg,cls){ dock.className='g-dock'+(cls?' '+cls:''); dock.innerHTML='<p class="g-msg">'+(msg||'Point at an underlined word in the chat (or tap it) and make your call.')+'</p>'; }
+    /* the calls pop up right under the word: on hover with a mouse, on tap or Enter otherwise */
+    var pop=null, popT=null;
+    function unpop(){ clearTimeout(popT); if(pop){ pop.remove(); pop=null; } if(sel){ sel=null; paint(); } }
+    function ask(id,focus){
+      var w=$('#tx [data-t="'+id+'"]'); if(!w) return;
+      clearTimeout(popT); if(pop&&sel===id){ if(focus) $('.g-call:not(:disabled)',pop).focus({preventScroll:true}); return; }
+      if(pop) pop.remove();
       sel=id; paint();
-      dock.className='g-dock ask';
-      dock.innerHTML='<p class="g-msg"><span class="g-word">'+esc(wordOf(id))+'</span> is…</p><div class="g-calls">'+
+      pop=el('<div class="g-pop" role="group" aria-label="What is '+esc(wordOf(id))+'?"><div class="g-calls">'+
         '<button type="button" class="g-call thing" data-c="thing">a thing<small>its own block</small></button>'+
         '<button type="button" class="g-call fact" data-c="fact">a fact<small>describes a thing</small></button>'+
-        '<button type="button" class="g-call out" data-c="neither">neither<small>not worth storing</small></button></div>';
-      $('.g-call',dock).focus({preventScroll:true});
+        '<button type="button" class="g-call out" data-c="neither">neither<small>not worth storing</small></button></div><p class="g-hint" hidden></p></div>');
+      game.appendChild(pop);
+      var r=w.getBoundingClientRect(), pw=pop.offsetWidth, ph=pop.offsetHeight;
+      pop.style.left=Math.min(Math.max(8,r.left+r.width/2-pw/2),window.innerWidth-pw-8)+'px';
+      pop.style.top=(r.bottom+8+ph>window.innerHeight-8?r.top-ph-8:r.bottom+8)+'px';
+      pop.addEventListener('mouseenter',function(){ clearTimeout(popT); });
+      pop.addEventListener('mouseleave',function(){ popT=setTimeout(unpop,250); });
+      pop.addEventListener('click',function(e){ var b=e.target.closest('.g-call'); if(b&&!b.disabled) call(b.dataset.c); });
+      if(focus) $('.g-call',pop).focus({preventScroll:true});
     }
     function call(c){
       var id=sel; if(!id) return;
       var tok=D.TOKENS[id], right=(c===tok.role)||(tok.role==='file'&&c==='thing'), w=$('#tx [data-t="'+id+'"]');
       if(!right){
         S.g1.miss=(S.g1.miss||0)+1; S.g1.streak=0; S.g1.missed[id]=1; store.set(K,S); hud();
-        $$('.g-call',dock).forEach(function(b){ if(b.dataset.c===c){ b.classList.add('no'); b.disabled=true; } });
-        var m=$('.g-msg',dock); m.innerHTML='<b>Not quite.</b> Can the app create, read, update and delete <span class="g-word">'+esc(wordOf(id))+'</span> on its own? Try again.';
+        if(pop){ $$('.g-call',pop).forEach(function(b){ if(b.dataset.c===c){ b.classList.add('no'); b.disabled=true; } });
+          var m=$('.g-hint',pop); m.hidden=false; m.innerHTML='<b>Not quite.</b> Can the app create, read, update and delete it on its own?'; }
         if(w){ w.classList.add('no'); setTimeout(function(){ w.classList.remove('no'); },400); }
         return;
       }
@@ -255,7 +267,7 @@ document.addEventListener('DOMContentLoaded',function(){
       S.g1.streak=(S.g1.streak||0)+1;
       var gain=S.g1.missed[id]?5:10, bonus=S.g1.streak>=3?5:0;
       S.g1.pts=(S.g1.pts||0)+gain+bonus;
-      S.tags[id]=c; sel=null; store.set(K,S);
+      S.tags[id]=c; unpop(); store.set(K,S);
       board.innerHTML=huntBoard(newEnt); paint(); hud(); fly(w,id);
       idle('<b class="gain">+'+(gain+bonus)+(bonus?' streak!':'')+'</b> <b>'+(newEnt?'New block: '+newEnt+'.':tok.role==='thing'?'Another word for '+tok.ent+'.':'Yes.')+'</b> '+tok.why,'ok');
       if(g1Found()===D.TOKEN_ORDER.length) setTimeout(finish,900);
@@ -277,14 +289,14 @@ document.addEventListener('DOMContentLoaded',function(){
       intro.hidden=false; $('#g1go').focus();
     }
     function close(next){
-      game.hidden=true; document.documentElement.classList.remove('g-lock'); sel=null;
+      game.hidden=true; document.documentElement.classList.remove('g-lock'); unpop();
       drawBoards();
       var t=next?$('#s2'):$('#g1card'); if(t) setTimeout(function(){ window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-(next?72:160),behavior:'instant'}); },0);
       if(lastFocus&&!next) lastFocus.focus({preventScroll:true});
     }
     function reset(quiet){
       S.tags={}; S.g1={missed:{},best:S.g1.best||0}; store.set(K,S);
-      board.innerHTML=huntBoard(); sel=null; paint(); hud(); idle(quiet?'':'Fresh board. Tap an underlined word in the chat.'); win.hidden=true;
+      unpop(); board.innerHTML=huntBoard(); paint(); hud(); idle(quiet?'':'Fresh board. Point at an underlined word in the chat.'); win.hidden=true;
     }
     $('#g1start').addEventListener('click',open);
     $('#g1go').addEventListener('click',function(){ intro.hidden=true; idle(); });
@@ -292,16 +304,25 @@ document.addEventListener('DOMContentLoaded',function(){
     $('#g1again').addEventListener('click',function(){ reset(true); intro.hidden=false; $('#g1go').focus(); });
     $('#g1next').addEventListener('click',function(){ close(true); });
     $$('[data-exit]',game).forEach(function(b){ b.addEventListener('click',function(){ close(false); }); });
-    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!game.hidden) close(false); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!game.hidden){ if(pop) unpop(); else close(false); } });
     root.addEventListener('click',function(e){
-      var t=e.target.closest('[data-t]'); if(!t) return;
+      var t=e.target.closest('[data-t]'); if(!t){ unpop(); return; }
       var id=t.dataset.t;
-      if(tagRight(id)){ sel=null; paint(); idle('<b>Already on the board.</b> '+D.TOKENS[id].why); return; }
-      ask(id);
+      if(tagRight(id)){ unpop(); idle('<b>Already on the board.</b> '+D.TOKENS[id].why); return; }
+      ask(id,e.detail===0);
+    });
+    root.addEventListener('mouseover',function(e){
+      var t=e.target.closest('[data-t]'); if(!t||tagRight(t.dataset.t)) return;
+      ask(t.dataset.t);
+    });
+    root.addEventListener('mouseout',function(e){
+      var t=e.target.closest('[data-t]'); if(!t||(e.relatedTarget&&(t.contains(e.relatedTarget)||(pop&&pop.contains(e.relatedTarget))))) return;
+      clearTimeout(popT); popT=setTimeout(unpop,250);
     });
     root.addEventListener('keydown',function(e){ var t=e.target.closest('[data-t]'); if(t&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); t.click(); } });
     $$('[data-t]',root).forEach(function(x){ x.tabIndex=0; x.setAttribute('role','button'); });
-    dock.addEventListener('click',function(e){ var b=e.target.closest('.g-call'); if(b&&!b.disabled) call(b.dataset.c); });
+    game.addEventListener('scroll',function(e){ if(pop&&!pop.contains(e.target)) unpop(); },true);
+    window.addEventListener('resize',function(){ if(pop) unpop(); });
     drawG1Card();
   })();
 
