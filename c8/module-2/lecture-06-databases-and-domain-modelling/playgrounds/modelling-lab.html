@@ -90,28 +90,16 @@
 <section class="s" id="s1"><h2><span class="n">01</span>Question 1: what are the things worth storing?</h2>
 <p class="bricks"><span class="q thing">things</span><span class="q fact off">facts</span><span class="q link off">links</span></p>
 <p>Start from Aarav's own words. Every noun is a candidate. To keep one, ask: can the app <b>create</b> one, <b>read</b> it, <b>update</b> it and <b>delete</b> it on its own, and can there be many? If yes, it is a <span class="q thing">thing</span> and becomes a block on the board. If it only describes a thing, it is a <span class="q fact">fact</span>. Some words are neither, and one is a file.</p>
-<p><b>The game:</b> sixteen words are hiding in the chat. Tap one and call it. Every right call flies onto Aarav's board: things become blocks, facts stick to their block. Six blocks are hidden. Find them all.</p>
-<div class="hunt">
-<div class="tx" id="tx">
-  <div class="day">signed in as <span class="tag" data-t="aarav">Aarav</span></div>
-  <div class="day"><span class="tag" data-t="conv1">Monday's conversation</span></div>
-  <div class="bub u"><span class="mlab" data-t="msg1">this bubble</span>Here is <span class="tag" data-t="wf">my weekly workflow</span>: every Monday I open <span class="tag" data-t="jira">Jira</span> to check my to-dos. I pick the <span class="tag" data-t="hiprio">high-priority</span> ones, pull the numbers from our <span class="tag" data-t="dash">dashboard</span>, write a short report for each, and send it to <span class="tag" data-t="manager">my manager</span> on <span class="tag" data-t="slack">Slack</span>.</div>
-  <div class="ct" style="align-self:flex-end"><span class="tag" data-t="time">9:12 am</span></div>
-  <div class="att"><span class="tag" data-t="file">jira-board.png</span></div>
-  <div class="bub a"><span class="mlab" data-t="msg2">this bubble</span>Here is <span class="tag" data-t="plan">your plan</span>:
-1. Let Jira list the to-dos (saved filter)
-2. You pick what matters
-3. Export the dashboard the same way each week
-4. Draft the report with the app
-5. Send on Slack yourself, for now</div>
-  <div class="day"><span class="tag" data-t="conv2">Tuesday's conversation</span></div>
-  <div class="bub u">Can you redo the plan in a more <span class="tag" data-t="casual">casual</span> tone?</div>
-  <div class="bub a"><span class="tag" data-t="plan2">Quick version</span>: let Jira do the listing, you do the picking. Export the dashboard the same way, draft with the app, keep the Slack send in your hands until you trust the draft.</div>
+<div class="gcard" id="g1card" data-nolink>
+  <div class="gc-art" aria-hidden="true"><i class="t"></i><i class="t"></i><i class="f"></i><i class="q">?</i><i class="t"></i><i class="q">?</i></div>
+  <div class="gc-body">
+    <p class="kick">Game · Question 1</p>
+    <h3>Find the things</h3>
+    <p>Sixteen words hide in Aarav's chat. Call each one, and uncover the six blocks worth storing.</p>
+    <p class="gc-meta" id="g1meta">16 words · 6 hidden blocks · about 5 minutes</p>
+    <button type="button" class="btn" id="g1start">Start the game</button>
+  </div>
 </div>
-<div class="hboard" id="board1" aria-live="polite"></div>
-</div>
-<div class="fbk" id="txFb">Tap an underlined word to begin.</div>
-<p class="cap" id="board1Cap"></p>
 <div class="two">
   <div class="qc" data-k="conv"></div>
   <div class="qc" data-k="tone"></div>
@@ -426,7 +414,62 @@
 <p><button type="button" class="reset" id="labReset">Reset the whole lab</button></p>
 </section>
 
-  </main>
+  
+<!-- ============ the Question 1 game: full screen, opened from the card in section 1 ============ -->
+<div class="game" id="g1" data-nolink role="dialog" aria-modal="true" aria-labelledby="g1title" hidden>
+  <header class="g-bar">
+    <div class="g-name"><span class="kick">Question 1</span><b id="g1title">Find the things</b></div>
+    <div class="g-score" aria-live="polite"><span class="pts"><b id="g1pts">0</b> pts</span><span class="streak" id="g1streak"></span><span class="miss">misses <b id="g1miss">0</b></span></div>
+    <div class="g-act"><button type="button" class="g-btn" id="g1restart">Restart</button><button type="button" class="g-btn exit" data-exit>Exit ✕</button></div>
+  </header>
+  <div class="g-prog"><i id="g1prog"></i></div>
+  <div class="g-main">
+    <section class="g-chat" aria-label="Aarav's chat"><p class="g-lab">Aarav's chat · tap an underlined word</p>
+<div class="tx" id="tx">
+  <div class="day">signed in as <span class="tag" data-t="aarav">Aarav</span></div>
+  <div class="day"><span class="tag" data-t="conv1">Monday's conversation</span></div>
+  <div class="bub u"><span class="mlab" data-t="msg1">this bubble</span>Here is <span class="tag" data-t="wf">my weekly workflow</span>: every Monday I open <span class="tag" data-t="jira">Jira</span> to check my to-dos. I pick the <span class="tag" data-t="hiprio">high-priority</span> ones, pull the numbers from our <span class="tag" data-t="dash">dashboard</span>, write a short report for each, and send it to <span class="tag" data-t="manager">my manager</span> on <span class="tag" data-t="slack">Slack</span>.</div>
+  <div class="ct" style="align-self:flex-end"><span class="tag" data-t="time">9:12 am</span></div>
+  <div class="att"><span class="tag" data-t="file">jira-board.png</span></div>
+  <div class="bub a"><span class="mlab" data-t="msg2">this bubble</span>Here is <span class="tag" data-t="plan">your plan</span>:
+1. Let Jira list the to-dos (saved filter)
+2. You pick what matters
+3. Export the dashboard the same way each week
+4. Draft the report with the app
+5. Send on Slack yourself, for now</div>
+  <div class="day"><span class="tag" data-t="conv2">Tuesday's conversation</span></div>
+  <div class="bub u">Can you redo the plan in a more <span class="tag" data-t="casual">casual</span> tone?</div>
+  <div class="bub a"><span class="tag" data-t="plan2">Quick version</span>: let Jira do the listing, you do the picking. Export the dashboard the same way, draft with the app, keep the Slack send in your hands until you trust the draft.</div>
+</div>
+    </section>
+    <section class="g-board" aria-label="Aarav's board"><div class="hboard" id="board1"></div></section>
+  </div>
+  <div class="g-dock" id="g1dock" aria-live="polite"></div>
+  <div class="g-over" id="g1intro">
+    <div class="g-card">
+      <p class="kick">How to play</p>
+      <h3>Find the things worth storing</h3>
+      <ol class="g-steps">
+        <li>Tap an underlined word in Aarav's chat.</li>
+        <li>Call it: <span class="q thing">thing</span> gets its own block, <span class="q fact">fact</span> describes a thing, <span class="q">neither</span> is not worth storing.</li>
+        <li>Right calls fly onto the board. Uncover all six blocks.</li>
+      </ol>
+      <p class="g-tip">The test: can the app create, read, update and delete it on its own?</p>
+      <p class="g-rules">+10 a right call · +5 for a streak of three · misses cost stars</p>
+      <button type="button" class="btn" id="g1go">Let's start</button>
+    </div>
+  </div>
+  <div class="g-over" id="g1win" hidden>
+    <div class="g-card win">
+      <p class="kick">Board complete</p>
+      <p class="g-stars" id="g1stars"></p>
+      <h3 id="g1final"></h3>
+      <p id="g1sum"></p>
+      <div class="g-btns"><button type="button" class="btn" id="g1next">Next: Question 2 →</button><button type="button" class="btn ghost" id="g1again">Play again</button><button type="button" class="btn ghost" data-exit>Back to the lab</button></div>
+    </div>
+  </div>
+</div>
+</main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Databases and domain modelling</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>
 <script src="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-data.js"></script>

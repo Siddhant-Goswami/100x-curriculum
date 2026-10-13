@@ -168,35 +168,38 @@ document.addEventListener('DOMContentLoaded',function(){
     drawChat(); drawSheet();
   })();
 
-  /* ================= section 1 · the find game: tap a word, call it, and it flies onto the board =================
-     Things become blocks (named once the first word that finds them is called), facts stick to
-     their block, the file waits for section 4, and the words worth nothing go to the left-out tray. */
+  /* ================= section 1 · the find game =================
+     A full-screen playground opened from the card in section 1. Tap a word, call it in the dock,
+     and a right call flies onto the board: things become blocks (named once the first word that
+     finds them is called), facts stick to their block, the file waits for section 4, and the
+     words worth nothing go to the left-out tray. Score, streak and misses live in S.g1. */
   var WORD={msg1:'his message',msg2:'the app\'s reply'}, FACT_COL={casual:'tone',time:'sent at'};
+  if(!S.g1||typeof S.g1!=='object') S.g1={};
+  if(!S.g1.missed||typeof S.g1.missed!=='object') S.g1.missed={};
   function wordOf(id){ if(WORD[id]) return WORD[id]; var x=$('#tx [data-t="'+id+'"]'); return x?x.textContent.trim():id; }
+  function g1Found(){ return D.TOKEN_ORDER.filter(tagRight).length; }
+  function g1Stars(){ var m=S.g1.miss||0; return m<=1?3:m<=4?2:1; }
   function huntBoard(pop){
-    var all=D.TOKEN_ORDER, got=all.filter(tagRight).length;
+    var all=D.TOKEN_ORDER;
     function ids(role,ent){ return all.filter(function(id){ var t=D.TOKENS[id]; return t.role===role && (!ent||t.ent===ent); }); }
     function slot(id,cls,txt){ var on=tagRight(id); return '<span class="hs '+cls+(on?' on':'')+'" data-drop="'+id+'">'+(on?esc(txt||wordOf(id)):'')+'</span>'; }
     function n(role){ var x=ids(role); return [x.filter(tagRight).length,x.length]; }
     var bl=D.TARGET_ENTITIES.filter(foundEnt).length, fa=n('fact'), ne=n('neither'), fi=n('file');
-    var hud='<div class="hb-hud"><span class="c thing">blocks <b>'+bl+'</b>/'+D.TARGET_ENTITIES.length+'</span><span class="c fact">facts <b>'+fa[0]+'</b>/'+fa[1]+'</span><span class="c file">file <b>'+fi[0]+'</b>/'+fi[1]+'</span><span class="c out">left out <b>'+ne[0]+'</b>/'+ne[1]+'</span><span class="c miss">misses <b>'+(S.huntMiss||0)+'</b></span></div>'+
-      '<div class="hb-bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+all.length+'" aria-valuenow="'+got+'"><i style="width:'+(got/all.length*100)+'%"></i></div>';
+    var hud='<div class="hb-hud"><span class="c thing">blocks <b>'+bl+'</b>/'+D.TARGET_ENTITIES.length+'</span><span class="c fact">facts <b>'+fa[0]+'</b>/'+fa[1]+'</span><span class="c file">file <b>'+fi[0]+'</b>/'+fi[1]+'</span><span class="c out">left out <b>'+ne[0]+'</b>/'+ne[1]+'</span></div>';
     var blocks=D.TARGET_ENTITIES.map(function(e){
-      var on=foundEnt(e), facts=ids('fact',e);
+      var on=foundEnt(e), facts=ids('fact',e).filter(tagRight);
       return '<div class="hb-blk'+(on?' on':'')+(pop===e?' pop':'')+'"><div class="nm">'+(on?esc(e):'?')+'</div>'+
         '<div class="ws">'+ids('thing',e).map(function(id){ return slot(id,'thing'); }).join('')+'</div>'+
-        (facts.some(tagRight)?'<div class="fs">'+facts.filter(tagRight).map(function(id){ return slot(id,'fact',FACT_COL[id]+': '+wordOf(id)); }).join('')+'</div>':facts.map(function(id){ return '<span class="hs fact" data-drop="'+id+'" hidden></span>'; }).join(''))+'</div>';
+        (facts.length?'<div class="fs">'+facts.map(function(id){ return slot(id,'fact',FACT_COL[id]+': '+wordOf(id)); }).join('')+'</div>':'')+'</div>';
     }).join('');
-    var won=got===all.length;
-    return '<div class="hb-top"><p class="kick">Aarav\'s board · brick 1</p><button type="button" class="hb-reset" data-reset>start over</button></div>'+hud+
-      '<div class="hb-grid">'+blocks+'</div>'+
+    return '<p class="kick">Aarav\'s board</p>'+hud+'<div class="hb-grid">'+blocks+'</div>'+
       '<div class="hb-trays"><div class="hb-tray file"><span class="lb">file · held for section 4</span>'+ids('file').map(function(id){ return slot(id,'file'); }).join('')+'</div>'+
-      '<div class="hb-tray out"><span class="lb">left out · not worth storing</span>'+ids('neither').map(function(id){ return slot(id,'out'); }).join('')+'</div></div>'+
-      (won?'<div class="hb-win"><b>Board complete.</b> Six blocks, two facts stuck on, one file held, two words left out.</div>':'');
+      '<div class="hb-tray out"><span class="lb">left out</span>'+ids('neither').map(function(id){ return slot(id,'out'); }).join('')+'</div></div>';
   }
   function fly(from,id){
     var to=$('#board1 [data-drop="'+id+'"]'); if(!to||!from) return;
-    if(to.hidden||!to.animate||window.matchMedia('(prefers-reduced-motion: reduce)').matches){ to.classList.add('land'); return; }
+    to.scrollIntoView({block:'nearest'});
+    if(!to.animate||window.matchMedia('(prefers-reduced-motion: reduce)').matches){ to.classList.add('land'); return; }
     var a=from.getBoundingClientRect(), b=to.getBoundingClientRect(), t=D.TOKENS[id];
     var c=el('<span class="flychip '+(t.role==='neither'?'out':t.role)+'">'+esc(to.textContent)+'</span>');
     c.style.left=a.left+'px'; c.style.top=a.top+'px'; document.body.appendChild(c);
@@ -205,60 +208,102 @@ document.addEventListener('DOMContentLoaded',function(){
     /* a timer, not onfinish: a hidden tab can pause the animation, and the chip must still land */
     setTimeout(function(){ c.remove(); to.style.visibility=''; to.classList.add('land'); },680);
   }
+  function drawG1Card(){
+    var meta=$('#g1meta'), go=$('#g1start'); if(!meta) return;
+    var n=g1Found(), all=D.TOKEN_ORDER.length;
+    if(n===all){ meta.innerHTML='<span class="stars">'+'★★★'.slice(0,g1Stars())+'<i>'+'★★★'.slice(g1Stars())+'</i></span> '+(S.g1.pts||0)+' pts · '+(S.g1.miss||0)+' misses · all six blocks found'; go.textContent='Play again'; }
+    else if(n){ meta.textContent=n+' of '+all+' words found · '+(S.g1.pts||0)+' pts'; go.textContent='Resume the game'; }
+    else { meta.textContent=all+' words · 6 hidden blocks · about 5 minutes'; go.textContent='Start the game'; }
+  }
   (function(){
-    var root=$('#tx'); if(!root) return;
-    var fb=$('#txFb'), board=$('#board1');
-    var pick=null;
-    function closePick(){ if(pick){ pick.remove(); pick=null; } $$('.hot',root).forEach(function(x){ x.classList.remove('hot'); }); }
+    var game=$('#g1'), root=$('#tx'); if(!game||!root) return;
+    document.body.appendChild(game); /* out of main, so nothing on the page can clip or shift it */
+    var board=$('#board1'), dock=$('#g1dock'), intro=$('#g1intro'), win=$('#g1win'), sel=null, lastFocus=null;
+    function hud(){
+      $('#g1pts').textContent=S.g1.pts||0; $('#g1miss').textContent=S.g1.miss||0;
+      var st=S.g1.streak||0; $('#g1streak').textContent=st>=2?'streak ×'+st:'';
+      $('#g1prog').style.width=(g1Found()/D.TOKEN_ORDER.length*100)+'%';
+    }
     function paint(){
       $$('[data-t]',root).forEach(function(x){
-        var id=x.dataset.t; x.classList.remove('thing','fact','neither','file');
+        var id=x.dataset.t; x.classList.remove('thing','fact','neither','file','sel');
         if(tagRight(id)) x.classList.add(D.TOKENS[id].role);
+        if(id===sel) x.classList.add('sel');
       });
     }
+    function idle(msg,cls){ dock.className='g-dock'+(cls?' '+cls:''); dock.innerHTML='<p class="g-msg">'+(msg||'Tap an underlined word in the chat.')+'</p>'; }
+    function ask(id){
+      sel=id; paint();
+      dock.className='g-dock ask';
+      dock.innerHTML='<p class="g-msg"><span class="g-word">'+esc(wordOf(id))+'</span> is…</p><div class="g-calls">'+
+        '<button type="button" class="g-call thing" data-c="thing">a thing<small>its own block</small></button>'+
+        '<button type="button" class="g-call fact" data-c="fact">a fact<small>describes a thing</small></button>'+
+        '<button type="button" class="g-call out" data-c="neither">neither<small>not worth storing</small></button></div>';
+      $('.g-call',dock).focus({preventScroll:true});
+    }
+    function call(c){
+      var id=sel; if(!id) return;
+      var tok=D.TOKENS[id], right=(c===tok.role)||(tok.role==='file'&&c==='thing'), w=$('#tx [data-t="'+id+'"]');
+      if(!right){
+        S.g1.miss=(S.g1.miss||0)+1; S.g1.streak=0; S.g1.missed[id]=1; store.set(K,S); hud();
+        $$('.g-call',dock).forEach(function(b){ if(b.dataset.c===c){ b.classList.add('no'); b.disabled=true; } });
+        var m=$('.g-msg',dock); m.innerHTML='<b>Not quite.</b> Can the app create, read, update and delete <span class="g-word">'+esc(wordOf(id))+'</span> on its own? Try again.';
+        if(w){ w.classList.add('no'); setTimeout(function(){ w.classList.remove('no'); },400); }
+        return;
+      }
+      var newEnt=tok.role==='thing'&&!foundEnt(tok.ent)?tok.ent:'';
+      S.g1.streak=(S.g1.streak||0)+1;
+      var gain=S.g1.missed[id]?5:10, bonus=S.g1.streak>=3?5:0;
+      S.g1.pts=(S.g1.pts||0)+gain+bonus;
+      S.tags[id]=c; sel=null; store.set(K,S);
+      board.innerHTML=huntBoard(newEnt); paint(); hud(); fly(w,id);
+      idle('<b class="gain">+'+(gain+bonus)+(bonus?' streak!':'')+'</b> <b>'+(newEnt?'New block: '+newEnt+'.':tok.role==='thing'?'Another word for '+tok.ent+'.':'Yes.')+'</b> '+tok.why,'ok');
+      if(g1Found()===D.TOKEN_ORDER.length) setTimeout(finish,900);
+    }
+    function finish(){
+      if(!S.g1.best||S.g1.pts>S.g1.best) S.g1.best=S.g1.pts; store.set(K,S);
+      var st=g1Stars();
+      $('#g1stars').innerHTML='★★★'.slice(0,st)+'<i>'+'★★★'.slice(st)+'</i>';
+      $('#g1final').textContent=(S.g1.pts||0)+' points';
+      $('#g1sum').textContent='Six blocks found, two facts stuck on, one file held, two words left out. '+(S.g1.miss?S.g1.miss+(S.g1.miss===1?' miss.':' misses.'):'No misses.')+(S.g1.best>S.g1.pts?' Best: '+S.g1.best+'.':'');
+      win.hidden=false; $('#g1next').focus();
+    }
+    function open(){
+      lastFocus=document.activeElement;
+      game.hidden=false; document.documentElement.classList.add('g-lock');
+      board.innerHTML=huntBoard(); sel=null; paint(); hud(); idle();
+      win.hidden=true;
+      if(g1Found()===D.TOKEN_ORDER.length) reset(true);
+      intro.hidden=false; $('#g1go').focus();
+    }
+    function close(next){
+      game.hidden=true; document.documentElement.classList.remove('g-lock'); sel=null;
+      drawBoards();
+      var t=next?$('#s2'):$('#g1card'); if(t) setTimeout(function(){ window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-(next?72:160),behavior:'instant'}); },0);
+      if(lastFocus&&!next) lastFocus.focus({preventScroll:true});
+    }
+    function reset(quiet){
+      S.tags={}; S.g1={missed:{},best:S.g1.best||0}; store.set(K,S);
+      board.innerHTML=huntBoard(); sel=null; paint(); hud(); idle(quiet?'':'Fresh board. Tap an underlined word in the chat.'); win.hidden=true;
+    }
+    $('#g1start').addEventListener('click',open);
+    $('#g1go').addEventListener('click',function(){ intro.hidden=true; idle(); });
+    $('#g1restart').addEventListener('click',function(){ reset(); });
+    $('#g1again').addEventListener('click',function(){ reset(true); intro.hidden=false; $('#g1go').focus(); });
+    $('#g1next').addEventListener('click',function(){ close(true); });
+    $$('[data-exit]',game).forEach(function(b){ b.addEventListener('click',function(){ close(false); }); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!game.hidden) close(false); });
     root.addEventListener('click',function(e){
-      var t=e.target.closest('[data-t]'); if(!t){ closePick(); return; }
-      closePick();
-      var id0=t.dataset.t;
-      if(tagRight(id0)){ fb.className='fbk ok'; fb.innerHTML='<b>Already on the board.</b> '+D.TOKENS[id0].why; return; }
-      t.classList.add('hot');
-      var r=t.getBoundingClientRect();
-      pick=el('<div class="pick" style="position:fixed" role="group" aria-label="What is this?"><button type="button" data-c="thing">a thing</button><button type="button" data-c="fact">a fact about a thing</button><button type="button" data-c="neither">neither</button></div>');
-      document.body.appendChild(pick);
-      var pw=pick.offsetWidth; var left=Math.min(Math.max(8,r.left), window.innerWidth-pw-8);
-      pick.style.left=left+'px'; pick.style.top=(r.bottom+6)+'px';
-      pick.addEventListener('click',function(ev){
-        var b=ev.target.closest('button'); if(!b) return;
-        var id=t.dataset.t, tok=D.TOKENS[id], c=b.dataset.c;
-        var right=(c===tok.role)||(tok.role==='file'&&c==='thing');
-        closePick();
-        fb.className='fbk '+(right?'ok':'no');
-        if(!right){
-          S.huntMiss=(S.huntMiss||0)+1; store.set(K,S); drawBoards();
-          fb.innerHTML='<b>Not quite.</b> Look again: can the app create, read, update and delete it on its own?';
-          t.classList.add('no'); setTimeout(function(){ t.classList.remove('no'); },400);
-          return;
-        }
-        var newEnt=tok.role==='thing'&&!foundEnt(tok.ent)?tok.ent:'';
-        S.tags[id]=c; store.set(K,S);
-        if(board) board.innerHTML=huntBoard(newEnt); drawCap();
-        fb.innerHTML='<b>'+(newEnt?'New block: '+newEnt+'.':tok.role==='thing'?'Another word for '+tok.ent+'.':'Yes.')+'</b> '+tok.why;
-        paint(); fly(t,id);
-      });
+      var t=e.target.closest('[data-t]'); if(!t) return;
+      var id=t.dataset.t;
+      if(tagRight(id)){ sel=null; paint(); idle('<b>Already on the board.</b> '+D.TOKENS[id].why); return; }
+      ask(id);
     });
-    if(board) board.addEventListener('click',function(e){
-      if(!e.target.closest('[data-reset]')) return;
-      S.tags={}; S.huntMiss=0; save(); paint();
-      fb.className='fbk'; fb.innerHTML='Board cleared. Tap an underlined word to begin.';
-    });
-    document.addEventListener('click',function(e){ if(pick && !pick.contains(e.target) && !root.contains(e.target)) closePick(); });
-    window.addEventListener('scroll',function(){ if(pick) closePick(); },{passive:true});
-    paint();
+    root.addEventListener('keydown',function(e){ var t=e.target.closest('[data-t]'); if(t&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); t.click(); } });
+    $$('[data-t]',root).forEach(function(x){ x.tabIndex=0; x.setAttribute('role','button'); });
+    dock.addEventListener('click',function(e){ var b=e.target.closest('.g-call'); if(b&&!b.disabled) call(b.dataset.c); });
+    drawG1Card();
   })();
-  function drawCap(){
-    var c=$('#board1Cap'); if(!c) return; var n1=D.TARGET_ENTITIES.filter(foundEnt).length;
-    c.textContent=n1===D.TARGET_ENTITIES.length?'All six blocks are on the board, each one a future table. They are nearly empty: question 2 fills them with facts.':n1+' of 6 blocks found. Each empty slot is a word still hiding in the chat.';
-  }
 
   /* ================= generic tap-to-place: a bank of cards and target boxes ================= */
   function placer(opts){
@@ -523,7 +568,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
   /* ================= every board on the page, redrawn after each placement ================= */
   function drawBoards(){
-    var b1=$('#board1'); if(b1){ b1.innerHTML=huntBoard(); drawCap(); }
+    drawG1Card();
     var b3=$('#board3');
     if(b3){ b3.innerHTML=aaravBoard(3); var n3=D.PAIRS.filter(function(p){ return shapeKnown(p)&&keyOk(p); }).length;
       $('#board3Cap').textContent=(n3===D.PAIRS.length?'Every block is linked. ':n3+' of 5 links placed. ')+'Each arrow runs from a pointer on the many side to the key of the row it points at.'; }
