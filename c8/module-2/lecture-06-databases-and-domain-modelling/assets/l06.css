@@ -200,17 +200,18 @@
 .bricks .q.off::before{background:transparent;box-shadow:inset 0 0 0 1.5px currentColor}
 
 /* section 1 · the game card on the page */
-.gcard{display:grid;grid-template-columns:120px minmax(0,1fr);gap:20px;align-items:center;border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:20px 22px;margin:18px 0}
-@media (max-width:560px){.gcard{grid-template-columns:1fr}.gc-art{max-width:120px}}
-.gc-art{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.gc-art i{aspect-ratio:1;border-radius:7px;display:grid;place-items:center;font:700 20px Caveat,cursive;font-style:normal;color:var(--ink3)}
-.gc-art .t{background:var(--q-thing-soft);border:1.5px solid var(--q-thing)}
-.gc-art .f{background:var(--q-fact-soft);border:1.5px solid var(--q-fact)}
-.gc-art .q{border:1.5px dashed var(--line2)}
-.gc-body h3{margin:2px 0 6px;font-size:22px}
+.gcard{display:flex;gap:24px;align-items:center;border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:22px 24px;margin:18px 0}
+@media (max-width:560px){.gcard{flex-direction:column;align-items:flex-start;gap:16px}}
+.gc-art{flex:none;display:grid;grid-template-columns:repeat(3,34px);gap:6px}
+.gc-art i{width:34px;height:34px;border-radius:7px;display:grid;place-items:center;font:700 18px/1 Caveat,cursive;font-style:normal;color:var(--ink3)}
+.gc-art .gt{background:var(--q-thing-soft);border:1.5px solid var(--q-thing)}
+.gc-art .gf{background:var(--q-fact-soft);border:1.5px solid var(--q-fact)}
+.gc-art .gq{border:1.5px dashed var(--line2)}
+.gc-body{min-width:0}
+.gc-body .kick{color:var(--q-thing-ink);margin:0 0 4px}
+.gcard .gc-body h3{margin:0 0 6px;font:600 22px/1.2 var(--sans)}
 .gc-body p{margin:0 0 8px}
-.gc-body .kick{color:var(--q-thing-ink)}
-.gc-meta{font:12.5px var(--mono);color:var(--ink3)}
+.gc-body .gc-meta{font:12.5px var(--mono);color:var(--ink3);margin:0 0 14px}
 .stars{color:var(--det);letter-spacing:2px}.stars i{font-style:normal;color:var(--line2)}
 
 /* the game: a full-screen playground over the page */
