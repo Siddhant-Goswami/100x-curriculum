@@ -168,23 +168,60 @@ document.addEventListener('DOMContentLoaded',function(){
     drawChat(); drawSheet();
   })();
 
-  /* ================= section 1 · tap the words ================= */
+  /* ================= section 1 · the find game: tap a word, call it, and it flies onto the board =================
+     Things become blocks (named once the first word that finds them is called), facts stick to
+     their block, the file waits for section 4, and the words worth nothing go to the left-out tray. */
+  var WORD={msg1:'his message',msg2:'the app\'s reply'}, FACT_COL={casual:'tone',time:'sent at'};
+  function wordOf(id){ if(WORD[id]) return WORD[id]; var x=$('#tx [data-t="'+id+'"]'); return x?x.textContent.trim():id; }
+  function huntBoard(pop){
+    var all=D.TOKEN_ORDER, got=all.filter(tagRight).length;
+    function ids(role,ent){ return all.filter(function(id){ var t=D.TOKENS[id]; return t.role===role && (!ent||t.ent===ent); }); }
+    function slot(id,cls,txt){ var on=tagRight(id); return '<span class="hs '+cls+(on?' on':'')+'" data-drop="'+id+'">'+(on?esc(txt||wordOf(id)):'')+'</span>'; }
+    function n(role){ var x=ids(role); return [x.filter(tagRight).length,x.length]; }
+    var bl=D.TARGET_ENTITIES.filter(foundEnt).length, fa=n('fact'), ne=n('neither'), fi=n('file');
+    var hud='<div class="hb-hud"><span class="c thing">blocks <b>'+bl+'</b>/'+D.TARGET_ENTITIES.length+'</span><span class="c fact">facts <b>'+fa[0]+'</b>/'+fa[1]+'</span><span class="c file">file <b>'+fi[0]+'</b>/'+fi[1]+'</span><span class="c out">left out <b>'+ne[0]+'</b>/'+ne[1]+'</span><span class="c miss">misses <b>'+(S.huntMiss||0)+'</b></span></div>'+
+      '<div class="hb-bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+all.length+'" aria-valuenow="'+got+'"><i style="width:'+(got/all.length*100)+'%"></i></div>';
+    var blocks=D.TARGET_ENTITIES.map(function(e){
+      var on=foundEnt(e), facts=ids('fact',e);
+      return '<div class="hb-blk'+(on?' on':'')+(pop===e?' pop':'')+'"><div class="nm">'+(on?esc(e):'?')+'</div>'+
+        '<div class="ws">'+ids('thing',e).map(function(id){ return slot(id,'thing'); }).join('')+'</div>'+
+        (facts.some(tagRight)?'<div class="fs">'+facts.filter(tagRight).map(function(id){ return slot(id,'fact',FACT_COL[id]+': '+wordOf(id)); }).join('')+'</div>':facts.map(function(id){ return '<span class="hs fact" data-drop="'+id+'" hidden></span>'; }).join(''))+'</div>';
+    }).join('');
+    var won=got===all.length;
+    return '<div class="hb-top"><p class="kick">Aarav\'s board · brick 1</p><button type="button" class="hb-reset" data-reset>start over</button></div>'+hud+
+      '<div class="hb-grid">'+blocks+'</div>'+
+      '<div class="hb-trays"><div class="hb-tray file"><span class="lb">file · held for section 4</span>'+ids('file').map(function(id){ return slot(id,'file'); }).join('')+'</div>'+
+      '<div class="hb-tray out"><span class="lb">left out · not worth storing</span>'+ids('neither').map(function(id){ return slot(id,'out'); }).join('')+'</div></div>'+
+      (won?'<div class="hb-win"><b>Board complete.</b> Six blocks, two facts stuck on, one file held, two words left out.</div>':'');
+  }
+  function fly(from,id){
+    var to=$('#board1 [data-drop="'+id+'"]'); if(!to||!from) return;
+    if(to.hidden||!to.animate||window.matchMedia('(prefers-reduced-motion: reduce)').matches){ to.classList.add('land'); return; }
+    var a=from.getBoundingClientRect(), b=to.getBoundingClientRect(), t=D.TOKENS[id];
+    var c=el('<span class="flychip '+(t.role==='neither'?'out':t.role)+'">'+esc(to.textContent)+'</span>');
+    c.style.left=a.left+'px'; c.style.top=a.top+'px'; document.body.appendChild(c);
+    var dx=b.left-a.left, dy=b.top-a.top; to.style.visibility='hidden';
+    c.animate([{transform:'translate(0,0) scale(1)'},{transform:'translate('+dx/2+'px,'+(dy/2-60)+'px) scale(1.15)',offset:.45},{transform:'translate('+dx+'px,'+dy+'px) scale(1)'}],{duration:650,easing:'cubic-bezier(.3,.6,.25,1)'});
+    /* a timer, not onfinish: a hidden tab can pause the animation, and the chip must still land */
+    setTimeout(function(){ c.remove(); to.style.visibility=''; to.classList.add('land'); },680);
+  }
   (function(){
     var root=$('#tx'); if(!root) return;
-    var fb=$('#txFb');
+    var fb=$('#txFb'), board=$('#board1');
     var pick=null;
     function closePick(){ if(pick){ pick.remove(); pick=null; } $$('.hot',root).forEach(function(x){ x.classList.remove('hot'); }); }
     function paint(){
       $$('[data-t]',root).forEach(function(x){
-        var id=x.dataset.t, c=S.tags[id]; x.classList.remove('thing','fact','neither','file');
-        if(c){ var tok=D.TOKENS[id]; var right=(c===tok.role)||(tok.role==='file'&&c==='thing'); if(right) x.classList.add(tok.role); }
+        var id=x.dataset.t; x.classList.remove('thing','fact','neither','file');
+        if(tagRight(id)) x.classList.add(D.TOKENS[id].role);
       });
-      var right=D.TOKEN_ORDER.filter(function(id){ var t=D.TOKENS[id]; var c=S.tags[id]; return c && (c===t.role || (t.role==='file'&&c==='thing')); }).length;
-      $('#txCount').textContent=right+' / '+D.TOKEN_ORDER.length+' placed';
     }
     root.addEventListener('click',function(e){
       var t=e.target.closest('[data-t]'); if(!t){ closePick(); return; }
-      closePick(); t.classList.add('hot');
+      closePick();
+      var id0=t.dataset.t;
+      if(tagRight(id0)){ fb.className='fbk ok'; fb.innerHTML='<b>Already on the board.</b> '+D.TOKENS[id0].why; return; }
+      t.classList.add('hot');
       var r=t.getBoundingClientRect();
       pick=el('<div class="pick" style="position:fixed" role="group" aria-label="What is this?"><button type="button" data-c="thing">a thing</button><button type="button" data-c="fact">a fact about a thing</button><button type="button" data-c="neither">neither</button></div>');
       document.body.appendChild(pick);
@@ -194,16 +231,34 @@ document.addEventListener('DOMContentLoaded',function(){
         var b=ev.target.closest('button'); if(!b) return;
         var id=t.dataset.t, tok=D.TOKENS[id], c=b.dataset.c;
         var right=(c===tok.role)||(tok.role==='file'&&c==='thing');
-        S.tags[id]=c; save();
+        closePick();
         fb.className='fbk '+(right?'ok':'no');
-        fb.innerHTML=(right?'<b>Yes.</b> ':'<b>Not quite.</b> ')+tok.why;
-        closePick(); paint();
+        if(!right){
+          S.huntMiss=(S.huntMiss||0)+1; store.set(K,S); drawBoards();
+          fb.innerHTML='<b>Not quite.</b> Look again: can the app create, read, update and delete it on its own?';
+          t.classList.add('no'); setTimeout(function(){ t.classList.remove('no'); },400);
+          return;
+        }
+        var newEnt=tok.role==='thing'&&!foundEnt(tok.ent)?tok.ent:'';
+        S.tags[id]=c; store.set(K,S);
+        if(board) board.innerHTML=huntBoard(newEnt); drawCap();
+        fb.innerHTML='<b>'+(newEnt?'New block: '+newEnt+'.':tok.role==='thing'?'Another word for '+tok.ent+'.':'Yes.')+'</b> '+tok.why;
+        paint(); fly(t,id);
       });
+    });
+    if(board) board.addEventListener('click',function(e){
+      if(!e.target.closest('[data-reset]')) return;
+      S.tags={}; S.huntMiss=0; save(); paint();
+      fb.className='fbk'; fb.innerHTML='Board cleared. Tap an underlined word to begin.';
     });
     document.addEventListener('click',function(e){ if(pick && !pick.contains(e.target) && !root.contains(e.target)) closePick(); });
     window.addEventListener('scroll',function(){ if(pick) closePick(); },{passive:true});
     paint();
   })();
+  function drawCap(){
+    var c=$('#board1Cap'); if(!c) return; var n1=D.TARGET_ENTITIES.filter(foundEnt).length;
+    c.textContent=n1===D.TARGET_ENTITIES.length?'All six blocks are on the board, each one a future table. They are nearly empty: question 2 fills them with facts.':n1+' of 6 blocks found. Each empty slot is a word still hiding in the chat.';
+  }
 
   /* ================= generic tap-to-place: a bank of cards and target boxes ================= */
   function placer(opts){
@@ -357,10 +412,10 @@ document.addEventListener('DOMContentLoaded',function(){
   var QUIZ={
     conv:{p:'Is "conversation" a thing in your app?',scn:'Aarav chats on Monday. On Tuesday he opens a fresh conversation. Each can be started, reopened and deleted.',
       o:[['Yes, it earns its own table',1,'Create, Read, reopen, Delete, each on its own, and many over time. A thing with its own row.'],['No, it just describes Aarav',0,'A conversation is not a fact about Aarav. You can create and delete each one, and there are many. A thing.']]},
-    email:{p:'Is "email address" a thing?',scn:'A user signs in with an email like aarav@mail.com.',
-      o:[['No, it describes a user',1,'An email cannot be created or deleted on its own. It only describes a user: a column, not a table.'],['Yes, give it its own table',0,'It has no life of its own. Splitting it out is the classic over-split.']]},
-    tone:{p:'Thing or fact: "tone"?',scn:'A diagnosis is written in a chosen tone, formal or casual. Tones are not saved or reused anywhere.',
-      o:[['A fact on the diagnosis',1,'As described, tone belongs to one diagnosis. One column.'],['Its own thing',0,'Nobody creates or deletes a "tone" here. It describes one diagnosis. If users could save and reuse named tones, the answer would flip.']]},
+    tone:{p:'Is "casual" a thing?',scn:'On Tuesday Aarav asks for the plan in a more casual tone. Tones are not saved or reused anywhere.',
+      o:[['No, it describes a plan',1,'Nobody creates or deletes a "casual" on its own. It is the tone of one plan: a fact, so a column, not a block.'],['Yes, give it its own block',0,'It has no life of its own. It only describes one plan. If users could save and reuse named tones, the answer would flip.']]},
+    time:{p:'Thing or fact: "9:12 am"?',scn:'Aarav\'s message went out at 9:12 am. The app\'s reply came a minute later, with its own time.',
+      o:[['A fact on the message',1,'Each message has exactly one time it was sent. One column on messages: created_at.'],['Its own thing',0,'Nobody creates or deletes a time on its own. It only says when one message was sent.']]},
     attach:{p:'Thing or fact: "attachment"?',scn:'Aarav uploads a screenshot and reuses it in different conversations.',
       o:[['Its own thing',1,'Created and deleted on its own, reused across conversations. A row of its own, pointing at the message it was sent with. Where its bytes go is section 4.'],['A fact on the message',0,'It outlives the message and is reused. That independent life makes it a thing.']]},
     often:{p:'Where does "how often" live?',scn:'For each tool in a workflow, Aarav says how often he uses it there: daily, weekly. Jira is daily in one workflow and monthly in another.',
@@ -468,9 +523,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
   /* ================= every board on the page, redrawn after each placement ================= */
   function drawBoards(){
-    var b1=$('#board1');
-    if(b1){ b1.innerHTML=aaravBoard(1); var n1=D.TARGET_ENTITIES.filter(foundEnt).length;
-      $('#board1Cap').textContent=n1===D.TARGET_ENTITIES.length?'All six blocks are on the board, each one a future table. They are empty: question 2 fills them.':n1+' of 6 blocks found. The grey ones are still hiding in Aarav\'s chat.'; }
+    var b1=$('#board1'); if(b1){ b1.innerHTML=huntBoard(); drawCap(); }
     var b3=$('#board3');
     if(b3){ b3.innerHTML=aaravBoard(3); var n3=D.PAIRS.filter(function(p){ return shapeKnown(p)&&keyOk(p); }).length;
       $('#board3Cap').textContent=(n3===D.PAIRS.length?'Every block is linked. ':n3+' of 5 links placed. ')+'Each arrow runs from a pointer on the many side to the key of the row it points at.'; }

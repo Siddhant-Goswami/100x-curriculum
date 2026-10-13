@@ -119,7 +119,7 @@ L06.BRIEFS = [
     id:'aarav', order:1, move:'the canonical model',
     title:'Aarav\'s workflow diagnoser',
     blurb:'The app you are building. From a blank page this time.',
-    story:'Your app lets a user describe a weekly workflow and get back a plan to automate part of it. Users chat with it; each chat has messages. A workflow can be diagnosed again and again, and every past plan must stay. Next week these exact tables go into Supabase.',
+    story:'Your app lets a user describe a weekly workflow and get back a plan to automate part of it. Users chat with it; each chat has messages. A workflow can be diagnosed again and again, and every past plan must stay. Next week these exact tables go into the storage box.',
     reqs:['Users have conversations; conversations have messages.','A user has workflows; a workflow has many diagnoses over time.','Every pointer on the many side.'],
     starter:['users','conversations','messages','workflows','diagnoses'],
     rubric:{ entities:[

@@ -79,7 +79,7 @@
     <text x="630" y="250" class="s c-link">→ a pointer</text>
   </g>
 </svg></div>
-<p class="cap">You cannot list a thing's facts before you have the thing, or connect two things before both exist. Sections 1 to 3 add one brick each to Aarav's board. Section 4 adds files, section 5 shows the finished board, and sections 6 and 7 use the same bricks on new apps. Next week the board becomes tables in Supabase.</p>
+<p class="cap">You cannot list a thing's facts before you have the thing, or connect two things before both exist. Sections 1 to 3 add one brick each to Aarav's board. Section 4 adds files, section 5 shows the finished board, and sections 6 and 7 use the same bricks on new apps. Next week the board becomes the real tables in your HLD's storage box.</p>
 </figure>
 
 <div class="scorebox"><div class="score" data-for="cp"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/8</b></div><div class="l"><strong>Checkpoints</strong>Saved on this device</div></div></div>
@@ -89,7 +89,9 @@
 <!-- ============ 1 ============ -->
 <section class="s" id="s1"><h2><span class="n">01</span>Question 1: what are the things worth storing?</h2>
 <p class="bricks"><span class="q thing">things</span><span class="q fact off">facts</span><span class="q link off">links</span></p>
-<p>Start from Aarav's own words. Every noun is a candidate. To keep one, ask: can the app <b>create</b> one, <b>read</b> it, <b>update</b> it and <b>delete</b> it on its own, and can there be many? If yes, it is a <span class="q thing">thing</span> and becomes a block on the board. If it only describes a thing, it is a <span class="q fact">fact</span>: question 2 places those. Tap each underlined word.</p>
+<p>Start from Aarav's own words. Every noun is a candidate. To keep one, ask: can the app <b>create</b> one, <b>read</b> it, <b>update</b> it and <b>delete</b> it on its own, and can there be many? If yes, it is a <span class="q thing">thing</span> and becomes a block on the board. If it only describes a thing, it is a <span class="q fact">fact</span>. Some words are neither, and one is a file.</p>
+<p><b>The game:</b> sixteen words are hiding in the chat. Tap one and call it. Every right call flies onto Aarav's board: things become blocks, facts stick to their block. Six blocks are hidden. Find them all.</p>
+<div class="hunt">
 <div class="tx" id="tx">
   <div class="day">signed in as <span class="tag" data-t="aarav">Aarav</span></div>
   <div class="day"><span class="tag" data-t="conv1">Monday's conversation</span></div>
@@ -106,15 +108,13 @@
   <div class="bub u">Can you redo the plan in a more <span class="tag" data-t="casual">casual</span> tone?</div>
   <div class="bub a"><span class="tag" data-t="plan2">Quick version</span>: let Jira do the listing, you do the picking. Export the dashboard the same way, draft with the app, keep the Slack send in your hands until you trust the draft.</div>
 </div>
-<div class="fbk" id="txFb">Tap a word to begin.</div><p class="kick" id="txCount">0 / 16 placed</p>
-<figure class="wbx board">
-<p class="kick">Aarav's board · brick 1</p>
-<div class="sc" id="board1"></div>
+<div class="hboard" id="board1" aria-live="polite"></div>
+</div>
+<div class="fbk" id="txFb">Tap an underlined word to begin.</div>
 <p class="cap" id="board1Cap"></p>
-</figure>
 <div class="two">
   <div class="qc" data-k="conv"></div>
-  <div class="qc" data-k="email"></div>
+  <div class="qc" data-k="tone"></div>
 </div>
 <div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c1"><label for="c1"><span class="t">Checkpoint: all six blocks on the board, and I can say why "high-priority" is not one</span></label></li></ul></div>
 </section>
@@ -131,7 +131,7 @@
 <div class="fbk" id="factFb">Nine cards. Tap one, then its block.</div><p class="kick" id="factCount">0 / 9 placed</p>
 <div class="think" data-k="t2"><p class="kick">Pause and think</p><p>Aarav picks a tone for each plan. Today, tone is a fact on the plan. What would have to change in the product for tone to become a thing with its own block?</p><input type="text" placeholder="One line"><details class="rev"><summary>Reveal</summary><div class="b"><p>If users could save named tones and reuse them across plans, a tone would be created, read, updated and deleted on its own. It would pass the question 1 test, so it would become a thing. The word does not decide. <b>What the product needs to do with it decides.</b> That is the whole skill: drawing the line between a thing and a fact, for this app.</p></div></details><p class="mine"></p></div>
 <div class="two">
-  <div class="qc" data-k="tone"></div>
+  <div class="qc" data-k="time"></div>
   <div class="qc" data-k="attach"></div>
 </div>
 <div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c2"><label for="c2"><span class="t">Checkpoint: every fact placed, and the tone answer written</span></label></li></ul></div>
@@ -297,7 +297,7 @@
   <div class="bin" data-box="file"><div class="h"><b>A file in storage, with its link in a row</b><small>Images, documents, audio, video.</small></div><div class="in"></div></div>
 </div>
 <div class="fbk" id="sortFb">Eight cards.</div><p class="kick" id="sortCount">0 / 8 placed</p>
-<p>The screenshot you held in section 2 gets its block now, built from the same three bricks: <b>attachments</b> is a thing, the file's name and link are its facts, and <code>message_id</code> points at the message it came with. The bytes sit outside, in file storage. In Supabase next week: tables for rows, a storage bucket for files.</p>
+<p>The screenshot you held in section 2 gets its block now, built from the same three bricks: <b>attachments</b> is a thing, the file's name and link are its facts, and <code>message_id</code> points at the message it came with. The bytes sit outside, in file storage. On your HLD both live in the storage box: tables for rows, file storage for files.</p>
 <figure class="wbx board">
 <p class="kick">Aarav's board · the held block</p>
 <div class="sc" id="board4"></div>
@@ -422,7 +422,7 @@
 </ul>
 </div>
 <div data-stage="cp"><ul class="ck"><li><input type="checkbox" id="c7"><label for="c7"><span class="t">Checkpoint: my model drawn, three questions answered, files and bridge written</span></label></li></ul></div>
-<p class="sig">You cannot store what you cannot describe.<small>Write these tables into your HLD's storage box, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s04">submit the practice set</a>. Next week: these tables, typed into Supabase, and a row that survives a refresh.</small></p>
+<p class="sig">You cannot store what you cannot describe.<small>Write these tables into your HLD's storage box, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#s04">submit the practice set</a>. Next week: these tables become real storage, and a row survives a refresh.</small></p>
 <p><button type="button" class="reset" id="labReset">Reset the whole lab</button></p>
 </section>
 
