@@ -67,7 +67,7 @@
   <div class="meta"><span>Sat 10 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span></div>
 </div>
 
-<div class="call"><p class="kick">The one thing to keep</p><p>Storage is just a way to remember. Keep it on your server, where the user cannot wipe it and nobody else can read it. Store only what your app needs to answer its questions next time. The <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a> turns "what is worth storing?" into three questions you can answer.</p></div>
+<div class="call"><p class="kick">The one thing to keep</p><p>Storage is just a way to remember. Keep it on your server, where the user cannot wipe it and nobody else can read it. Store only what your app needs to answer its questions next time. The <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a> turns "what is worth storing?" into three questions, and then into seven levels you play.</p></div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>The Whiteboard So Far</h2>
 <p>Three weeks, one diagram. Aarav types his workflow into the UI on <b>his machine</b>: the first interface. The UI sends it to <b>your server</b>, where the diagnose function lives: the second interface, an API. Your server sends it on to the <b>LLM on Groq's machine</b>, which you do not own. The plan comes back the same way.</p>
@@ -235,24 +235,27 @@
 <p>The answer from class: <b>the least you need to carry on next time</b>. To find it, write the questions your app must answer tomorrow, such as "Aarav's last plan" or "every plan this workflow ever got". Whatever those questions need is worth storing. Nothing else is.</p>
 </section>
 
-<section class="s" id="s09"><h2><span class="n">09</span>In the Lab: Three Questions Give the Shape</h2>
-<p>The <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a> is where you answer it, first for Aarav, then for your app. <code>memory.txt</code> stored one shape: who, what, when. Aarav's app needs more: his conversations, his workflows, and every plan each workflow got. The lab splits "what is worth storing?" into three questions:</p>
+<section class="s" id="s09"><h2><span class="n">09</span>Three Questions Give the Shape</h2>
+<p><code>memory.txt</code> stored one shape: who, what, when. Aarav's app needs more: his conversations, his workflows, and every plan each workflow got. The lab splits "what is worth storing?" into three questions:</p>
 <ol>
-  <li><span class="q thing">What are the things?</span> Can the app create, read, update and delete one on its own, and can there be many? A conversation passes. "High-priority" fails, because it is a word inside a message. Each thing gets a <b>table</b>.</li>
+  <li><span class="q thing">What are the things?</span> Can the app create, read, update and delete one on its own, and can there be many? A conversation passes. "High-priority" fails, because it is a word inside a message. Each thing gets a <b>table</b>. In the lab it is a block on Aarav's board first, and becomes a table in Level 6.</li>
   <li><span class="q fact">What does each thing have?</span> The facts you need to recreate one. For a message: who said it, what, and when. Each fact is a <b>column</b>. Tone is a fact on a plan today. If users could save named tones, it would become a thing. What the product does with it decides.</li>
-  <li><span class="q link">How do they connect?</span> One-to-one (rare), one-to-many (most links), or many-to-many (a third table).</li>
+  <li><span class="q link">How do they connect?</span> Ask two questions, both ways. Can one conversation have many messages? Yes. Can one message sit in many conversations? No. The two answers give the link its <b>shape</b>: one-to-many (most links), many-to-many (both yes: a third table), or one-to-one (both no, and rare: often the two are one table).</li>
 </ol>
 <p>This is <b>domain modelling</b>: the smallest description of your user's world that still answers the product's questions.</p>
+<p class="muted">Practise it: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s1">Level 1</a> for things, <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s2">Level 2</a> for facts, <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s3">Level 3</a> for links.</p>
 </section>
 
 <section class="s" id="s10"><h2><span class="n">10</span>Keys and Pointers</h2>
-<p>Every row needs an address that never repeats: its <b>key</b>, a column called <code>id</code>. A link is a column on the <b>many side</b> that holds the other row's key. <code>conversation_id = 7</code> on a message means "I belong to conversation 7". That column is a <b>pointer</b> (the formal word is foreign key).</p>
+<p>Every row needs an address that never repeats. Its words cannot be it: two messages can both say "okay". So number the rows. The number goes in a column called <code>id</code>, and that column is the row's <b>key</b>. A link is a column on the <b>many side</b> that holds the other row's id. Why the many side? A cell holds one value. Conversation 7 has many messages, but each message is in one conversation. <code>conversation_id = 7</code> on a message means "I belong to conversation 7". That column is a <b>pointer</b> (the formal word is foreign key).</p>
 <p>When both sides are many, no single cell can hold "many". A workflow uses many tools, and Jira appears in many workflows. A third table, <code>workflow_tools</code>, holds one row per pairing, and facts about the pairing, such as how often, live on that row.</p>
+<p class="muted">Practise it: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s3">Level 3</a>, pair by pair.</p>
 </section>
 
 <section class="s" id="s11"><h2><span class="n">11</span>Two Rules That Save You Later</h2>
 <p><b>History is a row, not a cell.</b> A plan saved in a cell gets erased by the next plan. Give each diagnosis its own row with a time on it, the same timestamp idea as <code>memory.txt</code>.</p>
 <p><b>Rows for facts, files for bytes.</b> A screenshot cannot go in a cell. It goes in file storage, and a row keeps its link, its name, and the message it came with.</p>
+<p class="muted">Practise it: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s4">Level 4</a> for rows or files, and the hospital brief in <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s6">the Arena</a> for history.</p>
 </section>
 
 <section class="s" id="s12"><h2><span class="n">12</span>Aarav's Model</h2>
@@ -267,7 +270,13 @@
 <tr><td>tools</td><td class="mono">id, name</td><td></td></tr>
 <tr><td>workflow_tools</td><td class="mono">id, workflow_id, tool_id, how_often</td><td>workflows, tools</td></tr>
 </tbody></table></div>
-<p>Every noun in your Lecture 4 API addresses is a thing here. <code>POST /workflows</code> creates a row in workflows. The API is how a request reaches a row. The model is done when it answers your questions. "Aarav's last conversation, every message in order": follow user_id, then conversation_id, then sort by created_at.</p>
+<p>Every noun in your Lecture 4 API addresses is a thing here. <code>POST /workflows</code> creates a row in workflows. The API is how a request reaches a row. The model is done when it answers your questions. Three for Aarav:</p>
+<ul>
+  <li><b>His last conversation, every message in order:</b> follow user_id, then conversation_id, then sort by created_at.</li>
+  <li><b>Every plan this workflow ever got, oldest first:</b> diagnoses by workflow_id. History exists because a plan is a row.</li>
+  <li><b>Which screenshot went with which message:</b> attachments by message_id. The bytes sit behind file_url.</li>
+</ul>
+<p class="muted">Practise it: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s5">Level 5</a>, the boss level: answer these three on the board you built.</p>
 </section>
 
 <section class="s" id="s13"><h2><span class="n">13</span>Next: The Storage Box Gets Real</h2>
@@ -280,10 +289,13 @@
   <div class="w"><b>Timestamp</b><span>The date and time saved with each entry, so you know when it was said.</span></div>
   <div class="w"><b>High-level design</b><span>The whiteboard: every box, where it lives, and the calls between them.</span></div>
   <div class="w"><b>Domain model</b><span>The smallest description of your user's world that still answers the product's questions.</span></div>
+  <div class="w"><b>Block</b><span>A thing drawn on the board in the lab. It becomes a table.</span></div>
   <div class="w"><b>Thing (entity)</b><span>Created, read, updated and deleted on its own, and there can be many. Gets a table.</span></div>
   <div class="w"><b>Fact (attribute)</b><span>What you need to recreate one of the thing. Gets a column.</span></div>
   <div class="w"><b>Key (primary key)</b><span>The row's address, usually id. Never repeats.</span></div>
-  <div class="w"><b>Pointer (foreign key)</b><span>A column on the many side holding another row's key.</span></div>
+  <div class="w"><b>Pointer (foreign key)</b><span>A column on the many side holding another row's id.</span></div>
+  <div class="w"><b>Shape</b><span>One-to-many, many-to-many or one-to-one. Found by asking "one A, many B?" and "one B, many A?".</span></div>
+  <div class="w"><b>Many side</b><span>The side with only one to point at. It holds the pointer.</span></div>
   <div class="w"><b>Third table (join table)</b><span>One row per pairing when both sides are many.</span></div>
   <div class="w"><b>File storage</b><span>Where bytes live. The row keeps the link.</span></div>
 </div>
