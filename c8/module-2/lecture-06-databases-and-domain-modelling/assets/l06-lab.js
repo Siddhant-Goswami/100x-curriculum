@@ -213,24 +213,22 @@ document.addEventListener('DOMContentLoaded',function(){
     function ids(role,ent){ return all.filter(function(id){ var t=D.TOKENS[id]; return t.role===role && (!ent||t.ent===ent); }); }
     function slot(id,cls,txt){ var on=tr(id); return '<span class="hs '+cls+(on?' on':'')+'" data-drop="'+id+'">'+(on?esc(txt||wordOf(id)):'')+'</span>'; }
     function cnt(role){ var x=ids(role); return [x.filter(tr).length,x.length]; }
-    var bl=LV.blocksFound(S), fa=cnt('fact'), ne=cnt('neither'), fi=cnt('file');
-    var hud='<div class="hb-hud"><span class="c thing">blocks <b>'+bl+'</b>/'+D.TARGET_ENTITIES.length+'</span><span class="c fact">facts <b>'+fa[0]+'</b>/'+fa[1]+'</span><span class="c file">file <b>'+fi[0]+'</b>/'+fi[1]+'</span><span class="c out">left out <b>'+ne[0]+'</b>/'+ne[1]+'</span></div>';
+    var bl=LV.blocksFound(S), fa=cnt('fact');
+    var hud='<div class="hb-hud"><span class="c thing">blocks <b>'+bl+'</b>/'+D.TARGET_ENTITIES.length+'</span><span class="c fact">facts <b>'+fa[0]+'</b>/'+fa[1]+'</span></div>';
     var blocks=D.TARGET_ENTITIES.map(function(e){
       var on=fe(e), facts=ids('fact',e).filter(tr);
       return '<div class="hb-blk'+(on?' on':'')+(pop===e?' pop':'')+'"><div class="nm">'+(on?esc(e):'?')+'</div>'+
         '<div class="ws">'+ids('thing',e).map(function(id){ return slot(id,'thing'); }).join('')+'</div>'+
         (facts.length?'<div class="fs">'+facts.map(function(id){ return slot(id,'fact',FACT_COL[id]+': '+wordOf(id)); }).join('')+'</div>':'')+'</div>';
     }).join('');
-    return '<p class="kick">Aarav\'s board</p>'+hud+'<div class="hb-grid">'+blocks+'</div>'+
-      '<div class="hb-trays"><div class="hb-tray file"><span class="lb">file · held for level 4</span>'+ids('file').map(function(id){ return slot(id,'file'); }).join('')+'</div>'+
-      '<div class="hb-tray out"><span class="lb">left out</span>'+ids('neither').map(function(id){ return slot(id,'out'); }).join('')+'</div></div>';
+    return '<p class="kick">Aarav\'s board</p>'+hud+'<div class="hb-grid">'+blocks+'</div>';
   }
   function fly(from,id){
     var to=$('#board1 [data-drop="'+id+'"]'); if(!to||!from) return;
     to.scrollIntoView({block:'nearest'});
     if(!to.animate||reduced()){ to.classList.add('land'); return; }
     var a=from.getBoundingClientRect(), b=to.getBoundingClientRect(), t=D.TOKENS[id];
-    var c=el('<span class="flychip '+(t.role==='neither'?'out':t.role)+'">'+esc(to.textContent)+'</span>');
+    var c=el('<span class="flychip '+t.role+'">'+esc(to.textContent)+'</span>');
     c.style.left=a.left+'px'; c.style.top=a.top+'px'; document.body.appendChild(c);
     var dx=b.left-a.left, dy=b.top-a.top; to.style.visibility='hidden';
     c.animate([{transform:'translate(0,0) scale(1)'},{transform:'translate('+dx/2+'px,'+(dy/2-60)+'px) scale(1.15)',offset:.45},{transform:'translate('+dx+'px,'+dy+'px) scale(1)'}],{duration:650,easing:'cubic-bezier(.3,.6,.25,1)'});
@@ -244,11 +242,11 @@ document.addEventListener('DOMContentLoaded',function(){
       layout:'',
       main:'<section class="g-chat" aria-label="Aarav\'s chat"><p class="g-lab">Aarav\'s chat · point at an underlined word</p><div class="tx" id="tx"></div></section><section class="g-board" aria-label="Aarav\'s board"><div class="hboard" id="board1"></div></section>',
       idle:'Point at an underlined word in the chat (or tap it) and make your call.',
-      intro:{h:'Find the things worth storing',steps:['Point at an underlined word in Aarav\'s chat (or tap it).','Call it right there: <span class="q thing">thing</span> gets its own block, <span class="q fact">fact</span> describes a thing, <span class="q">neither</span> is not worth storing.','Right calls fly onto the board. Uncover all six blocks.'],tip:'The test: can the app create, read, update and delete it on its own, and can there be many?'},
+      intro:{h:'Find the things worth storing',steps:['Point at an underlined word in Aarav\'s chat (or tap it).','Call it right there: a <span class="q thing">thing</span> gets its own block, a <span class="q fact">fact</span> describes a thing.','Right calls fly onto the board. Uncover all six blocks.'],tip:'The test: can the app create, read, update and delete it on its own, and can there be many?'},
       bonus:[{k:'conv'},{k:'tone'}],
       progress:function(){ var p=LV.progress(1,S); return p[0]/p[1]; },
       isDone:function(){ return LV.done(1,S); },
-      summary:function(){ return 'Six blocks found, two facts stuck on, one file held, two words left out.'; },
+      summary:function(){ return 'Six blocks found and two facts stuck on.'; },
       reset:function(){ S.tags={}; },
       paint:function(){ board.innerHTML=huntBoard(); paintWords(); },
       esc:function(){ if(pop){ unpop(); return true; } return false; },
@@ -257,7 +255,7 @@ document.addEventListener('DOMContentLoaded',function(){
     root=$('#tx',api.g); root.innerHTML=tpl.innerHTML; board=$('#board1',api.g);
     function paintWords(){
       $$('[data-t]',root).forEach(function(x){
-        var id=x.dataset.t; x.classList.remove('thing','fact','neither','file','sel');
+        var id=x.dataset.t; x.classList.remove('thing','fact','sel');
         if(LV.tagRight(S,id)) x.classList.add(D.TOKENS[id].role);
         if(id===sel) x.classList.add('sel');
       });
@@ -271,8 +269,7 @@ document.addEventListener('DOMContentLoaded',function(){
       sel=id; paintWords();
       pop=el('<div class="g-pop" role="group" aria-label="What is '+esc(wordOf(id))+'?"><div class="g-calls">'+
         '<button type="button" class="g-call thing" data-c="thing">a thing<small>its own block</small></button>'+
-        '<button type="button" class="g-call fact" data-c="fact">a fact<small>describes a thing</small></button>'+
-        '<button type="button" class="g-call out" data-c="neither">neither<small>not worth storing</small></button></div><p class="g-hint" hidden></p></div>');
+        '<button type="button" class="g-call fact" data-c="fact">a fact<small>describes a thing</small></button></div><p class="g-hint" hidden></p></div>');
       api.g.appendChild(pop);
       var r=w.getBoundingClientRect(), pw=pop.offsetWidth, ph=pop.offsetHeight;
       pop.style.left=Math.min(Math.max(8,r.left+r.width/2-pw/2),window.innerWidth-pw-8)+'px';
@@ -284,7 +281,7 @@ document.addEventListener('DOMContentLoaded',function(){
     }
     function call(c){
       var id=sel; if(!id) return;
-      var tok=D.TOKENS[id], right=(c===tok.role)||(tok.role==='file'&&c==='thing'), w=$('[data-t="'+id+'"]',root);
+      var tok=D.TOKENS[id], right=c===tok.role, w=$('[data-t="'+id+'"]',root);
       if(!right){
         api.miss(id);
         if(pop){ $$('.g-call',pop).forEach(function(b){ if(b.dataset.c===c){ b.classList.add('no'); b.disabled=true; } });

@@ -14,7 +14,7 @@ L06.AARAV_PLAN_CASUAL = "Quick version: let Jira do the listing (one saved filte
 L06.COL_TYPES = ['text','number','yes/no','date and time','id'];
 
 /* ---------- Level 1 · the things: the transcript with tappable words ----------
-   role: 'thing' | 'fact' | 'neither' | 'file'
+   role: 'thing' | 'fact' (only these two: Level 1 asks just that)
    ent:  the entity a thing becomes (or the entity a fact belongs to) */
 L06.TOKENS = {
   aarav:   {role:'thing', ent:'users',         why:'Aarav signs in, has his own history, can be one of many. He is a <b>user</b>: a thing with its own row.', nudge:'He signs in, has his own history, and the app will have many people like him.'},
@@ -29,12 +29,9 @@ L06.TOKENS = {
   dash:    {role:'thing', ent:'tools',         why:'The dashboard is another tool. Many workflows mention it.', nudge:'Like Jira: a tool more than one workflow uses.'},
   slack:   {role:'thing', ent:'tools',         why:'Slack: a tool, like Jira. Keep it as a thing for Level 3.', nudge:'Like Jira: a tool.'},
   casual:  {role:'fact',  ent:'diagnoses',     why:'"Casual" describes one diagnosis. It cannot be created or deleted on its own. It is a fact: the tone of that plan.', nudge:'Can anyone create or delete a "casual" on its own, or does it describe one plan?'},
-  time:    {role:'fact',  ent:'messages',      why:'9:12 am describes when that message was sent. A fact about the message.', nudge:'Does a time live on its own, or does it say when one message was sent?'},
-  hiprio:  {role:'neither',                    why:'"High-priority" is a word inside his message. The app does not create, find or change it on its own. Neither.', nudge:'It is a word inside his message. Does the app ever create, find or change a "high-priority" on its own?'},
-  manager: {role:'neither',                    why:'His manager is a person in Aarav\'s life, not in your app. The app never stores a row about her. Neither, for now.', nudge:'Is his manager someone who uses your app?'},
-  file:    {role:'file',  ent:'attachments',   why:'The screenshot is a thing (an attachment) but its bytes are not a row. Hold that thought for Level 4.', nudge:'It has a life of its own, so it is more than a fact. But can you type its bytes into a cell?'}
+  time:    {role:'fact',  ent:'messages',      why:'9:12 am describes when that message was sent. A fact about the message.', nudge:'Does a time live on its own, or does it say when one message was sent?'}
 };
-L06.TOKEN_ORDER = ['aarav','conv1','msg1','wf','jira','hiprio','dash','manager','slack','msg2','plan','time','file','conv2','casual','plan2'];
+L06.TOKEN_ORDER = ['aarav','conv1','msg1','wf','jira','dash','slack','msg2','plan','time','conv2','casual','plan2'];
 L06.TARGET_ENTITIES = ['users','conversations','messages','workflows','diagnoses','tools'];
 
 /* ---------- Level 2 · what each thing has: fact cards to place ---------- */

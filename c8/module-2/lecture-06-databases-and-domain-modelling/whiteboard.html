@@ -425,13 +425,13 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
 <!-- 10 · Aarav's chat, taken apart -->
 <div class="scene">
 <p class="kick">10 · Take Aarav's chat apart</p>
-<h2>Every word is a thing, a fact, or neither</h2>
-<svg class="wb" viewBox="0 0 760 440" role="img" aria-label="Left, Aarav's chat: Monday's conversation with his weekly workflow (Jira, the dashboard, Slack), sent at 9:12 am with jira-board.png, the app's plan, and Tuesday's conversation asking for a more casual tone. Right, a table pulling the parts out. Things: user, conversation, message, workflow, plan, tool. Facts: name, text, who sent it, time sent, tone. Links: one user to many chats, one chat to many messages, one workflow to many plans, workflows to tools. Neither: high-priority, his manager.">
+<h2>Every word is a thing or a fact</h2>
+<svg class="wb" viewBox="0 0 760 440" role="img" aria-label="Left, Aarav's chat: Monday's conversation with his weekly workflow (Jira, the dashboard, Slack), sent at 9:12 am, the app's plan, and Tuesday's conversation asking for a more casual tone. Right, a table pulling the parts out. Things: user, conversation, message, workflow, plan, tool. Facts: name, text, who sent it, time sent, tone. Links: one user to many chats, one chat to many messages, one workflow to many plans, workflows to tools.">
   <g class="ln" filter="url(#wob)">
     <rect x="16" y="16" width="350" height="412" rx="10"/>
     <path class="thin" d="M16 42 H366"/>
     <rect class="thin" x="88" y="72" width="266" height="142" rx="10"/>
-    <rect class="thin f-act" x="88" y="222" width="122" height="22" rx="6"/>
+    <rect class="thin" x="88" y="222" width="122" height="22" rx="6"/>
     <rect class="thin" x="28" y="256" width="256" height="76" rx="10"/>
     <path class="dash" d="M28 346 H354"/>
     <rect class="thin" x="118" y="374" width="236" height="46" rx="10"/>
@@ -443,11 +443,11 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="191" y="62" class="xxs c-mute">Monday's <tspan class="c-thing">conversation</tspan></text>
     <text x="102" y="94" class="xxs l c-ink">Here's my weekly <tspan class="c-thing">workflow</tspan>:</text>
     <text x="102" y="116" class="xxs l c-ink">every Monday I open <tspan class="c-thing">Jira</tspan>,</text>
-    <text x="102" y="138" class="xxs l c-ink">pick the <tspan class="c-mute strike">high-priority</tspan> to-dos,</text>
+    <text x="102" y="138" class="xxs l c-ink">pick the high-priority to-dos,</text>
     <text x="102" y="160" class="xxs l c-ink">pull numbers from the <tspan class="c-thing">dashboard</tspan>,</text>
     <text x="102" y="182" class="xxs l c-ink">write a report, send it to my</text>
-    <text x="102" y="204" class="xxs l c-ink"><tspan class="c-mute strike">manager</tspan> on <tspan class="c-thing">Slack</tspan>.</text>
-    <text x="149" y="238" class="xxs c-act">jira-board.png</text>
+    <text x="102" y="204" class="xxs l c-ink">manager on <tspan class="c-thing">Slack</tspan>.</text>
+    <text x="149" y="238" class="xxs c-mute">jira-board.png</text>
     <text x="354" y="238" class="xxs r c-fact">9:12 am</text>
     <text x="42" y="278" class="xxs l c-ink">Here's your <tspan class="c-thing">plan</tspan>:</text>
     <text x="42" y="300" class="xxs l">1. Let Jira list the to-dos</text>
@@ -475,18 +475,16 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="685" y="130" class="xxs">1 chat →</text><text x="685" y="150" class="xxs">many messages</text>
     <text x="685" y="182" class="xxs">1 workflow →</text><text x="685" y="202" class="xxs">many plans</text>
     <text x="685" y="234" class="xxs">workflows ↔</text><text x="685" y="254" class="xxs">tools</text>
-    <text x="568" y="342" class="xs c-mute">neither: high-priority, his manager</text>
-    <text x="568" y="370" class="xs c-act">a file: jira-board.png (later)</text>
   </g>
 </svg>
-<p>Pull every noun out of the chat and sort it. Most are things. Some only describe a thing: those are facts. Two are neither: "high-priority" is a word inside a message, and his manager is a person in Aarav's life, not in your app.</p>
+<p>Pull every noun out of the chat and sort it. Most are things: each gets its own table. The rest only describe a thing: those are facts, and each becomes a column.</p>
 </div>
 
 <!-- 11 · question 1 -->
 <div class="scene">
 <p class="kick">11 · Question 1</p>
 <h2>Is it a thing? The Create, Read, Update, Delete test</h2>
-<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="A checklist. Message, conversation and Jira pass: the app can create, read, update and delete each on its own, and there can be many. They are things. High-priority and his manager fail: neither.">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="A checklist. Message, conversation and Jira pass: the app can create, read, update and delete each on its own, and there can be many. They are things. 9:12 am and casual fail: each only describes one message or one plan, so they are facts.">
   <g class="ln" filter="url(#wob)">
     <rect x="40" y="16" width="680" height="240" rx="6"/>
     <path class="thin" d="M40 56 H720 M40 96 H720 M40 136 H720 M40 176 H720 M40 216 H720 M236 16 V256 M306 16 V256 M376 16 V256 M446 16 V256 M516 16 V256 M600 16 V256"/>
@@ -501,14 +499,14 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="271" y="123" class="xs c-pkg">✓</text><text x="341" y="123" class="xs c-pkg">✓</text><text x="411" y="123" class="xs c-pkg">✓</text><text x="481" y="123" class="xs c-pkg">✓</text><text x="558" y="123" class="xs c-pkg">✓</text><text x="660" y="123" class="m c-thing">thing</text>
     <text x="138" y="163" class="xs">Jira, a tool</text>
     <text x="271" y="163" class="xs c-pkg">✓</text><text x="341" y="163" class="xs c-pkg">✓</text><text x="411" y="163" class="xs c-pkg">✓</text><text x="481" y="163" class="xs c-pkg">✓</text><text x="558" y="163" class="xs c-pkg">✓</text><text x="660" y="163" class="m c-thing">thing</text>
-    <text x="138" y="203" class="xs">"high-priority"</text>
-    <text x="271" y="203" class="xs c-act">✗</text><text x="341" y="203" class="xs c-act">✗</text><text x="411" y="203" class="xs c-act">✗</text><text x="481" y="203" class="xs c-act">✗</text><text x="558" y="203" class="xs c-mute">–</text><text x="660" y="203" class="m c-mute">neither</text>
-    <text x="138" y="243" class="xs">his manager</text>
-    <text x="271" y="243" class="xs c-act">✗</text><text x="341" y="243" class="xs c-act">✗</text><text x="411" y="243" class="xs c-act">✗</text><text x="481" y="243" class="xs c-act">✗</text><text x="558" y="243" class="xs c-mute">–</text><text x="660" y="243" class="m c-mute">neither</text>
+    <text x="138" y="203" class="xs">"9:12 am"</text>
+    <text x="271" y="203" class="xs c-act">✗</text><text x="341" y="203" class="xs c-act">✗</text><text x="411" y="203" class="xs c-act">✗</text><text x="481" y="203" class="xs c-act">✗</text><text x="558" y="203" class="xs c-mute">–</text><text x="660" y="203" class="m c-fact">fact</text>
+    <text x="138" y="243" class="xs">"casual"</text>
+    <text x="271" y="243" class="xs c-act">✗</text><text x="341" y="243" class="xs c-act">✗</text><text x="411" y="243" class="xs c-act">✗</text><text x="481" y="243" class="xs c-act">✗</text><text x="558" y="243" class="xs c-mute">–</text><text x="660" y="243" class="m c-fact">fact</text>
     <text x="380" y="290" class="s">on its own, and can there be many?</text>
   </g>
 </svg>
-<p>Nouns are clues, not answers. A thing is something the app can create, read, update and delete on its own, and there can be many. The most common beginner move is splitting into too many tables. This test is how you refuse.</p>
+<p>Nouns are clues, not answers. A thing is something the app can create, read, update and delete on its own, and there can be many. A word that fails only describes a thing: it is a fact, a column on that thing's table. The most common beginner move is splitting into too many tables. This test is how you refuse.</p>
 </div>
 
 <!-- 12 · question 2 -->
