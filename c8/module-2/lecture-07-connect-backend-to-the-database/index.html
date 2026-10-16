@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connect Backend to the Database | 100xEngineers</title>
+<meta name="description" content="Cohort 8 Module 2, Lecture 7: Connect backend to the database. The key leaves the browser, the file on the server dies, storage moves to a machine at an address, SQL gives it the Lecture 6 shape, and one fetch replaces Gradio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+.cards a.card{text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.cards a.card:hover{border-color:var(--line2);transform:translateY(-1px)}
+.when{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
+.when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
+.when .kick{margin:0}
+</style>
+</head>
+<body data-page="l07-index" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L7">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 7 pages"><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">Overview</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard">Whiteboard</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Lecture 7 · Fri 16 Oct 2026</p>
+  <h1>Connect backend to the database</h1>
+  <p class="dek">A database is a machine at an address. SQL is its package.</p>
+</div>
+
+<div class="call"><p class="kick">The lecture in one line</p><p>Aarav's plan survives a refresh and a redeploy. The page that serves it is HTML, CSS and one fetch, with no key anywhere in the browser.</p></div>
+
+<div class="when"><p class="kick">01</p><h2>The nine steps</h2></div>
+<ol class="steps">
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s03">The leak: the browser calls Groq directly</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s04">Strip it down to the function</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s05">The function behind a route, on your server</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s06">Gradio becomes a client, with no key</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s07">Plans saved to memory.txt, and why it dies</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s13">SQL is the package language</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s16">The cushion: what the SDK hides</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s17">The server remembers</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s18">Rip off Gradio: one fetch</a></li>
+</ol>
+
+<div class="when"><p class="kick">02</p><h2>Done equals</h2></div>
+<p>A classmate opens your URL, gets a plan, refreshes, and the plan is still there. They search the Network tab and find no key. <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s20">The five checks, in debt order.</a></p>
+
+<div class="when"><p class="kick">03</p><h2>When you need it</h2></div>
+<div class="cards">
+  <a class="card" href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard"><p class="kick">See it drawn</p><h4>Lecture 7 on a whiteboard</h4></a>
+  <a class="card" href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s22"><p class="kick">Do this</p><h4>Practice set: five steps</h4></a>
+  <a class="card" href="/c8/module-2/lecture-06-databases-and-domain-modelling/whiteboard"><p class="kick">Before this</p><h4>Lecture 6 on a whiteboard</h4></a>
+  <a class="card" href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab"><p class="kick">Your tables</p><h4>The Modelling Lab</h4></a>
+  <a class="card" href="/#L7"><p class="kick">Track progress</p><h4>Checklist on the map</h4></a>
+</div>
+
+<p class="sig">Call the machine before it has a shape, then give it the shape you drew on paper.<small>Next: Lecture 8. Whose row is this?</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 7: Connect backend to the database</span><a href="/#L7">Curriculum map</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">All Lecture 7 pages</a></div></footer>
+</body>
+</html>
