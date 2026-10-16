@@ -42,10 +42,13 @@
       if(read){
         /* the sidebar's quick links move to the "Go on" block at the end of the page; the aside goes */
         var aside=$('aside.toc'); if(aside) aside.remove();
-        /* the quiet rail: titles only */
+        /* the quiet rail: one tick per section by default, the current one darker; a toggle opens the titles and remembers it */
         var rail=document.createElement('nav'); rail.className='rail'; rail.setAttribute('aria-label','On this page');
-        rail.innerHTML=items.map(function(it){return '<a href="#'+it.id+'">'+it.t+'</a>'}).join('');
+        var railOpen=store.get('c8.rail','min')==='open';
+        rail.classList.toggle('min',!railOpen);
+        rail.innerHTML='<button type="button" class="rt" aria-expanded="'+railOpen+'" title="Contents"><span>Contents</span></button>'+items.map(function(it){return '<a href="#'+it.id+'" title="'+it.t.replace(/"/g,'&quot;')+'"><span>'+it.t+'</span></a>'}).join('');
         document.body.appendChild(rail);
+        $('.rt',rail).addEventListener('click',function(){railOpen=!railOpen;rail.classList.toggle('min',!railOpen);this.setAttribute('aria-expanded',railOpen);store.set('c8.rail',railOpen?'open':'min')});
         /* the contents popover in the header, under the current section's title */
         var top=$('.top .in'), brand=$('.top .brand');
         if(top){
@@ -63,6 +66,8 @@
       var links=$$('#toc a, .rail a, .pop a[href^="#s"], .pop a[href^="#"]').filter(function(a){return !a.hasAttribute('data-top')});
       var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id)});if(curLabel){var it=items.filter(function(x){return x.id===e.target.id})[0];if(it)curLabel.textContent=it.t}}})},{rootMargin:'-20% 0px -70% 0px',threshold:0});
       secs.forEach(function(s){io.observe(s)});
+      /* before any section has crossed the spy line, the first one counts as current */
+      if(read&&!location.hash){links.forEach(function(l){if(l.getAttribute('href')==='#'+secs[0].id)l.classList.add('on')});if(curLabel)curLabel.textContent=items[0].t}
     }
 
     /* OS switches */

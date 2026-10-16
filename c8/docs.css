@@ -301,6 +301,7 @@ body.read .up{animation:none}
 body.read .top .brand{font:500 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink)}
 body.read .top .brand b{color:var(--ink3);font-weight:400;margin:0 4px}
 body.read .top nav{margin-left:0}
+body.read .top .brand{margin-right:auto}
 body.read .top .in{gap:10px}
 body.read .cur{position:relative;flex:1;display:flex;justify-content:center;min-width:0}
 body.read .cur summary{list-style:none;cursor:pointer;font:500 13px var(--sans);color:var(--ink2);padding:6px 10px;border-radius:8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
@@ -327,9 +328,21 @@ body.read .rail{display:none;position:fixed;top:84px;left:calc(50% - 576px);widt
 body.read .rail::-webkit-scrollbar{display:none}
 body.read .rail:hover,body.read .rail:focus-within{opacity:1}
 @media (min-width:1200px){body.read .rail{display:block}}
+body.read .rail .rt{display:flex;align-items:center;gap:6px;background:none;border:0;padding:4px 0 8px;cursor:pointer;font:500 12px var(--sans);color:var(--ink3)}
+body.read .rail .rt::before{content:"";width:5px;height:5px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);flex:none;transition:transform .15s}
+body.read .rail .rt:hover{color:var(--ink)}
 body.read .rail a{display:block;font-size:13px;line-height:1.35;color:var(--ink2);text-decoration:none;padding:4px 0;text-wrap:pretty}
 body.read .rail a:hover{color:var(--ink)}
 body.read .rail a.on{color:var(--ink);font-weight:500}
+/* compressed: the word "Contents" goes, each section is a short tick, the current one longer and darker */
+body.read .rail.min{width:auto}
+body.read .rail.min .rt{padding:4px 0 10px}
+body.read .rail.min .rt::before{transform:rotate(45deg)}
+body.read .rail.min .rt span{display:none}
+body.read .rail.min a{width:14px;height:2px;padding:0;margin:9px 0;border-radius:1px;background:var(--ink3);opacity:.5;transition:width .15s,background .15s}
+body.read .rail.min a span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+body.read .rail.min a:hover{opacity:1;width:20px}
+body.read .rail.min a.on{width:24px;background:var(--ink);opacity:1}
 body.read .mtoc{margin:0 0 8px}
 body.read .mtoc summary{font:500 14px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink2);padding:6px 0;border:0;background:none}
 body.read .mtoc .l a .n{font:400 12px var(--sans);color:var(--ink3)}
@@ -455,6 +468,26 @@ body.read .code .ln:hover{background:transparent}
 body.read .code .ln.hl{background:rgba(255,255,255,.05)}
 body.read .code .ln.tag:hover{background:color-mix(in srgb,var(--l,#fff) 14%,transparent)}
 body.read .btn.ghost{color:var(--ink2)}
+
+/* overview pages: headings without numbers, link cards as a plain list, the three questions borderless */
+body.read .when{margin:2.5em 0 .6em}
+body.read .when .kick{display:none}
+body.read .when h2{font:500 1.375rem/1.25 var(--sans);letter-spacing:-.01em;margin:0}
+body.read .cards a.card{display:block;margin:0 0 .8em;transition:none}
+body.read .cards a.card:hover{border-color:transparent;transform:none}
+body.read .cards a.card:hover h4{text-decoration:underline;text-decoration-color:var(--ink3);text-underline-offset:3px}
+body.read .cards a.card .kick{display:inline;color:var(--ink3);margin:0 6px 0 0}
+body.read .cards a.card p:not(.kick){display:block;font-size:15px;line-height:1.5;color:var(--ink2);margin:2px 0 0}
+body.read .three{gap:12px 24px;margin:0 0 1.5em}
+body.read .three div{border:0;background:transparent;padding:0;border-radius:0}
+body.read .three div b{font-weight:600;font-size:inherit;margin:2px 0 4px}
+body.read .three div span{font-size:15px;line-height:1.5}
+body.read .three .thing .kick{color:var(--q-thing-ink,var(--ink2))}
+body.read .three .fact .kick{color:var(--q-fact-ink,var(--ink2))}
+body.read .three .link .kick{color:var(--q-link-ink,var(--ink2))}
+body.read .call.drive{display:block;padding:0;background:transparent}
+body.read .call.drive .wb{margin:0 0 16px}
+body.read .call.drive p{margin:0 0 .8em}
 
 /* go on: the links that used to live in the sidebar and the card grids */
 body.read .goon{margin:3em 0 0}
