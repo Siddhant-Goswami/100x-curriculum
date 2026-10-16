@@ -77,7 +77,18 @@ var GUIDE_LINKS = {
   l06Model: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s5',
   l06Arena: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s6',
   l06Yours: '/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab#s7',
-  l04ApiTable: '/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set#s04'
+  l04ApiTable: '/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set#s04',
+  /* Lecture 7 · Connect backend to the database (code track; pages live in c8/module-2/lecture-07-connect-backend-to-the-database) */
+  l07Hub: '/c8/module-2/lecture-07-connect-backend-to-the-database/',
+  l07Notes: '/c8/module-2/lecture-07-connect-backend-to-the-database/notes',
+  l07Board: '/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard',
+  l07Practice: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set',
+  l07Submit: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set#s01',
+  l07Setup: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set#s02',
+  l07Steps: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set#s03',
+  l07Errors: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set#s04',
+  l07Repo: 'https://github.com/Siddhant-Goswami/c8-db',
+  fastapiTutorial: 'https://fastapi.tiangolo.com/tutorial/'
 };
 
 var HELLO_WORLD = [
@@ -538,4 +549,88 @@ GUIDES.L6 = { all: {
     ['File storage', 'Where bytes live. The row keeps the link.']
   ],
   kw: 'database domain modelling modeling entities entity attribute attributes relationships relationship one-to-many many-to-many one-to-one primary key foreign key pointer join table third table supabase memory storage persistence rows files storage bucket er diagram modelling lab arena aarav practice set whiteboard high-level design hld memory.txt file client side server side worth storing api key gpt-oss'
+}};
+
+/* Lecture 7 · Connect backend to the database · Part 1 (Fri 16 October 2026), Part 2 on Sat 17 October.
+   Source: the Friday transcript, the c8-db repository (steps 01 to 08) and the Lecture 7 pages. */
+GUIDES.L7 = { code: {
+  hub: {link:'l07Hub', title:'Open the Lecture 7 pages', sub:'Notes, the practice set and the whiteboard', more:[['l07Notes','Notes'],['l07Practice','Practice set'],['l07Board','Whiteboard']]},
+  name: 'The key leaves the browser',
+  sub: 'After Part 1 · 16 October 2026 · code track',
+  deadline: 'Practice set',
+  due: 'Before Saturday\'s session, 17 Oct, 6 pm IST',
+  keep: 'Three machines: the user\'s, yours, and the one you pay for. Strip your app to one function, put it behind a FastAPI route with Pydantic at the door, deploy it to Vercel, and keep the key in an environment variable on the only machine you control. Saturday, that machine learns to remember.',
+  ideas: [
+    ['The hardest bugs are components on the wrong machine.', 'Nothing errors. Someone just spends your credits or your data vanishes. An LLM will make that decision for you if you do not. Decide where each piece lives before you type.'],
+    ['Strip it to the function.', 'Remove every cushion and one function is left: input in, output out. That is what you deploy first. The UI can call it from anywhere once it has an address.'],
+    ['Rent the machine.', 'Your laptop is personal: it sleeps, and it serves one person. Your own server is an independent house with its own locks and power backup. Vercel is the Airbnb. Free to start.'],
+    ['Pydantic is the traffic police.', 'A route is a promise to the whole internet. Policy is "send me text". Enforcement is the two lines that reject anything else and name the rule. The same layer sits between an agent and your software.'],
+    ['Read the status before you ask.', '401 is the key, 404 is the address, 500 is the server itself, and the fix for a 500 on Vercel is the Logs tab and then the environment variable, never a hardcoded key.'],
+    ['Commit is a save. Push sends it up.', 'The repository keeps a change log of what you got wrong and how it improved. Keep the hackathon repository public.']
+  ],
+  rule: 'Keys live in environment variables: the terminal on your laptop, the dashboard on Vercel. Never in the file, never in a screenshot. Predict the status code before every call.',
+  stages: [
+    {id:'setup', name:'Before you start', short:'Setup', sub:'Practice set, section 02',
+     intro:'The five things every step from here depends on. One LLM helper, not four.',
+     ticks:[
+       {id:'py', t:'Python locally and an IDE', link:'l07Setup', linkLabel:'Before you start'},
+       {id:'gh', t:'A GitHub account and one public repository', how:'Repository is the project. Commit is a save. Push sends the saves up.'},
+       {id:'vc', t:'A Vercel account, the CLI installed and logged in', how:'npm i -g vercel, then vercel login.'},
+       {id:'llm', t:'One LLM helper that can see the project folder', how:'Codex, Claude Code, Hermes or OpenCode. Read every command it runs.'},
+       {id:'key', t:'The Groq key set in the terminal', how:'export on Mac, $env: on Windows. Not in a file you will share.'}
+     ]},
+    {id:'steps', name:'The four steps', short:'Steps', sub:'Practice set, section 03',
+     intro:'Steps 01 to 04 of the lecture, for your own app. No app yet? Do them for Aarav\'s diagnoser, then change the workflow to one you actually do.',
+     ticks:[
+       {id:'leak', t:'Witnessed the leak, then stripped my app to one function that runs from the terminal', how:'Input, output, process, in English first. Then the Python.', link:'l07Steps', linkLabel:'The four steps'},
+       {id:'api', t:'The function behind a FastAPI route with a Pydantic input model; /docs shows it', how:'Fill the four dials before any code. uvicorn api.index:app --reload from inside the folder.'},
+       {id:'deploy', t:'Deployed with vercel --prod, key added as an environment variable, a 200 from the full address', how:'New terminal, inside the API folder. The address needs /api/… on the end.'},
+       {id:'client', t:'Gradio posts to the live URL, with no key and no Groq address in the file'}
+     ]},
+    {id:'submit', name:'Practice set', short:'Submit', sub:'Before Sat 17 Oct, 6 pm IST',
+     intro:'Five items, posted in the Discord code channel. Earliest posts are reviewed first.',
+     ticks:[
+       {id:'d1', t:'My function in English and in Python', link:'l07Submit', linkLabel:'What to submit'},
+       {id:'d2', t:'A /docs screenshot of my API'},
+       {id:'d3', t:'My live URL and an httpie screenshot of a 200'},
+       {id:'d4', t:'Gradio calling the live URL, and the file it runs from'},
+       {id:'d5', t:'My error log: status, meaning, fix', link:'l07Errors', linkLabel:'Your error log'}
+     ]}
+  ],
+  actions: [
+    {id:'sat', t:'Saturday, 17 Oct, 6 pm IST: Part 2', how:'Bring the live URL and your Modelling Lab tables. The file dies, Supabase, end to end.', link:'l07Board', linkLabel:'Scenes 7 to 22'},
+    {id:'pyd', t:'Read about Pydantic beyond type checks', how:'The lecture\'s homework. It is the bridge between probabilistic and deterministic systems.', link:'fastapiTutorial', linkLabel:'FastAPI tutorial'},
+    {id:'hack', t:'The hackathon starts after Saturday', how:'Two days, fresh problem statements, mandatory, graded on the attempt. A public repository.'}
+  ],
+  next: 'Next: Saturday, 6 pm. The same server gets memory: memory.txt dies on Vercel, the Lecture 6 tables become a Supabase schema, and the app goes live end to end.',
+  errors: [
+    ['401 from the leak page', 'No key in the request', 'That is the point. The key moves to the server, never into this file'],
+    ['Model error from diagnose.py', 'A retired model name', 'Check the model name on the day and change one string'],
+    ['404 from the deploy URL', 'The URL alone is not the route', 'POST to <url>/api/diagnose'],
+    ['500 from /api/diagnose', 'The server failed, usually because the key is not on that machine', 'Read the Logs tab on the deployment, add GROQ_API_KEY under Environment Variables with the exact name, redeploy'],
+    ['vercel asks about the wrong folder', 'It was run from the repository root', 'New terminal, cd into the step folder, run vercel again'],
+    ['422 from your route', 'Pydantic rejected the package', 'Read the message: it names the missing or mistyped field. The body field must match the model'],
+    ['Nobody can open my localhost link', 'It only exists on your machine', 'Send a screenshot, or deploy and send the vercel.app URL']
+  ],
+  read: [
+    ['Lecture 7 overview', 'l07Hub', 'Friday and Saturday, step by step.'],
+    ['Notes', 'l07Notes', 'What was said on Friday, in order.'],
+    ['Practice set', 'l07Practice', 'Setup, the four steps, the error log, five things to post.'],
+    ['The lecture on a whiteboard', 'l07Board', 'All 22 scenes. 1 to 6 are Friday, 7 to 22 are Saturday.'],
+    ['The lecture repository', 'l07Repo', 'Every step as a folder. Replace the function with yours.'],
+    ['FastAPI tutorial', 'fastapiTutorial', 'Read it before asking an LLM to write the route.']
+  ],
+  words: [
+    ['Repository', 'A project on GitHub: all its files and every save you made.'],
+    ['Commit', 'A save of your progress with a one-line reason. Local until you push.'],
+    ['Push', 'Send your commits from the laptop to the repository on the internet.'],
+    ['Deploy', 'Put your code on a rented machine with a URL. vercel --prod is the production one.'],
+    ['Environment variable', 'A named value the machine holds outside the code. Where keys live.'],
+    ['Endpoint', 'One address on your API with one action, such as POST /api/diagnose.'],
+    ['FastAPI', 'The Python framework that turns a function into an endpoint in four lines and documents it at /docs.'],
+    ['Pydantic', 'The data validation library FastAPI uses. The traffic police for everything that arrives.'],
+    ['Business logic', 'The one function that takes the input and makes the output. Everything else is around it.'],
+    ['CLI', 'Command line interface. The Vercel and GitHub CLIs let your terminal, or your LLM helper, talk to those machines.']
+  ],
+  kw: 'connect backend database deploy vercel github commit push repository fastapi pydantic validation traffic police environment variable env var groq key leak 401 404 500 httpie uvicorn docs gradio client api/diagnose business logic codex claude code hermes opencode hackathon supabase saturday practice set'
 }};

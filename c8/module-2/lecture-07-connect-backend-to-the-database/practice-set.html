@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Practice Set: Connect Backend to the Database | 100xEngineers</title>
+<meta name="description" content="Practice set after Lecture 7 Part 1 of the 100xEngineers Cohort 8 Module 2: strip your app to one function, put it behind a FastAPI route with Pydantic, deploy it to Vercel with the key in an environment variable, and point Gradio at the live URL. Due before Saturday's session.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials code{font-size:13px}
+</style>
+</head>
+<body data-page="l07-practice-set" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L7">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 7 pages"><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">Overview</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Notes</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Practice set · Lecture 7 · Part 1 · Code track</p>
+  <h1>Your function, live on a URL</h1>
+  <p class="dek">Steps 01 to 04 of the lecture, done for your own app. The key never leaves your server.</p>
+  <div class="meta"><span>Due before Saturday's session, 17 Oct, 6 pm IST.</span><span>Post in the Discord code channel.</span></div>
+</div>
+
+<div class="call"><p class="kick">The brief</p><p>Strip your Assignment 1 app to one function. Put it behind a FastAPI route with Pydantic at the door. Deploy it to Vercel with your key in an environment variable. Point your Gradio app at the live URL. Then write down every error you met on the way. Saturday adds storage to this same URL, so finish before 6 pm.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What to Submit <span class="ready" data-ready="sub">0 of 5 ready</span></h2>
+<div data-stage="sub">
+<ul class="ck">
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. Your function, in English and in Python</span><span class="h">Three lines of English: the input, the output, the process. Then the Python file with that function alone, run locally. Key blurred or absent.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. A <code>/docs</code> screenshot</span><span class="h">FastAPI's own page for your API, showing a POST route and its input model.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. Your live URL and a 200</span><span class="h">The <code>vercel.app</code> address, plus an <a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a> screenshot of a POST to it returning your output.</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Gradio calling the live URL</span><span class="h">A screenshot of your Gradio app with a reply, and the file it runs from. One URL in it, no key anywhere.</span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">5. Your error log</span><span class="h">Every error you hit: the status code or message, what it meant, what fixed it. <a href="#s04">Use the table in section 04.</a> Saturday opens with the common ones.</span></label></li>
+</ul>
+</div>
+<p>No app of your own yet? Do all five for Aarav's diagnoser from <a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">the lecture repository</a>, then change the workflow to one you actually do each week.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Before You Start <span class="ready" data-ready="setup">0 of 5 ready</span></h2>
+<div data-stage="setup">
+<ul class="ck">
+<li><input type="checkbox" id="a1"><label for="a1"><span class="t">Python runs locally and you have an IDE</span><span class="h">Cursor, VS Code, PyCharm. Whatever you used for Lecture 5.</span></label></li>
+<li><input type="checkbox" id="a2"><label for="a2"><span class="t">A GitHub account and one public repository</span><span class="h">Repository is the project. Commit is a save. Push sends the saves up. Public, or it cannot be reviewed.</span></label></li>
+<li><input type="checkbox" id="a3"><label for="a3"><span class="t">A Vercel account, and the CLI logged in</span><span class="h"><code>npm i -g vercel</code>, then <code>vercel login</code> with the same account. Hobby plan, free.</span></label></li>
+<li><input type="checkbox" id="a4"><label for="a4"><span class="t">One LLM helper that can see your project folder</span><span class="h">Codex, Claude Code, Hermes or OpenCode. One, not four. Let it install Git, the GitHub CLI and the Vercel CLI, and read the commands it runs.</span></label></li>
+<li><input type="checkbox" id="a5"><label for="a5"><span class="t">Your Groq key set in the terminal</span><span class="h">Not in a file you will share. Not on a shared screen.</span></label></li>
+</ul>
+</div>
+<div class="osrow"><span class="kick">Your machine</span><div class="seg" data-seg="os" role="group" aria-label="Operating system"><button type="button" data-v="mac">Mac</button><button type="button" data-v="win">Windows</button></div></div>
+<div class="cmd" data-os="mac"><span>export GROQ_API_KEY=gsk_your_key_here</span><button class="cp" type="button">Copy</button></div>
+<div class="cmd" data-os="win"><span>$env:GROQ_API_KEY="gsk_your_key_here"</span><button class="cp" type="button">Copy</button></div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The Four Steps <span class="ready" data-ready="steps">0 of 4 ready</span></h2>
+<div data-stage="steps">
+<ul class="ck">
+<li><input type="checkbox" id="p1"><label for="p1"><span class="t">1. Witness the leak, then strip to the function</span><span class="h">Open <code>01-leak/index.html</code>, click Diagnose, read the 401 in the Network tab. Then write your function in English: input, output, process. Replace the body of <code>02-function/diagnose.py</code> with it and run it from the terminal until it answers.</span></label></li>
+<li><input type="checkbox" id="p2"><label for="p2"><span class="t">2. Put it behind an API</span><span class="h">Fill the four dials first, below. Then FastAPI: <code>app.post</code> on your address, a Pydantic model for the input, the function under it. Run <code>uvicorn api.index:app --reload</code> inside the folder, open <code>/docs</code>, and POST to it from httpie.</span></label></li>
+<li><input type="checkbox" id="p3"><label for="p3"><span class="t">3. Deploy</span><span class="h">New terminal, <code>cd</code> into the API folder, <code>vercel</code>, then <code>vercel --prod</code>. Add <code>GROQ_API_KEY</code> under Settings, Environment Variables, exact name, then redeploy. POST to the full address, including <code>/api/…</code>.</span></label></li>
+<li><input type="checkbox" id="p4"><label for="p4"><span class="t">4. Gradio becomes a client</span><span class="h">Your Lecture 5 Gradio app posts to the live URL and shows one field of the reply. Delete the key and the Groq address from that file. They are on the server now.</span></label></li>
+</ul>
+</div>
+<h3>Step 2 · Your four dials, before any code</h3>
+<table class="dials">
+<tr><th>Dial</th><th>Aarav's diagnoser</th><th>Yours</th></tr>
+<tr><td><span class="part act">action</span></td><td>POST</td><td>POST, for a function that makes something</td></tr>
+<tr><td><span class="part addr">address</span></td><td><code>/api/diagnose</code></td><td><code>/api/</code> and a verb for your function</td></tr>
+<tr><td><span class="part pkg">package</span></td><td><code>{"workflow"}</code> in, <code>{"plan"}</code> out</td><td>Your input field in, your output field out. Text only, for now.</td></tr>
+<tr><td><span class="part key">key</span></td><td>none on your API. Groq's key stays on the server.</td><td>Same. Your own key comes later in the module.</td></tr>
+</table>
+<h3>Step 3 · Test the live route</h3>
+<div class="cmd"><span>http POST https://&lt;your-app&gt;.vercel.app/api/diagnose workflow="I edit videos until Sunday night"</span><button class="cp" type="button">Copy</button></div>
+<h3>Step 4 · Run Gradio against the live server</h3>
+<div class="cmd"><span>API_URL=https://&lt;your-app&gt;.vercel.app/api/diagnose python 04-gradio-client/app.py</span><button class="cp" type="button">Copy</button></div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Your Error Log</h2>
+<p>Predict the status before every call. Then write what came back. The lecture's own log, to start you off:</p>
+<table class="dials">
+<tr><th>Call</th><th>Predicted</th><th>Actual</th><th>Meant</th><th>Fix</th></tr>
+<tr><td>Leak page, Diagnose</td><td>200</td><td>401</td><td>No key in the request</td><td>The key, on the server, not here</td></tr>
+<tr><td><code>python diagnose.py</code></td><td>a plan</td><td>error</td><td>Retired model name</td><td>Check the model name on the day</td></tr>
+<tr><td>POST to the deploy URL</td><td>200</td><td>404</td><td>Wrong address, no route at <code>/</code></td><td>Add <code>/api/diagnose</code></td></tr>
+<tr><td>POST to <code>/api/diagnose</code></td><td>200</td><td>500</td><td>Server failed, key not on that machine</td><td>Logs tab, then the env var</td></tr>
+<tr><td>POST after the env var</td><td>200</td><td>200</td><td>A plan</td><td>Share the URL</td></tr>
+</table>
+<p>Status code says whose fault. Message says what. Try the fix the error points to before pasting it into an LLM. Still stuck: screenshot, context, your LLM helper, then a support ticket.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Rules</h2>
+<ul>
+  <li><b>One function first.</b> Not the UI, not storage. If it does not run from the terminal, nothing above it will.</li>
+  <li><b>Keys live in environment variables.</b> In the terminal on your laptop, in the dashboard on Vercel. Never in the file, never in a screenshot, never hardcoded to make a 500 go away.</li>
+  <li><b>Predict, then run.</b> Write the status code you expect before each call.</li>
+  <li><b>Thin API.</b> JSON in, JSON out. Convert to sheets or files on the user's device, not on the server.</li>
+  <li><b>Mock the LLM if you need to.</b> Build the deterministic path from your golden pair first. Add the model call last.</li>
+  <li><b>LLM help: terminal chores and diagnosis, yes. Writing your function, no.</b> Read every command it runs.</li>
+  <li><b>Public repository.</b> Commit after each step, push when the step works.</li>
+</ul>
+<p class="sig">The key lives on the machine that spends the money.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Saturday</h2>
+<p>Bring the live URL and your Modelling Lab tables. The server you deployed learns to remember: a file that dies, then Supabase, then the whole app end to end. Then the hackathon, where you run this trace again on a fresh problem.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Lecture 7 notes</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard">The lecture on a whiteboard</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">The lecture repository, step by step</a></li>
+  <li><a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Lecture 5 troubleshooting: status codes</a></li>
+  <li><a href="/#L7">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 7: Connect backend to the database</span><a href="/#L7">Curriculum map</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">All Lecture 7 pages</a></div></footer>
+</body>
+</html>
