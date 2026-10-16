@@ -289,3 +289,178 @@ footer a{color:var(--ink2)}
 span.trk{display:none}
 html[data-track="all"] span.trk,html[data-track="a"] span.trk.a,html[data-track="b"] span.trk.b{display:inline}
 a.btn{text-decoration:none}
+
+/* ================= reading pages (body.read): one column, one accent, one thing at a time ================= */
+body.read{--ink3:#6F6F6F;font-size:1.0625rem;line-height:1.65;-webkit-text-size-adjust:100%}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body.read{--ink3:#8E8B84}}
+:root[data-theme="dark"] body.read{--ink3:#8E8B84}
+body.read #prog{display:none}
+body.read .up{animation:none}
+
+/* header: brand in the nav's sans, current section in the centre, contents popover */
+body.read .top .brand{font:500 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink)}
+body.read .top .brand b{color:var(--ink3);font-weight:400;margin:0 4px}
+body.read .top nav{margin-left:0}
+body.read .top .in{gap:10px}
+body.read .cur{position:relative;flex:1;display:flex;justify-content:center;min-width:0}
+body.read .cur summary{list-style:none;cursor:pointer;font:500 13px var(--sans);color:var(--ink2);padding:6px 10px;border-radius:8px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-flex;align-items:center;gap:7px}
+body.read .cur summary::-webkit-details-marker{display:none}
+body.read .cur summary::after{content:"";width:5px;height:5px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);flex:none;opacity:.7}
+body.read .cur summary:hover,body.read .cur[open] summary{color:var(--ink);background:var(--bg2)}
+body.read .cur .pop{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);width:min(380px,calc(100vw - 24px));background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--float);padding:8px;max-height:min(72vh,600px);overflow:auto;z-index:70;animation:popin .15s ease-out;text-align:left}
+@keyframes popin{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%)}}
+body.read .pop a{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:7px;font-size:14px;line-height:1.35;color:var(--ink2);text-decoration:none}
+body.read .pop a:hover{color:var(--ink);background:var(--bg2)}
+body.read .pop a.on{color:var(--ink);font-weight:500;background:var(--bg2)}
+body.read .pop a .n{font:400 12px var(--sans);color:var(--ink3);font-variant-numeric:tabular-nums;min-width:18px;flex:none}
+body.read .pop .ft{border-top:1px solid var(--line);margin-top:6px;padding:8px 10px 2px;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px}
+body.read .pop .ft a,body.read .pop .ft button{display:inline;padding:0;background:none;border:0;font:500 13px var(--sans);color:var(--ink2);text-decoration:none;cursor:pointer}
+body.read .pop .ft a:hover,body.read .pop .ft button:hover{color:var(--ink)}
+@media (max-width:640px){body.read .top .brand span{display:none}body.read .top .brand b{display:none}body.read .top nav a{padding:6px 8px}}
+
+/* layout: a centred column, the sidebar grid gone, a quiet rail at 1200px and up */
+body.read .wrap.grid{display:block;max-width:752px}
+body.read aside.toc{display:none}
+body.read main{max-width:720px;margin:0 auto;padding-bottom:80px}
+body.read footer .wrap{max-width:752px}
+body.read .rail{display:none;position:fixed;top:84px;left:calc(50% - 576px);width:184px;max-height:calc(100vh - 110px);overflow:auto;scrollbar-width:none;opacity:.55;transition:opacity .15s}
+body.read .rail::-webkit-scrollbar{display:none}
+body.read .rail:hover,body.read .rail:focus-within{opacity:1}
+@media (min-width:1200px){body.read .rail{display:block}}
+body.read .rail a{display:block;font-size:13px;line-height:1.35;color:var(--ink2);text-decoration:none;padding:4px 0;text-wrap:pretty}
+body.read .rail a:hover{color:var(--ink)}
+body.read .rail a.on{color:var(--ink);font-weight:500}
+body.read .mtoc{margin:0 0 8px}
+body.read .mtoc summary{font:500 14px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink2);padding:6px 0;border:0;background:none}
+body.read .mtoc .l a .n{font:400 12px var(--sans);color:var(--ink3)}
+
+/* labels: words in sentence case, never uppercase mono */
+body.read .kick{font:500 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink2)}
+
+/* type */
+body.read .hero{padding:40px 0 8px}
+body.read .hero .kick{color:var(--ink2)}
+body.read .hero h1{font:500 clamp(30px,4vw,40px)/1.15 var(--sans);letter-spacing:-.02em;margin:8px 0 12px;text-wrap:balance}
+body.read .hero .dek{font-size:1.125rem;line-height:1.5;color:var(--ink2);max-width:none;margin:0 0 12px;text-wrap:pretty}
+body.read .hero .meta{display:block;font:14px/1.6 var(--sans);color:var(--ink3)}
+body.read .hero .meta span::before{display:none}
+body.read .hero .meta span+span::before{display:inline;content:"· ";width:auto;height:auto;background:none;border-radius:0;margin:0 2px 0 6px;vertical-align:baseline}
+body.read section.s{padding:0;margin:2.5em 0 0}
+body.read section.s>h2{font:500 1.375rem/1.25 var(--sans);letter-spacing:-.01em;margin:0 0 .6em;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;text-wrap:balance}
+body.read section.s>h2 .n{display:none}
+body.read section.s h3,body.read main h3{font:600 1.0625rem/1.4 var(--sans);letter-spacing:0;margin:1.5em 0 .4em}
+body.read section.s p{margin:0 0 1em;max-width:none;text-wrap:pretty;overflow-wrap:break-word}
+body.read section.s ul,body.read section.s ol{padding-left:22px;margin:0 0 1em;max-width:none}
+body.read section.s li{margin:0 0 6px;text-wrap:pretty}
+body.read section.s li::marker{color:var(--ink3)}
+body.read .lead{font-size:inherit;color:inherit}
+body.read b,body.read strong{font-weight:600}
+body.read code,body.read kbd{font-size:.9em;color:var(--ink);background:var(--bg2);border:0;border-radius:2px;padding:.05em .3em}
+body.read a.aarav{color:var(--ink);text-decoration:underline dotted;text-decoration-color:var(--ink3);text-decoration-thickness:1px}
+body.read a.aarav:hover{color:var(--coral);text-decoration-color:currentColor}
+body.read .muted{color:var(--ink3)}
+body.read .sig{border:0;padding:0;margin:2.5em 0 0;font-size:1.125rem;font-weight:500;text-wrap:balance}
+body.read .sig small{font:15px/1.5 var(--sans);color:var(--ink2);margin-top:8px}
+body.read .pull{font:500 1.375rem/1.35 var(--sans);letter-spacing:-.01em;text-align:center;margin:2em auto;max-width:34ch;text-wrap:balance}
+
+/* tables: sentence-case headers, no grey band, tabular figures */
+body.read .tw{border-color:var(--line);background:transparent;margin:0 0 1.25em}
+body.read table{font-size:15px;font-variant-numeric:tabular-nums}
+body.read th{font:500 13px/1.4 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink2);background:transparent;padding:10px 14px}
+body.read td{padding:10px 14px}
+body.read td:first-child{font-weight:500}
+body.read span.sc{font:600 13px var(--mono);background:var(--bg2);color:var(--ink);padding:1px 6px;outline:0}
+body.read span.sc.s2{color:var(--hum-ink);background:var(--bg2)}
+body.read span.sc.s4{color:var(--coral-ink);background:var(--bg2)}
+body.read span.sc.s5{color:var(--ink2)}
+
+/* boxes: six become two. The framed note, figures, tables and forms. Nothing else draws a border. */
+body.read .call{border:0;background:var(--bg2);border-radius:10px;padding:20px;margin:2em 0}
+body.read .call .kick{color:var(--ink2);margin:0 0 6px}
+body.read .call p{font-size:inherit;line-height:inherit;max-width:none}
+body.read .call .sb{font-size:15px}
+body.read .hold{border:0;padding:0;margin:0 0 1em}
+body.read .hold .kick{display:inline;font-weight:600;color:var(--ink)}
+body.read .hold .kick::after{content:". "}
+body.read .hold p{display:inline}
+body.read .think{border:0;background:var(--bg2);border-radius:10px;padding:16px 18px}
+body.read .think .kick{color:var(--ink2)}
+body.read .wbx{border:0;background:transparent;padding:0;margin:1.5em 0 1.5em}
+body.read .wbx>.kick,body.read .wbx>h3{display:none}
+body.read .wbx .wb{min-width:560px}
+body.read .wbx>p.cap,body.read .wbx>figcaption{font-size:15px;line-height:1.55;color:var(--ink2);margin:10px 0 0;max-width:none;text-wrap:pretty}
+body.read .keys{display:none}
+body.read .bigq{border:0;background:transparent;padding:0;margin:2em 0}
+body.read .bigq .kick{display:none}
+body.read .bigq .qq{font:500 1.375rem/1.35 var(--sans);color:var(--ink);text-align:center;margin:0 auto 1em;max-width:34ch}
+body.read .q,body.read .part{display:inline;font:inherit;font-style:italic;letter-spacing:0;background:none;color:inherit;padding:0;border-radius:0;white-space:normal;vertical-align:baseline}
+body.read .q::before,body.read .part::before{display:none}
+body.read .cards{display:block;margin:0 0 1em}
+body.read .card{border:0;background:transparent;padding:0;margin:0 0 .6em}
+body.read .card h4{font:inherit;font-weight:600;display:inline}
+body.read .card p{font-size:inherit;color:inherit;display:inline}
+body.read .card .kick{display:inline;margin:0 6px 0 0}
+body.read .two{display:block}
+body.read .ipo{gap:6px 10px;margin:0 0 1.25em}
+body.read .ipo .bx{border:0;background:var(--bg2);border-radius:8px;padding:12px 14px}
+body.read .ipo .bx .kick{color:var(--ink3);font-size:12px;margin-bottom:2px}
+body.read .ipo .bx b{font-weight:600}
+body.read .env{background:transparent}
+body.read .env .band>b{letter-spacing:.04em}
+body.read .steps li::before{background:transparent;color:var(--ink3);font:500 15px var(--sans);top:0}
+body.read .steps li::after{display:none}
+body.read .steps li{padding:0 0 .8em 32px}
+body.read details.acc{border:0;background:transparent;margin:0 0 .4em}
+body.read details.acc summary{padding:6px 0;font-size:inherit;font-weight:500;color:var(--ink)}
+body.read details.acc .b{padding:0 0 10px;border:0;font-size:inherit;color:inherit}
+body.read .seg{background:transparent}
+body.read .osrow{margin:0 0 .8em}
+body.read .need{gap:6px 16px;margin:0 0 1em}
+body.read .need span{font:14px var(--sans);background:none;padding:0;color:var(--ink3)}
+body.read .need span.ok{color:var(--ink)}
+
+/* glossary: a definition list inside a closed <details> */
+body.read details.words{margin:1.5em 0 0}
+body.read details.words summary{cursor:pointer;list-style:none;font:500 1.0625rem var(--sans);color:var(--ink);padding:6px 0;display:inline-flex;align-items:center;gap:8px}
+body.read details.words summary::-webkit-details-marker{display:none}
+body.read details.words summary::after{content:"";width:6px;height:6px;border-right:1.5px solid var(--ink3);border-bottom:1.5px solid var(--ink3);transform:rotate(-45deg);transition:transform .15s}
+body.read details.words[open] summary::after{transform:rotate(45deg)}
+body.read details.words dl{margin:6px 0 0}
+body.read details.words dl>div{padding:9px 0;border-bottom:1px solid var(--line);font-size:15.5px;line-height:1.55}
+body.read details.words dl>div:last-child{border-bottom:0}
+body.read details.words dt{display:inline;font-weight:600}
+body.read details.words dt::after{content:" "}
+body.read details.words dd{display:inline;margin:0;color:var(--ink2)}
+body.read .gl{display:block;margin:0 0 1em}
+body.read .gl .w{border:0;background:transparent;padding:9px 0;border-bottom:1px solid var(--line);border-radius:0}
+body.read .gl .w b{display:inline;font:600 15.5px var(--sans);margin:0 4px 0 0}
+body.read .gl .w span{font-size:15.5px}
+
+/* checklist: the card stays (it is a form); the hover highlight and green fill go */
+body.read .ck{margin:0 0 1em;background:var(--card)}
+body.read .ck li{transition:none;padding:12px 16px}
+body.read .ck li:hover,body.read .ck li.done{background:transparent}
+body.read .ck li.done .t{text-decoration:none;color:var(--ink2)}
+body.read .ck li.done .h{color:var(--ink3)}
+body.read .ck .t{font-size:1rem}
+body.read .ck .h{font-size:14px}
+body.read .ck .h .kick{display:inline;font:inherit;color:var(--ink3);margin-right:4px}
+body.read .ck .h .kick::after{content:". "}
+body.read .ck input::after{transition:transform .12s var(--e-out)}
+body.read .ck input:checked{background:var(--ink);border-color:var(--ink)}
+body.read .stg,body.read .scorebox,body.read .trkpick{display:none}
+body.read .ready{font:400 14px var(--sans);color:var(--ink3);letter-spacing:0;font-variant-numeric:tabular-nums}
+body.read .code .ln{transition:none}
+body.read .code .ln:hover{background:transparent}
+body.read .code .ln.hl{background:rgba(255,255,255,.05)}
+body.read .code .ln.tag:hover{background:color-mix(in srgb,var(--l,#fff) 14%,transparent)}
+body.read .btn.ghost{color:var(--ink2)}
+
+/* go on: the links that used to live in the sidebar and the card grids */
+body.read .goon{margin:3em 0 0}
+body.read .goon h2{font:500 1.0625rem/1.4 var(--sans);letter-spacing:0;margin:0 0 .5em;color:var(--ink2)}
+body.read .goon ul{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+body.read .goon li{margin:0}
+body.read .goon a{font-size:1rem}
+body.read .lab .lh,body.read .lab .sub label{font:500 13px var(--sans);letter-spacing:0;text-transform:none;color:var(--ink2)}
+body.read .lab .sub label .pk{font:12px/1.55 var(--mono)}

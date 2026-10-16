@@ -13,10 +13,9 @@
 <link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-board.css">
 <script src="/c8/docs.js"></script>
 </head>
-<body data-page="l06-notes">
-<div id="prog" aria-hidden="true"></div>
+<body data-page="l06-notes" class="read">
 <header class="top"><div class="in">
-  <a class="brand" href="/#L6">100x<b>·</b>C8 Module 2</a>
+  <a class="brand" href="/#L6">100x<b>·</b><span>C8 Module 2</span></a>
   <nav aria-label="Lecture 6 pages"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Overview</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Notes</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
@@ -56,10 +55,9 @@
     </symbol>
   </defs>
 </svg>
-<div class="wrap grid">
-  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/whiteboard">The lecture on a whiteboard</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#hld">Draw your HLD</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">The Modelling Lab</a><br><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set</a></div></div></aside>
+<div class="wrap">
   <main>
-<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
   <p class="kick">Lecture notes · Lecture 6</p>
   <h1>It can think. It cannot remember.</h1>
@@ -67,14 +65,10 @@
   <div class="meta"><span>Sat 10 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span></div>
 </div>
 
-<div class="call"><p class="kick">The one thing to keep</p><p>Storage is just a way to remember. Keep it on your server, where the user cannot wipe it and nobody else can read it. Store only what your app needs to answer its questions next time. The <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a> turns "what is worth storing?" into three questions, and then into seven levels you play.</p></div>
-
 <section class="s" id="s01"><h2><span class="n">01</span>The Whiteboard So Far</h2>
 <p>Three weeks, one diagram. Aarav types his workflow into the UI on <b>his machine</b>: the first interface. The UI sends it to <b>your server</b>, where the diagnose function lives: the second interface, an API. Your server sends it on to the <b>LLM on Groq's machine</b>, which you do not own. The plan comes back the same way.</p>
 <p>That is two API calls, and each needs the same four things: <b>address, action, key, package</b>. Learn the four, not the tool. The same four connect email (Resend: <code>POST /emails</code> with from, to and subject) or data from Instagram and Google Maps (Apify). You never built an LLM. You called a machine that has one.</p>
 <figure class="wbx">
-<p class="kick">Week 3 · this week</p>
-<h3>The missing box: storage</h3>
 <div class="sc"><svg class="wb" viewBox="0 0 760 362" role="img" aria-label="The whole system so far. The user and the client, then your server. The server talks to two boxes: GroqCloud, which thinks, and a file called storage, which remembers. Brackets underneath: UI in week 1, API in week 2, storage this week.">
   <g class="ln" filter="url(#wob)">
     <use href="#person" x="8" y="120"/>
@@ -102,7 +96,7 @@
     <text x="361" y="330" class="xs">week 2</text>
   </g>
 </svg></div>
-<p class="cap">Your server gets one more box to talk to. GroqCloud thinks. Storage remembers. For now, picture it as a file.</p>
+<figcaption class="cap">The missing box: storage. Your server gets one more box to talk to. GroqCloud thinks. Storage remembers. For now, picture it as a file.</figcaption>
 </figure>
 <p>See it drawn, scene by scene: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/whiteboard">the lecture on a whiteboard</a>.</p>
 </section>
@@ -120,7 +114,7 @@
 <tr><td>A 421-million-parameter model</td><td>About 2.5 GB</td><td>Even the user's machine</td></tr>
 </tbody></table></div>
 <p>Anything you ship to the user's machine has to fit that machine. This curriculum site has no server at all, because static pages fit everywhere. Size is one deciding factor, and the class added more: network speed (YouTube drops to 360p on a slow connection) and how often something is used (WhatsApp keeps gigabytes of chats on your phone).</p>
-<div class="hold"><p class="kick">Open thread</p><p>Write down what you use to decide where a piece lives. We close this thread at the end of the deterministic module, when the same decision is tested with 1 user and with 10.</p></div>
+<p><b>Open thread.</b> Write down what you use to decide where a piece lives. We close this thread at the end of the deterministic module, when the same decision is tested with 1 user and with 10.</p>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Aarav's App Forgets</h2>
@@ -141,8 +135,6 @@
 <section class="s" id="s07"><h2><span class="n">07</span>The High-Level Design</h2>
 <p>The whiteboard has a name: the <b>high-level design</b> (HLD). It answers three things for every piece of an app: what it is, whose machine it lives on, and how it talks to the others. Here is Aarav's app, the way we drew it in class, with storage on the server.</p>
 <figure class="wbx">
-<p class="kick">High-level design · Aarav's app</p>
-<h3>Every box, where it lives, and the calls between them</h3>
 <div class="sc"><svg class="wb" viewBox="0 0 1040 475" role="img" aria-label="High-level design of Aarav's app in three zones. Aarav's machine: his laptop (1), Chrome (2) and the UI (3), where he types his workflow in and reads the plan out. Your server (4), with the endpoint POST /diagnose (5) on it, the Groq key, and storage (7): a file, memory.txt, with save and fetch arrows. Groq's machine: a GPU, the endpoint POST /chat/completions (6) and the model gpt-oss-120b, which is 14 files, 65 GB. An API arrow pair joins the UI and your server, and another joins your server and Groq. Underneath: anyone can read and the user can wipe what is on his machine; only you can reach your server; Groq's machine is rented because the model is too big to host.">
   <g class="ln" filter="url(#wob)">
     <rect class="dash ink" x="112" y="52" width="258" height="350" rx="18"/>
@@ -220,18 +212,15 @@
     <text x="878" y="436" class="xs l">rented, too big to host</text>
   </g>
 </svg></div>
-<div class="keys">
-  <div><b>Numbers</b>One per piece, so you can say "5 calls 6".</div>
-  <div><b>Dashed zones</b>Whose machine each piece runs on.</div>
-  <div><b>Arrows</b>API calls: address, action, key, package.</div>
-</div>
+<figcaption class="cap">Aarav's high-level design: every box, where it lives, and the calls between them. Numbers name the pieces, so you can say "5 calls 6". Dashed zones show whose machine. Arrows are API calls: address, action, key, package.</figcaption>
 </figure>
 <p>Read it as one request. Aarav types his workflow into the UI (input). An API call takes it to <code>POST /diagnose</code> on your server. The server adds the key and calls the LLM. The plan comes back the same way (output). Storage (7) is new this week: for now, a file.</p>
 <p>Now draw one for your own app: <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set#hld">your HLD</a> in the practice set.</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>The Question Mark: What Is Worth Storing?</h2>
-<div class="bigq"><p class="kick">The one question for box 7</p><p class="qq">What is worth storing?</p><p>Not "what can be stored": everything that passes through your server can. "Worth" makes you weigh it. Store too much and you pay for it, or get sued for it. Store too little and the app forgets.</p></div>
+<p class="pull">What is worth storing?</p>
+<p>That is the one question for box 7. Not "what can be stored": everything that passes through your server can. "Worth" makes you weigh it. Store too much and you pay for it, or get sued for it. Store too little and the app forgets.</p>
 <p>The answer from class: <b>the least you need to carry on next time</b>. To find it, write the questions your app must answer tomorrow, such as "Aarav's last plan" or "every plan this workflow ever got". Whatever those questions need is worth storing. Nothing else is.</p>
 </section>
 
@@ -281,26 +270,37 @@
 
 <section class="s" id="s13"><h2><span class="n">13</span>Next: The Storage Box Gets Real</h2>
 <p>Lecture 7, Fri 16 Oct. These tables go into Supabase, and a row survives a refresh.</p>
-<h3>Words</h3>
-<div class="gl">
-  <div class="w"><b>Client side</b><span>The user's machine. The user can wipe anything stored there, and anyone can read it.</span></div>
-  <div class="w"><b>Server side</b><span>A machine you control. Keys and stored data live here.</span></div>
-  <div class="w"><b>Storage</b><span>Anything that keeps things and gives them back: a file, a sheet, a database.</span></div>
-  <div class="w"><b>Timestamp</b><span>The date and time saved with each entry, so you know when it was said.</span></div>
-  <div class="w"><b>High-level design</b><span>The whiteboard: every box, where it lives, and the calls between them.</span></div>
-  <div class="w"><b>Domain model</b><span>The smallest description of your user's world that still answers the product's questions.</span></div>
-  <div class="w"><b>Block</b><span>A thing drawn on the board in the lab. It becomes a table.</span></div>
-  <div class="w"><b>Thing (entity)</b><span>Created, read, updated and deleted on its own, and there can be many. Gets a table.</span></div>
-  <div class="w"><b>Fact (attribute)</b><span>What you need to recreate one of the thing. Gets a column.</span></div>
-  <div class="w"><b>Key (primary key)</b><span>The row's address, usually id. Never repeats.</span></div>
-  <div class="w"><b>Pointer (foreign key)</b><span>A column on the many side holding another row's id.</span></div>
-  <div class="w"><b>Shape</b><span>One-to-many, many-to-many or one-to-one. Found by asking "one A, many B?" and "one B, many A?".</span></div>
-  <div class="w"><b>Many side</b><span>The side with only one to point at. It holds the pointer.</span></div>
-  <div class="w"><b>Third table (join table)</b><span>One row per pairing when both sides are many.</span></div>
-  <div class="w"><b>File storage</b><span>Where bytes live. The row keeps the link.</span></div>
-</div>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <div><dt>Client side</dt><dd>The user's machine. The user can wipe anything stored there, and anyone can read it.</dd></div>
+  <div><dt>Server side</dt><dd>A machine you control. Keys and stored data live here.</dd></div>
+  <div><dt>Storage</dt><dd>Anything that keeps things and gives them back: a file, a sheet, a database.</dd></div>
+  <div><dt>Timestamp</dt><dd>The date and time saved with each entry, so you know when it was said.</dd></div>
+  <div><dt>High-level design</dt><dd>The whiteboard: every box, where it lives, and the calls between them.</dd></div>
+  <div><dt>Domain model</dt><dd>The smallest description of your user's world that still answers the product's questions.</dd></div>
+  <div><dt>Block</dt><dd>A thing drawn on the board in the lab. It becomes a table.</dd></div>
+  <div><dt>Thing (entity)</dt><dd>Created, read, updated and deleted on its own, and there can be many. Gets a table.</dd></div>
+  <div><dt>Fact (attribute)</dt><dd>What you need to recreate one of the thing. Gets a column.</dd></div>
+  <div><dt>Key (primary key)</dt><dd>The row's address, usually id. Never repeats.</dd></div>
+  <div><dt>Pointer (foreign key)</dt><dd>A column on the many side holding another row's id.</dd></div>
+  <div><dt>Shape</dt><dd>One-to-many, many-to-many or one-to-one. Found by asking "one A, many B?" and "one B, many A?".</dd></div>
+  <div><dt>Many side</dt><dd>The side with only one to point at. It holds the pointer.</dd></div>
+  <div><dt>Third table (join table)</dt><dd>One row per pairing when both sides are many.</dd></div>
+  <div><dt>File storage</dt><dd>Where bytes live. The row keeps the link.</dd></div>
+</dl>
+</details>
 <p class="sig">Decide what is worth storing before you pick where to store it.<small>Draw your HLD, do the <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">lab</a>, then <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">submit the practice set</a> before Thu 15 Oct, 8:30 pm IST.</small></p>
 </section>
+
+<div class="call"><p class="kick">Keep this</p><p>Storage is just a way to remember. Keep it on your server, where the user cannot wipe it and nobody else can read it. Store only what your app needs to answer its questions next time. The <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">Modelling Lab</a> turns "what is worth storing?" into three questions, and then into seven levels you play.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/practice-set">Practice set: draw your HLD</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">The Modelling Lab</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/whiteboard">The lecture on a whiteboard</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/troubleshooting">Troubleshooting</a></li>
+  <li><a href="/#L6">Curriculum map</a></li>
+</ul></nav>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Databases and domain modelling</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>

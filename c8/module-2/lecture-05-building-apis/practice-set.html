@@ -13,54 +13,43 @@
 <link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
 <script src="/c8/docs.js"></script>
 </head>
-<body data-page="l05-practice-set">
-<div id="prog" aria-hidden="true"></div>
+<body data-page="l05-practice-set" class="read">
 <header class="top"><div class="in">
-  <a class="brand" href="/#L5">100x<b>·</b>C8 Module 2</a>
+  <a class="brand" href="/#L5">100x<b>·</b><span>C8 Module 2</span></a>
   <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Overview</a><a href="/c8/module-2/lecture-05-building-apis/notes">Notes</a><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
-<div class="wrap grid">
-  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="#s03">Open the raw request</a><br><a href="#s04">Prediction log</a><br><a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a><br><a href="/#L5">Checklist on the map</a></div></div></aside>
+<div class="wrap">
   <main>
-<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
   <p class="kick">Practice set · Follows Lecture 5 · Code track</p>
   <h1>Building APIs</h1>
   <p class="dek">One chat app. One raw POST request. Proof against your golden pair.</p>
-  <div class="meta"><span>Lecture 5 · Building APIs and backend · Fri 9 Oct 2026</span><span>Post in the Discord code channel</span><span>Cohort 8 · Module 2</span></div>
+  <div class="meta"><span>Follows Lecture 5, Fri 9 Oct 2026.</span><span>Post in the Discord code channel.</span></div>
 </div>
 
-<div class="call"><p class="kick">The assignment in one sentence</p><p>Connect your Gradio app with a raw <code>requests.post</code> to an LLM, carrying your own prompt and your user's real input, and prove the reply is useful by checking it against your golden pair.</p></div>
+<div class="call"><p class="kick">The brief</p><p>Connect your Gradio app with a raw <code>requests.post</code> to an LLM, carrying your own prompt and your user's real input, and prove the reply is useful by checking it against your golden pair.</p></div>
 
-<div class="scorebox">
-  <div class="score" data-for="steps"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/5</b></div><div class="l"><strong>The five steps</strong>Section 02</div></div>
-  <div class="score" id="logScore"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/4</b></div><div class="l"><strong>Prediction log</strong>Three requests, two failures</div></div>
-  <div class="score" data-for="sub"><div class="ring"><svg viewBox="0 0 46 46"><circle class="bg" cx="23" cy="23" r="20"/><circle class="fg" cx="23" cy="23" r="20"/></svg><b>0/6</b></div><div class="l"><strong>Deliverables</strong>Section 07</div></div>
+<div class="osrow"><span class="kick">Your track</span><div class="seg" data-seg="track" role="group" aria-label="Track"><button type="button" data-v="a">Track A · my observation</button><button type="button" data-v="b">Track B · Aarav</button><button type="button" data-v="all">Both</button></div></div>
+
+<section class="s" id="s07"><h2><span class="n">01</span>What to Submit <span class="ready" data-ready="sub">0 of 6 ready</span></h2>
+<div data-stage="sub">
+<ul class="ck">
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">App screenshot</span><span class="h">The Gradio chat running locally, with your user's real input and the model's reply visible. Key not visible.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">Code file</span><span class="h">One Python file (repo link or paste) using <code>requests.post</code>, with the address, action, key and package. No SDK import.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">Raw request screenshot</span><span class="h"><a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a> showing POST, the full endpoint, and a 200 response, key blurred.</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">Prediction log</span><span class="h">At least three requests (two deliberate failures), each with predicted status code, actual status code, and the error message for failures. <a href="#s04">Copy it from section 04.</a></span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">Verification note</span><span class="h">Golden output beside actual output, a one-line verdict, the one prompt change you made, and the reply after the change. <a href="#s05">Copy it from section 05.</a></span></label></li>
+<li><input type="checkbox" id="d6"><label for="d6"><span class="t">The 201 question</span><span class="h">Two sentences: why did the chat completions call return 200 and not 201?</span></label></li>
+</ul>
 </div>
-
-<div class="trkpick">
-  <p class="kick">Which track are you on?</p>
-    <div class="opts">
-    <button type="button" data-v="a"><b>Track A · my own observation</b><small>Assignment 1 done. Preferred.</small></button>
-    <button type="button" data-v="b"><b>Track B · Aarav's workflow diagnoser</b><small>Assignment 1 not finished.</small></button>
-  </div>
-  <p style="margin:10px 0 0!important"><button type="button" class="reset" data-v="all">Show both tracks</button></p>
-</div>
-
-<section class="s" id="s01"><h2><span class="n">01</span>Why This Exercise Exists</h2>
-<p>A passenger enjoys the comfort of a car. A driver understands its controls and knows what to do when things go wrong.</p>
-<p><strong>Comfort without understanding comes at the cost of control.</strong></p>
-<p>In software, SDKs, libraries, no-code/vibe-coding tools are like comfortable passenger seats. They make the journey easier by hiding the machinery underneath.</p>
-<p>But hidden machinery doesn't disappear.</p>
-<p>When something breaks, what you understand determines what you can fix.</p>
-<p><strong>To drive software machines, understand its controls: APIs, endpoints, authentication, requests, and responses.</strong></p>
-<p><strong>Use abstractions for comfort. Build understanding for control.</strong></p>
-<p>A 200 proves the call worked. Only your verifier proves the reply helps.</p>
+<h3>The 201 question</h3>
+<div class="ver"><label>Why did the chat completions call return 200 and not 201?<small>Two sentences, in your own words. A starting point: what a 201 meant on Aarav's service in <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Lecture 4</a>, and whether Groq kept anything after it replied.</small><textarea data-v="q201"></textarea></label></div>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>The Five Steps</h2>
-<div class="trk b"><div class="call prob"><p class="kick">Track B · Aarav as the user</p><p>Input: his weekly workflow. Output: a plan to automate part of it. Starting prompt:</p><p style="margin-top:8px"><em>"Here is the workflow of an analyst working at an IT company in India. Diagnose and generate a plan to automate this work, or a part of the work."</em></p><span class="sb">Target: the plan drifts into jargon Aarav cannot use.</span></div></div>
+<section class="s" id="s02"><h2><span class="n">02</span>The Five Steps <span class="ready" data-ready="steps">0 of 5 ready</span></h2>
+<div class="trk b"><p><b>Track B, Aarav as the user.</b> Input: his weekly workflow. Output: a plan to automate part of it. Starting prompt: <em>"Here is the workflow of an analyst working at an IT company in India. Diagnose and generate a plan to automate this work, or a part of the work."</em> Target: the plan drifts into jargon Aarav cannot use.</p></div>
 <div data-stage="steps">
 <ul class="ck">
 <li><input type="checkbox" id="p1"><label for="p1"><span class="t">1. Start from the echo</span><span class="h">Run your Lecture 3 Gradio chat. Confirm it returns your input unchanged: no process yet.</span></label></li>
@@ -69,7 +58,6 @@
 <li><input type="checkbox" id="p4"><label for="p4"><span class="t">4. Rip off the cushion</span><span class="h">In Python, replace the echo with <code>requests.post</code>, using the same address, action, key and package. Return only the content field. No Groq or OpenAI SDK in the final file.</span></label></li>
 <li><input type="checkbox" id="p5"><label for="p5"><span class="t">5. Verify</span><span class="h"><span class="trk a">Run your golden input through the app. Compare the reply to your golden output, write a one-line verdict, change the prompt once based on what the comparison showed, and run it again.</span><span class="trk b">Find the jargon in the plan. Fix it with a prompt (no jargon, one step at a time, the minimum action needed now) and show the before and after.</span> <a href="#s05">Use the verification note.</a></span></label></li>
 </ul>
-<div class="stg"><span class="kick">Steps done</span><div class="bar"><i></i></div><span class="num">0 / 5</span></div>
 </div>
 
 <h3>Step 1 · Where you start</h3>
@@ -127,7 +115,7 @@
 <p><b>Got an error?</b> Search it in <a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a>: the part it points to and the fix.</p>
 </section>
 
-<section class="s" id="s04"><h2><span class="n">04</span>Prediction Log</h2>
+<section class="s" id="s04"><h2><span class="n">04</span>Prediction Log <span class="ready" id="logReady">0 of 4 ready</span></h2>
 <p>Three requests minimum, two of them deliberate failures. Sends from section 03 land here; add the rest by hand.</p>
 <div class="need" id="need"><span data-n="three">Three requests</span><span data-n="model">A wrong model name</span><span data-n="key">A missing or wrong key</span><span data-n="pred">A prediction on every row</span></div>
 <div class="tw plog"><table>
@@ -150,36 +138,22 @@
   </div>
   <label>One-line verdict<small>Does the actual output do what the golden output does, for this user?</small><input data-v="verdict" type="text"></label>
   <label>The one prompt change<small>What you changed, and which part of the comparison made you change it.</small><input data-v="change" type="text"></label>
-  <div class="btnrow"><button type="button" class="btn" id="copyVer">Copy the verification note</button><span class="saved" id="verSaved">Saves on this device as you type.</span></div>
+  <div class="btnrow"><button type="button" class="btn ghost" id="copyVer">Copy the verification note</button><span class="saved" id="verSaved">Saves on this device as you type.</span></div>
 </div>
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>Rules of the Build</h2>
-<details class="acc" open><summary>Predict before you run.</summary><div class="b"><p>Every request in the prediction log gets its expected status code written down first. Include at least two deliberate failures: a wrong model name and a missing or wrong key. Record what each actually returned.</p></div></details>
-<details class="acc"><summary>Read the error before you ask.</summary><div class="b"><p>Status code says whose fault; the message says what. Try the fix the error points to before pasting anything into an LLM.</p></div></details>
-<details class="acc"><summary>Minimum path.</summary><div class="b"><p>No extra parameters, no chat history handling, no changed interface, no renamed functions. The diff from the echo app should be the process and nothing else.</p></div></details>
-<details class="acc"><summary>Keys never in code or screenshots.</summary><div class="b"><p>Set it in the terminal, never in the file. Blur the key in every image you post. If a key leaks, revoke it and create a new one: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</p></div></details>
-<details class="acc"><summary>Stay inside the free tier.</summary><div class="b"><p>Groq allows 30 requests per minute. You will not need more.</p></div></details>
-<details class="acc"><summary>LLM help: hints and debugging yes; generating the solution no.</summary><div class="b"><p>Think for the first minute on your own. Pasting this brief in and copying the code out defeats the exercise; the code is short enough that writing it is the learning.</p></div></details>
-</section>
-
-<section class="s" id="s07"><h2><span class="n">07</span>What to Submit</h2>
-<div data-stage="sub">
-<ul class="ck">
-<li><input type="checkbox" id="d1"><label for="d1"><span class="t">App screenshot</span><span class="h">The Gradio chat running locally, with your user's real input and the model's reply visible. Key not visible.</span></label></li>
-<li><input type="checkbox" id="d2"><label for="d2"><span class="t">Code file</span><span class="h">One Python file (repo link or paste) using <code>requests.post</code>, with the address, action, key and package. No SDK import.</span></label></li>
-<li><input type="checkbox" id="d3"><label for="d3"><span class="t">Raw request screenshot</span><span class="h"><a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a> showing POST, the full endpoint, and a 200 response, key blurred.</span></label></li>
-<li><input type="checkbox" id="d4"><label for="d4"><span class="t">Prediction log</span><span class="h">At least three requests (two deliberate failures), each with predicted status code, actual status code, and the error message for failures. <a href="#s04">Copy it from section 04.</a></span></label></li>
-<li><input type="checkbox" id="d5"><label for="d5"><span class="t">Verification note</span><span class="h">Golden output beside actual output, a one-line verdict, the one prompt change you made, and the reply after the change. <a href="#s05">Copy it from section 05.</a></span></label></li>
-<li><input type="checkbox" id="d6"><label for="d6"><span class="t">The 201 question</span><span class="h">Two sentences: why did the chat completions call return 200 and not 201?</span></label></li>
+<ul>
+  <li><b>Predict before you run.</b> Every request in the prediction log gets its expected status code written down first. Include at least two deliberate failures: a wrong model name and a missing or wrong key. Record what each actually returned.</li>
+  <li><b>Read the error before you ask.</b> Status code says whose fault; the message says what. Try the fix the error points to before pasting anything into an LLM.</li>
+  <li><b>Minimum path.</b> No extra parameters, no chat history handling, no changed interface, no renamed functions. The diff from the echo app should be the process and nothing else.</li>
+  <li><b>Keys never in code or screenshots.</b> Set it in the terminal, never in the file. Blur the key in every image you post. If a key leaks, revoke it and create a new one: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Keys</a>.</li>
+  <li><b>Stay inside the free tier.</b> Groq allows 30 requests per minute. You will not need more.</li>
+  <li><b>LLM help: hints and debugging yes; generating the solution no.</b> Think for the first minute on your own. Pasting this brief in and copying the code out defeats the exercise; the code is short enough that writing it is the learning.</li>
 </ul>
-<div class="stg"><span class="kick">Deliverables ready</span><div class="bar"><i></i></div><span class="num">0 / 6</span><button class="reset" type="button">Reset ticks</button></div>
-</div>
-<h3>The 201 question</h3>
-<div class="ver"><label>Why did the chat completions call return 200 and not 201?<small>Two sentences, in your own words. A starting point: what a 201 meant on Aarav's service in <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Lecture 4</a>, and whether Groq kept anything after it replied.</small><textarea data-v="q201"></textarea></label></div>
 </section>
 
-<section class="s" id="s08"><h2><span class="n">08</span>Stretch: Any Machine, Four Lines</h2>
+<section class="s" id="s08"><h2><span class="n">07</span>Stretch: Any Machine, Four Lines</h2>
 <ul>
   <li>Pick one free API from the <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener">public-apis list</a> (<a href="https://mediastack.com" target="_blank" rel="noopener">MediaStack</a> is a fine start). Answer the four questions for it in writing before writing any code.</li>
   <li>Call it with <code>requests</code> and print one field from the JSON response.</li>
@@ -195,13 +169,31 @@
 </div>
 </section>
 
+<section class="s" id="s01"><h2><span class="n">08</span>Why This Exercise Exists</h2>
+<p>A passenger enjoys the comfort of a car. A driver understands its controls and knows what to do when things go wrong.</p>
+<p><strong>Comfort without understanding comes at the cost of control.</strong></p>
+<p>In software, SDKs, libraries, no-code/vibe-coding tools are like comfortable passenger seats. They make the journey easier by hiding the machinery underneath.</p>
+<p>But hidden machinery doesn't disappear.</p>
+<p>When something breaks, what you understand determines what you can fix.</p>
+<p><strong>To drive software machines, understand its controls: APIs, endpoints, authentication, requests, and responses.</strong></p>
+<p><strong>Use abstractions for comfort. Build understanding for control.</strong></p>
+<p>A 200 proves the call worked. Only your verifier proves the reply helps.</p>
+</section>
+
 <section class="s" id="s09"><h2><span class="n">09</span>Where to Post and How to Get Unblocked</h2>
 <p>Post on the C8 Discord code channel; earliest posts are reviewed first. Questions on the channel, not DMs (replies Mon and Tue). Still stuck: next week's office hour.</p>
 <p><b>Next:</b> building your own API, and how much protection it actually needs.</p>
-<div class="hold"><p class="kick">Hold this</p><p>A 200 means the machine understood you. It does not mean you helped anyone. Four lines get you to any machine on the internet; your golden pair tells you whether the trip was worth it for a human.</p></div>
-<p class="sig">Four lines to any machine.<small>Companion pages: <a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a> · <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 Groq step</a> · <a href="/c8/module-2/lecture-05-building-apis/troubleshooting">troubleshooting</a> · <a href="/#L5">checklist on the map</a></small></p>
+<p><b>Hold this.</b> A 200 means the machine understood you. It does not mean you helped anyone. Four lines get you to any machine on the internet; your golden pair tells you whether the trip was worth it for a human.</p>
+<p class="sig">Four lines to any machine.</p>
 </section>
 
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-05-building-apis/notes">Lecture 5 notes</a></li>
+  <li><a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a></li>
+  <li><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s8">Lecture 4 Groq step in the Request Builder</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Next: Lecture 6</a></li>
+  <li><a href="/#L5">Curriculum map</a></li>
+</ul></nav>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 5: Building APIs and backend</span><a href="/#L5">Curriculum map</a><a href="/c8/module-2/lecture-05-building-apis/">All Lecture 5 pages</a></div></footer>
@@ -212,9 +204,6 @@ document.addEventListener('DOMContentLoaded',function(){
   var store=window.c8store, URL_='https://api.groq.com/openai/v1/chat/completions';
   var esc=function(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')};
   var ink=document.documentElement.getAttribute('data-theme')==='dark'||(!document.documentElement.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme:dark)').matches)?'#EDEBE5':'#1B1B1B';
-
-  /* "show both tracks" */
-  $('.trkpick .reset').addEventListener('click',function(){document.documentElement.setAttribute('data-track','all');store.set('c8.track','all');$$('.trkpick button[data-v]:not(.reset)').forEach(function(b){b.setAttribute('aria-pressed','false')})});
 
   /* step 1 and step 4 code */
   $('#echo').innerHTML=c8code({title:'app.py · the echo from Lecture 3',code:'import gradio as gr\ndef respond(message, history):\n    return "You typed: " + message\ngr.ChatInterface(fn=respond).launch()',tags:{1:['Input',ink],2:['Process → Output · this line is what changes','#F2603C'],3:['Interface · leave it alone','#8A8A8A']}});
@@ -315,8 +304,8 @@ document.addEventListener('DOMContentLoaded',function(){
         allPred=log.length>0 && log.every(function(r){ return r.pred; });
     var need={three:n>=3, model:hasModel, key:hasKey, pred:allPred};
     Object.keys(need).forEach(function(k){ $('#need [data-n="'+k+'"]').classList.toggle('ok',need[k]); });
-    var done=Object.keys(need).filter(function(k){ return need[k]; }).length, sc=$('#logScore');
-    $('.fg',sc).style.strokeDashoffset=126-126*(done/4); $('.ring b',sc).textContent=done+'/4';
+    var done=Object.keys(need).filter(function(k){ return need[k]; }).length, lr=$('#logReady');
+    if(lr) lr.textContent=done+' of 4 ready';
   }
   $('#logBody').addEventListener('input',function(e){ var f=e.target.dataset.f, tr=e.target.closest('tr'); if(!f||!tr) return; var v=e.target.value; if(f==='pred'&&/^5/.test(v)) v='500'; log[+tr.dataset.i][f]=v; store.set(K+'log',log); });
   $('#logBody').addEventListener('change',checkLog);

@@ -13,27 +13,21 @@
 <link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
 <script src="/c8/docs.js"></script>
 </head>
-<body data-page="l05-notes">
-<div id="prog" aria-hidden="true"></div>
+<body data-page="l05-notes" class="read">
 <header class="top"><div class="in">
-  <a class="brand" href="/#L5">100x<b>·</b>C8 Module 2</a>
+  <a class="brand" href="/#L5">100x<b>·</b><span>C8 Module 2</span></a>
   <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Overview</a><a href="/c8/module-2/lecture-05-building-apis/notes">Notes</a><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
-<div class="wrap grid">
-  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a></div></div></aside>
+<div class="wrap">
   <main>
-<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
   <p class="kick">Lecture notes · Lecture 5 · Code track</p>
   <h1>APIs: Rip Off the Cushion</h1>
-  <p class="dek">From an echo chat with no process to a raw POST request that plans Aarav's week.</p>
+  <p class="dek">From an echo chat with no process to a raw POST request that plans Aarav's week. Read once end to end, then rebuild <a href="#s10">section 10</a> and <a href="#s13">section 13</a> on your own machine.</p>
   <div class="meta"><span>Fri 9 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span></div>
 </div>
-
-<div class="call"><p class="kick">The one thing to keep</p><p>An LLM is not magic inside your app. It is a machine at an address, and you reach it like any API: an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span> and a <span class="part pkg">package</span>. The process is your prompt plus your user's input, sent to that address. None of it counts until your verifier says the output helps the person you built it for.</p></div>
-
-<p>Read once end to end, then rebuild <a href="#s10">section 10</a> and <a href="#s13">section 13</a> on your own machine.</p>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Where We Left Off: A Chat That Repeats You</h2>
 <p>The Gradio app from the last code lecture: <code>message</code> is the input, the <code>return</code> line is the output, and there is nothing in between.</p>
@@ -47,7 +41,7 @@
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Why Learn It When Agents Can Write It</h2>
-<div class="call"><p class="kick">Thinking can be outsourced. Understanding cannot.</p><p>We are not learning code to write it faster by hand. We are learning how deterministic systems behave, because a system you do not understand is a system you cannot verify: an agent, a mobile app or legacy enterprise software.</p></div>
+<p><b>Thinking can be outsourced. Understanding cannot.</b> We are not learning code to write it faster by hand. We are learning how deterministic systems behave, because a system you do not understand is a system you cannot verify: an agent, a mobile app or legacy enterprise software.</p>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Filling the Process With One Line</h2>
@@ -75,7 +69,7 @@
 
 <section class="s" id="s08"><h2><span class="n">08</span>Go to the Source, and Read the 404</h2>
 <p>Go to the official source before any AI. Groq's quickstart (<code>pip install groq</code>, export <code>GROQ_API_KEY</code>, a short script) failed as pasted:</p>
-<div class="call prob"><p class="kick">Error 404</p><p>The model <code>llama-3.3-70b-versatile</code> does not exist or you do not have access to it.</p></div>
+<p><b>Error 404.</b> <i>The model <code>llama-3.3-70b-versatile</code> does not exist or you do not have access to it.</i></p>
 <p>404 is the client's mistake and means <i>not found</i>. Not found what? The message says: the model. Change the name to GPT OSS and run again. The status code tells you whose fault it is; the message tells you what.</p>
 </section>
 
@@ -122,7 +116,7 @@
 
 <section class="s" id="s15"><h2><span class="n">15</span>Any Machine, Four Lines</h2>
 <p>The raw version is provider-agnostic: swap the URL and key for OpenAI's and the same code runs. No new package, no dependence on anyone's SDK.</p>
-<div class="call"><p class="kick">The four questions for any machine</p><p>What is the address? What is the action? Do I need a key, and how do I get it? What package does it expect? Answer those and about four lines connect your app to any machine on the internet.</p></div>
+<p><b>The four questions for any machine.</b> What is the address? What is the action? Do I need a key, and how do I get it? What package does it expect? Answer those and about four lines connect your app to any machine on the internet.</p>
 <p>Practice targets: the <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener">public-apis list</a>.</p>
 </section>
 
@@ -136,20 +130,22 @@
 </section>
 
 <section class="s" id="s17"><h2><span class="n">17</span>Words You Met</h2>
-<div class="gl">
-  <div class="w"><b>Process</b><span>The step that turns input into output: your prompt plus the user's message, sent to an LLM.</span></div>
-  <div class="w"><b>Golden dataset</b><span>Ideal input and output pairs, written from doing the job by hand.</span></div>
-  <div class="w"><b>Verifier</b><span>A written condition that says whether an output is good enough for the user.</span></div>
-  <div class="w"><b>Deterministic system</b><span>Same input, same output, every time. Verifiable by rule.</span></div>
-  <div class="w"><b>Endpoint</b><span>The full address of one resource, path included. The domain alone is not enough.</span></div>
-  <div class="w"><b>DNS</b><span>Domain Name System: finds which server a domain points to.</span></div>
-  <div class="w"><b>Status code</b><span>The machine's verdict: 2xx worked, 4xx your mistake, 5xx theirs.</span></div>
-  <div class="w"><b>Abstraction</b><span>Hiding detail so you work at a higher level. Comfort that costs understanding.</span></div>
-  <div class="w"><b>SDK</b><span>A provider's code wrapped around address, action, key and package.</span></div>
-  <div class="w"><b>Environment variable</b><span>Where keys live, outside your code, so they never reach a screenshot.</span></div>
-  <div class="w"><b>Rate limit</b><span>Requests allowed per minute or day. Groq free: 30 per minute.</span></div>
-  <div class="w"><b>JQL</b><span>Jira Query Language, which the plan suggested for pulling Aarav's tickets.</span></div>
-</div>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <div><dt>Process</dt><dd>The step that turns input into output: your prompt plus the user's message, sent to an LLM.</dd></div>
+  <div><dt>Golden dataset</dt><dd>Ideal input and output pairs, written from doing the job by hand.</dd></div>
+  <div><dt>Verifier</dt><dd>A written condition that says whether an output is good enough for the user.</dd></div>
+  <div><dt>Deterministic system</dt><dd>Same input, same output, every time. Verifiable by rule.</dd></div>
+  <div><dt>Endpoint</dt><dd>The full address of one resource, path included. The domain alone is not enough.</dd></div>
+  <div><dt>DNS</dt><dd>Domain Name System: finds which server a domain points to.</dd></div>
+  <div><dt>Status code</dt><dd>The machine's verdict: 2xx worked, 4xx your mistake, 5xx theirs.</dd></div>
+  <div><dt>Abstraction</dt><dd>Hiding detail so you work at a higher level. Comfort that costs understanding.</dd></div>
+  <div><dt>SDK</dt><dd>A provider's code wrapped around address, action, key and package.</dd></div>
+  <div><dt>Environment variable</dt><dd>Where keys live, outside your code, so they never reach a screenshot.</dd></div>
+  <div><dt>Rate limit</dt><dd>Requests allowed per minute or day. Groq free: 30 per minute.</dd></div>
+  <div><dt>JQL</dt><dd>Jira Query Language, which the plan suggested for pulling Aarav's tickets.</dd></div>
+</dl>
+</details>
 </section>
 
 <section class="s" id="s18"><h2><span class="n">18</span>Before the Next Office Hour</h2>
@@ -160,9 +156,17 @@
   <li><b>Check one output against your golden pair</b> and write one prompt change the check forced.</li>
   <li><b>Post a screenshot</b> of the working app on the Discord code channel. Earliest posts are reviewed first.</li>
 </ol>
-<p class="sig">Use abstractions for comfort. Build understanding for control.<small><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set</a> · <a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a></small></p>
+<p class="sig">Use abstractions for comfort. Build understanding for control.</p>
 </section>
 
+<div class="call"><p class="kick">Keep this</p><p>An LLM is not magic inside your app. It is a machine at an address, and you reach it like any API: an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span> and a <span class="part pkg">package</span>. The process is your prompt plus your user's input, sent to that address. None of it counts until your verifier says the output helps the person you built it for.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-05-building-apis/practice-set">Practice set: building APIs</a></li>
+  <li><a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Troubleshooting</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Next: Lecture 6 notes</a></li>
+  <li><a href="/#L5">Curriculum map</a></li>
+</ul></nav>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 5: Building APIs and backend</span><a href="/#L5">Curriculum map</a><a href="/c8/module-2/lecture-05-building-apis/">All Lecture 5 pages</a></div></footer>

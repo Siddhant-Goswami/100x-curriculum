@@ -12,33 +12,25 @@
 <link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
 <script src="/c8/docs.js"></script>
 </head>
-<body data-page="l04-notes">
-<div id="prog" aria-hidden="true"></div>
+<body data-page="l04-notes" class="read">
 <header class="top"><div class="in">
-  <a class="brand" href="/">100x<b>·</b>C8 Module 2</a>
+  <a class="brand" href="/">100x<b>·</b><span>C8 Module 2</span></a>
   <nav aria-label="Lecture 4 pages"><a href="/c8/module-2/lecture-04-the-second-interface/">Overview</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Notes</a><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
-<div class="wrap grid">
-  <aside class="toc" aria-label="On this page"><div id="toc"><p class="kick">On this page</p><div class="sub"><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Open the Request Builder</a><br><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a></div></div></aside>
+<div class="wrap">
   <main>
-<details class="mtoc"><summary>On this page</summary><div class="l" id="mtoc"></div></details>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
   <p class="kick">Lecture notes · Lecture 4 · Both tracks</p>
   <h1>API as the Second Interface</h1>
   <p class="dek">How your UI talks to a machine it has never met, worked out from the machine's own replies.</p>
-  <div class="meta"><span>Sat 3 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span><span>Reading time ≈ 12 min</span></div>
+  <div class="meta"><span>Sat 3 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span><span>About 12 minutes to read</span></div>
 </div>
-
-<div class="call"><p class="kick">The one thing to keep</p><p>Every request between two machines carries four things: an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span>, and a <span class="part pkg">package</span> in a format both sides agree on. Every reply carries two: a <span class="part code">code</span> and a <span class="part pkg">package</span>.</p></div>
 
 <section class="s" id="how">
 <h2>How These Notes Are Organised</h2>
-<div class="cards">
-  <div class="card"><p class="kick">Part 1 · Sections 1 to 4</p><h4>What we did in the lecture</h4><p>Round Three, the six parts, and the CRUD quiz.</p></div>
-  <div class="card coral"><p class="kick">Part 2 · Section 5</p><h4>What you do this week</h4><p>Ten steps in the Request Builder, then the practice set.</p></div>
-  <div class="card"><p class="kick">Part 3 · Section 6</p><h4>Optional deep dive</h4><p>Why the six parts exist: six problems from Morse to JSON.</p></div>
-</div>
+<p>Sections 1 to 4 are what we did in the lecture: Round Three, the six parts, and the CRUD quiz. <a href="#s05">Section 5</a> is what you do this week: the steps in the Request Builder, then the practice set. Section 6 is an optional deep dive into why the six parts exist, from Morse to JSON.</p>
 </section>
 
 <section class="s" id="s01"><h2><span class="n">01</span>A Face With No Brain</h2>
@@ -80,8 +72,7 @@
   <div class="band key"><b>Key</b><code>key: ••••••••</code></div>
   <div class="band pkg"><b>Package</b><code>{"workflow": "I open Jira, read the week's tickets, write a status report and post it on Slack. About 90 minutes."}</code></div>
 </div>
-<p>And the machine replied:</p>
-<div class="call det"><p class="kick">201 Created · the diagnosis</p><p>Repeated pattern: a weekly status report. Bottleneck: reading every ticket to find what changed. First AI step: draft the report from a Jira export; Aarav edits and posts it.</p></div>
+<p>And the machine replied <b>201 Created</b>, with the diagnosis: <i>Repeated pattern: a weekly status report. Bottleneck: reading every ticket to find what changed. First AI step: draft the report from a Jira export; Aarav edits and posts it.</i></p>
 <p>Nobody listed these parts before the game. The machine's replies did, one at a time.</p>
 </section>
 
@@ -124,7 +115,7 @@
 <p>Search for something on Google and look at the address bar: <code>google.com/search?q=…</code>. That is a GET. Ask ChatGPT the same thing, or call a model through an API, and the request is a POST. Why is one a Read and the other a Create?</p>
 <p>Google is reading. The pages it searches already sit in its index, and your search fetches results from what is already there. Your question fits in the address, and nothing new is stored.</p>
 <p>The model is creating. Your message and a new reply are added to the conversation, and that reply did not exist before you asked. Ask the same question twice and you get two different replies. Your prompt also travels as a package in the body, because it can be long and private, and an address is neither. So generation is a Create, and Create is spelled POST.</p>
-<div class="call"><p class="kick">The rule</p><p>Read what already exists: GET, and nothing changes. Create something new: POST. Update it: PUT or PATCH. Delete it: DELETE.</p></div>
+<p><b>The rule.</b> Read what already exists: GET, and nothing changes. Create something new: POST. Update it: PUT or PATCH. Delete it: DELETE.</p>
 <p>Companies do not always follow the convention. For any app, its real traffic is the truth. You will read real traffic yourself in <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s7">step 7 of the Request Builder</a>.</p>
 </section>
 
@@ -141,12 +132,13 @@
   <li><b><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s9">Find your key, and where it should live</a>.</b> Your key is visible in DevTools. That is why keys live in a backend, never in a page.</li>
   <li><b><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder#s10">Design your API</a>.</b> Write Aarav's table for your own app, then submit the <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a>.</li>
 </ol>
-<div class="cards">
-  <div class="card coral"><p class="kick">Thu 8 Oct · 8:30 pm IST · Office hour</p><h4><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting#s04">Office hour</a></h4><p>Milestone: steps 1 to 8 done and a draft of your API table. The question template, checklist and what to bring are on the troubleshooting page.</p></div>
-  <div class="card"><p class="kick">Before Fri 9 Oct</p><h4><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a></h4><p>Submit what the steps produce.</p></div>
-  <div class="card"><p class="kick">Fri 9 Oct · Lecture 5</p><h4>Build the backend</h4><p>Code track: a raw request from your Gradio chat to the model, in Python. No-code track: Antigravity.</p></div>
-  <div class="card"><p class="kick">Fri 9 Oct</p><h4>Assignment 1</h4><p>Due on its own track. The practice set does not depend on it.</p></div>
-</div>
+<h3>Dates</h3>
+<ul>
+  <li><b>Thu 8 Oct, 8:30 pm IST: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting#s04">office hour</a>.</b> Milestone: steps 1 to 8 done and a draft of your API table. The question template, checklist and what to bring are on the troubleshooting page.</li>
+  <li><b>Before Fri 9 Oct: <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a>.</b> Submit what the steps produce.</li>
+  <li><b>Fri 9 Oct, Lecture 5: build the backend.</b> Code track: a raw request from your Gradio chat to the model, in Python. No-code track: Antigravity.</li>
+  <li><b>Fri 9 Oct: Assignment 1.</b> Due on its own track. The practice set does not depend on it.</li>
+</ul>
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>Optional Deep Dive: Why These Six Parts?</h2>
@@ -154,25 +146,36 @@
 </section>
 
 <section class="s" id="s07"><h2><span class="n">07</span>Words You Met</h2>
-<div class="gl">
-  <div class="w"><b>API</b><span>The interface between two machines: a common language plus a protocol.</span></div>
-  <div class="w"><b>Request</b><span>Address, action, key, package.</span></div>
-  <div class="w"><b>Response</b><span>Code and package.</span></div>
-  <div class="w"><b>URL / endpoint</b><span>The address: the machine (domain) and the door (path).</span></div>
-  <div class="w"><b>Method</b><span>How the action is spelled: GET, POST, PUT, PATCH, DELETE.</span></div>
-  <div class="w"><b>CRUD</b><span>Create, Read, Update, Delete: the four actions on anything stored.</span></div>
-  <div class="w"><b>Header</b><span>A line written on the envelope, read without opening the letter. The key goes here.</span></div>
-  <div class="w"><b>Bearer</b><span>Whoever bears this key is let in. Written as Authorization: Bearer &lt;key&gt;.</span></div>
-  <div class="w"><b>Body</b><span>The package inside the envelope.</span></div>
-  <div class="w"><b>JSON</b><span>A text format, not a language: keys and values in curly braces.</span></div>
-  <div class="w"><b>Status code</b><span>Three digits on the reply. 2xx worked, 4xx yours, 5xx theirs.</span></div>
-  <div class="w"><b>HTTPS</b><span>HTTP in a sealed envelope, so nobody on the way can read your key.</span></div>
-  <div class="w"><b>REST</b><span>A design style: nouns as addresses, CRUD as verbs. Not a protocol.</span></div>
-  <div class="w"><b>Backend</b><span>The machine between your UI and everything else. It holds keys and stores data.</span></div>
-</div>
-<p class="sig">Four things in, two things out.<small>Companion pages: <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Request Builder</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">practice set</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">troubleshooting</a> · <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">kit</a></small></p>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <div><dt>API</dt><dd>The interface between two machines: a common language plus a protocol.</dd></div>
+  <div><dt>Request</dt><dd>Address, action, key, package.</dd></div>
+  <div><dt>Response</dt><dd>Code and package.</dd></div>
+  <div><dt>URL / endpoint</dt><dd>The address: the machine (domain) and the door (path).</dd></div>
+  <div><dt>Method</dt><dd>How the action is spelled: GET, POST, PUT, PATCH, DELETE.</dd></div>
+  <div><dt>CRUD</dt><dd>Create, Read, Update, Delete: the four actions on anything stored.</dd></div>
+  <div><dt>Header</dt><dd>A line written on the envelope, read without opening the letter. The key goes here.</dd></div>
+  <div><dt>Bearer</dt><dd>Whoever bears this key is let in. Written as Authorization: Bearer &lt;key&gt;.</dd></div>
+  <div><dt>Body</dt><dd>The package inside the envelope.</dd></div>
+  <div><dt>JSON</dt><dd>A text format, not a language: keys and values in curly braces.</dd></div>
+  <div><dt>Status code</dt><dd>Three digits on the reply. 2xx worked, 4xx yours, 5xx theirs.</dd></div>
+  <div><dt>HTTPS</dt><dd>HTTP in a sealed envelope, so nobody on the way can read your key.</dd></div>
+  <div><dt>REST</dt><dd>A design style: nouns as addresses, CRUD as verbs. Not a protocol.</dd></div>
+  <div><dt>Backend</dt><dd>The machine between your UI and everything else. It holds keys and stores data.</dd></div>
+</dl>
+</details>
+<p class="sig">Four things in, two things out.</p>
 </section>
 
+<div class="call"><p class="kick">Keep this</p><p>Every request between two machines carries four things: an <span class="part addr">address</span>, an <span class="part act">action</span>, a <span class="part key">key</span>, and a <span class="part pkg">package</span> in a format both sides agree on. Every reply carries two: a <span class="part code">code</span> and a <span class="part pkg">package</span>.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">The Request Builder</a></li>
+  <li><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/practice-set">Practice set</a></li>
+  <li><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/troubleshooting">Troubleshooting</a></li>
+  <li><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/kit">The kit</a></li>
+  <li><a href="/">Curriculum map</a></li>
+</ul></nav>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 4: API as the second interface</span><a href="/">Curriculum map</a><a href="/c8/module-2/lecture-04-the-second-interface/">All Lecture 4 pages</a></div></footer>
