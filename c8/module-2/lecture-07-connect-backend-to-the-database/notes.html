@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Connect Backend to the Database | 100xEngineers</title>
+<meta name="description" content="Lecture 7 notes, as pointers: the four dials, the three games that run through the lecture, the nine steps in four parts with every prediction and stamp, the proof in debt order, the practice set and the flags.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt li.g::before{background:var(--coral)}
+body.read .pt li.guess::before{background:var(--det)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials code{font-size:13px}
+.stamps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 1.2em}
+@media (max-width:640px){.stamps{grid-template-columns:1fr}}
+.stamps div{border-top:3px solid var(--coral);padding:10px 0 0}
+.stamps b{display:block;font-weight:500;font-size:15px}
+.stamps span{font-size:14px;color:var(--ink2)}
+</style>
+</head>
+<body data-page="l07-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L7">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 7 pages"><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">Overview</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Notes</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard">Whiteboard</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 7</p>
+  <h1>A database is a machine at an address</h1>
+  <p class="dek">Pointers, not prose. The nine steps, the three games, what you predict, what you stamp, and what you post.</p>
+  <div class="meta"><span>Fri 16 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Cohort 8 · Module 2</span></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The lecture in one line</h2>
+<ul class="pt">
+  <li><b>Principle:</b> a database is a machine at an address. SQL is its package.</li>
+  <li><b>Done equals:</b> a classmate opens your <code>vercel.app</code> URL, gets a plan, refreshes, and the plan is still there. They search the Network tab and find no key.</li>
+  <li><b>From Lecture 6:</b> storage was a file on your server, and the tables were drawn on paper. Today the file dies and the paper tables get typed. See it drawn: <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard">the lecture on a whiteboard</a>.</li>
+</ul>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Every arrow is the same four dials</h2>
+<table class="dials">
+<tr><th>Dial</th><th>Groq</th><th>Your API</th><th>Supabase</th></tr>
+<tr><td><span class="part addr">address</span></td><td><code>api.groq.com/openai/v1/chat/completions</code></td><td><code>&lt;app&gt;.vercel.app/api/diagnose</code></td><td><code>&lt;project&gt;.supabase.co/rest/v1/diagnoses</code></td></tr>
+<tr><td><span class="part act">action</span></td><td>POST</td><td>POST</td><td>POST adds a row, GET reads rows</td></tr>
+<tr><td><span class="part key">key</span></td><td>required</td><td>none today (L8 debt)</td><td><code>apikey</code> + <code>Authorization: Bearer</code>, service key, server only</td></tr>
+<tr><td><span class="part pkg">package</span></td><td><code>{model, messages}</code></td><td><code>{"workflow"}</code> in, <code>{"plan"}</code> out</td><td><code>{"workflow_id":1, "plan":"…", "tone":"plain"}</code></td></tr>
+</table>
+<p>Fill the dials before you type any code. If you can fill them, you can make the call.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Three games, all 120 minutes</h2>
+<p>You play the parts the lecture is about: the attacker who finds the key, the many writers who lose data, and the verifier who checks someone else's work.</p>
+<ul class="pt">
+  <li class="guess"><b>🎯 Predict the status.</b> Before every run, post your guess in chat. A right guess is 1 point. The answer key is in <a href="#s08">section 08</a>, so guess first.</li>
+  <li class="g"><b>🎮 The debt card.</b> Three debts. Stamp each one when <em>your own</em> deploy passes, and post every stamp with a screenshot. A partner's "verified" closes the card.</li>
+  <li class="g"><b>🎮 Roll call stampede.</b> Twice in the lecture, the whole room POSTs its name to the live URL. The route skips Groq on purpose: sixty students on <code>/api/diagnose</code> would hit Groq's limit and fail for the wrong reason.</li>
+</ul>
+<div class="stamps">
+  <div><b>🔑 L5 debt</b><span>no key in my Network tab</span></div>
+  <div><b>🔄 L6 debt</b><span>my plan survives a refresh</span></div>
+  <div><b>🚀 Part 2 debt</b><span>my plan survives a redeploy</span></div>
+</div>
+<div class="cmd"><span>http POST https://&lt;your-app&gt;.vercel.app/api/roll name=Priya</span><button class="cp" type="button">Copy</button></div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Part 1 · Pay the key debt (0 to 30)</h2>
+<ul class="pt">
+  <li><b>01 The leak.</b> A key pasted into a page. Inspect, Network, Send, read the Authorization header aloud. Whose machine? Whose key? Who else can read it? <span class="kick">🎯 is the key visible?</span></li>
+  <li class="g"><b>🎮 Key hunt.</b> The leak page goes live with a throwaway key. First to post the key's last 4 characters wins. The key is revoked on screen right after.</li>
+  <li><b>02 Strip it to the function.</b> <code>diagnose(workflow)</code> returns a plan, from the terminal. The UI was never the process.</li>
+  <li class="g"><b>🎮 Dial cards.</b> The room fills in the four dials for your API in chat before any FastAPI code is typed.</li>
+  <li><b>03 The function on your server.</b> A FastAPI route on Vercel, the Groq key in an environment variable. <span class="kick">🎯 what does the first live call return?</span></li>
+  <li class="g"><b>🎮 Stamp time, 10 minutes.</b> Split your own Lecture 5 app the same way and post a <code>/docs</code> screenshot. A clean Network tab stamps 🔑.</li>
+  <li><b>04 Gradio becomes a client.</b> One URL in the file, no key. The key lives on the machine that spends the money. Debt left: this UI runs on your laptop only.</li>
+</ul>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Part 2 · The file dies (30 to 50)</h2>
+<ul class="pt">
+  <li><b>05 memory.txt.</b> Each request reads the file, asks Groq, writes the file back with one more line. <code>GET /api/plans</code> returns every line. Locally it works. <span class="kick">🎯 what will a POST to the live URL return?</span></li>
+  <li class="g"><b>🎮 Stampede 1.</b> Everyone runs the roll call against the live URL. Every single student gets a 500: read-only file system. A Vercel function has no disk you own, and the machine is thrown away after each request.</li>
+  <li><b>Two writers.</b> Two volunteers, two terminals, one count of three, against the local server. <span class="kick">🎯 how many plans did the file keep?</span> Both read the same old file. The one that writes last wins.</li>
+  <li><b>What broke, three things.</b> The data must survive the server being thrown away. Many writers must save without losing anything. "Every plan for workflow 1, oldest first" must be answered without reading everything.</li>
+  <li><b>The move.</b> Size moved the LLM off your server. Survival moves storage. The data goes to a machine built for it, reached by API.</li>
+</ul>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Part 3 · Another machine (50 to 85)</h2>
+<ul class="pt">
+  <li><b>Supabase project.</b> Settings, then API: one URL, two keys.</li>
+  <li class="g"><b>🎮 Dial cards again.</b> The room fills in Supabase's four dials before any code. <span class="kick">🎯 what will the first POST return?</span></li>
+  <li><b>Call it before it has a shape.</b> The httpie POST fails: <code>relation "diagnoses" does not exist</code>. The machine needs a shape. Lecture 6 said it first: you cannot store what you cannot describe.</li>
+  <li class="g"><b>🎮 Shape the table.</b> The room calls out the columns from the Lecture 6 model. Only what is called out gets typed. Then check against <code>schema.sql</code> and run it in the SQL editor.</li>
+  <li><b>06 SQL is the package language.</b> <code>create table</code> is a thing becoming a table. Each line is a fact becoming a column. <code>primary key</code> is the row's address. <code>references</code> is the pointer on the many side. <code>default now()</code> is the memory.txt timestamp. The last line is Aarav's Lecture 6 question, as SQL. <span class="kick">🎯 what does the same POST return now?</span></li>
+  <li><b>Two keys.</b> anon / publishable is for machines you don't control, like a browser (Lecture 9). service_role / secret bypasses every lock: server environment variables only. Leave Row Level Security alone today (Lecture 8).</li>
+  <li><b>07 The cushion.</b> The SDK makes the same two calls.</li>
+  <li class="g"><b>🎮 What does it hide?</b> Each student names one thing the SDK hides. Repeats don't count. (The URL, the headers, <code>apikey</code>, the JSON…)</li>
+</ul>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Part 4 · Strip the cushion, ship it all (85 to 120)</h2>
+<ul class="pt">
+  <li><b>08 The server remembers.</b> The file append becomes an insert. The Lecture 6 question becomes a route: <code>GET /api/workflows/1/diagnoses</code>. Add the Supabase URL and secret key as environment variables and deploy. Gradio from step 04 still works, unchanged.</li>
+  <li><b>The lie.</b> <code>workflow_id: 1</code> is hardcoded on purpose. Lecture 8 opens on it.</li>
+  <li class="g"><b>🎮 Stampede 2.</b> The same roll call, now to the step 08 URL, with the <code>roll</code> table on the projector. Sixty writers, sixty rows, on a machine nobody in the room owns. Requirement 2, done by the room.</li>
+  <li><b>09 Rip off Gradio.</b> All it was hiding: a text box, a button, one POST. <code>fetch</code> is <code>requests.post</code> in the browser. The page sits in the same Vercel project as the API, so same origin and no CORS. <span class="kick">🎯 how many keys in the Network tab?</span></li>
+  <li><b>The HLD.</b> Aarav's browser runs plain HTML. Your Vercel function exists only while it answers. Groq thinks. Supabase remembers.</li>
+  <li><b>Proof, in debt order.</b> 1. Type on the live page, then GET the list: one row. 2. Refresh: still one row, 🔄 paid. 3. Change a comment, redeploy, GET again: still one row, 🚀 paid. 4. Network tab: only your URL, no key, 🔑 paid. 5. Swap and verify.</li>
+  <li class="g"><b>🎮 Swap and verify.</b> Swap URLs with a partner. They get a plan, refresh, search for a key, and post "verified" with your URL. Nobody verifies their own. That post stamps 🔄 and 🚀 and closes the debt card.</li>
+  <li><b>Hook for Lecture 8.</b> Your partner just read Aarav's plans without a password. Whose row is this?</li>
+</ul>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Predict the status: the answer key</h2>
+<p>Read this after you have guessed.</p>
+<table class="dials">
+<tr><th>Moment</th><th>Answer</th></tr>
+<tr><td>01: is the key visible?</td><td>Yes, in plain text</td></tr>
+<tr><td>03: first live call</td><td>200, but slow (cold start)</td></tr>
+<tr><td>05: POST on Vercel</td><td>500, read-only file system</td></tr>
+<tr><td>Two writers</td><td>200 + 200, one plan saved</td></tr>
+<tr><td>Supabase before the table</td><td>404, <code>relation does not exist</code></td></tr>
+<tr><td>Supabase after <code>schema.sql</code></td><td>201</td></tr>
+<tr><td>09: keys in the Network tab?</td><td>0</td></tr>
+</table>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Practice set</h2>
+<ol class="steps">
+  <li><b>Split:</b> a FastAPI route on Vercel, and Gradio running locally with one URL and no key.</li>
+  <li><b>Type your model:</b> every table from your Modelling Lab board, with <code>references</code> on every <code>_id</code>.</li>
+  <li><b>Two verbs:</b> one insert route, and one select route that uses <code>where</code> and <code>order by</code>.</li>
+  <li><b>Strip Gradio:</b> <code>public/index.html</code> with one fetch, in the same Vercel project.</li>
+  <li><b>Get verified:</b> a classmate posts "verified" with your URL.</li>
+</ol>
+<ul class="pt">
+  <li>httpie before the SDK.</li>
+  <li>No key in HTML, in screenshots, or in any file you share. Keys go in environment variables.</li>
+  <li>Ask an LLM to explain errors, not to write your <code>create table</code>.</li>
+</ul>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Flags</h2>
+<ul class="pt">
+  <li><b>Vercel:</b> the file system is read-only except <code>/tmp</code>. A cold start takes about a second. If <code>/</code> hits the function instead of <code>public/index.html</code>, add a rewrite in <code>vercel.json</code>.</li>
+  <li><b>Supabase:</b> free projects pause after 7 idle days. The <code>supabase</code> package is pinned in <code>requirements.txt</code>.</li>
+  <li><b>Groq:</b> the free tier allows 30 requests a minute. Check the model name on the day.</li>
+</ul>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>cold start</dt><dd>The first request after a function has been idle. The machine is built before it answers, so it is slow once.</dd>
+  <dt>read-only file system</dt><dd>A disk you can read but not write. A Vercel function's disk, apart from <code>/tmp</code>.</dd>
+  <dt>relation</dt><dd>Postgres's word for a table. "Relation does not exist" means no table by that name.</dd>
+  <dt>service_role key</dt><dd>The secret key that bypasses every lock. Server environment variables only.</dd>
+  <dt>anon key</dt><dd>The publishable key for machines you don't control. Waits for Lecture 9.</dd>
+  <dt>Row Level Security</dt><dd>Rules on who may read or write which rows. Off today. Lecture 8.</dd>
+  <dt>same origin</dt><dd>Page and API served from one address. Then the browser never asks the CORS question.</dd>
+  <dt>the cushion</dt><dd>An SDK: the same call with the address and headers hidden inside a client object.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>Four machines, four jobs. Aarav's browser shows. Your Vercel function answers, then disappears. Groq thinks. Supabase remembers. Every arrow between them is the same four dials, and the only machine that ever holds a key is yours. Done is not a screenshot. Done is a classmate's "verified" next to your URL.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard">The lecture on a whiteboard</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">Overview</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">The Modelling Lab: your tables</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Lecture 6 notes</a></li>
+  <li><a href="/#L7">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 7: Connect backend to the database</span><a href="/#L7">Curriculum map</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">All Lecture 7 pages</a></div></footer>
+</body>
+</html>
