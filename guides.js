@@ -16,7 +16,7 @@ var GUIDE_LINKS = {
   practiceSet: 'https://docs.google.com/document/d/1J-Qi-nan-fYTur1LFu88AFSkyuBMNjHdlZKM7SdzdWM/edit?usp=sharing',
   aarav: 'https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l',
   wtbExample: '/c8/module-2/what-to-build/aarav-example',  /* What to build: Aarav's Discovery to MVP, worked example */
-  hackathon: '/c8/module-2/hackathon/',  /* the hackathon page: tracks, five moves, rules, schedule, submit */
+  hackathon: '/c8/module-2/hackathon/',  /* the hackathon page: problems, five moves, rules, schedule, submit */
   golden: 'https://docs.google.com/document/d/1qg8zt7yHflGM7ojtnUBSPj2e_I3ACYapztGZQnzJa_c/edit?tab=t.0',
   python: 'https://www.python.org/downloads/',
   vscode: 'https://code.visualstudio.com/download',
@@ -677,7 +677,7 @@ GUIDES.L8 = { code: {
     ['Lecture 8 overview', 'l08Hub', 'What to bring, the lecture, done equals.'],
     ['The lecture on a whiteboard', 'l08Board', 'Eighteen scenes: the file dies, another machine, ship it all.'],
     ['The lecture repository', 'l07Repo', 'Steps 05 to 09. Replace the function with yours.'],
-    ['The hackathon', 'hackathon', 'Pick a track, run the five moves, earn the verdict.']
+    ['The hackathon', 'hackathon', 'Pick a problem, run the five moves, earn the verdict.']
   ],
   kw: 'end to end mvp deploy live url supabase database sql schema create table references memory.txt read-only file system two writers insert select sdk create_client service key secret key publishable key row level security fetch index.html gradio cors verified hackathon'
 }};

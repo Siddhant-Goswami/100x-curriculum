@@ -4,33 +4,149 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hackathon | 100xEngineers</title>
-<meta name="description" content="Cohort 8 Module 2 hackathon, Sat 17 Oct 9:00 PM IST to Tue 20 Oct 9:00 PM IST. Pick a track, run the five moves, post every check-in, and earn the verdict.">
+<meta name="description" content="Cohort 8 Module 2 hackathon, Sat 17 Oct 9:00 PM IST to Tue 20 Oct 9:00 PM IST. Pick a problem, run the five moves, post every check-in, earn the verdict.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/c8/docs.css">
-<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
 <script src="/c8/docs.js"></script>
 <script>
-/* the track comes from the map (c8m2-track); the page asks once if it is missing */
+/* the track (code or no-code) comes from the map (c8m2-track); the page asks once if it is missing */
 (function(){var t=null;try{t=localStorage.getItem('c8m2-track')}catch(e){}if(t==='code'||t==='nocode')document.documentElement.setAttribute('data-hk',t)})();
 </script>
 <style>
-.hero .btnrow{margin:20px 0 0}
-.trk{border-top:1px solid var(--line);padding:16px 0 4px}
-.trk:last-of-type{border-bottom:1px solid var(--line);margin-bottom:1em}
-.trk h3{margin:0 0 4px!important}
-.trk p{margin:0 0 8px!important}
-.trk dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 10px;font-size:15.5px}
-.trk dt{color:var(--ink3)}
-.trk dd{margin:0}
-.trk details{margin:0 0 8px}
-.trk summary{cursor:pointer;font-size:15px;color:var(--ink2)}
-.trk details p{font-size:15.5px;color:var(--ink2);margin:8px 0 0!important}
-.gate{font-weight:600}
-.st{display:inline-block;min-width:4.5em;font-weight:600}
 html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{display:none}
-.trkline{font-size:15px;color:var(--ink3);margin:10px 0 0}
+.hk{max-width:1040px;margin:0 auto;padding:0 16px 80px}
+.hk h2{font:600 clamp(1.4rem,3vw,1.75rem)/1.2 var(--sans);letter-spacing:-.01em;margin:0 0 6px}
+.hk .sub{color:var(--ink2);margin:0 0 22px;font-size:15px}
+.sec{padding:56px 0 0;scroll-margin-top:60px}
+.m{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+
+/* hero */
+.hero{padding:56px 0 8px;text-align:center}
+.hero h1{font:700 clamp(2rem,5.5vw,3.2rem)/1.08 var(--sans);letter-spacing:-.025em;margin:12px auto 14px;max-width:16ch}
+.hero h1 em{font-style:normal;color:var(--coral)}
+.hero .dek{color:var(--ink2);font-size:17px;margin:0 auto 18px}
+.trkchip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line2);border-radius:99px;padding:5px 12px;font:500 13px var(--sans);color:var(--ink);text-decoration:none;background:var(--card)}
+.trkchip:hover{border-color:var(--ink)}
+.trkchip span{color:var(--ink3)}
+.clock{display:inline-flex;gap:8px;align-items:baseline;margin:22px 0 0;padding:10px 18px;border-radius:12px;background:var(--ink);color:var(--bg);font:500 14px var(--sans)}
+.clock b{font:700 18px var(--mono);letter-spacing:.02em}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:36px 0 0}
+.stats div{background:var(--card);padding:16px 10px;text-align:center}
+.stats b{display:block;font:700 26px/1 var(--sans);letter-spacing:-.02em}
+.stats span{font-size:13px;color:var(--ink2)}
+.oneline{margin:20px 0 0;text-align:center;font-size:15px;color:var(--ink2)}
+.oneline b{color:var(--ink)}
+
+/* problems */
+.probs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.prob{position:relative;display:flex;flex-direction:column;gap:10px;border:1.5px solid var(--line);border-radius:14px;background:var(--card);padding:18px;cursor:pointer;transition:border-color .15s,transform .15s}
+.prob:hover{border-color:var(--line2);transform:translateY(-2px)}
+.prob input{position:absolute;opacity:0;pointer-events:none}
+.prob:has(input:checked){border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft)}
+.prob:has(input:focus-visible){outline:2px solid var(--coral);outline-offset:2px}
+.prob h3{font:600 18px/1.2 var(--sans);margin:0;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.prob h3 i{font:500 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:#fff;background:var(--coral);border-radius:99px;padding:3px 8px;display:none}
+.prob:has(input:checked) h3 i{display:inline}
+.prob p{margin:0;font-size:14.5px;color:var(--ink2);line-height:1.5}
+.prob dl{margin:auto 0 0;display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13.5px;padding-top:10px;border-top:1px solid var(--line)}
+.prob dt{color:var(--ink3)}
+.prob dd{margin:0}
+.lock{margin:16px 0 0;font-size:14.5px}
+.lock b{color:var(--coral-ink)}
+
+/* five moves: a stepper */
+.moves{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;position:relative;list-style:none;padding:0;margin:0}
+.moves::before{content:"";position:absolute;left:10%;right:10%;top:19px;height:2px;background:var(--line2)}
+.moves>li{display:flex}
+.mv{width:100%;position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;border:0;background:none;padding:0;font:inherit;color:inherit}
+.mv .n{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:2px solid var(--line2);font:700 15px var(--mono);position:relative;z-index:1;transition:background .15s,border-color .15s,color .15s}
+.mv .c{margin-top:12px;width:100%;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px 12px;flex:1;display:flex;flex-direction:column;gap:8px;transition:border-color .15s}
+.mv .h{font:600 15.5px/1.25 var(--sans)}
+.mv .ls{font-size:13.5px;color:var(--ink2);line-height:1.55}
+.mv .ls span{display:block}
+.mv .tag{align-self:center;font:500 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);border:1px solid var(--line);border-radius:99px;padding:2px 8px}
+.mv .out{margin-top:auto;padding-top:8px;border-top:1px dashed var(--line2);font-size:13px}
+.mv .out span{display:block;color:var(--ink3);font:500 10px var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.mv .due{font:600 12px var(--sans);color:var(--coral-ink)}
+.mv:hover .n,.mv[aria-pressed="true"] .n{background:var(--coral);border-color:var(--coral);color:#fff}
+.mv:hover .c,.mv[aria-pressed="true"] .c{border-color:var(--coral)}
+.gate{display:inline-block;margin:18px 0 0;padding:8px 14px;border-radius:10px;background:var(--coral-soft);color:var(--coral-ink);font:600 14px var(--sans)}
+.hint{font-size:13px;color:var(--ink3);margin:10px 0 0}
+
+/* timeline */
+.tl{list-style:none;margin:8px 0 0;padding:0;position:relative}
+.tl::before{content:"";position:absolute;left:50%;top:6px;bottom:6px;width:2px;margin-left:-1px;background:var(--coral-soft)}
+.ev{position:relative;display:grid;grid-template-columns:1fr 56px 1fr;align-items:center;margin:0 0 14px}
+.ev .dot{grid-column:2;justify-self:center;width:14px;height:14px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 5px var(--coral-soft);z-index:1}
+.ev .card{grid-row:1;display:flex;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden;transition:border-color .2s,box-shadow .2s,opacity .2s}
+.ev:nth-child(odd) .card{grid-column:3}
+.ev:nth-child(even) .card{grid-column:1}
+.ev+.ev{margin-top:-44px}
+.ev .bd{flex:1;padding:12px 16px;min-width:0}
+.ev .lbl{font:500 10.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:0}
+.ev h3{font:600 16px/1.3 var(--sans);margin:2px 0 0}
+.ev .one{margin:2px 0 0;font-size:13.5px;color:var(--ink2)}
+.ev .when{flex:0 0 84px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:var(--bg2);padding:10px 6px;border-left:1px solid var(--line)}
+.ev .when b{font:700 17px/1.1 var(--sans)}
+.ev .when span{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-top:3px}
+.ev .gr{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:3px}
+.ev .gr label{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;cursor:pointer;line-height:1.4}
+.ev .gr input{appearance:none;flex:0 0 16px;width:16px;height:16px;margin:1px 0 0;border:1.5px solid var(--line2);border-radius:5px;display:grid;place-items:center;cursor:pointer;background:var(--card)}
+.ev .gr input::after{content:"";width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg) scale(0);margin-top:-2px;transition:transform .15s}
+.ev .gr input:checked{background:var(--hum);border-color:var(--hum)}
+.ev .gr input:checked::after{transform:rotate(45deg) scale(1)}
+.ev .gr input:checked+span{color:var(--ink3);text-decoration:line-through}
+.ev .pf{margin:8px 0 0;font-size:12.5px;color:var(--ink2)}
+.ev .pf b{font:500 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--hum-ink);background:var(--hum-soft);border-radius:4px;padding:2px 6px;margin-right:6px}
+.ev .mvs{font:500 10.5px var(--mono);color:var(--coral-ink);letter-spacing:.04em;margin-left:6px}
+.ev.big .card{border-color:var(--ink)}
+.ev.past .card{opacity:.55}
+.ev.past .dot{background:var(--ink3);box-shadow:0 0 0 5px var(--bg2)}
+.ev.next .card{border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft)}
+.ev.next .lbl::after{content:" · Next";color:var(--coral-ink)}
+.ev.next .dot{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px var(--coral-soft)}}
+.ev.hl .card{border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft);opacity:1}
+.tl.dim .ev:not(.hl) .card{opacity:.35}
+
+/* check-in rules */
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;list-style:none;padding:0;margin:0 0 20px;counter-reset:h}
+.how li{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:14px;font-size:14px;line-height:1.45;counter-increment:h}
+.how li::before{content:counter(h);display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--bg);font:700 12px var(--mono);margin-bottom:8px}
+.how b{display:block;font-size:15px}
+.how span{color:var(--ink2)}
+.lights{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 20px}
+.lt{border-radius:12px;padding:14px;font-size:14px;line-height:1.45}
+.lt b{display:flex;align-items:center;gap:8px;font-size:16px}
+.lt b::before{content:"";width:12px;height:12px;border-radius:50%;background:currentColor}
+.lt.g{background:var(--hum-soft);color:var(--hum-ink)}
+.lt.y{background:var(--det-soft);color:var(--det-ink)}
+.lt.r{background:var(--coral-soft);color:var(--coral-ink)}
+.lt span{display:block;color:var(--ink);margin-top:4px}
+.tabs{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:10px;background:var(--card);margin:0 0 10px}
+.tabs button{border:0;background:none;border-radius:7px;padding:6px 14px;font:500 13.5px var(--sans);color:var(--ink2);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+.tpl[hidden]{display:none}
+.note{font-size:14px;color:var(--ink2);margin:0}
+
+/* rules */
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:0 28px;list-style:none;padding:0;margin:0;counter-reset:r}
+.rules li{display:grid;grid-template-columns:30px 1fr;gap:4px;padding:11px 0;border-bottom:1px solid var(--line);font-size:14.5px;counter-increment:r}
+.rules li::before{content:counter(r,decimal-leading-zero);font:500 12px var(--mono);color:var(--ink3);padding-top:2px}
+.rules b{font-weight:600}
+.rules span{color:var(--ink2)}
+
+/* submit + help */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.box{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:20px}
+.box h2{font-size:1.3rem}
+.box ol,.box ul{margin:10px 0 12px;padding-left:20px;font-size:15px}
+.box li{margin:4px 0}
+.box p{font-size:14px;color:var(--ink2);margin:0 0 6px}
+.box .gate{margin:6px 0 0}
+
 #pick{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:24px;width:min(420px,calc(100vw - 32px));box-shadow:var(--float)}
 #pick::backdrop{background:rgba(0,0,0,.45)}
 #pick h2{font:500 1.25rem/1.3 var(--sans);margin:0 0 6px}
@@ -39,218 +155,236 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 #pick button{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);padding:12px 14px;font:500 15px var(--sans);cursor:pointer}
 #pick button:hover,#pick button:focus-visible{border-color:var(--ink)}
 #pick button i{display:block;font-style:normal;font-weight:400;font-size:14px;color:var(--ink3);margin-top:2px}
+
+@media (max-width:860px){
+  .probs{grid-template-columns:1fr}
+  .moves{grid-template-columns:1fr;gap:10px}
+  .moves::before{left:19px;right:auto;top:20px;bottom:20px;width:2px;height:auto}
+  .mv{flex-direction:row;align-items:flex-start;text-align:left;gap:12px}
+  .mv .c{margin-top:0}
+  .mv .tag{align-self:flex-start}
+  .how{grid-template-columns:1fr 1fr}
+  .rules,.two{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .lights{grid-template-columns:1fr}
+  .how{grid-template-columns:1fr}
+  .tl::before{left:7px}
+  .ev{grid-template-columns:28px 1fr}
+  .ev .dot{grid-column:1;justify-self:start}
+  .ev:nth-child(odd) .card,.ev:nth-child(even) .card{grid-column:2}
+  .ev+.ev{margin-top:0}
+  .ev .when{flex-basis:72px}
+}
+@media (prefers-reduced-motion:reduce){.ev.next .dot{animation:none}.prob:hover{transform:none}}
 </style>
 </head>
-<body data-page="hackathon" class="read">
+<body data-page="hackathon">
 <header class="top"><div class="in">
   <a class="brand" href="/#HK">100x<b>·</b><span>C8 Module 2</span></a>
-  <nav aria-label="Hackathon pages"><a href="/c8/module-2/hackathon/">Hackathon</a></nav>
+  <nav aria-label="Hackathon sections"><a href="#problems">Problems</a><a href="#moves">Moves</a><a href="#timeline">Timeline</a><a href="#checkins">Check-ins</a><a href="#rules">Rules</a><a href="#submit">Submit</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
-<div class="wrap">
-  <main>
+
+<main class="hk">
+
 <div class="hero">
-  <p class="kick">Cohort 8 · Module 2 · Hackathon · <span class="t-code">Code track</span><span class="t-nocode">No-code track</span> · Sat 17 Oct, 9:00 PM IST to Tue 20 Oct, 9:00 PM IST</p>
-  <h1>Build the tool. Hand it to a real person. Earn the verdict.</h1>
-  <p class="dek">Four days, one track, solo. Six check-ins, all mandatory.</p>
-  <div class="btnrow"><a class="btn" href="#tracks">Pick your track</a></div>
-  <p class="trkline">Wrong track? <a href="/#HK">Change it on the map</a>.</p>
+  <p class="m">Cohort 8 · Module 2 · Hackathon</p>
+  <h1>Build it. Hand it over. <em>Earn the verdict.</em></h1>
+  <p class="dek">Sat 17 Oct, 9 PM to Tue 20 Oct, 9 PM IST. Solo.</p>
+  <a class="trkchip" href="/#HK" title="Change your track on the curriculum map"><span>Your track:</span><b class="t-code">Code</b><b class="t-nocode">No-code</b> ↗</a>
+  <div><p class="clock" id="clock" aria-live="polite"></p></div>
+  <div class="stats">
+    <div><b>3</b><span>problems, pick 1</span></div>
+    <div><b>5</b><span>moves</span></div>
+    <div><b>6</b><span>check-ins</span></div>
+    <div><b>72</b><span>hours</span></div>
+  </div>
+  <p class="oneline">The app is plumbing. <b>The grade is proof a real person used it.</b></p>
 </div>
 
-<div class="call"><p class="kick">The one line</p><p>The app is plumbing. The grade is proof a real person used it.</p></div>
-
-<section class="s" id="tracks">
-<h2>Pick a track</h2>
-<div class="trk">
-  <h3>BillShield</h3>
-  <p>Paste a bill. Get every line decoded, only provable flags, and one message to send.</p>
-  <dl><dt>Who you need</dt><dd>A classmate with a real bill, plus one cold user.</dd><dt>The win</dt><dd>They say, in words, they would send the message.</dd></dl>
-  <p><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full brief in the handbook</a></p>
-</div>
-<div class="trk">
-  <h3>Eval Co-pilot</h3>
-  <p>Write five known-good cases for a friend's AI feature. Grade it. Find the failure they were about to ship.</p>
-  <dl><dt>Who you need</dt><dd>A classmate shipping an LLM feature, plus one cold user.</dd><dt>The win</dt><dd>They change the prompt or guardrail and re-run.</dd></dl>
-  <p><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full brief in the handbook</a></p>
-</div>
-<div class="trk">
-  <h3>Concept Check</h3>
-  <p>A learner explains API, backend, or storage. Find the sentence where understanding turned into a memorised phrase.</p>
-  <dl><dt>Who you need</dt><dd>A classmate who says they get interfaces, plus one cold user.</dd><dt>The win</dt><dd>They could not derive before. They derive after.</dd></dl>
-  <p><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full brief in the handbook</a></p>
-</div>
-<p><b>Pick one. Lock your problem statement before Check-in 1, Sun 18 Oct, 9:00 AM IST.</b></p>
+<section class="sec" id="problems">
+  <h2>Pick one problem</h2>
+  <p class="sub">Tap one to mark it as yours.</p>
+  <div class="probs" role="radiogroup" aria-label="Problems">
+    <label class="prob"><input type="radio" name="prob" value="billshield">
+      <h3>BillShield <i>Yours</i></h3>
+      <p>Paste a bill. Decode every line, flag only what you can prove, write one message to send.</p>
+      <dl><dt>Test with</dt><dd>A classmate with a real bill</dd><dt>Win</dt><dd>They'd send the message</dd></dl>
+    </label>
+    <label class="prob"><input type="radio" name="prob" value="evalcopilot">
+      <h3>Eval Co-pilot <i>Yours</i></h3>
+      <p>Write five good test cases for a friend's AI feature. Grade it. Find the bug before they ship it.</p>
+      <dl><dt>Test with</dt><dd>A classmate shipping an AI feature</dd><dt>Win</dt><dd>They fix it and re-run</dd></dl>
+    </label>
+    <label class="prob"><input type="radio" name="prob" value="conceptcheck">
+      <h3>Concept Check <i>Yours</i></h3>
+      <p>A learner explains APIs, backends or storage. Find where they stopped understanding and started reciting.</p>
+      <dl><dt>Test with</dt><dd>A classmate who says they get it</dd><dt>Win</dt><dd>They can work it out after</dd></dl>
+    </label>
+  </div>
+  <p class="lock">Every problem also needs <b>one stranger</b> to test it. Lock your problem by <b>Check-in 1, Sun 9 AM</b>. <a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full briefs ↗</a></p>
 </section>
 
-<section class="s" id="moves">
-<h2>Run the five moves</h2>
-<p>The last four weeks, in order.</p>
-<div class="tw"><table>
-  <thead><tr><th>Move</th><th>What you learned</th><th>What you do</th><th>You hand in</th></tr></thead>
-  <tbody>
-    <tr><td>1. Be the tool by hand</td><td>Discovery</td><td>Sit with a real person. Do the job yourself before building.</td><td>Raw record and their reaction.</td></tr>
-    <tr><td>2. Name the need, then the tool</td><td>UI, API</td><td>For each capability finish: "the system has to be able to ___." Remember, react, generate, touch. Then map to frontend, API, model, database.</td><td>Need list, no tool named first.</td></tr>
-    <tr><td>3. Draw the boundary</td><td>API, model call</td><td>Mark what is deterministic and what the model judges. Circle the one place the model must not decide.</td><td>Hand-drawn diagram.</td></tr>
-    <tr><td>4. Shape the data, lock it</td><td>Data, auth, deploy</td><td>Draw the schema. Mark the one link that is your evidence. Add login and row-level security. Log in as two users. Prove neither sees the other's rows.</td><td>Hand-drawn schema, two-user test result, live link.</td></tr>
-    <tr><td>5. Earn the verdict</td><td>Discovery</td><td>Two real people use the deployed tool, one cold. Record what they did, not what they said. Write one surprise.</td><td>Behavioural evidence and the surprise.</td></tr>
-  </tbody>
-</table></div>
-<p class="gate">No Move 5, no submission.</p>
+<section class="sec" id="moves">
+  <h2>Run the five moves</h2>
+  <p class="sub">The last four weeks, in order. Tap a move to see its check-ins.</p>
+  <ol class="moves">
+    <li><button class="mv" type="button" data-m="1" aria-pressed="false"><span class="n">1</span><span class="c">
+      <span class="h">Do it by hand</span><span class="tag">Discovery</span>
+      <span class="ls"><span>Sit with someone</span><span>Do the job yourself</span></span>
+      <span class="out"><span>Hand in</span>Raw notes</span><span class="due">Check-in 2</span></span></button></li>
+    <li><button class="mv" type="button" data-m="2" aria-pressed="false"><span class="n">2</span><span class="c">
+      <span class="h">Needs before tools</span><span class="tag">UI · API</span>
+      <span class="ls"><span>"It must be able to…"</span><span>Then pick the tools</span></span>
+      <span class="out"><span>Hand in</span>Need list</span><span class="due">Check-in 3</span></span></button></li>
+    <li><button class="mv" type="button" data-m="3" aria-pressed="false"><span class="n">3</span><span class="c">
+      <span class="h">Draw the line</span><span class="tag">API · Model</span>
+      <span class="ls"><span>What code decides</span><span>What the AI decides</span><span>Circle the no-go</span></span>
+      <span class="out"><span>Hand in</span>Paper sketch</span><span class="due">Check-in 3</span></span></button></li>
+    <li><button class="mv" type="button" data-m="4" aria-pressed="false"><span class="n">4</span><span class="c">
+      <span class="h">Lock the data</span><span class="tag">Data · Auth · Deploy</span>
+      <span class="ls"><span>Draw the tables</span><span>Add login + RLS</span><span>Test two users</span></span>
+      <span class="out"><span>Hand in</span>Schema, test, live link</span><span class="due">Check-ins 3 to 5</span></span></button></li>
+    <li><button class="mv" type="button" data-m="5" aria-pressed="false"><span class="n">5</span><span class="c">
+      <span class="h">Earn the verdict</span><span class="tag">Discovery</span>
+      <span class="ls"><span>Two people use it</span><span>One is a stranger</span><span>Note one surprise</span></span>
+      <span class="out"><span>Hand in</span>What they did</span><span class="due">Check-in 6, submit</span></span></button></li>
+  </ol>
+  <p class="gate">No Move 5, no submission.</p>
+  <p class="hint">RLS = row-level security: each user sees only their own rows.</p>
 </section>
 
-<section class="s" id="rules">
-<h2>Follow ten rules</h2>
-<ol>
-  <li>Sat 17 Oct, 9:00 PM IST to Tue 20 Oct, 9:00 PM IST. Late work does not count.</li>
-  <li>One track. Lock it and your problem statement before Check-in 1.</li>
-  <li>Solo. People you test are subjects, not teammates.</li>
-  <li>Any AI tool to build. The grade is what AI cannot fake: real sessions, your diagrams, your surprise.</li>
-  <li>Hand-drawn means paper. Photo it, paste it.</li>
-  <li>Every feature traces to a need you wrote in Move 2.</li>
-  <li>Deployed and touchable. A screenshot is not an app.</li>
-  <li>Login and row-level security on every track. Two-user test or no submission.</li>
-  <li>Real people, real evidence. Fabrication is an automatic fail. An honest disproof beats a polished fake.</li>
-  <li>Consent. Redact names and account numbers.</li>
-</ol>
+<section class="sec" id="timeline">
+  <h2>The timeline</h2>
+  <p class="sub">Each check-in shows what <b>Green</b> looks like. Tick as you go.</p>
+  <ol class="tl" id="tl">
+    <li class="ev big" data-at="2026-10-17T21:00:00+05:30"><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">Start</p><h3>Hackathon opens</h3><p class="one">Pick a problem. Message your two people.</p>
+    </div><div class="when"><b>Sat 17</b><span>9 PM</span></div></div></li>
+
+    <li class="ev" data-at="2026-10-18T09:00:00+05:30" data-m=""><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">Check-in 1</p><h3>Locked</h3>
+      <ul class="gr"><li><label><input type="checkbox" data-k="11"><span>Problem in one sentence</span></label></li><li><label><input type="checkbox" data-k="12"><span>Classmate + stranger named</span></label></li><li><label><input type="checkbox" data-k="13"><span>Both messaged</span></label></li></ul>
+      <p class="pf"><b>Proof</b>Problem + two names</p>
+    </div><div class="when"><b>Sun 18</b><span>9 AM</span></div></div></li>
+
+    <li class="ev" data-at="2026-10-18T15:00:00+05:30" data-m="1"><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">Check-in 2 <span class="mvs">Move 1</span></p><h3>Done by hand</h3>
+      <ul class="gr"><li><label><input type="checkbox" data-k="21"><span>Did the job with a real person</span></label></li><li><label><input type="checkbox" data-k="22"><span>Raw notes + reaction saved</span></label></li><li><label><input type="checkbox" data-k="23"><span>Both booked to test</span></label></li></ul>
+      <p class="pf"><b>Proof</b>Photo of your notes</p>
+    </div><div class="when"><b>Sun 18</b><span>3 PM</span></div></div></li>
+
+    <li class="ev" data-at="2026-10-18T21:00:00+05:30" data-m="2 3 4"><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">Check-in 3 <span class="mvs">Moves 2 to 4</span></p><h3>On paper</h3>
+      <ul class="gr"><li><label><input type="checkbox" data-k="31"><span>Need list, no tools named</span></label></li><li><label><input type="checkbox" data-k="32"><span>Line drawn, no-go circled</span></label></li><li><label><input type="checkbox" data-k="33"><span>Tables drawn, key link marked</span></label></li></ul>
+      <p class="pf"><b>Proof</b>Three photos</p>
+    </div><div class="when"><b>Sun 18</b><span>9 PM</span></div></div></li>
+
+    <li class="ev" data-at="2026-10-19T09:00:00+05:30" data-m="4"><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">Check-in 4 <span class="mvs">Move 4</span></p><h3>Live</h3>
+      <ul class="gr"><li><label><input type="checkbox" data-k="41"><span>Live link opens</span></label></li><li><label><input type="checkbox" data-k="42"><span>Main flow works once</span></label></li></ul>
+      <p class="pf"><b>Proof</b>The live link</p>
+    </div><div class="when"><b>Mon 19</b><span>9 AM</span></div></div></li>
+
+    <li class="ev" data-at="2026-10-19T21:00:00+05:30" data-m="4"><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">Check-in 5 <span class="mvs">Move 4</span></p><h3>Locked down</h3>
+      <ul class="gr"><li><label><input type="checkbox" data-k="51"><span>Login + RLS on</span></label></li><li><label><input type="checkbox" data-k="52"><span>Two-user test passes</span></label></li><li><label><input type="checkbox" data-k="53"><span>A stranger can use it alone</span></label></li></ul>
+      <p class="pf"><b>Proof</b>Two-user screenshots</p>
+    </div><div class="when"><b>Mon 19</b><span>9 PM</span></div></div></li>
+
+    <li class="ev" data-at="2026-10-20T09:00:00+05:30" data-m="5"><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">Check-in 6 <span class="mvs">Move 5</span></p><h3>In their hands</h3>
+      <ul class="gr"><li><label><input type="checkbox" data-k="61"><span>One person used it</span></label></li><li><label><input type="checkbox" data-k="62"><span>Noted what they did, not said</span></label></li><li><label><input type="checkbox" data-k="63"><span>Stranger session booked</span></label></li></ul>
+      <p class="pf"><b>Proof</b>Session notes</p>
+    </div><div class="when"><b>Tue 20</b><span>9 AM</span></div></div></li>
+
+    <li class="ev big" data-at="2026-10-20T21:00:00+05:30" data-m="5"><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">Deadline</p><h3>Submit</h3>
+      <ul class="gr"><li><label><input type="checkbox" data-k="71"><span>Both sessions done</span></label></li><li><label><input type="checkbox" data-k="72"><span>One surprise written</span></label></li><li><label><input type="checkbox" data-k="73"><span>Form submitted</span></label></li></ul>
+      <p class="pf"><b>Proof</b>Submission confirmation</p>
+    </div><div class="when"><b>Tue 20</b><span>9 PM</span></div></div></li>
+
+    <li class="ev" data-at="2026-10-22T20:30:00+05:30"><span class="dot"></span><div class="card"><div class="bd">
+      <p class="lbl">After</p><h3>Results + review</h3><p class="one">Results Thu (time to be announced). Submissions discussed in the 8:30 PM office hour.</p>
+    </div><div class="when"><b>Thu 22</b><span>8:30 PM</span></div></div></li>
+  </ol>
 </section>
 
-<section class="s" id="schedule">
-<h2>Know the times</h2>
-<div class="tw"><table>
-  <thead><tr><th>Day and time (IST)</th><th>What</th><th>Where</th></tr></thead>
-  <tbody>
-    <tr><td>Sat 17 Oct, 9:00 PM</td><td>Hackathon starts</td><td>This page</td></tr>
-    <tr><td>Sun 18 Oct, 9:00 AM</td><td>Check-in 1. Problem statement locked.</td><td>Discord</td></tr>
-    <tr><td>Sun 18 Oct, 3:00 PM</td><td>Check-in 2</td><td>Discord</td></tr>
-    <tr><td>Sun 18 Oct, 9:00 PM</td><td>Check-in 3</td><td>Discord</td></tr>
-    <tr><td>Mon 19 Oct, 9:00 AM</td><td>Check-in 4</td><td>Discord</td></tr>
-    <tr><td>Mon 19 Oct, 9:00 PM</td><td>Check-in 5</td><td>Discord</td></tr>
-    <tr><td>Tue 20 Oct, 9:00 AM</td><td>Check-in 6</td><td>Discord</td></tr>
-    <tr><td>Tue 20 Oct, 9:00 PM</td><td>Submissions close</td><td>Form</td></tr>
-    <tr><td>Thu 22 Oct</td><td>Results</td><td>Time to be announced</td></tr>
-    <tr><td>Thu 22 Oct, 8:30 PM</td><td>Submissions discussed</td><td>Office hour</td></tr>
-  </tbody>
-</table></div>
-</section>
-
-<section class="s" id="checkins">
-<h2>Post every check-in</h2>
-<ul>
-  <li>All six are mandatory. A missed check-in is graded negative.</li>
-  <li>Open one thread in the <span class="t-code">code</span><span class="t-nocode">no-code</span> hackathon check-in forum on Discord. Title it with your name.</li>
-  <li>Post every check-in as a reply in that thread. Never a new thread.</li>
-  <li>Post on time, or up to 1 hour late. After 1 hour it is not recorded.</li>
-  <li>Pick the template below and copy it. The first word must be Green or Yellow, spelled exactly. Posts are counted automatically.</li>
-  <li>Attach one proof with every post: a photo, a screenshot, or a link.</li>
-</ul>
-<div class="tw"><table>
-  <thead><tr><th>Word</th><th>Means</th></tr></thead>
-  <tbody>
-    <tr><td>Green</td><td>Everything is going as per the plan.</td></tr>
-    <tr><td>Yellow</td><td>Blocked. One line on why, with proof of the block.</td></tr>
-    <tr><td>Red</td><td>No post. We record it, and it is graded negative.</td></tr>
-  </tbody>
-</table></div>
-<p>Stuck, or almost no progress? Post Yellow and say so. Honest shows you are in the loop.</p>
-<h3>On plan? Copy Green</h3>
-<div class="code"><div class="hd">Green template<button class="cp" type="button">Copy</button></div><pre>
+<section class="sec" id="checkins">
+  <h2>How to check in</h2>
+  <p class="sub">All six are mandatory. A missed one is graded negative.</p>
+  <ol class="how">
+    <li><b>One thread</b><span>In the <span class="t-code">code</span><span class="t-nocode">no-code</span> check-in forum on Discord. Title: your name.</span></li>
+    <li><b>Reply in it</b><span>Every check-in is a reply. Never a new thread.</span></li>
+    <li><b>Green or Yellow first</b><span>Exact word, first line. Posts are counted automatically.</span></li>
+    <li><b>Attach one proof</b><span>Photo, screenshot or link.</span></li>
+  </ol>
+  <div class="lights">
+    <div class="lt g"><b>Green</b><span>On plan.</span></div>
+    <div class="lt y"><b>Yellow</b><span>Blocked or behind. Say why, show the block.</span></div>
+    <div class="lt r"><b>Red</b><span>No post. Graded negative.</span></div>
+  </div>
+  <p class="note" style="margin-bottom:16px">Up to 1 hour late still counts. After that, it is missed. Behind? Post Yellow. Honest beats silent.</p>
+  <div class="tabs" role="tablist" aria-label="Templates">
+    <button type="button" role="tab" aria-selected="true" data-tpl="g">Green template</button>
+    <button type="button" role="tab" aria-selected="false" data-tpl="y">Yellow template</button>
+  </div>
+  <div class="code tpl" data-tpl="g"><div class="hd">Green<button class="cp" type="button">Copy</button></div><pre>
 <div class="ln"><code>Green</code></div>
-<div class="ln"><code>What I am doing now: </code></div>
-<div class="ln"><code>What I finished since the last check-in: </code></div>
-<div class="ln"><code>What I will do next: </code></div>
+<div class="ln"><code>Doing now: </code></div>
+<div class="ln"><code>Done since last check-in: </code></div>
+<div class="ln"><code>Next: </code></div>
 <div class="ln"><code>Proof attached: </code></div></pre></div>
-<h3>Blocked? Copy Yellow</h3>
-<div class="code"><div class="hd">Yellow template<button class="cp" type="button">Copy</button></div><pre>
+  <div class="code tpl" data-tpl="y" hidden><div class="hd">Yellow<button class="cp" type="button">Copy</button></div><pre>
 <div class="ln"><code>Yellow</code></div>
-<div class="ln"><code>What I am doing now: </code></div>
-<div class="ln"><code>What I finished since the last check-in: </code></div>
-<div class="ln"><code>Blocked, in one line: what is stopping me? </code></div>
-<div class="ln"><code>What I have tried: </code></div>
-<div class="ln"><code>What help I need: </code></div>
+<div class="ln"><code>Doing now: </code></div>
+<div class="ln"><code>Done since last check-in: </code></div>
+<div class="ln"><code>Blocked by (one line): </code></div>
+<div class="ln"><code>Tried: </code></div>
+<div class="ln"><code>Help I need: </code></div>
 <div class="ln"><code>Proof of the block attached: </code></div></pre></div>
 </section>
 
-<section class="s" id="green">
-<h2>Know what Green looks like</h2>
-<p>The ideal run, check-in by check-in. You do not have to match it. Use it to see where you stand. The proof line says what to attach.</p>
-<h3>Check-in 1 · Sun 18 Oct, 9:00 AM IST: Locked</h3>
-<ul class="ck">
-<li><input type="checkbox" id="c11"><label for="c11"><span class="t">One track and one problem statement, in one sentence. You commit to it.</span></label></li>
-<li><input type="checkbox" id="c12"><label for="c12"><span class="t">Two people named: a classmate who fits the track, and one cold user.</span></label></li>
-<li><input type="checkbox" id="c13"><label for="c13"><span class="t">You know how to reach both, and you have messaged them.</span></label></li>
-</ul>
-<p class="muted">Proof: Your problem statement and the two names.</p>
-<h3>Check-in 2 · Sun 18 Oct, 3:00 PM IST: Done by hand</h3>
-<ul class="ck">
-<li><input type="checkbox" id="c21"><label for="c21"><span class="t">Move 1 done. You sat with a real person and did the job yourself.</span></label></li>
-<li><input type="checkbox" id="c22"><label for="c22"><span class="t">Raw record and their reaction saved.</span></label></li>
-<li><input type="checkbox" id="c23"><label for="c23"><span class="t">Both people have agreed to a time to try your tool.</span></label></li>
-</ul>
-<p class="muted">Proof: A photo of your raw record.</p>
-<h3>Check-in 3 · Sun 18 Oct, 9:00 PM IST: On paper</h3>
-<ul class="ck">
-<li><input type="checkbox" id="c31"><label for="c31"><span class="t">Move 2 done. Need list written, no tool named first.</span></label></li>
-<li><input type="checkbox" id="c32"><label for="c32"><span class="t">Move 3 done. Boundary drawn by hand, the one place the model must not decide circled.</span></label></li>
-<li><input type="checkbox" id="c33"><label for="c33"><span class="t">Schema drawn by hand, the evidence link marked.</span></label></li>
-</ul>
-<p class="muted">Proof: Photos of the need list, boundary and schema.</p>
-<h3>Check-in 4 · Mon 19 Oct, 9:00 AM IST: Live</h3>
-<ul class="ck">
-<li><input type="checkbox" id="c41"><label for="c41"><span class="t">A first version deployed. The live link opens, even if it is rough.</span></label></li>
-<li><input type="checkbox" id="c42"><label for="c42"><span class="t">The core flow works once, end to end, on the live link.</span></label></li>
-</ul>
-<p class="muted">Proof: The live link.</p>
-<h3>Check-in 5 · Mon 19 Oct, 9:00 PM IST: Locked down</h3>
-<ul class="ck">
-<li><input type="checkbox" id="c51"><label for="c51"><span class="t">Move 4 done. Login and row-level security on.</span></label></li>
-<li><input type="checkbox" id="c52"><label for="c52"><span class="t">Two-user test passed. Neither user sees the other's rows.</span></label></li>
-<li><input type="checkbox" id="c53"><label for="c53"><span class="t">The tool is ready for a stranger to use without you explaining it.</span></label></li>
-</ul>
-<p class="muted">Proof: Screenshots of the two-user test.</p>
-<h3>Check-in 6 · Tue 20 Oct, 9:00 AM IST: In their hands</h3>
-<ul class="ck">
-<li><input type="checkbox" id="c61"><label for="c61"><span class="t">Move 5 started. One person has used the deployed tool.</span></label></li>
-<li><input type="checkbox" id="c62"><label for="c62"><span class="t">What they did is recorded, not what they said.</span></label></li>
-<li><input type="checkbox" id="c63"><label for="c63"><span class="t">The second session, the cold one, is booked before 9:00 PM IST.</span></label></li>
-</ul>
-<p class="muted">Proof: Your notes from the first session.</p>
-<h3>Deadline · Tue 20 Oct, 9:00 PM IST: Submitted</h3>
-<ul class="ck">
-<li><input type="checkbox" id="c71"><label for="c71"><span class="t">Both sessions done. One surprise written.</span></label></li>
-<li><input type="checkbox" id="c72"><label for="c72"><span class="t">Template filled, repo public, live link working. Submitted.</span></label></li>
-</ul>
-<p class="muted">Proof: The submission confirmation.</p>
+<section class="sec" id="rules">
+  <h2>Ten rules</h2>
+  <p class="sub">Break one and the submission does not count.</p>
+  <ol class="rules">
+    <li><div><b>On time.</b> <span>Late work does not count.</span></div></li>
+    <li><div><b>One problem.</b> <span>Locked by Check-in 1.</span></div></li>
+    <li><div><b>Solo.</b> <span>Testers are not teammates.</span></div></li>
+    <li><div><b>Any AI tool.</b> <span>The proof is what AI cannot fake.</span></div></li>
+    <li><div><b>Draw on paper.</b> <span>Photo it, paste it.</span></div></li>
+    <li><div><b>Features trace to needs.</b> <span>Every one, from Move 2.</span></div></li>
+    <li><div><b>Deployed.</b> <span>A screenshot is not an app.</span></div></li>
+    <li><div><b>Login + RLS.</b> <span>Two-user test, every problem.</span></div></li>
+    <li><div><b>Real evidence only.</b> <span>Faking it fails. Honest beats polished.</span></div></li>
+    <li><div><b>Get consent.</b> <span>Hide names and account numbers.</span></div></li>
+  </ol>
 </section>
 
-<section class="s" id="submit">
-<h2>Submit three things</h2>
-<ol>
-  <li>Your filled template.</li>
-  <li>A public repo.</li>
-  <li>A live deploy link.</li>
-</ol>
-<p>The form opens on Tue 20 Oct. We share it on Discord.</p>
-<p class="gate">No Move 5, no submission.</p>
+<section class="sec" id="submit">
+  <div class="two">
+    <div class="box">
+      <h2>Submit three things</h2>
+      <ol><li>Your filled template</li><li>A public repo</li><li>A live link</li></ol>
+      <p>Form opens Tue 20 Oct, shared on Discord.</p>
+      <span class="gate">No Move 5, no submission.</span>
+    </div>
+    <div class="box">
+      <h2>Stuck?</h2>
+      <ul><li>We help with: problem, rules, dates, logistics.</li><li>Ask in <b class="t-code">Code Hackathon</b><b class="t-nocode">No Code Hackathon help</b> on Discord.</li><li>The build is yours. Stuck 30 min? Note it, move on.</li><li>Feedback comes after you submit.</li></ul>
+      <p><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full handbook ↗</a></p>
+    </div>
+  </div>
 </section>
 
-<section class="s" id="stuck">
-<h2>Stuck? Do the work, then ask the right thing</h2>
-<ul>
-  <li>This is a hackathon, not a guided build. You do the work.</li>
-  <li>We help with the problem statement, rules, dates and logistics.</li>
-  <li>Ask in <span class="t-code">Code Hackathon</span><span class="t-nocode">No Code Hackathon help</span> on Discord.</li>
-  <li>Everything else, you figure out. Stuck for 30 minutes? Note the block, move to the next part.</li>
-  <li>You do not need everything solved. Do your best in the time.</li>
-  <li>Feedback comes after you submit: what you did, and how to do better.</li>
-</ul>
-</section>
+</main>
 
-<p class="sig">The app is plumbing.<small>Rules, reasoning and SOPs live in <a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">the full handbook</a>.</small></p>
-  </main>
-</div>
 <dialog id="pick" aria-labelledby="pickh">
   <h2 id="pickh">Which track are you on?</h2>
-  <p>The rules and instructions follow your track.</p>
+  <p>Your Discord channels follow your track.</p>
   <div class="opts">
     <button type="button" data-pick="nocode">No-code<i>Read the plan, approve, verify</i></button>
     <button type="button" data-pick="code">Code<i>Python, your own backend</i></button>
@@ -270,6 +404,48 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   /* a track changed on the map, in another tab or before coming back, updates this page */
   addEventListener('storage',function(e){if(e.key==='c8m2-track')apply(e.newValue)});
   addEventListener('pageshow',function(){apply(read())});
+
+  function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+
+  /* the problem a student marks as theirs */
+  var p=get('c8hk-problem'), radios=[].slice.call(document.querySelectorAll('input[name=prob]'));
+  radios.forEach(function(r){if(r.value===p)r.checked=true;r.addEventListener('change',function(){set('c8hk-problem',r.value)})});
+
+  /* Green ticks per check-in */
+  var ticks={};try{ticks=JSON.parse(get('c8hk-ticks')||'{}')}catch(e){}
+  [].slice.call(document.querySelectorAll('.gr input')).forEach(function(b){b.checked=!!ticks[b.dataset.k];b.addEventListener('change',function(){ticks[b.dataset.k]=b.checked;set('c8hk-ticks',JSON.stringify(ticks))})});
+
+  /* a move highlights the check-ins it lands in */
+  var tl=document.getElementById('tl'), evs=[].slice.call(tl.querySelectorAll('.ev')), mvs=[].slice.call(document.querySelectorAll('.mv'));
+  mvs.forEach(function(b){b.addEventListener('click',function(){
+    var on=b.getAttribute('aria-pressed')!=='true', m=b.dataset.m;
+    mvs.forEach(function(x){x.setAttribute('aria-pressed','false')});
+    evs.forEach(function(e){e.classList.remove('hl')});
+    tl.classList.toggle('dim',on);
+    if(!on)return;
+    b.setAttribute('aria-pressed','true');
+    var first=null;
+    evs.forEach(function(e){if((' '+(e.dataset.m||'')+' ').indexOf(' '+m+' ')>-1){e.classList.add('hl');first=first||e}});
+    if(first)first.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});
+  })});
+
+  /* the clock: past events fade, the next one is marked */
+  var clock=document.getElementById('clock'), start=Date.parse(evs[0].dataset.at), end=Date.parse('2026-10-20T21:00:00+05:30');
+  function left(ms){var m=Math.max(0,Math.floor(ms/6e4)),d=Math.floor(m/1440),h=Math.floor(m%1440/60);m=m%60;return (d?d+'d ':'')+(d||h?h+'h ':'')+m+'m'}
+  function tick(){
+    var now=Date.now(), next=null;
+    evs.forEach(function(e){var t=Date.parse(e.dataset.at);e.classList.toggle('past',t<=now);e.classList.remove('next');if(!next&&t>now)next=e});
+    if(next)next.classList.add('next');
+    if(now<start) clock.innerHTML='Starts in <b>'+left(start-now)+'</b>';
+    else if(now<end) clock.innerHTML=next.querySelector('.lbl').firstChild.textContent.trim()+' in <b>'+left(Date.parse(next.dataset.at)-now)+'</b>';
+    else clock.innerHTML='Submissions closed. <b>Results Thu 22 Oct</b>';
+  }
+  tick(); setInterval(tick,30000);
+
+  /* Green and Yellow templates */
+  var tabs=[].slice.call(document.querySelectorAll('.tabs button')), tpls=[].slice.call(document.querySelectorAll('.tpl'));
+  tabs.forEach(function(b){b.addEventListener('click',function(){tabs.forEach(function(x){x.setAttribute('aria-selected',x===b)});tpls.forEach(function(t){t.hidden=t.dataset.tpl!==b.dataset.tpl})})});
 })();
 </script>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Hackathon</span><a href="/#HK">Curriculum map</a><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full handbook</a></div></footer>
