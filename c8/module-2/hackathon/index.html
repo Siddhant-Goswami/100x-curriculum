@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hackathon | 100xEngineers</title>
+<meta name="description" content="Cohort 8 Module 2 hackathon, Sat 17 Oct 9:00 PM IST to Tue 20 Oct 9:00 PM IST. Pick a track, run the five moves, post every check-in, and earn the verdict.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<script>
+/* the track comes from the map (c8m2-track); the page asks once if it is missing */
+(function(){var t=null;try{t=localStorage.getItem('c8m2-track')}catch(e){}if(t==='code'||t==='nocode')document.documentElement.setAttribute('data-hk',t)})();
+</script>
+<style>
+.hero .btnrow{margin:20px 0 0}
+.trk{border-top:1px solid var(--line);padding:16px 0 4px}
+.trk:last-of-type{border-bottom:1px solid var(--line);margin-bottom:1em}
+.trk h3{margin:0 0 4px!important}
+.trk p{margin:0 0 8px!important}
+.trk dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0 0 10px;font-size:15.5px}
+.trk dt{color:var(--ink3)}
+.trk dd{margin:0}
+.trk details{margin:0 0 8px}
+.trk summary{cursor:pointer;font-size:15px;color:var(--ink2)}
+.trk details p{font-size:15.5px;color:var(--ink2);margin:8px 0 0!important}
+.gate{font-weight:600}
+.st{display:inline-block;min-width:4.5em;font-weight:600}
+html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{display:none}
+.trkline{font-size:15px;color:var(--ink3);margin:10px 0 0}
+#pick{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:24px;width:min(420px,calc(100vw - 32px));box-shadow:var(--float)}
+#pick::backdrop{background:rgba(0,0,0,.45)}
+#pick h2{font:500 1.25rem/1.3 var(--sans);margin:0 0 6px}
+#pick p{margin:0 0 16px;color:var(--ink2);font-size:15px}
+#pick .opts{display:grid;gap:10px}
+#pick button{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);padding:12px 14px;font:500 15px var(--sans);cursor:pointer}
+#pick button:hover,#pick button:focus-visible{border-color:var(--ink)}
+#pick button i{display:block;font-style:normal;font-weight:400;font-size:14px;color:var(--ink3);margin-top:2px}
+</style>
+</head>
+<body data-page="hackathon" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#HK">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Hackathon pages"><a href="/c8/module-2/hackathon/">Hackathon</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Hackathon · <span class="t-code">Code track</span><span class="t-nocode">No-code track</span> · Sat 17 Oct, 9:00 PM IST to Tue 20 Oct, 9:00 PM IST</p>
+  <h1>Build the tool. Hand it to a real person. Earn the verdict.</h1>
+  <p class="dek">Four days, one track, solo. Six check-ins, all mandatory.</p>
+  <div class="btnrow"><a class="btn" href="#tracks">Pick your track</a></div>
+  <p class="trkline">Wrong track? <a href="/#HK">Change it on the map</a>.</p>
+</div>
+
+<div class="call"><p class="kick">The one line</p><p>The app is plumbing. The grade is proof a real person used it.</p></div>
+
+<section class="s" id="tracks">
+<h2>Pick a track</h2>
+<div class="trk">
+  <h3>BillShield</h3>
+  <p>Paste a bill. Get every line decoded, only provable flags, and one message to send.</p>
+  <dl><dt>Who you need</dt><dd>A classmate with a real bill, plus one cold user.</dd><dt>The win</dt><dd>They say, in words, they would send the message.</dd></dl>
+  <p><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full brief in the handbook</a></p>
+</div>
+<div class="trk">
+  <h3>Eval Co-pilot</h3>
+  <p>Write five known-good cases for a friend's AI feature. Grade it. Find the failure they were about to ship.</p>
+  <dl><dt>Who you need</dt><dd>A classmate shipping an LLM feature, plus one cold user.</dd><dt>The win</dt><dd>They change the prompt or guardrail and re-run.</dd></dl>
+  <p><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full brief in the handbook</a></p>
+</div>
+<div class="trk">
+  <h3>Concept Check</h3>
+  <p>A learner explains API, backend, or storage. Find the sentence where understanding turned into a memorised phrase.</p>
+  <dl><dt>Who you need</dt><dd>A classmate who says they get interfaces, plus one cold user.</dd><dt>The win</dt><dd>They could not derive before. They derive after.</dd></dl>
+  <p><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full brief in the handbook</a></p>
+</div>
+<p><b>Pick one. Lock your problem statement before Check-in 1, Sun 18 Oct, 9:00 AM IST.</b></p>
+</section>
+
+<section class="s" id="moves">
+<h2>Run the five moves</h2>
+<p>The last four weeks, in order.</p>
+<div class="tw"><table>
+  <thead><tr><th>Move</th><th>What you learned</th><th>What you do</th><th>You hand in</th></tr></thead>
+  <tbody>
+    <tr><td>1. Be the tool by hand</td><td>Discovery</td><td>Sit with a real person. Do the job yourself before building.</td><td>Raw record and their reaction.</td></tr>
+    <tr><td>2. Name the need, then the tool</td><td>UI, API</td><td>For each capability finish: "the system has to be able to ___." Remember, react, generate, touch. Then map to frontend, API, model, database.</td><td>Need list, no tool named first.</td></tr>
+    <tr><td>3. Draw the boundary</td><td>API, model call</td><td>Mark what is deterministic and what the model judges. Circle the one place the model must not decide.</td><td>Hand-drawn diagram.</td></tr>
+    <tr><td>4. Shape the data, lock it</td><td>Data, auth, deploy</td><td>Draw the schema. Mark the one link that is your evidence. Add login and row-level security. Log in as two users. Prove neither sees the other's rows.</td><td>Hand-drawn schema, two-user test result, live link.</td></tr>
+    <tr><td>5. Earn the verdict</td><td>Discovery</td><td>Two real people use the deployed tool, one cold. Record what they did, not what they said. Write one surprise.</td><td>Behavioural evidence and the surprise.</td></tr>
+  </tbody>
+</table></div>
+<p class="gate">No Move 5, no submission.</p>
+</section>
+
+<section class="s" id="rules">
+<h2>Follow ten rules</h2>
+<ol>
+  <li>Sat 17 Oct, 9:00 PM IST to Tue 20 Oct, 9:00 PM IST. Late work does not count.</li>
+  <li>One track. Lock it and your problem statement before Check-in 1.</li>
+  <li>Solo. People you test are subjects, not teammates.</li>
+  <li>Any AI tool to build. The grade is what AI cannot fake: real sessions, your diagrams, your surprise.</li>
+  <li>Hand-drawn means paper. Photo it, paste it.</li>
+  <li>Every feature traces to a need you wrote in Move 2.</li>
+  <li>Deployed and touchable. A screenshot is not an app.</li>
+  <li>Login and row-level security on every track. Two-user test or no submission.</li>
+  <li>Real people, real evidence. Fabrication is an automatic fail. An honest disproof beats a polished fake.</li>
+  <li>Consent. Redact names and account numbers.</li>
+</ol>
+</section>
+
+<section class="s" id="schedule">
+<h2>Know the times</h2>
+<div class="tw"><table>
+  <thead><tr><th>Day and time (IST)</th><th>What</th><th>Where</th></tr></thead>
+  <tbody>
+    <tr><td>Sat 17 Oct, 9:00 PM</td><td>Hackathon starts</td><td>This page</td></tr>
+    <tr><td>Sun 18 Oct, 9:00 AM</td><td>Check-in 1. Problem statement locked.</td><td>Discord</td></tr>
+    <tr><td>Sun 18 Oct, 3:00 PM</td><td>Check-in 2</td><td>Discord</td></tr>
+    <tr><td>Sun 18 Oct, 9:00 PM</td><td>Check-in 3</td><td>Discord</td></tr>
+    <tr><td>Mon 19 Oct, 9:00 AM</td><td>Check-in 4</td><td>Discord</td></tr>
+    <tr><td>Mon 19 Oct, 9:00 PM</td><td>Check-in 5</td><td>Discord</td></tr>
+    <tr><td>Tue 20 Oct, 9:00 AM</td><td>Check-in 6</td><td>Discord</td></tr>
+    <tr><td>Tue 20 Oct, 9:00 PM</td><td>Submissions close</td><td>Form</td></tr>
+    <tr><td>Thu 22 Oct</td><td>Results</td><td>Time to be announced</td></tr>
+    <tr><td>Thu 22 Oct, 8:30 PM</td><td>Submissions discussed</td><td>Office hour</td></tr>
+  </tbody>
+</table></div>
+</section>
+
+<section class="s" id="checkins">
+<h2>Post every check-in</h2>
+<ul>
+  <li>All six are mandatory. A missed check-in is graded negative.</li>
+  <li>Open one thread in the <span class="t-code">code</span><span class="t-nocode">no-code</span> hackathon check-in forum on Discord. Title it with your name.</li>
+  <li>Post every check-in as a reply in that thread. Never a new thread.</li>
+  <li>Post on time, or up to 1 hour late. After 1 hour it is not recorded.</li>
+  <li>Pick the template below and copy it. The first word must be Green or Yellow, spelled exactly. Posts are counted automatically.</li>
+  <li>Attach one proof with every post: a photo, a screenshot, or a link.</li>
+</ul>
+<div class="tw"><table>
+  <thead><tr><th>Word</th><th>Means</th></tr></thead>
+  <tbody>
+    <tr><td>Green</td><td>Everything is going as per the plan.</td></tr>
+    <tr><td>Yellow</td><td>Blocked. One line on why, with proof of the block.</td></tr>
+    <tr><td>Red</td><td>No post. We record it, and it is graded negative.</td></tr>
+  </tbody>
+</table></div>
+<p>Stuck, or almost no progress? Post Yellow and say so. Honest shows you are in the loop.</p>
+<h3>On plan? Copy Green</h3>
+<div class="code"><div class="hd">Green template<button class="cp" type="button">Copy</button></div><pre>
+<div class="ln"><code>Green</code></div>
+<div class="ln"><code>What I am doing now: </code></div>
+<div class="ln"><code>What I finished since the last check-in: </code></div>
+<div class="ln"><code>What I will do next: </code></div>
+<div class="ln"><code>Proof attached: </code></div></pre></div>
+<h3>Blocked? Copy Yellow</h3>
+<div class="code"><div class="hd">Yellow template<button class="cp" type="button">Copy</button></div><pre>
+<div class="ln"><code>Yellow</code></div>
+<div class="ln"><code>What I am doing now: </code></div>
+<div class="ln"><code>What I finished since the last check-in: </code></div>
+<div class="ln"><code>Blocked, in one line: what is stopping me? </code></div>
+<div class="ln"><code>What I have tried: </code></div>
+<div class="ln"><code>What help I need: </code></div>
+<div class="ln"><code>Proof of the block attached: </code></div></pre></div>
+</section>
+
+<section class="s" id="green">
+<h2>Know what Green looks like</h2>
+<p>The ideal run, check-in by check-in. You do not have to match it. Use it to see where you stand. The proof line says what to attach.</p>
+<h3>Check-in 1 · Sun 18 Oct, 9:00 AM IST: Locked</h3>
+<ul class="ck">
+<li><input type="checkbox" id="c11"><label for="c11"><span class="t">One track and one problem statement, in one sentence. You commit to it.</span></label></li>
+<li><input type="checkbox" id="c12"><label for="c12"><span class="t">Two people named: a classmate who fits the track, and one cold user.</span></label></li>
+<li><input type="checkbox" id="c13"><label for="c13"><span class="t">You know how to reach both, and you have messaged them.</span></label></li>
+</ul>
+<p class="muted">Proof: Your problem statement and the two names.</p>
+<h3>Check-in 2 · Sun 18 Oct, 3:00 PM IST: Done by hand</h3>
+<ul class="ck">
+<li><input type="checkbox" id="c21"><label for="c21"><span class="t">Move 1 done. You sat with a real person and did the job yourself.</span></label></li>
+<li><input type="checkbox" id="c22"><label for="c22"><span class="t">Raw record and their reaction saved.</span></label></li>
+<li><input type="checkbox" id="c23"><label for="c23"><span class="t">Both people have agreed to a time to try your tool.</span></label></li>
+</ul>
+<p class="muted">Proof: A photo of your raw record.</p>
+<h3>Check-in 3 · Sun 18 Oct, 9:00 PM IST: On paper</h3>
+<ul class="ck">
+<li><input type="checkbox" id="c31"><label for="c31"><span class="t">Move 2 done. Need list written, no tool named first.</span></label></li>
+<li><input type="checkbox" id="c32"><label for="c32"><span class="t">Move 3 done. Boundary drawn by hand, the one place the model must not decide circled.</span></label></li>
+<li><input type="checkbox" id="c33"><label for="c33"><span class="t">Schema drawn by hand, the evidence link marked.</span></label></li>
+</ul>
+<p class="muted">Proof: Photos of the need list, boundary and schema.</p>
+<h3>Check-in 4 · Mon 19 Oct, 9:00 AM IST: Live</h3>
+<ul class="ck">
+<li><input type="checkbox" id="c41"><label for="c41"><span class="t">A first version deployed. The live link opens, even if it is rough.</span></label></li>
+<li><input type="checkbox" id="c42"><label for="c42"><span class="t">The core flow works once, end to end, on the live link.</span></label></li>
+</ul>
+<p class="muted">Proof: The live link.</p>
+<h3>Check-in 5 · Mon 19 Oct, 9:00 PM IST: Locked down</h3>
+<ul class="ck">
+<li><input type="checkbox" id="c51"><label for="c51"><span class="t">Move 4 done. Login and row-level security on.</span></label></li>
+<li><input type="checkbox" id="c52"><label for="c52"><span class="t">Two-user test passed. Neither user sees the other's rows.</span></label></li>
+<li><input type="checkbox" id="c53"><label for="c53"><span class="t">The tool is ready for a stranger to use without you explaining it.</span></label></li>
+</ul>
+<p class="muted">Proof: Screenshots of the two-user test.</p>
+<h3>Check-in 6 · Tue 20 Oct, 9:00 AM IST: In their hands</h3>
+<ul class="ck">
+<li><input type="checkbox" id="c61"><label for="c61"><span class="t">Move 5 started. One person has used the deployed tool.</span></label></li>
+<li><input type="checkbox" id="c62"><label for="c62"><span class="t">What they did is recorded, not what they said.</span></label></li>
+<li><input type="checkbox" id="c63"><label for="c63"><span class="t">The second session, the cold one, is booked before 9:00 PM IST.</span></label></li>
+</ul>
+<p class="muted">Proof: Your notes from the first session.</p>
+<h3>Deadline · Tue 20 Oct, 9:00 PM IST: Submitted</h3>
+<ul class="ck">
+<li><input type="checkbox" id="c71"><label for="c71"><span class="t">Both sessions done. One surprise written.</span></label></li>
+<li><input type="checkbox" id="c72"><label for="c72"><span class="t">Template filled, repo public, live link working. Submitted.</span></label></li>
+</ul>
+<p class="muted">Proof: The submission confirmation.</p>
+</section>
+
+<section class="s" id="submit">
+<h2>Submit three things</h2>
+<ol>
+  <li>Your filled template.</li>
+  <li>A public repo.</li>
+  <li>A live deploy link.</li>
+</ol>
+<p>The form opens on Tue 20 Oct. We share it on Discord.</p>
+<p class="gate">No Move 5, no submission.</p>
+</section>
+
+<section class="s" id="stuck">
+<h2>Stuck? Do the work, then ask the right thing</h2>
+<ul>
+  <li>This is a hackathon, not a guided build. You do the work.</li>
+  <li>We help with the problem statement, rules, dates and logistics.</li>
+  <li>Ask in <span class="t-code">Code Hackathon</span><span class="t-nocode">No Code Hackathon help</span> on Discord.</li>
+  <li>Everything else, you figure out. Stuck for 30 minutes? Note the block, move to the next part.</li>
+  <li>You do not need everything solved. Do your best in the time.</li>
+  <li>Feedback comes after you submit: what you did, and how to do better.</li>
+</ul>
+</section>
+
+<p class="sig">The app is plumbing.<small>Rules, reasoning and SOPs live in <a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">the full handbook</a>.</small></p>
+  </main>
+</div>
+<dialog id="pick" aria-labelledby="pickh">
+  <h2 id="pickh">Which track are you on?</h2>
+  <p>The rules and instructions follow your track.</p>
+  <div class="opts">
+    <button type="button" data-pick="nocode">No-code<i>Read the plan, approve, verify</i></button>
+    <button type="button" data-pick="code">Code<i>Python, your own backend</i></button>
+  </div>
+</dialog>
+<script>
+(function(){
+  var root=document.documentElement, dlg=document.getElementById('pick');
+  function read(){try{return localStorage.getItem('c8m2-track')}catch(e){return null}}
+  function apply(t){if(t==='code'||t==='nocode'){root.setAttribute('data-hk',t);return true}return false}
+  function ask(){if(dlg.open)return;if(dlg.showModal)dlg.showModal();else dlg.setAttribute('open','')}
+  /* the choice is required: Escape does not close it */
+  dlg.addEventListener('cancel',function(e){e.preventDefault()});
+  dlg.addEventListener('close',function(){if(!root.hasAttribute('data-hk'))setTimeout(ask,0)});
+  dlg.addEventListener('click',function(e){var b=e.target.closest('[data-pick]');if(!b)return;var t=b.dataset.pick;try{localStorage.setItem('c8m2-track',t)}catch(x){}apply(t);dlg.close?dlg.close():dlg.removeAttribute('open')});
+  if(!root.hasAttribute('data-hk')) ask();
+  /* a track changed on the map, in another tab or before coming back, updates this page */
+  addEventListener('storage',function(e){if(e.key==='c8m2-track')apply(e.newValue)});
+  addEventListener('pageshow',function(){apply(read())});
+})();
+</script>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Hackathon</span><a href="/#HK">Curriculum map</a><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full handbook</a></div></footer>
+</body>
+</html>

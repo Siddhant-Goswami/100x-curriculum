@@ -16,6 +16,7 @@ var GUIDE_LINKS = {
   practiceSet: 'https://docs.google.com/document/d/1J-Qi-nan-fYTur1LFu88AFSkyuBMNjHdlZKM7SdzdWM/edit?usp=sharing',
   aarav: 'https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l',
   wtbExample: '/c8/module-2/what-to-build/aarav-example',  /* What to build: Aarav's Discovery to MVP, worked example */
+  hackathon: '/c8/module-2/hackathon/',  /* the hackathon page: tracks, five moves, rules, schedule, submit */
   golden: 'https://docs.google.com/document/d/1qg8zt7yHflGM7ojtnUBSPj2e_I3ACYapztGZQnzJa_c/edit?tab=t.0',
   python: 'https://www.python.org/downloads/',
   vscode: 'https://code.visualstudio.com/download',
@@ -607,7 +608,7 @@ GUIDES.L7 = { code: {
   actions: [
     {id:'sat', t:'Lecture 8, Sat 17 Oct, 6 pm IST', how:'Bring the live URL and your Modelling Lab tables. The file dies, Supabase, end to end.', link:'l08Hub', linkLabel:'Lecture 8'},
     {id:'pyd', t:'Read about Pydantic beyond type checks', how:'The lecture\'s homework. It is the bridge between probabilistic and deterministic systems.', link:'fastapiTutorial', linkLabel:'FastAPI tutorial'},
-    {id:'hack', t:'The hackathon starts after Lecture 8', how:'Two days, fresh problem statements, mandatory, graded on the attempt. A public repository.'}
+    {id:'hack', t:'The hackathon starts after Lecture 8', link:'hackathon', linkLabel:'The hackathon page', how:'Sat 17 Oct, 9:00 PM IST to Tue 20 Oct, 9:00 PM IST. Six mandatory check-ins, graded on the attempt. A public repository.'}
   ],
   next: 'Next: Lecture 8, Saturday 6 pm. The same server gets memory: memory.txt dies on Vercel, the Lecture 6 tables become a Supabase schema, and the app goes live end to end.',
   errors: [
@@ -669,13 +670,14 @@ GUIDES.L8 = { code: {
      ]}
   ],
   actions: [
-    {id:'hack', t:'The hackathon starts after Lecture 8', how:'Two days, fresh problem statements, mandatory, graded on the attempt. Run the same trace on a new problem.'}
+    {id:'hack', t:'The hackathon starts after Lecture 8', link:'hackathon', linkLabel:'The hackathon page', how:'Sat 17 Oct, 9:00 PM IST to Tue 20 Oct, 9:00 PM IST. Six mandatory check-ins, graded on the attempt. Run the same trace on a new problem.'}
   ],
   next: 'Next: the hackathon. Then whose row is this: every plan is still filed under workflow 1, and anyone with the URL can read it.',
   read: [
     ['Lecture 8 overview', 'l08Hub', 'What to bring, the lecture, done equals.'],
     ['The lecture on a whiteboard', 'l08Board', 'Eighteen scenes: the file dies, another machine, ship it all.'],
-    ['The lecture repository', 'l07Repo', 'Steps 05 to 09. Replace the function with yours.']
+    ['The lecture repository', 'l07Repo', 'Steps 05 to 09. Replace the function with yours.'],
+    ['The hackathon', 'hackathon', 'Pick a track, run the five moves, earn the verdict.']
   ],
   kw: 'end to end mvp deploy live url supabase database sql schema create table references memory.txt read-only file system two writers insert select sdk create_client service key secret key publishable key row level security fetch index.html gradio cors verified hackathon'
 }};
