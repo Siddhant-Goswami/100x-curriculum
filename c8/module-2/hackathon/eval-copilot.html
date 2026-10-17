@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eval Co-pilot brief | 100xEngineers</title>
+<meta name="description" content="Hackathon problem brief: Eval Co-pilot. Run a classmate’s live AI app against their own golden pairs and show them the case they were about to ship broken.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/hackathon/brief.css">
+<script src="/c8/docs.js"></script>
+<script>
+/* the track (code or no-code) comes from the map; with none set, both lines show */
+(function(){var t=null;try{t=localStorage.getItem('c8m2-track')}catch(e){}if(t==='code'||t==='nocode')document.documentElement.setAttribute('data-hk',t)})();
+</script>
+</head>
+<body data-page="hk-eval-copilot">
+<header class="top"><div class="in">
+  <a class="brand" href="/#HK">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Brief sections"><a href="/c8/module-2/hackathon/">Hackathon</a><a href="#moves">Moves</a><a href="#line">The line</a><a href="#data">Data</a><a href="#testing">Testing</a><a href="#template">Template</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-p" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 13l2 2 4-4"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
+<main class="bf">
+<p class="crumb"><a href="/c8/module-2/hackathon/#problems">Hackathon</a><span>/</span><span>Problem 2 of 3</span></p>
+
+<section class="bhero">
+  <span class="pi" aria-hidden="true"><svg class="ic"><use href="#i-p"/></svg></span>
+  <div>
+    <h1>Eval Co-pilot</h1>
+    <p class="dek">Catch the case a friend’s AI feature gets wrong, before they ship it.</p>
+    <p class="scene">Every classmate just shipped an AI app: paste a workflow, get a plan. Ask one if it is good. They’ll say it works on what they tried. <b>They picked what they tried.</b> Take ten real inputs, run every one, and check each answer against what they said good looks like. One fails in a way they didn’t know about.</p>
+    <div class="bacts"><button class="pbtn" type="button" data-p="evalcopilot">Pick this problem</button><span class="teach"><b>Teaches</b> How to verify the verifier.</span></div>
+  </div>
+</section>
+
+<figure class="io" aria-label="Input, process, output">
+  <div class="bx"><small>Input</small><p>Their live URL, ten golden pairs, their verifier</p></div>
+  <span class="ar" aria-hidden="true"><svg class="ic"><use href="#i-arr"/></svg></span>
+  <div class="bx pr"><small>Process</small><p>Send every input, check every answer</p></div>
+  <span class="ar" aria-hidden="true"><svg class="ic"><use href="#i-arr"/></svg></span>
+  <div class="bx"><small>Output</small><p>The cases that fail and why, next to the last run</p></div>
+</figure>
+<div class="win"><small>You win when</small><b>They change something, re-run, and the failing case passes.</b><span>Write your bar before you build, for example: at least one failure they didn’t know about, fixed and re-run within the session.</span></div>
+<div class="who2">
+  <div><small>Test with a classmate</small><p>A classmate with a live AI app, the one from Lecture 8 counts.</p></div>
+  <div><small>And a stranger</small><p>A cohort-mate you have never worked with, or anyone outside the cohort. They have never seen your app and get no help from you.</p></div>
+</div>
+
+<section class="bsec" id="moves">
+  <h2>Five moves, on this problem</h2>
+  <p class="sub">Each one is a lecture from the last four weeks.</p>
+  <div class="bms">
+    <details class="bm" open>
+      <summary><h3><small>Discovery</small>Do it by hand</h3><span class="by">Green by Sun 3 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Sit with one classmate and their live app. You are the Eval Co-pilot.</li><li>With them, write ten golden pairs from real inputs: what their user types, and what a good answer has in it.</li><li>Run all ten by hand. Mark each answer pass or fail against their verifier.</li><li>Show them the fail they didn’t expect. Do they change something and run it again?</li></ul><p class="sit"><b>Sit with it.</b> Which fail surprised them, and which did they already know about?</p><p class="uses">Uses <a href="/c8/building-ui-notes#s05">Golden pairs</a><a href="/c8/building-ui-notes#s06">Verifier threshold</a><a href="/c8/module-2/what-to-build/aarav-example">Aarav&#x27;s discovery</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>User interface</small>Needs first</h3><span class="by">Green by Sun 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Write what it must do, with no tools named: hold the pairs, send each one, show pass or fail per check, put two runs side by side.</li><li>Replay your by-hand session. Their first words after seeing a fail are your next screen. “Why did it fail?” and “Run just that one again” are different products.</li></ul><p class="sit"><b>Sit with it.</b> What did they look at first: the score, or the failed answer?</p><p class="uses">Uses <a href="/c8/building-ui-notes#s09">Search, form or chat</a><a href="/c8/building-ui-notes#s08">Two systems, one interface</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>System design</small>Draw the line</h3><span class="by">Green by Sun 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Your server calls their server. The second interface, pointed at another app.</li><li>Draw the boxes: your UI, your server, their app, the LLM if you use one as a judge, the database.</li><li>Split what code checks from what AI judges. Circle the no-go. The line is drawn below.</li><li><span class="t-code">Code track: your server calls their URL with requests.post.</span><span class="t-nocode">No-code track: if your builder can’t call their URL, they paste each answer in. The checks stay the same.</span></li></ul><p class="sit"><b>Sit with it.</b> Which checks need no model at all?</p><p class="uses">Uses <a href="/c8/module-2/lecture-05-building-apis/notes#s13">requests.post</a><a href="/c8/module-2/lecture-05-building-apis/notes#s11">Prompt + input = package</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s07">High-level design</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>Data</small>Lock the data</h3><span class="by">Drawn Sun 9 PM, locked Mon 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Write the questions your app must answer after the second run. Those decide what is worth storing.</li><li>Each run is a row. Each answer, for each pair, in each run, is a row.</li><li>One answer can fail many checks, and one check fails in many answers. That is a third table.</li><li>Add login and row-level security. A builder sees only their own pairs and runs.</li></ul><p class="sit"><b>Sit with it.</b> If run 1 is overwritten by run 2, can you still prove the fix?</p><p class="uses">Uses <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s08">What is worth storing</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s09">Things, facts, links</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s10">Keys and pointers</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s11">History is a row</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>User testing</small>Watch them use it</h3><span class="by">Tue 9 AM, then Tue 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Your classmate brings their live app and their own pairs.</li><li>Your stranger, a builder you have never helped, runs it alone.</li><li>Write down what they did: what did they change, and did the case flip on the re-run?</li><li>Write the one surprise: where real apps broke your plan.</li></ul><p class="sit"><b>Sit with it.</b> Did they change their app, or only nod at the report?</p><p class="uses">Uses <a href="/c8/module-2/lecture-08-end-to-end-mvp/">End-to-end MVP</a></p></div>
+    </details>
+  </div>
+</section>
+
+<section class="bsec" id="line">
+  <h2>Draw the line</h2>
+  <p class="sub">Draw yours on paper. This is where to start, not the answer.</p>
+  <div class="line">
+    <div class="side det"><h3>Code decides</h3><p>Same input, same answer, every time.</p><ul><li>Sending each input to their URL</li><li>A 500 or a timeout is a fail</li><li>Rule checks: has a number, has a baseline, under 300 words</li><li>The pass count, and run 1 against run 2</li></ul></div>
+    <div class="mid"><div class="call2"><small>Your call</small>Who judges the checks a rule can’t?</div></div>
+    <div class="side prob"><h3>AI decides</h3><p>Judgment. Can differ run to run.</p><ul><li>Checks a rule can’t read: “names the real bottleneck”</li><li>Why an answer failed, in one line</li><li class="no"><b>No-go</b>An AI judge nobody checked against pairs you graded by hand.</li></ul></div>
+  </div>
+  <p class="line-k">A judge that says “looks good” to everything is worse than no judge: it manufactures confidence. <b>Grade three pairs by hand first. If your AI judge disagrees with you on those, it doesn’t judge.</b></p>
+</section>
+
+<section class="bsec" id="data">
+  <h2>What is worth storing</h2>
+  <p class="sub">The questions it must answer tomorrow. Draw the tables that answer them.</p>
+  <ul class="qs"><li>Which cases failed in run 1 and passed in run 2?</li><li>Which check fails most often?</li><li>What exactly did their app say each time?</li></ul>
+  <div class="link1"><small>The one link that is your proof</small><code>result</code><span class="pt" aria-hidden="true">&rarr;</span><code>golden_pair</code><p>Each result points at its golden pair and its run. That is how one case, run twice, shows the fix worked.</p></div>
+  <ul class="notes2"><li><b>Their key never reaches you.</b> <span>Store their public URL, nothing else of theirs.</span></li><li><b>History is a row.</b> <span>A new run never overwrites the last one.</span></li><li><b>Login and row-level security.</b> <span>Two accounts, one cross-read, an empty result.</span></li></ul>
+</section>
+
+<section class="bsec" id="testing">
+  <h2>Watch them use it</h2>
+  <p class="sub">What they did, not what they said.</p>
+  <div class="cnt">
+    <div class="y"><h3>Counts</h3><ul><li>They changed a prompt, a model or code</li><li>The re-run, with the case now passing</li><li>A failure they called new</li></ul></div>
+    <div class="n"><h3>Doesn’t count</h3><ul><li>“Good tool”</li><li>A score with no failed answer shown</li><li>Cases you wrote without them</li></ul></div>
+  </div>
+</section>
+
+<section class="bsec" id="traps">
+  <h2>Traps</h2>
+  <ul class="traps"><li><b>A leaderboard.</b> <span>One score per app says nothing about their own inputs.</span></li><li><b>The rubber stamp.</b> <span>A judge that passes everything.</span></li><li><b>Their hand-picked cases.</b> <span>They picked them because they pass.</span></li><li><b>An unchecked AI judge.</b> <span>Calibrate it on pairs you already graded.</span></li></ul>
+</section>
+
+<section class="bsec" id="template">
+  <h2>Your filled template</h2>
+  <p class="sub">Copy it into a doc. Fill it as you go. It is what you submit.</p>
+  <div class="code"><div class="hd"><span>Eval Co-pilot template</span><button class="cp" type="button">Copy</button></div><pre><div class="ln h"><code>EVAL CO-PILOT SUBMISSION</code></div><div class="ln"><code>Name / track:</code></div><div class="ln"><code>Live link:</code></div><div class="ln"><code>Public repo:</code></div><div class="ln h"><code>MOVE 1, BY HAND</code></div><div class="ln"><code>Whose app (URL):</code></div><div class="ln"><code>Their ten golden pairs (link):</code></div><div class="ln"><code>My pass / fail sheet:</code></div><div class="ln"><code>The fail they didn’t know about / what they changed:</code></div><div class="ln h"><code>MOVE 2, NEEDS FIRST</code></div><div class="ln"><code>Need list:</code></div><div class="ln"><code>Their first words after a fail, and the screen it picked:</code></div><div class="ln h"><code>MOVE 3, THE LINE</code></div><div class="ln"><code>[photo of the drawing]</code></div><div class="ln"><code>Code checks:</code></div><div class="ln"><code>AI judges:</code></div><div class="ln"><code>My call on the judge, how I checked it, its failure mode:</code></div><div class="ln h"><code>MOVE 4, THE DATA</code></div><div class="ln"><code>[photo of the tables, result -&gt; golden_pair link marked]</code></div><div class="ln"><code>Two-user test (two accounts, the cross-read, the empty result):</code></div><div class="ln h"><code>MOVE 5, WATCH THEM</code></div><div class="ln"><code>Classmate: what failed, what they changed, run 1 vs run 2:</code></div><div class="ln"><code>Stranger: what failed, what they changed, run 1 vs run 2:</code></div><div class="ln"><code>The surprise:</code></div></pre></div>
+</section>
+
+<nav class="others" aria-label="Other problems"><span>Other problems</span><a href="/c8/module-2/hackathon/billshield">BillShield</a><a href="/c8/module-2/hackathon/concept-check">Concept Check</a><a href="/c8/module-2/hackathon/">Back to the hackathon</a></nav>
+</main>
+
+<script>
+(function(){
+  /* the same pick as the hackathon page (c8hk-problem) */
+  var b=document.querySelector('.pbtn[data-p]');
+  function get(){try{return localStorage.getItem('c8hk-problem')}catch(e){return null}}
+  function show(){var on=get()===b.dataset.p;b.classList.toggle('on',on);b.textContent=on?'Picked':'Pick this problem'}
+  b.addEventListener('click',function(){try{localStorage.setItem('c8hk-problem',get()===b.dataset.p?'':b.dataset.p)}catch(e){}show()});
+  addEventListener('pageshow',show);show();
+})();
+</script>
+<footer><div class="wrap"><span>100xEngineers, Cohort 8, Module 2</span><a href="/#HK">Curriculum map</a><a href="/c8/module-2/hackathon/">Hackathon</a></div></footer>
+</body>
+</html>

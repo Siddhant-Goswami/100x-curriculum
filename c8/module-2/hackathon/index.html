@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hackathon | 100xEngineers</title>
-<meta name="description" content="Cohort 8 Module 2 hackathon. Build an app solo in 72 hours and get a stranger to use it. Sat 17 Oct, 9 PM to Tue 20 Oct, 9 PM IST.">
+<meta name="description" content="Cohort 8 Module 2 hackathon. Build an app in 72 hours, verified by a stranger. Sat 17 Oct, 9 PM to Tue 20 Oct, 9 PM IST.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 .hero{display:grid;grid-template-columns:1.15fr 1fr;padding:0;border:1px solid var(--line);border-top:0;margin:0 0 0;background:var(--bg)}
 .hero .hl{padding:64px 40px 48px}
 .hero h1{font:700 clamp(2.4rem,5.6vw,4.4rem)/.95 var(--disp);letter-spacing:-.04em;text-transform:uppercase;margin:0 0 24px}
-.hero h1 span{display:block;color:var(--coral)}
+.hero h1 span{color:var(--coral)}
 .hero .dek{font:400 15px/1.65 var(--mono);color:var(--ink2);margin:0 0 32px;max-width:40ch}
 .hero .dek b{color:var(--ink);font-weight:700}
 .facts{display:flex;flex-wrap:wrap;gap:12px}
@@ -80,6 +80,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 .prob dt{color:var(--ink3)}
 .prob dd{margin:0}
 .prob .acts{display:flex;gap:14px;align-items:center;margin-left:auto}
+.prob .acts a{font-size:14px;font-weight:600;color:var(--coral-ink)}
 .pbtn{border:0;border-radius:10px;padding:10px 16px;font:600 14px var(--sans);background:var(--ink);color:var(--bg);cursor:pointer;transition:transform .15s var(--e-out)}
 .pbtn:active{transform:scale(.96)}
 .prob.mine .pbtn{background:var(--bg2);color:var(--ink)}
@@ -101,7 +102,6 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 @media (hover:hover){.mv:hover .o{border-color:var(--coral)}.mv:hover .t{color:var(--ink)}}
 .mvcap{margin:32px auto 0;max-width:640px;text-align:center}
 .mvcap .cn{font:700 22px/1.2 var(--disp);letter-spacing:-.01em;margin:0 0 6px}
-.mvcap .cn span{color:var(--ink3);font-weight:500}
 .mvcap p{margin:0;font-size:17px;line-height:1.5}
 .mvcap a{display:inline-block;margin-top:10px;font-size:14px;font-weight:600;color:var(--coral-ink)}
 
@@ -167,16 +167,21 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 .post .code{margin:0}
 .post .code pre{white-space:normal;padding:12px 0}
 .post .code .ln:first-child code{font-weight:700;color:var(--c)}
-.post .code[data-tpl="g"]{--c:#6FCB92}.post .code[data-tpl="y"]{--c:#E8B44D}
+.post .code[data-tpl="g"],.post .code[data-tpl="e"]{--c:#6FCB92}
+.post .code[data-tpl="e"] .ln code{white-space:pre-wrap}
+.post .code[data-tpl="e"] .ln{margin-bottom:6px}.post .code[data-tpl="y"]{--c:#E8B44D}
 .tpl[hidden]{display:none}
 .att{display:inline-flex;align-items:center;gap:6px;margin:10px 0 0;font-size:13px;color:var(--ink2);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
 .att .ic{width:15px;height:15px}
 
 /* rules */
-.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:0 40px;list-style:none;padding:0;margin:0}
-.rules li{padding:14px 0;border-bottom:1px solid var(--line);font-size:16px}
-.rules b{font-weight:600}
-.rules span{color:var(--ink2)}
+.charter{background-color:var(--card);padding:36px 40px}
+.pre{font:400 15px/1.7 var(--mono);color:var(--ink2);margin:0 0 28px;padding:0 0 24px;border-bottom:1px solid var(--line);max-width:62ch}
+.rules{display:grid;grid-template-columns:repeat(2,1fr);gap:0 48px;list-style:none;padding:0;margin:0}
+.rules li{padding:18px 0;border-bottom:1px dashed var(--line2)}
+.rules .art{display:block;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--coral-ink);margin:0 0 6px}
+.rules b{display:block;font:700 19px/1.2 var(--disp);letter-spacing:-.01em;text-transform:uppercase;margin:0 0 6px}
+.rules p{margin:0;font:400 14.5px/1.6 var(--mono);color:var(--ink2)}
 
 /* submit + stuck */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -252,8 +257,6 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 .att{border-radius:0;font:400 12px var(--mono)}
 .who{font-family:var(--mono);font-size:13px}
 
-.rules li{font:400 14px/1.55 var(--mono)}
-.rules b{font:700 16px var(--disp);margin-right:4px}
 
 #submit{padding:0}
 .two{gap:0;margin:0}
@@ -286,6 +289,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   .panel{min-height:320px}
   .dial{width:250px}
   .ci,.two,.rules{grid-template-columns:1fr}
+  .charter{padding:24px 16px}
   .ci{gap:28px}
   .det{grid-template-columns:1fr}
 }
@@ -333,8 +337,8 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 
 <section class="hero">
   <div class="hl">
-    <h1>Build an app. <span>Put it in a stranger's hands.</span></h1>
-    <p class="dek">72 hours, solo. <b>You pass when a real person uses what you built.</b></p>
+    <h1>Build an <span>app</span> in <span>72 hours</span>, verified by a stranger.</h1>
+    <p class="dek">Solo. <b>You pass when a real person uses what you built.</b></p>
     <div class="facts">
       <button class="fact when" type="button" aria-expanded="false" aria-describedby="whentip"><small>Hackathon</small><b><svg class="ic"><use href="#i-cal"/></svg>Sat 9 PM to Tue 9 PM IST</b>
         <span class="tip" id="whentip" role="tooltip">Starts <b>Sat 17 Oct, 9:00 PM IST</b><br>Ends <b>Tue 20 Oct, 9:00 PM IST</b></span></button>
@@ -356,18 +360,18 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   <div class="probs">
     <details class="prob" name="prob" data-p="billshield">
       <summary><span class="pi"><svg class="ic"><use href="#i-bill"/></svg></span><div><h3>BillShield <em>Yours</em></h3><p>Turn a confusing bill into one message worth sending.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
-      <div class="body"><dl><dt>Test with</dt><dd>A classmate with a real bill</dd><dt>You win when</dt><dd>They'd send the message</dd></dl><div class="acts"><button class="pbtn" type="button">Pick this</button></div></div>
+      <div class="body"><dl><dt>Test with</dt><dd>A classmate with a real bill</dd><dt>You win when</dt><dd>They send the message</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/billshield">Read the brief</a><button class="pbtn" type="button">Pick this</button></div></div>
     </details>
     <details class="prob" name="prob" data-p="evalcopilot">
       <summary><span class="pi"><svg class="ic"><use href="#i-eval"/></svg></span><div><h3>Eval Co-pilot <em>Yours</em></h3><p>Catch the bug in a friend's AI feature before they ship.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
-      <div class="body"><dl><dt>Test with</dt><dd>A classmate shipping an AI feature</dd><dt>You win when</dt><dd>They fix it and re-run</dd></dl><div class="acts"><button class="pbtn" type="button">Pick this</button></div></div>
+      <div class="body"><dl><dt>Test with</dt><dd>A classmate with a live AI app</dd><dt>You win when</dt><dd>They fix it and re-run</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/eval-copilot">Read the brief</a><button class="pbtn" type="button">Pick this</button></div></div>
     </details>
     <details class="prob" name="prob" data-p="conceptcheck">
       <summary><span class="pi"><svg class="ic"><use href="#i-ask"/></svg></span><div><h3>Concept Check <em>Yours</em></h3><p>Find where a learner stops understanding and starts reciting.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
-      <div class="body"><dl><dt>Test with</dt><dd>A classmate who says they get it</dd><dt>You win when</dt><dd>They can work it out after</dd></dl><div class="acts"><button class="pbtn" type="button">Pick this</button></div></div>
+      <div class="body"><dl><dt>Test with</dt><dd>A classmate who says they get it</dd><dt>You win when</dt><dd>They work out a new case</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/concept-check">Read the brief</a><button class="pbtn" type="button">Pick this</button></div></div>
     </details>
   </div>
-  <p class="foot">Every problem also needs <b>one stranger</b> to test it. <a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Read the full briefs</a></p>
+  <p class="foot">Every problem also needs <b>one stranger</b> to test it. Briefs: <a href="/c8/module-2/hackathon/billshield">BillShield</a>, <a href="/c8/module-2/hackathon/eval-copilot">Eval Co-pilot</a>, <a href="/c8/module-2/hackathon/concept-check">Concept Check</a></p>
 </section>
 
 <section class="sec" id="moves">
@@ -411,7 +415,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
     </div>
     <div class="thread">
       <div class="th-top"><span><span class="t-code">Code</span><span class="t-nocode">No-code</span> check-ins</span> / <b>Your name</b>
-        <div class="tabs" role="tablist" aria-label="Templates"><button type="button" role="tab" aria-selected="true" data-tpl="g">Green</button><button type="button" role="tab" aria-selected="false" data-tpl="y">Yellow</button></div>
+        <div class="tabs" role="tablist" aria-label="Templates"><button type="button" role="tab" aria-selected="true" data-tpl="g">Green</button><button type="button" role="tab" aria-selected="false" data-tpl="y">Yellow</button><button type="button" role="tab" aria-selected="false" data-tpl="e">Example</button></div>
       </div>
       <div class="post"><span class="av" aria-hidden="true">You</span><div>
         <p class="who"><b>You</b><span>Sun, 9:02 AM</span></p>
@@ -429,27 +433,36 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 <div class="ln"><code>Tried: </code></div>
 <div class="ln"><code>Help I need: </code></div>
 <div class="ln"><code>Proof of the block attached: </code></div></pre></div>
-        <span class="att"><svg class="ic"><use href="#i-clip"/></svg>proof.jpg</span>
+        <div class="code tpl" data-tpl="e" hidden><div class="hd">A Green check-in done right<button class="cp" type="button">Copy</button></div><pre>
+<div class="ln"><code>Green</code></div>
+<div class="ln"><code>Doing now: Turning my notes into a need list for BillShield.</code></div>
+<div class="ln"><code>Done since last check-in: Sat with Meera (classmate) for 25 minutes and decoded her electricity bill by hand, line by line. She didn't know the "fixed charge" was billed twice. Booked her for Mon 7 PM and a stranger, her landlord, for Tue 10 AM.</code></div>
+<div class="ln"><code>Next: Need list, the code/AI line and the tables on paper by 9 PM.</code></div>
+<div class="ln"><code>Proof attached: photo of my handwritten notes, names hidden.</code></div></pre></div>
+        <span class="att"><svg class="ic"><use href="#i-clip"/></svg><span id="attn">proof.jpg</span></span>
       </div></div>
     </div>
   </div>
 </section>
 
 <section class="sec" id="rules">
-  <h2>Ten <span>rules</span></h2>
-  <p class="sub">Break one and the submission doesn't count.</p>
-  <ul class="rules">
-    <li><b>On time.</b> <span>Late work doesn't count.</span></li>
-    <li><b>One problem.</b> <span>Locked by Check-in 1.</span></li>
-    <li><b>Solo.</b> <span>Testers aren't teammates.</span></li>
-    <li><b>Any AI tool.</b> <span>The proof is what AI can't fake.</span></li>
-    <li><b>Draw on paper.</b> <span>Photo it, paste it.</span></li>
-    <li><b>Features trace to needs.</b> <span>Every one, from Move 2.</span></li>
-    <li><b>Deployed.</b> <span>A screenshot isn't an app.</span></li>
-    <li><b>Login and <abbr title="Row-level security: each user sees only their own rows">RLS</abbr>.</b> <span>Two-user test, every problem.</span></li>
-    <li><b>Real evidence only.</b> <span>Honest beats polished.</span></li>
-    <li><b>Get consent.</b> <span>Hide names and account numbers.</span></li>
-  </ul>
+  <h2>The <span>rule book</span></h2>
+  <p class="sub">Break one article and the submission doesn't count.</p>
+  <div class="charter brk">
+    <p class="pre">We build alone, ship for real and prove it with real people. These ten articles bind every builder on both tracks.</p>
+    <ol class="rules">
+    <li><span class="art">Article I</span><b>Time</b><p>Work submitted after Tue 20 Oct, 9 PM IST does not count, however good it is.</p></li>
+    <li><span class="art">Article II</span><b>One problem</b><p>You pick one problem, lock it by Check-in 1 on Sun 9 AM, and do not switch after.</p></li>
+    <li><span class="art">Article III</span><b>Solo</b><p>You build alone, and your testers give feedback but never write, design or build any part.</p></li>
+    <li><span class="art">Article IV</span><b>AI tools</b><p>You may use any AI tool, because what we grade is what a real person did, and AI cannot fake that.</p></li>
+    <li><span class="art">Article V</span><b>Paper first</b><p>Every sketch, need list and table starts on paper, and you photograph it and paste it in.</p></li>
+    <li><span class="art">Article VI</span><b>Needs</b><p>Every feature in your app traces back to a need you wrote down in Move 2.</p></li>
+    <li><span class="art">Article VII</span><b>Deployed</b><p>Your app runs at a live link anyone can open, because a screenshot is not an app.</p></li>
+    <li><span class="art">Article VIII</span><b>Login and <abbr title="Row-level security: each user sees only their own rows">RLS</abbr></b><p>Every problem ships with login and row-level security, proven by a two-user test.</p></li>
+    <li><span class="art">Article IX</span><b>Real evidence</b><p>Every note, screenshot and session is real, and faked evidence fails the whole submission.</p></li>
+    <li><span class="art">Article X</span><b>Consent</b><p>You ask before you record anyone, and you hide names and account numbers in everything you post.</p></li>
+    </ol>
+  </div>
 </section>
 
 <section class="sec" id="submit">
@@ -523,7 +536,6 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
     4:['Data','Tables, login and row-level security. Two users never see each other\'s rows.','/c8/module-2/lecture-06-databases-and-domain-modelling/','Lecture 6, Databases'],
     5:['User testing','Two people use it, one a stranger. Write down what they did, not what they said.','/c8/module-2/lecture-08-end-to-end-mvp/','Lecture 8, End-to-end MVP']
   };
-  var MVN={1:'Do it by hand',2:'Needs first',3:'Draw the line',4:'Lock the data',5:'Watch them use it'};
 
   var ticks={};try{ticks=JSON.parse(get('c8hk-ticks')||'{}')}catch(e){}
   var track=document.getElementById('track'), det=document.getElementById('det'), sel=null;
@@ -544,7 +556,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   var mvs=$$('.mv'), cap=document.getElementById('mvcap');
   function pick(m){
     mvs.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.m===m)});
-    var x=MV[m];cap.innerHTML='<p class="cn">'+x[0]+' <span>/ '+MVN[m]+'</span></p><p>'+x[1]+'</p><a href="'+x[2]+'">Revisit '+x[3]+'</a>';
+    var x=MV[m];cap.innerHTML='<p class="cn">'+x[0]+'</p><p>'+x[1]+'</p><a href="'+x[2]+'">Revisit '+x[3]+'</a>';
     nds.forEach(function(b,j){b.classList.toggle('hl',(' '+(EV[j].m||'')+' ').indexOf(' '+m+' ')>-1)});
   }
   mvs.forEach(function(b){b.addEventListener('click',function(){pick(b.dataset.m)})});
@@ -587,7 +599,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 
   /* Green and Yellow templates */
   var tabs=$$('.tabs button'), tpls=$$('.tpl');
-  tabs.forEach(function(b){b.addEventListener('click',function(){tabs.forEach(function(x){x.setAttribute('aria-selected',x===b)});tpls.forEach(function(t){t.hidden=t.dataset.tpl!==b.dataset.tpl});document.querySelector('.who span').textContent=b.dataset.tpl==='g'?'Sun, 9:02 AM':'Sun, 9:05 AM'})});
+  tabs.forEach(function(b){b.addEventListener('click',function(){tabs.forEach(function(x){x.setAttribute('aria-selected',x===b)});tpls.forEach(function(t){t.hidden=t.dataset.tpl!==b.dataset.tpl});var t=b.dataset.tpl;document.querySelector('.who span').textContent=t==='e'?'Sun, 3:04 PM':t==='g'?'Sun, 9:02 AM':'Sun, 9:05 AM';document.getElementById('attn').textContent=t==='e'?'bill-notes.jpg':'proof.jpg'})});
 })();
 </script>
 <footer><div class="wrap"><span>100xEngineers, Cohort 8, Module 2</span><a href="/#HK">Curriculum map</a><a href="https://docs.google.com/document/d/13XIP1bgIGRMd1PQi6vkd8-WiG8PJwFq7Z5Y4rEWEvVM/edit?tab=t.0" target="_blank" rel="noopener">Full handbook</a></div></footer>

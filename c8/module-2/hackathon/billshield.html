@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BillShield brief | 100xEngineers</title>
+<meta name="description" content="Hackathon problem brief: BillShield. Turn a bill you do not trust into one message worth sending, with code doing the maths and AI doing the reading.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/hackathon/brief.css">
+<script src="/c8/docs.js"></script>
+<script>
+/* the track (code or no-code) comes from the map; with none set, both lines show */
+(function(){var t=null;try{t=localStorage.getItem('c8m2-track')}catch(e){}if(t==='code'||t==='nocode')document.documentElement.setAttribute('data-hk',t)})();
+</script>
+</head>
+<body data-page="hk-billshield">
+<header class="top"><div class="in">
+  <a class="brand" href="/#HK">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Brief sections"><a href="/c8/module-2/hackathon/">Hackathon</a><a href="#moves">Moves</a><a href="#line">The line</a><a href="#data">Data</a><a href="#testing">Testing</a><a href="#template">Template</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-p" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
+<main class="bf">
+<p class="crumb"><a href="/c8/module-2/hackathon/#problems">Hackathon</a><span>/</span><span>Problem 1 of 3</span></p>
+
+<section class="bhero">
+  <span class="pi" aria-hidden="true"><svg class="ic"><use href="#i-p"/></svg></span>
+  <div>
+    <h1>BillShield</h1>
+    <p class="dek">Turn a bill you don’t trust into one message worth sending.</p>
+    <p class="scene">Ask a classmate for a bill they paid without reading: phone, broadband, electricity, a card statement. Go through it line by line together. Somewhere is a charge they can’t explain. A ₹199 pack they never asked for. A late fee on a bill paid on time. <b>They noticed. They never wrote in, because writing that message is a chore.</b></p>
+    <div class="bacts"><button class="pbtn" type="button" data-p="billshield">Pick this problem</button><span class="teach"><b>Teaches</b> Where code must decide, because a model can’t be trusted to add.</span></div>
+  </div>
+</section>
+
+<figure class="io" aria-label="Input, process, output">
+  <div class="bx"><small>Input</small><p>A bill (photo or PDF) and what they were promised</p></div>
+  <span class="ar" aria-hidden="true"><svg class="ic"><use href="#i-arr"/></svg></span>
+  <div class="bx pr"><small>Process</small><p>Read every line, check the maths against the promise</p></div>
+  <span class="ar" aria-hidden="true"><svg class="ic"><use href="#i-arr"/></svg></span>
+  <div class="bx"><small>Output</small><p>The line that doesn’t add up, and one message to send</p></div>
+</figure>
+<div class="win"><small>You win when</small><b>They send the message.</b><span>Write your bar before you build, for example: sent with fewer than 20 words changed. If every line checks out, saying so, with the maths, is a real answer.</span></div>
+<div class="who2">
+  <div><small>Test with a classmate</small><p>A classmate with a real bill from the last three months.</p></div>
+  <div><small>And a stranger</small><p>A cohort-mate you have never worked with, or anyone outside the cohort. They have never seen your app and get no help from you.</p></div>
+</div>
+
+<section class="bsec" id="moves">
+  <h2>Five moves, on this problem</h2>
+  <p class="sub">Each one is a lecture from the last four weeks.</p>
+  <div class="bms">
+    <details class="bm" open>
+      <summary><h3><small>Discovery</small>Do it by hand</h3><span class="by">Green by Sun 3 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Sit with one classmate and their real bill. You are BillShield.</li><li>Mark every line. Do the maths on paper. Write the message yourself.</li><li>Watch what they do with it. Do they send it? What do they change?</li><li>Each bill and promise, with the line and message that solved it, is a golden pair. Collect ten across the cohort.</li></ul><p class="sit"><b>Sit with it.</b> Which line did they care about that you didn’t flag?</p><p class="uses">Uses <a href="/c8/module-2/what-to-build/aarav-example">Aarav&#x27;s discovery</a><a href="/c8/building-ui-notes#s05">Golden pairs</a><a href="/c8/building-ui-notes#s06">Verifier threshold</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>User interface</small>Needs first</h3><span class="by">Green by Sun 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Write what it must do, with no tools named: read a bill photo, take the promised price, show the maths, write the message, let them copy it.</li><li>Replay your by-hand session. What did they ask right after reading your message? “Is 18% GST right?” is a follow-up, and a follow-up needs memory.</li><li>That replay picks the interface: form, chat or both. Not your taste.</li></ul><p class="sit"><b>Sit with it.</b> Is every feature on your list traced to something they did or said?</p><p class="uses">Uses <a href="/c8/building-ui-notes#s09">Search, form or chat</a><a href="/c8/building-ui-notes#s08">Two systems, one interface</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>System design</small>Draw the line</h3><span class="by">Green by Sun 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Draw the boxes: UI, your server, the LLM, the database. Write whose machine each lives on.</li><li>The bill photo and the prompt go to the LLM as one package. The key stays on your server.</li><li>Split what code decides from what AI decides. Circle the no-go. The line is drawn below.</li></ul><p class="sit"><b>Sit with it.</b> If the model did the maths, how would you ever know it was wrong?</p><p class="uses">Uses <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s07">High-level design</a><a href="/c8/module-2/lecture-05-building-apis/notes#s11">Prompt + input = package</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s05">The key leaves the browser</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>Data</small>Lock the data</h3><span class="by">Drawn Sun 9 PM, locked Mon 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Write the questions your app must answer next month. Those decide what is worth storing.</li><li>Every bill is a row, every line on it is a row. History is a row, not a cell.</li><li>The photo goes to file storage. The row keeps its link.</li><li>Add login and row-level security. Run the two-user test: one person never sees another’s bills.</li></ul><p class="sit"><b>Sit with it.</b> What would you be sued for storing? Mask it before it is saved.</p><p class="uses">Uses <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s08">What is worth storing</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s09">Things, facts, links</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s11">History is a row</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s10">Keys and pointers</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>User testing</small>Watch them use it</h3><span class="by">Tue 9 AM, then Tue 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Your classmate uploads a bill you haven’t seen.</li><li>Your stranger uses it alone. You watch, you don’t help.</li><li>Write down what they did: did they send it, and how many words did they change?</li><li>Write the one surprise: where real bills broke your plan.</li></ul><p class="sit"><b>Sit with it.</b> Did they send it, or did they say they would?</p><p class="uses">Uses <a href="/c8/module-2/lecture-08-end-to-end-mvp/">End-to-end MVP</a></p></div>
+    </details>
+  </div>
+</section>
+
+<section class="bsec" id="line">
+  <h2>Draw the line</h2>
+  <p class="sub">Draw yours on paper. This is where to start, not the answer.</p>
+  <div class="line">
+    <div class="side det"><h3>Code decides</h3><p>Same input, same answer, every time.</p><ul><li>Totals, taxes and the difference from the promise</li><li>Charges that repeat across months</li><li>Dates: billing period, due date, late fees</li><li>What gets masked before saving</li></ul></div>
+    <div class="mid"><div class="call2"><small>Your call</small>Is a charge wrong, or only unexplained?</div></div>
+    <div class="side prob"><h3>AI decides</h3><p>Judgment. Can differ run to run.</p><ul><li>Reading the photo into lines</li><li>Each line in plain words</li><li>The message, in their tone</li><li class="no"><b>No-go</b>AI states an amount code didn’t compute.</li></ul></div>
+  </div>
+  <p class="line-k">The model will happily add up the bill for you. It will also be confidently wrong by ₹40. <b>Every number in the message comes from code.</b></p>
+</section>
+
+<section class="bsec" id="data">
+  <h2>What is worth storing</h2>
+  <p class="sub">The questions it must answer tomorrow. Draw the tables that answer them.</p>
+  <ul class="qs"><li>Has this charge shown up on my earlier bills?</li><li>Which messages did I send, and about which line?</li><li>What was I promised, and when did it change?</li></ul>
+  <div class="link1"><small>The one link that is your proof</small><code>message</code><span class="pt" aria-hidden="true">&rarr;</span><code>line_item</code><p>The message points at the line it disputes, with when it was sent and how many words were changed. Without it you can’t show the tool did anything.</p></div>
+  <ul class="notes2"><li><b>Rows for facts, files for bytes.</b> <span>The bill image is a file. Its row holds the link.</span></li><li><b>Store the least.</b> <span>No account numbers, phone numbers or addresses.</span></li><li><b>Login and row-level security.</b> <span>Two accounts, one cross-read, an empty result.</span></li></ul>
+</section>
+
+<section class="bsec" id="testing">
+  <h2>Watch them use it</h2>
+  <p class="sub">What they did, not what they said.</p>
+  <div class="cnt">
+    <div class="y"><h3>Counts</h3><ul><li>They sent it to the company</li><li>Words changed before sending, counted</li><li>A charge they found that you didn’t</li></ul></div>
+    <div class="n"><h3>Doesn’t count</h3><ul><li>“This is useful”</li><li>A sample bill from the internet</li><li>A message they’d send “later”</li></ul></div>
+  </div>
+</section>
+
+<section class="bsec" id="traps">
+  <h2>Traps</h2>
+  <ul class="traps"><li><b>A bill summariser.</b> <span>Explaining the bill isn’t the job. The message is.</span></li><li><b>The model doing maths.</b> <span>Every rupee comes from code.</span></li><li><b>Inventing an error.</b> <span>“Every line checks out” is an answer.</span></li><li><b>One person’s bill on another’s screen.</b> <span>That is what the two-user test is for.</span></li></ul>
+</section>
+
+<section class="bsec" id="template">
+  <h2>Your filled template</h2>
+  <p class="sub">Copy it into a doc. Fill it as you go. It is what you submit.</p>
+  <div class="code"><div class="hd"><span>BillShield template</span><button class="cp" type="button">Copy</button></div><pre><div class="ln h"><code>BILLSHIELD SUBMISSION</code></div><div class="ln"><code>Name / track:</code></div><div class="ln"><code>Live link:</code></div><div class="ln"><code>Public repo:</code></div><div class="ln h"><code>MOVE 1, BY HAND</code></div><div class="ln"><code>Whose bill, what kind (masked photo attached):</code></div><div class="ln"><code>The line I flagged and the maths:</code></div><div class="ln"><code>The message I wrote / did they send it / what they changed:</code></div><div class="ln"><code>Golden pairs (link):</code></div><div class="ln h"><code>MOVE 2, NEEDS FIRST</code></div><div class="ln"><code>Need list:</code></div><div class="ln"><code>The follow-up from the replay, and the interface it picked:</code></div><div class="ln h"><code>MOVE 3, THE LINE</code></div><div class="ln"><code>[photo of the drawing]</code></div><div class="ln"><code>Code decides:</code></div><div class="ln"><code>AI decides:</code></div><div class="ln"><code>My call on wrong vs unexplained, and its failure mode:</code></div><div class="ln h"><code>MOVE 4, THE DATA</code></div><div class="ln"><code>[photo of the tables, message -&gt; line link marked]</code></div><div class="ln"><code>What I chose not to store:</code></div><div class="ln"><code>Two-user test (two accounts, the cross-read, the empty result):</code></div><div class="ln h"><code>MOVE 5, WATCH THEM</code></div><div class="ln"><code>Classmate: sent? words changed?</code></div><div class="ln"><code>Stranger: sent? words changed?</code></div><div class="ln"><code>The surprise:</code></div></pre></div>
+</section>
+
+<nav class="others" aria-label="Other problems"><span>Other problems</span><a href="/c8/module-2/hackathon/eval-copilot">Eval Co-pilot</a><a href="/c8/module-2/hackathon/concept-check">Concept Check</a><a href="/c8/module-2/hackathon/">Back to the hackathon</a></nav>
+</main>
+
+<script>
+(function(){
+  /* the same pick as the hackathon page (c8hk-problem) */
+  var b=document.querySelector('.pbtn[data-p]');
+  function get(){try{return localStorage.getItem('c8hk-problem')}catch(e){return null}}
+  function show(){var on=get()===b.dataset.p;b.classList.toggle('on',on);b.textContent=on?'Picked':'Pick this problem'}
+  b.addEventListener('click',function(){try{localStorage.setItem('c8hk-problem',get()===b.dataset.p?'':b.dataset.p)}catch(e){}show()});
+  addEventListener('pageshow',show);show();
+})();
+</script>
+<footer><div class="wrap"><span>100xEngineers, Cohort 8, Module 2</span><a href="/#HK">Curriculum map</a><a href="/c8/module-2/hackathon/">Hackathon</a></div></footer>
+</body>
+</html>

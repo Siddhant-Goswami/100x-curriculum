@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Concept Check brief | 100xEngineers</title>
+<meta name="description" content="Hackathon problem brief: Concept Check. Find the sentence where a classmate stops understanding a Module 2 idea and starts reciting it, then check they can work out a new case.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/hackathon/brief.css">
+<script src="/c8/docs.js"></script>
+<script>
+/* the track (code or no-code) comes from the map; with none set, both lines show */
+(function(){var t=null;try{t=localStorage.getItem('c8m2-track')}catch(e){}if(t==='code'||t==='nocode')document.documentElement.setAttribute('data-hk',t)})();
+</script>
+</head>
+<body data-page="hk-concept-check">
+<header class="top"><div class="in">
+  <a class="brand" href="/#HK">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Brief sections"><a href="/c8/module-2/hackathon/">Hackathon</a><a href="#moves">Moves</a><a href="#line">The line</a><a href="#data">Data</a><a href="#testing">Testing</a><a href="#template">Template</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-p" viewBox="0 0 24 24"><path d="M4 5h16v11H10l-6 4z"/><path d="M10 9a2 2 0 1 1 3 1.7c-.6.4-1 .8-1 1.3M12 14.2v.01"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-arr" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+</svg>
+
+<main class="bf">
+<p class="crumb"><a href="/c8/module-2/hackathon/#problems">Hackathon</a><span>/</span><span>Problem 3 of 3</span></p>
+
+<section class="bhero">
+  <span class="pi" aria-hidden="true"><svg class="ic"><use href="#i-p"/></svg></span>
+  <div>
+    <h1>Concept Check</h1>
+    <p class="dek">Find where a learner stops understanding and starts reciting.</p>
+    <p class="scene">Ask a classmate why the API key can’t live in the browser. They start well. By the third sentence they’re saying “for security reasons”. <b>The words keep coming. The thinking has stopped.</b> Point at that sentence, ask one question about what breaks, and see if they can work it out.</p>
+    <div class="bacts"><button class="pbtn" type="button" data-p="conceptcheck">Pick this problem</button><span class="teach"><b>Teaches</b> How to judge a judgment about someone’s mind.</span></div>
+  </div>
+</section>
+
+<figure class="io" aria-label="Input, process, output">
+  <div class="bx"><small>Input</small><p>A Module 2 idea, explained in their own words</p></div>
+  <span class="ar" aria-hidden="true"><svg class="ic"><use href="#i-arr"/></svg></span>
+  <div class="bx pr"><small>Process</small><p>Find the recited sentence, ask one follow-up</p></div>
+  <span class="ar" aria-hidden="true"><svg class="ic"><use href="#i-arr"/></svg></span>
+  <div class="bx"><small>Output</small><p>The sentence, the follow-up, and a new case to try</p></div>
+</figure>
+<div class="win"><small>You win when</small><b>They work out a case they hadn’t seen.</b><span>Write your bar before you build, for example: failed a fresh case before the follow-up, passed a different one after.</span></div>
+<div class="who2">
+  <div><small>Test with a classmate</small><p>A classmate who says they get it.</p></div>
+  <div><small>And a stranger</small><p>A cohort-mate you have never worked with, or anyone outside the cohort. They have never seen your app and get no help from you.</p></div>
+</div>
+
+<section class="bsec" id="moves">
+  <h2>Five moves, on this problem</h2>
+  <p class="sub">Each one is a lecture from the last four weeks.</p>
+  <div class="bms">
+    <details class="bm" open>
+      <summary><h3><small>Discovery</small>Do it by hand</h3><span class="by">Green by Sun 3 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Sit with two classmates who say they get one of the ideas below. You are Concept Check.</li><li>Ask them to work it out, not define it. Push with why, and what breaks without it.</li><li>Mark the sentence where it turned into a phrase. Ask one follow-up.</li><li>Then give a new case they haven’t seen. Each case, with its known answer, is a golden pair. Write ten.</li></ul><p class="sit"><b>Ideas to test.</b> Why does a backend exist at all? &middot; What does one API call carry? &middot; Why can’t the key live in the browser? &middot; Why does the app forget without storage? &middot; Why does the pointer sit on the many side? &middot; Why is history a row, not a cell? &middot; How do you decide where a piece lives?</p><p class="sit"><b>Sit with it.</b> Did both break at the same sentence? That is worth a lot.</p><p class="uses">Uses <a href="/c8/module-2/what-to-build/aarav-example">Aarav&#x27;s discovery</a><a href="/c8/building-ui-notes#s05">Golden pairs</a><a href="/c8/building-ui-notes#s06">Verifier threshold</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>User interface</small>Needs first</h3><span class="by">Green by Sun 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Write what it must do, with no tools named: take an idea, take an explanation, point at one sentence, ask one follow-up, take a second try, give a new case.</li><li>Replay your by-hand session. When you pointed at the sentence, did they argue, go quiet or try again? Each needs a different screen.</li></ul><p class="sit"><b>Sit with it.</b> Does a learner need a conversation here, or one question and one answer?</p><p class="uses">Uses <a href="/c8/building-ui-notes#s09">Search, form or chat</a><a href="/c8/building-ui-notes#s08">Two systems, one interface</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>System design</small>Draw the line</h3><span class="by">Green by Sun 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Draw the boxes: UI, your server, the LLM, the database. Write whose machine each lives on.</li><li>The explanation and your instructions go to the LLM as one package. The key stays on your server.</li><li>Split what code decides from what AI decides. Circle the no-go. The line is drawn below.</li></ul><p class="sit"><b>Sit with it.</b> Who decides they understand now? That is the whole project.</p><p class="uses">Uses <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s07">High-level design</a><a href="/c8/module-2/lecture-05-building-apis/notes#s11">Prompt + input = package</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s06">Strip it to the function</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>Data</small>Lock the data</h3><span class="by">Drawn Sun 9 PM, locked Mon 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Write the questions your app must answer next week. Those decide what is worth storing.</li><li>Every attempt is a row. The second try points at the gap it answers.</li><li>Is the list of ideas a table, or a fixed list you ship? Decide, and say why.</li><li>Add login and row-level security. A learner never sees another learner’s attempts.</li></ul><p class="sit"><b>Sit with it.</b> Your best question crosses learners. Row-level security says it can’t. What can a shared view show?</p><p class="uses">Uses <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s08">What is worth storing</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s09">Things, facts, links</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s10">Keys and pointers</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s11">History is a row</a></p></div>
+    </details>
+    <details class="bm">
+      <summary><h3><small>User testing</small>Watch them use it</h3><span class="by">Tue 9 AM, then Tue 9 PM</span><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="bb"><ul><li>Your classmate tries an idea you haven’t tested them on.</li><li>Your stranger uses it alone. You watch, you don’t help.</li><li>Write down what they did: the fresh case before, and the different fresh case after.</li><li>Write the one surprise: where real learners broke your plan.</li></ul><p class="sit"><b>Sit with it.</b> Did they work it out, or recite a better phrase?</p><p class="uses">Uses <a href="/c8/module-2/lecture-08-end-to-end-mvp/">End-to-end MVP</a></p></div>
+    </details>
+  </div>
+</section>
+
+<section class="bsec" id="line">
+  <h2>Draw the line</h2>
+  <p class="sub">Draw yours on paper. This is where to start, not the answer.</p>
+  <div class="line">
+    <div class="side det"><h3>Code decides</h3><p>Same input, same answer, every time.</p><ul><li>The list of ideas</li><li>The new cases and their known answers</li><li>Every attempt, with a time</li><li>Passed or not, against the answer key</li></ul></div>
+    <div class="mid"><div class="call2"><small>Your call</small>Who judges the second try?</div></div>
+    <div class="side prob"><h3>AI decides</h3><p>Judgment. Can differ run to run.</p><ul><li>Finding the recited sentence</li><li>Writing the one follow-up</li><li class="no"><b>No-go</b>The model decides on its own that they understand now.</li></ul></div>
+  </div>
+  <p class="line-k">A model asked “do they understand now?” says yes, kindly, to everyone. <b>The new case has an answer you wrote before the session. That answer is the judge, not the model’s mood.</b></p>
+</section>
+
+<section class="bsec" id="data">
+  <h2>What is worth storing</h2>
+  <p class="sub">The questions it must answer tomorrow. Draw the tables that answer them.</p>
+  <ul class="qs"><li>Which idea does this learner keep reciting?</li><li>Did the second try pass a new case?</li><li>Which sentence do most learners recite?</li></ul>
+  <div class="link1"><small>The one link that is your proof</small><code>retry</code><span class="pt" aria-hidden="true">&rarr;</span><code>gap</code><p>The second try points at the gap it answers. Without it you can’t show a gap was named and then closed.</p></div>
+  <ul class="notes2"><li><b>Consent first.</b> <span>Recording a classmate thinking out loud needs a yes.</span></li><li><b>Store the least.</b> <span>Their explanation, not their name in the shared view.</span></li><li><b>Login and row-level security.</b> <span>Two accounts, one cross-read, an empty result.</span></li></ul>
+</section>
+
+<section class="bsec" id="testing">
+  <h2>Watch them use it</h2>
+  <p class="sub">What they did, not what they said.</p>
+  <div class="cnt">
+    <div class="y"><h3>Counts</h3><ul><li>Failed a new case before, passed a different one after</li><li>The recited sentence, quoted</li><li>A follow-up that didn’t work, and what you tried next</li></ul></div>
+    <div class="n"><h3>Doesn’t count</h3><ul><li>“That was helpful”</li><li>The same phrase, said faster</li><li>A case they’d already seen</li></ul></div>
+  </div>
+</section>
+
+<section class="bsec" id="traps">
+  <h2>Traps</h2>
+  <ul class="traps"><li><b>A quiz.</b> <span>Picking from four options tests recognition. You are testing the opposite.</span></li><li><b>A soft judge.</b> <span>The model passes everyone.</span></li><li><b>Ideas they never met.</b> <span>Stick to Module 2.</span></li><li><b>A follow-up that gives the answer.</b> <span>Ask what breaks. Don’t tell them.</span></li></ul>
+</section>
+
+<section class="bsec" id="template">
+  <h2>Your filled template</h2>
+  <p class="sub">Copy it into a doc. Fill it as you go. It is what you submit.</p>
+  <div class="code"><div class="hd"><span>Concept Check template</span><button class="cp" type="button">Copy</button></div><pre><div class="ln h"><code>CONCEPT CHECK SUBMISSION</code></div><div class="ln"><code>Name / track:</code></div><div class="ln"><code>Live link:</code></div><div class="ln"><code>Public repo:</code></div><div class="ln h"><code>MOVE 1, BY HAND</code></div><div class="ln"><code>Person 1 and 2, idea tested, raw record (with consent):</code></div><div class="ln"><code>The sentence where it became a phrase:</code></div><div class="ln"><code>Follow-up used / new case before and after:</code></div><div class="ln"><code>Golden pairs (new cases with answers, link):</code></div><div class="ln h"><code>MOVE 2, NEEDS FIRST</code></div><div class="ln"><code>Need list:</code></div><div class="ln"><code>What they did when I pointed at the sentence, and the interface it picked:</code></div><div class="ln h"><code>MOVE 3, THE LINE</code></div><div class="ln"><code>[photo of the drawing]</code></div><div class="ln"><code>Code decides:</code></div><div class="ln"><code>AI decides:</code></div><div class="ln"><code>Who judges the second try, and its failure mode:</code></div><div class="ln h"><code>MOVE 4, THE DATA</code></div><div class="ln"><code>[photo of the tables, retry -&gt; gap link marked]</code></div><div class="ln"><code>Two-user test (two accounts, the cross-read, the empty result):</code></div><div class="ln h"><code>MOVE 5, WATCH THEM</code></div><div class="ln"><code>Classmate: case before / follow-up / case after:</code></div><div class="ln"><code>Stranger: case before / follow-up / case after:</code></div><div class="ln"><code>The surprise:</code></div></pre></div>
+</section>
+
+<nav class="others" aria-label="Other problems"><span>Other problems</span><a href="/c8/module-2/hackathon/billshield">BillShield</a><a href="/c8/module-2/hackathon/eval-copilot">Eval Co-pilot</a><a href="/c8/module-2/hackathon/">Back to the hackathon</a></nav>
+</main>
+
+<script>
+(function(){
+  /* the same pick as the hackathon page (c8hk-problem) */
+  var b=document.querySelector('.pbtn[data-p]');
+  function get(){try{return localStorage.getItem('c8hk-problem')}catch(e){return null}}
+  function show(){var on=get()===b.dataset.p;b.classList.toggle('on',on);b.textContent=on?'Picked':'Pick this problem'}
+  b.addEventListener('click',function(){try{localStorage.setItem('c8hk-problem',get()===b.dataset.p?'':b.dataset.p)}catch(e){}show()});
+  addEventListener('pageshow',show);show();
+})();
+</script>
+<footer><div class="wrap"><span>100xEngineers, Cohort 8, Module 2</span><a href="/#HK">Curriculum map</a><a href="/c8/module-2/hackathon/">Hackathon</a></div></footer>
+</body>
+</html>
