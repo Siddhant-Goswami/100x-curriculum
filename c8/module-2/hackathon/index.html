@@ -200,6 +200,86 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 #pick button:hover,#pick button:focus-visible{border-color:var(--ink)}
 #pick button i{display:block;font-style:normal;font-weight:400;font-size:14px;color:var(--ink3);margin-top:2px}
 
+/* the hero's language for the whole page, after 100xengineers.com: one framed column,
+   uppercase two-tone headings, mono copy, square corners, corner brackets, striped buttons */
+.top nav a{font:500 11.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;border-radius:0}
+.sec{padding:72px 40px;border:1px solid var(--line);border-top:0;scroll-margin-top:52px}
+.hk h2{font:700 clamp(1.9rem,4.2vw,2.9rem)/.98 var(--disp);letter-spacing:-.04em;text-transform:uppercase;margin:0 0 14px}
+.hk h2 span{color:var(--coral)}
+.hk .sub{font:400 14px/1.6 var(--mono);color:var(--ink2);margin:0 0 36px}
+.foot{font:400 13.5px/1.6 var(--mono)}
+.brk{--k:var(--coral);background-image:linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k));
+  background-repeat:no-repeat;background-size:7px 1.5px,1.5px 7px,7px 1.5px,1.5px 7px,7px 1.5px,1.5px 7px,7px 1.5px,1.5px 7px;background-position:0 0,0 0,100% 0,100% 0,0 100%,0 100%,100% 100%,100% 100%}
+.lbl{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+
+.prob .pi{border-radius:0}
+.prob h3{font:700 20px/1.2 var(--disp);letter-spacing:-.01em}
+.prob h3 em{font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;border-radius:0;padding:3px 8px}
+.prob summary p,.prob dl{font:400 14px/1.55 var(--mono)}
+.pbtn{border-radius:0;border-bottom:2px solid var(--coral);padding:10px 18px;font:600 14px var(--disp);color:var(--coral-ink);background:var(--coral-soft) repeating-linear-gradient(135deg,transparent 0 7px,color-mix(in srgb,var(--coral) 12%,transparent) 7px 14px)}
+.prob.mine .pbtn{background:var(--coral);color:#fff}
+
+.mv .o{border-radius:0}
+.mv .t{font:700 16px/1.2 var(--disp)}
+.mvcap .cn{font-size:26px;text-transform:uppercase;letter-spacing:-.03em}
+.mvcap p{font:400 15px/1.6 var(--mono)}
+.mvcap a{font:600 14px var(--disp)}
+
+.nd .nm{font:700 15px/1.2 var(--disp)}
+.nd .tm{font:400 11.5px var(--mono)}
+.det{border-radius:0}
+.det .l h3{font:700 30px/1 var(--disp);letter-spacing:-.03em;text-transform:uppercase}
+.det .l p{font:400 13px/1.6 var(--mono)}
+.det .l .mvchip{border-radius:0;background-color:transparent;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px}
+.det .r>p{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase}
+.gr label{font:400 14.5px/1.5 var(--mono)}
+.gr input{border-radius:0}
+.pf{border:0;border-radius:0;background-color:var(--bg2);font:400 13px var(--mono);padding:8px 12px}
+.det .r>.one{font:400 16px/1.6 var(--mono);text-transform:none;letter-spacing:0;color:var(--ink)}
+.post .code{border-radius:0}
+
+.cisteps li{font:600 18px/1.35 var(--disp)}
+.cisteps li::before{border-radius:0;font:700 13px var(--mono);background:var(--coral);color:#fff}
+.lt{font:400 14px var(--mono)}
+.lt b{font:700 15px var(--disp);min-width:70px}
+.lt::before{border-radius:0}
+.grace{font:400 13.5px/1.6 var(--mono)}
+.thread{border-radius:0;box-shadow:none}
+.th-top{font:400 12.5px var(--mono)}
+.th-top .tabs,.tabs button{border-radius:0}
+.tabs button{font:500 12px var(--mono)}
+.tabs button::before{border-radius:0}
+.att{border-radius:0;font:400 12px var(--mono)}
+.who{font-family:var(--mono);font-size:13px}
+
+.rules li{font:400 14px/1.55 var(--mono)}
+.rules b{font:700 16px var(--disp);margin-right:4px}
+
+#submit{padding:0}
+.two{gap:0;margin:0}
+.box{border:0;border-radius:0;padding:48px 40px;background:var(--bg)}
+.box+.box{border-left:1px solid var(--line)}
+.box h2{font-size:clamp(1.6rem,3vw,2.2rem)}
+.box p{font:400 14px/1.65 var(--mono)}
+.box a{font:600 14px var(--disp)}
+.box.dark{position:relative;overflow:hidden;background:#141210;color:#F4F3EF}
+.box.dark>*:not(.glyph){position:relative}
+.box.dark .glyph{opacity:.16}
+.box.dark p{color:#B5ADA4}
+.three li{border-radius:0;border-color:rgba(255,255,255,.18);font:600 14px var(--disp);background:#141210}
+.box .gate{font:500 12px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+
+#pick{border-radius:0}
+#pick h2{font:700 1.4rem/1.1 var(--disp);text-transform:uppercase;letter-spacing:-.02em}
+#pick p,#pick button i{font-family:var(--mono);font-size:13.5px}
+#pick button{border-radius:0;font:700 16px var(--disp)}
+
+@media (max-width:860px){
+  .sec{margin:0 -16px;padding:56px 16px;border-left:0;border-right:0}
+  #submit{padding:0}
+  .box{padding:40px 16px}
+  .box+.box{border-left:0;border-top:1px solid var(--line)}
+}
 @media (max-width:860px){
   .hero{grid-template-columns:1fr;margin:0 -16px;border-left:0;border-right:0}
   .hero .hl{padding:40px 16px 32px}
@@ -271,7 +351,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 </section>
 
 <section class="sec" id="problems">
-  <h2>Pick one problem</h2>
+  <h2>Pick one <span>problem</span></h2>
   <p class="sub">Lock it by Sunday, 9 AM.</p>
   <div class="probs">
     <details class="prob" name="prob" data-p="billshield">
@@ -291,7 +371,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 </section>
 
 <section class="sec" id="moves">
-  <h2>Five moves</h2>
+  <h2>Five <span>moves</span></h2>
   <p class="sub">What you learned in the last four weeks, in order.</p>
   <ol class="moves">
     <li><button class="mv" type="button" data-m="1" aria-pressed="true"><span class="o"><svg class="ic"><use href="#i-hand"/></svg></span><span class="t"><small>Discovery</small>Do it by hand</span></button></li>
@@ -304,7 +384,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 </section>
 
 <section class="sec" id="timeline">
-  <h2>72 hours, six check-ins</h2>
+  <h2>72 hours, <span>six check-ins</span></h2>
   <p class="sub">Each one shows what Green looks like.</p>
   <div class="track" id="track" role="tablist" aria-label="Check-ins"><span class="fill" id="fill"></span></div>
   <div class="det" id="det" role="tabpanel"></div>
@@ -312,7 +392,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 </section>
 
 <section class="sec" id="checkins">
-  <h2>How to check in</h2>
+  <h2>How to <span>check in</span></h2>
   <p class="sub">All six are mandatory.</p>
   <div class="ci">
     <div>
@@ -356,7 +436,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 </section>
 
 <section class="sec" id="rules">
-  <h2>Ten rules</h2>
+  <h2>Ten <span>rules</span></h2>
   <p class="sub">Break one and the submission doesn't count.</p>
   <ul class="rules">
     <li><b>On time.</b> <span>Late work doesn't count.</span></li>
@@ -374,8 +454,8 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 
 <section class="sec" id="submit">
   <div class="two">
-    <div class="box dark">
-      <h2>Submit by Tue, 9 PM</h2>
+    <div class="box dark"><pre class="glyph" aria-hidden="true"></pre>
+      <h2>Submit by <span>Tue, 9 PM</span></h2>
       <ul class="three"><li>Filled template</li><li>Public repo</li><li>Live link</li></ul>
       <p>The form link goes up in your check-in channel on Tuesday.</p>
       <span class="gate">No stranger test, no submission.</span>
@@ -454,8 +534,8 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   function show(i){
     sel=i;var e=EV[i];
     nds.forEach(function(b,j){b.setAttribute('aria-selected',j===i)});
-    var mv=e.m?'<span class="mvchip">'+(e.m.length>1?'Moves 2 to 4':'Move '+e.m+', '+MV[e.m][0])+'</span>':'';
-    var right=e.g?'<p>Green means</p><ul class="gr">'+Object.keys(e.g).map(function(k){return '<li><label><input type="checkbox" data-k="'+k+'"'+(ticks[k]?' checked':'')+'><span>'+e.g[k]+'</span></label></li>'}).join('')+'</ul><span class="pf"><svg class="ic"><use href="#i-clip"/></svg>Proof: '+e.pf+'</span>':'<p class="one">'+e.one+'</p>';
+    var mv=e.m?'<span class="mvchip brk">'+(e.m.length>1?'Moves 2 to 4':'Move '+e.m+', '+MV[e.m][0])+'</span>':'';
+    var right=e.g?'<p>Green means</p><ul class="gr">'+Object.keys(e.g).map(function(k){return '<li><label><input type="checkbox" data-k="'+k+'"'+(ticks[k]?' checked':'')+'><span>'+e.g[k]+'</span></label></li>'}).join('')+'</ul><span class="pf brk"><svg class="ic"><use href="#i-clip"/></svg>Proof: '+e.pf+'</span>':'<p class="one">'+e.one+'</p>';
     det.innerHTML='<div class="l"><p>'+e.lb+'</p><h3>'+e.nm+'</h3><p>'+e.day+'</p>'+mv+'</div><div class="r">'+right+'</div>';
   }
   det.addEventListener('change',function(x){var b=x.target;if(!b.dataset.k)return;ticks[b.dataset.k]=b.checked;set('c8hk-ticks',JSON.stringify(ticks))});
@@ -498,7 +578,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   /* the glyph field behind the clock, as on 100xengineers.com */
   var G='$%1X#+-0', rows=[], q=7;
   for(var r=0;r<40;r++){var l='';for(var c=0;c<40;c++)q=(Math.imul(q,1103515245)+12345)>>>0,l+=G[(q>>>16)%G.length];rows.push(l)}
-  document.getElementById('glyph').textContent=rows.join('\n');
+  document.querySelectorAll('.glyph').forEach(function(g){g.textContent=rows.join('\n')});
 
   /* the dates: hover or focus shows them, a tap pins them */
   var wb=document.querySelector('.when');
