@@ -23,6 +23,11 @@
       "source": "/:page(beginner-kit|building-ui-notes|office-hour-guide|practice-set|tick-list|docs.css|docs.js)",
       "destination": "/c8/:page",
       "permanent": true
+    },
+    {
+      "source": "/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard",
+      "destination": "/c8/module-2/lecture-07-connect-backend-to-the-database/notes",
+      "permanent": false
     }
   ]
 }

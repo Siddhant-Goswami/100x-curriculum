@@ -81,7 +81,6 @@ var GUIDE_LINKS = {
   /* Lecture 7 · Connect backend to the database (code track; pages live in c8/module-2/lecture-07-connect-backend-to-the-database) */
   l07Hub: '/c8/module-2/lecture-07-connect-backend-to-the-database/',
   l07Notes: '/c8/module-2/lecture-07-connect-backend-to-the-database/notes',
-  l07Board: '/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard',
   l07Practice: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set',
   l07Submit: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set#s01',
   l07Setup: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set#s02',
@@ -562,7 +561,7 @@ GUIDES.L6 = { all: {
 /* Lecture 7 · Connect backend to the database (Fri 16 October 2026). Storage is Lecture 8.
    Source: the Friday transcript, the c8-db repository (steps 01 to 04) and the Lecture 7 pages. */
 GUIDES.L7 = { code: {
-  hub: {link:'l07Hub', title:'Open the Lecture 7 pages', sub:'Notes, the practice set and the whiteboard', more:[['l07Notes','Notes'],['l07Practice','Practice set'],['l07Board','Whiteboard']]},
+  hub: {link:'l07Hub', title:'Open the Lecture 7 pages', sub:'Notes with the whiteboard sketches, and the practice set', more:[['l07Notes','Notes'],['l07Practice','Practice set']]},
   name: 'The key leaves the browser',
   sub: 'After the lecture · 16 October 2026 · code track',
   deadline: 'Practice set',
@@ -579,12 +578,12 @@ GUIDES.L7 = { code: {
   rule: 'Keys live in environment variables: the terminal on your laptop, the dashboard on Vercel. Never in the file, never in a screenshot. Predict the status code before every call.',
   stages: [
     {id:'setup', name:'Before you start', short:'Setup', sub:'Practice set, section 02',
-     intro:'The five things every step from here depends on. One LLM helper, not four.',
+     intro:'The five things every step from here depends on. One LLM desktop app, not four.',
      ticks:[
        {id:'py', t:'Python locally and an IDE', link:'l07Setup', linkLabel:'Before you start'},
        {id:'gh', t:'A GitHub account and one public repository', how:'Repository is the project. Commit is a save. Push sends the saves up.'},
        {id:'vc', t:'A Vercel account, the CLI installed and logged in', how:'npm i -g vercel, then vercel login.'},
-       {id:'llm', t:'One LLM helper that can see the project folder', how:'Codex, Claude Code, Hermes or OpenCode. Read every command it runs.'},
+       {id:'llm', t:'One LLM desktop app that can see the project folder', how:'Codex, Claude Code, Hermes or OpenCode. Read every command it runs.'},
        {id:'key', t:'The Groq key set in the terminal', how:'export on Mac, $env: on Windows. Not in a file you will share.'}
      ]},
     {id:'steps', name:'The four steps', short:'Steps', sub:'Practice set, section 03',
@@ -622,9 +621,8 @@ GUIDES.L7 = { code: {
   ],
   read: [
     ['Lecture 7 overview', 'l07Hub', 'The lecture, step by step.'],
-    ['Notes', 'l07Notes', 'What was said, in order.'],
+    ['Notes', 'l07Notes', 'What was said, in order, with the whiteboard sketches.'],
     ['Practice set', 'l07Practice', 'Setup, the four steps, the error log, five things to post.'],
-    ['The lecture on a whiteboard', 'l07Board', 'Four scenes: the leak, the function, the route, the client.'],
     ['The lecture repository', 'l07Repo', 'Every step as a folder. Replace the function with yours.'],
     ['FastAPI tutorial', 'fastapiTutorial', 'Read it before asking an LLM to write the route.']
   ],
@@ -638,7 +636,7 @@ GUIDES.L7 = { code: {
     ['FastAPI', 'The Python framework that turns a function into an endpoint in four lines and documents it at /docs.'],
     ['Pydantic', 'The data validation library FastAPI uses. The traffic police for everything that arrives.'],
     ['Business logic', 'The one function that takes the input and makes the output. Everything else is around it.'],
-    ['CLI', 'Command line interface. The Vercel and GitHub CLIs let your terminal, or your LLM helper, talk to those machines.']
+    ['CLI', 'Command line interface. The Vercel and GitHub CLIs let your terminal, or your LLM desktop app, talk to those machines.']
   ],
   kw: 'connect backend database deploy vercel github commit push repository fastapi pydantic validation traffic police environment variable env var groq key leak 401 404 500 httpie uvicorn docs gradio client api/diagnose business logic codex claude code hermes opencode hackathon practice set'
 }};

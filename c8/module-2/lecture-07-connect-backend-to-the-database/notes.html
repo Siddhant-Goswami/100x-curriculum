@@ -4,12 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lecture Notes: Connect Backend to the Database | 100xEngineers</title>
-<meta name="description" content="Post-read notes for Lecture 7: the five things you need before you build, why you rent a machine instead of running your laptop, the leak, the function, FastAPI with Pydantic as the traffic police, the first deploy to Vercel, the status codes along the way, and what comes in Lecture 8.">
+<meta name="description" content="Post-read notes for Lecture 7: the five things you need before you build, why you rent a machine instead of running your laptop, the leak, the function, FastAPI with Pydantic as the traffic police, the first deploy to Vercel, the status codes along the way, and what comes in Lecture 8. With the whiteboard sketches inline.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/c8/docs.css">
 <link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
 <link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
 <script src="/c8/docs.js"></script>
 <style>
@@ -23,6 +24,26 @@ body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10
 body.read table.dials th{font-weight:500;color:var(--ink2)}
 body.read table.dials code{font-size:13px}
 body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:9px;padding:12px 14px;font:13.5px/1.5 var(--mono);overflow-x:auto;margin:6px 0 14px}
+/* the whiteboard sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}.wb .ln .c-pkg{stroke:var(--hum)}
+.wb .ln .c-thing{stroke:var(--q-thing)}.wb .ln .c-fact{stroke:var(--q-fact)}.wb .ln .c-link{stroke:var(--q-link)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-pkg{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-addr{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-key{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dot{fill:currentColor;stroke:none}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-thing{fill:var(--q-thing-ink)}.wb .tx .c-fact{fill:var(--q-fact-ink)}.wb .tx .c-link{fill:var(--q-link-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+.wb .tx .strike{text-decoration:line-through}
+.wb image{opacity:.96}
 </style>
 </head>
 <body data-page="l07-notes" class="read">
@@ -31,6 +52,67 @@ body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius
   <nav aria-label="Lecture 7 pages"><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">Overview</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Notes</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set">Practice set</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
+
+<!-- shared whiteboard defs, as in the Lecture 6 whiteboard: wobble filter, arrowheads, and the drawn objects every sketch reuses -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--hum)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <!-- laptop: screen with a browser bar, keyboard deck with three key rows and a space bar. 256 x 170 -->
+    <symbol id="laptop" style="overflow:visible">
+      <rect x="28" y="0" width="200" height="126" rx="10" vector-effect="non-scaling-stroke"/>
+      <path d="M28 126 L0 170 H256 L228 126 Z" vector-effect="non-scaling-stroke"/>
+      <path d="M28 22 H228" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+      <circle cx="42" cy="11" r="3" fill="currentColor" stroke="none"/><circle cx="54" cy="11" r="3" fill="currentColor" stroke="none"/><circle cx="66" cy="11" r="3" fill="currentColor" stroke="none"/>
+      <path d="M34 134 H222 M27 143 H229 M20 152 H236" stroke-width="5" stroke-dasharray="11 4" stroke-linecap="butt" vector-effect="non-scaling-stroke"/>
+      <path d="M96 162 H160" stroke-width="4" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a person. 52 x 128 -->
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a server: three slots with lights. 120 x 150 -->
+    <symbol id="rack" style="overflow:visible">
+      <rect x="0" y="0" width="120" height="150" rx="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 50 H120 M0 100 H120 M38 21 H104 M38 30 H84 M38 71 H104 M38 80 H84 M38 121 H104 M38 130 H84" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+      <circle cx="20" cy="25" r="6" vector-effect="non-scaling-stroke"/><circle cx="20" cy="75" r="6" vector-effect="non-scaling-stroke"/><circle cx="20" cy="125" r="6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a file with a folded corner. 86 x 112 -->
+    <symbol id="file" style="overflow:visible">
+      <path d="M0 0 H62 L86 24 V112 H0 Z" vector-effect="non-scaling-stroke"/>
+      <path d="M62 0 V24 H86 M14 46 H72 M14 62 H72 M14 78 H72 M14 94 H50" stroke-width="1.8" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a file of tables: the same file with a grid inside. 86 x 112 -->
+    <symbol id="tablefile" style="overflow:visible">
+      <path d="M0 0 H62 L86 24 V112 H0 Z" vector-effect="non-scaling-stroke"/>
+      <path d="M62 0 V24 H86 M12 38 H74 V96 H12 Z M12 52 H74 M12 66 H74 M12 81 H74 M34 38 V96" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a GPU card: two fans and a connector. 170 x 88 -->
+    <symbol id="gpu" style="overflow:visible">
+      <rect x="0" y="0" width="170" height="76" rx="6" vector-effect="non-scaling-stroke"/>
+      <circle cx="48" cy="38" r="26" vector-effect="non-scaling-stroke"/><circle cx="122" cy="38" r="26" vector-effect="non-scaling-stroke"/>
+      <circle cx="48" cy="38" r="6" vector-effect="non-scaling-stroke"/><circle cx="122" cy="38" r="6" vector-effect="non-scaling-stroke"/>
+      <path d="M48 12 Q60 30 48 38 M74 38 Q56 50 48 38 M122 12 Q134 30 122 38 M148 38 Q130 50 122 38" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+      <path d="M24 76 V88 H116 V76 M34 80 V86 M46 80 V86 M58 80 V86 M70 80 V86 M82 80 V86 M94 80 V86 M106 80 V86" stroke-width="1.6" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a key: a ring and a shaft with two teeth. 60 x 28, centred on the ring -->
+    <symbol id="key" style="overflow:visible">
+      <circle cx="0" cy="0" r="9" vector-effect="non-scaling-stroke"/>
+      <path d="M9 0 H44 M34 0 V9 M42 0 V7" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a padlock. 28 x 26, centred -->
+    <symbol id="lock" style="overflow:visible">
+      <rect x="-12" y="-2" width="24" height="18" rx="4" vector-effect="non-scaling-stroke"/>
+      <path d="M-7 -2 V-8 A7 7 0 0 1 7 -8 V-2" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a terminal window: title bar with three dots. 0 0 w h drawn by the scene -->
+  </defs>
+</svg>
+
 <div class="wrap">
   <main>
 <details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
@@ -48,7 +130,7 @@ body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius
   <li><b>Then the hackathon.</b> Two days, fresh problem statements, mandatory, graded on the attempt. You do what Lectures 7 and 8 did, with your own idea.</li>
   <li><b>Done for today:</b> <code>http POST https://&lt;your-app&gt;.vercel.app/api/diagnose workflow="…"</code> returns a plan. The key is nowhere a user can see it.</li>
 </ul>
-<p>Drawn: <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard">this lecture on a whiteboard</a>, four scenes. The storage half is <a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard">Lecture 8 on a whiteboard</a>.</p>
+<p>The whiteboard sketches sit inside the sections they belong to. The storage half is <a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard">Lecture 8 on a whiteboard</a>.</p>
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>Five things before you build</h2>
@@ -56,14 +138,14 @@ body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius
 <tr><th>Need</th><th>Why</th></tr>
 <tr><td>Python, locally</td><td>Every step is a Python file you run first on your laptop.</td></tr>
 <tr><td>An IDE</td><td>Cursor in class. VS Code, PyCharm, anything works.</td></tr>
-<tr><td>One LLM helper</td><td>Free is fine. Pick one, see <a href="#s04">section 04</a>.</td></tr>
+<tr><td>One LLM desktop app</td><td>Free is fine. Pick one, see <a href="#s04">section 04</a>.</td></tr>
 <tr><td>A GitHub account</td><td>Where your code lives on the internet, and how you share it for review.</td></tr>
 <tr><td>A Vercel account and CLI</td><td>The rented machine your API runs on. Free hobby plan.</td></tr>
 </table>
 <ul class="pt">
   <li><b>GitHub in two words.</b> A repository is a project. <em>Commit</em> is saving your progress, like a save file in a game. <em>Push</em> sends your saves to the repository on the internet. You can commit many times, then push once.</li>
   <li><b>Keep the hackathon repo public.</b> A private repo cannot be reviewed. Code is no longer the moat. Your domain expertise is.</li>
-  <li><b>You do not have to memorise the commands.</b> Understand commit and push. Let your LLM helper run the terminal.</li>
+  <li><b>You do not have to memorise the commands.</b> Understand commit and push. Let your LLM desktop app run the terminal.</li>
 </ul>
 </section>
 
@@ -77,16 +159,15 @@ body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius
 </ul>
 </section>
 
-<section class="s" id="s04"><h2><span class="n">04</span>Pick one LLM helper</h2>
+<section class="s" id="s04"><h2><span class="n">04</span>Pick one LLM desktop app</h2>
 <table class="dials">
 <tr><th>Tool</th><th>Ease</th><th>Speed</th><th>Note</th></tr>
-<tr><td>Codex (in the ChatGPT desktop app)</td><td>easiest</td><td>heavy on the laptop</td><td>Point it at your project folder. $20 plan, free tier exists.</td></tr>
-<tr><td>Claude Code, in the terminal</td><td>easy</td><td>fast, light</td><td>Paid. A terminal session is all it needs.</td></tr>
-<tr><td>Hermes agent</td><td>harder to set up</td><td>fast</td><td>Runs local and open models. Most configurable. $20 for 200+ cloud models, optional.</td></tr>
-<tr><td>OpenCode</td><td>terminal only</td><td>fastest</td><td>For people who already live in a terminal.</td></tr>
+<tr><td><a href="https://openai.com/codex/" target="_blank" rel="noopener">Codex</a> (in the ChatGPT desktop app)</td><td>easiest</td><td>heavy on the laptop</td><td>Point it at your project folder. $20 plan, free tier exists.</td></tr>
+<tr><td><a href="https://claude.com/product/claude-code" target="_blank" rel="noopener">Claude Code</a>, in the terminal</td><td>easy</td><td>fast, light</td><td>Paid. A terminal session is all it needs.</td></tr>
+<tr><td><a href="https://hermes-agent.nousresearch.com/" target="_blank" rel="noopener">Hermes agent</a></td><td>harder to set up</td><td>fast</td><td>Runs local and open models. Most configurable. $20 for 200+ cloud models, optional.</td></tr>
+<tr><td><a href="https://opencode.ai/" target="_blank" rel="noopener">OpenCode</a></td><td>terminal only</td><td>fastest</td><td>For people who already live in a terminal.</td></tr>
 </table>
 <ul class="pt">
-  <li><b>Not yet:</b> Pi and OpenClaw. Pi is the stripped-down core most of these agents are built on, "the Linux of agents". Very hard to configure. Later in the cohort.</li>
   <li><b>What to use it for tonight.</b> Install Git and the GitHub CLI and log in with the account you created. Install the Vercel CLI and log in. Commit and push. Diagnose an error from a screenshot.</li>
   <li><b>Paid models are not required.</b> Everything in this cohort runs on open or local models. Post your hardware in the chat for a local-model recommendation.</li>
 </ul>
@@ -101,6 +182,32 @@ body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius
   <li><b>Three machines, three jobs.</b> The client, your server, Groq's server. The whole lecture is deciding which component lives on which machine.</li>
   <li><b>Why you cannot vibe-code this part.</b> An LLM will decide where things live for you, on the assumption of one hobby user. Nothing errors. Someone just quietly spends your money, or your data vanishes. There is now a marketplace of "vibe coding specialists" paid to fix exactly this. Be the specialist.</li>
 </ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Aarav's browser sends a POST straight to GroqCloud with Authorization Bearer gsk and the key. Below, the Network tab shows that header in full. A stranger reads it from the tab: anyone can read it and spend your money.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="20" y="90"/>
+    <use href="#laptop" transform="translate(90 96) scale(.7)"/>
+    <use href="#rack" x="600" y="70"/>
+    <path class="arw c-key" d="M284 150 H588" marker-end="url(#ahv)"/>
+    <rect class="f-card" x="120" y="236" width="400" height="84" rx="8"/>
+    <path class="thin" d="M120 262 H520"/>
+    <circle class="dot" cx="136" cy="249" r="3"/><circle class="dot" cx="148" cy="249" r="3"/><circle class="dot" cx="160" cy="249" r="3"/>
+    <use href="#person" transform="translate(590 240) scale(.55)"/>
+    <path class="arw c-act" d="M528 290 H580" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="80" class="s">Aarav's browser</text>
+    <text x="436" y="138" class="xs c-key">POST · Authorization: Bearer gsk_…</text>
+    <text x="436" y="186" class="xs c-act">whose machine is this? whose key?</text>
+    <text x="660" y="250" class="m">GroqCloud</text>
+    <text x="340" y="255" class="xxs c-mute">Inspect → Network → Headers</text>
+    <text x="136" y="298" class="xs l c-key">Authorization: Bearer gsk_live_7f3a9c…</text>
+    <text x="690" y="300" class="xs c-act">anyone can read it,</text>
+    <text x="690" y="324" class="xs c-act">and spend your money</text>
+  </g>
+</svg>
+<figcaption>The leak: the browser calls Groq directly</figcaption>
+</figure>
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>Step 02 · Strip it to the function</h2>
@@ -109,6 +216,32 @@ body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius
   <li><b>This is what you deploy first.</b> Not the UI. The UI can call your function the way you call Groq, from anywhere, once the function has an address.</li>
   <li><b>Set the key in the terminal.</b> Then run <code>python 02-function/diagnose.py</code> and type a workflow.</li>
 </ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="A terminal: python diagnose.py, Workflow: I edit until Sunday, and a three-line plan comes back. To the right, a single box: diagnose(workflow) returns plan. One function, no UI, no server.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="20" y="30" width="330" height="210" rx="10"/>
+    <path class="thin" d="M20 56 H350"/>
+    <circle class="dot" cx="36" cy="43" r="3"/><circle class="dot" cx="48" cy="43" r="3"/><circle class="dot" cx="60" cy="43" r="3"/>
+    <rect x="430" y="96" width="230" height="70" rx="12"/>
+    <path class="arw" d="M372 130 H420" marker-end="url(#ah)"/>
+    <path class="arw c-pkg" d="M545 176 V220" marker-end="url(#ahg)"/>
+  </g>
+  <g class="tx">
+    <text x="36" y="86" class="xxs l c-ink">$ python diagnose.py</text>
+    <text x="36" y="112" class="xxs l c-ink">Workflow: I edit until Sunday</text>
+    <text x="36" y="150" class="xxs l c-pkg">1. Batch your edits into one block</text>
+    <text x="36" y="174" class="xxs l c-pkg">2. Lock the cut on Thursday</text>
+    <text x="36" y="198" class="xxs l c-pkg">3. Post Friday, not Sunday</text>
+    <text x="396" y="118" class="xxs">text in</text>
+    <text x="545" y="70" class="s">one function · no UI · no server</text>
+    <text x="545" y="128" class="m">diagnose(workflow)</text>
+    <text x="545" y="152" class="xs c-pkg">→ plan</text>
+    <text x="545" y="246" class="xs c-pkg">plan, printed</text>
+    <text x="380" y="284" class="s c-act">the UI was never the process</text>
+  </g>
+</svg>
+<figcaption>Strip it down to the function</figcaption>
+</figure>
 <div class="osrow"><span class="kick">Your machine</span><div class="seg" data-seg="os" role="group" aria-label="Operating system"><button type="button" data-v="mac">Mac</button><button type="button" data-v="win">Windows</button></div></div>
 <div class="cmd" data-os="mac"><span>export GROQ_API_KEY=gsk_your_key_here</span><button class="cp" type="button">Copy</button></div>
 <div class="cmd" data-os="win"><span>$env:GROQ_API_KEY="gsk_your_key_here"</span><button class="cp" type="button">Copy</button></div>
@@ -128,6 +261,35 @@ body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius
 <tr><td><span class="part pkg">package</span></td><td><code>{"workflow": "…"}</code> in, <code>{"plan": "…"}</code> out</td></tr>
 <tr><td><span class="part key">key</span></td><td>none on your API yet. The Groq key stays on your server.</td></tr>
 </table>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 362" role="img" aria-label="Your laptop posts a workflow to your server on Vercel, which holds the route POST slash api slash diagnose and the Groq key as an environment variable. The server calls GroqCloud with the key and returns the plan. Underneath, the four dials for your API: address your app on vercel.app slash api slash diagnose, action POST, key none, package workflow in and plan out.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#laptop" transform="translate(10 120) scale(.62)"/>
+    <use href="#rack" x="300" y="96"/>
+    <rect class="f-card" x="250" y="256" width="220" height="36" rx="10"/>
+    <use href="#key" class="c-key" x="432" y="206"/>
+    <use href="#rack" transform="translate(620 20) scale(.8)"/>
+    <path class="arw c-act" d="M180 160 H290" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M290 196 H180" marker-end="url(#ahg)"/>
+    <path class="arw c-act" d="M424 120 L612 80" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M612 104 L424 146" marker-end="url(#ahg)"/>
+  </g>
+  <g class="tx">
+    <text x="90" y="110" class="s">httpie · your laptop</text>
+    <text x="235" y="148" class="xs c-act">POST {workflow}</text>
+    <text x="235" y="222" class="xs c-pkg">200 {plan}</text>
+    <text x="360" y="84" class="s">your server · Vercel</text>
+    <text x="360" y="280" class="m"><tspan class="c-act">POST</tspan> <tspan class="c-addr">/api/diagnose</tspan></text>
+    <text x="500" y="236" class="xxs c-key">GROQ_API_KEY</text>
+    <text x="500" y="256" class="xxs c-key">an env var, server only</text>
+    <text x="520" y="84" class="xxs c-key">with the key</text>
+    <text x="668" y="166" class="m">GroqCloud</text>
+    <text x="380" y="322" class="xs"><tspan class="c-addr">address</tspan> &lt;app&gt;.vercel.app/api/diagnose · <tspan class="c-act">action</tspan> POST</text>
+    <text x="380" y="348" class="xs"><tspan class="c-key">key</tspan> none · <tspan class="c-pkg">package</tspan> {workflow} in, {plan} out</text>
+  </g>
+</svg>
+<figcaption>Put the function behind a route, on your server</figcaption>
+</figure>
 <ul class="pt">
   <li><b>FastAPI is the shortest path.</b> Four lines: import, <code>app = FastAPI()</code>, a decorator with the action and the address, the function under it. Read the <a href="https://fastapi.tiangolo.com/tutorial/" target="_blank" rel="noopener">FastAPI tutorial</a> before asking an LLM to write it.</li>
   <li><b>Why <code>/api/</code> in the address.</b> One folder for every endpoint, separate from static files like the page and images you add later.</li>
@@ -180,6 +342,38 @@ def diagnose_route(body: WorkflowIn):
   <li><b>Run it against the live server:</b></li>
 </ul>
 <div class="cmd"><span>API_URL=https://&lt;your-app&gt;.vercel.app/api/diagnose python 04-gradio-client/app.py</span><button class="cp" type="button">Copy</button></div>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="A laptop runs Gradio: a text box and a Diagnose button. It posts to your server's URL and holds no key. Your server holds the key and calls GroqCloud. The key lives on the machine that spends the money. A note: Gradio runs on your laptop only, fixed in Lecture 8.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#laptop" transform="translate(20 60) scale(.85)"/>
+    <rect class="thin" x="60" y="96" width="140" height="40" rx="6"/>
+    <rect class="thin f-act" x="60" y="144" width="64" height="18" rx="6"/>
+    <use href="#rack" x="330" y="56"/>
+    <use href="#key" class="c-key" x="352" y="236"/>
+    <use href="#rack" transform="translate(620 40) scale(.8)"/>
+    <path class="arw c-act" d="M250 130 H320" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M320 160 H250" marker-end="url(#ahg)"/>
+    <path class="arw c-act" d="M454 110 L610 90" marker-end="url(#ahc)"/>
+    <path class="arw c-pkg" d="M610 118 L454 140" marker-end="url(#ahg)"/>
+  </g>
+  <g class="tx">
+    <text x="129" y="46" class="s">Gradio · your laptop</text>
+    <text x="130" y="122" class="xxs c-mute">your workflow…</text>
+    <text x="92" y="158" class="xxs" style="font-size:13px">Diagnose</text>
+    <text x="129" y="236" class="xs c-key">no key in this file</text>
+    <text x="129" y="260" class="xs c-addr">URL = your server</text>
+    <text x="285" y="120" class="xxs c-act">POST</text>
+    <text x="285" y="182" class="xxs c-pkg">plan</text>
+    <text x="390" y="44" class="s">your server</text>
+    <text x="440" y="242" class="xs l c-key">the key lives here</text>
+    <text x="668" y="186" class="m">GroqCloud</text>
+    <text x="668" y="228" class="xs c-mute">debt: Gradio runs on</text>
+    <text x="668" y="252" class="xs c-mute">your laptop only (Lecture 8)</text>
+    <text x="380" y="302" class="s c-act">the key lives on the machine that spends the money</text>
+  </g>
+</svg>
+<figcaption>Gradio becomes a client, with no key</figcaption>
+</figure>
 <ul class="pt">
   <li><b>Write down every error you hit.</b> Status code, message, what fixed it. Post them tonight. Lecture 8 opens with the common ones.</li>
   <li><b>The debt left.</b> Gradio runs on your laptop only, and the server forgets every plan the moment it answers. Both are Lecture 8.</li>
@@ -216,7 +410,7 @@ def diagnose_route(body: WorkflowIn):
   <dt>FastAPI</dt><dd>The Python framework that turns a function into an endpoint in four lines, and documents it at <code>/docs</code>.</dd>
   <dt>Pydantic</dt><dd>The data validation library FastAPI uses. The traffic police for everything that arrives.</dd>
   <dt>business logic</dt><dd>The one function that takes the input and makes the output. Everything else is around it.</dd>
-  <dt>CLI</dt><dd>Command line interface. The Vercel CLI and the GitHub CLI let your terminal, or your LLM helper, talk to those machines.</dd>
+  <dt>CLI</dt><dd>Command line interface. The Vercel CLI and the GitHub CLI let your terminal, or your LLM desktop app, talk to those machines.</dd>
 </dl>
 </details>
 </section>
@@ -225,7 +419,6 @@ def diagnose_route(body: WorkflowIn):
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
   <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set">Practice set: four steps before Lecture 8</a></li>
-  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard">The lecture on a whiteboard</a></li>
   <li><a href="/c8/module-2/lecture-08-end-to-end-mvp/">Lecture 8: end to end MVP</a></li>
   <li><a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">The lecture repository, step by step</a></li>
   <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">The Modelling Lab: your tables</a></li>
