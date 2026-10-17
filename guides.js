@@ -90,12 +90,13 @@ var GUIDE_LINKS = {
   l07Repo: 'https://github.com/Siddhant-Goswami/c8-db',
   /* Lecture 8 · End to end MVP (code track; pages live in c8/module-2/lecture-08-end-to-end-mvp) */
   l08Hub: '/c8/module-2/lecture-08-end-to-end-mvp/',
+  l08Notes: '/c8/module-2/lecture-08-end-to-end-mvp/notes',
   l08Board: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard',
-  l08File: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s03',
-  l08Schema: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s09',
-  l08Remember: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s13',
-  l08Proof: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s16',
-  l08Turn: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s18',
+  l08File: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s06',
+  l08Schema: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s12',
+  l08Remember: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s15',
+  l08Proof: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s18',
+  l08Turn: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s20',
   fastapiTutorial: 'https://fastapi.tiangolo.com/tutorial/'
 };
 
@@ -643,9 +644,9 @@ GUIDES.L7 = { code: {
 }};
 
 /* Lecture 8 · End to end MVP (Sat 17 October 2026, 6 pm IST). The storage half that was planned as Lecture 7 Part 2.
-   Source: the c8-db repository (steps 05 to 09) and the Lecture 8 whiteboard. Notes and a practice set follow the session. */
+   Source: the c8-db repository (steps 01 to 08) and the Lecture 8 whiteboard. Notes and a practice set follow the session. */
 GUIDES.L8 = { code: {
-  hub: {link:'l08Hub', title:'Open the Lecture 8 pages', sub:'The overview and the whiteboard', more:[['l08Board','Whiteboard']]},
+  hub: {link:'l08Hub', title:'Open the Lecture 8 pages', sub:'The overview, the notes and the whiteboard', more:[['l08Notes','Notes'],['l08Board','Whiteboard']]},
   name: 'The server remembers',
   sub: 'Lecture 8 · 17 October 2026 · code track',
   deadline: 'Done equals',
@@ -660,7 +661,7 @@ GUIDES.L8 = { code: {
   ],
   rule: 'The secret key lives only in your server\'s environment variables, next to the Groq key. httpie before the SDK. No key in the HTML, no key in a screenshot.',
   stages: [
-    {id:'build', name:'Your app, steps 05 to 09', short:'Build', sub:'Whiteboard, scene 18',
+    {id:'build', name:'Your app, steps 05 to 08', short:'Build', sub:'Whiteboard, scene 20',
      intro:'The Lecture 7 route, now with memory. Your own app, or Aarav\'s diagnoser from the repository.',
      ticks:[
        {id:'model', t:'Typed my Modelling Lab tables into Supabase, references on every _id', link:'l08Schema', linkLabel:'SQL is the package'},
@@ -675,8 +676,9 @@ GUIDES.L8 = { code: {
   next: 'Next: the hackathon. Then whose row is this: every plan is still filed under workflow 1, and anyone with the URL can read it.',
   read: [
     ['Lecture 8 overview', 'l08Hub', 'What to bring, the lecture, done equals.'],
-    ['The lecture on a whiteboard', 'l08Board', 'Eighteen scenes: the file dies, another machine, ship it all.'],
-    ['The lecture repository', 'l07Repo', 'Steps 05 to 09. Replace the function with yours.'],
+    ['Notes', 'l08Notes', 'What was said, in order: the file, why it breaks, Supabase, whose row.'],
+    ['The lecture on a whiteboard', 'l08Board', 'Twenty scenes: local first, what to store, the file, another machine, ship it.'],
+    ['The lecture repository', 'l07Repo', 'Steps 01 to 08. Replace the function with yours.'],
     ['The hackathon', 'hackathon', 'Pick a problem, run the five moves, earn the verdict.']
   ],
   kw: 'end to end mvp deploy live url supabase database sql schema create table references memory.txt read-only file system two writers insert select sdk create_client service key secret key publishable key row level security fetch index.html gradio cors verified hackathon'

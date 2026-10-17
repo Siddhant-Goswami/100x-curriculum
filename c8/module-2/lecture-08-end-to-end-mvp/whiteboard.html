@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lecture 8 on a Whiteboard | 100xEngineers</title>
-<meta name="description" content="Lecture 8, drawn as a whiteboard: the file on the server dies, storage moves to a machine at an address, SQL gives it the shape from Lecture 6, and one fetch replaces Gradio.">
+<meta name="description" content="Lecture 8, drawn as a whiteboard: local first, what is worth storing, memory.txt and where a file breaks, Postgres on Supabase with the same four dials, things to tables and links to foreign keys, one fetch, and whose row is this.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -55,7 +55,7 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
 <div id="prog" aria-hidden="true"></div>
 <header class="top"><div class="in">
   <a class="brand" href="/#L8">100x<b>·</b>C8 Module 2</a>
-  <nav aria-label="Lecture 8 pages"><a href="/c8/module-2/lecture-08-end-to-end-mvp/">Overview</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard">Whiteboard</a></nav>
+  <nav aria-label="Lecture 8 pages"><a href="/c8/module-2/lecture-08-end-to-end-mvp/">Overview</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/notes">Notes</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard">Whiteboard</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 
@@ -125,11 +125,12 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
   <p class="kick">Cohort 8 · Module 2 · Lecture 8</p>
   <h1>Lecture 8, on a whiteboard</h1>
   <p class="dek">A database is a machine at an address. SQL is its package.</p>
-  <p class="kick">Sat 17 Oct 2026, 6 pm IST. Before this: <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Lecture 7 notes</a></p>
+  <p class="kick">Sat 17 Oct 2026, 6 pm IST. Before this: <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Lecture 7 notes</a>. After: <a href="/c8/module-2/lecture-08-end-to-end-mvp/notes">Lecture 8 notes</a></p>
+  <p class="kick">The code: <a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">github.com/Siddhant-Goswami/c8-db</a>, steps 01 to 08</p>
   <p><button class="pbtn" id="present" type="button">Present ▸</button> <span class="kick" style="margin-left:8px">P to present · ← → to move · Esc to leave</span></p>
 </div>
 
-<p class="partl">Part 1 · Where we left off</p>
+<p class="partl">Part 1 · Local first</p>
 
 <!-- 01 · last time -->
 <div class="scene" id="s01">
@@ -164,50 +165,144 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="640" y="366" class="xs c-act">a machine</text>
   </g>
 </svg>
-<p>On Friday the key left the browser: one function behind a route on Vercel, Gradio as a client. Last week's high-level design: UI for humans, API for machines, and storage for memory. We drew storage as a file on your server, and on paper we gave it a shape: eight tables, every arrow a many side pointing back. Today we build that file for real, watch it die, and move it to a machine built for the job.</p>
+<p>On Friday the key left the browser: one function behind a route on Vercel, Gradio as a client. Last week's high-level design: UI for humans, API for machines, and storage for memory. We drew storage as a file on your server, and on paper we gave it a shape: eight tables, every arrow a many side pointing back. Today: run it locally first, decide what is worth storing, build that file, see where it breaks, and move it to a machine built for the job.</p>
 </div>
 
-<!-- 02 · the four dials -->
+<!-- 02 · local first -->
 <div class="scene" id="s02">
-<p class="kick">02 · The rule for today</p>
-<h2>Every arrow is the same four dials</h2>
-<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="A table. Rows: address, action, key, package. Columns: Groq, your API, Supabase. Groq: api.groq.com, POST, key required, model and messages. Your API: your app on vercel.app slash api slash diagnose, POST, no key today, workflow in and plan out. Supabase: your project on supabase.co slash rest slash v1 slash diagnoses, POST adds a row and GET reads rows, apikey plus Bearer with the service key on the server only, workflow_id, plan and tone.">
+<p class="kick">02 · <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/04-gradio-client" target="_blank" rel="noopener">Steps 03 and 04</a></p>
+<h2>Local first, then production: only the address changes</h2>
+<svg class="wb" viewBox="0 0 760 360" role="img" aria-label="Inside a dashed box labelled your laptop, local: Gradio on the laptop posts to slash api slash diagnose on a server run by uvicorn at 127.0.0.1 port 8000. A second arrow leaves the box to your app on Vercel. Swap the address, nothing else. 127.0.0.1 means this machine: never share it.">
   <g class="ln" filter="url(#wob)">
-    <rect x="20" y="20" width="720" height="280" rx="6"/>
-    <path class="thin" d="M20 64 H740 M20 123 H740 M20 182 H740 M20 241 H740 M130 20 V300 M330 20 V300 M535 20 V300"/>
+    <rect class="dash ink" x="14" y="40" width="430" height="220" rx="14"/>
+    <use href="#laptop" transform="translate(30 92) scale(.6)"/>
+    <use href="#rack" transform="translate(310 84) scale(.7)"/>
+    <path class="arw c-act" d="M190 132 H300" marker-end="url(#ahc)"/>
+    <use href="#rack" transform="translate(610 84) scale(.8)"/>
+    <path class="arw c-act" d="M120 200 Q300 320 600 190" marker-end="url(#ahc)"/>
   </g>
   <g class="tx">
-    <text x="75" y="50" class="m">dial</text>
-    <text x="230" y="50" class="m">Groq</text>
-    <text x="432" y="50" class="m">your API</text>
-    <text x="637" y="50" class="m">Supabase</text>
-    <text x="75" y="100" class="m c-addr">address</text>
-    <text x="230" y="86" class="xxs c-addr">api.groq.com/openai/v1/</text><text x="230" y="106" class="xxs c-addr">chat/completions</text>
-    <text x="432" y="86" class="xxs c-addr">&lt;app&gt;.vercel.app</text><text x="432" y="106" class="xxs c-addr">/api/diagnose</text>
-    <text x="637" y="86" class="xxs c-addr">&lt;project&gt;.supabase.co</text><text x="637" y="106" class="xxs c-addr">/rest/v1/diagnoses</text>
-    <text x="75" y="159" class="m c-act">action</text>
-    <text x="230" y="159" class="xs">POST</text>
-    <text x="432" y="159" class="xs">POST</text>
-    <text x="637" y="146" class="xxs">POST adds a row</text><text x="637" y="166" class="xxs">GET reads rows</text>
-    <text x="75" y="218" class="m c-key">key</text>
-    <text x="230" y="218" class="xs c-key">required · gsk_…</text>
-    <text x="432" y="206" class="xs">none today</text><text x="432" y="228" class="xxs c-mute">(still a debt)</text>
-    <text x="637" y="204" class="xxs c-key">apikey + Bearer</text><text x="637" y="226" class="xxs c-key">service key · server only</text>
-    <text x="75" y="277" class="m c-pkg">package</text>
-    <text x="230" y="277" class="xxs c-pkg">{model, messages}</text>
-    <text x="432" y="277" class="xxs c-pkg">{workflow} in · {plan} out</text>
-    <text x="637" y="277" class="xxs c-pkg">{workflow_id, plan, tone}</text>
-    <text x="380" y="330" class="s">three machines, one phone call each</text>
+    <text x="229" y="30" class="s">your laptop · local</text>
+    <text x="107" y="82" class="xs">Gradio</text>
+    <text x="245" y="120" class="xxs c-act">POST /api/diagnose</text>
+    <text x="352" y="218" class="xs">uvicorn</text>
+    <text x="352" y="242" class="xxs c-addr">127.0.0.1:8000</text>
+    <text x="658" y="72" class="s">production · Vercel</text>
+    <text x="658" y="236" class="xxs c-addr">&lt;app&gt;.vercel.app</text>
+    <text x="400" y="296" class="xs c-act">swap the address, nothing else</text>
+    <text x="380" y="344" class="s">127.0.0.1 means "this machine". never share it.</text>
   </g>
 </svg>
-<p>Nothing new to learn about talking to a machine. Groq, your own API and today's database all answer the same <span class="part addr">address</span>, <span class="part act">action</span>, <span class="part key">key</span>, <span class="part pkg">package</span>. Before any code, fill the four dials. If you can fill them, you can make the call.</p>
+<p>Keep two environments apart. Local is everything on your laptop: <code>uvicorn api.index:app --reload</code> serves the API at <code>127.0.0.1:8000</code>, and the step 04 Gradio file posts to it with the same action, address and package as the Groq call in Lecture 5, minus the key. When it works, swap that one address for your <code>vercel.app</code> URL, stop the local server, and it still answers. A localhost link opens on your machine and nobody else's, so anything you share has to be deployed.</p>
 </div>
 
-<p class="partl">Part 2 · The file dies</p>
-
-<!-- 03 · memory.txt -->
+<!-- 03 · logs -->
 <div class="scene" id="s03">
-<p class="kick">03 · Step 05</p>
+<p class="kick">03 · Production</p>
+<h2>Read the logs on someone else's machine</h2>
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="A log row from Vercel's Logs tab: 18:29, POST slash api slash diagnose, 200, 2.77 seconds. Below, the trip it records: your laptop in Mumbai, to the Vercel function in Washington DC, to GroqCloud as an external call. No terminal on someone else's machine: the Logs tab is your terminal.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="20" width="720" height="70" rx="8"/>
+    <use href="#laptop" transform="translate(30 126) scale(.5)"/>
+    <use href="#rack" transform="translate(330 116) scale(.7)"/>
+    <use href="#rack" transform="translate(630 116) scale(.7)"/>
+    <path class="arw c-act" d="M166 168 H320" marker-end="url(#ahc)"/>
+    <path class="arw c-act" d="M422 168 H620" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="36" y="46" class="xxs l c-mute">Vercel → your project → Logs</text>
+    <text x="36" y="74" class="xs l"><tspan class="c-mute">18:29</tspan>  <tspan class="c-act">POST</tspan> <tspan class="c-addr">/api/diagnose</tspan>  <tspan class="c-pkg">200</tspan>  2.77 s</text>
+    <text x="94" y="236" class="xs">your laptop</text>
+    <text x="94" y="258" class="xxs c-mute">received in Mumbai</text>
+    <text x="372" y="244" class="xs">your function</text>
+    <text x="372" y="266" class="xxs c-mute">routed to Washington DC</text>
+    <text x="672" y="244" class="xs">GroqCloud</text>
+    <text x="672" y="266" class="xxs c-mute">an external call</text>
+    <text x="380" y="300" class="s">no terminal there: the Logs tab is your terminal</text>
+  </g>
+</svg>
+<p>On your laptop every request prints in the terminal. Vercel's machine has no terminal you can open, so open the project's Logs tab instead. One row tells the whole trip: received in Mumbai, routed to Washington DC, one external call to Groq, 2.77 seconds, status 200. When something is a 404 or a 500 in production, this is where you look first.</p>
+</div>
+
+<p class="partl">Part 2 · What is worth storing</p>
+
+<!-- 04 · the least that tests the bet -->
+<div class="scene" id="s04">
+<p class="kick">04 · What is worth storing</p>
+<h2>Store the least that tests the bet</h2>
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="A sticky note with the hypothesis: given a workflow diagnosis, 6 of 10 early-career people map one repeated workflow and build an app. An arrow down to three boxes kept: users, workflows, diagnoses. Three boxes struck out for later: messages, conversations, tools. The fewest things that can prove or kill the bet.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="20" width="720" height="80" rx="6" transform="rotate(-.6 380 60)"/>
+    <path class="arw c-act" d="M200 106 V140" marker-end="url(#ahc)"/>
+    <rect class="c-thing" x="20" y="150" width="120" height="50" rx="8"/>
+    <rect class="c-thing" x="150" y="150" width="130" height="50" rx="8"/>
+    <rect class="c-thing" x="290" y="150" width="130" height="50" rx="8"/>
+    <rect class="dash ink" x="460" y="150" width="90" height="50" rx="8"/>
+    <rect class="dash ink" x="560" y="150" width="124" height="50" rx="8"/>
+    <rect class="dash ink" x="694" y="150" width="56" height="50" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="52" class="xs">we believe: with a workflow diagnosis, 6 of 10 early-career people</text>
+    <text x="380" y="80" class="xs">map one repeated workflow and build a working app</text>
+    <text x="80" y="182" class="m c-thing">users</text>
+    <text x="215" y="182" class="m c-thing">workflows</text>
+    <text x="355" y="182" class="m c-thing">diagnoses</text>
+    <text x="505" y="182" class="xxs c-mute strike">messages</text>
+    <text x="622" y="182" class="xxs c-mute strike">conversations</text>
+    <text x="722" y="182" class="xxs c-mute strike">tools</text>
+    <text x="220" y="236" class="s c-pkg">store these</text>
+    <text x="605" y="236" class="xs c-mute">later, if users need them</text>
+    <text x="380" y="292" class="s">the fewest things that can prove or kill the bet</text>
+    <text x="380" y="322" class="xs c-mute">the Modelling Lab drew everything. the MVP stores three.</text>
+  </g>
+</svg>
+<p>The Modelling Lab gave you the full picture: users, workflows, messages, conversations, diagnoses, tools. Do not build all of it. Ask what is the cheapest data that can test the hypothesis. Here that is a user, the workflow they write, and the diagnosis you give back. Without those three the experiment cannot run. Everything else can wait until users ask for it.</p>
+</div>
+
+<!-- 05 · facts, ids and links -->
+<div class="scene" id="s05">
+<p class="kick">05 · Facts, ids and links</p>
+<h2>An ER diagram: one user, many workflows, one plan each</h2>
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three boxes. Users: id, name, created_at. Workflows: id, user_id, description, created_at. Diagnoses: id, workflow_id, plan, created_at. A violet arrow from user_id back to users, marked one to many. A violet arrow from workflow_id back to workflows, marked one to one for now. An id tells two Miras apart, and a link is an id stored on the other side.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="20" y="50" width="200" height="190" rx="8"/>
+    <path class="thin" d="M20 96 H220"/>
+    <rect x="280" y="50" width="200" height="190" rx="8"/>
+    <path class="thin" d="M280 96 H480"/>
+    <rect x="540" y="50" width="200" height="190" rx="8"/>
+    <path class="thin" d="M540 96 H740"/>
+    <path class="arw c-link" d="M286 154 H226" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M546 154 H486" marker-end="url(#ahv)"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="82" class="m c-thing">users</text>
+    <text x="36" y="128" class="xs l c-addr">id</text>
+    <text x="36" y="158" class="xs l c-fact">name</text>
+    <text x="36" y="188" class="xs l c-fact">created_at</text>
+    <text x="380" y="82" class="m c-thing">workflows</text>
+    <text x="296" y="128" class="xs l c-addr">id</text>
+    <text x="296" y="158" class="xs l c-link">user_id</text>
+    <text x="296" y="188" class="xs l c-fact">description</text>
+    <text x="296" y="218" class="xs l c-fact">created_at</text>
+    <text x="640" y="82" class="m c-thing">diagnoses</text>
+    <text x="556" y="128" class="xs l c-addr">id</text>
+    <text x="556" y="158" class="xs l c-link">workflow_id</text>
+    <text x="556" y="188" class="xs l c-fact">plan</text>
+    <text x="556" y="218" class="xs l c-fact">created_at</text>
+    <text x="250" y="36" class="xxs c-link">1 : many</text>
+    <text x="510" y="36" class="xxs c-link">1 : 1, for now</text>
+    <text x="380" y="292" class="s">things, facts, links: the industry calls it an ER diagram</text>
+    <text x="380" y="322" class="xs c-mute">an id tells two Miras apart. a link is an id stored on the other side.</text>
+  </g>
+</svg>
+<p>Facts: a user has a name, a workflow has a description, a diagnosis has a plan, and each gets a time. Each also gets an id, because two people can both be called Mira. One user writes many workflows, and each workflow has one owner, so <code>user_id</code> sits on the workflow. Under today's rules each workflow gets one plan, so workflow to diagnosis is one to one. Whether it should allow more is not a guess. Run both versions with ten users and keep the cheaper one unless they need the other.</p>
+</div>
+
+<p class="partl">Part 3 · The file, and where it breaks</p>
+
+<!-- 06 · memory.txt -->
+<div class="scene" id="s06">
+<p class="kick">06 · <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/05-memory-txt" target="_blank" rel="noopener">Step 05</a></p>
 <h2>The Lecture 6 storage box, built: memory.txt</h2>
 <svg class="wb" viewBox="0 0 760 352" role="img" aria-label="Six numbered steps. 1, httpie posts a workflow to your local server. 2, the server reads memory.txt. 3, it asks GroqCloud. 4, the plan comes back. 5, the server writes the file back with one more line. 6, the plan returns to the laptop. GET slash api slash plans returns every line. Locally it works.">
   <g class="ln" filter="url(#wob)">
@@ -240,47 +335,15 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="380" y="340" class="s c-pkg">locally: it works ✓</text>
   </g>
 </svg>
-<p>This is the file we drew last week. Each request reads it, asks Groq, and writes it back with one more line: a time, the workflow, the plan. A second route reads the whole file. Run it on your laptop and it works. Now have the room predict what happens on Vercel.</p>
+<p>This is the file we drew last week. Write the steps in English before reading the code: read the file, run the same <code>diagnose</code>, build one line with the time, the workflow and the plan, and write it all back, because <code>"w"</code> replaces everything. The timestamp is the step most people miss. Users are left out on purpose: for one user, Aarav, two facts are enough.</p>
+<p> A second route reads the whole file. Run it locally, send a workflow from Gradio, open <code>memory.txt</code>: the time, the input and the plan are there. Persistence was four lines.</p>
 </div>
 
-<!-- 04 · 500 on vercel -->
-<div class="scene" id="s04">
-<p class="kick">04 · The prediction</p>
-<h2>On Vercel: 500, read-only file system</h2>
-<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="Left, on your laptop: the server and memory.txt side by side, 200, plan saved. Right, on Vercel, in a dashed box: the same server, but the write to the file is crossed out, read-only file system, 500. A function exists only while it answers, then the machine is thrown away.">
-  <g class="ln" filter="url(#wob)">
-    <rect x="20" y="50" width="330" height="210" rx="12"/>
-    <use href="#rack" transform="translate(60 90) scale(.6)"/>
-    <use href="#file" transform="translate(200 90) scale(.7)"/>
-    <path class="arw" d="M138 130 H192" marker-start="url(#ah)" marker-end="url(#ah)"/>
-    <path class="dash" d="M380 30 V300"/>
-    <rect class="dash ink" x="410" y="50" width="330" height="210" rx="12"/>
-    <use href="#rack" transform="translate(450 90) scale(.6)"/>
-    <use href="#file" transform="translate(590 90) scale(.7)"/>
-    <path class="c-act" d="M596 96 L654 162 M654 96 L596 162"/>
-    <path class="arw c-act" d="M528 130 H582" marker-end="url(#ahc)"/>
-  </g>
-  <g class="tx">
-    <text x="185" y="38" class="h">on your laptop</text>
-    <text x="230" y="196" class="xs">memory.txt</text>
-    <text x="185" y="240" class="s c-pkg">200 · plan saved ✓</text>
-    <text x="185" y="290" class="xs">a disk you own</text>
-    <text x="575" y="38" class="h">on Vercel</text>
-    <text x="555" y="118" class="xxs c-act">write ✗</text>
-    <text x="575" y="196" class="xs c-act">read-only file system</text>
-    <text x="575" y="244" class="h c-act">500</text>
-    <text x="575" y="290" class="xs">a function exists only while it answers,</text>
-    <text x="575" y="314" class="xs">then the machine is thrown away</text>
-  </g>
-</svg>
-<p>Deploy the same code and POST to the live URL. The answer is a 500. A Vercel function has no disk you own, and the machine that ran your request is thrown away as soon as it has answered. Lecture 6's "memory dies, storage survives" has a sharper edge here: on this kind of server, the file is memory too.</p>
-</div>
-
-<!-- 05 · two writers -->
-<div class="scene" id="s05">
-<p class="kick">05 · Two writers</p>
-<h2>Two 200s, one plan</h2>
-<svg class="wb" viewBox="0 0 760 380" role="img" aria-label="Aarav and Meera both POST to the local server on a count of three. The sequence: Aarav reads the empty file, Meera reads the empty file, Aarav writes his plan, Meera writes her plan. The file now holds only Meera's plan. Aarav's is crossed out. Last write wins.">
+<!-- 07 · two writers -->
+<div class="scene" id="s07">
+<p class="kick">07 · Two writers</p>
+<h2>100 users, 60,000 lines, and two writers at once</h2>
+<svg class="wb" viewBox="0 0 760 380" role="img" aria-label="Jagan and Vineet both POST to the local server on a count of three. The sequence: Jagan reads the empty file, Vineet reads the empty file, Jagan writes his plan, Vineet writes her plan. The file now holds only Vineet's plan. Jagan's is crossed out. Last write wins.">
   <g class="ln" filter="url(#wob)">
     <use href="#person" transform="translate(20 40) scale(.6)"/>
     <use href="#person" transform="translate(20 190) scale(.6)"/>
@@ -292,8 +355,8 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <path class="arw c-act" d="M374 210 H424" marker-end="url(#ahc)"/>
   </g>
   <g class="tx">
-    <text x="36" y="138" class="xs">Aarav</text>
-    <text x="36" y="302" class="xs">Meera</text>
+    <text x="36" y="138" class="xs">Jagan</text>
+    <text x="36" y="302" class="xs">Vineet</text>
     <text x="150" y="62" class="xxs c-act">POST "I edit until Sunday"</text>
     <text x="150" y="270" class="xxs c-act">POST "research eats my mornings"</text>
     <text x="150" y="172" class="xs c-mute">on a count of three</text>
@@ -301,55 +364,56 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="399" y="150" class="xxs">read</text>
     <text x="399" y="232" class="xxs c-act">write</text>
     <text x="473" y="258" class="m">memory.txt</text>
-    <text x="560" y="80" class="xxs l">1 Aarav reads: (empty)</text>
-    <text x="560" y="104" class="xxs l">2 Meera reads: (empty)</text>
-    <text x="560" y="128" class="xxs l">3 Aarav writes: "" + his plan</text>
-    <text x="560" y="152" class="xxs l c-act">4 Meera writes: "" + her plan</text>
+    <text x="560" y="80" class="xxs l">1 Jagan reads: (empty)</text>
+    <text x="560" y="104" class="xxs l">2 Vineet reads: (empty)</text>
+    <text x="560" y="128" class="xxs l">3 Jagan writes: "" + his plan</text>
+    <text x="560" y="152" class="xxs l c-act">4 Vineet writes: "" + her plan</text>
     <text x="560" y="190" class="xs l">the file now:</text>
-    <text x="560" y="214" class="xxs l c-act strike">Aarav's plan</text>
-    <text x="560" y="238" class="xxs l">Meera's plan</text>
+    <text x="560" y="214" class="xxs l c-act strike">Jagan's plan</text>
+    <text x="560" y="238" class="xxs l">Vineet's plan</text>
     <text x="650" y="274" class="s c-act">last write wins</text>
     <text x="380" y="330" class="xs">both read the same old file, and the one that writes last wins</text>
     <text x="380" y="360" class="s c-act">two 200s · one plan</text>
   </g>
 </svg>
-<p>Keep the local server running. Two volunteers, two terminals, one count of three. Both requests get a 200. Then read the file: one plan. Each request read the same old file and wrote its own version back, so whoever wrote last erased the other. The server never lied. The file just cannot hold two writers.</p>
+<p>One user is easy. Now 100 users write 10 workflows a day for 60 days: 60,000 lines, and you still need to know who wrote which, and when. Worse, they do not arrive in a line. Jagan and Vineet open the app at the same minute. Both requests get a 200. Then read the file: one plan. Each request read the same old file and wrote its own version back, so whoever wrote last erased the other. The server never lied. The file just cannot hold two writers. That is a race condition, and every read and write also eats the RAM of a small rented machine until it crashes and answers 500 to everyone.</p>
 </div>
 
-<!-- 06 · what broke -->
-<div class="scene" id="s06">
-<p class="kick">06 · What broke</p>
-<h2>Three things a file on your server cannot do</h2>
-<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three sticky notes. 1 survive: the machine is thrown away after each request, the data must outlive it. 2 many writers: two saves at once, nothing lost. 3 answer a question: every plan for workflow 1, oldest first, without reading everything. Below, an arrow from a file to another machine: too fragile for your server, so it moves to a machine built for it, reached by API.">
+<!-- 08 · a file or a database -->
+<div class="scene" id="s08">
+<p class="kick">08 · The decision</p>
+<h2>A file is enough, until people write at once</h2>
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Two columns. A file is enough: one user, under about ten writes a day, a fixed test window, read-only pages; this curriculum serves 200 plus readers from one file, a personal site served 10,000. Rent a database: many people writing at once, backups, a copy near each user, roll back a bad write; and Vercel's disk is read-only anyway. Writing is expensive, reading is cheap.">
   <g class="ln" filter="url(#wob)">
-    <rect class="f-card" x="30" y="20" width="214" height="130" rx="6" transform="rotate(-2 137 85)"/>
-    <rect class="f-card" x="273" y="20" width="214" height="130" rx="6" transform="rotate(1.5 380 85)"/>
-    <rect class="f-card" x="516" y="20" width="214" height="130" rx="6" transform="rotate(-1 623 85)"/>
-    <use href="#file" transform="translate(200 190) scale(.75)"/>
-    <path class="arw c-act" d="M280 232 H440" marker-end="url(#ahc)"/>
-    <use href="#rack" transform="translate(460 180) scale(.6)"/>
-    <use href="#tablefile" class="f-act" transform="translate(478 208) scale(.4)"/>
+    <use href="#file" transform="translate(30 18) scale(.42)"/>
+    <path class="dash" d="M380 20 V270"/>
+    <use href="#tablefile" class="f-act" transform="translate(410 18) scale(.42)"/>
   </g>
   <g class="tx">
-    <text x="137" y="54" class="m c-act">1 · survive</text>
-    <text x="137" y="86" class="xxs">the machine is thrown away</text><text x="137" y="108" class="xxs">after each request.</text><text x="137" y="130" class="xxs">the data must outlive it</text>
-    <text x="380" y="54" class="m c-act">2 · many writers</text>
-    <text x="380" y="86" class="xxs">two saves at once,</text><text x="380" y="108" class="xxs">nothing lost</text>
-    <text x="623" y="54" class="m c-act">3 · answer a question</text>
-    <text x="623" y="86" class="xxs">"every plan for workflow 1,</text><text x="623" y="108" class="xxs">oldest first" without</text><text x="623" y="130" class="xxs">reading everything</text>
-    <text x="232" y="300" class="xs c-act">too fragile for your server</text>
-    <text x="496" y="300" class="xs">a machine built for it, reached by API</text>
-    <text x="380" y="332" class="s">size moved the LLM off your server. survival moves storage.</text>
+    <text x="200" y="46" class="h">a file is enough</text>
+    <text x="40" y="100" class="xs l">· one user, under ~10 writes a day</text>
+    <text x="40" y="130" class="xs l">· a fixed window, like a test</text>
+    <text x="40" y="160" class="xs l">· read-only pages: nobody writes</text>
+    <text x="40" y="200" class="xxs l c-mute">this curriculum: 200+ readers, one file</text>
+    <text x="40" y="224" class="xxs l c-mute">a personal site: 10,000+ readers, files</text>
+    <text x="580" y="46" class="h c-act">rent a database</text>
+    <text x="420" y="100" class="xs l">· many people writing at once</text>
+    <text x="420" y="130" class="xs l">· backups</text>
+    <text x="420" y="160" class="xs l">· a copy near each user</text>
+    <text x="420" y="190" class="xs l">· roll back a bad write</text>
+    <text x="420" y="230" class="xxs l c-mute">and Vercel's disk is read-only: step 05 gets a 500 there</text>
+    <text x="380" y="300" class="s">writing is expensive. reading is cheap.</text>
+    <text x="380" y="328" class="xs c-mute">a database is a file system with fifty years of fixes</text>
   </g>
 </svg>
-<p>Three requirements, and a file on this server fails all three. The data has to outlive the machine. Many writers have to save without losing anything. And the Lecture 6 question, every plan for workflow 1 oldest first, has to be answered without reading the whole file. In Lecture 6, size moved the model off your laptop. Today, survival moves storage off your server.</p>
+<p>Do not reach for a database by reflex. One user making a few writes a day for a limited test is fine on a file, and read-only sites scale on files because nobody writes, and a CDN like Vercel's copies them around the world. The need starts when your machine cannot keep up: many writers, 500s, lost lines. Then you graduate from a file to a database. Deploy <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/05-memory-txt" target="_blank" rel="noopener">step 05</a> to see one more reason: Vercel's file system is read-only, so the write fails with a 500.</p>
 </div>
 
-<p class="partl">Part 3 · Another machine</p>
+<p class="partl">Part 4 · Another machine</p>
 
-<!-- 07 · a machine at an address -->
-<div class="scene" id="s07">
-<p class="kick">07 · The principle</p>
+<!-- 09 · a machine at an address -->
+<div class="scene" id="s09">
+<p class="kick">09 · The principle</p>
 <h2>A database is a machine at an address</h2>
 <svg class="wb" viewBox="0 0 760 380" role="img" aria-label="The client, your server, and now two machines on the right. GroqCloud, which thinks, and Supabase, a server holding the file of tables, which remembers, at your project on supabase.co. Your server talks to both by API: insert and select go to Supabase.">
   <g class="ln" filter="url(#wob)">
@@ -375,107 +439,43 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="380" y="334" class="xs">both by API: address, action, key, package</text>
   </g>
 </svg>
-<p>Create a Supabase project and open Settings, then API. You get one URL and two keys. That is all a database is from where your server stands: another machine at an address that answers the four dials. Groq thinks. Supabase remembers. Your server is a client to both.</p>
+<p>Pick a SQL database, because your model maps straight onto it: PostgreSQL, free and open source, the one OpenAI runs at 800 million users. You could host it yourself, the independent house again. With ten users, rent. Supabase is to Postgres what Vercel is to servers, free up to 50,000 monthly active users. Sign in, create an organisation and a project, save the database password, keep the default region. Then open Settings. Data API gives you one URL, API keys gives you two keys. That is all a database is from where your server stands: another machine at an address that answers the four dials. Groq thinks. Supabase remembers. Your server is a client to both.</p>
 </div>
 
-<!-- 08 · before it has a shape -->
-<div class="scene" id="s08">
-<p class="kick">08 · Call it first</p>
-<h2>Call the machine before it has a shape</h2>
-<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="A terminal: http POST to the Supabase URL slash rest slash v1 slash diagnoses with apikey and Authorization headers and a package of workflow_id 1, plan and tone. The reply: 404, relation diagnoses does not exist. To the right, the Supabase machine with a question mark: no table yet, the machine needs a shape.">
-  <g class="ln" filter="url(#wob)">
-    <rect x="20" y="30" width="440" height="200" rx="10"/>
-    <path class="thin" d="M20 56 H460"/>
-    <circle class="dot" cx="36" cy="43" r="3"/><circle class="dot" cx="48" cy="43" r="3"/><circle class="dot" cx="60" cy="43" r="3"/>
-    <use href="#rack" transform="translate(560 40) scale(.9)"/>
-  </g>
-  <g class="tx">
-    <text x="36" y="86" class="xxs l c-ink">$ http <tspan class="c-act">POST</tspan> <tspan class="c-addr">$SUPABASE_URL/rest/v1/diagnoses</tspan> \</text>
-    <text x="36" y="110" class="xxs l c-key">    apikey:$KEY "Authorization:Bearer $KEY" \</text>
-    <text x="36" y="134" class="xxs l c-pkg">    workflow_id:=1 plan="Batch your edits." tone=plain</text>
-    <text x="36" y="172" class="xs l c-act">404 Not Found</text>
-    <text x="36" y="200" class="xs l c-act">relation "diagnoses" does not exist</text>
-    <text x="700" y="112" class="h c-act">?</text>
-    <text x="614" y="206" class="xs c-act">no table yet</text>
-    <text x="614" y="230" class="xs">the machine needs a shape</text>
-    <text x="380" y="280" class="s">Lecture 6: you cannot store what you cannot describe</text>
-    <text x="380" y="306" class="xs c-mute">the four dials were right. the shape was missing.</text>
-  </g>
-</svg>
-<p>Fill the four dials and make the call with httpie, before any SDK and before any table exists. It fails, and the error is the lesson: the machine has no idea what a diagnosis is. Lecture 6 ended on exactly this line. Now the machine says it back to you.</p>
-</div>
-
-<!-- 09 · SQL is the package language -->
-<div class="scene" id="s09">
-<p class="kick">09 · Step 06</p>
-<h2>SQL is the package language: the paper model, typed</h2>
-<svg class="wb" viewBox="0 0 760 400" role="img" aria-label="Left, schema.sql: create table diagnoses, id primary key, workflow_id references workflows(id), plan text, tone text, created_at default now(), and a final select for workflow 1 ordered by created_at. Right, each line mapped to the Lecture 6 model: create table is a thing becoming a table, primary key is the row's address, references is the pointer on the many side, each other line is a fact becoming a column, default now() is the memory.txt timestamp, and the last line is Aarav's Lecture 6 question as SQL.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="f-card" x="20" y="30" width="380" height="330" rx="8"/>
-    <path class="arw thin" d="M404 62 H460" marker-end="url(#ah)"/>
-    <path class="arw thin" d="M404 88 L460 114" marker-end="url(#ah)"/>
-    <path class="arw thin" d="M404 140 L460 166" marker-end="url(#ah)"/>
-    <path class="arw thin" d="M404 192 L460 218" marker-end="url(#ah)"/>
-    <path class="arw thin" d="M404 244 L460 270" marker-end="url(#ah)"/>
-    <path class="arw thin" d="M404 324 H460" marker-end="url(#ah)"/>
-  </g>
-  <g class="tx">
-    <text x="210" y="20" class="xxs c-mute">06-schema/schema.sql</text>
-    <text x="36" y="66" class="xxs l c-thing">create table diagnoses (</text>
-    <text x="36" y="92" class="xxs l c-addr">  id bigint … primary key,</text>
-    <text x="36" y="118" class="xxs l c-link">  workflow_id bigint</text>
-    <text x="36" y="144" class="xxs l c-link">    references workflows(id),</text>
-    <text x="36" y="170" class="xxs l c-fact">  plan text,</text>
-    <text x="36" y="196" class="xxs l c-fact">  tone text,</text>
-    <text x="36" y="222" class="xxs l c-fact">  created_at timestamptz</text>
-    <text x="36" y="248" class="xxs l c-fact">    default now()</text>
-    <text x="36" y="274" class="xxs l c-ink">);</text>
-    <text x="36" y="312" class="xxs l c-ink">select * from diagnoses where</text>
-    <text x="36" y="338" class="xxs l c-ink">  workflow_id = 1 order by created_at;</text>
-    <text x="470" y="66" class="xs l c-thing">create table</text><text x="470" y="88" class="xxs l">a thing → a table</text>
-    <text x="470" y="118" class="xs l c-addr">primary key</text><text x="470" y="140" class="xxs l">the row's address · never repeats</text>
-    <text x="470" y="170" class="xs l c-link">references</text><text x="470" y="192" class="xxs l">the pointer · the many side points back</text>
-    <text x="470" y="222" class="xs l c-fact">each other line</text><text x="470" y="244" class="xxs l">a fact → a column</text>
-    <text x="470" y="274" class="xs l c-fact">default now()</text><text x="470" y="296" class="xxs l">the memory.txt timestamp</text>
-    <text x="470" y="326" class="xs l c-act">the last line</text><text x="470" y="348" class="xxs l">Aarav's Lecture 6 question, as SQL</text>
-    <text x="380" y="388" class="s">nothing new to model. that is why we did it on paper first.</text>
-  </g>
-</svg>
-<p>Paste the schema file into the SQL editor and run it. Read it line by line against last week's three questions: a thing is a <code>create table</code>, a fact is a line inside it, a link is <code>references</code> on the many side. SQL is just the package language this machine speaks. The last line is the question from Lecture 6, and it already answers requirement 3.</p>
-</div>
-
-<!-- 10 · three tables -->
+<!-- 10 · the four dials -->
 <div class="scene" id="s10">
-<p class="kick">10 · The tables</p>
-<h2>Users, workflows, diagnoses: the same arrows as last week</h2>
-<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three tables. Users: id 1, Aarav. Workflows: id 1, user_id 1, the description Script Monday, shoot Tuesday, edit until Sunday. Diagnoses: id 1, workflow_id 1, plan Batch your edits, created at 16 Oct 10:02. Violet arrows from workflow_id back to workflows and from user_id back to users. The httpie POST now returns 201 and the row shows in the Table Editor.">
+<p class="kick">10 · The rule, again</p>
+<h2>Every arrow is the same four dials</h2>
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="A table. Rows: address, action, key, package. Columns: Groq, your API, Supabase. Groq: api.groq.com, POST, key required, model and messages. Your API: your app on vercel.app slash api slash diagnose, POST, no key today, workflow in and plan out. Supabase: your project on supabase.co slash rest slash v1 slash diagnoses, POST creates, GET reads, PATCH and PUT update, DELETE deletes, apikey plus Bearer with the service key on the server only, workflow_id, plan and tone.">
   <g class="ln" filter="url(#wob)">
-    <rect x="290" y="28" width="180" height="70" rx="6"/>
-    <path class="thin" d="M290 62 H470 M330 28 V98"/>
-    <rect x="20" y="150" width="330" height="80" rx="6"/>
-    <path class="thin" d="M20 184 H350 M60 150 V230 M150 150 V230"/>
-    <rect x="390" y="150" width="350" height="120" rx="6"/>
-    <path class="thin" d="M390 184 H740 M390 226 H740 M430 150 V270 M530 150 V270 M650 150 V270"/>
-    <path class="arw c-link" d="M105 146 Q110 70 284 68" marker-end="url(#ahv)"/>
-    <path class="arw c-link" d="M386 206 Q368 206 354 206" marker-end="url(#ahv)"/>
+    <rect x="20" y="20" width="720" height="280" rx="6"/>
+    <path class="thin" d="M20 64 H740 M20 123 H740 M20 182 H740 M20 241 H740 M130 20 V300 M330 20 V300 M535 20 V300"/>
   </g>
   <g class="tx">
-    <text x="380" y="24" class="m c-thing">users</text>
-    <text x="310" y="52" class="xs c-addr">id</text><text x="400" y="52" class="xs">name</text>
-    <text x="310" y="86" class="xs">1</text><text x="400" y="86" class="xs">Aarav</text>
-    <text x="185" y="142" class="m c-thing">workflows</text>
-    <text x="40" y="174" class="xs c-addr">id</text><text x="105" y="174" class="xxs c-link">user_id</text><text x="250" y="174" class="xs">description</text>
-    <text x="40" y="212" class="xs">1</text><text x="105" y="212" class="xs">1</text><text x="250" y="212" class="xxs">Script Mon, shoot Tue, edit…</text>
-    <text x="565" y="142" class="m c-thing">diagnoses</text>
-    <text x="410" y="174" class="xs c-addr">id</text><text x="480" y="174" class="xxs c-link">workflow_id</text><text x="590" y="174" class="xs">plan</text><text x="695" y="174" class="xxs">created_at</text>
-    <text x="410" y="212" class="xs">1</text><text x="480" y="212" class="xs">1</text><text x="590" y="212" class="xxs">Batch your edits.</text><text x="695" y="212" class="xxs">16 Oct 10:02</text>
-    <text x="410" y="254" class="xs c-mute">2</text><text x="480" y="254" class="xs c-mute">1</text><text x="590" y="254" class="xxs c-mute">the next plan…</text><text x="695" y="254" class="xxs c-mute">later</text>
-    <text x="185" y="262" class="xxs c-mute">two seed rows, from the schema file</text>
-    <text x="565" y="300" class="xs c-pkg">POST again → 201 ✓ · the row shows in the Table Editor</text>
-    <text x="380" y="330" class="s c-link">every arrow is a many side pointing back</text>
+    <text x="75" y="50" class="m">dial</text>
+    <text x="230" y="50" class="m">Groq</text>
+    <text x="432" y="50" class="m">your API</text>
+    <text x="637" y="50" class="m">Supabase</text>
+    <text x="75" y="100" class="m c-addr">address</text>
+    <text x="230" y="86" class="xxs c-addr">api.groq.com/openai/v1/</text><text x="230" y="106" class="xxs c-addr">chat/completions</text>
+    <text x="432" y="86" class="xxs c-addr">&lt;app&gt;.vercel.app</text><text x="432" y="106" class="xxs c-addr">/api/diagnose</text>
+    <text x="637" y="86" class="xxs c-addr">&lt;project&gt;.supabase.co</text><text x="637" y="106" class="xxs c-addr">/rest/v1/diagnoses</text>
+    <text x="75" y="159" class="m c-act">action</text>
+    <text x="230" y="159" class="xs">POST</text>
+    <text x="432" y="159" class="xs">POST</text>
+    <text x="637" y="146" class="xxs">POST create · GET read</text><text x="637" y="166" class="xxs">PATCH · PUT · DELETE</text>
+    <text x="75" y="218" class="m c-key">key</text>
+    <text x="230" y="218" class="xs c-key">required · gsk_…</text>
+    <text x="432" y="206" class="xs">none today</text><text x="432" y="228" class="xxs c-mute">(still a debt)</text>
+    <text x="637" y="204" class="xxs c-key">apikey + Bearer</text><text x="637" y="226" class="xxs c-key">service key · server only</text>
+    <text x="75" y="277" class="m c-pkg">package</text>
+    <text x="230" y="277" class="xxs c-pkg">{model, messages}</text>
+    <text x="432" y="277" class="xxs c-pkg">{workflow} in · {plan} out</text>
+    <text x="637" y="277" class="xxs c-pkg">{workflow_id, plan, tone}</text>
+    <text x="380" y="330" class="s">the database is one more phone call</text>
   </g>
 </svg>
-<p>Three of last week's eight tables, enough for today's product. The schema also inserts Aarav and his Monday workflow, so there is something to point at. Run the same httpie POST again: 201 Created, and the row is sitting in the Table Editor. Requirement 1 is paid: that row outlives every machine that touched it.</p>
+<p>Nothing new to learn about talking to a database. Groq, your own API and Supabase all answer the same <span class="part addr">address</span>, <span class="part act">action</span>, <span class="part key">key</span>, <span class="part pkg">package</span>. The action is the verb: POST the first time you write, PUT to replace a row, PATCH to change part of it, DELETE to remove it, GET to read. Fill the four dials before any code.</p>
 </div>
 
 <!-- 11 · two keys -->
@@ -500,15 +500,88 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="570" y="168" class="xs c-act">bypasses every lock</text>
     <text x="570" y="192" class="xs">a server env var, only</text>
     <text x="660" y="276" class="xxs">Row Level Security</text>
-    <text x="660" y="296" class="xxs c-mute">leave it alone today · scene 17</text>
+    <text x="660" y="296" class="xxs c-mute">leave it alone today · scene 19</text>
   </g>
 </svg>
-<p>Two keys, two kinds of machine. The publishable key is for machines you do not control, like a browser, and it waits for later. The secret key bypasses every lock, so it lives only in your server's environment variables, next to the Groq key. Row Level Security stays untouched today. Scene 17 shows why it matters.</p>
+<p>Two keys, two kinds of machine. The publishable key is safe in a browser only once Row Level Security is on, so it waits for later. The secret key bypasses every lock, so it lives only in your server's environment variables, next to the Groq key. Row Level Security stays untouched today. Scene 19 shows why it matters.</p>
 </div>
 
-<!-- 12 · the cushion -->
+<!-- 12 · SQL is the package language -->
 <div class="scene" id="s12">
-<p class="kick">12 · Step 07</p>
+<p class="kick">12 · <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/06-schema" target="_blank" rel="noopener">Step 06</a></p>
+<h2>SQL is the package language: things become tables, links become foreign keys</h2>
+<svg class="wb" viewBox="0 0 760 400" role="img" aria-label="Left, schema.sql: create table diagnoses, id primary key, workflow_id references workflows(id), plan text, tone text, created_at default now(), and a final select for workflow 1 ordered by created_at. Right, each line mapped to the Lecture 6 model: create table is a thing becoming a table, primary key is the id, references is a link, the foreign key, each other line is a fact becoming a column, default now() is the memory.txt timestamp, and the last line is Aarav's Lecture 6 question as SQL.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="30" width="380" height="330" rx="8"/>
+    <path class="arw thin" d="M404 62 H460" marker-end="url(#ah)"/>
+    <path class="arw thin" d="M404 88 L460 114" marker-end="url(#ah)"/>
+    <path class="arw thin" d="M404 140 L460 166" marker-end="url(#ah)"/>
+    <path class="arw thin" d="M404 192 L460 218" marker-end="url(#ah)"/>
+    <path class="arw thin" d="M404 244 L460 270" marker-end="url(#ah)"/>
+    <path class="arw thin" d="M404 324 H460" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="210" y="20" class="xxs c-mute">06-schema/schema.sql</text>
+    <text x="36" y="66" class="xxs l c-thing">create table diagnoses (</text>
+    <text x="36" y="92" class="xxs l c-addr">  id bigint … primary key,</text>
+    <text x="36" y="118" class="xxs l c-link">  workflow_id bigint</text>
+    <text x="36" y="144" class="xxs l c-link">    references workflows(id),</text>
+    <text x="36" y="170" class="xxs l c-fact">  plan text,</text>
+    <text x="36" y="196" class="xxs l c-fact">  tone text,</text>
+    <text x="36" y="222" class="xxs l c-fact">  created_at timestamptz</text>
+    <text x="36" y="248" class="xxs l c-fact">    default now()</text>
+    <text x="36" y="274" class="xxs l c-ink">);</text>
+    <text x="36" y="312" class="xxs l c-ink">select * from diagnoses where</text>
+    <text x="36" y="338" class="xxs l c-ink">  workflow_id = 1 order by created_at;</text>
+    <text x="470" y="66" class="xs l c-thing">create table</text><text x="470" y="88" class="xxs l">a thing → a table</text>
+    <text x="470" y="118" class="xs l c-addr">primary key</text><text x="470" y="140" class="xxs l">the id → the primary key (PK)</text>
+    <text x="470" y="170" class="xs l c-link">references</text><text x="470" y="192" class="xxs l">a link → a foreign key (FK)</text>
+    <text x="470" y="222" class="xs l c-fact">each other line</text><text x="470" y="244" class="xxs l">a fact → a column</text>
+    <text x="470" y="274" class="xs l c-fact">default now()</text><text x="470" y="296" class="xxs l">the memory.txt timestamp</text>
+    <text x="470" y="326" class="xs l c-act">the last line</text><text x="470" y="348" class="xxs l">Aarav's Lecture 6 question, as SQL</text>
+    <text x="380" y="388" class="s">nothing new to model. that is why we did it on paper first.</text>
+  </g>
+</svg>
+<p>Two machines need a common language. The API connects Vercel to Supabase. SQL connects Python to Postgres, and <code>schema.sql</code> is its package. Paste it into the SQL Editor and run it once, or build the same tables by hand in the Table Editor: New table, a column per fact with its type, Add foreign key for each link. Read it line by line against last week's three questions: a thing is a <code>create table</code>, a fact is a line inside it, a link is <code>references</code> on the many side. The type on each line is the traffic police again: send a picture into a <code>text</code> column and the database refuses. The last line is the question from Lecture 6. Designing this is the part AI cannot verify for you, so it stays your job.</p>
+</div>
+
+<!-- 13 · three tables -->
+<div class="scene" id="s13">
+<p class="kick">13 · The tables</p>
+<h2>Users, workflows, diagnoses: the same arrows as last week</h2>
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three tables. Users: id 1, Aarav. Workflows: id 1, user_id 1, the description Script Monday, shoot Tuesday, edit until Sunday. Diagnoses: id 1, workflow_id 1, plan Batch your edits, created at 17 Oct 18:40. Violet arrows from workflow_id back to workflows and from user_id back to users. The Schema Visualizer draws the same three boxes back.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="290" y="28" width="180" height="70" rx="6"/>
+    <path class="thin" d="M290 62 H470 M330 28 V98"/>
+    <rect x="20" y="150" width="330" height="80" rx="6"/>
+    <path class="thin" d="M20 184 H350 M60 150 V230 M150 150 V230"/>
+    <rect x="390" y="150" width="350" height="120" rx="6"/>
+    <path class="thin" d="M390 184 H740 M390 226 H740 M430 150 V270 M530 150 V270 M650 150 V270"/>
+    <path class="arw c-link" d="M105 146 Q110 70 284 68" marker-end="url(#ahv)"/>
+    <path class="arw c-link" d="M386 206 Q368 206 354 206" marker-end="url(#ahv)"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="24" class="m c-thing">users</text>
+    <text x="310" y="52" class="xs c-addr">id</text><text x="400" y="52" class="xs">name</text>
+    <text x="310" y="86" class="xs">1</text><text x="400" y="86" class="xs">Aarav</text>
+    <text x="185" y="142" class="m c-thing">workflows</text>
+    <text x="40" y="174" class="xs c-addr">id</text><text x="105" y="174" class="xxs c-link">user_id</text><text x="250" y="174" class="xs">description</text>
+    <text x="40" y="212" class="xs">1</text><text x="105" y="212" class="xs">1</text><text x="250" y="212" class="xxs">Script Mon, shoot Tue, edit…</text>
+    <text x="565" y="142" class="m c-thing">diagnoses</text>
+    <text x="410" y="174" class="xs c-addr">id</text><text x="480" y="174" class="xxs c-link">workflow_id</text><text x="590" y="174" class="xs">plan</text><text x="695" y="174" class="xxs">created_at</text>
+    <text x="410" y="212" class="xs">1</text><text x="480" y="212" class="xs">1</text><text x="590" y="212" class="xxs">Batch your edits.</text><text x="695" y="212" class="xxs">17 Oct 18:40</text>
+    <text x="410" y="254" class="xs c-mute">2</text><text x="480" y="254" class="xs c-mute">1</text><text x="590" y="254" class="xxs c-mute">the next plan…</text><text x="695" y="254" class="xxs c-mute">later</text>
+    <text x="185" y="262" class="xxs c-mute">two seed rows, from the schema file</text>
+    <text x="565" y="300" class="xs c-pkg">Schema Visualizer: the same three boxes, the same lines</text>
+    <text x="380" y="330" class="s c-link">every arrow is a many side pointing back</text>
+  </g>
+</svg>
+<p>Three of last week's eight tables, enough for today's product. The schema also inserts Aarav and his Monday workflow, so there is something to point at. Open the Schema Visualizer and Supabase draws your ER diagram back: the same three boxes, the same arrows. Every row in the Table Editor outlives every machine that touched it.</p>
+</div>
+
+<!-- 14 · the cushion -->
+<div class="scene" id="s14">
+<p class="kick">14 · <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/07-supabase-sdk" target="_blank" rel="noopener">Step 07</a></p>
 <h2>The cushion: what the SDK hides</h2>
 <svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Left, raw httpie: POST to the URL slash rest slash v1 slash diagnoses, apikey and Authorization headers, the package, then GET with workflow_id eq 1 and order created_at. Four dials every time. Right, the SDK: a cushion labelled create_client(URL, KEY), then supabase.table diagnoses insert, and select, eq workflow_id 1, order created_at. The SDK hides the address and the headers.">
   <g class="ln" filter="url(#wob)">
@@ -534,16 +607,16 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="380" y="320" class="xs">same two calls, same rows. httpie first, SDK after.</text>
   </g>
 </svg>
-<p>Lecture 5's cushion again. The SDK makes the same two calls and gives back the same rows. Ask the room what disappeared: the address and the headers, which the client object now carries for you. Make the raw call first so that when the cushion hides an error, you know what is under it.</p>
+<p>Lecture 5's cushion again. The SDK makes the same two calls and gives back the same rows. Ask the room what disappeared: the address and the headers, which the client object now carries for you. <code>sdk.py</code> is the cushion. <code>rest.py</code> takes it off: insert, select, update and delete with plain <code>requests</code> to <code>&lt;project&gt;/rest/v1/diagnoses</code>, filters like <code>workflow_id=eq.1</code> in the query string. Start with the SDK if time is short, and read the raw version once so you know what is under an error.</p>
 </div>
 
-<p class="partl">Part 4 · Strip the cushion, ship it all</p>
+<p class="partl">Part 5 · Ship it</p>
 
-<!-- 13 · the server remembers -->
-<div class="scene" id="s13">
-<p class="kick">13 · Step 08</p>
+<!-- 15 · the server remembers -->
+<div class="scene" id="s15">
+<p class="kick">15 · <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/08-supabase-api" target="_blank" rel="noopener">Step 08</a></p>
 <h2>The server remembers: append becomes insert, the question becomes a route</h2>
-<svg class="wb" viewBox="0 0 760 380" role="img" aria-label="Two routes enter your server on Vercel: POST slash api slash diagnose, and GET slash api slash workflows slash 1 slash diagnoses. The server calls GroqCloud to think and Supabase to insert a row and to select where and order by. Below: append a line becomes insert a row, the Lecture 6 question becomes a route. workflow_id 1 is hardcoded on purpose; scene 17 opens on that lie.">
+<svg class="wb" viewBox="0 0 760 380" role="img" aria-label="Two routes enter your server on Vercel: POST slash api slash diagnose, and GET slash api slash workflows slash 1 slash diagnoses. The server calls GroqCloud to think and Supabase to insert a row and to select where and order by. Below: append a line becomes insert a row, the Lecture 6 question becomes a route. workflow_id 1 is hardcoded on purpose; scene 19 opens on that lie.">
   <g class="ln" filter="url(#wob)">
     <rect class="f-card" x="20" y="90" width="240" height="40" rx="10"/>
     <rect class="f-card" x="20" y="170" width="250" height="58" rx="10"/>
@@ -569,15 +642,15 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="360" y="276" class="xs"><tspan class="c-mute strike">append a line</tspan>  →  <tspan class="c-act">insert a row</tspan></text>
     <text x="360" y="302" class="xs"><tspan class="c-mute strike">the Lecture 6 question</tspan>  →  <tspan class="c-act">a route</tspan></text>
     <text x="380" y="346" class="xs c-act">workflow_id: 1 is hardcoded, on purpose</text>
-    <text x="380" y="370" class="xxs c-mute">scene 17 opens on that lie</text>
+    <text x="380" y="370" class="xxs c-mute">scene 19 opens on that lie</text>
   </g>
 </svg>
-<p>Step 05's file append becomes one insert. The select from the bottom of the schema file becomes a second route, and its address names the thing, exactly as Lecture 6 scene 21 promised. Add the Supabase URL and secret key as environment variables and deploy. Gradio from step 04 keeps working without a change. Every diagnosis is filed under workflow 1 for now, and scene 17 comes back to that lie.</p>
+<p>Step 05's four file lines become one insert. <code>diagnose</code> and the FastAPI route do not change: swap the storage without touching the business logic, and tell your LLM that up front or it will tangle them. The select from the bottom of the schema file becomes a second route, and its address names the thing, exactly as Lecture 6 scene 21 promised. Locally the keys come from <code>.env</code>, copied from <code>.env.example</code>. On Vercel, add <code>SUPABASE_URL</code> and <code>SUPABASE_SERVICE_KEY</code> under Environment Variables with the exact same names, and deploy. Gradio from step 04 keeps working without a change. Every diagnosis is filed under workflow 1 for now, and scene 19 comes back to that lie.</p>
 </div>
 
-<!-- 14 · rip off gradio -->
-<div class="scene" id="s14">
-<p class="kick">14 · Step 09</p>
+<!-- 16 · rip off gradio -->
+<div class="scene" id="s16">
+<p class="kick">16 · <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/08-supabase-api/public" target="_blank" rel="noopener">Step 08, the page</a></p>
 <h2>Rip off Gradio: a text box, a button, one fetch</h2>
 <svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Left, a Gradio window: a text box and a Diagnose button. All it was hiding: a text box, a button, one POST. An arrow, becomes. Right, public slash index.html: a textarea, a button, and fetch slash api slash diagnose with method POST and a body of workflow. fetch is requests.post in the browser. No key in the page. Same origin, same project, so CORS never comes up.">
   <g class="ln" filter="url(#wob)">
@@ -608,12 +681,12 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="380" y="320" class="s">same origin, same project: CORS never comes up</text>
   </g>
 </svg>
-<p>Gradio was hiding three things. Write them yourself: a text box, a button, and one fetch to your own address with the workflow as the package. Read the fetch against the dials: address, action, package, and no key. Put the page in the same Vercel project as the API and the two share an origin, so CORS never comes up. The last debt, a UI that only ran on your laptop, is paid.</p>
+<p>Gradio was hiding three things. Write them yourself: a text box, a button, and one fetch to your own address with the workflow as the package. Read the fetch against the dials: address, action, package, and no key. The page sits in <code>08-supabase-api/public/</code>, in the same Vercel project as the API, and lists the saved plans with a second fetch. Same project means one origin, so CORS never comes up. The last debt, a UI that only ran on your laptop, is paid.</p>
 </div>
 
-<!-- 15 · the HLD today -->
-<div class="scene" id="s15">
-<p class="kick">15 · The HLD</p>
+<!-- 17 · the HLD today -->
+<div class="scene" id="s17">
+<p class="kick">17 · The HLD</p>
 <h2>Four machines, four jobs</h2>
 <svg class="wb" viewBox="0 0 760 390" role="img" aria-label="Four dashed zones. Aarav's machine: his laptop runs plain HTML with one fetch and no key. Vercel: your function with two environment variables, GROQ_API_KEY and SUPABASE_SERVICE_KEY; it exists only while it answers. GroqCloud: a GPU, it thinks. Supabase: a server holding the tables, it remembers, at your project on supabase.co. Brackets: UI week 1, API week 2, database weeks 3 and 4.">
   <g class="ln" filter="url(#wob)">
@@ -651,12 +724,12 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="618" y="356" class="m c-act">database</text><text x="618" y="380" class="xs c-act">weeks 3 and 4</text>
   </g>
 </svg>
-<p>The whiteboard from Lecture 6, redrawn with today's machines. Aarav's browser runs plain HTML. Your Vercel function exists only while it answers, and it is the only machine holding keys. Groq thinks. Supabase remembers. Every piece lives where it does for a reason: size, survival, privacy.</p>
+<p>The whiteboard from Lecture 6, redrawn with today's machines. Four machines now, and the design gets a little busier every week, but every box has a reason you can name. Aarav's browser runs plain HTML. Your Vercel function exists only while it answers, and it is the only machine holding keys. Groq thinks. Supabase remembers. Every piece lives where it does for a reason: size, survival, privacy.</p>
 </div>
 
-<!-- 16 · proof in debt order -->
-<div class="scene" id="s16">
-<p class="kick">16 · Proof</p>
+<!-- 18 · proof in debt order -->
+<div class="scene" id="s18">
+<p class="kick">18 · Proof</p>
 <h2>Five checks, in debt order</h2>
 <svg class="wb" viewBox="0 0 760 310" role="img" aria-label="Five rows. 1, type a workflow on the live page, then GET the list: one row. 2, refresh: still one row, the Lecture 6 debt is paid. 3, change a comment and deploy again: still one row, the file problem is fixed. 4, open Network and send: only your URL, no Groq key and no Supabase key, the Lecture 5 debt is paid. 5, swap URLs with a partner: they get a plan, refresh, search for a key, and post verified.">
   <g class="ln" filter="url(#wob)">
@@ -684,11 +757,11 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
 <p>Done equals: a classmate opens your URL, gets a plan, refreshes, and the plan is still there. They search the Network tab and find no key. Each check closes one debt we opened on the way here, in the order we opened them.</p>
 </div>
 
-<!-- 17 · hook for L8 -->
-<div class="scene" id="s17">
-<p class="kick">17 · The hook</p>
+<!-- 19 · hook for L8 -->
+<div class="scene" id="s19">
+<p class="kick">19 · Enforcement</p>
 <h2>Whose row is this?</h2>
-<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Your partner's laptop sends GET slash api slash workflows slash 1 slash diagnoses to your server. The server reads from Supabase and returns Aarav's plans, every one, with no password asked. Whose row is this? Next: whose row, Row Level Security, and the real workflow_id.">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Mira's laptop sends GET slash api slash workflows slash 1 slash diagnoses to your server. The server reads from Supabase and returns Aarav's plans, every one, with no password asked. Whose row is this? Row Level Security: you read only the rows where auth.uid() is the owner.">
   <g class="ln" filter="url(#wob)">
     <use href="#person" transform="translate(30 60) scale(.7)"/>
     <use href="#laptop" transform="translate(80 70) scale(.5)"/>
@@ -700,22 +773,23 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <path class="arw c-act" d="M534 130 H610" marker-start="url(#ahc)" marker-end="url(#ahc)"/>
   </g>
   <g class="tx">
-    <text x="140" y="200" class="xs">your partner</text>
+    <text x="140" y="200" class="xs">Mira</text>
     <text x="300" y="118" class="xxs c-addr">GET /api/workflows/1/diagnoses</text>
     <text x="300" y="186" class="xs c-pkg">Aarav's plans, every one</text>
     <text x="300" y="210" class="xs c-act">no password asked</text>
     <text x="470" y="46" class="s">your server</text>
     <text x="662" y="202" class="m c-act">Supabase</text>
     <text x="380" y="254" class="h c-act">whose row is this?</text>
-    <text x="380" y="280" class="xxs c-mute">next: whose row, Row Level Security, and the real workflow_id</text>
+    <text x="380" y="280" class="xxs c-mute">Row Level Security: you read only rows where auth.uid() is the owner</text>
   </g>
 </svg>
-<p>Your partner just read Aarav's plans without a password, and every plan anyone saved is filed under workflow 1. The machine remembers, but it does not yet know whose memory it is. That question comes next.</p>
+<p>Mira joins and reads Aarav's plans without a password. So would a bug that gave both of them id 1, or an attacker with one <code>select *</code> who wants to sell your data. Types are policed already. Who reads which row is not. Pydantic was policy plus enforcement for the API. Row Level Security is the same for rows: a policy, written in SQL, that returns only the rows whose owner matches <code>auth.uid()</code>, the id Supabase gives each signed-in user.</p>
+<p>It needs login. In Supabase's Authentication tab, start with the email provider. Google, Apple and the rest carry third-party costs. RLS also blocks injected queries, because they arrive without a matching UID. It is the advanced step: store first, then add RLS for signed-in users. The <a href="https://supabase.com/docs/guides/database/postgres/row-level-security" target="_blank" rel="noopener">Supabase RLS guide</a> has the policies.</p>
 </div>
 
-<!-- 18 · practice set -->
-<div class="scene" id="s18">
-<p class="kick">18 · Your turn</p>
+<!-- 20 · practice set -->
+<div class="scene" id="s20">
+<p class="kick">20 · Your turn</p>
 <h2>Five steps, then a classmate says "verified"</h2>
 <svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Six cards. Split, from Lecture 7: a route on Vercel, Gradio local, no key. Type your model: every table, references on every _id. Two verbs: one insert route, one select with where and order by. Strip Gradio: public slash index.html with one fetch, in the same project. Get verified: a classmate posts verified with your URL. Rules: httpie before the SDK, keys out of HTML and screenshots.">
   <g class="ln" filter="url(#wob)">
@@ -735,7 +809,7 @@ body.present #pnum{display:block;position:fixed;right:18px;bottom:14px;font:500 
     <text x="627" y="198" class="m c-act">rules</text><text x="627" y="230" class="xs">httpie before the SDK</text><text x="627" y="254" class="xs">no key in HTML or screenshots</text>
   </g>
 </svg>
-<p>Your own app, through the same nine steps. Type the model you drew in the Modelling Lab, with a pointer on every many side. Ask an LLM to explain errors, not to write your <code>create table</code>. Done is not a screenshot. Done is a classmate's "verified" next to your URL.</p>
+<p>Your own app, through the same eight steps of the <a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">repository</a>. Type the model you drew in the Modelling Lab, with a pointer on every many side. Ask an LLM to explain errors, not to write your <code>create table</code>. Done is not a screenshot. Done is a classmate's "verified" next to your URL.</p>
 </div>
 
 <p class="sig">A database is a machine at an address. SQL is its package.<small>Before this: <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Lecture 7 notes</a>, <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/whiteboard">Lecture 6 on a whiteboard</a> and its <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">notes</a>.</small></p>

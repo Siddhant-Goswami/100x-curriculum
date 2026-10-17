@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: End to End MVP | 100xEngineers</title>
+<meta name="description" content="Post-read notes for Lecture 8: local first then production, reading Vercel's logs, the minimum data worth storing, memory.txt in four steps and where a file breaks, Postgres on Supabase with the same four dials, things to tables and links to foreign keys, the SDK, and whose row is this.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials code{font-size:13px}
+body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:9px;padding:12px 14px;font:13.5px/1.5 var(--mono);overflow-x:auto;margin:6px 0 14px}
+</style>
+</head>
+<body data-page="l08-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L8">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 8 pages"><a href="/c8/module-2/lecture-08-end-to-end-mvp/">Overview</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/notes">Notes</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard">Whiteboard</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Post-read notes · Lecture 8</p>
+  <h1>The server remembers</h1>
+  <p class="dek">What was said on Saturday, in the order it was said. Local first, the file, why it breaks, then Postgres on Supabase with the same four dials.</p>
+  <div class="meta"><span>Sat 17 Oct 2026</span><span>Instructor: Siddhant Goswami</span><span>Code track</span></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The lecture in one line</h2>
+<ul class="pt">
+  <li><b>Lecture 7</b> put <code>diagnose</code> behind an API on Vercel. <b>Today</b> that API learns to remember, first in a file, then in a database.</li>
+  <li><b>Every whiteboard from the last four weeks connects here.</b> Four dials, things, facts and links, policy and enforcement.</li>
+  <li><b>The repository was updated.</b> Same <a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">c8-db repo</a>, now with a <code>.env.example</code> and steps 01 to 08. Every step is a folder; the sections below link to theirs.</li>
+  <li><b>Drawn version:</b> <a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard">Lecture 8 on a whiteboard</a>, twenty scenes in the same order.</li>
+</ul>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Local first, then production</h2>
+<ul class="pt">
+  <li><b>Two environments, kept apart.</b> Local is everything running on your laptop. Production is the link a real user opens. If Aarav is using the app and you push a change that breaks it, Aarav pays for your test.</li>
+  <li><b>Run the API locally.</b> From inside the step folder: <code>uvicorn api.index:app --reload</code>. <code>api.index</code> is the file, <code>app</code> is what gets served, <code>--reload</code> restarts on every save. Install with <code>pip install fastapi uvicorn</code>.</li>
+  <li><b>Point Gradio at it.</b> <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/04-gradio-client" target="_blank" rel="noopener">Step 04</a> is the same <code>requests.post</code> from the API lecture: action, address, package. The address is now <code>http://127.0.0.1:8000/api/diagnose</code> and there is no key in the file.</li>
+  <li><b>Go to production by changing one thing: the address.</b> Swap the local URL for your <code>vercel.app</code> URL, stop the local server, and it still answers. Same code, different machine.</li>
+  <li><b>Never send a <code>127.0.0.1</code> link.</b> It means "this machine". It opens on yours and nobody else's. Anything you submit or share has to be a deployed link.</li>
+</ul>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Read the logs on someone else's machine</h2>
+<ul class="pt">
+  <li><b>Locally, the terminal shows every request.</b> On Vercel you have no terminal. Open the project, then the <b>Logs</b> tab.</li>
+  <li><b>One request, read live:</b> received in Mumbai, routed to Washington DC, an external call to Groq, 2.77 seconds, status 200.</li>
+  <li><b>A 404 or 500 shows up here first.</b> This is where you start when something goes wrong in production.</li>
+</ul>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>What is worth storing</h2>
+<ul class="pt">
+  <li><b>Start from the Modelling Lab.</b> Users, workflows, messages, conversations, diagnoses, tools. The full picture.</li>
+  <li><b>Then store the least that tests the hypothesis.</b> The bet: given a workflow diagnosis, 6 of 10 early-career people map one repeated workflow and build an app. That needs three things: a <b>user</b>, a <b>workflow</b>, a <b>diagnosis</b>. Conversations, profiles and tools can wait.</li>
+  <li><b>Facts.</b> A user has a name. A workflow has a description. A diagnosis has a plan. Each gets an <code>id</code> and a <code>created_at</code>.</li>
+  <li><b>Why the id.</b> Two users can both be called Mira. A name does not tell them apart, an id does.</li>
+  <li><b>User to workflow: one to many.</b> One person writes many workflows. A workflow has exactly one owner.</li>
+  <li><b>Workflow to diagnosis: one to one, for now.</b> Under today's rules each message gets one plan. Whether it should allow several is not your call to guess. Run both with your ten users and keep the cheaper one unless users need the other. That answer only comes from discovery.</li>
+  <li><b>The link is the <code>user_id</code> on the workflow.</b> Workflow 7 has <code>user_id</code> 1, Aarav is user 1, done. No name matching. The same holds for an LLM or an agent reading your data.</li>
+  <li><b>The industry calls this an ER diagram.</b> Entities are things, relationships are links. Knowledge graphs, second brains and LLM wikis all grow from this same first principle.</li>
+</ul>
+<p class="pull">A user is a thing, not a fact. Facts about Aarav, his role or age, come later and make the prompt personal.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Step 05 · memory.txt in four steps</h2>
+<p><a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/05-memory-txt" target="_blank" rel="noopener">05-memory-txt in the repository</a></p>
+<p>Write it in English before you read the code. Most of the chat got it. The step most people missed was the timestamp.</p>
+<pre class="code">memory = open("memory.txt").read()          # 1. read what is already there
+plan = diagnose(body.workflow)              # 2. same business logic as before
+line = f"{datetime.now()} | {body.workflow} | {plan}\n"   # 3. time, workflow, diagnosis
+open("memory.txt", "w").write(memory + line)              # 4. write it all back</pre>
+<ul class="pt">
+  <li><b>Why read first.</b> <code>"w"</code> replaces the whole file. Keep what was there, then add the new line.</li>
+  <li><b>The user is left out on purpose.</b> For one user, workflow and diagnosis are enough to test with Aarav. Add users when it works.</li>
+  <li><b>Test locally.</b> Run step 05 with uvicorn, point Gradio at it, send a workflow, open <code>memory.txt</code>. The time, the input and the plan are there. Persistence was four lines.</li>
+</ul>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Where a file breaks, and where it does not</h2>
+<ul class="pt">
+  <li><b>Do the math.</b> 100 users, 10 workflows a day, 60 days: 60,000 lines, and you need to know who wrote which, when.</li>
+  <li><b>Two writers at once.</b> Jagan and Vineet start the same hackathon at the same minute. Both read, both write, one plan is lost. A race condition.</li>
+  <li><b>Every read and write costs memory.</b> A small rented machine runs out, crashes, and returns 500 to everyone, not just the person who caused it.</li>
+  <li><b>The rule of thumb.</b> One user, under about ten operations a day, a fixed window: a file is fine. More than one user writing: think database.</li>
+  <li><b>Read-only scales on a file.</b> The curriculum app serves 200+ people, soon 2,000, from one file. A personal site peaked above 10,000 readers on files. Nobody writes, so nothing races. Vercel copies static files to servers around the world (a CDN).</li>
+  <li><b>Writing is the expensive part.</b> A database is a file system with fifty years of fixes: backups, copies near the user, rolling back a bad write.</li>
+</ul>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Postgres, rented from Supabase</h2>
+<ul class="pt">
+  <li><b>SQL-type, because your model maps straight onto it</b> and it is easy to query. The specific one is <b>PostgreSQL</b>: free, open source, and what OpenAI runs on at 800 million users.</li>
+  <li><b>Own house or rent.</b> You can host Postgres yourself and run the maintenance. With ten users, rent.</li>
+  <li><b>Supabase is to Postgres what Vercel is to servers.</b> It wraps the database in an API, plus auth, storage and vectors. Free up to 50,000 monthly active users and 500 MB. Tested past 100 users with controlled reads and writes.</li>
+</ul>
+<ol class="steps">
+  <li>Sign in at <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a>. GitHub login is easiest.</li>
+  <li>New organisation: any name, Personal, Free plan.</li>
+  <li>New project: a name and a database password you save somewhere. Leave the rest, including the region it picks for you.</li>
+  <li>Wait for it to come up. That is a rented machine with your database on it.</li>
+</ol>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>The same four dials</h2>
+<table class="dials">
+<tr><th>Dial</th><th>For your database</th></tr>
+<tr><td><span class="part addr">address</span></td><td>Project URL, under Settings, Data API</td></tr>
+<tr><td><span class="part act">action</span></td><td>GET reads. POST creates. PUT replaces, PATCH updates part. DELETE deletes.</td></tr>
+<tr><td><span class="part key">key</span></td><td>Settings, API keys. The <b>secret key</b>, on your server only.</td></tr>
+<tr><td><span class="part pkg">package</span></td><td>The rows you send, and the JSON that comes back</td></tr>
+</table>
+<ul class="pt">
+  <li><b>Two keys.</b> The publishable key is safe in a browser only once row level security is on. The secret key can read and write everything. Today you use the secret key, and only on the server.</li>
+  <li><b>Four machines now.</b> The user's, yours on Vercel, Groq's, and Supabase's. Each one is there for a reason you can name. <a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s17">Whiteboard, scene 17</a>.</li>
+</ul>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>From the whiteboard to tables</h2>
+<table class="dials">
+<tr><th>Modelling Lab</th><th>Database</th></tr>
+<tr><td>thing</td><td>table</td></tr>
+<tr><td>fact</td><td>column, with a type</td></tr>
+<tr><td>link</td><td>foreign key (FK)</td></tr>
+<tr><td>id</td><td>primary key (PK)</td></tr>
+</table>
+<pre class="code">create table users (
+  id bigint generated always as identity primary key,
+  name text,
+  created_at timestamptz default now()
+);
+create table workflows (
+  id bigint generated always as identity primary key,
+  description text,
+  user_id bigint references users(id),
+  created_at timestamptz default now()
+);
+-- diagnoses: plan text, workflow_id bigint references workflows(id)</pre>
+<ul class="pt">
+  <li><b>Two machines need a common language.</b> The API connects Vercel to Supabase. SQL connects Python to Postgres. <code>schema.sql</code> is the JSON schema of the database.</li>
+  <li><b>Types are the traffic police again.</b> A name is <code>text</code>. Send a picture into it and the database refuses. SQL types are not Python types.</li>
+  <li><b>Two ways to make the tables.</b> Paste <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/06-schema" target="_blank" rel="noopener"><code>schema.sql</code></a> into the SQL Editor and run it once. Or Table Editor, New table: add each column and its type, then Add foreign key to link it.</li>
+  <li><b>Check it.</b> The Schema Visualizer draws your ER diagram back: the same three boxes, the same lines.</li>
+  <li><b>Learn SQL by writing it.</b> The BigBinary SQL course on the LMS runs in the browser, no setup.</li>
+  <li><b>Why the lecture stays on the design.</b> The verifier's rule: whatever is easy to verify, AI will do. Code is easy to verify. Deciding what is worth storing, for which user, to test which bet, is not. That part is yours.</li>
+</ul>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Steps 07 and 08 · The server remembers</h2>
+<p><a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/07-supabase-sdk" target="_blank" rel="noopener">07-supabase-sdk</a> (the SDK and the raw calls) and <a href="https://github.com/Siddhant-Goswami/c8-db/tree/main/08-supabase-api" target="_blank" rel="noopener">08-supabase-api</a> (the server and the page) in the repository.</p>
+<ul class="pt">
+  <li><b>Keys in <code>.env</code>.</b> Copy <code>.env.example</code> to <code>.env</code> and fill <code>GROQ_API_KEY</code>, <code>SUPABASE_URL</code>, <code>SUPABASE_SERVICE_KEY</code>. Every step from 05 on reads it.</li>
+  <li><b>The raw call.</b> <code>&lt;project-url&gt;/rest/v1/&lt;table&gt;</code>, with the key in the headers. Filters, updates and deletes are the same request with a different action. Read the Supabase API docs once so you know what the SDK is doing.</li>
+  <li><b>The cushion.</b> The SDK hides the address and headers:</li>
+</ul>
+<pre class="code">supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+plan = diagnose(body.workflow)
+supabase.table("diagnoses").insert({"workflow_id": 1, "plan": plan}).execute()
+
+supabase.table("diagnoses").select("*").eq("workflow_id", 1).execute()</pre>
+<ul class="pt">
+  <li><b>Four file lines became one insert.</b> <code>diagnose</code> and the FastAPI route did not change. That is a modular system: swap storage without touching business logic. Tell your LLM this up front or it will tangle them.</li>
+  <li><b>JSON comes back because you asked for it.</b> The content matters, not the format. A spreadsheet user can still get JSON converted on their side.</li>
+  <li><b>On Vercel, add the same two variables.</b> Settings, Environment Variables, exact names from <code>.env</code>. Redeploy. Only the address changed, so the code is the same.</li>
+</ul>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Whose row is this?</h2>
+<ul class="pt">
+  <li><b>Types are enforced by the database already.</b> Who can read which row is not.</li>
+  <li><b>Mira joins.</b> If she finds the URL and a key, one <code>select *</code> returns Aarav's workflows too. So would a glitch that gave both of them id 1. So would an attacker who wants to sell your data.</li>
+  <li><b>Row level security (RLS)</b> is the policy, written in SQL: you see only the rows where <code>auth.uid()</code> matches the row's owner. Without a policy, anyone who gets a query through gets everything.</li>
+  <li><b>It needs login.</b> Supabase's Authentication tab: start with the email provider. Google, Apple and the rest come with third-party costs. Each signed-up user gets a UID in a separate auth table, and RLS checks it.</li>
+  <li><b>Advanced for now.</b> Store first, then RLS for logged-in users, then deeper auth. The <a href="https://supabase.com/docs/guides/database/postgres/row-level-security" target="_blank" rel="noopener">Supabase RLS guide</a> has the details. <a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s19">Whiteboard, scene 19</a>.</li>
+</ul>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>From the chat</h2>
+<ul class="pt">
+  <li><b>"Should we do all 50 hours of the SQL course?"</b> Learning is insurance. AI writes code well and fails on the hard cases, and if you do not understand the system you cannot explain the failure to another AI or an expert. Buy as much cover as you want.</li>
+  <li><b>"Is RLS about access or about injection?"</b> Both. It limits each user to their rows, and an injected query without a matching UID gets nothing.</li>
+  <li><b>"Where is the diagnoses table created?"</b> In <code>schema.sql</code>, run once in the SQL Editor. Or by hand with New table.</li>
+  <li><b>"How do I call Supabase without the SDK?"</b> The Data API reference: <code>rest/v1/</code>, the table name, the action, and the body.</li>
+</ul>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Next: the hackathon</h2>
+<p>Dates, problems, check-ins and rules are on <a href="/c8/module-2/hackathon/">the hackathon page</a>.</p>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>localhost</dt><dd><code>127.0.0.1</code>. This machine. A link to it works only on yours.</dd>
+  <dt>uvicorn</dt><dd>The server that runs a FastAPI app on your laptop.</dd>
+  <dt>ER diagram</dt><dd>Entities and relationships. Things and links, drawn.</dd>
+  <dt>primary key</dt><dd>The column that tells every row apart. Usually <code>id</code>.</dd>
+  <dt>foreign key</dt><dd>A column that points at another table's primary key. A link.</dd>
+  <dt>race condition</dt><dd>Two writers at once, and one write is lost.</dd>
+  <dt>PostgreSQL</dt><dd>The free, open-source SQL database Supabase runs.</dd>
+  <dt>SDK</dt><dd>A library that wraps an API in functions, like <code>supabase.table().insert()</code>.</dd>
+  <dt>RLS</dt><dd>Row level security. A policy on which rows each user can read or write.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>Decide what is worth storing before you store it: the fewest things, facts and links that test your bet. A file is fine for one user or for read-only pages. Once several people write, rent a database. It is one more machine at an address, called with the same four dials, and the secret key stays on your server.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/hackathon/">The hackathon</a></li>
+  <li><a href="/c8/module-2/lecture-08-end-to-end-mvp/whiteboard">Lecture 8 on a whiteboard</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">The lecture repository, step by step</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab">The Modelling Lab: your tables</a></li>
+  <li><a href="/#L8">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 8: End to end MVP</span><a href="/#L8">Curriculum map</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/">All Lecture 8 pages</a></div></footer>
+</body>
+</html>
