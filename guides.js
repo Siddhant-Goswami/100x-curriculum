@@ -88,6 +88,14 @@ var GUIDE_LINKS = {
   l07Steps: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set#s03',
   l07Errors: '/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set#s04',
   l07Repo: 'https://github.com/Siddhant-Goswami/c8-db',
+  /* Lecture 8 · End to end MVP (code track; pages live in c8/module-2/lecture-08-end-to-end-mvp) */
+  l08Hub: '/c8/module-2/lecture-08-end-to-end-mvp/',
+  l08Board: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard',
+  l08File: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s03',
+  l08Schema: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s09',
+  l08Remember: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s13',
+  l08Proof: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s16',
+  l08Turn: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s18',
   fastapiTutorial: 'https://fastapi.tiangolo.com/tutorial/'
 };
 
@@ -551,15 +559,15 @@ GUIDES.L6 = { all: {
   kw: 'database domain modelling modeling entities entity attribute attributes relationships relationship one-to-many many-to-many one-to-one primary key foreign key pointer join table third table supabase memory storage persistence rows files storage bucket er diagram modelling lab arena aarav practice set whiteboard high-level design hld memory.txt file client side server side worth storing api key gpt-oss'
 }};
 
-/* Lecture 7 · Connect backend to the database · Part 1 (Fri 16 October 2026), Part 2 on Sat 17 October.
-   Source: the Friday transcript, the c8-db repository (steps 01 to 08) and the Lecture 7 pages. */
+/* Lecture 7 · Connect backend to the database (Fri 16 October 2026). Storage is Lecture 8.
+   Source: the Friday transcript, the c8-db repository (steps 01 to 04) and the Lecture 7 pages. */
 GUIDES.L7 = { code: {
   hub: {link:'l07Hub', title:'Open the Lecture 7 pages', sub:'Notes, the practice set and the whiteboard', more:[['l07Notes','Notes'],['l07Practice','Practice set'],['l07Board','Whiteboard']]},
   name: 'The key leaves the browser',
-  sub: 'After Part 1 · 16 October 2026 · code track',
+  sub: 'After the lecture · 16 October 2026 · code track',
   deadline: 'Practice set',
-  due: 'Before Saturday\'s session, 17 Oct, 6 pm IST',
-  keep: 'Three machines: the user\'s, yours, and the one you pay for. Strip your app to one function, put it behind a FastAPI route with Pydantic at the door, deploy it to Vercel, and keep the key in an environment variable on the only machine you control. Saturday, that machine learns to remember.',
+  due: 'Before Lecture 8, Sat 17 Oct, 6 pm IST',
+  keep: 'Three machines: the user\'s, yours, and the one you pay for. Strip your app to one function, put it behind a FastAPI route with Pydantic at the door, deploy it to Vercel, and keep the key in an environment variable on the only machine you control. In Lecture 8, that machine learns to remember.',
   ideas: [
     ['The hardest bugs are components on the wrong machine.', 'Nothing errors. Someone just spends your credits or your data vanishes. An LLM will make that decision for you if you do not. Decide where each piece lives before you type.'],
     ['Strip it to the function.', 'Remove every cushion and one function is left: input in, output out. That is what you deploy first. The UI can call it from anywhere once it has an address.'],
@@ -598,11 +606,11 @@ GUIDES.L7 = { code: {
      ]}
   ],
   actions: [
-    {id:'sat', t:'Saturday, 17 Oct, 6 pm IST: Part 2', how:'Bring the live URL and your Modelling Lab tables. The file dies, Supabase, end to end.', link:'l07Board', linkLabel:'Scenes 7 to 22'},
+    {id:'sat', t:'Lecture 8, Sat 17 Oct, 6 pm IST', how:'Bring the live URL and your Modelling Lab tables. The file dies, Supabase, end to end.', link:'l08Hub', linkLabel:'Lecture 8'},
     {id:'pyd', t:'Read about Pydantic beyond type checks', how:'The lecture\'s homework. It is the bridge between probabilistic and deterministic systems.', link:'fastapiTutorial', linkLabel:'FastAPI tutorial'},
-    {id:'hack', t:'The hackathon starts after Saturday', how:'Two days, fresh problem statements, mandatory, graded on the attempt. A public repository.'}
+    {id:'hack', t:'The hackathon starts after Lecture 8', how:'Two days, fresh problem statements, mandatory, graded on the attempt. A public repository.'}
   ],
-  next: 'Next: Saturday, 6 pm. The same server gets memory: memory.txt dies on Vercel, the Lecture 6 tables become a Supabase schema, and the app goes live end to end.',
+  next: 'Next: Lecture 8, Saturday 6 pm. The same server gets memory: memory.txt dies on Vercel, the Lecture 6 tables become a Supabase schema, and the app goes live end to end.',
   errors: [
     ['401 from the leak page', 'No key in the request', 'That is the point. The key moves to the server, never into this file'],
     ['Model error from diagnose.py', 'A retired model name', 'Check the model name on the day and change one string'],
@@ -613,10 +621,10 @@ GUIDES.L7 = { code: {
     ['Nobody can open my localhost link', 'It only exists on your machine', 'Send a screenshot, or deploy and send the vercel.app URL']
   ],
   read: [
-    ['Lecture 7 overview', 'l07Hub', 'Friday and Saturday, step by step.'],
-    ['Notes', 'l07Notes', 'What was said on Friday, in order.'],
+    ['Lecture 7 overview', 'l07Hub', 'The lecture, step by step.'],
+    ['Notes', 'l07Notes', 'What was said, in order.'],
     ['Practice set', 'l07Practice', 'Setup, the four steps, the error log, five things to post.'],
-    ['The lecture on a whiteboard', 'l07Board', 'All 22 scenes. 1 to 6 are Friday, 7 to 22 are Saturday.'],
+    ['The lecture on a whiteboard', 'l07Board', 'Four scenes: the leak, the function, the route, the client.'],
     ['The lecture repository', 'l07Repo', 'Every step as a folder. Replace the function with yours.'],
     ['FastAPI tutorial', 'fastapiTutorial', 'Read it before asking an LLM to write the route.']
   ],
@@ -632,5 +640,44 @@ GUIDES.L7 = { code: {
     ['Business logic', 'The one function that takes the input and makes the output. Everything else is around it.'],
     ['CLI', 'Command line interface. The Vercel and GitHub CLIs let your terminal, or your LLM helper, talk to those machines.']
   ],
-  kw: 'connect backend database deploy vercel github commit push repository fastapi pydantic validation traffic police environment variable env var groq key leak 401 404 500 httpie uvicorn docs gradio client api/diagnose business logic codex claude code hermes opencode hackathon supabase saturday practice set'
+  kw: 'connect backend database deploy vercel github commit push repository fastapi pydantic validation traffic police environment variable env var groq key leak 401 404 500 httpie uvicorn docs gradio client api/diagnose business logic codex claude code hermes opencode hackathon practice set'
+}};
+
+/* Lecture 8 · End to end MVP (Sat 17 October 2026, 6 pm IST). The storage half that was planned as Lecture 7 Part 2.
+   Source: the c8-db repository (steps 05 to 09) and the Lecture 8 whiteboard. Notes and a practice set follow the session. */
+GUIDES.L8 = { code: {
+  hub: {link:'l08Hub', title:'Open the Lecture 8 pages', sub:'The overview and the whiteboard', more:[['l08Board','Whiteboard']]},
+  name: 'The server remembers',
+  sub: 'Lecture 8 · 17 October 2026 · code track',
+  deadline: 'Done equals',
+  due: 'A classmate posts "verified" next to your URL',
+  keep: 'A database is a machine at an address, and SQL is its package. The file on your server dies with the machine, so storage moves to Supabase, reached with the same four dials as Groq. The key stays on your server, and the UI is one fetch.',
+  ideas: [
+    ['The file is memory too.', 'On Vercel the machine is thrown away after every answer. memory.txt works on your laptop and returns a 500 live. Two writers at once lose a plan even locally.'],
+    ['Call it before it has a shape.', 'Fill the four dials and POST with httpie before any table exists. The error says the machine does not know what a diagnosis is.'],
+    ['SQL is the paper model, typed.', 'A thing is a create table, a fact is a line in it, a link is references on the many side. The Lecture 6 question is the last line of the schema.'],
+    ['Raw call first, then the cushion.', 'The SDK hides the address and the headers. Make the httpie call first so you know what is under an error.'],
+    ['Gradio was hiding three things.', 'A text box, a button, one fetch. Same Vercel project as the API, so CORS never comes up.']
+  ],
+  rule: 'The secret key lives only in your server\'s environment variables, next to the Groq key. httpie before the SDK. No key in the HTML, no key in a screenshot.',
+  stages: [
+    {id:'build', name:'Your app, steps 05 to 09', short:'Build', sub:'Whiteboard, scene 18',
+     intro:'The Lecture 7 route, now with memory. Your own app, or Aarav\'s diagnoser from the repository.',
+     ticks:[
+       {id:'model', t:'Typed my Modelling Lab tables into Supabase, references on every _id', link:'l08Schema', linkLabel:'SQL is the package'},
+       {id:'verbs', t:'Two verbs: one insert route, one select with where and order by', link:'l08Remember', linkLabel:'The server remembers'},
+       {id:'strip', t:'Gradio replaced by public/index.html with one fetch, in the same Vercel project'},
+       {id:'verified', t:'A classmate opened my URL, refreshed, found no key, and posted "verified"', link:'l08Proof', linkLabel:'Five checks'}
+     ]}
+  ],
+  actions: [
+    {id:'hack', t:'The hackathon starts after Lecture 8', how:'Two days, fresh problem statements, mandatory, graded on the attempt. Run the same trace on a new problem.'}
+  ],
+  next: 'Next: the hackathon. Then whose row is this: every plan is still filed under workflow 1, and anyone with the URL can read it.',
+  read: [
+    ['Lecture 8 overview', 'l08Hub', 'What to bring, the lecture, done equals.'],
+    ['The lecture on a whiteboard', 'l08Board', 'Eighteen scenes: the file dies, another machine, ship it all.'],
+    ['The lecture repository', 'l07Repo', 'Steps 05 to 09. Replace the function with yours.']
+  ],
+  kw: 'end to end mvp deploy live url supabase database sql schema create table references memory.txt read-only file system two writers insert select sdk create_client service key secret key publishable key row level security fetch index.html gradio cors verified hackathon'
 }};

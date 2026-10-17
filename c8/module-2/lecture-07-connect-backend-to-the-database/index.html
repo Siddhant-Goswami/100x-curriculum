@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Connect Backend to the Database | 100xEngineers</title>
-<meta name="description" content="Cohort 8 Module 2, Lecture 7, in two parts. Friday: the key leaves the browser, one function goes behind a FastAPI route with Pydantic and is deployed to Vercel. Saturday: the file on the server dies, storage moves to Supabase with the Lecture 6 shape, and the app goes live end to end.">
+<meta name="description" content="Cohort 8 Module 2, Lecture 7: the key leaves the browser. One function goes behind a FastAPI route with Pydantic, is deployed to Vercel with the key in an environment variable, and Gradio becomes a client.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -28,14 +28,14 @@
 <div class="wrap">
   <main>
 <div class="hero">
-  <p class="kick">Cohort 8 · Module 2 · Lecture 7 · Fri 16 and Sat 17 Oct 2026 · Code track</p>
+  <p class="kick">Cohort 8 · Module 2 · Lecture 7 · Fri 16 Oct 2026 · Code track</p>
   <h1>Connect backend to the database</h1>
-  <p class="dek">A database is a machine at an address. SQL is its package.</p>
+  <p class="dek">The key lives on the machine that spends the money.</p>
 </div>
 
-<div class="call"><p class="kick">The lecture in one line</p><p>Friday: the key left the browser. Aarav's one function runs behind a route on a rented machine, with the key in an environment variable there. Saturday: that machine learns to remember, and the whole app goes live.</p></div>
+<div class="call"><p class="kick">The lecture in one line</p><p>The key left the browser. Aarav's one function runs behind a route on a rented machine, with the key in an environment variable there. <a href="/c8/module-2/lecture-08-end-to-end-mvp/">Lecture 8</a> teaches that machine to remember.</p></div>
 
-<div class="when"><p class="kick">01</p><h2>Friday · the key leaves the browser</h2></div>
+<div class="when"><p class="kick">01</p><h2>The lecture</h2></div>
 <ol class="steps">
   <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s02">Five things before you build: Python, an IDE, one LLM helper, GitHub, Vercel</a></li>
   <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s05">The leak: the browser calls Groq directly</a></li>
@@ -45,29 +45,20 @@
   <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s09">Gradio becomes a client, with no key</a></li>
 </ol>
 
-<div class="when"><p class="kick">02</p><h2>Saturday · the server remembers</h2></div>
-<ol class="steps">
-  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s07">Plans saved to memory.txt, and why it dies</a></li>
-  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s13">SQL is the package language</a></li>
-  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s16">The cushion: what the SDK hides</a></li>
-  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s17">The server remembers</a></li>
-  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard#s18">Rip off Gradio: one fetch</a></li>
-</ol>
+<div class="when"><p class="kick">02</p><h2>Done equals</h2></div>
+<p>By Saturday 6 pm: a POST to your <code>vercel.app</code> URL returns your output, and no key is anywhere a user can see it. <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set">The practice set, five things to post.</a></p>
 
-<div class="when"><p class="kick">03</p><h2>Done equals</h2></div>
-<p>By Saturday 6 pm: a POST to your <code>vercel.app</code> URL returns your output, and no key is anywhere a user can see it. <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set">The practice set, five things to post.</a> After Saturday: a classmate opens your URL, gets a plan, refreshes, and the plan is still there.</p>
-
-<div class="when"><p class="kick">04</p><h2>When you need it</h2></div>
+<div class="when"><p class="kick">03</p><h2>When you need it</h2></div>
 <div class="cards">
-  <a class="card" href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes"><p class="kick">Read after</p><h4>Notes: Friday, in order</h4></a>
-  <a class="card" href="/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set"><p class="kick">Do this</p><h4>Practice set: four steps before Saturday</h4></a>
+  <a class="card" href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes"><p class="kick">Read after</p><h4>Notes, in order</h4></a>
+  <a class="card" href="/c8/module-2/lecture-07-connect-backend-to-the-database/practice-set"><p class="kick">Do this</p><h4>Practice set: four steps before Lecture 8</h4></a>
   <a class="card" href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard"><p class="kick">See it drawn</p><h4>Lecture 7 on a whiteboard</h4></a>
   <a class="card" href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener"><p class="kick">The code</p><h4>The lecture repository, step by step</h4></a>
   <a class="card" href="/c8/module-2/lecture-06-databases-and-domain-modelling/playgrounds/modelling-lab"><p class="kick">Your tables</p><h4>The Modelling Lab</h4></a>
   <a class="card" href="/#L7"><p class="kick">Track progress</p><h4>Checklist on the map</h4></a>
 </div>
 
-<p class="sig">The key lives on the machine that spends the money.<small>Next: Saturday, 6 pm. Then the hackathon.</small></p>
+<p class="sig">The key lives on the machine that spends the money.<small>Next: <a href="/c8/module-2/lecture-08-end-to-end-mvp/">Lecture 8</a>, Saturday 6 pm. Then the hackathon.</small></p>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 7: Connect backend to the database</span><a href="/#L7">Curriculum map</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">All Lecture 7 pages</a></div></footer>

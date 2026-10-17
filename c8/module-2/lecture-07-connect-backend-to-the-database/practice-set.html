@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Practice Set: Connect Backend to the Database | 100xEngineers</title>
-<meta name="description" content="Practice set after Lecture 7 Part 1 of the 100xEngineers Cohort 8 Module 2: strip your app to one function, put it behind a FastAPI route with Pydantic, deploy it to Vercel with the key in an environment variable, and point Gradio at the live URL. Due before Saturday's session.">
+<meta name="description" content="Practice set after Lecture 7 of the 100xEngineers Cohort 8 Module 2: strip your app to one function, put it behind a FastAPI route with Pydantic, deploy it to Vercel with the key in an environment variable, and point Gradio at the live URL. Due before Lecture 8.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -29,13 +29,13 @@ body.read table.dials code{font-size:13px}
   <main>
 <details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
-  <p class="kick">Practice set · Lecture 7 · Part 1 · Code track</p>
+  <p class="kick">Practice set · Lecture 7 · Code track</p>
   <h1>Your function, live on a URL</h1>
   <p class="dek">Steps 01 to 04 of the lecture, done for your own app. The key never leaves your server.</p>
-  <div class="meta"><span>Due before Saturday's session, 17 Oct, 6 pm IST.</span><span>Post in the Discord code channel.</span></div>
+  <div class="meta"><span>Due before Lecture 8, Sat 17 Oct, 6 pm IST.</span><span>Post in the Discord code channel.</span></div>
 </div>
 
-<div class="call"><p class="kick">The brief</p><p>Strip your Assignment 1 app to one function. Put it behind a FastAPI route with Pydantic at the door. Deploy it to Vercel with your key in an environment variable. Point your Gradio app at the live URL. Then write down every error you met on the way. Saturday adds storage to this same URL, so finish before 6 pm.</p></div>
+<div class="call"><p class="kick">The brief</p><p>Strip your Assignment 1 app to one function. Put it behind a FastAPI route with Pydantic at the door. Deploy it to Vercel with your key in an environment variable. Point your Gradio app at the live URL. Then write down every error you met on the way. Lecture 8 adds storage to this same URL, so finish before Saturday 6 pm.</p></div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>What to Submit <span class="ready" data-ready="sub">0 of 5 ready</span></h2>
 <div data-stage="sub">
@@ -44,7 +44,7 @@ body.read table.dials code{font-size:13px}
 <li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. A <code>/docs</code> screenshot</span><span class="h">FastAPI's own page for your API, showing a POST route and its input model.</span></label></li>
 <li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. Your live URL and a 200</span><span class="h">The <code>vercel.app</code> address, plus an <a href="https://httpie.io/app" target="_blank" rel="noopener">httpie.io/app</a> screenshot of a POST to it returning your output.</span></label></li>
 <li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Gradio calling the live URL</span><span class="h">A screenshot of your Gradio app with a reply, and the file it runs from. One URL in it, no key anywhere.</span></label></li>
-<li><input type="checkbox" id="d5"><label for="d5"><span class="t">5. Your error log</span><span class="h">Every error you hit: the status code or message, what it meant, what fixed it. <a href="#s04">Use the table in section 04.</a> Saturday opens with the common ones.</span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">5. Your error log</span><span class="h">Every error you hit: the status code or message, what it meant, what fixed it. <a href="#s04">Use the table in section 04.</a> Lecture 8 opens with the common ones.</span></label></li>
 </ul>
 </div>
 <p>No app of your own yet? Do all five for Aarav's diagnoser from <a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">the lecture repository</a>, then change the workflow to one you actually do each week.</p>
@@ -114,13 +114,14 @@ body.read table.dials code{font-size:13px}
 <p class="sig">The key lives on the machine that spends the money.</p>
 </section>
 
-<section class="s" id="s06"><h2><span class="n">06</span>Saturday</h2>
-<p>Bring the live URL and your Modelling Lab tables. The server you deployed learns to remember: a file that dies, then Supabase, then the whole app end to end. Then the hackathon, where you run this trace again on a fresh problem.</p>
+<section class="s" id="s06"><h2><span class="n">06</span>Next: Lecture 8</h2>
+<p>Bring the live URL and your Modelling Lab tables. The server you deployed learns to remember: a file that dies, then Supabase, then the whole app end to end. <a href="/c8/module-2/lecture-08-end-to-end-mvp/">Lecture 8 overview.</a> Then the hackathon, where you run this trace again on a fresh problem.</p>
 </section>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
   <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Lecture 7 notes</a></li>
   <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/whiteboard">The lecture on a whiteboard</a></li>
+  <li><a href="/c8/module-2/lecture-08-end-to-end-mvp/">Lecture 8: end to end MVP</a></li>
   <li><a href="https://github.com/Siddhant-Goswami/c8-db" target="_blank" rel="noopener">The lecture repository, step by step</a></li>
   <li><a href="/c8/module-2/lecture-05-building-apis/troubleshooting">Lecture 5 troubleshooting: status codes</a></li>
   <li><a href="/#L7">Curriculum map</a></li>
