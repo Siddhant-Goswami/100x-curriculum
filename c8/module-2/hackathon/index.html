@@ -7,7 +7,7 @@
 <meta name="description" content="Cohort 8 Module 2 hackathon. Build an app solo in 72 hours and get a stranger to use it. Sat 17 Oct, 9 PM to Tue 20 Oct, 9 PM IST.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/c8/docs.css">
 <script src="/c8/docs.js"></script>
 <script>
@@ -17,38 +17,49 @@
 <style>
 html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{display:none}
 .hk{max-width:1040px;margin:0 auto;padding:0 16px 80px}
-.hk h2{font:700 clamp(1.5rem,3.2vw,2rem)/1.15 var(--sans);letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+.hk{--disp:'Space Grotesk',var(--sans)}
+.hk h2{font:700 clamp(1.6rem,3.4vw,2.2rem)/1.1 var(--disp);letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
 .hk .sub{color:var(--ink2);margin:0 0 28px;font-size:16px}
 .sec{padding:88px 0 0;scroll-margin-top:60px}
 .ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
 @media (hover:hover){.hov{transition:border-color .15s,background-color .15s}}
 
-/* hero: the promise on the left, the 72-hour clock on the right */
-.hero{display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;padding:64px 0 0}
-.hero h1{font:700 clamp(2.3rem,6vw,4rem)/1.02 var(--sans);letter-spacing:-.035em;margin:0 0 20px;text-wrap:balance;max-width:13ch}
-.hero .dek{font-size:clamp(1.05rem,2vw,1.25rem);color:var(--ink2);margin:0 0 28px;max-width:34ch;line-height:1.45}
-.hero .dek b{color:var(--ink);font-weight:600}
-.hmeta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.when{display:inline-flex;align-items:center;gap:8px;font:600 15px var(--sans)}
-.when .ic{width:18px;height:18px;color:var(--coral)}
-.chip{font-size:14px;color:var(--ink2);text-decoration:none;border:1px solid var(--line2);border-radius:99px;padding:5px 12px}
-.chip b{color:var(--ink);font-weight:600}
-@media (hover:hover){.chip:hover{border-color:var(--ink)}}
+/* hero, after 100xengineers.com: a two-tone uppercase headline, mono copy, bracketed fact boxes, a dark glyph panel holding the clock */
+.hero{display:grid;grid-template-columns:1.15fr 1fr;padding:0;border:1px solid var(--line);border-top:0;margin:0 0 0;background:var(--bg)}
+.hero .hl{padding:64px 40px 48px}
+.hero h1{font:700 clamp(2.4rem,5.6vw,4.4rem)/.95 var(--disp);letter-spacing:-.04em;text-transform:uppercase;margin:0 0 24px}
+.hero h1 span{display:block;color:var(--coral)}
+.hero .dek{font:400 15px/1.65 var(--mono);color:var(--ink2);margin:0 0 32px;max-width:40ch}
+.hero .dek b{color:var(--ink);font-weight:700}
+.facts{display:flex;flex-wrap:wrap;gap:12px}
+.fact{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 16px;border:0;background:var(--bg2);color:var(--ink);text-decoration:none;font:inherit;text-align:left;cursor:pointer;
+  --k:var(--coral);background-image:linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k)),linear-gradient(var(--k),var(--k));
+  background-repeat:no-repeat;background-size:8px 1.5px,1.5px 8px,8px 1.5px,1.5px 8px,8px 1.5px,1.5px 8px,8px 1.5px,1.5px 8px;background-position:0 0,0 0,100% 0,100% 0,0 100%,0 100%,100% 100%,100% 100%}
+.fact small{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.fact b{display:flex;align-items:center;gap:8px;font:700 17px var(--disp);color:var(--coral-ink)}
+.fact b .ic{width:16px;height:16px}
+@media (hover:hover){.fact:hover{background-color:var(--line)}}
+.tip{position:absolute;left:0;top:calc(100% + 8px);z-index:5;white-space:nowrap;padding:12px 14px;background:var(--ink);color:var(--bg);font:400 13px/1.6 var(--mono);box-shadow:var(--float);opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .15s,transform .15s,visibility .15s}
+.tip b{color:var(--coral);font:inherit;font-weight:700;display:inline}
+.when:hover .tip,.when:focus-visible .tip,.when[aria-expanded="true"] .tip{opacity:1;visibility:visible;transform:none}
 
-.dial{position:relative;width:280px;aspect-ratio:1}
+.panel{position:relative;overflow:hidden;background:#141210;display:grid;place-items:center;min-height:420px}
+.glyph{position:absolute;inset:-8px;margin:0;font:500 14px/1.25 var(--mono);color:#F2603C;opacity:.42;white-space:pre;user-select:none;pointer-events:none;letter-spacing:.35em}
+.dial{position:relative;width:300px;aspect-ratio:1}
 .dial svg{width:100%;height:100%;display:block;overflow:visible}
-.dial .rim{fill:none;stroke:var(--line);stroke-width:12}
+.dial .bk{fill:#141210}
+.dial .rim{fill:none;stroke:#2E2A26;stroke-width:12}
 .dial .arc{fill:none;stroke:var(--coral);stroke-width:12;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset .6s var(--e-out)}
-.dial .tk{fill:var(--card);stroke:var(--line2);stroke-width:2}
+.dial .tk{fill:#141210;stroke:#5A534C;stroke-width:2}
 .dial .tk.done{fill:var(--coral);stroke:var(--coral)}
 .dial .tk.nx{stroke:var(--coral);stroke-width:3}
-.dial .face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
-.dial .lab{font-size:14px;color:var(--ink2);margin:0 0 4px}
+.dial .face{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#F4F3EF}
+.dial .lab{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#A39C94;margin:0 0 8px}
 .dial .num{display:flex;gap:10px;font-variant-numeric:tabular-nums}
 .dial .num span{display:flex;flex-direction:column;align-items:center}
-.dial .num b{font:700 40px/1 var(--sans);letter-spacing:-.03em}
-.dial .num i{font-style:normal;font-size:12px;color:var(--ink3);margin-top:4px}
-.dial .cap{font-size:13px;color:var(--ink3);margin:10px 0 0}
+.dial .num b{font:700 44px/1 var(--disp);letter-spacing:-.03em}
+.dial .num i{font:400 11px var(--mono);font-style:normal;color:#8A8279;margin-top:6px}
+.dial .cap{font:500 13px var(--mono);color:var(--coral);margin:12px 0 0}
 
 /* problems: an accordion, one line each until opened */
 .probs{border-top:1px solid var(--line)}
@@ -83,12 +94,16 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 .mv .o{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--card);border:2px solid var(--line2);position:relative;z-index:1;transition:background-color .15s,border-color .15s,color .15s}
 .mv .o .ic{width:24px;height:24px}
 .mv .t{font:600 15px/1.25 var(--sans);text-align:center;color:var(--ink2);transition:color .15s}
-.mv .t small{display:block;font:500 12px var(--sans);color:var(--ink3);margin-bottom:2px}
+.mv .t small{display:block;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.mv[aria-pressed="true"] .t small{color:var(--coral-ink)}
 .mv[aria-pressed="true"] .o{background:var(--coral);border-color:var(--coral);color:#fff}
 .mv[aria-pressed="true"] .t{color:var(--ink)}
 @media (hover:hover){.mv:hover .o{border-color:var(--coral)}.mv:hover .t{color:var(--ink)}}
-.mvcap{margin:28px auto 0;max-width:620px;text-align:center;font-size:17px;line-height:1.5;min-height:3em}
-.mvcap span{display:block;font-size:14px;color:var(--coral-ink);margin-top:4px;font-weight:600}
+.mvcap{margin:32px auto 0;max-width:640px;text-align:center}
+.mvcap .cn{font:700 22px/1.2 var(--disp);letter-spacing:-.01em;margin:0 0 6px}
+.mvcap .cn span{color:var(--ink3);font-weight:500}
+.mvcap p{margin:0;font-size:17px;line-height:1.5}
+.mvcap a{display:inline-block;margin-top:10px;font-size:14px;font-weight:600;color:var(--coral-ink)}
 
 /* timeline: proportional to the 72 hours */
 .track{position:relative;height:118px;margin:0 44px}
@@ -186,8 +201,10 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 #pick button i{display:block;font-style:normal;font-weight:400;font-size:14px;color:var(--ink3);margin-top:2px}
 
 @media (max-width:860px){
-  .hero{grid-template-columns:1fr;gap:40px;padding-top:40px}
-  .dial{width:240px;justify-self:center}
+  .hero{grid-template-columns:1fr;margin:0 -16px;border-left:0;border-right:0}
+  .hero .hl{padding:40px 16px 32px}
+  .panel{min-height:320px}
+  .dial{width:250px}
   .ci,.two,.rules{grid-template-columns:1fr}
   .ci{gap:28px}
   .det{grid-template-columns:1fr}
@@ -235,17 +252,21 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 <main class="hk">
 
 <section class="hero">
-  <div>
-    <h1>Build an app. Put it in a stranger's hands.</h1>
+  <div class="hl">
+    <h1>Build an app. <span>Put it in a stranger's hands.</span></h1>
     <p class="dek">72 hours, solo. <b>You pass when a real person uses what you built.</b></p>
-    <div class="hmeta">
-      <span class="when"><svg class="ic"><use href="#i-cal"/></svg>Sat 17 Oct, 9 PM to Tue 20 Oct, 9 PM IST</span>
-      <a class="chip" href="/#HK" title="Change your track on the curriculum map"><b class="t-code">Code</b><b class="t-nocode">No-code</b> track</a>
+    <div class="facts">
+      <button class="fact when" type="button" aria-expanded="false" aria-describedby="whentip"><small>Hackathon</small><b><svg class="ic"><use href="#i-cal"/></svg>Sat 9 PM to Tue 9 PM IST</b>
+        <span class="tip" id="whentip" role="tooltip">Starts <b>Sat 17 Oct, 9:00 PM IST</b><br>Ends <b>Tue 20 Oct, 9:00 PM IST</b></span></button>
+      <a class="fact" href="/#HK" title="Change your track on the curriculum map"><small>Your track</small><b><span class="t-code">Code</span><span class="t-nocode">No-code</span></b></a>
     </div>
   </div>
-  <div class="dial" role="timer" aria-live="off" aria-label="Hackathon clock">
-    <svg viewBox="0 0 240 240" aria-hidden="true"><circle class="rim" cx="120" cy="120" r="104"/><circle class="arc" id="arc" cx="120" cy="120" r="104"/><g id="ticks"></g></svg>
-    <div class="face"><p class="lab" id="clab"></p><div class="num" id="cnum"></div><p class="cap" id="ccap"></p></div>
+  <div class="panel">
+    <pre class="glyph" id="glyph" aria-hidden="true"></pre>
+    <div class="dial" role="timer" aria-live="off" aria-label="Hackathon clock">
+      <svg viewBox="0 0 240 240" aria-hidden="true"><circle class="bk" cx="120" cy="120" r="116"/><circle class="rim" cx="120" cy="120" r="104"/><circle class="arc" id="arc" cx="120" cy="120" r="104"/><g id="ticks"></g></svg>
+      <div class="face"><p class="lab" id="clab"></p><div class="num" id="cnum"></div><p class="cap" id="ccap"></p></div>
+    </div>
   </div>
 </section>
 
@@ -271,15 +292,15 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 
 <section class="sec" id="moves">
   <h2>Five moves</h2>
-  <p class="sub">The last four weeks, in order.</p>
+  <p class="sub">What you learned in the last four weeks, in order.</p>
   <ol class="moves">
-    <li><button class="mv" type="button" data-m="1" aria-pressed="true"><span class="o"><svg class="ic"><use href="#i-hand"/></svg></span><span class="t"><small>1</small>Do it by hand</span></button></li>
-    <li><button class="mv" type="button" data-m="2" aria-pressed="false"><span class="o"><svg class="ic"><use href="#i-list"/></svg></span><span class="t"><small>2</small>Needs first</span></button></li>
-    <li><button class="mv" type="button" data-m="3" aria-pressed="false"><span class="o"><svg class="ic"><use href="#i-split"/></svg></span><span class="t"><small>3</small>Draw the line</span></button></li>
-    <li><button class="mv" type="button" data-m="4" aria-pressed="false"><span class="o"><svg class="ic"><use href="#i-db"/></svg></span><span class="t"><small>4</small>Lock the data</span></button></li>
-    <li><button class="mv" type="button" data-m="5" aria-pressed="false"><span class="o"><svg class="ic"><use href="#i-eye"/></svg></span><span class="t"><small>5</small>Watch them use it</span></button></li>
+    <li><button class="mv" type="button" data-m="1" aria-pressed="true"><span class="o"><svg class="ic"><use href="#i-hand"/></svg></span><span class="t"><small>Discovery</small>Do it by hand</span></button></li>
+    <li><button class="mv" type="button" data-m="2" aria-pressed="false"><span class="o"><svg class="ic"><use href="#i-list"/></svg></span><span class="t"><small>User interface</small>Needs first</span></button></li>
+    <li><button class="mv" type="button" data-m="3" aria-pressed="false"><span class="o"><svg class="ic"><use href="#i-split"/></svg></span><span class="t"><small>System design</small>Draw the line</span></button></li>
+    <li><button class="mv" type="button" data-m="4" aria-pressed="false"><span class="o"><svg class="ic"><use href="#i-db"/></svg></span><span class="t"><small>Data</small>Lock the data</span></button></li>
+    <li><button class="mv" type="button" data-m="5" aria-pressed="false"><span class="o"><svg class="ic"><use href="#i-eye"/></svg></span><span class="t"><small>User testing</small>Watch them use it</span></button></li>
   </ol>
-  <p class="mvcap" id="mvcap" aria-live="polite"></p>
+  <div class="mvcap" id="mvcap" aria-live="polite"></div>
 </section>
 
 <section class="sec" id="timeline">
@@ -416,11 +437,11 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
     {h:72,nm:'Submit',lb:'Deadline',tm:'Tue 9 PM',day:'Tue 20 Oct, 9 PM',m:'5',g:{71:'Both sessions done',72:'One surprise written',73:'Form submitted'},pf:'Submission confirmation'}
   ];
   var MV={
-    1:['Sit with a real person and do the job yourself.','Check-in 2'],
-    2:['Write what it must be able to do. Then pick tools.','Check-in 3'],
-    3:['Split what code decides from what AI decides. Circle the no-go.','Check-in 3'],
-    4:['Tables, login, row-level security, a two-user test, a live link.','Check-ins 3 to 5'],
-    5:['Two people use it, one a stranger. Write down one surprise.','Check-in 6 and submit']
+    1:['Discovery','Sit with a real person and do the job yourself.','/c8/module-2/what-to-build/','What to build'],
+    2:['User interface','Write what it must be able to do. Then pick the screens and tools.','/c8/building-ui-notes.html','Building UI'],
+    3:['System design','Split what code decides from what AI decides. Circle the no-go.','/c8/module-2/lecture-05-building-apis/','Lecture 5, Building APIs'],
+    4:['Data','Tables, login and row-level security. Two users never see each other\'s rows.','/c8/module-2/lecture-06-databases-and-domain-modelling/','Lecture 6, Databases'],
+    5:['User testing','Two people use it, one a stranger. Write down what they did, not what they said.','/c8/module-2/lecture-08-end-to-end-mvp/','Lecture 8, End-to-end MVP']
   };
   var MVN={1:'Do it by hand',2:'Needs first',3:'Draw the line',4:'Lock the data',5:'Watch them use it'};
 
@@ -433,7 +454,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   function show(i){
     sel=i;var e=EV[i];
     nds.forEach(function(b,j){b.setAttribute('aria-selected',j===i)});
-    var mv=e.m?'<span class="mvchip">'+(e.m.length>1?'Moves 2 to 4':'Move '+e.m+', '+MVN[e.m])+'</span>':'';
+    var mv=e.m?'<span class="mvchip">'+(e.m.length>1?'Moves 2 to 4':'Move '+e.m+', '+MV[e.m][0])+'</span>':'';
     var right=e.g?'<p>Green means</p><ul class="gr">'+Object.keys(e.g).map(function(k){return '<li><label><input type="checkbox" data-k="'+k+'"'+(ticks[k]?' checked':'')+'><span>'+e.g[k]+'</span></label></li>'}).join('')+'</ul><span class="pf"><svg class="ic"><use href="#i-clip"/></svg>Proof: '+e.pf+'</span>':'<p class="one">'+e.one+'</p>';
     det.innerHTML='<div class="l"><p>'+e.lb+'</p><h3>'+e.nm+'</h3><p>'+e.day+'</p>'+mv+'</div><div class="r">'+right+'</div>';
   }
@@ -443,7 +464,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   var mvs=$$('.mv'), cap=document.getElementById('mvcap');
   function pick(m){
     mvs.forEach(function(b){b.setAttribute('aria-pressed',b.dataset.m===m)});
-    cap.innerHTML=MV[m][0]+'<span>'+MV[m][1]+'</span>';
+    var x=MV[m];cap.innerHTML='<p class="cn">'+x[0]+' <span>/ '+MVN[m]+'</span></p><p>'+x[1]+'</p><a href="'+x[2]+'">Revisit '+x[3]+'</a>';
     nds.forEach(function(b,j){b.classList.toggle('hl',(' '+(EV[j].m||'')+' ').indexOf(' '+m+' ')>-1)});
   }
   mvs.forEach(function(b){b.addEventListener('click',function(){pick(b.dataset.m)})});
@@ -473,6 +494,16 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
     if(first){first=false;show(n<0?EV.length-1:n)}
   }
   tick(); setInterval(tick,1000);
+
+  /* the glyph field behind the clock, as on 100xengineers.com */
+  var G='$%1X#+-0', rows=[], q=7;
+  for(var r=0;r<40;r++){var l='';for(var c=0;c<40;c++)q=(Math.imul(q,1103515245)+12345)>>>0,l+=G[(q>>>16)%G.length];rows.push(l)}
+  document.getElementById('glyph').textContent=rows.join('\n');
+
+  /* the dates: hover or focus shows them, a tap pins them */
+  var wb=document.querySelector('.when');
+  wb.addEventListener('click',function(){wb.setAttribute('aria-expanded',wb.getAttribute('aria-expanded')!=='true')});
+  document.addEventListener('click',function(e){if(!wb.contains(e.target))wb.setAttribute('aria-expanded','false')});
 
   /* Green and Yellow templates */
   var tabs=$$('.tabs button'), tpls=$$('.tpl');
