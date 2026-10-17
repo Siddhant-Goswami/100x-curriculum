@@ -289,7 +289,7 @@ def page(p):
     <h1>{e(p['name'])}</h1>
     <p class="dek">{e(p['dek'])}</p>
     <p class="scene">{p['scene']}</p>
-    <div class="bacts"><button class="pbtn" type="button" data-p="{p['key']}">Pick this problem</button><span class="teach"><b>Teaches</b> {e(p['teach'])}</span></div>
+    <div class="bacts"><span class="teach"><b>Teaches</b> {e(p['teach'])}</span></div>
   </div>
 </section>
 
@@ -356,16 +356,6 @@ def page(p):
 <nav class="others" aria-label="Other problems"><span>Other problems</span>{''.join('<a href="/c8/module-2/hackathon/%s">%s</a>' % (q['slug'], e(q['name'])) for q in others)}<a href="/c8/module-2/hackathon/">Back to the hackathon</a></nav>
 </main>
 
-<script>
-(function(){{
-  /* the same pick as the hackathon page (c8hk-problem) */
-  var b=document.querySelector('.pbtn[data-p]');
-  function get(){{try{{return localStorage.getItem('c8hk-problem')}}catch(e){{return null}}}}
-  function show(){{var on=get()===b.dataset.p;b.classList.toggle('on',on);b.textContent=on?'Picked':'Pick this problem'}}
-  b.addEventListener('click',function(){{try{{localStorage.setItem('c8hk-problem',get()===b.dataset.p?'':b.dataset.p)}}catch(e){{}}show()}});
-  addEventListener('pageshow',show);show();
-}})();
-</script>
 <footer><div class="wrap"><span>100xEngineers, Cohort 8, Module 2</span><a href="/#HK">Curriculum map</a><a href="/c8/module-2/hackathon/">Hackathon</a></div></footer>
 </body>
 </html>

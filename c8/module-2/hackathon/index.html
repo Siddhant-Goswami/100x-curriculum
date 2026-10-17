@@ -69,9 +69,6 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 .prob .pi{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:var(--bg2);color:var(--ink)}
 .prob .pi .ic{width:24px;height:24px}
 .prob h3{font:600 19px/1.25 var(--sans);margin:0;display:flex;gap:10px;align-items:center}
-.prob h3 em{font:600 12px var(--sans);font-style:normal;color:#fff;background:var(--coral);border-radius:99px;padding:2px 9px;display:none}
-.prob.mine h3 em{display:inline}
-.prob.mine .pi{background:var(--coral);color:#fff}
 .prob summary p{margin:2px 0 0;color:var(--ink2);font-size:15px}
 .prob .chev{width:20px;height:20px;color:var(--ink3);transition:transform .2s var(--e-out)}
 .prob[open] .chev{transform:rotate(180deg)}
@@ -81,10 +78,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 .prob dd{margin:0}
 .prob .acts{display:flex;gap:14px;align-items:center;margin-left:auto}
 .prob .acts a{font-size:14px;font-weight:600;color:var(--coral-ink)}
-.pbtn{border:0;border-radius:10px;padding:10px 16px;font:600 14px var(--sans);background:var(--ink);color:var(--bg);cursor:pointer;transition:transform .15s var(--e-out)}
-.pbtn:active{transform:scale(.96)}
-.prob.mine .pbtn{background:var(--bg2);color:var(--ink)}
-@media (hover:hover){.prob summary:hover .pi{background:var(--line)}.prob.mine summary:hover .pi{background:var(--coral)}}
+@media (hover:hover){.prob summary:hover .pi{background:var(--line)}}
 .foot{margin:18px 0 0;font-size:15px;color:var(--ink2)}
 .foot b{color:var(--ink)}
 
@@ -179,9 +173,9 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 .pre{font:400 15px/1.7 var(--mono);color:var(--ink2);margin:0 0 28px;padding:0 0 24px;border-bottom:1px solid var(--line);max-width:62ch}
 .rules{display:grid;grid-template-columns:repeat(2,1fr);gap:0 48px;list-style:none;padding:0;margin:0}
 .rules li{padding:18px 0;border-bottom:1px dashed var(--line2)}
-.rules .art{display:block;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--coral-ink);margin:0 0 6px}
-.rules b{display:block;font:700 19px/1.2 var(--disp);letter-spacing:-.01em;text-transform:uppercase;margin:0 0 6px}
-.rules p{margin:0;font:400 14.5px/1.6 var(--mono);color:var(--ink2)}
+.rules .art,.rules b{display:inline;font:700 19px/1.2 var(--disp);letter-spacing:-.01em;text-transform:uppercase}
+.rules .art{color:var(--coral-ink);margin-right:.3em}
+.rules p{margin:6px 0 0;font:400 14.5px/1.6 var(--mono);color:var(--ink2)}
 
 /* submit + stuck */
 .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -219,10 +213,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 
 .prob .pi{border-radius:0}
 .prob h3{font:700 20px/1.2 var(--disp);letter-spacing:-.01em}
-.prob h3 em{font:500 10.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;border-radius:0;padding:3px 8px}
 .prob summary p,.prob dl{font:400 14px/1.55 var(--mono)}
-.pbtn{border-radius:0;border-bottom:2px solid var(--coral);padding:10px 18px;font:600 14px var(--disp);color:var(--coral-ink);background:var(--coral-soft) repeating-linear-gradient(135deg,transparent 0 7px,color-mix(in srgb,var(--coral) 12%,transparent) 7px 14px)}
-.prob.mine .pbtn{background:var(--coral);color:#fff}
 
 .mv .o{border-radius:0}
 .mv .t{font:700 16px/1.2 var(--disp)}
@@ -337,8 +328,8 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 
 <section class="hero">
   <div class="hl">
-    <h1>Build an <span>app</span> in <span>72 hours</span>, verified by a stranger.</h1>
-    <p class="dek">Solo. <b>You pass when a real person uses what you built.</b></p>
+    <h1>Build an <span>app</span> in <span>72</span> hours, <span>verified</span> by a stranger.</h1>
+    <p class="dek"><b>You pass when a real person uses what you built.</b></p>
     <div class="facts">
       <button class="fact when" type="button" aria-expanded="false" aria-describedby="whentip"><small>Hackathon</small><b><svg class="ic"><use href="#i-cal"/></svg>Sat 9 PM to Tue 9 PM IST</b>
         <span class="tip" id="whentip" role="tooltip">Starts <b>Sat 17 Oct, 9:00 PM IST</b><br>Ends <b>Tue 20 Oct, 9:00 PM IST</b></span></button>
@@ -359,16 +350,16 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   <p class="sub">Lock it by Sunday, 9 AM.</p>
   <div class="probs">
     <details class="prob" name="prob" data-p="billshield">
-      <summary><span class="pi"><svg class="ic"><use href="#i-bill"/></svg></span><div><h3>BillShield <em>Yours</em></h3><p>Turn a confusing bill into one message worth sending.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
-      <div class="body"><dl><dt>Test with</dt><dd>A classmate with a real bill</dd><dt>You win when</dt><dd>They send the message</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/billshield">Read the brief</a><button class="pbtn" type="button">Pick this</button></div></div>
+      <summary><span class="pi"><svg class="ic"><use href="#i-bill"/></svg></span><div><h3>BillShield</h3><p>Turn a confusing bill into one message worth sending.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="body"><dl><dt>Test with</dt><dd>A classmate with a real bill</dd><dt>You win when</dt><dd>They send the message</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/billshield">Read the brief</a></div></div>
     </details>
     <details class="prob" name="prob" data-p="evalcopilot">
-      <summary><span class="pi"><svg class="ic"><use href="#i-eval"/></svg></span><div><h3>Eval Co-pilot <em>Yours</em></h3><p>Catch the bug in a friend's AI feature before they ship.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
-      <div class="body"><dl><dt>Test with</dt><dd>A classmate with a live AI app</dd><dt>You win when</dt><dd>They fix it and re-run</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/eval-copilot">Read the brief</a><button class="pbtn" type="button">Pick this</button></div></div>
+      <summary><span class="pi"><svg class="ic"><use href="#i-eval"/></svg></span><div><h3>Eval Co-pilot</h3><p>Catch the bug in a friend's AI feature before they ship.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="body"><dl><dt>Test with</dt><dd>A classmate with a live AI app</dd><dt>You win when</dt><dd>They fix it and re-run</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/eval-copilot">Read the brief</a></div></div>
     </details>
     <details class="prob" name="prob" data-p="conceptcheck">
-      <summary><span class="pi"><svg class="ic"><use href="#i-ask"/></svg></span><div><h3>Concept Check <em>Yours</em></h3><p>Find where a learner stops understanding and starts reciting.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
-      <div class="body"><dl><dt>Test with</dt><dd>A classmate who says they get it</dd><dt>You win when</dt><dd>They work out a new case</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/concept-check">Read the brief</a><button class="pbtn" type="button">Pick this</button></div></div>
+      <summary><span class="pi"><svg class="ic"><use href="#i-ask"/></svg></span><div><h3>Concept Check</h3><p>Find where a learner stops understanding and starts reciting.</p></div><svg class="ic chev"><use href="#i-chev"/></svg></summary>
+      <div class="body"><dl><dt>Test with</dt><dd>A classmate who says they get it</dd><dt>You win when</dt><dd>They work out a new case</dd></dl><div class="acts"><a href="/c8/module-2/hackathon/concept-check">Read the brief</a></div></div>
     </details>
   </div>
   <p class="foot">Every problem also needs <b>one stranger</b> to test it. Briefs: <a href="/c8/module-2/hackathon/billshield">BillShield</a>, <a href="/c8/module-2/hackathon/eval-copilot">Eval Co-pilot</a>, <a href="/c8/module-2/hackathon/concept-check">Concept Check</a></p>
@@ -447,20 +438,19 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 
 <section class="sec" id="rules">
   <h2>The <span>rule book</span></h2>
-  <p class="sub">Break one article and the submission doesn't count.</p>
   <div class="charter brk">
-    <p class="pre">We build alone, ship for real and prove it with real people. These ten articles bind every builder on both tracks.</p>
+    <p class="pre">We build alone, ship for real and prove it with real people. These ten rules bind every builder on both tracks.</p>
     <ol class="rules">
-    <li><span class="art">Article I</span><b>Time</b><p>Work submitted after Tue 20 Oct, 9 PM IST does not count, however good it is.</p></li>
-    <li><span class="art">Article II</span><b>One problem</b><p>You pick one problem, lock it by Check-in 1 on Sun 9 AM, and do not switch after.</p></li>
-    <li><span class="art">Article III</span><b>Solo</b><p>You build alone, and your testers give feedback but never write, design or build any part.</p></li>
-    <li><span class="art">Article IV</span><b>AI tools</b><p>You may use any AI tool, because what we grade is what a real person did, and AI cannot fake that.</p></li>
-    <li><span class="art">Article V</span><b>Paper first</b><p>Every sketch, need list and table starts on paper, and you photograph it and paste it in.</p></li>
-    <li><span class="art">Article VI</span><b>Needs</b><p>Every feature in your app traces back to a need you wrote down in Move 2.</p></li>
-    <li><span class="art">Article VII</span><b>Deployed</b><p>Your app runs at a live link anyone can open, because a screenshot is not an app.</p></li>
-    <li><span class="art">Article VIII</span><b>Login and <abbr title="Row-level security: each user sees only their own rows">RLS</abbr></b><p>Every problem ships with login and row-level security, proven by a two-user test.</p></li>
-    <li><span class="art">Article IX</span><b>Real evidence</b><p>Every note, screenshot and session is real, and faked evidence fails the whole submission.</p></li>
-    <li><span class="art">Article X</span><b>Consent</b><p>You ask before you record anyone, and you hide names and account numbers in everything you post.</p></li>
+    <li><span class="art">1.</span><b>Time</b><p>Work submitted after Tue 20 Oct, 9 PM IST does not count, however good it is.</p></li>
+    <li><span class="art">2.</span><b>One problem</b><p>You pick one problem, lock it by Check-in 1 on Sun 9 AM, and do not switch after.</p></li>
+    <li><span class="art">3.</span><b>Solo</b><p>You build alone, and your testers give feedback but never write, design or build any part.</p></li>
+    <li><span class="art">4.</span><b>AI tools</b><p>You may use any AI tool, because what we grade is what a real person did, and AI cannot fake that.</p></li>
+    <li><span class="art">5.</span><b>Paper first</b><p>Every sketch, need list and table starts on paper, and you photograph it and paste it in.</p></li>
+    <li><span class="art">6.</span><b>Needs</b><p>Every feature in your app traces back to a need you wrote down in Move 2.</p></li>
+    <li><span class="art">7.</span><b>Deployed</b><p>Your app runs at a live link anyone can open, because a screenshot is not an app.</p></li>
+    <li><span class="art">8.</span><b>Login and <abbr title="Row-level security: each user sees only their own rows">RLS</abbr></b><p>Every problem ships with login and row-level security, proven by a two-user test.</p></li>
+    <li><span class="art">9.</span><b>Real evidence</b><p>Every note, screenshot and session is real, and faked evidence fails the whole submission.</p></li>
+    <li><span class="art">10.</span><b>Consent</b><p>You ask before you record anyone, and you hide names and account numbers in everything you post.</p></li>
     </ol>
   </div>
 </section>
@@ -510,12 +500,6 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   function get(k){try{return localStorage.getItem(k)}catch(e){return null}}
   function set(k,v){try{localStorage.setItem(k,v)}catch(e){}}
   function $$(s,r){return [].slice.call((r||document).querySelectorAll(s))}
-
-  /* the problem a student marks as theirs */
-  var probs=$$('.prob');
-  function mark(p){probs.forEach(function(d){var on=d.dataset.p===p;d.classList.toggle('mine',on);d.querySelector('.pbtn').textContent=on?'Picked':'Pick this'})}
-  mark(get('c8hk-problem'));
-  probs.forEach(function(d){d.querySelector('.pbtn').addEventListener('click',function(){var p=d.classList.contains('mine')?'':d.dataset.p;set('c8hk-problem',p);mark(p)})});
 
   /* the events: hours from the start, the Green ticks, the proof */
   var START=Date.parse('2026-10-17T21:00:00+05:30'), H=36e5;

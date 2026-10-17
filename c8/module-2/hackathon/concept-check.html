@@ -38,7 +38,7 @@
     <h1>Concept Check</h1>
     <p class="dek">Find where a learner stops understanding and starts reciting.</p>
     <p class="scene">Ask a classmate why the API key can’t live in the browser. They start well. By the third sentence they’re saying “for security reasons”. <b>The words keep coming. The thinking has stopped.</b> Point at that sentence, ask one question about what breaks, and see if they can work it out.</p>
-    <div class="bacts"><button class="pbtn" type="button" data-p="conceptcheck">Pick this problem</button><span class="teach"><b>Teaches</b> How to judge a judgment about someone’s mind.</span></div>
+    <div class="bacts"><span class="teach"><b>Teaches</b> How to judge a judgment about someone’s mind.</span></div>
   </div>
 </section>
 
@@ -124,16 +124,6 @@
 <nav class="others" aria-label="Other problems"><span>Other problems</span><a href="/c8/module-2/hackathon/billshield">BillShield</a><a href="/c8/module-2/hackathon/eval-copilot">Eval Co-pilot</a><a href="/c8/module-2/hackathon/">Back to the hackathon</a></nav>
 </main>
 
-<script>
-(function(){
-  /* the same pick as the hackathon page (c8hk-problem) */
-  var b=document.querySelector('.pbtn[data-p]');
-  function get(){try{return localStorage.getItem('c8hk-problem')}catch(e){return null}}
-  function show(){var on=get()===b.dataset.p;b.classList.toggle('on',on);b.textContent=on?'Picked':'Pick this problem'}
-  b.addEventListener('click',function(){try{localStorage.setItem('c8hk-problem',get()===b.dataset.p?'':b.dataset.p)}catch(e){}show()});
-  addEventListener('pageshow',show);show();
-})();
-</script>
 <footer><div class="wrap"><span>100xEngineers, Cohort 8, Module 2</span><a href="/#HK">Curriculum map</a><a href="/c8/module-2/hackathon/">Hackathon</a></div></footer>
 </body>
 </html>
