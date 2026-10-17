@@ -50,7 +50,7 @@ P.append(dict(
  io=('A bill (photo or PDF) and what they were promised', 'Read every line, check the maths against the promise', 'The line that doesn’t add up, and one message to send'),
  win='They send the message.',
  bar='Write your bar before you build, for example: sent with fewer than 20 words changed. If every line checks out, saying so, with the maths, is a real answer.',
- classmate='A classmate with a real bill from the last three months.',
+ classmate='A classmate with a real bill from the last year.',
  moves=[
   (['Sit with one classmate and their real bill. You are BillShield.',
     'Mark every line. Do the maths on paper. Write the message yourself.',
