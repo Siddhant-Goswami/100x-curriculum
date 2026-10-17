@@ -70,8 +70,7 @@ P.append(dict(
    ['hld','pkg','leak']),
   (['Write the questions your app must answer next month. Those decide what is worth storing.',
     'Every bill is a row, every line on it is a row. History is a row, not a cell.',
-    'The photo goes to file storage. The row keeps its link.',
-    'Add login and row-level security. Run the two-user test: one person never sees another’s bills.'],
+    'The photo goes to file storage. The row keeps its link.'],
    'What would you be sued for storing? Mask it before it is saved.',
    ['worth','shape','rules','keys']),
   (['Your classmate uploads a bill you haven’t seen.',
@@ -93,13 +92,12 @@ P.append(dict(
  no=['“This is useful”','A sample bill from the internet','A message they’d send “later”'],
  traps=[('A bill summariser.','Explaining the bill isn’t the job. The message is.'),
         ('The model doing maths.','Every rupee comes from code.'),
-        ('Inventing an error.','“Every line checks out” is an answer.'),
-        ('One person’s bill on another’s screen.','That is what the two-user test is for.')],
+        ('Inventing an error.','“Every line checks out” is an answer.')],
  tpl=[('h','BILLSHIELD SUBMISSION'),('','Name / track:'),('','Live link:'),('','Public repo:'),
       ('h','MOVE 1, BY HAND'),('','Whose bill, what kind (masked photo attached):'),('','The line I flagged and the maths:'),('','The message I wrote / did they send it / what they changed:'),('','Golden pairs (link):'),
       ('h','MOVE 2, NEEDS FIRST'),('','Need list:'),('','The follow-up from the replay, and the interface it picked:'),
       ('h','MOVE 3, THE LINE'),('','[photo of the drawing]'),('','Code decides:'),('','AI decides:'),('','My call on wrong vs unexplained, and its failure mode:'),
-      ('h','MOVE 4, THE DATA'),('','[photo of the tables, message -> line link marked]'),('','What I chose not to store:'),('','Two-user test (two accounts, the cross-read, the empty result):'),
+      ('h','MOVE 4, THE DATA'),('','[photo of the tables, message -> line link marked]'),('','What I chose not to store:'),
       ('h','MOVE 5, WATCH THEM'),('','Classmate: sent? words changed?'),('','Stranger: sent? words changed?'),('','The surprise:')],
 ))
 
@@ -132,8 +130,7 @@ P.append(dict(
    ['post','pkg','hld']),
   (['Write the questions your app must answer after the second run. Those decide what is worth storing.',
     'Each run is a row. Each answer, for each pair, in each run, is a row.',
-    'One answer can fail many checks, and one check fails in many answers. That is a third table.',
-    'Add login and row-level security. A builder sees only their own pairs and runs.'],
+    'One answer can fail many checks, and one check fails in many answers. That is a third table.'],
    'If run 1 is overwritten by run 2, can you still prove the fix?',
    ['worth','shape','keys','rules']),
   (['Your classmate brings their live app and their own pairs.',
@@ -161,7 +158,7 @@ P.append(dict(
       ('h','MOVE 1, BY HAND'),('','Whose app (URL):'),('','Their ten golden pairs (link):'),('','My pass / fail sheet:'),('','The fail they didn’t know about / what they changed:'),
       ('h','MOVE 2, NEEDS FIRST'),('','Need list:'),('','Their first words after a fail, and the screen it picked:'),
       ('h','MOVE 3, THE LINE'),('','[photo of the drawing]'),('','Code checks:'),('','AI judges:'),('','My call on the judge, how I checked it, its failure mode:'),
-      ('h','MOVE 4, THE DATA'),('','[photo of the tables, result -> golden_pair link marked]'),('','Two-user test (two accounts, the cross-read, the empty result):'),
+      ('h','MOVE 4, THE DATA'),('','[photo of the tables, result -> golden_pair link marked]'),
       ('h','MOVE 5, WATCH THEM'),('','Classmate: what failed, what they changed, run 1 vs run 2:'),('','Stranger: what failed, what they changed, run 1 vs run 2:'),('','The surprise:')],
 ))
 
@@ -195,9 +192,8 @@ P.append(dict(
    ['hld','pkg','fn']),
   (['Write the questions your app must answer next week. Those decide what is worth storing.',
     'Every attempt is a row. The second try points at the gap it answers.',
-    'Is the list of ideas a table, or a fixed list you ship? Decide, and say why.',
-    'Add login and row-level security. A learner never sees another learner’s attempts.'],
-   'Your best question crosses learners. Row-level security says it can’t. What can a shared view show?',
+    'Is the list of ideas a table, or a fixed list you ship? Decide, and say why.'],
+   'Your best question crosses learners. Can your tables answer it without showing anyone’s name?',
    ['worth','shape','keys','rules']),
   (['Your classmate tries an idea you haven’t tested them on.',
     'Your stranger uses it alone. You watch, you don’t help.',
@@ -224,7 +220,7 @@ P.append(dict(
       ('h','MOVE 1, BY HAND'),('','Person 1 and 2, idea tested, raw record (with consent):'),('','The sentence where it became a phrase:'),('','Follow-up used / new case before and after:'),('','Golden pairs (new cases with answers, link):'),
       ('h','MOVE 2, NEEDS FIRST'),('','Need list:'),('','What they did when I pointed at the sentence, and the interface it picked:'),
       ('h','MOVE 3, THE LINE'),('','[photo of the drawing]'),('','Code decides:'),('','AI decides:'),('','Who judges the second try, and its failure mode:'),
-      ('h','MOVE 4, THE DATA'),('','[photo of the tables, retry -> gap link marked]'),('','Two-user test (two accounts, the cross-read, the empty result):'),
+      ('h','MOVE 4, THE DATA'),('','[photo of the tables, retry -> gap link marked]'),
       ('h','MOVE 5, WATCH THEM'),('','Classmate: case before / follow-up / case after:'),('','Stranger: case before / follow-up / case after:'),('','The surprise:')],
 ))
 
@@ -330,7 +326,7 @@ def page(p):
   <p class="sub">The questions it must answer tomorrow. Draw the tables that answer them.</p>
   <ul class="qs">{''.join('<li>%s</li>' % e(q) for q in p['qs'])}</ul>
   <div class="link1"><small>The one link that is your proof</small><code>{p['link'][0]}</code><span class="pt" aria-hidden="true">&rarr;</span><code>{p['link'][1]}</code><p>{e(p['link'][2][:1].upper()+p['link'][2][1:])}</p></div>
-  <ul class="notes2">{''.join('<li><b>%s</b> <span>%s</span></li>' % (e(a), e(b)) for a,b in p['dnotes'])}<li><b>Login and row-level security.</b> <span>Two accounts, one cross-read, an empty result.</span></li></ul>
+  <ul class="notes2">{''.join('<li><b>%s</b> <span>%s</span></li>' % (e(a), e(b)) for a,b in p['dnotes'])}</ul>
 </section>
 
 <section class="bsec" id="testing">
