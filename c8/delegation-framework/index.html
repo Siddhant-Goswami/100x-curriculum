@@ -130,6 +130,16 @@ th{font-weight:500;color:var(--ink2)}
 td b{font-weight:600}
 .gr{font-weight:500;white-space:nowrap}
 .gr.x{color:var(--ink3);text-decoration:line-through}
+.after h3{font:700 19px/1.3 var(--sans);margin:32px 0 10px}
+.kfig{margin:22px 0 8px}
+.kfig svg{display:block;width:100%;height:auto;overflow:visible}
+.kfig rect{fill:var(--c-stay)}.kfig rect.acc{fill:var(--c-acc)}.kfig rect.auto{fill:var(--c-auto)}
+.kfig text{font:500 19px var(--sans);fill:var(--ink3)}
+.kfig figcaption{display:grid;gap:8px;margin-top:14px;font:400 15px/1.5 var(--sans);color:var(--ink2)}
+.kfig figcaption b{color:var(--ink);font-weight:600}
+.fx{margin:0;padding:0 0 0 22px;font:400 16.5px/1.55 var(--sans)}
+.fx li{padding:6px 0 6px 4px}.fx li::marker{color:var(--ink3);font-variant-numeric:tabular-nums}
+.fx b{font-weight:600}
 .pull{border-left:3px solid var(--c-acc);padding:4px 0 4px 18px;margin:22px 0}
 details{margin-top:28px;font:400 14.5px/1.55 var(--sans);color:var(--ink2)}
 summary{cursor:pointer;font-weight:500;color:var(--ink)}
@@ -234,6 +244,27 @@ footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;font
     <li class="end"><span class="n"></span><span><span class="chip auto"></span>Four yeses: it may run Autonomous. Expect <span class="chip new"></span>new work for checking it.</span></li>
   </ol>
 
+  <h2>Zoom out: the week becomes a K</h2>
+  <p>Run the same four questions over every worker and the economy splits like a K, as <a href="https://www.shaanpuri.com/essays/the-k-shaped-economy" target="_blank" rel="noopener">Shaan Puri</a> puts it: one path where the agent does your job, one where you run the agent. Which path you're on depends on the colours in your bundle, and on whether you hand work over or are the work being handed over.</p>
+  <figure class="kfig">
+    <svg id="kfig" viewBox="0 0 760 360" role="img" aria-label="A K drawn in watercolour squares. A row of grey squares runs in from the left and splits. The upper arm rises with squares that grow and mix purple and grey. The lower arm falls with blue squares that shrink and fade."></svg>
+    <figcaption>
+      <span><span class="chip acc"></span><b>Upper arm:</b> people whose week is mostly grey and purple. They hand tasks over and put the hours into judgment, so each hour is worth more.</span>
+      <span><span class="chip auto"></span><b>Lower arm:</b> people whose week is mostly blue. The agent does the job itself, and the price of the task falls toward the price of a run.</span>
+    </figcaption>
+  </figure>
+  <h3>Second-order effects</h3>
+  <ol class="fx">
+    <li><b>Checkable work gets cheap.</b> Anything you can check in two minutes heads toward the agent's price. Pay moves to what can't be checked: judgment, accountability, a name on the decision.</li>
+    <li><b>The bottom rung goes first.</b> Research briefs, meeting packs and first drafts are the blue squares, and they are how juniors used to learn judgment. Fewer people climb to the upper arm unless firms train them on purpose.</li>
+    <li><b>Leverage compounds.</b> The consultant's 10 hours go back into grey work, which earns more, which buys better agents. The gap widens every year, not once. Directing agents becomes a skill like managing people.</li>
+    <li><b>New work appears on both arms, but not the same work.</b> Up top: designing the workflow, scoring runs, signing the output. Below: checking and labelling someone else's runs, usually paid per task.</li>
+    <li><b>Access picks the arm early.</b> Muse is not sold in India, Dots needs a $200 plan, and every agent needs inputs that are digital and reachable. Those with the subscription, the connected tools and the English get leverage first.</li>
+    <li><b>Trust becomes the scarce input.</b> Blast radius can't be delegated. Whoever answers when a run goes wrong is the one clients pay, so being trusted to sign is worth more, not less.</li>
+  </ol>
+  <p class="pull">The arm is chosen task by task, not once. Hand over the blue squares, move the hours into grey ones, and learn to direct agents before your own bundle turns blue.</p>
+  <p class="note">This is an argument, not a forecast. To see which work tasks are being augmented and which automated today, look them up in the <a href="https://www.anthropic.com/economic-index" target="_blank" rel="noopener">Anthropic Economic Index</a>.</p>
+
   <h2>Which agent, as of 18 Oct 2026</h2>
   <p>The framework names no agent. This list does, and it dates fast. Drop any agent you cannot use from India or whose connectors miss the task's inputs. Then prefer a published hands-on test over press reports over the vendor's word. On a tie, take the smaller permissions, then the lower cost.</p>
   <div class="tw"><table>
@@ -251,6 +282,7 @@ footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;font
   <details><summary>Sources, all opened 18 Oct 2026</summary>
   <dl>
     <dt>Economic Index</dt><dd><a href="https://www.anthropic.com/research/anthropic-economic-index-january-2026-report" target="_blank" rel="noopener">Economic primitives, Jan 2026</a> · <a href="https://www.anthropic.com/research/economic-index-march-2026-report" target="_blank" rel="noopener">Learning curves, Mar 2026</a> · <a href="https://www.anthropic.com/research/economic-index-june-2026-report" target="_blank" rel="noopener">Cadences, Jun 2026</a> · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">open dataset</a></dd>
+    <dt>The K-shaped economy</dt><dd><a href="https://www.shaanpuri.com/essays/the-k-shaped-economy" target="_blank" rel="noopener">Shaan Puri, The K-shaped economy</a>: the two paths, the job as a bundle of tasks, managing robots over managing people. The second-order effects above are this page's own argument.</dd>
     <dt>Comparisons</dt><dd><a href="https://every.to/personal-agents-comparison" target="_blank" rel="noopener">Every: personal agents compared</a> · <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">AI Agents Library test lab</a> · <a href="https://www.aiagentslibrary.com/blog/openai-dots-vs-gemini-spark-vs-meta-muse/" target="_blank" rel="noopener">Dots vs Spark vs Muse</a> · <a href="https://www.fastcompany.com/91620082/openai-dots-agent-review" target="_blank" rel="noopener">Fast Company on Dots</a></dd>
     <dt>Gemini Spark</dt><dd><a href="https://blog.google/intl/en-in/company-news/technology/introducing-gemini-spark-your-247-personal-ai-agent-in-country/" target="_blank" rel="noopener">India launch</a> · <a href="https://support.google.com/gemini/answer/17171264" target="_blank" rel="noopener">release notes</a> · <a href="https://www.aiagentslibrary.com/blog/gemini-spark-review/" target="_blank" rel="noopener">10-task test</a></dd>
     <dt>Manus</dt><dd><a href="https://www.usecarly.com/blog/manus-pricing/" target="_blank" rel="noopener">pricing</a> · <a href="https://eesel.ai/blog/manus-ai-pricing" target="_blank" rel="noopener">review</a> · <a href="https://aurascape.ai/resources/auralabs-research/silentbridge-zero-click-agent-takeover-meta-manus/" target="_blank" rel="noopener">prompt-injection flaw, fixed Feb 2026</a></dd>
@@ -339,6 +371,17 @@ footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;font
     hrs.textContent=s===0?'':s<6?' · 36 h':' · 36 h → 26 h';
   }
   apply(0);
+
+  /* the K: a stem of grey squares that splits; the upper arm grows purple and grey, the lower shrinks blue and fades */
+  var k=document.getElementById('kfig'), ks='', fx=330, fy=190, i;
+  function sqr(x,y,s,cls,op,n){return '<rect'+(cls?' class="'+cls+'"':'')+' x="'+(x-s/2).toFixed(1)+'" y="'+(y-s/2).toFixed(1)+'" width="'+s.toFixed(1)+'" height="'+s.toFixed(1)+'" filter="url(#wc'+(n%4)+')"'+(op<1?' opacity="'+op.toFixed(2)+'"':'')+'/>'}
+  for(i=0;i<6;i++)ks+=sqr(40+i*52,fy,22,'',1,i);
+  for(i=1;i<=7;i++){var t=i/7;
+    ks+=sqr(fx+t*390,fy-t*150,22+t*30,i%3===0?'':'acc',1,i);
+    ks+=sqr(fx+t*390,fy+t*130,Math.max(8,22-t*15),'auto',1-t*.65,i+2);
+  }
+  ks+='<text x="40" y="'+(fy+44)+'">a week of tasks</text><text x="'+(fx+30)+'" y="350">as agents get better and cheaper →</text>';
+  k.innerHTML=ks;
 
   var steps=[].slice.call(document.querySelectorAll('.step'));
   if('IntersectionObserver' in window){
