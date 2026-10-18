@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Delegation Framework | 100xEngineers</title>
+<meta name="description" content="Which tasks to hand to a personal AI agent, at what level of autonomy, and to which agent: intake, a five-question screen, an autonomy selector and a dated agent matrix for India, worked through for a management consultant.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06-board.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 0 1.2em}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:14.5px;line-height:1.45}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw table.wide{min-width:760px}
+.tw table.xwide{min-width:1120px}
+.lv{font-weight:500;white-space:nowrap}
+.lv.auto{color:var(--hum-ink)}.lv.acc{color:var(--det-ink)}.lv.ast{color:var(--coral-ink)}.lv.off{color:var(--ink3)}
+.gr{font:500 12px var(--mono);white-space:nowrap}
+.gr.t{color:var(--hum-ink)}.gr.r{color:var(--det-ink)}.gr.d{color:var(--prob-ink)}.gr.x{color:var(--ink3);text-decoration:line-through}
+.wb .ln .f-top{fill:var(--line2);stroke:var(--ink)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-hum{stroke:var(--hum)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .q-hum{fill:var(--hum-soft);stroke:none}.wb .ln .q-det{fill:var(--det-soft);stroke:none}.wb .ln .q-act{fill:var(--coral-soft);stroke:none}
+.wb .ln .on{fill:currentColor;stroke:none}
+.wb .ln .on.act{fill:var(--coral)}.wb .ln .on.hum{fill:var(--hum)}.wb .ln .on.det{fill:var(--det)}.wb .ln .on.prob{fill:var(--prob)}.wb .ln .on.mute{fill:var(--line2)}
+.wb .tx .c-hum{fill:var(--hum-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .r{text-anchor:end}
+.wb .tx .c-ink{fill:var(--ink)}
+</style>
+</head>
+<body data-page="delegation-framework" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="#top">100x<b>·</b><span>Delegation Framework</span></a>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, a person -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--hum)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap" id="top">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Framework · Personal AI agents</p>
+  <h1>What to hand to an agent</h1>
+  <p class="dek">An agent is fast, cheap and sometimes wrong. Four questions follow from that one fact, each built on the answer before it.</p>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Start from one fact</h2>
+<p>The agent will sometimes be wrong. So handing it a task pays only when four things are true, and each one only matters once the one before it holds.</p>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 132" role="img" aria-label="Four empty boxes in a row: measure, screen, level, trust. None filled in yet.">
+  <g class="ln" filter="url(#wob)"><rect class="dash ink" x="10" y="14" width="160" height="72" rx="12"/><path class="arw" d="M172 50 H198" marker-end="url(#ah)"/><rect class="dash ink" x="203" y="14" width="160" height="72" rx="12"/><path class="arw" d="M365 50 H391" marker-end="url(#ah)"/><rect class="dash ink" x="396" y="14" width="160" height="72" rx="12"/><path class="arw" d="M558 50 H584" marker-end="url(#ah)"/><rect class="dash ink" x="589" y="14" width="160" height="72" rx="12"/></g>
+  <g class="tx"><text x="90" y="58" class="xs c-mute">1 · measure</text><text x="283" y="58" class="xs c-mute">2 · screen</text><text x="476" y="58" class="xs c-mute">3 · level</text><text x="669" y="58" class="xs c-mute">4 · trust</text></g>
+</svg></div></figure>
+<ol class="steps">
+  <li><b>The time is real.</b> You can only save time you measured.</li>
+  <li><b>The agent can do it.</b> Without you supplying the judgment, the inputs or the check.</li>
+  <li><b>A mistake is cheap.</b> How far it runs alone depends on what a wrong run costs.</li>
+  <li><b>It rarely makes one.</b> Proved on your own tasks, not on a demo.</li>
+</ol>
+<p>Each section answers one and fills one box. The running example: an engagement manager at a Bengaluru consulting firm, eight years in, on Google Workspace, with travel and a home loan on the side.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Measure: is the time real?</h2>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 132" role="img" aria-label="Box 1, measure, is filled: 12 tasks logged. Screen, level and trust are still empty.">
+  <g class="ln" filter="url(#wob)"><rect class="f-pkg" x="10" y="14" width="160" height="72" rx="12"/><path class="arw" d="M172 50 H198" marker-end="url(#ah)"/><rect class="dash ink" x="203" y="14" width="160" height="72" rx="12"/><path class="arw" d="M365 50 H391" marker-end="url(#ah)"/><rect class="dash ink" x="396" y="14" width="160" height="72" rx="12"/><path class="arw" d="M558 50 H584" marker-end="url(#ah)"/><rect class="dash ink" x="589" y="14" width="160" height="72" rx="12"/></g>
+  <g class="tx"><text x="90" y="46" class="m c-pkg">1 · measure</text><text x="90" y="72" class="xs">log one week</text><text x="90" y="118" class="xxs c-pkg">12 tasks logged</text><text x="283" y="58" class="xs c-mute">2 · screen</text><text x="476" y="58" class="xs c-mute">3 · level</text><text x="669" y="58" class="xs c-mute">4 · trust</text></g>
+</svg></div></figure>
+<p>No saving can be shown without a baseline, so nothing is decided before one real week is logged. Write the number when the task ends; estimate nothing.</p>
+<div class="tw"><table class="dials">
+<tr><th>Field</th><th>Why it matters later</th></tr>
+<tr><td>One task, one line ("weekly client status email", not "reporting")</td><td>A category cannot be delegated; a task can</td></tr>
+<tr><td>Times per week × minutes each</td><td>Below once a week, setup usually costs more than it saves</td></tr>
+<tr><td>Mental load, 1 to 5</td><td>Load, not minutes, is what people most want gone</td></tr>
+<tr><td>Checkable in under 2 minutes?</td><td>Step 3 needs it</td></tr>
+</table></div>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 380" role="img" aria-label="A week of a consultant's work as bars of minutes per week, longest first: research briefs 360, slide drafting 360, meeting prep 240, final recommendation 240, inbox triage 225, financial model 180, proposal 180, sector monitoring 150, development conversations 90, status email 60, travel 50, bills 20. The top five are dark. A second column of five dots shows mental load; loads of 4 and 5 are coral, including development conversations, which is small in minutes.">
+  <g class="ln" filter="url(#wob)">
+    <path class="thin" d="M250 42 V352"/>
+    <rect class="f-top" x="250" y="50" width="380" height="14" rx="3" style="stroke:var(--ink)"/>
+    <rect class="f-top" x="250" y="74" width="380" height="14" rx="3" style="stroke:var(--ink)"/>
+    <rect class="f-top" x="250" y="98" width="253" height="14" rx="3" style="stroke:var(--ink)"/>
+    <rect class="f-top" x="250" y="122" width="253" height="14" rx="3" style="stroke:var(--ink)"/>
+    <rect class="f-top" x="250" y="146" width="238" height="14" rx="3" style="stroke:var(--ink)"/>
+    <rect x="250" y="170" width="190" height="14" rx="3" style="stroke:var(--ink3)"/>
+    <rect x="250" y="194" width="190" height="14" rx="3" style="stroke:var(--ink3)"/>
+    <rect x="250" y="218" width="158" height="14" rx="3" style="stroke:var(--ink3)"/>
+    <rect x="250" y="242" width="95" height="14" rx="3" style="stroke:var(--ink3)"/>
+    <rect x="250" y="266" width="63" height="14" rx="3" style="stroke:var(--ink3)"/>
+    <rect x="250" y="290" width="53" height="14" rx="3" style="stroke:var(--ink3)"/>
+    <rect x="250" y="314" width="21" height="14" rx="3" style="stroke:var(--ink3)"/>
+  </g>
+  <g class="ln">
+    <!-- load dots: 5 per row, filled = load -->
+    <g transform="translate(672 57)"><circle class="on act" cx="0" r="4"/><circle class="on act" cx="12" r="4"/><circle class="on act" cx="24" r="4"/><circle class="on act" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 81)"><circle class="on" cx="0" r="4"/><circle class="on" cx="12" r="4"/><circle class="on" cx="24" r="4"/><circle class="on mute" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 105)"><circle class="on" cx="0" r="4"/><circle class="on" cx="12" r="4"/><circle class="on" cx="24" r="4"/><circle class="on mute" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 129)"><circle class="on act" cx="0" r="4"/><circle class="on act" cx="12" r="4"/><circle class="on act" cx="24" r="4"/><circle class="on act" cx="36" r="4"/><circle class="on act" cx="48" r="4"/></g>
+    <g transform="translate(672 153)"><circle class="on act" cx="0" r="4"/><circle class="on act" cx="12" r="4"/><circle class="on act" cx="24" r="4"/><circle class="on act" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 177)"><circle class="on act" cx="0" r="4"/><circle class="on act" cx="12" r="4"/><circle class="on act" cx="24" r="4"/><circle class="on act" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 201)"><circle class="on act" cx="0" r="4"/><circle class="on act" cx="12" r="4"/><circle class="on act" cx="24" r="4"/><circle class="on act" cx="36" r="4"/><circle class="on act" cx="48" r="4"/></g>
+    <g transform="translate(672 225)"><circle class="on" cx="0" r="4"/><circle class="on" cx="12" r="4"/><circle class="on mute" cx="24" r="4"/><circle class="on mute" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 249)"><circle class="on act" cx="0" r="4"/><circle class="on act" cx="12" r="4"/><circle class="on act" cx="24" r="4"/><circle class="on act" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 273)"><circle class="on" cx="0" r="4"/><circle class="on" cx="12" r="4"/><circle class="on" cx="24" r="4"/><circle class="on mute" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 297)"><circle class="on" cx="0" r="4"/><circle class="on" cx="12" r="4"/><circle class="on" cx="24" r="4"/><circle class="on mute" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+    <g transform="translate(672 321)"><circle class="on" cx="0" r="4"/><circle class="on" cx="12" r="4"/><circle class="on mute" cx="24" r="4"/><circle class="on mute" cx="36" r="4"/><circle class="on mute" cx="48" r="4"/></g>
+  </g>
+  <g class="tx">
+    <text x="440" y="28" class="xs">frequency × minutes, per week</text>
+    <text x="696" y="28" class="xs">load</text>
+    <text x="240" y="62" class="xxs r c-ink">research briefs</text>
+    <text x="240" y="86" class="xxs r c-ink">slide drafting</text>
+    <text x="240" y="110" class="xxs r c-ink">meeting prep</text>
+    <text x="240" y="134" class="xxs r c-ink">final recommendation</text>
+    <text x="240" y="158" class="xxs r c-ink">inbox triage</text>
+    <text x="240" y="182" class="xxs r">financial model</text>
+    <text x="240" y="206" class="xxs r">proposal and fee</text>
+    <text x="240" y="230" class="xxs r">sector monitoring</text>
+    <text x="240" y="254" class="xxs r">development talks</text>
+    <text x="240" y="278" class="xxs r">status email</text>
+    <text x="240" y="302" class="xxs r">travel</text>
+    <text x="240" y="326" class="xxs r">bills and EMI</text>
+    <text x="636" y="62" class="xxs l">360</text><text x="636" y="86" class="xxs l">360</text><text x="509" y="110" class="xxs l">240</text><text x="509" y="134" class="xxs l">240</text><text x="494" y="158" class="xxs l">225</text>
+    <text x="446" y="182" class="xxs l">180</text><text x="446" y="206" class="xxs l">180</text><text x="414" y="230" class="xxs l">150</text><text x="351" y="254" class="xxs l">90</text><text x="319" y="278" class="xxs l">60</text><text x="309" y="302" class="xxs l">50</text><text x="277" y="326" class="xxs l">20</text>
+    <text x="440" y="370" class="xs">dark bars: the top five by time · coral dots: load 4 or 5, listed even when small</text>
+  </g>
+</svg></div>
+<figcaption class="cap">Rank twice. By time, the top five carry most of what can come back. By load, anything at 4 or 5 makes the list, like development conversations at 90 minutes.</figcaption>
+</figure>
+<p>Personal admin, travel and bills go in the same log, scored the same way.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Screen: can an agent do it at all?</h2>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 132" role="img" aria-label="Measure is done with 12 tasks. Box 2, screen, is filled: 7 pass, 5 stay with you. Level and trust are still empty.">
+  <g class="ln" filter="url(#wob)"><rect x="10" y="14" width="160" height="72" rx="12"/><path class="arw" d="M172 50 H198" marker-end="url(#ah)"/><rect class="f-pkg" x="203" y="14" width="160" height="72" rx="12"/><path class="arw" d="M365 50 H391" marker-end="url(#ah)"/><rect class="dash ink" x="396" y="14" width="160" height="72" rx="12"/><path class="arw" d="M558 50 H584" marker-end="url(#ah)"/><rect class="dash ink" x="589" y="14" width="160" height="72" rx="12"/></g>
+  <g class="tx"><text x="90" y="46" class="m">1 · measure</text><text x="90" y="72" class="xs">log one week</text><text x="90" y="118" class="xxs">12 tasks logged</text><text x="283" y="46" class="m c-pkg">2 · screen</text><text x="283" y="72" class="xs">five gates</text><text x="283" y="118" class="xxs c-pkg">7 pass, 5 stay</text><text x="476" y="58" class="xs c-mute">3 · level</text><text x="669" y="58" class="xs c-mute">4 · trust</text></g>
+</svg></div></figure>
+<p>Twelve measured tasks. Before any effort goes into one, drop those no agent can finish. Five questions, in order; one no stops the task.</p>
+<div class="tw"><table class="dials">
+<tr><th>#</th><th>Question</th><th>Fails if</th></tr>
+<tr><td>1</td><td>A task, not a judgment?</td><td>The output is an opinion you are held to. If a junior could not sign it, it is a judgment</td></tr>
+<tr><td>2</td><td>Inputs digital and reachable?</td><td>They live in a head, a hallway or a system the agent cannot connect to</td></tr>
+<tr><td>3</td><td>The whole workflow, not one step?</td><td>It can draft but not send, find but not file</td></tr>
+<tr><td>4</td><td>Checkable in 2 minutes?</td><td>Verifying means redoing the work</td></tr>
+<tr><td>5</td><td>Already done by AI at scale?</td><td>Nobody does it with AI yet. For work tasks, check the <a href="https://www.anthropic.com/economic-index" target="_blank" rel="noopener">Anthropic Economic Index</a>; research runs fully automated there. Personal tasks have no coverage, so use published hands-on tests</td></tr>
+</table></div>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 360" role="img" aria-label="Twelve tasks walk left to right through five gates. Three drop at gate 1, task or judgment: proposal, final recommendation, development conversations. One drops at gate 2, inputs reachable: bills and EMI. One drops at gate 4, checkable in two minutes: the financial model. Seven come out the other side.">
+  <g class="ln" filter="url(#wob)">
+    <path d="M140 60 V200 M180 60 V200 M140 68 H180"/>
+    <path d="M262 60 V200 M302 60 V200 M262 68 H302"/>
+    <path d="M384 60 V200 M424 60 V200 M384 68 H424"/>
+    <path d="M506 60 V200 M546 60 V200 M506 68 H546"/>
+    <path d="M628 60 V200 M668 60 V200 M628 68 H668"/>
+    <path class="arw" d="M20 150 H735" marker-end="url(#ah)"/>
+    <path class="arw c-act" d="M160 160 V240" marker-end="url(#ahc)"/>
+    <path class="arw c-act" d="M282 160 V240" marker-end="url(#ahc)"/>
+    <path class="arw c-act" d="M526 160 V240" marker-end="url(#ahc)"/>
+  </g>
+  <g class="ln">
+    <circle class="on" cx="30" cy="136" r="5"/><circle class="on" cx="43" cy="136" r="5"/><circle class="on" cx="56" cy="136" r="5"/><circle class="on" cx="69" cy="136" r="5"/><circle class="on" cx="82" cy="136" r="5"/><circle class="on" cx="95" cy="136" r="5"/>
+    <circle class="on" cx="30" cy="122" r="5"/><circle class="on" cx="43" cy="122" r="5"/><circle class="on" cx="56" cy="122" r="5"/><circle class="on" cx="69" cy="122" r="5"/><circle class="on" cx="82" cy="122" r="5"/><circle class="on" cx="95" cy="122" r="5"/>
+    <circle class="on act" cx="147" cy="256" r="5"/><circle class="on act" cx="160" cy="256" r="5"/><circle class="on act" cx="173" cy="256" r="5"/>
+    <circle class="on act" cx="282" cy="256" r="5"/>
+    <circle class="on act" cx="526" cy="256" r="5"/>
+    <circle class="on hum" cx="690" cy="122" r="5"/><circle class="on hum" cx="703" cy="122" r="5"/><circle class="on hum" cx="716" cy="122" r="5"/><circle class="on hum" cx="729" cy="122" r="5"/>
+    <circle class="on hum" cx="696" cy="108" r="5"/><circle class="on hum" cx="709" cy="108" r="5"/><circle class="on hum" cx="722" cy="108" r="5"/>
+  </g>
+  <g class="tx">
+    <text x="160" y="30" class="xs">1 · task or</text><text x="160" y="52" class="xs">judgment?</text>
+    <text x="282" y="30" class="xs">2 · inputs</text><text x="282" y="52" class="xs">reachable?</text>
+    <text x="404" y="30" class="xs">3 · whole</text><text x="404" y="52" class="xs">workflow?</text>
+    <text x="526" y="30" class="xs">4 · checkable</text><text x="526" y="52" class="xs">in 2 min?</text>
+    <text x="648" y="30" class="xs">5 · done by AI</text><text x="648" y="52" class="xs">at scale?</text>
+    <text x="62" y="176" class="xxs">12 tasks</text>
+    <text x="710" y="176" class="xxs c-hum">7 pass</text>
+    <text x="160" y="288" class="xxs c-act">proposal</text><text x="160" y="308" class="xxs c-act">recommendation</text><text x="160" y="328" class="xxs c-act">development talks</text>
+    <text x="282" y="288" class="xxs c-act">bills and EMI</text><text x="282" y="308" class="xxs c-act">no portal access</text>
+    <text x="526" y="288" class="xxs c-act">financial model</text><text x="526" y="308" class="xxs c-act">you would redo it</text>
+    <text x="404" y="270" class="xs c-mute">in general, most tasks</text><text x="404" y="292" class="xs c-mute">die at 3 or 4</text>
+  </g>
+</svg></div>
+<figcaption class="cap">A judgment, an unreachable input or an unverifiable output each stop a task on its own. Five stay with the consultant.</figcaption>
+</figure>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Level: what does a mistake cost?</h2>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 132" role="img" aria-label="Measure and screen are done. Box 3, level, is filled: a ceiling per task. Trust is still empty.">
+  <g class="ln" filter="url(#wob)"><rect x="10" y="14" width="160" height="72" rx="12"/><path class="arw" d="M172 50 H198" marker-end="url(#ah)"/><rect x="203" y="14" width="160" height="72" rx="12"/><path class="arw" d="M365 50 H391" marker-end="url(#ah)"/><rect class="f-pkg" x="396" y="14" width="160" height="72" rx="12"/><path class="arw" d="M558 50 H584" marker-end="url(#ah)"/><rect class="dash ink" x="589" y="14" width="160" height="72" rx="12"/></g>
+  <g class="tx"><text x="90" y="46" class="m">1 · measure</text><text x="90" y="72" class="xs">log one week</text><text x="90" y="118" class="xxs">12 tasks logged</text><text x="283" y="46" class="m">2 · screen</text><text x="283" y="72" class="xs">five gates</text><text x="283" y="118" class="xxs">7 pass, 5 stay</text><text x="476" y="46" class="m c-pkg">3 · level</text><text x="476" y="72" class="xs">undo + blast radius</text><text x="476" y="118" class="xxs c-pkg">a ceiling per task</text><text x="669" y="58" class="xs c-mute">4 · trust</text></g>
+</svg></div></figure>
+<p>Seven tasks an agent can do. It will still get some wrong, so how far it runs alone follows from what a wrong run costs. Two dials set that:</p>
+<ul class="pt">
+  <li><b>Undo.</b> Can you reverse it in one step with nobody outside noticing? A draft, yes. A sent email, a booking, a payment, no.</li>
+  <li><b>Blast radius.</b> Who does a wrong action touch? A note to yourself is small. A client, money or someone else's numbers is large.</li>
+</ul>
+<p>The dials give three levels. <span class="lv auto">Autonomous</span>: it does and commits. <span class="lv acc">Accelerated</span>: it does the work and stops before the step that commits. <span class="lv ast">Assisted</span>: it helps, you do it.</p>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 470" role="img" aria-label="A two by two grid. Across: easy to undo on the left, hard to undo on the right. Up: small blast radius at the bottom, large at the top. Bottom left, green, Autonomous: meeting prep, sector monitoring, research briefs. Top right, coral, Assisted: status email send, proposal, final recommendation, bills, development conversations. The other two quadrants, amber, Accelerated: inbox triage and the financial model top left, travel and slides bottom right and on the line. The financial model is circled: not checkable, so assisted anyway.">
+  <g class="ln">
+    <rect class="q-det" x="110" y="40" width="230" height="180"/>
+    <rect class="q-act" x="340" y="40" width="230" height="180"/>
+    <rect class="q-hum" x="110" y="220" width="230" height="180"/>
+    <rect class="q-det" x="340" y="220" width="230" height="180"/>
+  </g>
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M110 400 H580" marker-end="url(#ah)"/>
+    <path class="arw" d="M110 400 V30" marker-end="url(#ah)"/>
+    <path class="dash ink" d="M340 40 V400 M110 220 H570"/>
+    <circle class="dash c-act" cx="236" cy="128" r="22"/>
+  </g>
+  <g class="ln">
+    <circle class="badge" cx="160" cy="320" r="11"/><circle class="badge" cx="200" cy="352" r="11"/><circle class="badge" cx="270" cy="290" r="11"/>
+    <circle class="badge" cx="180" cy="90" r="11"/><circle class="badge" cx="236" cy="128" r="11"/><circle class="badge" cx="300" cy="234" r="11"/>
+    <circle class="badge" cx="400" cy="80" r="11"/><circle class="badge" cx="460" cy="110" r="11"/><circle class="badge" cx="520" cy="70" r="11"/><circle class="badge" cx="400" cy="160" r="11"/><circle class="badge" cx="520" cy="160" r="11"/>
+    <circle class="badge" cx="440" cy="280" r="11"/>
+  </g>
+  <g class="tx">
+    <text x="160" y="325" class="bn">1</text><text x="200" y="357" class="bn">2</text><text x="270" y="295" class="bn">3</text>
+    <text x="180" y="95" class="bn">4</text><text x="236" y="133" class="bn">6</text><text x="300" y="239" class="bn">7</text>
+    <text x="400" y="85" class="bn">5</text><text x="460" y="115" class="bn">8</text><text x="520" y="75" class="bn">9</text><text x="400" y="165" class="bn">11</text><text x="520" y="165" class="bn">12</text>
+    <text x="440" y="285" class="bn">10</text>
+    <text x="225" y="384" class="m c-hum">Autonomous</text>
+    <text x="455" y="206" class="m c-act">Assisted</text>
+    <text x="225" y="206" class="m c-det">Accelerated</text>
+    <text x="455" y="384" class="m c-det">Accelerated</text>
+    <text x="225" y="432" class="xs">easy to undo</text>
+    <text x="455" y="432" class="xs">hard to undo</text>
+    <text x="60" y="130" class="xs">large</text><text x="60" y="152" class="xs">blast</text><text x="60" y="174" class="xs">radius</text>
+    <text x="60" y="310" class="xs">small</text>
+    <text x="590" y="70" class="xxs l">1 meeting prep</text>
+    <text x="590" y="94" class="xxs l">2 sector monitoring</text>
+    <text x="590" y="118" class="xxs l">3 research briefs</text>
+    <text x="590" y="142" class="xxs l">4 inbox triage</text>
+    <text x="590" y="166" class="xxs l">5 status email</text>
+    <text x="590" y="190" class="xxs l c-act">6 financial model</text>
+    <text x="590" y="214" class="xxs l">7 slide drafting</text>
+    <text x="590" y="238" class="xxs l">8 proposal and fee</text>
+    <text x="590" y="262" class="xxs l">9 recommendation</text>
+    <text x="590" y="286" class="xxs l">10 travel</text>
+    <text x="590" y="310" class="xxs l">11 bills and EMI</text>
+    <text x="590" y="334" class="xxs l">12 development talks</text>
+    <text x="590" y="372" class="xs l c-act">circled: not checkable,</text>
+    <text x="590" y="394" class="xs l c-act">so Assisted anyway</text>
+    <text x="340" y="462" class="xs c-mute">a smarter agent does not move a dot. a cleaner undo or a smaller blast radius does.</text>
+  </g>
+</svg></div>
+<figcaption class="cap">Hard to undo and large blast radius stays <span class="lv ast">Assisted</span> however capable the agent. Easy and small may run <span class="lv auto">Autonomous</span>. The rest is <span class="lv acc">Accelerated</span>. A smarter agent never moves a dot.</figcaption>
+</figure>
+<p><b>The Verifier's Rule</b> caps it. Whoever approves must check faster than they could redo. A task not checkable in two minutes cannot be Autonomous, even in the green corner.</p>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 210" role="img" aria-label="Two rows. Meeting prep: checking the pack takes 5 minutes, redoing it takes 40, so it passes. Financial model: checking takes about as long as redoing, 90 minutes, so it fails.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-pkg" x="200" y="40" width="26" height="22" rx="4"/>
+    <rect x="200" y="70" width="208" height="22" rx="4" style="stroke:var(--ink3)"/>
+    <rect class="f-act" x="200" y="130" width="440" height="22" rx="4"/>
+    <rect x="200" y="160" width="468" height="22" rx="4" style="stroke:var(--ink3)"/>
+  </g>
+  <g class="tx">
+    <text x="20" y="64" class="m l">meeting prep</text>
+    <text x="20" y="154" class="m l">financial model</text>
+    <text x="236" y="57" class="xxs l c-hum">check · 5 min</text>
+    <text x="418" y="87" class="xxs l">redo · 40 min</text>
+    <text x="650" y="147" class="xxs l c-act">check ≈</text>
+    <text x="678" y="177" class="xxs l">redo · 90</text>
+    <text x="600" y="74" class="m c-hum">passes</text>
+    <text x="420" y="122" class="m c-act">fails: formulas break, self-checks pass</text>
+  </g>
+</svg></div>
+<figcaption class="cap">If checking costs as much as doing, the agent saved nothing and added a risk.</figcaption>
+</figure>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Trust: does it rarely fail?</h2>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 132" role="img" aria-label="Measure, screen and level are done. Box 4, trust, is filled: earned per task.">
+  <g class="ln" filter="url(#wob)"><rect x="10" y="14" width="160" height="72" rx="12"/><path class="arw" d="M172 50 H198" marker-end="url(#ah)"/><rect x="203" y="14" width="160" height="72" rx="12"/><path class="arw" d="M365 50 H391" marker-end="url(#ah)"/><rect x="396" y="14" width="160" height="72" rx="12"/><path class="arw" d="M558 50 H584" marker-end="url(#ah)"/><rect class="f-pkg" x="589" y="14" width="160" height="72" rx="12"/></g>
+  <g class="tx"><text x="90" y="46" class="m">1 · measure</text><text x="90" y="72" class="xs">log one week</text><text x="90" y="118" class="xxs">12 tasks logged</text><text x="283" y="46" class="m">2 · screen</text><text x="283" y="72" class="xs">five gates</text><text x="283" y="118" class="xxs">7 pass, 5 stay</text><text x="476" y="46" class="m">3 · level</text><text x="476" y="72" class="xs">undo + blast radius</text><text x="476" y="118" class="xxs">a ceiling per task</text><text x="669" y="46" class="m c-pkg">4 · trust</text><text x="669" y="72" class="xs">8 of 10</text><text x="669" y="118" class="xxs c-pkg">earned per task</text></g>
+</svg></div></figure>
+<p>The level is a ceiling, not a start. Every task begins Accelerated and moves up only when the agent proves it on your own work.</p>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Ten boxes for ten runs of one task type. Eight have a tick, two have a cross. A line after the eighth box reads: 8 of 10 unlocks Autonomous for this task type only. Below: a calendar page reading 60 days, the expiry, or sooner on a model, connector or pricing change.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="20" y="40" width="50" height="50" rx="8"/><rect x="82" y="40" width="50" height="50" rx="8"/><rect x="144" y="40" width="50" height="50" rx="8"/><rect x="206" y="40" width="50" height="50" rx="8"/><rect x="268" y="40" width="50" height="50" rx="8"/>
+    <rect x="330" y="40" width="50" height="50" rx="8"/><rect x="392" y="40" width="50" height="50" rx="8"/><rect x="454" y="40" width="50" height="50" rx="8"/><rect x="516" y="40" width="50" height="50" rx="8"/><rect x="578" y="40" width="50" height="50" rx="8"/>
+    <path class="c-hum" d="M32 66 L42 76 L60 54 M94 66 L104 76 L122 54 M156 66 L166 76 L184 54 M218 66 L228 76 L246 54 M280 66 L290 76 L308 54 M342 66 L352 76 L370 54 M466 66 L476 76 L494 54 M590 66 L600 76 L618 54"/>
+    <path class="c-act" d="M404 54 L430 78 M430 54 L404 78 M528 54 L554 78 M554 54 L528 78"/>
+    <rect x="40" y="140" width="80" height="72" rx="8"/>
+    <path d="M40 162 H120 M60 132 V148 M100 132 V148"/>
+  </g>
+  <g class="tx">
+    <text x="324" y="26" class="xs">ten runs of one task type, one attempt each</text>
+    <text x="700" y="64" class="m c-hum">8 of 10</text>
+    <text x="700" y="90" class="xxs">unlocks Autonomous</text>
+    <text x="700" y="110" class="xxs">for this task only</text>
+    <text x="80" y="196" class="m">60 days</text>
+    <text x="140" y="172" class="xs l">then the scores expire, or sooner if the agent ships</text>
+    <text x="140" y="196" class="xs l">a model change, a new connector, or a pricing change</text>
+  </g>
+</svg></div>
+<figcaption class="cap">The bar is per task type. Passing on meeting prep says nothing about inbox triage. Scores expire after 60 days, or sooner when the agent changes its model, connectors or pricing.</figcaption>
+</figure>
+<ol class="steps">
+  <li>Fix the test set from your log before testing. For the consultant: 3 meeting prep packs from real threads, 3 research briefs with a known answer, 3 triage runs on a frozen inbox, 2 status emails, 2 monitors run for a week, 2 travel searches with a known cheapest option.</li>
+  <li>Same prompt, connectors and tier for every agent. One attempt per task.</li>
+  <li>Check the output in the tool you will use. A sheet that passes its own checks and breaks in Sheets is a fail.</li>
+  <li>8 of 10 unlocks Autonomous for that task type only.</li>
+</ol>
+<p>A test cannot show multi-week reliability or real hours saved. Keep the step 1 log for a month after adoption.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>The whole framework, on one week</h2>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="Four boxes in a row: measure, screen, level, trust. Twelve tasks are logged. Five drop at the screen and stay with you. Seven pass. At the level step two may become Autonomous and five are capped at Accelerated. At the trust step all seven start Accelerated, and the two move up only after 8 of 10.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="10" y="40" width="160" height="104" rx="12"/>
+    <rect x="203" y="40" width="160" height="104" rx="12"/>
+    <rect x="396" y="40" width="160" height="104" rx="12"/>
+    <rect class="f-pkg" x="589" y="40" width="160" height="104" rx="12"/>
+    <path class="arw" d="M172 92 H198" marker-end="url(#ah)"/>
+    <path class="arw" d="M365 92 H391" marker-end="url(#ah)"/>
+    <path class="arw" d="M558 92 H584" marker-end="url(#ah)"/>
+    <circle class="on" cx="24" cy="180" r="5"/><circle class="on" cx="37" cy="180" r="5"/><circle class="on" cx="50" cy="180" r="5"/><circle class="on" cx="63" cy="180" r="5"/><circle class="on" cx="76" cy="180" r="5"/><circle class="on" cx="89" cy="180" r="5"/>
+    <circle class="on" cx="24" cy="196" r="5"/><circle class="on" cx="37" cy="196" r="5"/><circle class="on" cx="50" cy="196" r="5"/><circle class="on" cx="63" cy="196" r="5"/><circle class="on" cx="76" cy="196" r="5"/><circle class="on" cx="89" cy="196" r="5"/>
+    <circle class="on" cx="220" cy="180" r="5"/><circle class="on" cx="233" cy="180" r="5"/><circle class="on" cx="246" cy="180" r="5"/><circle class="on" cx="259" cy="180" r="5"/><circle class="on" cx="272" cy="180" r="5"/><circle class="on" cx="285" cy="180" r="5"/><circle class="on" cx="298" cy="180" r="5"/>
+    <path class="arw" d="M283 196 Q300 230 300 252" marker-end="url(#ah)"/>
+    <circle class="on mute" cx="232" cy="268" r="5"/><circle class="on mute" cx="245" cy="268" r="5"/><circle class="on mute" cx="258" cy="268" r="5"/><circle class="on mute" cx="271" cy="268" r="5"/><circle class="on mute" cx="284" cy="268" r="5"/>
+    <circle class="on hum" cx="413" cy="180" r="5"/><circle class="on hum" cx="426" cy="180" r="5"/>
+    <circle class="on det" cx="445" cy="180" r="5"/><circle class="on det" cx="458" cy="180" r="5"/><circle class="on det" cx="471" cy="180" r="5"/><circle class="on det" cx="484" cy="180" r="5"/><circle class="on det" cx="497" cy="180" r="5"/>
+    <circle class="on det" cx="606" cy="180" r="5"/><circle class="on det" cx="619" cy="180" r="5"/><circle class="on det" cx="632" cy="180" r="5"/><circle class="on det" cx="645" cy="180" r="5"/><circle class="on det" cx="658" cy="180" r="5"/><circle class="on det" cx="671" cy="180" r="5"/><circle class="on det" cx="684" cy="180" r="5"/>
+    <path class="arw c-hum" d="M610 196 Q616 226 640 232" marker-end="url(#ahg)"/>
+  </g>
+  <g class="tx">
+    <text x="90" y="80" class="m">1 · measure</text><text x="90" y="108" class="xs">log one week</text>
+    <text x="283" y="80" class="m">2 · screen</text><text x="283" y="108" class="xs">five gates</text>
+    <text x="476" y="80" class="m">3 · level</text><text x="476" y="108" class="xs">undo + blast radius</text>
+    <text x="669" y="80" class="m c-pkg">4 · trust</text><text x="669" y="108" class="xs">8 of 10</text>
+    <text x="106" y="194" class="xxs l">12 tasks</text>
+    <text x="312" y="186" class="xxs l">7 pass</text>
+    <text x="258" y="300" class="xs">5 stay with you</text>
+    <text x="400" y="216" class="xxs l c-hum">2 may go Autonomous</text>
+    <text x="400" y="238" class="xxs l c-det">5 capped Accelerated</text>
+    <text x="646" y="238" class="xxs l c-hum">2 after 8/10</text>
+    <text x="604" y="268" class="xxs l c-det">all 7 start</text><text x="604" y="288" class="xxs l c-det">Accelerated</text>
+    <text x="380" y="24" class="xs c-mute">each step removes tasks before the next spends effort on them</text>
+  </g>
+</svg></div>
+<figcaption class="cap">The consultant's week, all four boxes filled.</figcaption>
+</figure>
+<div class="tw"><table class="dials wide">
+<tr><th>#</th><th>Responsibility</th><th>Week</th><th>Load</th><th>Screen</th><th>Level</th></tr>
+<tr><td>1</td><td>Client meeting prep</td><td class="n">6 × 40 min</td><td class="n">3</td><td>Pass</td><td><span class="lv auto">Autonomous</span> after 8/10</td></tr>
+<tr><td>2</td><td>Sector and competitor monitoring</td><td class="n">5 × 30</td><td class="n">2</td><td>Pass</td><td><span class="lv auto">Autonomous</span> after 8/10</td></tr>
+<tr><td>3</td><td>Research briefs and source packs</td><td class="n">3 × 120</td><td class="n">4</td><td>Pass</td><td><span class="lv acc">Accelerated</span>: you check sources</td></tr>
+<tr><td>4</td><td>Inbox triage and replies</td><td class="n">5 × 45</td><td class="n">4</td><td>Pass</td><td><span class="lv acc">Accelerated</span>: it ranks, you act</td></tr>
+<tr><td>5</td><td>Weekly status email</td><td class="n">1 × 60</td><td class="n">3</td><td>Pass</td><td><span class="lv acc">Accelerated</span>: it drafts, you send</td></tr>
+<tr><td>7</td><td>Slide drafting</td><td class="n">3 × 120</td><td class="n">3</td><td>Pass</td><td><span class="lv acc">Accelerated</span></td></tr>
+<tr><td>10</td><td>Travel and expenses</td><td class="n">1 × 50</td><td class="n">3</td><td>Pass</td><td><span class="lv acc">Accelerated</span>: it finds, you book</td></tr>
+<tr><td>6</td><td>Financial model updates</td><td class="n">2 × 90</td><td class="n">4</td><td>Fails 4</td><td><span class="lv ast">Assisted</span>: formulas break, self-checks pass</td></tr>
+<tr><td>8</td><td>Proposal and fee quote</td><td class="n">1 × 180</td><td class="n">5</td><td>Fails 1</td><td><span class="lv ast">Assisted</span></td></tr>
+<tr><td>9</td><td>Final recommendation</td><td class="n">1 × 240</td><td class="n">5</td><td>Fails 1</td><td><span class="lv ast">Assisted</span>: the job itself</td></tr>
+<tr><td>11</td><td>Bills and loan EMI</td><td class="n">1 × 20</td><td class="n">2</td><td>Fails 2</td><td><span class="lv off">Calendar reminders</span></td></tr>
+<tr><td>12</td><td>Development conversations</td><td class="n">2 × 45</td><td class="n">4</td><td>Fails 1</td><td><span class="lv off">Not delegated</span></td></tr>
+</table></div>
+<p>About <b>9 hours a week</b> comes back, almost all from research, monitoring and meeting prep. Nothing client-facing runs alone. The minutes are illustrative, not measured.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Tools: which agent, as of 18 Oct 2026</h2>
+<p>The framework names no agent. This section does, and it dates fast: re-check every 60 days. Evidence grades: <span class="gr t">Tested</span> is a published hands-on run with a score, <span class="gr r">Reported</span> is press or one reviewer, <span class="gr d">Documented</span> is the vendor's word. None of these has been run against the 8-of-10 bar yet.</p>
+<ol class="steps">
+  <li>Drop any agent you cannot use where you are. A VPN does not count.</li>
+  <li>Drop any whose connectors do not reach the task's inputs.</li>
+  <li>Pick Tested evidence on the closest task over Reported over Documented.</li>
+  <li>On a tie, the smaller permission scope, then the lower cost.</li>
+</ol>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="Six agents above a sieve labelled usable from India. Meta Muse and Instinct are stopped with a cross: US and Canada only, and invite-only beta. OpenAI Dots passes only on the 200 dollar Pro plan. Gemini Spark, Manus and OpenClaw pass through.">
+  <g class="ln" filter="url(#wob)">
+    <rect x="10" y="30" width="112" height="48" rx="10"/>
+    <rect x="135" y="30" width="112" height="48" rx="10"/>
+    <rect x="260" y="30" width="112" height="48" rx="10"/>
+    <rect x="385" y="30" width="112" height="48" rx="10"/>
+    <rect x="510" y="30" width="112" height="48" rx="10"/>
+    <rect x="635" y="30" width="112" height="48" rx="10"/>
+    <path class="dash ink" d="M0 150 H760"/>
+    <path class="arw c-hum" d="M66 82 V220" marker-end="url(#ahg)"/>
+    <path class="arw c-hum" d="M191 82 V220" marker-end="url(#ahg)"/>
+    <path class="arw c-hum" d="M316 82 V220" marker-end="url(#ahg)"/>
+    <path class="arw" d="M441 82 V220" marker-end="url(#ah)" stroke-dasharray="5 7"/>
+    <path class="arw c-act" d="M566 82 V136"/>
+    <path class="arw c-act" d="M691 82 V136"/>
+    <path class="c-act" d="M554 126 L578 150 M578 126 L554 150"/>
+    <path class="c-act" d="M679 126 L703 150 M703 126 L679 150"/>
+    <rect class="f-pkg" x="10" y="226" width="112" height="48" rx="10"/>
+    <rect class="f-pkg" x="135" y="226" width="112" height="48" rx="10"/>
+    <rect class="f-pkg" x="260" y="226" width="112" height="48" rx="10"/>
+    <rect class="f-det" x="385" y="226" width="112" height="48" rx="10" stroke-dasharray="6 6"/>
+  </g>
+  <g class="tx">
+    <text x="66" y="61" class="m">Spark</text>
+    <text x="191" y="61" class="m">Manus</text>
+    <text x="316" y="61" class="m">OpenClaw</text>
+    <text x="441" y="61" class="m">Dots</text>
+    <text x="566" y="61" class="m">Muse</text>
+    <text x="691" y="61" class="m">Instinct</text>
+    <text x="503" y="120" class="xxs c-mute">usable</text><text x="503" y="140" class="xxs c-mute">from India?</text>
+    <text x="66" y="257" class="m c-hum">Spark</text>
+    <text x="191" y="257" class="m c-hum">Manus</text>
+    <text x="316" y="257" class="m c-hum">OpenClaw</text>
+    <text x="441" y="257" class="m c-det">Dots</text>
+    <text x="441" y="300" class="xxs c-det">Pro, $200 only</text>
+    <text x="566" y="182" class="xxs c-act">US and Canada</text>
+    <text x="566" y="202" class="xxs c-act">only</text>
+    <text x="691" y="182" class="xxs c-act">invite-only</text>
+    <text x="691" y="202" class="xxs c-act">beta</text>
+    <text x="66" y="300" class="xxs">Google Workspace</text>
+    <text x="191" y="300" class="xxs">one-off research</text>
+    <text x="316" y="300" class="xxs">run your own</text>
+  </g>
+</svg></div>
+<figcaption class="cap">Availability is pass or fail before any capability question. From India: Muse and Instinct are out, Dots only on the $200 Pro plan.</figcaption>
+</figure>
+<div class="tw"><table class="dials xwide">
+<tr><th>Agent</th><th>Usable from India</th><th>Cost a month</th><th>Runs where, reached how</th><th>Connectors</th><th>Approval controls</th><th>Published evidence</th><th>Grade</th></tr>
+<tr><td><b>Gemini Spark</b><br>Google</td><td>Yes. AI Pro and Ultra, rolled out <a href="https://blog.google/intl/en-in/company-news/technology/introducing-gemini-spark-your-247-personal-ai-agent-in-country/" target="_blank" rel="noopener">July 2026</a></td><td>Rs 1,950 Pro, Rs 6,500 Ultra</td><td>Google cloud; Gemini app, web, Mac app; its own email address</td><td>Gmail, Calendar, Drive, Docs, Sheets, Tasks, Keep; Dropbox and Zillow; Chrome for the web</td><td>Some actions ask; stop or take control of its browser</td><td><a href="https://www.aiagentslibrary.com/blog/gemini-spark-review/" target="_blank" rel="noopener">8.7/10 on 10 business tasks</a>, strongest on Gmail, Drive, Calendar and knowing whether a task is already done; one reviewer could not connect Gmail at all</td><td><span class="gr t">Tested</span></td></tr>
+<tr><td><b>Manus</b><br>Butterfly Effect, Singapore</td><td>Yes. Public, no waitlist</td><td>Free 300 credits a day; $20 for 4,000; $40 for 8,000; $200 for 40,000 (<a href="https://www.usecarly.com/blog/manus-pricing/" target="_blank" rel="noopener">pricing</a>)</td><td>Its own cloud computer per task; web and app</td><td>Web browsing, code, file output (docs, sheets, slides); scheduled tasks (2 free, 20 paid)</td><td>Task-level; you watch the run, no standing rules</td><td>Strong on research, reports, slides, data analysis; credits burn fast, about 4 to 5 complex runs on $20; loops and stalls reported; <a href="https://aurascape.ai/resources/auralabs-research/silentbridge-zero-click-agent-takeover-meta-manus/" target="_blank" rel="noopener">zero-click prompt-injection flaw</a> disclosed Feb 2026, since fixed</td><td><span class="gr r">Reported</span></td></tr>
+<tr><td><b>OpenClaw</b><br>open source</td><td>Yes. Self-hosted or a managed host</td><td>Software free; model API plus hosting, typically $10 to $60</td><td>Your machine or a managed host; WhatsApp, Slack, Telegram, web chat</td><td>Anything you wire up: Gmail, calendar, cron jobs, local models</td><td>Configurable permission modes; you set them</td><td><a href="https://www.digitalocean.com/resources/article/what-is-openclaw" target="_blank" rel="noopener">Documentation only</a>; reliability is whatever your model and config produce</td><td><span class="gr d">Documented</span></td></tr>
+<tr><td><b>OpenAI Dots</b></td><td>Partly. <a href="https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/" target="_blank" rel="noopener">Pro outside EEA, UK, Switzerland</a>, so India Pro qualifies; Plus does not</td><td>$200 Pro or Business Premium; first dot included</td><td>OpenAI cloud computer, optional local access; ChatGPT, Slack, Teams, phone call</td><td>4,000+ apps through plugins, GitHub, Google Workspace, Stripe</td><td>Approval on purchases and deletions; custom rules; background mode is read-only</td><td><a href="https://www.aiagentslibrary.com/blog/openai-dots-review/" target="_blank" rel="noopener">8.8/10 on 10 business tasks</a> (30 Sep to 1 Oct); weakest on spreadsheet formulas, inbox triage, send-ready drafts; voice failures in the launch demo</td><td><span class="gr t">Tested</span></td></tr>
+<tr><td><b>Meta Muse</b></td><td>No. <a href="https://www.analyticsinsight.net/tech-news/meta-muse-stays-off-the-table-for-indian-users-for-now" target="_blank" rel="noopener">US and Canada only</a>; a VPN breaches the terms</td><td>Free with a limit; $20 Power; $100 Maximum</td><td>Meta cloud VM with a visible browser; app, web, WhatsApp</td><td>Email, calendar, shopping, Shopify checkout; Amazon has blocked it</td><td>Approval on email, purchases, sharing</td><td><a href="https://www.aiagentslibrary.com/blog/meta-muse-review/" target="_blank" rel="noopener">8.0 on scored tasks, 6.5 overall</a>; Reuters reported <a href="https://www.implicator.ai/meta-muse-ai-agent-internal-security-flaws/" target="_blank" rel="noopener">pre-launch reliability and security concerns</a>; one reported address leak</td><td><span class="gr x">Excluded</span></td></tr>
+<tr><td><b>Instinct</b><br>Spear Street</td><td>No. Private beta, invite or waitlist</td><td>Free in beta; pricing unpublished</td><td>Cloud computer; iMessage, WhatsApp, phone, agent email; no app</td><td>Email, calendar, bookings, payments</td><td>Approval on messages and payments (one hands-on report)</td><td>Verge hands-on, 9 Oct: <a href="https://letsdatascience.com/news/instinct-holds-its-own-as-muse-and-dots-enter-the-ai-agent-m-5b4de4e1" target="_blank" rel="noopener">held its own against Muse and Dots</a>; memory recall inconsistent in a black-box test; <a href="https://techcrunch.com/2026/08/24/instincts-powerful-ai-assistant-is-raising-privacy-and-security-concerns/" target="_blank" rel="noopener">privacy concerns</a></td><td><span class="gr x">Excluded</span></td></tr>
+</table></div>
+<p><b>Outside the set.</b> The <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">same test lab</a> scored Claude Cowork 9.3 and ChatGPT Work 9.15, above every agent here. They are session tools, not always-on agents; test them too if your work is mostly documents and analysis. Wider comparison: <a href="https://every.to/personal-agents-comparison" target="_blank" rel="noopener">Every</a>.</p>
+<p class="pull">Gemini Spark for anything in Gmail, Drive or Calendar. Manus for standalone research. Dots only if Pro is already paid for. OpenClaw when privacy beats setup time.</p>
+
+<h3>For the consultant</h3>
+<div class="tw"><table class="dials">
+<tr><th>#</th><th>Task</th><th>Agent</th><th>What you still do</th></tr>
+<tr><td>1</td><td>Meeting prep</td><td>Gemini Spark, 7:30 am schedule</td><td>Read the one-page pack, 5 min</td></tr>
+<tr><td>2</td><td>Sector monitoring</td><td>Gemini Spark, 6 pm digest</td><td>Skim it</td></tr>
+<tr><td>3</td><td>Research briefs</td><td>Manus; Spark if it must stay in Drive</td><td>Verify every source and number</td></tr>
+<tr><td>4</td><td>Inbox triage</td><td>Gemini Spark</td><td>Act on the ranked list; never let it archive</td></tr>
+<tr><td>5</td><td>Status email</td><td>Gemini Spark</td><td>Edit the tone, press send</td></tr>
+<tr><td>7</td><td>Slide drafting</td><td>Manus skeleton</td><td>Rebuild in the firm template</td></tr>
+<tr><td>10</td><td>Travel</td><td>Gemini Spark searches</td><td>Book, file expenses</td></tr>
+</table></div>
+<figure class="wbx"><div class="sc">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Hours saved per week by task. Meeting prep 3.5 hours with Gemini Spark. Research briefs 3 hours with Manus. Sector monitoring 2 hours with Spark. Inbox triage 1 hour with Spark. Slides 1 hour with Manus. Status email half an hour with Spark. Travel 20 minutes with Spark. Total roughly 9 to 11 hours before checking time.">
+  <g class="ln" filter="url(#wob)">
+    <path class="thin" d="M200 30 V250"/>
+    <rect class="f-pkg" x="200" y="38" width="350" height="18" rx="4"/>
+    <rect class="f-key" x="200" y="68" width="300" height="18" rx="4"/>
+    <rect class="f-pkg" x="200" y="98" width="200" height="18" rx="4"/>
+    <rect class="f-pkg" x="200" y="128" width="100" height="18" rx="4"/>
+    <rect class="f-key" x="200" y="158" width="100" height="18" rx="4"/>
+    <rect class="f-pkg" x="200" y="188" width="50" height="18" rx="4"/>
+    <rect class="f-pkg" x="200" y="218" width="33" height="18" rx="4"/>
+  </g>
+  <g class="tx">
+    <text x="190" y="53" class="xxs r c-ink">1 meeting prep</text>
+    <text x="190" y="83" class="xxs r c-ink">3 research briefs</text>
+    <text x="190" y="113" class="xxs r c-ink">2 sector monitoring</text>
+    <text x="190" y="143" class="xxs r c-ink">4 inbox triage</text>
+    <text x="190" y="173" class="xxs r c-ink">7 slide drafting</text>
+    <text x="190" y="203" class="xxs r c-ink">5 status email</text>
+    <text x="190" y="233" class="xxs r c-ink">10 travel</text>
+    <text x="558" y="53" class="xxs l">3.5 h</text>
+    <text x="508" y="83" class="xxs l">3 h, net of checking</text>
+    <text x="408" y="113" class="xxs l">2 h</text>
+    <text x="308" y="143" class="xxs l">1 h</text>
+    <text x="308" y="173" class="xxs l">1 h, if the skeleton is used</text>
+    <text x="258" y="203" class="xxs l">30 min</text>
+    <text x="241" y="233" class="xxs l">20 min</text>
+    <text x="600" y="128" class="m c-hum l">■ Gemini Spark</text>
+    <text x="600" y="158" class="m c-prob l">■ Manus</text>
+    <text x="380" y="284" class="xs">about 9 to 11 hours a week, before time spent checking. items 6, 8, 9, 11, 12 save nothing, by design.</text>
+  </g>
+</svg></div>
+<figcaption class="cap">Most of the time comes back from the quiet, read-only work.</figcaption>
+</figure>
+<p><b>Monday:</b> buy Google AI Pro (Rs 1,950) and connect Gmail, Calendar, Drive and Docs only. Set the two read-only schedules. Try Manus free on the next brief and pay only if it clears the source check. Log the first ten runs of each against the step 1 minutes. Re-check this section by 17 Dec 2026.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Evidence and limits</h2>
+<ul class="pt">
+  <li><b>Defaults:</b> an employed knowledge worker in India. Both change the tools; neither changes the four steps.</li>
+  <li><b>The Economic Index</b> covers work tasks on Claude.ai and the API, nothing personal, and says a task type is done with AI, not that any agent here does it well.</li>
+  <li><b>Hours saved</b> are estimates from reported task times.</li>
+</ul>
+<details class="words"><summary>Sources, all opened 18 Oct 2026</summary>
+<dl>
+  <dt>Economic Index</dt><dd><a href="https://www.anthropic.com/research/anthropic-economic-index-january-2026-report" target="_blank" rel="noopener">Economic primitives, 15 Jan 2026</a> · <a href="https://www.anthropic.com/research/economic-index-march-2026-report" target="_blank" rel="noopener">Learning curves, Mar 2026</a> · <a href="https://www.anthropic.com/research/economic-index-june-2026-report" target="_blank" rel="noopener">Cadences, 26 Jun 2026</a> · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">the open dataset</a></dd>
+  <dt>Comparisons</dt><dd><a href="https://every.to/personal-agents-comparison" target="_blank" rel="noopener">Every: personal agents compared</a> · <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">AI Agents Library test lab</a> · <a href="https://www.aiagentslibrary.com/blog/openai-dots-vs-gemini-spark-vs-meta-muse/" target="_blank" rel="noopener">Dots vs Spark vs Muse</a> · <a href="https://www.fastcompany.com/91620082/openai-dots-agent-review" target="_blank" rel="noopener">Fast Company on Dots</a></dd>
+  <dt>Gemini Spark</dt><dd><a href="https://blog.google/intl/en-in/company-news/technology/introducing-gemini-spark-your-247-personal-ai-agent-in-country/" target="_blank" rel="noopener">India launch</a> · <a href="https://support.google.com/gemini/answer/17171264" target="_blank" rel="noopener">release notes</a> · <a href="https://www.aiagentslibrary.com/blog/gemini-spark-review/" target="_blank" rel="noopener">10-task test</a></dd>
+  <dt>Manus</dt><dd><a href="https://www.usecarly.com/blog/manus-pricing/" target="_blank" rel="noopener">pricing and credits</a> · <a href="https://eesel.ai/blog/manus-ai-pricing" target="_blank" rel="noopener">review</a> · <a href="https://aurascape.ai/resources/auralabs-research/silentbridge-zero-click-agent-takeover-meta-manus/" target="_blank" rel="noopener">SilentBridge disclosure</a></dd>
+  <dt>OpenClaw</dt><dd><a href="https://www.digitalocean.com/resources/article/what-is-openclaw" target="_blank" rel="noopener">what it is</a> · <a href="https://www.lennysnewsletter.com/p/openclaw-the-complete-guide-to-building" target="_blank" rel="noopener">a complete setup guide</a></dd>
+  <dt>OpenAI Dots</dt><dd><a href="https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/" target="_blank" rel="noopener">launch and availability</a> · <a href="https://www.aiagentslibrary.com/blog/openai-dots-review/" target="_blank" rel="noopener">10-task test</a></dd>
+  <dt>Meta Muse</dt><dd><a href="https://www.analyticsinsight.net/tech-news/meta-muse-stays-off-the-table-for-indian-users-for-now" target="_blank" rel="noopener">India status</a> · <a href="https://www.aiagentslibrary.com/blog/meta-muse-review/" target="_blank" rel="noopener">10-task test</a> · <a href="https://www.implicator.ai/meta-muse-ai-agent-internal-security-flaws/" target="_blank" rel="noopener">pre-launch concerns, after Reuters</a></dd>
+  <dt>Instinct</dt><dd><a href="https://letsdatascience.com/news/instinct-holds-its-own-as-muse-and-dots-enter-the-ai-agent-m-5b4de4e1" target="_blank" rel="noopener">the Verge hands-on, summarised</a> · <a href="https://techcrunch.com/2026/08/24/instincts-powerful-ai-assistant-is-raising-privacy-and-security-concerns/" target="_blank" rel="noopener">TechCrunch on privacy</a> · <a href="https://www.eesel.ai/blog/instinct-ai-review" target="_blank" rel="noopener">review</a></dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>Measure a week before deciding anything. Screen out judgments, unreachable inputs and anything you cannot check in two minutes. Set the ceiling by undo and blast radius, never by how smart the agent seems. Start everything Accelerated and let nothing run alone until it lands 8 of 10 on your own tasks.</p></div>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Delegation Framework for Personal AI Agents</span></div></footer>
+</body>
+</html>
