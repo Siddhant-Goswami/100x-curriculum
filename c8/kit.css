@@ -1,0 +1,114 @@
+/* C8 kit: shared drawn components. Load after docs.css; pair with kit.js.
+   Colours are docs.css tokens only: det (amber), prob (violet), hum (green) mean the kind of step, coral means now or action. */
+[hidden]{display:none!important}
+
+/* ---------- territory, as on the curriculum map: soft land, a coastline, four contour rings ---------- */
+.terr .coast{fill:var(--soft);stroke:var(--c);stroke-opacity:.55;stroke-width:1.3;vector-effect:non-scaling-stroke}
+.terr .contour{fill:none;stroke:var(--c);stroke-opacity:.2;stroke-width:1;vector-effect:non-scaling-stroke}
+.terr .tl-n{font:500 24px var(--sans);letter-spacing:-.02em;fill:var(--ci,var(--ink));text-anchor:middle}
+.terr .tl-s{font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;fill:var(--ci,var(--ink2));text-anchor:middle;opacity:.85}
+.terr .tl-q{font:12px var(--mono);fill:var(--ink2);text-anchor:middle}
+.terr.det{--c:var(--det);--soft:var(--det-soft);--ci:var(--det-ink)}
+.terr.prob{--c:var(--prob);--soft:var(--prob-soft);--ci:var(--prob-ink)}
+.terr.hum{--c:var(--hum);--soft:var(--hum-soft);--ci:var(--hum-ink)}
+.terr.none{--c:var(--ink3);--soft:var(--bg2);--ci:var(--ink2)}
+.terr{transition:opacity .6s var(--e-out)}
+.terr.off{opacity:0}
+
+/* ---------- map pins: a white dot with a coloured ring, a number, a haloed label ---------- */
+.pinx{cursor:pointer;transition:transform .9s var(--e-out),opacity .5s}
+.pinx .dot{transition:transform .9s var(--e-out)}
+.pinx circle{fill:var(--card);stroke:var(--pc,var(--ink3));stroke-width:2;vector-effect:non-scaling-stroke;transition:fill .6s,stroke .6s}
+.pinx .num{font:700 10px var(--mono);fill:var(--pi,var(--ink2));text-anchor:middle;dominant-baseline:central;pointer-events:none;transition:fill .6s}
+.pinx .lab{font:500 12.5px var(--sans);fill:var(--ink);text-anchor:middle;paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round;pointer-events:none;transition:transform .9s var(--e-out),opacity .4s}
+.pinx .lab tspan.m{font:500 10.5px var(--mono);fill:var(--ink2)}
+.pinx.det{--pc:var(--det);--pi:var(--det-ink)}.pinx.det circle{fill:var(--det-soft)}
+.pinx.prob{--pc:var(--prob);--pi:var(--prob-ink)}.pinx.prob circle{fill:var(--prob-soft)}
+.pinx.hum{--pc:var(--hum);--pi:var(--hum-ink)}.pinx.hum circle{fill:var(--hum-soft)}
+.pinx.new{--pc:var(--coral);--pi:var(--coral-ink)}.pinx.new circle{fill:var(--coral-soft);stroke-dasharray:3 3}
+.pinx.dim{opacity:.35}
+.pinx.gone{opacity:0;pointer-events:none}
+.pinx.nolab .lab{opacity:0}
+.pinx:hover circle,.pinx:focus-visible circle,.pinx.on circle{stroke-width:3}
+.pinx:focus{outline:none}
+.pin-tip{position:absolute;z-index:5;max-width:260px;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--float);padding:10px 12px;font:13.5px/1.45 var(--sans);color:var(--ink);pointer-events:none;transform:translate(-50%,calc(-100% - 14px));animation:pop .15s var(--e-out)}
+.pin-tip b{font-weight:500}
+.pin-tip small{display:block;margin-top:4px;font:12px var(--mono);color:var(--ink2)}
+@keyframes pop{from{opacity:0}to{opacity:1}}
+
+/* ---------- scroll story: a sticky stage, cards scroll over it ---------- */
+.sc{position:relative}
+.sc-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.sc-viz{position:absolute;inset:104px 24px 44px calc(34vw + 6vw)}
+.sc-viz svg{width:100%;height:100%;display:block;overflow:visible}
+.sc-head{position:absolute;left:calc(34vw + 6vw);right:24px;top:64px;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:4px 14px;z-index:2;pointer-events:none}
+.sc-head b{font:500 17px var(--sans);letter-spacing:-.01em}
+.sc-head span{font:500 12px var(--mono);color:var(--ink2)}
+.sc-steps{position:relative;margin-top:-100vh;margin-top:-100svh;z-index:3;pointer-events:none}
+.sc-step{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:0 4vw}
+.sc-step:last-child{min-height:110vh}
+.sc-card{pointer-events:auto;width:min(420px,34vw);background:var(--card);border:1px solid var(--line);border-radius:var(--r,12px);box-shadow:var(--float);padding:20px 22px}
+.sc-card .k{display:block;font:500 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:0 0 8px}
+.sc-card h2{font:500 20px/1.25 var(--sans);letter-spacing:-.015em;margin:0 0 10px}
+.sc-card p{font-size:16px;line-height:1.55;margin:0 0 10px}
+.sc-card p:last-child{margin-bottom:0}
+.sc-card .fn{font-size:13.5px;color:var(--ink2);margin-top:12px}
+.sc-card b{font-weight:500}
+.sc-card ul{margin:0 0 10px;padding-left:18px;font-size:15px}
+.sc-card li{margin:0 0 3px}
+.sc-legend{position:absolute;left:calc(34vw + 6vw);right:24px;bottom:18px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;font:12px var(--mono);color:var(--ink2);transition:opacity .5s;z-index:2}
+.sc-legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;border:2px solid var(--l);background:var(--ls);margin-right:7px;vertical-align:-2px}
+@media (max-width:1000px){
+  .sc-viz{inset:96px 8px 40vh 8px}
+  .sc-head{left:16px;right:16px;top:60px}
+  .sc-head b{font-size:15px}
+  .sc-legend{left:8px;right:8px;bottom:auto;top:calc(60vh - 6px);font-size:10.5px;gap:4px 12px}
+  .sc-step{align-items:flex-end;justify-content:center;padding:0 12px 3vh}
+  .sc-card{width:100%;max-width:520px;padding:16px 18px;max-height:37vh;overflow:auto}
+  .sc-card h2{font-size:17px;margin-bottom:6px}
+  .sc-card p{font-size:15px}
+}
+.chipd{display:inline-block;width:.75em;height:.75em;border-radius:50%;border:2px solid var(--l);background:var(--ls);margin-right:5px;vertical-align:-.05em}
+.chipd.det{--l:var(--det);--ls:var(--det-soft)}.chipd.prob{--l:var(--prob);--ls:var(--prob-soft)}.chipd.hum{--l:var(--hum);--ls:var(--hum-soft)}.chipd.new{--l:var(--coral);--ls:var(--coral-soft)}
+
+/* ---------- ask: one question, a typed answer, a list of the closest matches ---------- */
+.ask{border:1px solid var(--line);border-radius:var(--r,12px);background:var(--card);padding:20px 22px;margin:1.5em 0 0}
+.ask .askq{font:500 1.375rem/1.25 var(--sans);letter-spacing:-.01em;margin:0 0 4px}
+.ask .h{color:var(--ink2);font-size:15px;margin:0 0 14px}
+.combo{position:relative}
+.combo input{width:100%;border:1px solid var(--line2);background:var(--bg);border-radius:10px;padding:12px 14px;font:16px var(--sans);color:var(--ink)}
+.combo input:focus{outline:2px solid var(--coral);outline-offset:1px;border-color:transparent}
+.combo ul{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;list-style:none;margin:0;padding:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--float);max-height:340px;overflow:auto}
+.combo li{padding:9px 10px;border-radius:8px;cursor:pointer;line-height:1.35}
+.combo li[aria-selected="true"],.combo li:hover{background:var(--bg2)}
+.combo li b{font-weight:500;display:block}
+.combo li small{display:block;font:12px var(--mono);color:var(--ink2);margin-top:2px}
+.combo li mark{background:none;color:var(--coral-ink);font-weight:600}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.quick button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:5px 12px;font:500 13px var(--sans);color:var(--ink2)}
+.quick button:hover{border-color:var(--line2);color:var(--ink)}
+.picked{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.picked b{font:500 1.125rem var(--sans)}
+.picked small{font:12px var(--mono);color:var(--ink2)}
+.picked button{margin-left:auto;border:1px solid var(--line);background:transparent;border-radius:8px;padding:5px 11px;font:500 13px var(--sans);color:var(--ink2)}
+.picked button:hover{color:var(--ink);border-color:var(--line2)}
+
+/* ---------- yes/no toggles in a worksheet row ---------- */
+.yn{border:1px solid var(--line2);background:var(--card);border-radius:7px;min-width:44px;padding:3px 8px;font:500 12px var(--mono);color:var(--ink2)}
+.yn[aria-pressed="true"]{background:var(--hum-soft);border-color:color-mix(in srgb,var(--hum) 45%,var(--line));color:var(--hum-ink)}
+.yn[aria-pressed="false"]{background:var(--coral-soft);border-color:color-mix(in srgb,var(--coral) 45%,var(--line));color:var(--coral-ink)}
+.yn[disabled]{opacity:.35;cursor:default}
+
+/* ---------- whiteboard sketch, as in the lecture whiteboards: wobbly ink lines, Caveat labels ---------- */
+.wb{display:block;width:100%;height:auto;color:var(--ink);background:none;margin:0 0 10px}
+.wb .ln *{fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.wb .ln .dash{stroke:var(--line2);stroke-dasharray:6 9}
+.wb .ln .arw{stroke:var(--ink3);stroke-width:2}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}.wb .ln .f-hum{fill:var(--hum-soft);stroke:var(--hum)}.wb .ln .f-none{fill:var(--card);stroke:var(--ink3)}
+.wb .tx text{font-family:Caveat,cursive;fill:currentColor;text-anchor:middle}
+.wb .tx .h{font-size:30px;font-weight:700}
+.wb .tx .s{font-size:23px;font-weight:500;fill:var(--ink2)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}.wb .tx .c-hum{fill:var(--hum-ink)}.wb .tx .c-act{fill:var(--coral-ink)}
+
+@media (prefers-reduced-motion:reduce){.terr,.pinx,.pinx .dot,.pinx .lab{transition:none!important}}

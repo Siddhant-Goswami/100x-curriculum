@@ -4,390 +4,405 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Delegation Framework | 100xEngineers</title>
-<meta name="description" content="Which tasks to hand to a personal AI agent and how far to let it run, told as one consultant's week: measure, screen, start Accelerated, earn Autonomous. With a dated agent list for India.">
+<meta name="description" content="Which of your tasks to hand to a personal AI agent and how far to let it run, worked on your own job: pick it from O*NET's 923 occupations, then measure, screen, start Accelerated, earn Autonomous. With a dated agent list for India.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/kit.css">
 <script src="/c8/docs.js"></script>
+<script src="/c8/kit.js"></script>
 <style>
-:root{
-  --bg:#f9f8f4;--grid:rgba(60,55,40,.075);--grid2:rgba(60,55,40,.13);
-  --ink:#141413;--ink2:#55534c;--ink3:#8a877d;--line:#d6d2c6;
-  --card:#f4f2ec;--card-line:#c9c4b6;--shadow:0 10px 30px rgba(40,35,20,.10);
-  --c-stay:#d3cfc2;--c-acc:#a497f0;--c-auto:#8cb3ea;--c-new:#f7c46c;
-  --sans:Inter,system-ui,sans-serif;--serif:"Source Serif 4",Georgia,serif;
-}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#1b1a18;--grid:rgba(255,250,235,.05);--grid2:rgba(255,250,235,.09);
-  --ink:#eeebe3;--ink2:#b9b5aa;--ink3:#878378;--line:#3a3833;
-  --card:#25241f;--card-line:#403d36;--shadow:0 10px 30px rgba(0,0,0,.4);
-  --c-stay:#6c685d;--c-acc:#8f80ea;--c-auto:#6f9ddf;--c-new:#e9b252;
-}}
-:root[data-theme="dark"]{
-  --bg:#1b1a18;--grid:rgba(255,250,235,.05);--grid2:rgba(255,250,235,.09);
-  --ink:#eeebe3;--ink2:#b9b5aa;--ink3:#878378;--line:#3a3833;
-  --card:#25241f;--card-line:#403d36;--shadow:0 10px 30px rgba(0,0,0,.4);
-  --c-stay:#6c685d;--c-acc:#8f80ea;--c-auto:#6f9ddf;--c-new:#e9b252;
-}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration-color:var(--ink3);text-underline-offset:3px}
-a:hover{text-decoration-color:var(--ink)}
-
-/* header */
-.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.top .in{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
-.brand{font:600 15px var(--sans);text-decoration:none;color:var(--ink)}.brand b{color:var(--ink3);margin:0 6px}.brand span{font-weight:500;color:var(--ink2)}
-.tbtn{width:34px;height:34px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink2);cursor:pointer;display:grid;place-items:center}
-.tbtn svg{width:16px;height:16px}
-
-/* paper: a hand-ruled grid */
-.paper{position:absolute;inset:0;pointer-events:none;
-  background-image:linear-gradient(var(--grid2) 1px,transparent 1px),linear-gradient(90deg,var(--grid2) 1px,transparent 1px),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
-  background-size:120px 120px,120px 120px,24px 24px,24px 24px;
-  -webkit-mask-image:radial-gradient(ellipse 75% 70% at 60% 50%,#000 40%,transparent 100%);mask-image:radial-gradient(ellipse 75% 70% at 60% 50%,#000 40%,transparent 100%)}
-
-/* hero */
-.hero{position:relative;max-width:1200px;margin:0 auto;padding:72px 16px 40px}
-.hero .in{max-width:640px}
-.kick{font:500 13px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin:0 0 14px}
-h1{font:600 clamp(34px,5.4vw,54px)/1.05 var(--sans);letter-spacing:-.02em;margin:0 0 18px}
-.dek{font:400 clamp(19px,2.2vw,23px)/1.45 var(--serif);color:var(--ink2);margin:0}
-.cue{margin-top:28px;font:500 13px var(--sans);color:var(--ink3)}
-
-/* the story: a sticky stage, cards scroll over it */
-.story{position:relative}
-.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
-.board{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 16px 24px}
-.btitle{font:700 17px var(--sans);margin:0 0 18px;white-space:nowrap}
-.btitle .hrs{font-weight:500;color:var(--ink2);transition:opacity .5s}
-.grid{--M:104px;display:grid;grid-template-columns:repeat(4,calc(var(--M) + 64px));grid-auto-rows:calc(var(--M) + 62px)}
-.cell{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;transition:opacity .6s}
-.sq{width:calc(var(--M) * var(--s,.55));height:calc(var(--M) * var(--s,.55));overflow:visible;flex:none;transition:width .9s cubic-bezier(.3,.7,.2,1),height .9s cubic-bezier(.3,.7,.2,1),transform .6s}
-.sq rect{fill:var(--c-stay);transition:fill .8s}
-.cell.acc .sq rect{fill:var(--c-acc)}.cell.auto .sq rect{fill:var(--c-auto)}.cell.new .sq rect{fill:var(--c-new)}
-.cell.fade{opacity:.32}
-.cell.gone{opacity:0}.cell.gone .sq{transform:scale(.2)}
-.lb{font:400 14.5px/1.3 var(--sans);color:var(--ink2);margin-top:8px;max-width:150px}
-.mt{font:500 12.5px/1.3 var(--sans);color:var(--ink3);min-height:16px;margin-top:2px;transition:color .5s}
-.cell.auto .mt{color:color-mix(in srgb,var(--c-auto) 60%,var(--ink))}
-.cell.why .mt{color:var(--ink)}
-.legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin-top:18px;font:400 14px var(--sans);color:var(--ink2);transition:opacity .6s}
-.legend span{display:inline-flex;align-items:center;gap:8px}
-.legend svg{width:20px;height:20px;overflow:visible}
-.legend .k0 rect{fill:var(--c-stay)}.legend .k1 rect{fill:var(--c-acc)}.legend .k2 rect{fill:var(--c-auto)}.legend .k3 rect{fill:var(--c-new)}
-.stage[data-step="0"] .legend,.stage[data-step="1"] .legend,.stage[data-step="2"] .legend{opacity:0}
-
-.steps{position:relative;margin-top:-100vh;margin-top:-100svh;z-index:2;pointer-events:none}
-.step{min-height:100vh;min-height:100svh;display:flex;align-items:center;padding:0 4vw}
-.step:last-child{min-height:110vh}
-.card{pointer-events:auto;width:min(440px,34vw);background:var(--card);border:1px solid var(--card-line);border-radius:12px;box-shadow:var(--shadow);padding:26px 28px 24px}
-.card h2{font:700 21px/1.25 var(--sans);letter-spacing:-.005em;margin:0 0 14px}
-.card p{font:400 20px/1.48 var(--serif);margin:0 0 12px}
-.card p:last-child{margin-bottom:0}
-.card .fn{font:400 14.5px/1.5 var(--sans);color:var(--ink2);margin-top:18px}
-.card b{font-weight:500}
-.chip{display:inline-block;width:.8em;height:.8em;border-radius:2px;margin-right:5px;vertical-align:.02em}
-.chip.stay{background:var(--c-stay)}.chip.acc{background:var(--c-acc)}.chip.auto{background:var(--c-auto)}.chip.new{background:var(--c-new)}
-
-@media (min-width:1001px){.board{padding-left:calc(34vw + 6vw)}}
-@media (max-width:1180px) and (min-width:1001px){.grid{--M:84px}}
-@media (max-width:1000px){
-  .board{justify-content:flex-start;padding-top:64px}
-  .grid{--M:60px;grid-template-columns:repeat(4,calc(var(--M) + 26px));grid-auto-rows:calc(var(--M) + 46px)}
-  .lb{font-size:11.5px;margin-top:5px}
-  .mt{font-size:10.5px;min-height:13px}
-  .btitle{font-size:15px;margin-bottom:10px}
-  .legend{order:-1;margin:0 0 10px;gap:4px 12px;font-size:11.5px;max-width:360px}
-  .legend svg{width:13px;height:13px}
-  .step{align-items:flex-end;padding:0 16px 5vh;justify-content:center}
-  .card{width:100%;max-width:520px;padding:18px 20px}
-  .card h2{font-size:18px;margin-bottom:8px}
-  .card p{font-size:17px}
-  .card .fn{font-size:13px;margin-top:12px}
-}
-@media (max-width:1000px) and (min-height:860px){.grid{--M:76px}}
-@media (max-width:380px){.grid{--M:52px;grid-template-columns:repeat(4,calc(var(--M) + 22px))}}
-
-/* after the story: a plain reading column */
-.after{position:relative;max-width:760px;margin:0 auto;padding:40px 16px 80px}
-.after h2{font:700 26px/1.2 var(--sans);letter-spacing:-.01em;margin:64px 0 14px}
-.after h2:first-child{margin-top:0}
-.after p{font:400 19px/1.55 var(--serif);margin:0 0 14px;color:var(--ink)}
-.after .note{font:400 15px/1.55 var(--sans);color:var(--ink2)}
-.rules{list-style:none;margin:20px 0;padding:0;border-top:1px solid var(--line)}
-.rules li{display:grid;grid-template-columns:28px 1fr minmax(150px,210px);gap:12px;padding:14px 0;border-bottom:1px solid var(--line);font:400 16px/1.45 var(--sans)}
+[data-need-job]{display:none}
+body.has-job [data-need-job]{display:block}
+body.has-job span[data-need-job]{display:inline}
+body.has-job [data-no-job]{display:none}
+body.sc-in .rail{opacity:0!important;pointer-events:none}
+html,body{overflow-x:clip}
+.sc{width:100vw;margin:2.5em 0 0 calc(50% - 50vw);border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg)}
+.tall .pinx .lab{font-size:20px;stroke-width:6px}.tall .pinx .lab tspan.m{font-size:17px}
+.tall .terr .tl-n{font-size:30px}.tall .terr .tl-s{font-size:15px}
+table.wk{min-width:680px;font-size:14px}
+table.wk th,table.wk td{padding:9px 6px}
+table.wk th:first-child,table.wk td:first-child{padding-left:14px}
+table.wk td{vertical-align:middle}
+table.wk td:first-child{font-weight:400;max-width:300px}
+table.wk td:first-child b{font-weight:500;display:block}
+table.wk td:first-child small{font-size:12.5px;color:var(--ink2);line-height:1.4;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+table.wk th:not(:first-child),table.wk td:not(:first-child){text-align:center;white-space:nowrap}
+table.wk input{width:64px;border:1px solid var(--line2);background:var(--bg);border-radius:7px;padding:4px 6px;font:500 13px var(--mono);color:var(--ink);text-align:right}
+table.wk .n{font:700 11px var(--mono);color:var(--ink3);margin-right:6px}
+.wkft{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;font-size:14px;color:var(--ink2);margin:0 0 1em}
+.wkft .btn{padding:6px 12px;font-size:13px}
+.rules{list-style:none;margin:0 0 1em;padding:0;border-top:1px solid var(--line)}
+.rules li{display:grid;grid-template-columns:24px 1fr minmax(150px,210px);gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:16px;line-height:1.45}
 .rules .n{color:var(--ink3);font-variant-numeric:tabular-nums}
-.rules .then{color:var(--ink2)}
-.rules li.end{grid-template-columns:28px 1fr}
-@media (max-width:560px){.rules li{grid-template-columns:24px 1fr}.rules .then{grid-column:2}}
-.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:18px 0}
-table{width:100%;min-width:620px;border-collapse:collapse;font:400 14.5px/1.45 var(--sans)}
-th,td{text-align:left;vertical-align:top;padding:9px 12px 9px 0;border-bottom:1px solid var(--line)}
-th{font-weight:500;color:var(--ink2)}
-td b{font-weight:600}
+.rules .then{color:var(--ink2);font-size:15px}
+.rules li.end{grid-template-columns:24px 1fr}
+@media (max-width:560px){.rules li{grid-template-columns:20px 1fr}.rules .then{grid-column:2}}
+.fx{padding-left:22px}
+.fx li{margin:0 0 10px!important}
 .gr{font-weight:500;white-space:nowrap}
 .gr.x{color:var(--ink3);text-decoration:line-through}
-.after h3{font:700 19px/1.3 var(--sans);margin:32px 0 10px}
-.kfig{margin:22px 0 8px}
-.kfig svg{display:block;width:100%;height:auto;overflow:visible}
-.kfig rect{fill:var(--c-stay)}.kfig rect.acc{fill:var(--c-acc)}.kfig rect.auto{fill:var(--c-auto)}
-.kfig text{font:500 19px var(--sans);fill:var(--ink3)}
-.kfig figcaption{display:grid;gap:8px;margin-top:14px;font:400 15px/1.5 var(--sans);color:var(--ink2)}
-.kfig figcaption b{color:var(--ink);font-weight:600}
-.fx{margin:0;padding:0 0 0 22px;font:400 16.5px/1.55 var(--sans)}
-.fx li{padding:6px 0 6px 4px}.fx li::marker{color:var(--ink3);font-variant-numeric:tabular-nums}
-.fx b{font-weight:600}
-.pull{border-left:3px solid var(--c-acc);padding:4px 0 4px 18px;margin:22px 0}
-details{margin-top:28px;font:400 14.5px/1.55 var(--sans);color:var(--ink2)}
-summary{cursor:pointer;font-weight:500;color:var(--ink)}
-details dl{margin:12px 0 0}details dt{font-weight:600;color:var(--ink);margin-top:10px}details dd{margin:2px 0 0}
-footer{border-top:1px solid var(--line);padding:22px 16px;text-align:center;font:400 13px var(--sans);color:var(--ink3)}
-@media (prefers-reduced-motion:reduce){.sq,.sq rect,.cell,.legend{transition:none!important}}
+body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 16px;font-size:16px}
 </style>
 </head>
-<body data-page="delegation-framework">
+<body data-page="delegation-framework" class="read">
 <header class="top"><div class="in">
-  <a class="brand" href="#top">100x<b>·</b><span>Delegation Framework</span></a>
+  <a class="brand" href="/">100x<b>·</b><span>C8 Module 2</span></a>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 
-<!-- watercolour: four variants so the squares are not identical -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs id="wcdefs"></defs>
-</svg>
-
-<div id="top" class="hero">
-  <div class="paper"></div>
-  <div class="in">
-    <p class="kick">Framework · Personal AI agents</p>
-    <h1>What to hand to an agent</h1>
-    <p class="dek">An agent is fast, cheap and sometimes wrong. Here is how to decide what it does, and how far it runs alone, on one real week.</p>
-    <p class="cue">Scroll ↓</p>
-  </div>
+<div class="wrap">
+<main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Framework · Personal AI agents</p>
+  <h1>What to hand to an agent</h1>
+  <p class="dek">An agent is fast, cheap and sometimes wrong. Here is how to decide what it does, and how far it runs alone, on a week of your own job.</p>
 </div>
 
-<section class="story" aria-label="One consultant's week, task by task">
-  <div class="stage" id="stage" data-step="0" aria-hidden="true">
-    <div class="paper"></div>
-    <div class="board">
-      <p class="btitle">A consultant's week<span class="hrs" id="hrs"></span></p>
-      <div class="grid" id="grid"></div>
-      <div class="legend">
-        <span class="k0"><svg viewBox="0 0 100 100"><rect width="100" height="100" filter="url(#wc0)"/></svg>Stays with you</span>
-        <span class="k1"><svg viewBox="0 0 100 100"><rect width="100" height="100" filter="url(#wc1)"/></svg>Accelerated: it does, you commit</span>
-        <span class="k2"><svg viewBox="0 0 100 100"><rect width="100" height="100" filter="url(#wc2)"/></svg>Autonomous: it runs alone</span>
-        <span class="k3"><svg viewBox="0 0 100 100"><rect width="100" height="100" filter="url(#wc3)"/></svg>New work it creates</span>
-      </div>
+<section class="s" id="job">
+  <h2>Start with your job</h2>
+  <div class="ask" id="ask">
+    <div id="askForm">
+      <p class="askq"><label for="jobq">What do you do?</label></p>
+      <p class="h">Type it the way you would say it, then pick the closest job from O*NET's list of 923.</p>
+      <div class="combo"><input id="jobq" type="text" autocomplete="off" spellcheck="false" placeholder="For example: management consultant"><ul id="jobl" hidden></ul></div>
+      <div class="quick" id="quick" aria-label="Common jobs"></div>
     </div>
-  </div>
-
-  <div class="steps">
-    <div class="step" data-step="0"><div class="card">
-      <h2>Think of a week in a consultant's life</h2>
-      <p>Any job is a bundle of tasks. An engagement manager in Bengaluru preps client meetings, writes research briefs, triages the inbox, drafts slides, builds the model and signs the recommendation. Then travel and the home loan on the side.</p>
-      <p>An agent can change each task in one of three ways, or leave it alone.</p>
-      <p class="fn">The tasks and minutes are an illustration, not a measurement.</p>
-    </div></div>
-
-    <div class="step" data-step="1"><div class="card">
-      <h2>First, measure one real week</h2>
-      <p>Log each task as it ends: how often, how many minutes. Estimate nothing. You can only save time you measured.</p>
-      <p>Each square is now sized by hours a week. Briefs and slides are big; bills are a speck.</p>
-      <p class="fn">One task per line: "weekly client status email", not "reporting". Below once a week, setup usually costs more than it saves.</p>
-    </div></div>
-
-    <div class="step" data-step="2"><div class="card">
-      <h2>Some tasks stay yours</h2>
-      <p>Three questions, and one no is enough. Could a junior sign the output, or is it a judgment you are held to? Can the agent reach the inputs? Can you check its work in two minutes?</p>
-      <p>Five fail. Three are judgments, bills sit behind portals it cannot reach, and checking the model takes as long as redoing it.</p>
-      <p class="fn">To see whether a work task is already done with AI at scale, look it up in the <a href="https://www.anthropic.com/economic-index" target="_blank" rel="noopener">Anthropic Economic Index</a>.</p>
-    </div></div>
-
-    <div class="step" data-step="3"><div class="card">
-      <h2>Everything else starts Accelerated</h2>
-      <p>Seven tasks pass. The agent does the work and stops before the step that commits. It drafts, you send. It finds the flight, you book. It ranks the inbox, you act.</p>
-      <p class="fn"><span class="chip acc"></span>Accelerated is where every passing task begins, however good the agent looks in a demo.</p>
-    </div></div>
-
-    <div class="step" data-step="4"><div class="card">
-      <h2>A few earn the right to run alone</h2>
-      <p>Two things must hold. A mistake is cheap: easy to undo, and it touches no client, money or anyone else's numbers. And the agent proved it: 8 of 10 runs on your own tasks, checked in the tool you use.</p>
-      <p>Meeting prep and sector monitoring qualify. Nothing client-facing does.</p>
-      <p class="fn">The bar is per task type and expires after 60 days, or sooner when the agent changes its model, connectors or pricing. A smarter agent moves no square; a cleaner undo does.</p>
-    </div></div>
-
-    <div class="step" data-step="5"><div class="card">
-      <h2>Handing work over creates work</h2>
-      <p>Someone scores the test runs, and someone re-tests when the agent changes. That is new work, and it is yours.</p>
-    </div></div>
-
-    <div class="step" data-step="6"><div class="card">
-      <h2>The result: the week changes</h2>
-      <p>About 10 hours a week come back, almost all from quiet, read-only work: meeting prep, research, monitoring. The judgments are as big as before.</p>
-      <p>That is the point. The hours go to the work only you can sign.</p>
-      <p class="fn">Keep the log running for a month after you hand anything over. A test cannot show multi-week reliability.</p>
-    </div></div>
+    <div class="picked" id="picked" hidden>
+      <b id="pickedT"></b><small id="pickedM"></small>
+      <button type="button" id="change">Change</button>
+    </div>
   </div>
 </section>
 
-<div class="after">
+<section class="sc" id="story" aria-label="Your week, task by task" data-need-job>
+  <div class="sc-stage" id="stage" data-step="0">
+    <div class="sc-head"><b id="hTitle"></b><span id="hHrs"></span></div>
+    <div class="sc-viz" id="viz"></div>
+    <div class="sc-legend" id="legend">
+      <span style="--l:var(--hum);--ls:var(--hum-soft)">Stays with you</span>
+      <span style="--l:var(--prob);--ls:var(--prob-soft)">Accelerated</span>
+      <span style="--l:var(--det);--ls:var(--det-soft)">Autonomous</span>
+      <span style="--l:var(--coral);--ls:var(--coral-soft)">New work</span>
+    </div>
+  </div>
+  <div class="sc-steps" id="steps"></div>
+</section>
+
+<section class="s" id="yours" data-need-job>
+  <h2>Your week, task by task</h2>
+  <p>The defaults come from each task's wording in O*NET. You know your week better: set the minutes from your log and flip any answer. The map above follows.</p>
+  <div class="tw"><table class="wk" id="wk"></table></div>
+  <div class="wkft"><span id="wkSum"></span><button type="button" class="btn ghost" id="wkReset">Back to O*NET's answers</button></div>
+</section>
+
+<section class="s" id="card">
   <h2>The framework on one card</h2>
   <p>Ask four questions of every task, in order. Each one only matters once the one before it holds.</p>
   <ol class="rules">
     <li><span class="n">1</span><span>Did you log it for a real week?</span><span class="then">If not, log first</span></li>
-    <li><span class="n">2</span><span>Could a junior sign it, can the agent reach the inputs, and can you check it in two minutes?</span><span class="then"><span class="chip stay"></span>If not, it stays with you</span></li>
-    <li><span class="n">3</span><span>Is a mistake easy to undo and kept away from clients, money and other people's numbers?</span><span class="then"><span class="chip acc"></span>If not, Accelerated at most</span></li>
-    <li><span class="n">4</span><span>Did it pass 8 of 10 on your own tasks in the last 60 days?</span><span class="then"><span class="chip acc"></span>If not, Accelerated for now</span></li>
-    <li class="end"><span class="n"></span><span><span class="chip auto"></span>Four yeses: it may run Autonomous. Expect <span class="chip new"></span>new work for checking it.</span></li>
+    <li><span class="n">2</span><span>Could a junior sign it, can the agent reach the inputs, and can you check it in two minutes?</span><span class="then"><span class="chipd hum"></span>If not, it stays with you</span></li>
+    <li><span class="n">3</span><span>Is a mistake easy to undo and kept away from clients, money and other people's numbers?</span><span class="then"><span class="chipd prob"></span>If not, Accelerated at most</span></li>
+    <li><span class="n">4</span><span>Did it pass 8 of 10 on your own tasks in the last 60 days?</span><span class="then"><span class="chipd prob"></span>If not, Accelerated for now</span></li>
+    <li class="end"><span class="n"></span><span><span class="chipd det"></span>Four yeses: it may run Autonomous. Expect <span class="chipd new"></span>new work for checking it.</span></li>
   </ol>
+  <p class="muted">The colours are the map's. Amber is deterministic: a rule checks it. Violet is probabilistic: the output varies, so you judge each one. Green is human. Coral is what you do next.</p>
+</section>
 
+<section class="s" id="k">
   <h2>Zoom out: the week becomes a K</h2>
   <p>Run the same four questions over every worker and the economy splits like a K: one path where the agent does your job, one where you run the agent. Which path you're on depends on the colours in your bundle, and on whether you hand work over or are the work being handed over.</p>
-  <figure class="kfig">
-    <svg id="kfig" viewBox="0 0 760 360" role="img" aria-label="A K drawn in watercolour squares. A row of grey squares runs in from the left and splits. The upper arm rises with squares that grow and mix purple and grey. The lower arm falls with blue squares that shrink and fade."></svg>
-    <figcaption>
-      <span><span class="chip acc"></span><b>Upper arm:</b> people whose week is mostly grey and purple. They hand tasks over and put the hours into judgment, so each hour is worth more.</span>
-      <span><span class="chip auto"></span><b>Lower arm:</b> people whose week is mostly blue. The agent does the job itself, and the price of the task falls toward the price of a run.</span>
-    </figcaption>
+  <figure class="wbx">
+    <svg class="wb" id="kfig" viewBox="0 0 760 380" role="img" aria-label="A K drawn on a whiteboard. A row of grey circles runs in from the left and splits. The upper arm rises with circles that grow, green and violet: you run the agent. The lower arm falls with amber circles that shrink and fade: the agent does the job."></svg>
   </figure>
+  <p class="you" id="kYou" data-need-job></p>
   <h3>Second-order effects</h3>
   <ol class="fx">
     <li><b>Checkable work gets cheap.</b> Jason Wei's <a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Verifier's law</a>: "The ease of training AI to solve a task is proportional to how verifiable the task is. All tasks that are possible to solve and easy to verify will be solved by AI." So anything you can check in two minutes heads toward the agent's price. Pay moves to what can't be checked: judgment, accountability, a name on the decision.</li>
-    <li><b>The bottom rung goes first.</b> Research briefs, meeting packs and first drafts are the blue squares, and they are how juniors used to learn judgment. Fewer people climb to the upper arm unless firms train them on purpose.</li>
-    <li><b>Leverage compounds.</b> The consultant's 10 hours go back into grey work, which earns more, which buys better agents. The gap widens every year, not once. Directing agents becomes a skill like managing people.</li>
+    <li><b>The bottom rung goes first.</b> Research briefs, meeting packs and first drafts are the amber pins, and they are how juniors used to learn judgment. Fewer people climb to the upper arm unless firms train them on purpose.</li>
+    <li><b>Leverage compounds.</b> The hours that come back go into green work, which earns more, which buys better agents. The gap widens every year, not once. Directing agents becomes a skill like managing people.</li>
     <li><b>New work appears on both arms, but not the same work.</b> Up top: designing the workflow, scoring runs, signing the output. Below: checking and labelling someone else's runs, usually paid per task.</li>
     <li><b>Access picks the arm early.</b> Muse is not sold in India, Dots needs a $200 plan, and every agent needs inputs that are digital and reachable. Those with the subscription, the connected tools and the English get leverage first.</li>
     <li><b>Trust becomes the scarce input.</b> Blast radius can't be delegated. Whoever answers when a run goes wrong is the one clients pay, so being trusted to sign is worth more, not less.</li>
   </ol>
-  <p class="pull">The arm is chosen task by task, not once. Hand over the blue squares, move the hours into grey ones, and learn to direct agents before your own bundle turns blue.</p>
-  <p class="note">This is an argument, not a forecast. To see which work tasks are being augmented and which automated today, look them up in the <a href="https://www.anthropic.com/economic-index" target="_blank" rel="noopener">Anthropic Economic Index</a>.</p>
+  <p class="pull">The arm is chosen task by task, not once. Hand over the amber pins, move the hours into green ones, and learn to direct agents before your own bundle turns amber.</p>
+  <p class="muted">This is an argument, not a forecast. To see which work tasks are being augmented and which automated today, look them up in the <a href="https://www.anthropic.com/economic-index" target="_blank" rel="noopener">Anthropic Economic Index</a>, which uses the same O*NET tasks.</p>
+</section>
 
+<section class="s" id="agents">
   <h2>Which agent, as of 18 Oct 2026</h2>
   <p>The framework names no agent. This list does, and it dates fast. Drop any agent you cannot use from India or whose connectors miss the task's inputs. Then prefer a published hands-on test over press reports over the vendor's word. On a tie, take the smaller permissions, then the lower cost.</p>
   <div class="tw"><table>
     <tr><th>Agent</th><th>From India</th><th>A month</th><th>Evidence</th></tr>
-    <tr><td><b>Gemini Spark</b></td><td><a href="https://blog.google/intl/en-in/company-news/technology/introducing-gemini-spark-your-247-personal-ai-agent-in-country/" target="_blank" rel="noopener">Yes</a>, AI Pro and Ultra</td><td>Rs 1,950 / Rs 6,500</td><td><span class="gr">Tested</span>: <a href="https://www.aiagentslibrary.com/blog/gemini-spark-review/" target="_blank" rel="noopener">8.7/10 on 10 business tasks</a>, best on Gmail, Drive, Calendar</td></tr>
-    <tr><td><b>Manus</b></td><td>Yes</td><td>Free 300 credits a day, <a href="https://www.usecarly.com/blog/manus-pricing/" target="_blank" rel="noopener">then from $20</a></td><td><span class="gr">Reported</span>: strong on research and slides; credits burn fast</td></tr>
-    <tr><td><b>OpenClaw</b></td><td>Yes, self-hosted</td><td>$10 to $60 in model and hosting</td><td><span class="gr">Documented</span>: <a href="https://www.digitalocean.com/resources/article/what-is-openclaw" target="_blank" rel="noopener">as good as your setup</a></td></tr>
-    <tr><td><b>OpenAI Dots</b></td><td><a href="https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/" target="_blank" rel="noopener">Pro only</a></td><td>$200</td><td><span class="gr">Tested</span>: <a href="https://www.aiagentslibrary.com/blog/openai-dots-review/" target="_blank" rel="noopener">8.8/10</a>; weak on spreadsheets and inbox triage</td></tr>
-    <tr><td><b>Meta Muse</b></td><td><a href="https://www.analyticsinsight.net/tech-news/meta-muse-stays-off-the-table-for-indian-users-for-now" target="_blank" rel="noopener">No</a>, US and Canada</td><td>n/a</td><td><span class="gr x">Excluded</span></td></tr>
-    <tr><td><b>Instinct</b></td><td>No, invite-only beta</td><td>n/a</td><td><span class="gr x">Excluded</span></td></tr>
+    <tr><td>Gemini Spark</td><td><a href="https://blog.google/intl/en-in/company-news/technology/introducing-gemini-spark-your-247-personal-ai-agent-in-country/" target="_blank" rel="noopener">Yes</a>, AI Pro and Ultra</td><td>Rs 1,950 / Rs 6,500</td><td><span class="gr">Tested</span>: <a href="https://www.aiagentslibrary.com/blog/gemini-spark-review/" target="_blank" rel="noopener">8.7/10 on 10 business tasks</a>, best on Gmail, Drive, Calendar</td></tr>
+    <tr><td>Manus</td><td>Yes</td><td>Free 300 credits a day, <a href="https://www.usecarly.com/blog/manus-pricing/" target="_blank" rel="noopener">then from $20</a></td><td><span class="gr">Reported</span>: strong on research and slides; credits burn fast</td></tr>
+    <tr><td>OpenClaw</td><td>Yes, self-hosted</td><td>$10 to $60 in model and hosting</td><td><span class="gr">Documented</span>: <a href="https://www.digitalocean.com/resources/article/what-is-openclaw" target="_blank" rel="noopener">as good as your setup</a></td></tr>
+    <tr><td>OpenAI Dots</td><td><a href="https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/" target="_blank" rel="noopener">Pro only</a></td><td>$200</td><td><span class="gr">Tested</span>: <a href="https://www.aiagentslibrary.com/blog/openai-dots-review/" target="_blank" rel="noopener">8.8/10</a>; weak on spreadsheets and inbox triage</td></tr>
+    <tr><td>Meta Muse</td><td><a href="https://www.analyticsinsight.net/tech-news/meta-muse-stays-off-the-table-for-indian-users-for-now" target="_blank" rel="noopener">No</a>, US and Canada</td><td>n/a</td><td><span class="gr x">Excluded</span></td></tr>
+    <tr><td>Instinct</td><td>No, invite-only beta</td><td>n/a</td><td><span class="gr x">Excluded</span></td></tr>
   </table></div>
-  <p class="note">Outside the set, the <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">same test lab</a> scored Claude Cowork 9.3 and ChatGPT Work 9.15. They are session tools, not always-on agents; test them too if your work is mostly documents.</p>
-  <p class="pull">For the consultant: Gemini Spark for meeting prep, monitoring, inbox, status email and travel. Manus for research briefs and slide skeletons. On Monday, buy Google AI Pro, connect Gmail, Calendar, Drive and Docs only, and start the first ten test runs. Re-check this list by 17 Dec 2026.</p>
+  <p class="muted">Outside the set, the <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">same test lab</a> scored Claude Cowork 9.3 and ChatGPT Work 9.15. They are session tools, not always-on agents; test them too if your work is mostly documents.</p>
+  <div class="call" data-need-job><p class="kick">For your week</p><p id="agentYou"></p></div>
 
-  <details><summary>Sources, all opened 18 Oct 2026</summary>
+  <details class="words"><summary>Sources, all opened 18 Oct 2026</summary>
   <dl>
-    <dt>Economic Index</dt><dd><a href="https://www.anthropic.com/research/anthropic-economic-index-january-2026-report" target="_blank" rel="noopener">Economic primitives, Jan 2026</a> · <a href="https://www.anthropic.com/research/economic-index-march-2026-report" target="_blank" rel="noopener">Learning curves, Mar 2026</a> · <a href="https://www.anthropic.com/research/economic-index-june-2026-report" target="_blank" rel="noopener">Cadences, Jun 2026</a> · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">open dataset</a></dd>
-    <dt>Verifier's law</dt><dd><a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Jason Wei, Asymmetry of verification and verifier's law</a>. The K and its other second-order effects are this page's own argument.</dd>
-    <dt>Comparisons</dt><dd><a href="https://every.to/personal-agents-comparison" target="_blank" rel="noopener">Every: personal agents compared</a> · <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">AI Agents Library test lab</a> · <a href="https://www.aiagentslibrary.com/blog/openai-dots-vs-gemini-spark-vs-meta-muse/" target="_blank" rel="noopener">Dots vs Spark vs Muse</a> · <a href="https://www.fastcompany.com/91620082/openai-dots-agent-review" target="_blank" rel="noopener">Fast Company on Dots</a></dd>
-    <dt>Gemini Spark</dt><dd><a href="https://blog.google/intl/en-in/company-news/technology/introducing-gemini-spark-your-247-personal-ai-agent-in-country/" target="_blank" rel="noopener">India launch</a> · <a href="https://support.google.com/gemini/answer/17171264" target="_blank" rel="noopener">release notes</a> · <a href="https://www.aiagentslibrary.com/blog/gemini-spark-review/" target="_blank" rel="noopener">10-task test</a></dd>
-    <dt>Manus</dt><dd><a href="https://www.usecarly.com/blog/manus-pricing/" target="_blank" rel="noopener">pricing</a> · <a href="https://eesel.ai/blog/manus-ai-pricing" target="_blank" rel="noopener">review</a> · <a href="https://aurascape.ai/resources/auralabs-research/silentbridge-zero-click-agent-takeover-meta-manus/" target="_blank" rel="noopener">prompt-injection flaw, fixed Feb 2026</a></dd>
-    <dt>OpenClaw</dt><dd><a href="https://www.digitalocean.com/resources/article/what-is-openclaw" target="_blank" rel="noopener">what it is</a> · <a href="https://www.lennysnewsletter.com/p/openclaw-the-complete-guide-to-building" target="_blank" rel="noopener">setup guide</a></dd>
-    <dt>OpenAI Dots</dt><dd><a href="https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/" target="_blank" rel="noopener">launch and availability</a> · <a href="https://www.aiagentslibrary.com/blog/openai-dots-review/" target="_blank" rel="noopener">10-task test</a></dd>
-    <dt>Meta Muse</dt><dd><a href="https://www.analyticsinsight.net/tech-news/meta-muse-stays-off-the-table-for-indian-users-for-now" target="_blank" rel="noopener">India status</a> · <a href="https://www.aiagentslibrary.com/blog/meta-muse-review/" target="_blank" rel="noopener">10-task test</a> · <a href="https://www.implicator.ai/meta-muse-ai-agent-internal-security-flaws/" target="_blank" rel="noopener">pre-launch concerns</a></dd>
-    <dt>Instinct</dt><dd><a href="https://letsdatascience.com/news/instinct-holds-its-own-as-muse-and-dots-enter-the-ai-agent-m-5b4de4e1" target="_blank" rel="noopener">the Verge hands-on, summarised</a> · <a href="https://techcrunch.com/2026/08/24/instincts-powerful-ai-assistant-is-raising-privacy-and-security-concerns/" target="_blank" rel="noopener">TechCrunch on privacy</a></dd>
+    <div><dt>O*NET</dt><dd>Jobs, tasks, importance and frequency ratings from the <a href="https://www.onetcenter.org/database.html" target="_blank" rel="noopener">O*NET 31.0 Database</a> by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> license. O*NET® is a trademark of USDOL/ETA. The minutes and the screen's default answers are this page's own estimates from those ratings and the task wording; USDOL/ETA has not approved or endorsed them.</dd></div>
+    <div><dt>Economic Index</dt><dd><a href="https://www.anthropic.com/research/anthropic-economic-index-january-2026-report" target="_blank" rel="noopener">Economic primitives, Jan 2026</a> · <a href="https://www.anthropic.com/research/economic-index-march-2026-report" target="_blank" rel="noopener">Learning curves, Mar 2026</a> · <a href="https://www.anthropic.com/research/economic-index-june-2026-report" target="_blank" rel="noopener">Cadences, Jun 2026</a> · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">open dataset</a></dd></div>
+    <div><dt>Verifier's law</dt><dd><a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Jason Wei, Asymmetry of verification and verifier's law</a>. The K and its other second-order effects are this page's own argument.</dd></div>
+    <div><dt>Comparisons</dt><dd><a href="https://every.to/personal-agents-comparison" target="_blank" rel="noopener">Every: personal agents compared</a> · <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">AI Agents Library test lab</a> · <a href="https://www.aiagentslibrary.com/blog/openai-dots-vs-gemini-spark-vs-meta-muse/" target="_blank" rel="noopener">Dots vs Spark vs Muse</a> · <a href="https://www.fastcompany.com/91620082/openai-dots-agent-review" target="_blank" rel="noopener">Fast Company on Dots</a></dd></div>
+    <div><dt>Gemini Spark</dt><dd><a href="https://blog.google/intl/en-in/company-news/technology/introducing-gemini-spark-your-247-personal-ai-agent-in-country/" target="_blank" rel="noopener">India launch</a> · <a href="https://support.google.com/gemini/answer/17171264" target="_blank" rel="noopener">release notes</a> · <a href="https://www.aiagentslibrary.com/blog/gemini-spark-review/" target="_blank" rel="noopener">10-task test</a></dd></div>
+    <div><dt>Manus</dt><dd><a href="https://www.usecarly.com/blog/manus-pricing/" target="_blank" rel="noopener">pricing</a> · <a href="https://eesel.ai/blog/manus-ai-pricing" target="_blank" rel="noopener">review</a> · <a href="https://aurascape.ai/resources/auralabs-research/silentbridge-zero-click-agent-takeover-meta-manus/" target="_blank" rel="noopener">prompt-injection flaw, fixed Feb 2026</a></dd></div>
+    <div><dt>OpenClaw</dt><dd><a href="https://www.digitalocean.com/resources/article/what-is-openclaw" target="_blank" rel="noopener">what it is</a> · <a href="https://www.lennysnewsletter.com/p/openclaw-the-complete-guide-to-building" target="_blank" rel="noopener">setup guide</a></dd></div>
+    <div><dt>OpenAI Dots</dt><dd><a href="https://techcrunch.com/2026/09/29/openai-launches-dots-its-bubbly-agentic-avatar/" target="_blank" rel="noopener">launch and availability</a> · <a href="https://www.aiagentslibrary.com/blog/openai-dots-review/" target="_blank" rel="noopener">10-task test</a></dd></div>
+    <div><dt>Meta Muse</dt><dd><a href="https://www.analyticsinsight.net/tech-news/meta-muse-stays-off-the-table-for-indian-users-for-now" target="_blank" rel="noopener">India status</a> · <a href="https://www.aiagentslibrary.com/blog/meta-muse-review/" target="_blank" rel="noopener">10-task test</a> · <a href="https://www.implicator.ai/meta-muse-ai-agent-internal-security-flaws/" target="_blank" rel="noopener">pre-launch concerns</a></dd></div>
+    <div><dt>Instinct</dt><dd><a href="https://letsdatascience.com/news/instinct-holds-its-own-as-muse-and-dots-enter-the-ai-agent-m-5b4de4e1" target="_blank" rel="noopener">the Verge hands-on, summarised</a> · <a href="https://techcrunch.com/2026/08/24/instincts-powerful-ai-assistant-is-raising-privacy-and-security-concerns/" target="_blank" rel="noopener">TechCrunch on privacy</a></dd></div>
   </dl>
   </details>
+</section>
+</main>
 </div>
-<footer>100xEngineers · Delegation Framework for Personal AI Agents</footer>
+<footer><div class="wrap"><span>100xEngineers · Delegation Framework for Personal AI Agents</span><span>Job data: O*NET 31.0, USDOL/ETA, CC BY 4.0</span></div></footer>
 
 <script>
 (function(){
-  /* four watercolour filters: ragged edge, a lighter wash, a darker pooled rim, paper grain */
-  var defs=document.getElementById('wcdefs'), f='';
-  [3,11,23,37].forEach(function(seed,i){
-    f+='<filter id="wc'+i+'" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">'+
-      '<feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" seed="'+seed+'" result="e"/>'+
-      '<feDisplacementMap in="SourceGraphic" in2="e" scale="4.5" xChannelSelector="R" yChannelSelector="G" result="shape"/>'+
-      '<feTurbulence type="fractalNoise" baseFrequency="0.018 0.026" numOctaves="3" seed="'+(seed+5)+'" result="w"/>'+
-      '<feColorMatrix in="w" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.9 0 0 0 -0.32" result="ww"/>'+
-      '<feComposite in="ww" in2="shape" operator="in" result="wash"/>'+
-      '<feMorphology in="shape" operator="erode" radius="2.5" result="inner"/>'+
-      '<feComposite in="shape" in2="inner" operator="out" result="rim0"/>'+
-      '<feGaussianBlur in="rim0" stdDeviation="1.2" result="rim1"/>'+
-      '<feColorMatrix in="rim1" type="matrix" values="0.8 0 0 0 0  0 0.8 0 0 0  0 0 0.82 0 0  0 0 0 0.55 0" result="rim"/>'+
-      '<feMerge result="paint"><feMergeNode in="shape"/><feMergeNode in="wash"/><feMergeNode in="rim"/></feMerge>'+
-      '<feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="'+seed+'" result="g"/>'+
-      '<feColorMatrix in="g" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 0.85" result="ga"/>'+
-      '<feComposite in="ga" in2="shape" operator="in" result="grain"/>'+
-      '<feComposite in="grain" in2="paint" operator="arithmetic" k2="0.07" k3="1" result="out"/>'+
-      '<feComposite in="out" in2="shape" operator="in"/>'+
-    '</filter>';
-  });
-  defs.innerHTML=f;
+  var K=C8Kit, $=function(s){return document.querySelector(s)}, esc=K.esc;
+  var DATA='/c8/delegation-framework/data/', KEY='c8.delegate';
+  var store=window.c8store||{get:function(k,d){return d},set:function(){}};
+  var JOBS=null, AVG=null, job=null, base=[], tasks=[], step=0, tall=false, spy=null;
 
-  /* the week: minutes now, minutes after delegating, and what happens to it */
-  var T=[
-    {n:'Client meeting prep',m:240,a:30,k:'auto'},
-    {n:'Research briefs',m:360,a:180,k:'acc'},
-    {n:'Final recommendation',m:240,k:'stay',why:'a judgment'},
-    {n:'Inbox triage',m:225,a:165,k:'acc'},
-    {n:'Sector monitoring',m:150,a:30,k:'auto'},
-    {n:'Proposal and fee',m:180,k:'stay',why:'a judgment'},
-    {n:'Slide drafting',m:360,a:300,k:'acc'},
-    {n:'Bills and loan EMI',m:20,k:'stay',why:'inputs out of reach'},
-    {n:'Financial model',m:180,k:'stay',why:'can’t check in 2 min'},
-    {n:'Weekly status email',m:60,a:30,k:'acc'},
-    {n:'Development talks',m:90,k:'stay',why:'a judgment'},
-    {n:'Travel and expenses',m:50,a:30,k:'acc'},
-    null,
-    {n:'Score the test runs',m:60,k:'new'},
-    {n:'Re-test the agent',m:15,k:'new'},
-    null
-  ];
+  /* ---------- the screen ---------- */
+  function kind(t){return !(t.j&&t.r&&t.c)?'stay':t.u?'auto':'acc'}
+  function why(t){return !t.r?(/\b(confer|meet|interview|consult|discuss|teach|instruct|train|greet|present|represent|counsel|attend|participate|collaborate|visit|sell)\b/i.test(t.t)?'happens live, with people':'hands-on'):!t.j?'a judgment':!t.c?'can’t check in 2 min':''}
+  function after(t){var k=kind(t);return k==='acc'?r5(t.m*.6):k==='auto'?Math.max(5,r5(t.m*.15)):t.m}
+  function r5(m){return Math.max(5,Math.round(m/5)*5)}
   function fmt(m){if(m<60)return m+' min';var h=Math.floor(m/60),r=m%60;return h+' h'+(r?' '+r:'')}
-  function side(m){return Math.max(.2,Math.sqrt(m/360))}
+  function hrs(m){var h=m/60;return (Math.round(h*2)/2).toString().replace(/\.5$/,'½')+' h'}
+  function sum(a,f){return a.reduce(function(s,x){return s+f(x)},0)}
+  function lc(s){return s.charAt(0).toLowerCase()+s.slice(1)}
+  function list(a,cap){a=a.map(function(x,i){return '<b>'+esc(cap&&!i?x:lc(x))+'</b>'});return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1]}
+  function plural(n,one,many){return n+' '+(n===1?one:many)}
+  function newWork(){var moved=tasks.filter(function(t){return kind(t)!=='stay'}).length;if(!moved)return[];
+    return[{s:'Score the test runs',t:'Score ten test runs per task type, in the tool you use.',m:Math.max(30,moved*5),k:'new'},{s:'Re-test the agent',t:'Re-test when the agent changes its model, connectors or pricing.',m:15,k:'new'}]}
 
-  var grid=document.getElementById('grid');
-  grid.innerHTML=T.map(function(t,i){
-    if(!t)return '<div class="cell gone"></div>';
-    return '<div class="cell" data-i="'+i+'"><svg class="sq" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" filter="url(#wc'+(i%4)+')"/></svg><div class="lb">'+t.n+'</div><div class="mt"></div></div>';
-  }).join('');
-  var cells=[].slice.call(grid.querySelectorAll('.cell[data-i]'));
-  var stage=document.getElementById('stage'), hrs=document.getElementById('hrs');
+  /* ---------- the map: three territories in the curriculum's colours ---------- */
+  var LAY={
+    wide:{vb:[960,600],T:{det:[165,340,128,160],prob:[478,330,172,195],hum:[790,340,140,170]},R:30,r0:13,fs:12.5,lh:15,max:4,ch:17},
+    tall:{vb:[600,720],T:{det:[155,215,138,125],prob:[300,530,272,150],hum:[448,215,142,125]},R:40,r0:17,fs:20,lh:22,max:3,ch:15}
+  };
+  var TER={det:{name:'Autonomous',sub:'Deterministic · it runs alone',q:'A rule checks it: 8 of 10'},prob:{name:'Accelerated',sub:'Probabilistic · it does, you commit',q:'You judge every output'},hum:{name:'Stays with you',sub:'Human · a judgment, live or hands-on',q:'One no is enough'}};
+  var svg, pinEls=[], terrEls={};
+  function wrap(s,n){var w=s.split(' '),out=[''];w.forEach(function(x){var l=out[out.length-1];if((l+' '+x).trim().length>n&&l){if(out.length===2){out[1]+='…';out.push(null)}else out.push(x)}else if(out.length<3)out[out.length-1]=(l+' '+x).trim()});return out.filter(function(x){return x!==null}).slice(0,2)}
 
-  function apply(s){
-    stage.setAttribute('data-step',s);
-    cells.forEach(function(c){
-      var t=T[+c.getAttribute('data-i')], isNew=t.k==='new', moved=t.k==='acc'||t.k==='auto';
-      var sz=s===0?.55:side(s>=6&&t.a!=null?t.a:t.m), meta='';
-      if(s>=1)meta=fmt(t.m);
-      if(s===2&&t.k==='stay')meta=t.why;
-      if(s>=4&&s<6&&t.k==='auto')meta='8 of 10 ✓';
-      if(s>=6&&moved)meta=fmt(t.m)+' → '+fmt(t.a);
-      c.className='cell'+
-        (isNew&&s<5?' gone':'')+(isNew&&s>=5?' new':'')+
-        (s>=3&&t.k==='acc'?' acc':'')+
-        (t.k==='auto'?(s>=4?' auto':s>=3?' acc':''):'')+
-        (s===2&&t.k==='stay'?' why':'')+
-        (s===2&&t.k!=='stay'?' fade':'');
-      c.querySelector('.sq').style.setProperty('--s',sz.toFixed(3));
-      c.querySelector('.mt').textContent=meta;
+  function build(){
+    var L=LAY[tall?'tall':'wide'], viz=$('#viz');
+    viz.innerHTML='';
+    svg=K.svg('svg',{viewBox:'0 0 '+L.vb.join(' '),preserveAspectRatio:'xMidYMid meet',role:'group','aria-label':'Your tasks as pins on a map of three territories'},viz);
+    svg.classList.toggle('tall',tall);viz.classList.toggle('tall',tall);
+    var land=K.svg('g',{},svg);
+    var p=L.T.prob;terrEls.none=K.terrain(land,{cx:p[0],cy:p[1],rx:p[2],ry:p[3],seed:5,c:'var(--ink3)',soft:'var(--bg2)',cls:'none',name:'Your week',sub:'O*NET 31.0 · top 12 tasks'});
+    var ly=Math.min.apply(null,['det','prob','hum'].map(function(k){return L.T[k][1]-L.T[k][3]}))-(tall?34:52);
+    ['det','prob','hum'].forEach(function(k,i){var t=L.T[k];terrEls[k]=K.terrain(land,{ly:tall?null:ly,cx:t[0],cy:t[1],rx:t[2],ry:t[3],seed:[23,37,61][i],c:'var(--'+k+')',soft:'var(--'+k+'-soft)',cls:k,name:TER[k].name,sub:tall?'':TER[k].sub,q:tall?'':TER[k].q})});
+    var g=K.svg('g',{},svg);
+    pinEls=tasks.concat(newWork()).map(function(t,i){
+      var e=K.svg('g',{'class':'pinx',tabindex:'0','data-i':i},g);
+      var d=K.svg('g',{'class':'dot'},e);K.svg('circle',{r:10},d);
+      var n=K.svg('text',{'class':'num'},e);n.textContent=t.k==='new'?'+':(i+1);
+      K.svg('text',{'class':'lab'},e);
+      e._t=t;return e;
     });
-    hrs.textContent=s===0?'':s<6?' · 36 h':' · 36 h → 26 h';
+    render(step,true);
   }
-  apply(0);
 
-  /* the K: a stem of grey squares that splits; the upper arm grows purple and grey, the lower shrinks blue and fades */
-  var k=document.getElementById('kfig'), ks='', fx=330, fy=190, i;
-  function sqr(x,y,s,cls,op,n){return '<rect'+(cls?' class="'+cls+'"':'')+' x="'+(x-s/2).toFixed(1)+'" y="'+(y-s/2).toFixed(1)+'" width="'+s.toFixed(1)+'" height="'+s.toFixed(1)+'" filter="url(#wc'+(n%4)+')"'+(op<1?' opacity="'+op.toFixed(2)+'"':'')+'/>'}
-  for(i=0;i<6;i++)ks+=sqr(40+i*52,fy,22,'',1,i);
-  for(i=1;i<=7;i++){var t=i/7;
-    ks+=sqr(fx+t*390,fy-t*150,22+t*30,i%3===0?'':'acc',1,i);
-    ks+=sqr(fx+t*390,fy+t*130,Math.max(8,22-t*15),'auto',1-t*.65,i+2);
+  /* where every pin sits at a step: grouped by territory, packed inside it, labels on the biggest */
+  function layout(s){
+    var L=LAY[tall?'tall':'wide'], all=tasks.concat(newWork()), groups={}, out=[];
+    var maxM=Math.max.apply(null,all.map(function(t){return t.m}));
+    all.forEach(function(t,i){
+      var k=t.k==='new'?'new':kind(t), ter=s<2?'none':s===2?(k==='stay'?'hum':'none'):k==='stay'||k==='new'?'hum':k==='auto'&&s>=4?'det':'prob';
+      var m=s>=6?after(t):t.m, r=s===0?L.r0:Math.max(L.r0*(t.k==='new'?.8:.55),L.R*Math.sqrt(m/maxM));
+      var cls=t.k==='new'?'new':s<2?'':s===2?(k==='stay'?'hum':'dim'):ter==='hum'?'hum':ter;
+      if(t.k==='new'&&s<5)cls+=' gone';
+      var meta=s===0?'':s===1?fmt(t.m):s===2?(k==='stay'?why(t):''):s===4&&k==='auto'?'8 of 10 ✓':s>=6&&k!=='stay'&&k!=='new'?fmt(t.m)+' → '+fmt(after(t)):s>=3?fmt(t.m):'';
+      out[i]={t:t,ter:ter,r:r,cls:cls,meta:meta,m:m};(groups[ter]=groups[ter]||[]).push(i);
+    });
+    Object.keys(groups).forEach(function(ter){
+      var ids=groups[ter].slice().sort(function(a,b){return out[b].m-out[a].m}), T=L.T[ter==='none'?'prob':ter];
+      var vis=ids.filter(function(i){return out[i].cls.indexOf('gone')<0});
+      /* a crowded territory drops labels first, then shrinks its pins, so the boxes fit */
+      var cap=Math.PI*T[2]*T[3]*.5, f=1;
+      function boxes(labN){var need=0;vis.forEach(function(i,rank){var o=out[i],r=o.r*f;o.lab=rank<labN;o.lines=o.lab?wrap(o.t.s,L.ch):[];if(o.lab&&o.meta)o.lines.push('');
+        var lw=Math.max.apply(null,[0].concat(o.lines.map(function(x){return x.length})))*L.fs*.56, lh=o.lines.length?o.lines.length*L.lh+6:0;
+        o.box={w:Math.max(2*r+8,lw+6),h:2*r+8+lh,oy:lh/2};need+=o.box.w*o.box.h});return need}
+      var labN=s===2&&ter==='none'?0:L.max;
+      while(boxes(labN)>cap&&labN>1)labN--;
+      var need=boxes(labN);if(need>cap){f=Math.max(.55,Math.sqrt(cap/need));vis.forEach(function(i){out[i].r*=f});f=1;boxes(labN)}
+      var pos=K.pack(vis.map(function(i){return out[i].box}),{cx:T[0],cy:T[1]+(tall?6:10),rx:T[2]*.9,ry:T[3]*.86});
+      vis.forEach(function(i,j){out[i].x=pos[j].x;out[i].y=pos[j].y});
+      ids.forEach(function(i){if(out[i].x==null){out[i].x=T[0];out[i].y=T[1];out[i].box={w:0,h:0,oy:0};out[i].lines=[]}});
+    });
+    return out;
   }
-  ks+='<text x="40" y="'+(fy+44)+'">a week of tasks</text><text x="'+(fx+30)+'" y="350">as agents get better and cheaper →</text>';
-  k.innerHTML=ks;
 
-  var steps=[].slice.call(document.querySelectorAll('.step'));
-  if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)apply(+e.target.getAttribute('data-step'))})},{rootMargin:'-50% 0px -50% 0px'});
-    steps.forEach(function(s){io.observe(s)});
+  function render(s,instant){
+    step=s;var L=LAY[tall?'tall':'wide'], lay=layout(s);
+    $('#stage').setAttribute('data-step',s);
+    terrEls.none.classList.toggle('off',s>=3);
+    terrEls.hum.classList.toggle('off',s<2);terrEls.prob.classList.toggle('off',s<3);terrEls.det.classList.toggle('off',s<4);
+    $('#legend').style.opacity=s<2?0:1;
+    pinEls.forEach(function(e,i){var o=lay[i];
+      if(instant)e.style.transition='none';
+      e.setAttribute('class','pinx '+o.cls+(o.lab?'':' nolab'));
+      e.style.transform='translate('+o.x.toFixed(1)+'px,'+o.y.toFixed(1)+'px)';
+      e.firstChild.style.transform='scale('+(o.r/10).toFixed(3)+')';
+      var num=e.childNodes[1];num.style.fontSize=Math.max(8,Math.min(L.fs+1,o.r*.85)).toFixed(1)+'px';
+      var lab=e.childNodes[2], names=o.lines.filter(function(x){return x}), h='';
+      names.forEach(function(x,k){h+='<tspan x="0" dy="'+(k?L.lh:0)+'">'+esc(x)+'</tspan>'});
+      if(o.lab&&o.meta)h+='<tspan class="m" x="0" dy="'+L.lh+'">'+esc(o.meta)+'</tspan>';
+      lab.innerHTML=h;lab.style.transform='translateY('+(o.r+L.fs+3).toFixed(1)+'px)';
+      e.setAttribute('aria-label',o.t.s+', '+fmt(o.m)+(o.meta&&!/min|h /.test(o.meta)?', '+o.meta:''));
+      if(instant){e.getBoundingClientRect();e.style.transition=''}
+    });
+    var before=sum(tasks,function(t){return t.m})+(s>=5?sum(newWork(),function(t){return t.m}):0), aft=sum(tasks,after)+sum(newWork(),function(t){return t.m});
+    $('#hHrs').textContent=s===0?'12 tasks':s<6?hrs(before)+' a week':hrs(sum(tasks,function(t){return t.m}))+' → '+hrs(aft)+' a week';
   }
+
+  /* tooltip on hover, focus or tap */
+  var tip=null;
+  function showTip(e){hideTip();var t=e._t,k=t.k==='new'?'new':kind(t),stage=$('#stage'),b=e.getBoundingClientRect(),sb=stage.getBoundingClientRect();
+    var v=step<2?'':k==='new'?'New work, yours':k==='stay'?'Stays with you: '+why(t):step<3?'':k==='auto'&&step>=4?'Autonomous':'Accelerated';
+    tip=document.createElement('div');tip.className='pin-tip';
+    tip.innerHTML='<b>'+esc(t.t)+'</b><small>'+fmt(t.m)+' a week'+(step>=6&&k!=='stay'&&k!=='new'?' → '+fmt(after(t)):'')+(v?' · '+esc(v):'')+'</small>';
+    tip.style.left=Math.min(sb.width-140,Math.max(140,b.left-sb.left+b.width/2))+'px';tip.style.top=(b.top-sb.top)+'px';stage.appendChild(tip)}
+  function hideTip(){if(tip){tip.remove();tip=null}}
+  ['mouseover','focusin'].forEach(function(ev){$('#viz').addEventListener(ev,function(e){var p=e.target.closest('.pinx');if(p)showTip(p)})});
+  ['mouseout','focusout'].forEach(function(ev){$('#viz').addEventListener(ev,function(e){if(e.target.closest('.pinx'))hideTip()})});
+  $('#viz').addEventListener('click',function(e){var p=e.target.closest('.pinx');if(p)showTip(p);else hideTip()});
+
+  /* ---------- the cards, written from the chosen job ---------- */
+  function cards(){
+    var N=tasks.length, by=function(k){return tasks.filter(function(t){return kind(t)===k})}, stay=by('stay'), acc=by('acc'), auto=by('auto'), moved=acc.concat(auto);
+    var sorted=tasks.slice().sort(function(a,b){return b.m-a.m}), nw=newWork(), title=esc(job.t);
+    var reasons={}, R=['a judgment','hands-on','happens live, with people','can’t check in 2 min'];
+    stay.forEach(function(t){var w=why(t);reasons[w]=(reasons[w]||0)+1});
+    var rtxt=R.filter(function(r){return reasons[r]}).map(function(r){var n=reasons[r];return r==='a judgment'?plural(n,'is a judgment','are judgments').replace(/^(\d+) is/,'$1 is'):r==='hands-on'?n+' '+(n===1?'is':'are')+' hands-on':r==='happens live, with people'?n+' '+(n===1?'happens':'happen')+' live, with people':n+' '+(n===1?'takes':'take')+' longer than two minutes to check'});
+    var saved=sum(tasks,function(t){return t.m})-sum(tasks,after)-sum(nw,function(t){return t.m});
+    var top=moved.slice().sort(function(a,b){return (b.m-after(b))-(a.m-after(a))}).slice(0,2).map(function(t){return t.s});
+    var C=[
+      ['Your week','Think of a week in this job',
+       '<p>Any job is a bundle of tasks. O*NET surveyed people who work as '+title+'; these are the twelve tasks that matter most to them, from '+list([sorted[0].s])+' to '+list([sorted[N-1].s])+'.</p><p>An agent can change each task in one of three ways, or leave it alone.</p><p class="fn">Tap any pin for the full task. Minutes are an estimate from how often and how important each task is; set your own <a href="#yours">below</a>.</p>'],
+      ['Measure','First, measure one real week',
+       '<p>Log each task as it ends: how often, how many minutes. Estimate nothing. You can only save time you measured.</p><p>Each pin is now sized by hours a week. '+list([sorted[0].s],1)+' is the biggest at '+fmt(sorted[0].m)+'; '+list([sorted[N-1].s])+' is the smallest.</p><p class="fn">One task per line: "weekly client status email", not "reporting". Below once a week, setup usually costs more than it saves.</p>'],
+      ['Screen','Some tasks stay yours',
+       '<p>Three questions, and one no is enough. Could a junior sign the output, or is it a judgment you are held to? Can the agent reach the inputs from a screen? Can you check its work in two minutes?</p>'+
+       (stay.length?'<p>'+(stay.length===N?'All '+N+' fail':stay.length+' of '+N+' fail')+'. '+rtxt.join(', ').replace(/^(\w)/,function(c){return c.toUpperCase()})+'.</p>':'<p>None fail on these answers. Check that against your own week.</p>')+
+       '<p class="fn"><span class="chipd hum"></span>Green, as on the map: human. The answers are defaults read from each task\'s wording; change any of them in <a href="#yours">your week, task by task</a>.</p>'],
+      ['Accelerated','Everything else starts Accelerated',
+       moved.length?'<p>'+plural(moved.length,'task passes','tasks pass')+', '+list(moved.slice(0,2).map(function(t){return t.s}))+' among them. The agent does the work and stops before the step that commits. It drafts, you send. It finds, you book. It ranks, you act.</p><p class="fn"><span class="chipd prob"></span>Violet, as on the map: probabilistic. The output varies, so you judge every one. Accelerated is where every passing task begins, however good the agent looks in a demo.</p>'
+       :'<p>Nothing passes the screen, so nothing moves. That is an answer too: an agent buys you little in this job today, until you split a task into a part it can reach.</p>'],
+      ['Autonomous','A few earn the right to run alone',
+       '<p>Two things must hold. A mistake is cheap: easy to undo, and it touches no client, money or anyone else\'s numbers. And the agent proved it: 8 of 10 runs on your own tasks, checked in the tool you use.</p>'+
+       (auto.length?'<p>'+list(auto.map(function(t){return t.s}),1)+' '+(auto.length===1?'qualifies':'qualify')+': read-only work that leaves nothing behind if it goes wrong.'+(acc.length?' Nothing that sends, signs or changes a record does.':'')+'</p>':moved.length?'<p>None of your tasks qualifies yet: each one sends, changes or signs something. They stay Accelerated, and that is fine.</p>':'<p>With nothing Accelerated, nothing can earn it.</p>')+
+       '<p class="fn"><span class="chipd det"></span>Amber, as on the map: deterministic, a rule checks it. The bar is per task type and expires after 60 days, or sooner when the agent changes its model, connectors or pricing. A smarter agent moves no pin; a cleaner undo does.</p>'],
+      ['New work','Handing work over creates work',
+       nw.length?'<p>Someone scores the test runs, and someone re-tests when the agent changes. That is new work, and it is yours: about '+fmt(sum(nw,function(t){return t.m}))+' a week.</p><p class="fn"><span class="chipd new"></span>Coral, as on the map: what you do next.</p>':'<p>Nothing moved, so there is nothing to score. If you change an answer below, this card changes too.</p>'],
+      ['Result','The result: the week changes',
+       (saved>0?'<p>About '+hrs(saved)+' a week come back, most of it from '+list(top)+'. The '+plural(stay.length,'task','tasks')+' that stay '+(stay.length===1?'is':'are')+' as big as before.</p><p>That is the point. The hours go to the work only you can sign.</p>':'<p>Little comes back this week: the checking costs about what the agent saves. The win here is smaller than a demo suggests, and that is worth knowing before you pay for one.</p>')+
+       '<p class="fn">Keep the log running for a month after you hand anything over. A test cannot show multi-week reliability. Not your week? <a href="#yours">Change any task</a>.</p>']
+    ];
+    $('#steps').innerHTML=C.map(function(c,i){return '<div class="sc-step" data-step="'+i+'"><div class="sc-card"><span class="k">'+(i+1)+' of 7 · '+c[0]+'</span><h2>'+c[1]+'</h2>'+c[2]+'</div></div>'}).join('');
+    if(spy)spy.disconnect();
+    spy=K.scrolly([].slice.call(document.querySelectorAll('#steps .sc-step')),function(n){if(n!==step)render(n)});
+  }
+
+  /* ---------- worksheet ---------- */
+  var Q=[['j','Junior signs','Could a junior sign it'],['r','Reachable','Can the agent reach the inputs'],['c','2-min check','Can you check it in two minutes'],['u','Undo cheap','Is a mistake cheap to undo']];
+  var PILL={stay:'<span class="pill hum">Stays</span>',acc:'<span class="pill prob">Accelerated</span>',auto:'<span class="pill det">Autonomous</span>'};
+  function sheet(){
+    $('#wk').innerHTML='<tr><th>Task</th><th>Min/wk</th>'+Q.map(function(q){return '<th title="'+q[2]+'?">'+q[1]+'</th>'}).join('')+'<th>Result</th></tr>'+
+      tasks.map(function(t,i){var screened=t.j&&t.r&&t.c;return '<tr><td><b><span class="n">'+(i+1)+'</span>'+esc(t.s)+'</b><small title="'+esc(t.t)+'">'+esc(t.t)+'</small></td><td><input type="number" min="0" step="15" value="'+t.m+'" data-i="'+i+'" aria-label="Minutes a week for '+esc(t.s)+'"></td>'+
+        Q.map(function(q){var dis=q[0]==='u'&&!screened;return '<td><button type="button" class="yn" data-i="'+i+'" data-q="'+q[0]+'" aria-pressed="'+(t[q[0]]?'true':'false')+'"'+(dis?' disabled':'')+' aria-label="'+q[2]+'? '+esc(t.s)+'">'+(t[q[0]]?'Yes':'No')+'</button></td>'}).join('')+
+        '<td>'+PILL[kind(t)]+'</td></tr>'}).join('');
+    var tot=sum(tasks,function(t){return t.m});
+    $('#wkSum').textContent=hrs(tot)+' logged across '+tasks.length+' tasks · '+tasks.filter(function(t){return kind(t)!=='stay'}).length+' can move';
+  }
+  $('#wk').addEventListener('click',function(e){var b=e.target.closest('.yn');if(!b||b.disabled)return;var t=tasks[+b.dataset.i];t[b.dataset.q]=t[b.dataset.q]?0:1;changed()});
+  $('#wk').addEventListener('change',function(e){var n=e.target.closest('input[data-i]');if(!n)return;tasks[+n.dataset.i].m=Math.max(0,Math.round(+n.value||0));changed()});
+  $('#wkReset').addEventListener('click',function(){tasks=base.map(function(t){return Object.assign({},t)});save();refresh()});
+  function changed(){save();refresh()}
+  function save(){var s=store.get(KEY,{});s.code=job.c;s.edits=s.edits||{};s.edits[job.c]=tasks.map(function(t){return[t.m,t.j,t.r,t.c,t.u]});store.set(KEY,s)}
+
+  /* ---------- personal lines: the K and the agent ---------- */
+  function personal(){
+    var tot=sum(tasks,function(t){return t.m})||1, share=function(k){return Math.round(100*sum(tasks.filter(function(t){return kind(t)===k}),function(t){return t.m})/tot)};
+    var a=share('auto'), p=share('acc'), h=100-a-p;
+    $('#kYou').innerHTML='Your week ('+esc(job.t)+'): <b>'+h+'%</b> green, <b>'+p+'%</b> violet, <b>'+a+'%</b> amber, by hours. The average O*NET job is '+Math.round(AVG.auto*100)+'% amber on the same rules. '+(a>=15?'More of yours is amber than most: hand it over before someone hands it over for you.':'Little of yours is amber, so you lean to the upper arm, if the hours that come back go into green work.');
+    var spark=/\b(e-?mail|correspond|calendar|schedul|appointment|meeting|telephone|calls?|messages|travel|expense|inbox|status|updates?|monitor|track)/i, manus=/\b(research|report|presentation|slides|compile|gather|literature|market|analy[sz]|document|draft|write|proposal|study|search|review)/i;
+    var mv=tasks.filter(function(t){return kind(t)!=='stay'}).sort(function(x,y){return y.m-x.m});
+    var S=mv.filter(function(t){return spark.test(t.t)}), M=mv.filter(function(t){return !spark.test(t.t)&&manus.test(t.t)}), O=mv.filter(function(t){return S.indexOf(t)<0&&M.indexOf(t)<0});
+    var bits=[];if(S.length)bits.push('Gemini Spark for '+list(S.slice(0,3).map(function(t){return t.s})));if(M.length)bits.push('Manus for '+list(M.slice(0,3).map(function(t){return t.s})));if(O.length)bits.push('test both on '+list(O.slice(0,2).map(function(t){return t.s})));
+    $('#agentYou').innerHTML=mv.length?bits.map(function(b){return b.charAt(0).toUpperCase()+b.slice(1)}).join('. ')+'. On Monday, pick one, connect only the tools those tasks read, and start the first ten test runs on '+list([mv[0].s])+'. Re-check this list by 17 Dec 2026.':'None of your twelve tasks passes the screen, so no agent earns a subscription yet. Split your biggest task into the part on a screen and the part that is not, and screen that part again.';
+  }
+
+  function refresh(){hideTip();build();cards();sheet();personal()}
+
+  /* ---------- choosing a job ---------- */
+  var ALIAS={founder:'chief executive',ceo:'chief executive',cto:'computer and information systems manager',hr:'human resources',ca:'accountant','chartered accountant':'accountant',swe:'software developer',sde:'software developer',pm:'project manager',ux:'user experience',ui:'user interface',ml:'machine learning',ai:'machine learning',doctor:'physician',consultant:'management consultant',freelancer:'management consultant'};
+  function norm(s){return s.toLowerCase().replace(/[^a-z0-9+ ]/g,' ').replace(/\s+/g,' ').trim()}
+  function rx(w){return new RegExp('\\b'+w.replace(/[+]/g,'\\+'))}
+  function score(name,Q){var n=norm(name);if(n===Q.q)return 100;if(Q.all.test(n))return 60-Math.min(8,n.length/8);
+    return Q.each.every(function(r){return r.test(n)})?30-Math.min(10,n.length/10):0}
+  function search(raw){
+    var q=norm(raw);if(!q||!JOBS)return[];q=ALIAS[q]||q;var Q={q:q,all:rx(q),each:q.split(' ').map(rx)};
+    /* best name wins; a name people report using, and more names that match, break the ties */
+    return JOBS.map(function(j){var best=score(j[1],Q)+5,via='',hits=0;j[2].forEach(function(a,i){var s=score(a,Q);if(s)hits++;if(s&&i<j[3])s+=8;if(s>best){best=s;via=a}});if(best<=5)best=0;else best+=Math.min(12,hits*3);return{j:j,s:best,via:via}})
+      .filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s}).slice(0,8)
+      .map(function(x){return{j:x.j,via:x.via,html:'<b>'+esc(x.j[1])+'</b><small>'+(x.via?'matches “'+esc(x.via)+'” · ':'')+esc(x.j[0])+'</small>'}});
+  }
+  function pick(j,via,scroll){
+    job={c:j[0],t:j[1]};
+    $('#pickedT').textContent=j[1];$('#pickedM').textContent=(via?'matched “'+via+'” · ':'')+'O*NET '+j[0];
+    $('#askForm').hidden=true;$('#picked').hidden=false;
+    try{var u=new URL(location.href);u.searchParams.set('job',j[0]);history.replaceState(null,'',u)}catch(e){}
+    fetch(DATA+'w/'+j[0].slice(0,2)+'.json').then(function(r){return r.json()}).then(function(d){
+      base=(d[j[0]]||[]).map(function(t){return{t:t.t,s:t.s,m:t.m,j:t.j,r:t.r,c:t.c,u:t.u}});
+      var s=store.get(KEY,{}), ed=s.edits&&s.edits[j[0]];
+      tasks=base.map(function(t,i){var o=Object.assign({},t);if(ed&&ed[i]){o.m=ed[i][0];o.j=ed[i][1];o.r=ed[i][2];o.c=ed[i][3];o.u=ed[i][4]}return o});
+      s.code=j[0];store.set(KEY,s);
+      $('#hTitle').textContent=j[1];
+      document.body.classList.add('has-job');
+      step=0;refresh();
+      if(scroll)setTimeout(function(){$('#story').scrollIntoView({behavior:'smooth'})},60);
+    });
+  }
+  $('#change').addEventListener('click',function(){$('#picked').hidden=true;$('#askForm').hidden=false;var i=$('#jobq');i.value='';i.focus()});
+  K.combo($('#jobq'),$('#jobl'),search,function(it){pick(it.j,it.via,true)});
+  var QUICK=[['Management consultant','13-1111.00'],['Software developer','15-1252.00'],['Marketing manager','11-2021.00'],['Accountant','13-2011.00'],['Teacher','25-2031.00'],['Project manager','13-1082.00'],['Graphic designer','27-1024.00'],['Lawyer','23-1011.00']];
+  $('#quick').innerHTML=QUICK.map(function(q){return '<button type="button" data-c="'+q[1]+'">'+q[0]+'</button>'}).join('');
+  $('#quick').addEventListener('click',function(e){var b=e.target.closest('button[data-c]');if(!b||!JOBS)return;var j=JOBS.filter(function(x){return x[0]===b.dataset.c})[0];if(j)pick(j,b.textContent,true)});
+
+  fetch(DATA+'jobs.json').then(function(r){if(!r.ok)throw r;return r.json()}).catch(function(){$('#askForm .h').textContent='The job list did not load. Reload the page to try again.';return{jobs:[],avg:{auto:0}}}).then(function(d){
+    JOBS=d.jobs;AVG=d.avg;
+    var want=new URLSearchParams(location.search).get('job')||store.get(KEY,{}).code;
+    var j=want&&JOBS.filter(function(x){return x[0]===want})[0];if(j)pick(j,'',false);
+    if($('#jobq').value.trim())$('#jobq').dispatchEvent(new Event('input'));
+  });
+
+  /* ---------- layout mode, the rail, the K ---------- */
+  var mq=matchMedia('(max-width:1000px)');tall=mq.matches;
+  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(function(){tall=mq.matches;if(job&&tasks.length){hideTip();build()}});
+  new IntersectionObserver(function(es){es.forEach(function(e){document.body.classList.toggle('sc-in',e.isIntersecting)})}).observe($('#story'));
+
+  K.wbDefs();
+  (function(){var k=$('#kfig'),ln='',fx=320,fy=200,i,c=function(x,y,r,cls,op){return '<circle class="'+cls+'" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'"'+(op<1?' opacity="'+op.toFixed(2)+'"':'')+'/>'};
+    for(i=0;i<6;i++)ln+=c(40+i*50,fy,11,'f-none',1);
+    for(i=1;i<=7;i++){var t=i/7;ln+=c(fx+t*390,fy-t*150,11+t*15,i%3===0?'f-hum':'f-prob',1);ln+=c(fx+t*390,fy+t*130,Math.max(4,11-t*7),'f-det',1-t*.65)}
+    ln+='<path class="arw" d="M330 360 H700" marker-end="url(#ah)"/>';
+    k.innerHTML='<g class="ln" filter="url(#wob)">'+ln+'</g><g class="tx"><text x="160" y="248" class="s">a week of tasks</text><text x="560" y="30" class="s c-hum">you run the agent</text><text x="470" y="305" class="s c-det">the agent does the job</text><text x="515" y="350" class="s">as agents get better and cheaper</text></g>';
+  })();
 })();
 </script>
 </body>
