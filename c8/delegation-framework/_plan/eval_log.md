@@ -60,3 +60,5 @@ A sweep over the saved signals (live .5–.7, reach .2–.4, rule/criteria .3–
 - questions asked: rule 21, live 10, criteria 2, reach 2, split 1
 
 Caveat: thresholds were tuned and scored on the same 300 tasks, and the labels were drafted by a model, not two people. Write a fresh held-out set before trusting the number further.
+
+Then fence 0 (asked for fewer questions after a live software-engineer week still asked on 4 of 10): questions only when the two orderings disagree or no bucket reaches .6. Replay: same accuracy 95.3%, macro-F1 0.953, human recall 91.0%; unsure 3.0% (rule 4, criteria 2, live 2, reach 1, split 1).
