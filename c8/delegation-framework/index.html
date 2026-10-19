@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Delegation Framework | 100xEngineers</title>
-<meta name="description" content="Which of your tasks to hand to a personal AI agent and how far to let it run, worked on your own job: pick it from O*NET's 923 occupations, then measure, screen, start Accelerated, earn Autonomous. With a dated agent list for India.">
+<meta name="description" content="Which of your tasks to hand to a personal AI agent and how far to let it run, worked on your own week: name your job, write your tasks, and sort them by how the work can be checked: a rule, criteria you write, or you. With a dated agent list for India.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,10 +14,8 @@
 <script src="/c8/docs.js"></script>
 <script src="/c8/kit.js"></script>
 <style>
-[data-need-job]{display:none}
-body.has-job [data-need-job]{display:block}
-body.has-job span[data-need-job]{display:inline}
-body.has-job [data-no-job]{display:none}
+[data-need-job],[data-need-week]{display:none}
+body.has-job [data-need-job],body.has-week [data-need-week]{display:block}
 body.sc-in .rail{opacity:0!important;pointer-events:none}
 html,body{overflow-x:clip}
 .sc{width:100vw;margin:2.5em 0 0 calc(50% - 50vw);border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg)}
@@ -46,6 +44,35 @@ table.wk .n{font:700 11px var(--mono);color:var(--ink3);margin-right:6px}
 .gr{font-weight:500;white-space:nowrap}
 .gr.x{color:var(--ink3);text-decoration:line-through}
 body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 16px;font-size:16px}
+.trow{display:grid;grid-template-columns:22px minmax(0,1fr) 168px 112px 30px;gap:6px 8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.trows{border-top:1px solid var(--line);margin:0 0 14px}
+.trow .n,.ckrow .n{font:700 11px var(--mono);color:var(--ink3)}
+.trow input,.trow select,.ckrow input{width:100%;min-width:0;border:1px solid var(--line2);background:var(--bg);border-radius:8px;padding:8px 10px;font:15px var(--sans);color:var(--ink)}
+.trow .min{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink2)}
+.trow .min input{text-align:right;font:500 14px var(--mono)}
+.trow .x{border:0;background:none;color:var(--ink3);font-size:20px;line-height:1;padding:4px}
+.trow .x:hover{color:var(--ink)}
+.trow .res,.trow .asks{grid-column:2/-1;font-size:14px;color:var(--ink2);margin:0}
+.trow .asks{display:grid;gap:6px}
+.trow .asks div{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.trow .asks .yn{min-width:48px}
+.ynp{border:1px solid var(--line2);background:var(--card);border-radius:7px;min-width:48px;padding:3px 8px;font:500 12px var(--mono);color:var(--ink2)}
+.ynp[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+@media (max-width:640px){.trow{grid-template-columns:22px 1fr 1fr 30px}.trow .t{grid-column:2/-1}.trow select{grid-column:2}.trow .min{grid-column:3}.trow .x{grid-column:4;grid-row:2}}
+.sugg{margin:4px 0 18px}.sugg .h{font-size:14px;color:var(--ink2);margin:0}
+.sugg .quick button{text-align:left}
+.sortrow{margin:18px 0 6px}
+.sortrow .muted,.ckmsg{font-size:14px}
+.priv{font-size:13.5px;margin:0 0 1em}
+.ckrow{display:grid;grid-template-columns:22px 1fr;gap:6px 8px;padding:14px 0;border-bottom:1px solid var(--line)}
+.ckrow>*:not(.n){grid-column:2}
+.ckrow b{font-weight:500}
+.ckrow label{font-size:14px;color:var(--ink2)}
+.ckrow .crit{display:grid;gap:6px}
+.ckrow .note{font-size:14px;margin:0;color:var(--ink2)}
+.ckrow .note.ok{color:var(--hum-ink)}
+.ckrow .btn{justify-self:start;padding:5px 11px;font-size:13px}
+table.wk select{border:1px solid var(--line2);background:var(--bg);border-radius:7px;padding:4px 6px;font:500 13px var(--sans);color:var(--ink)}
 </style>
 </head>
 <body data-page="delegation-framework" class="read">
@@ -68,8 +95,8 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
   <div class="ask" id="ask">
     <div id="askForm">
       <p class="askq"><label for="jobq">What do you do?</label></p>
-      <p class="h">Type it the way you would say it, then pick the closest job from O*NET's list of 923.</p>
-      <div class="combo"><input id="jobq" type="text" autocomplete="off" spellcheck="false" placeholder="For example: management consultant"><ul id="jobl" hidden></ul></div>
+      <p class="h">Type it the way you would say it and press Enter. Picking a close O*NET job only adds task suggestions.</p>
+      <div class="combo"><input id="jobq" type="text" autocomplete="off" spellcheck="false" maxlength="80" placeholder="For example: CA articleship, kirana store owner, product manager"><ul id="jobl" hidden></ul></div>
       <div class="quick" id="quick" aria-label="Common jobs"></div>
     </div>
     <div class="picked" id="picked" hidden>
@@ -79,7 +106,24 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
   </div>
 </section>
 
-<section class="sc" id="story" aria-label="Your week, task by task" data-need-job>
+<section class="s" id="tasks" data-need-job>
+  <h2>Write your week</h2>
+  <p>One line per task, the way you would log it: "send the weekly sales summary to the regional head", not "reporting". Up to 12, with how often and how long each time.</p>
+  <div class="trows" id="rows"></div>
+  <div class="btnrow"><button type="button" class="btn ghost" id="addRow">Add a task</button><button type="button" class="btn ghost" id="onet" hidden>Start from O*NET's list for this job</button></div>
+  <div class="sugg" id="suggW" hidden><p class="h">Tap a suggestion to add it, then edit it to match your week.</p><div class="quick" id="sugg"></div></div>
+  <div class="btnrow sortrow"><button type="button" class="btn" id="sort">Sort my tasks</button><span class="muted" id="sortMsg" aria-live="polite"></span></div>
+  <p class="muted priv">Your tasks are sent to TypeSafe's Jev to be sorted. This page doesn't store them, and TypeSafe doesn't train on them.</p>
+</section>
+
+<section class="s" id="checks" data-need-week>
+  <h2>How you'd check each one</h2>
+  <p>No written check, no delegation. An amber task gets a rule. A violet one gets up to three criteria a judge can apply the same way every time. Jev tests each check; a violet task stays green until its criteria are clear.</p>
+  <div id="ck"></div>
+  <div class="btnrow sortrow"><button type="button" class="btn" id="testCk">Test my checks</button><span class="muted ckmsg" id="ckMsg" aria-live="polite"></span></div>
+</section>
+
+<section class="sc" id="story" aria-label="Your week, task by task" data-need-week>
   <div class="sc-stage" id="stage" data-step="0">
     <div class="sc-head"><b id="hTitle"></b><span id="hHrs"></span></div>
     <div class="sc-viz" id="viz"></div>
@@ -93,11 +137,11 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
   <div class="sc-steps" id="steps"></div>
 </section>
 
-<section class="s" id="yours" data-need-job>
+<section class="s" id="yours" data-need-week>
   <h2>Your week, task by task</h2>
-  <p>The defaults come from each task's wording in O*NET. You know your week better: set the minutes from your log and flip any answer. The map above follows.</p>
+  <p>Jev's colours are a starting point. You know your week better: change any colour, and say whether a mistake is cheap to undo. The map above follows.</p>
   <div class="tw"><table class="wk" id="wk"></table></div>
-  <div class="wkft"><span id="wkSum"></span><button type="button" class="btn ghost" id="wkReset">Back to O*NET's answers</button></div>
+  <div class="wkft"><span id="wkSum"></span><button type="button" class="btn ghost" id="wkReset">Back to Jev's answers</button><button type="button" class="btn ghost" id="copy">Copy link to this week</button></div>
 </section>
 
 <section class="s" id="card">
@@ -105,12 +149,12 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
   <p>Ask four questions of every task, in order. Each one only matters once the one before it holds.</p>
   <ol class="rules">
     <li><span class="n">1</span><span>Did you log it for a real week?</span><span class="then">If not, log first</span></li>
-    <li><span class="n">2</span><span>Could a junior sign it, can the agent reach the inputs, and can you check it in two minutes?</span><span class="then"><span class="chipd hum"></span>If not, it stays with you</span></li>
+    <li><span class="n">2</span><span>How would you check a finished one? Write it down: a rule a program could run, or criteria two reviewers would agree on.</span><span class="then"><span class="chipd hum"></span>If neither, it stays with you</span></li>
     <li><span class="n">3</span><span>Is a mistake easy to undo and kept away from clients, money and other people's numbers?</span><span class="then"><span class="chipd prob"></span>If not, Accelerated at most</span></li>
     <li><span class="n">4</span><span>Did it pass 8 of 10 on your own tasks in the last 60 days?</span><span class="then"><span class="chipd prob"></span>If not, Accelerated for now</span></li>
-    <li class="end"><span class="n"></span><span><span class="chipd det"></span>Four yeses: it may run Autonomous. Expect <span class="chipd new"></span>new work for checking it.</span></li>
+    <li class="end"><span class="n"></span><span><span class="chipd det"></span>A rule and four yeses: it may run Autonomous. Criteria instead of a rule: Accelerated, with a judge applying them. Expect <span class="chipd new"></span>new work for checking it.</span></li>
   </ol>
-  <p class="muted">The colours are the map's. Amber is deterministic: a rule checks it. Violet is probabilistic: the output varies, so you judge each one. Green is human. Coral is what you do next.</p>
+  <p class="muted">The colours are the map's. Amber is deterministic: a rule checks it. Violet is probabilistic: several good versions, judged against criteria you wrote. Green is human: nothing reliable checks it, because it is live, by hand, signed by you or shows up much later. Coral is what you do next.</p>
 </section>
 
 <section class="s" id="k">
@@ -119,7 +163,7 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
   <figure class="wbx">
     <svg class="wb" id="kfig" viewBox="0 0 760 380" role="img" aria-label="A K drawn on a whiteboard. A row of grey circles runs in from the left and splits. The upper arm rises with circles that grow, green and violet: you run the agent. The lower arm falls with amber circles that shrink and fade: the agent does the job."></svg>
   </figure>
-  <p class="you" id="kYou" data-need-job></p>
+  <p class="you" id="kYou" data-need-week></p>
   <h3>Second-order effects</h3>
   <ol class="fx">
     <li><b>Checkable work gets cheap.</b> Jason Wei's <a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Verifier's law</a>: "The ease of training AI to solve a task is proportional to how verifiable the task is. All tasks that are possible to solve and easy to verify will be solved by AI." So anything you can check in two minutes heads toward the agent's price. Pay moves to what can't be checked: judgment, accountability, a name on the decision.</li>
@@ -146,11 +190,13 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
     <tr><td>Instinct</td><td>No, invite-only beta</td><td>n/a</td><td><span class="gr x">Excluded</span></td></tr>
   </table></div>
   <p class="muted">Outside the set, the <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">same test lab</a> scored Claude Cowork 9.3 and ChatGPT Work 9.15. They are session tools, not always-on agents; test them too if your work is mostly documents.</p>
-  <div class="call" data-need-job><p class="kick">For your week</p><p id="agentYou"></p></div>
+  <div class="call" data-need-week><p class="kick">For your week</p><p id="agentYou"></p></div>
 
   <details class="words"><summary>Sources, all opened 18 Oct 2026</summary>
   <dl>
-    <div><dt>O*NET</dt><dd>Jobs, tasks, importance and frequency ratings from the <a href="https://www.onetcenter.org/database.html" target="_blank" rel="noopener">O*NET 31.0 Database</a> by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> license. O*NET® is a trademark of USDOL/ETA. The minutes and the screen's default answers are this page's own estimates from those ratings and the task wording; USDOL/ETA has not approved or endorsed them.</dd></div>
+    <div><dt>Sorting</dt><dd>Each task goes to <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">TypeSafe's Jev 1.13</a> (pinned to jev-1.13.0) with seven narrow questions: the three-bucket question asked twice with the options in opposite orders, then whether a fixed rule could check it, whether criteria could be written, whether it happens live, by hand or under a signature, whether an agent could reach the inputs, and whether a mistake could be undone. The page's code combines the answers; when they disagree or sit near the middle, it asks you instead of guessing. Each check you write goes back to Jev to test whether it is a rule, clear criteria, and about the task. Jev reads literally and can be wrong: override any colour when you know better.<!-- add the gold-set score from _plan/eval_log.md once the eval has run --></dd></div>
+    <div><dt>Suggestions</dt><dd>Task suggestions come from O*NET (below) and a bank of about 1,500 tasks written for this page for Indian and global roles.</dd></div>
+    <div><dt>O*NET</dt><dd>Jobs, tasks, importance and frequency ratings from the <a href="https://www.onetcenter.org/database.html" target="_blank" rel="noopener">O*NET 31.0 Database</a> by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> license. O*NET® is a trademark of USDOL/ETA. The suggested minutes, and the default answers used when Jev can't be reached, are this page's own estimates from those ratings and the task wording; USDOL/ETA has not approved or endorsed them.</dd></div>
     <div><dt>Economic Index</dt><dd><a href="https://www.anthropic.com/research/anthropic-economic-index-january-2026-report" target="_blank" rel="noopener">Economic primitives, Jan 2026</a> · <a href="https://www.anthropic.com/research/economic-index-march-2026-report" target="_blank" rel="noopener">Learning curves, Mar 2026</a> · <a href="https://www.anthropic.com/research/economic-index-june-2026-report" target="_blank" rel="noopener">Cadences, Jun 2026</a> · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">open dataset</a></dd></div>
     <div><dt>Verifier's law</dt><dd><a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Jason Wei, Asymmetry of verification and verifier's law</a>. The K and its other second-order effects are this page's own argument.</dd></div>
     <div><dt>Comparisons</dt><dd><a href="https://every.to/personal-agents-comparison" target="_blank" rel="noopener">Every: personal agents compared</a> · <a href="https://www.aiagentslibrary.com/ai-agent-test-lab/" target="_blank" rel="noopener">AI Agents Library test lab</a> · <a href="https://www.aiagentslibrary.com/blog/openai-dots-vs-gemini-spark-vs-meta-muse/" target="_blank" rel="noopener">Dots vs Spark vs Muse</a> · <a href="https://www.fastcompany.com/91620082/openai-dots-agent-review" target="_blank" rel="noopener">Fast Company on Dots</a></dd></div>
@@ -165,18 +211,42 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
 </section>
 </main>
 </div>
-<footer><div class="wrap"><span>100xEngineers · Delegation Framework for Personal AI Agents</span><span>Job data: O*NET 31.0, USDOL/ETA, CC BY 4.0</span></div></footer>
+<footer><div class="wrap"><span>100xEngineers · Delegation Framework for Personal AI Agents</span><span>Sorted by TypeSafe Jev 1.13 · Suggestions: O*NET 31.0, CC BY 4.0</span></div></footer>
 
 <script>
 (function(){
   var K=C8Kit, $=function(s){return document.querySelector(s)}, esc=K.esc;
-  var DATA='/c8/delegation-framework/data/', KEY='c8.delegate';
+  var DATA='/c8/delegation-framework/data/', API='/api/verify', KEY='c8.delegate.week';
   var store=window.c8store||{get:function(k,d){return d},set:function(){}};
-  var JOBS=null, AVG=null, job=null, base=[], tasks=[], step=0, tall=false, spy=null;
+  var JOBS=null, AVG=null, BANK=[], job=null, onetTasks=[], tasks=[], week=[], step=0, tall=false, spy=null, MAX=12;
 
-  /* ---------- the screen ---------- */
-  function kind(t){return !(t.j&&t.r&&t.c)?'stay':t.u?'auto':'acc'}
-  function why(t){return !t.r?(/\b(confer|meet|interview|consult|discuss|teach|instruct|train|greet|present|represent|counsel|attend|participate|collaborate|visit|sell)\b/i.test(t.t)?'happens live, with people':'hands-on'):!t.j?'a judgment':!t.c?'can’t check in 2 min':''}
+  /* ---------- the three buckets, combined in code: the same decide() as api/verify.mjs ---------- */
+  var OFTEN=[['daily','Daily',5],['few_week','A few times a week',3],['weekly','Weekly',1],['monthly','Monthly',.25],['quarterly','Quarterly',.08]], PER={};
+  OFTEN.forEach(function(o){PER[o[0]]=o[2]});
+  var REASON={rule:'a rule can check it',criteria:'you can write the criteria',hum:'the quality can’t be written as criteria',live:'happens live, by hand or under your signature',reach:'the agent can’t reach every input',norule:'no fixed rule checks it, so it needs judgement',nocriteria:'the criteria aren’t clear enough to write down'};
+  var ASKQ={live:'Does it happen live with people, by hand, or need your signature?',reach:'Could an agent on a computer get every input it needs?',rule:'Could a program check a finished one with a fixed pass/fail rule?',criteria:'Could you write down what makes it good, so two reviewers would agree?',split:'Is this one specific task you repeat?'};
+  function argmax(p){return Object.keys(p).reduce(function(a,b){return p[b]>p[a]?b:a})}
+  /* a 0 or 1 is a person's answer and outranks Jev */
+  function decide(s){
+    var b=argmax(s.p), why=b==='det'?'rule':b==='prob'?'criteria':'hum';
+    if(s.live>.6)return{bucket:'hum',why:'live'};
+    if(s.reach<.4)return{bucket:'hum',why:'reach'};
+    if(s.rule===1)return{bucket:'det',why:'rule'};
+    if(s.criteria===1&&b==='hum'){b='prob';why='criteria'}
+    if(b==='det'&&s.rule<.4){b='prob';why='norule'}
+    if(b==='prob'&&s.criteria<.4){b='hum';why='nocriteria'}
+    return{bucket:b,why:why};
+  }
+  function undoCheap(t){return t.u!=null?!!t.u:t.undo!=null?t.undo>=.6:false}
+  /* level: green stays; violet needs verified criteria; amber needs a verified rule and a cheap undo to run alone */
+  function kind(t){return t.b==='hum'?'stay':t.b==='prob'?(t.ver?'acc':'stay'):t.ver&&undoCheap(t)?'auto':'acc'}
+  function why(t){return t.b==='prob'&&!t.ver?'no written criteria yet':t.reason||'nothing reliable checks it'}
+  function perWeek(t){return Math.round((+t.e||0)*(PER[t.f]||1))}
+  /* a short name for pins and prose: whole words, no dangling "for the" */
+  function short(x){x=x.replace(/\s+/g,' ').trim();if(x.length<=52)return x;var w=x.slice(0,53).split(' ');w.pop();while(w.length>2&&/^(a|an|the|for|with|to|of|and|in|on|from|by|at|per|into|or)$/i.test(w[w.length-1]))w.pop();return w.join(' ')}
+  function chkText(t){return t.b==='det'?(t.chk||'').trim():(t.chk||'').split('\n').map(function(x){return x.trim()}).filter(Boolean).join(' ; ')}
+  function sorted(t){return t.t.trim()&&t.b}
+
   function after(t){var k=kind(t);return k==='acc'?r5(t.m*.6):k==='auto'?Math.max(5,r5(t.m*.15)):t.m}
   function r5(m){return Math.max(5,Math.round(m/5)*5)}
   function fmt(m){if(m<60)return m+' min';var h=Math.floor(m/60),r=m%60;return h+' h'+(r?' '+r:'')}
@@ -185,7 +255,7 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
   function lc(s){return s.charAt(0).toLowerCase()+s.slice(1)}
   function list(a,cap){a=a.map(function(x,i){return '<b>'+esc(cap&&!i?x:lc(x))+'</b>'});return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1]}
   function plural(n,one,many){return n+' '+(n===1?one:many)}
-  function newWork(){var moved=tasks.filter(function(t){return kind(t)!=='stay'}).length;if(!moved)return[];
+  function newWork(){var moved=week.filter(function(t){return kind(t)!=='stay'}).length;if(!moved)return[];
     return[{s:'Score the test runs',t:'Score ten test runs per task type, in the tool you use.',m:Math.max(30,moved*5),k:'new'},{s:'Re-test the agent',t:'Re-test when the agent changes its model, connectors or pricing.',m:15,k:'new'}]}
 
   /* ---------- the map: three territories in the curriculum's colours ---------- */
@@ -193,7 +263,7 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
     wide:{vb:[960,600],T:{det:[165,340,128,160],prob:[478,330,172,195],hum:[790,340,140,170]},R:30,r0:13,fs:12.5,lh:15,max:4,ch:17},
     tall:{vb:[600,720],T:{det:[155,215,138,125],prob:[300,530,272,150],hum:[448,215,142,125]},R:40,r0:17,fs:20,lh:22,max:3,ch:15}
   };
-  var TER={det:{name:'Autonomous',sub:'Deterministic · it runs alone',q:'A rule checks it: 8 of 10'},prob:{name:'Accelerated',sub:'Probabilistic · it does, you commit',q:'You judge every output'},hum:{name:'Stays with you',sub:'Human · a judgment, live or hands-on',q:'One no is enough'}};
+  var TER={det:{name:'Autonomous',sub:'Deterministic · a rule checks it',q:'It runs alone after 8 of 10'},prob:{name:'Accelerated',sub:'It does, you commit',q:'A judge or you check each one'},hum:{name:'Stays with you',sub:'Human · nothing reliable checks it',q:'Live, by hand, signed or slow'}};
   var svg, pinEls=[], terrEls={};
   function wrap(s,n){var w=s.split(' '),out=[''];w.forEach(function(x){var l=out[out.length-1];if((l+' '+x).trim().length>n&&l){if(out.length===2){out[1]+='…';out.push(null)}else out.push(x)}else if(out.length<3)out[out.length-1]=(l+' '+x).trim()});return out.filter(function(x){return x!==null}).slice(0,2)}
 
@@ -203,11 +273,11 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
     svg=K.svg('svg',{viewBox:'0 0 '+L.vb.join(' '),preserveAspectRatio:'xMidYMid meet',role:'group','aria-label':'Your tasks as pins on a map of three territories'},viz);
     svg.classList.toggle('tall',tall);viz.classList.toggle('tall',tall);
     var land=K.svg('g',{},svg);
-    var p=L.T.prob;terrEls.none=K.terrain(land,{cx:p[0],cy:p[1],rx:p[2],ry:p[3],seed:5,c:'var(--ink3)',soft:'var(--bg2)',cls:'none',name:'Your week',sub:'O*NET 31.0 · top 12 tasks'});
+    var p=L.T.prob;terrEls.none=K.terrain(land,{cx:p[0],cy:p[1],rx:p[2],ry:p[3],seed:5,c:'var(--ink3)',soft:'var(--bg2)',cls:'none',name:'Your week',sub:plural(week.length,'task','tasks')+', in your words'});
     var ly=Math.min.apply(null,['det','prob','hum'].map(function(k){return L.T[k][1]-L.T[k][3]}))-(tall?34:52);
     ['det','prob','hum'].forEach(function(k,i){var t=L.T[k];terrEls[k]=K.terrain(land,{ly:tall?null:ly,cx:t[0],cy:t[1],rx:t[2],ry:t[3],seed:[23,37,61][i],c:'var(--'+k+')',soft:'var(--'+k+'-soft)',cls:k,name:TER[k].name,sub:tall?'':TER[k].sub,q:tall?'':TER[k].q})});
     var g=K.svg('g',{},svg);
-    pinEls=tasks.concat(newWork()).map(function(t,i){
+    pinEls=week.concat(newWork()).map(function(t,i){
       var e=K.svg('g',{'class':'pinx',tabindex:'0','data-i':i},g);
       var d=K.svg('g',{'class':'dot'},e);K.svg('circle',{r:10},d);
       var n=K.svg('text',{'class':'num'},e);n.textContent=t.k==='new'?'+':(i+1);
@@ -219,8 +289,8 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
 
   /* where every pin sits at a step: grouped by territory, packed inside it, labels on the biggest */
   function layout(s){
-    var L=LAY[tall?'tall':'wide'], all=tasks.concat(newWork()), groups={}, out=[];
-    var maxM=Math.max.apply(null,all.map(function(t){return t.m}));
+    var L=LAY[tall?'tall':'wide'], all=week.concat(newWork()), groups={}, out=[];
+    var maxM=Math.max.apply(null,all.map(function(t){return t.m}).concat([1]));
     all.forEach(function(t,i){
       var k=t.k==='new'?'new':kind(t), ter=s<2?'none':s===2?(k==='stay'?'hum':'none'):k==='stay'||k==='new'?'hum':k==='auto'&&s>=4?'det':'prob';
       var m=s>=6?after(t):t.m, r=s===0?L.r0:Math.max(L.r0*(t.k==='new'?.8:.55),L.R*Math.sqrt(m/maxM));
@@ -266,8 +336,8 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
       e.setAttribute('aria-label',o.t.s+', '+fmt(o.m)+(o.meta&&!/min|h /.test(o.meta)?', '+o.meta:''));
       if(instant){e.getBoundingClientRect();e.style.transition=''}
     });
-    var before=sum(tasks,function(t){return t.m})+(s>=5?sum(newWork(),function(t){return t.m}):0), aft=sum(tasks,after)+sum(newWork(),function(t){return t.m});
-    $('#hHrs').textContent=s===0?'12 tasks':s<6?hrs(before)+' a week':hrs(sum(tasks,function(t){return t.m}))+' → '+hrs(aft)+' a week';
+    var before=sum(week,function(t){return t.m})+(s>=5?sum(newWork(),function(t){return t.m}):0), aft=sum(week,after)+sum(newWork(),function(t){return t.m});
+    $('#hHrs').textContent=s===0?plural(week.length,'task','tasks'):s<6?hrs(before)+' a week':hrs(sum(week,function(t){return t.m}))+' → '+hrs(aft)+' a week';
   }
 
   /* tooltip on hover, focus or tap */
@@ -282,118 +352,262 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
   ['mouseout','focusout'].forEach(function(ev){$('#viz').addEventListener(ev,function(e){if(e.target.closest('.pinx'))hideTip()})});
   $('#viz').addEventListener('click',function(e){var p=e.target.closest('.pinx');if(p)showTip(p);else hideTip()});
 
-  /* ---------- the cards, written from the chosen job ---------- */
+  /* ---------- the cards, written from the learner's own week ---------- */
   function cards(){
-    var N=tasks.length, by=function(k){return tasks.filter(function(t){return kind(t)===k})}, stay=by('stay'), acc=by('acc'), auto=by('auto'), moved=acc.concat(auto);
-    var sorted=tasks.slice().sort(function(a,b){return b.m-a.m}), nw=newWork(), title=esc(job.t);
-    var reasons={}, R=['a judgment','hands-on','happens live, with people','can’t check in 2 min'];
-    stay.forEach(function(t){var w=why(t);reasons[w]=(reasons[w]||0)+1});
-    var rtxt=R.filter(function(r){return reasons[r]}).map(function(r){var n=reasons[r];return r==='a judgment'?plural(n,'is a judgment','are judgments').replace(/^(\d+) is/,'$1 is'):r==='hands-on'?n+' '+(n===1?'is':'are')+' hands-on':r==='happens live, with people'?n+' '+(n===1?'happens':'happen')+' live, with people':n+' '+(n===1?'takes':'take')+' longer than two minutes to check'});
-    var saved=sum(tasks,function(t){return t.m})-sum(tasks,after)-sum(nw,function(t){return t.m});
+    var N=week.length, by=function(k){return week.filter(function(t){return kind(t)===k})}, stay=by('stay'), acc=by('acc'), auto=by('auto'), moved=acc.concat(auto);
+    var sorted=week.slice().sort(function(a,b){return b.m-a.m}), nw=newWork(), title=esc(job.t);
+    var reasons={};stay.forEach(function(t){var w=why(t);reasons[w]=(reasons[w]||0)+1});
+    var rtxt=Object.keys(reasons).sort(function(a,b){return reasons[b]-reasons[a]}).map(function(r){return reasons[r]+': '+r});
+    var saved=sum(week,function(t){return t.m})-sum(week,after)-sum(nw,function(t){return t.m});
     var top=moved.slice().sort(function(a,b){return (b.m-after(b))-(a.m-after(a))}).slice(0,2).map(function(t){return t.s});
+    var amb=week.filter(function(t){return t.b==='det'}), vio=week.filter(function(t){return t.b==='prob'});
     var C=[
-      ['Your week','Think of a week in this job',
-       '<p>Any job is a bundle of tasks. O*NET surveyed people who work as '+title+'; these are the twelve tasks that matter most to them, from '+list([sorted[0].s])+' to '+list([sorted[N-1].s])+'.</p><p>An agent can change each task in one of three ways, or leave it alone.</p><p class="fn">Tap any pin for the full task. Minutes are an estimate from how often and how important each task is; set your own <a href="#yours">below</a>.</p>'],
+      ['Your week','Think of a week as '+(/^(a|an|the)\s/i.test(job.t)?'':'a ')+title,
+       '<p>Any job is a bundle of tasks. These are the '+plural(N,'task','tasks')+' you wrote, from '+list([sorted[0].s])+(N>1?' to '+list([sorted[N-1].s]):'')+'.</p><p>An agent can change each task in one of three ways, or leave it alone.</p><p class="fn">Tap any pin for the full task. Change any answer <a href="#yours">below</a>.</p>'],
       ['Measure','First, measure one real week',
-       '<p>Log each task as it ends: how often, how many minutes. Estimate nothing. You can only save time you measured.</p><p>Each pin is now sized by hours a week. '+list([sorted[0].s],1)+' is the biggest at '+fmt(sorted[0].m)+'; '+list([sorted[N-1].s])+' is the smallest.</p><p class="fn">One task per line: "weekly client status email", not "reporting". Below once a week, setup usually costs more than it saves.</p>'],
-      ['Screen','Some tasks stay yours',
-       '<p>Three questions, and one no is enough. Could a junior sign the output, or is it a judgment you are held to? Can the agent reach the inputs from a screen? Can you check its work in two minutes?</p>'+
-       (stay.length?'<p>'+(stay.length===N?'All '+N+' fail':stay.length+' of '+N+' fail')+'. '+rtxt.join(', ').replace(/^(\w)/,function(c){return c.toUpperCase()})+'.</p>':'<p>None fail on these answers. Check that against your own week.</p>')+
-       '<p class="fn"><span class="chipd hum"></span>Green, as on the map: human. The answers are defaults read from each task\'s wording; change any of them in <a href="#yours">your week, task by task</a>.</p>'],
+       '<p>Log each task as it ends: how often, how many minutes. Estimate nothing. You can only save time you measured.</p><p>Each pin is now sized by hours a week. '+list([sorted[0].s],1)+' is the biggest at '+fmt(sorted[0].m)+(N>1?'; '+list([sorted[N-1].s])+' is the smallest':'')+'.</p><p class="fn">Below once a week, setup usually costs more than it saves.</p>'],
+      ['Sort','Some tasks stay yours',
+       '<p>Sort each task by how a finished one can be checked. A rule a program could run: amber. Criteria you can write down, so two reviewers agree: violet. Nothing reliable, because it happens live, by hand, under your signature or shows up much later: green.</p>'+
+       (stay.length?'<p>'+(stay.length===N?'All '+N+' stay':stay.length+' of '+N+' stay')+'. '+esc(rtxt.join(' · ')).replace(/^(\w)/,function(c){return c.toUpperCase()})+'.</p>':'<p>None stay on these answers. Check that against your own week.</p>')+
+       '<p class="fn"><span class="chipd hum"></span>Green, as on the map: human. A violet task without written criteria stays green until you <a href="#checks">write them</a>.</p>'],
       ['Accelerated','Everything else starts Accelerated',
-       moved.length?'<p>'+plural(moved.length,'task passes','tasks pass')+', '+list(moved.slice(0,2).map(function(t){return t.s}))+' among them. The agent does the work and stops before the step that commits. It drafts, you send. It finds, you book. It ranks, you act.</p><p class="fn"><span class="chipd prob"></span>Violet, as on the map: probabilistic. The output varies, so you judge every one. Accelerated is where every passing task begins, however good the agent looks in a demo.</p>'
-       :'<p>Nothing passes the screen, so nothing moves. That is an answer too: an agent buys you little in this job today, until you split a task into a part it can reach.</p>'],
+       moved.length?'<p>'+plural(moved.length,'task moves','tasks move')+', '+list(moved.slice(0,2).map(function(t){return t.s}))+' among them. The agent does the work and stops before the step that commits. It drafts, you send. It finds, you book. It ranks, you act.</p><p class="fn"><span class="chipd prob"></span>Violet tasks stay here: a judge applies your criteria to every output and you spot-check. Accelerated is where every task begins, however good the agent looks in a demo.</p>'
+       :'<p>Nothing moves yet. '+(vio.length?'Write the criteria for your violet tasks and they will.':'That is an answer too: an agent buys you little in this week, until you split a task into a part a rule or criteria can check.')+'</p>'],
       ['Autonomous','A few earn the right to run alone',
-       '<p>Two things must hold. A mistake is cheap: easy to undo, and it touches no client, money or anyone else\'s numbers. And the agent proved it: 8 of 10 runs on your own tasks, checked in the tool you use.</p>'+
-       (auto.length?'<p>'+list(auto.map(function(t){return t.s}),1)+' '+(auto.length===1?'qualifies':'qualify')+': read-only work that leaves nothing behind if it goes wrong.'+(acc.length?' Nothing that sends, signs or changes a record does.':'')+'</p>':moved.length?'<p>None of your tasks qualifies yet: each one sends, changes or signs something. They stay Accelerated, and that is fine.</p>':'<p>With nothing Accelerated, nothing can earn it.</p>')+
-       '<p class="fn"><span class="chipd det"></span>Amber, as on the map: deterministic, a rule checks it. The bar is per task type and expires after 60 days, or sooner when the agent changes its model, connectors or pricing. A smarter agent moves no pin; a cleaner undo does.</p>'],
+       '<p>Three things must hold. A rule checks it, so a program can say pass or fail. A mistake is cheap: easy to undo, and it touches no client, money or anyone else\'s numbers. And the agent proved it: 8 of 10 runs on your own tasks.</p>'+
+       (auto.length?'<p>'+list(auto.map(function(t){return t.s}),1)+' '+(auto.length===1?'qualifies':'qualify')+'.</p>':amb.length?'<p>None qualifies yet: '+(amb.some(function(t){return !t.ver})?'write and test the rule for your amber tasks, and ':'')+'check that a mistake is cheap to undo. Until then they stay Accelerated, and that is fine.</p>':'<p>None of your tasks has a rule that checks it, so none runs alone.</p>')+
+       '<p class="fn"><span class="chipd det"></span>Amber, as on the map: deterministic. The bar is per task type and expires after 60 days, or sooner when the agent changes its model, connectors or pricing. A smarter agent moves no pin; a cleaner undo does.</p>'],
       ['New work','Handing work over creates work',
        nw.length?'<p>Someone scores the test runs, and someone re-tests when the agent changes. That is new work, and it is yours: about '+fmt(sum(nw,function(t){return t.m}))+' a week.</p><p class="fn"><span class="chipd new"></span>Coral, as on the map: what you do next.</p>':'<p>Nothing moved, so there is nothing to score. If you change an answer below, this card changes too.</p>'],
       ['Result','The result: the week changes',
        (saved>0?'<p>About '+hrs(saved)+' a week come back, most of it from '+list(top)+'. The '+plural(stay.length,'task','tasks')+' that stay '+(stay.length===1?'is':'are')+' as big as before.</p><p>That is the point. The hours go to the work only you can sign.</p>':'<p>Little comes back this week: the checking costs about what the agent saves. The win here is smaller than a demo suggests, and that is worth knowing before you pay for one.</p>')+
-       '<p class="fn">Keep the log running for a month after you hand anything over. A test cannot show multi-week reliability. Not your week? <a href="#yours">Change any task</a>.</p>']
+       '<p class="fn">Keep the log running for a month after you hand anything over. A test cannot show multi-week reliability. Not your week? <a href="#tasks">Change any task</a>.</p>']
     ];
     $('#steps').innerHTML=C.map(function(c,i){return '<div class="sc-step" data-step="'+i+'"><div class="sc-card"><span class="k">'+(i+1)+' of 7 · '+c[0]+'</span><h2>'+c[1]+'</h2>'+c[2]+'</div></div>'}).join('');
     if(spy)spy.disconnect();
     spy=K.scrolly([].slice.call(document.querySelectorAll('#steps .sc-step')),function(n){if(n!==step)render(n)});
   }
 
-  /* ---------- worksheet ---------- */
-  var Q=[['j','Junior signs','Could a junior sign it'],['r','Reachable','Can the agent reach the inputs'],['c','2-min check','Can you check it in two minutes'],['u','Undo cheap','Is a mistake cheap to undo']];
-  var PILL={stay:'<span class="pill hum">Stays</span>',acc:'<span class="pill prob">Accelerated</span>',auto:'<span class="pill det">Autonomous</span>'};
-  function sheet(){
-    $('#wk').innerHTML='<tr><th>Task</th><th>Min/wk</th>'+Q.map(function(q){return '<th title="'+q[2]+'?">'+q[1]+'</th>'}).join('')+'<th>Result</th></tr>'+
-      tasks.map(function(t,i){var screened=t.j&&t.r&&t.c;return '<tr><td><b><span class="n">'+(i+1)+'</span>'+esc(t.s)+'</b><small title="'+esc(t.t)+'">'+esc(t.t)+'</small></td><td><input type="number" min="0" step="15" value="'+t.m+'" data-i="'+i+'" aria-label="Minutes a week for '+esc(t.s)+'"></td>'+
-        Q.map(function(q){var dis=q[0]==='u'&&!screened;return '<td><button type="button" class="yn" data-i="'+i+'" data-q="'+q[0]+'" aria-pressed="'+(t[q[0]]?'true':'false')+'"'+(dis?' disabled':'')+' aria-label="'+q[2]+'? '+esc(t.s)+'">'+(t[q[0]]?'Yes':'No')+'</button></td>'}).join('')+
-        '<td>'+PILL[kind(t)]+'</td></tr>'}).join('');
-    var tot=sum(tasks,function(t){return t.m});
-    $('#wkSum').textContent=hrs(tot)+' logged across '+tasks.length+' tasks · '+tasks.filter(function(t){return kind(t)!=='stay'}).length+' can move';
+  /* ---------- write your week: the task rows ---------- */
+  var PILL={det:'<span class="pill det">Amber</span>',prob:'<span class="pill prob">Violet</span>',hum:'<span class="pill hum">Green</span>'};
+  function blank(){return{t:'',f:'weekly',e:30}}
+  function rows(){
+    var opts=function(v){return OFTEN.map(function(o){return '<option value="'+o[0]+'"'+(o[0]===v?' selected':'')+'>'+o[1]+'</option>'}).join('')};
+    $('#rows').innerHTML=tasks.map(function(t,i){
+      var res='', asks='';
+      if(t.b){res='<p class="res">'+PILL[t.b]+' '+esc(t.reason||'')+(t.src==='you'?' · your answers':t.ask&&t.ask.length?(t.ask.every(function(k){return t.ans&&t.ans[k]!=null})?' · with your answer':' · Jev is unsure, so it asks you'):'')+'</p>';
+        if(t.ask&&t.ask.length)asks='<div class="asks">'+t.ask.map(function(k){var a=t.ans&&t.ans[k];
+          return '<div><span>'+esc(ASKQ[k])+'</span><button type="button" class="ynp" data-i="'+i+'" data-k="'+k+'" data-v="1" aria-pressed="'+(a===1)+'">Yes</button><button type="button" class="ynp" data-i="'+i+'" data-k="'+k+'" data-v="0" aria-pressed="'+(a===0)+'">No</button>'+(k==='split'&&a===0?'<span class="muted">Split it into two lines, one per task, and sort again.</span>':'')+'</div>'}).join('')+'</div>'}
+      return '<div class="trow" data-i="'+i+'"><span class="n">'+(i+1)+'</span>'+
+        '<input class="t" type="text" maxlength="200" value="'+esc(t.t)+'" data-f="t" placeholder="'+(i?'Another task':'For example: reconcile GSTR-2B with the purchase register')+'" aria-label="Task '+(i+1)+'">'+
+        '<select data-f="f" aria-label="How often">'+opts(t.f)+'</select>'+
+        '<label class="min"><input type="number" min="0" max="600" step="5" value="'+t.e+'" data-f="e" aria-label="Minutes each time">min</label>'+
+        '<button type="button" class="x" data-x="'+i+'" aria-label="Remove task '+(i+1)+'">×</button>'+res+asks+'</div>'}).join('');
+    $('#addRow').disabled=tasks.length>=MAX;
+    var todo=tasks.filter(function(t){return t.t.trim()&&!t.b}).length, n=tasks.filter(function(t){return t.t.trim()}).length;
+    $('#sort').textContent=todo&&todo<n?'Sort '+plural(todo,'new task','new tasks'):n&&!todo?'Sort again':'Sort my tasks';
+    $('#sort').disabled=!n;
+    suggest();
   }
-  $('#wk').addEventListener('click',function(e){var b=e.target.closest('.yn');if(!b||b.disabled)return;var t=tasks[+b.dataset.i];t[b.dataset.q]=t[b.dataset.q]?0:1;changed()});
-  $('#wk').addEventListener('change',function(e){var n=e.target.closest('input[data-i]');if(!n)return;tasks[+n.dataset.i].m=Math.max(0,Math.round(+n.value||0));changed()});
-  $('#wkReset').addEventListener('click',function(){tasks=base.map(function(t){return Object.assign({},t)});save();refresh()});
-  function changed(){save();refresh()}
-  function save(){var s=store.get(KEY,{});s.code=job.c;s.edits=s.edits||{};s.edits[job.c]=tasks.map(function(t){return[t.m,t.j,t.r,t.c,t.u]});store.set(KEY,s)}
+  $('#rows').addEventListener('input',function(e){var f=e.target.dataset.f,r=e.target.closest('.trow');if(!f||!r)return;var t=tasks[+r.dataset.i];
+    if(f==='t'){t.t=e.target.value;if(t.b){t.b=null;t.ver=false;t.ask=[];var res=r.querySelector('.res'),as=r.querySelector('.asks');if(res)res.remove();if(as)as.remove()}}
+    else if(f==='f')t.f=e.target.value;else t.e=Math.max(0,Math.min(600,Math.round(+e.target.value||0)));
+    saveSoon()});
+  $('#rows').addEventListener('change',function(e){if(e.target.dataset.f){changed()}});
+  $('#rows').addEventListener('click',function(e){
+    var x=e.target.closest('[data-x]');if(x){tasks.splice(+x.dataset.x,1);if(!tasks.length)tasks.push(blank());changed();return}
+    var b=e.target.closest('.ynp');if(!b)return;var t=tasks[+b.dataset.i],k=b.dataset.k,v=+b.dataset.v;
+    t.ans=t.ans||{};t.ans[k]=v;
+    if(k!=='split'){t.sig[k]=v;var d=decide(t.sig);if(d.bucket!==t.b){t.b=d.bucket;t.ver=false}t.reason=REASON[d.why]}
+    changed()});
+  $('#addRow').addEventListener('click',function(){if(tasks.length<MAX){tasks.push(blank());rows();var r=document.querySelectorAll('#rows .trow input.t');r[r.length-1].focus()}});
+
+  /* ---------- suggestions: the O*NET match, the bank role, or keyword matches in the bank ---------- */
+  function words(s){return norm(s).split(' ').filter(function(w){return w.length>2&&!/^(and|the|for|with|lead|head|senior|junior|owner|manager|executive)$/.test(w)})}
+  function bankRole(q){var n=norm(q),best=null,bs=0;BANK.forEach(function(r,i){[r[0]].concat(r[1]).forEach(function(a){var s=score(a,{q:n,all:rx(n),each:n.split(' ').map(rx)});if(s>bs){bs=s;best=i}})});return bs>=30?best:null}
+  function fromOnet(t){var m=t.m,f=m>=300?'daily':m>=120?'few_week':m>=30?'weekly':'monthly';return{t:t.t.replace(/\.$/,''),f:f,e:r5(m/PER[f]),on:{j:t.j,r:t.r,c:t.c,u:t.u}}}
+  function suggestions(){
+    if(!job)return[];var out=[];
+    if(job.r!=null&&BANK[job.r])BANK[job.r][2].forEach(function(x){out.push({t:x[0],f:x[1],e:x[2]})});
+    onetTasks.forEach(function(t){out.push(fromOnet(t))});
+    if(!out.length){var ws=words(job.t);if(ws.length){var R=ws.map(function(w){return new RegExp('\\b'+w)});
+      BANK.forEach(function(r){var role=norm(r[0]+' '+r[1].join(' '));r[2].forEach(function(x){var s=0,tx=norm(x[0]);R.forEach(function(re){if(re.test(role))s+=2;if(re.test(tx))s+=3});if(s)out.push({t:x[0],f:x[1],e:x[2],s:s})})});
+      out.sort(function(a,b){return b.s-a.s})}}
+    var have={};tasks.forEach(function(t){have[norm(t.t)]=1});
+    return out.filter(function(x){return !have[norm(x.t)]}).slice(0,12);
+  }
+  var SUG=[];
+  function suggest(){SUG=suggestions();$('#suggW').hidden=!SUG.length||tasks.filter(function(t){return t.t.trim()}).length>=MAX;
+    $('#sugg').innerHTML=SUG.map(function(x,i){return '<button type="button" data-s="'+i+'">'+esc(x.t)+'</button>'}).join('');
+    $('#onet').hidden=!onetTasks.length}
+  function addTask(x){var i=tasks.findIndex(function(t){return !t.t.trim()});var t={t:x.t,f:x.f,e:x.e,on:x.on};if(i>=0)tasks[i]=t;else if(tasks.length<MAX)tasks.push(t)}
+  $('#sugg').addEventListener('click',function(e){var b=e.target.closest('[data-s]');if(!b)return;addTask(SUG[+b.dataset.s]);changed()});
+  $('#onet').addEventListener('click',function(){onetTasks.forEach(function(t){var x=fromOnet(t);if(!tasks.some(function(y){return norm(y.t)===norm(x.t)}))addTask(x)});changed()});
+
+  /* ---------- sort: one call for the week; on any failure the learner answers instead ---------- */
+  function post(q,body){return fetch(API+q,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(d){if(!r.ok&&!d.fallback)d.error=d.error||'Sorting failed.';return d})}).catch(function(){return{fallback:true}})}
+  $('#sort').addEventListener('click',function(){
+    var todo=tasks.filter(function(t){return t.t.trim()&&!t.b});if(!todo.length)todo=tasks.filter(function(t){return t.t.trim()});if(!todo.length)return;
+    var btn=$('#sort');btn.disabled=true;$('#sortMsg').textContent='Sorting '+plural(todo.length,'task','tasks')+'…';
+    post('',{job:job.t,tasks:todo.map(function(t){return{task:t.t,how_often:t.f}})}).then(function(d){
+      if(d.error&&!d.fallback){$('#sortMsg').textContent=d.error;btn.disabled=false;return}
+      if(d.fallback){todo.forEach(byHand);$('#sortMsg').textContent='Jev couldn’t be reached, so answer the questions under each task yourself.'}
+      else{d.tasks.forEach(function(r,i){var t=todo[i],was=t.b;t.b=t.jb=r.bucket;t.reason=r.reason;t.ask=r.ask;t.ans={};t.sig=r.sig;t.undo=r.undo;t.u=null;t.src='jev';if(was!==t.b)t.ver=false});
+        var un=todo.filter(function(t){return t.ask.length}).length;
+        $('#sortMsg').textContent='Sorted by '+d.model+'.'+(un?' '+plural(un,'task needs','tasks need')+' your answer.':'')}
+      changed();
+      if(week.length&&!un0())setTimeout(function(){$('#checks').scrollIntoView({behavior:'smooth'})},80);
+    });
+  });
+  function un0(){return tasks.some(function(t){return t.ask&&t.ask.some(function(k){return !(t.ans&&t.ans[k]!=null)})})}
+  /* offline: four questions per task, defaulting to O*NET's screen when the task came from there */
+  function byHand(t){var o=t.on;t.sig={p:{det:.34,prob:.33,hum:.33},live:.5,reach:.5,rule:0,criteria:0};t.ans={};
+    if(o){t.ans={live:o.r?0:1,reach:o.r,rule:0,criteria:o.j&&o.c?1:0};Object.keys(t.ans).forEach(function(k){t.sig[k]=t.ans[k]})}
+    var d=decide(t.sig);t.b=t.jb=d.bucket;t.reason=REASON[d.why];t.ask=['live','reach','rule','criteria'];t.undo=o?o.u:null;t.u=null;t.src='you';t.ver=false}
+
+  /* ---------- how you'd check each one ---------- */
+  function checks(){
+    var c=week.filter(function(t){return t.b!=='hum'});
+    $('#ck').innerHTML=c.length?c.map(function(t){var i=tasks.indexOf(t),crit=(t.chk||'').split('\n');
+      var field=t.b==='det'?'<label for="ck'+i+'">It passes if</label><input id="ck'+i+'" type="text" maxlength="200" data-c="'+i+'" value="'+esc(t.chk||'')+'" placeholder="the GSTR-2B total matches the purchase register to the rupee">'
+        :'<label>Criteria, up to three</label><div class="crit">'+[0,1,2].map(function(k){return '<input type="text" maxlength="130" data-c="'+i+'" data-k="'+k+'" value="'+esc(crit[k]||'')+'" placeholder="'+['names the client\'s actual number','no promise of dates','under 150 words'][k]+'" aria-label="Criterion '+(k+1)+'">'}).join('')+'</div>';
+      var note=t.note?'<p class="note'+(t.ver?' ok':'')+'">'+(t.ver?'✓ ':'')+esc(t.note)+'</p>':'';
+      var anyway=!t.ver&&(t.tries||0)>=3?'<button type="button" class="btn ghost" data-anyway="'+i+'">Use it anyway</button>':'';
+      return '<div class="ckrow"><span class="n">'+(i+1)+'</span><b>'+esc(t.t)+'</b><span>'+PILL[t.b]+'</span>'+field+note+anyway+'</div>'}).join('')
+      :'<p class="muted">Every task you wrote is green, so there is nothing to check. That is an answer too.</p>';
+    $('#testCk').hidden=!c.length;
+  }
+  $('#ck').addEventListener('input',function(e){var c=e.target.dataset.c;if(c==null)return;var t=tasks[+c];
+    if(e.target.dataset.k==null)t.chk=e.target.value;else{var a=(t.chk||'').split('\n');while(a.length<3)a.push('');a[+e.target.dataset.k]=e.target.value;t.chk=a.join('\n')}
+    if(t.ver){t.ver=false;t.note='Changed: test it again.'}saveSoon()});
+  $('#ck').addEventListener('change',function(e){if(e.target.dataset.c!=null)changed()});
+  $('#ck').addEventListener('click',function(e){var b=e.target.closest('[data-anyway]');if(!b)return;var t=tasks[+b.dataset.anyway];t.ver=true;t.vo=1;t.note='Your call: used without a passing test.';changed()});
+  $('#testCk').addEventListener('click',function(){
+    var todo=week.filter(function(t){return t.b!=='hum'&&!t.ver&&chkText(t)});
+    if(!todo.length){$('#ckMsg').textContent=week.some(function(t){return t.b!=='hum'&&!chkText(t)})?'Write a check first.':'Every check has passed.';return}
+    var btn=$('#testCk');btn.disabled=true;$('#ckMsg').textContent='Testing '+plural(todo.length,'check','checks')+'…';
+    post('?step=check',{items:todo.map(function(t){return{task:t.t,check:chkText(t),bucket:t.b}})}).then(function(d){
+      btn.disabled=false;
+      if(d.error&&!d.fallback){$('#ckMsg').textContent=d.error;return}
+      todo.forEach(function(t,i){var r=d.fallback?null:d.items[i];t.tries=(t.tries||0)+1;
+        if(!r){t.ver=true;t.vo=1;t.note='Jev couldn’t be reached, so this is taken on your word.';return}
+        if(r.bucket!==t.b){t.chk=r.bucket==='det'?chkText(t):(t.chk||'').trim();t.b=r.bucket}
+        t.ver=r.verified;t.note=r.note});
+      var ok=todo.filter(function(t){return t.ver}).length;$('#ckMsg').textContent=ok+' of '+todo.length+' passed.';
+      changed();
+    });
+  });
+
+  /* ---------- worksheet: override any colour, say whether undo is cheap ---------- */
+  var LEVEL={stay:'<span class="pill hum">Stays</span>',acc:'<span class="pill prob">Accelerated</span>',auto:'<span class="pill det">Autonomous</span>'};
+  function sheet(){
+    var bo=function(v){return [['det','Amber · rule'],['prob','Violet · criteria'],['hum','Green · you']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===v?' selected':'')+'>'+o[1]+'</option>'}).join('')};
+    $('#wk').innerHTML='<tr><th>Task</th><th>Min/wk</th><th>Colour</th><th>Check</th><th title="Is a mistake cheap to undo?">Undo cheap</th><th>Result</th></tr>'+
+      week.map(function(t,i){var u=undoCheap(t),ck=t.b==='hum'?'–':t.ver?(t.vo?'yours':'✓ '+(t.b==='det'?'rule':'criteria')):'<a href="#checks">write it</a>';
+        return '<tr><td><b><span class="n">'+(i+1)+'</span>'+esc(t.s)+'</b><small title="'+esc(t.t)+'">'+esc(t.reason||'')+'</small></td><td>'+fmt(t.m)+'</td>'+
+        '<td><select data-w="'+tasks.indexOf(t)+'" aria-label="Colour for '+esc(t.s)+'">'+bo(t.b)+'</select></td><td>'+ck+'</td>'+
+        '<td><button type="button" class="yn" data-u="'+tasks.indexOf(t)+'" aria-pressed="'+u+'"'+(t.b!=='det'?' disabled':'')+' aria-label="Is a mistake cheap to undo? '+esc(t.s)+'">'+(u?'Yes':'No')+'</button></td>'+
+        '<td>'+LEVEL[kind(t)]+'</td></tr>'}).join('');
+    var tot=sum(week,function(t){return t.m});
+    $('#wkSum').textContent=hrs(tot)+' a week across '+plural(week.length,'task','tasks')+' · '+week.filter(function(t){return kind(t)!=='stay'}).length+' can move';
+    $('#wkReset').hidden=!week.some(function(t){return t.jb&&(t.b!==t.jb||t.u!=null)});
+  }
+  $('#wk').addEventListener('change',function(e){var s=e.target.closest('select[data-w]');if(!s)return;var t=tasks[+s.dataset.w];
+    if(t.b!==s.value){t.chk=s.value==='det'?chkText(t):(t.chk||'').trim();t.b=s.value;t.ver=false;t.note='';t.reason='your call'}changed()});
+  $('#wk').addEventListener('click',function(e){var b=e.target.closest('[data-u]');if(!b||b.disabled)return;var t=tasks[+b.dataset.u];t.u=undoCheap(t)?0:1;changed()});
+  $('#wkReset').addEventListener('click',function(){week.forEach(function(t){if(t.jb){if(t.b!==t.jb){t.b=t.jb;t.ver=false;t.note='';t.reason=t.sig?REASON[decide(t.sig).why]:t.reason}t.u=null}});changed()});
+
+  /* ---------- the week as a link: everything in the hash, nothing on a server ---------- */
+  function pack(){return{j:job&&job.t,c:job&&job.c,k:tasks.filter(function(t){return t.t.trim()}).map(function(t){return[t.t,t.f,t.e,t.b||'',t.chk||'',t.ver?1:0,t.u==null?(t.undo==null?'':+(t.undo>=.6)):t.u,t.reason||'',t.jb||'']})}}
+  function unpack(d){if(!d||!d.k)return false;
+    tasks=d.k.slice(0,MAX).map(function(a){return{t:String(a[0]||''),f:PER[a[1]]?a[1]:'weekly',e:+a[2]||0,b:/^(det|prob|hum)$/.test(a[3])?a[3]:null,chk:String(a[4]||''),ver:!!a[5],u:a[6]===''||a[6]==null?null:+a[6],reason:String(a[7]||''),jb:a[8]||null,ask:[]}});
+    if(!tasks.length)tasks.push(blank());if(d.j)setJob({t:d.j,c:d.c||null},true);return true}
+  function b64(s){return btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+  function unb64(s){return decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))))}
+  $('#copy').addEventListener('click',function(){var u=location.href.split('#')[0]+'#w='+b64(JSON.stringify(pack())),b=$('#copy');
+    (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(function(){b.textContent='Link copied'},function(){history.replaceState(null,'',u);b.textContent='Link is in the address bar'}).then(function(){setTimeout(function(){b.textContent='Copy link to this week'},2400)})});
 
   /* ---------- personal lines: the K and the agent ---------- */
   function personal(){
-    var tot=sum(tasks,function(t){return t.m})||1, share=function(k){return Math.round(100*sum(tasks.filter(function(t){return kind(t)===k}),function(t){return t.m})/tot)};
+    var tot=sum(week,function(t){return t.m})||1, share=function(k){return Math.round(100*sum(week.filter(function(t){return kind(t)===k}),function(t){return t.m})/tot)};
     var a=share('auto'), p=share('acc'), h=100-a-p;
-    $('#kYou').innerHTML='Your week ('+esc(job.t)+'): <b>'+h+'%</b> green, <b>'+p+'%</b> violet, <b>'+a+'%</b> amber, by hours. The average O*NET job is '+Math.round(AVG.auto*100)+'% amber on the same rules. '+(a>=15?'More of yours is amber than most: hand it over before someone hands it over for you.':'Little of yours is amber, so you lean to the upper arm, if the hours that come back go into green work.');
-    var spark=/\b(e-?mail|correspond|calendar|schedul|appointment|meeting|telephone|calls?|messages|travel|expense|inbox|status|updates?|monitor|track)/i, manus=/\b(research|report|presentation|slides|compile|gather|literature|market|analy[sz]|document|draft|write|proposal|study|search|review)/i;
-    var mv=tasks.filter(function(t){return kind(t)!=='stay'}).sort(function(x,y){return y.m-x.m});
+    $('#kYou').innerHTML='Your week ('+esc(job.t)+'): <b>'+h+'%</b> stays with you, <b>'+p+'%</b> Accelerated, <b>'+a+'%</b> Autonomous, by hours. Screened from its wording alone, the average O*NET job is '+Math.round(AVG.auto*100)+'% Autonomous. '+(a>=15?'More of yours could run alone than most: hand it over before someone hands it over for you.':'Little of yours runs alone, so you lean to the upper arm, if the hours that come back go into green work.');
+    var spark=/\b(e-?mail|correspond|calendar|schedul|appointment|meeting|telephone|calls?|messages|whatsapp|travel|expense|inbox|status|updates?|monitor|track|remind)/i, manus=/\b(research|report|presentation|slides|deck|compile|gather|literature|market|analy[sz]|document|draft|write|proposal|study|search|review|summar)/i;
+    var mv=week.filter(function(t){return kind(t)!=='stay'}).sort(function(x,y){return y.m-x.m});
     var S=mv.filter(function(t){return spark.test(t.t)}), M=mv.filter(function(t){return !spark.test(t.t)&&manus.test(t.t)}), O=mv.filter(function(t){return S.indexOf(t)<0&&M.indexOf(t)<0});
     var bits=[];if(S.length)bits.push('Gemini Spark for '+list(S.slice(0,3).map(function(t){return t.s})));if(M.length)bits.push('Manus for '+list(M.slice(0,3).map(function(t){return t.s})));if(O.length)bits.push('test both on '+list(O.slice(0,2).map(function(t){return t.s})));
-    $('#agentYou').innerHTML=mv.length?bits.map(function(b){return b.charAt(0).toUpperCase()+b.slice(1)}).join('. ')+'. On Monday, pick one, connect only the tools those tasks read, and start the first ten test runs on '+list([mv[0].s])+'. Re-check this list by 17 Dec 2026.':'None of your twelve tasks passes the screen, so no agent earns a subscription yet. Split your biggest task into the part on a screen and the part that is not, and screen that part again.';
+    $('#agentYou').innerHTML=mv.length?bits.map(function(b){return b.charAt(0).toUpperCase()+b.slice(1)}).join('. ')+'. On Monday, pick one, connect only the tools those tasks read, and start the first ten test runs on '+list([mv[0].s])+'. Re-check this list by 17 Dec 2026.':'None of your tasks can move yet, so no agent earns a subscription. Write the check for a violet task, or split your biggest task into the part on a screen and the part that is not, and sort that part again.';
   }
 
-  function refresh(){hideTip();build();cards();sheet();personal()}
+  var saveT=null;
+  function saveSoon(){clearTimeout(saveT);saveT=setTimeout(save,400)}
+  function save(){store.set(KEY,pack())}
+  function changed(){save();refresh()}
+  function refresh(){
+    hideTip();
+    tasks.forEach(function(t){t.m=perWeek(t);t.s=short(t.t)});
+    week=tasks.filter(sorted);
+    var had=document.body.classList.contains('has-week');
+    document.body.classList.toggle('has-week',!!week.length);
+    rows();checks();
+    if(!week.length)return;
+    if(!had)step=0;
+    $('#hTitle').textContent=job.t;
+    build();cards();sheet();personal();
+  }
 
-  /* ---------- choosing a job ---------- */
+  /* ---------- your job: free text, with O*NET and the bank as suggestions only ---------- */
   var ALIAS={founder:'chief executive',ceo:'chief executive',cto:'computer and information systems manager',hr:'human resources',ca:'accountant','chartered accountant':'accountant',swe:'software developer',sde:'software developer',pm:'project manager',ux:'user experience',ui:'user interface',ml:'machine learning',ai:'machine learning',doctor:'physician',consultant:'management consultant',freelancer:'management consultant'};
   function norm(s){return s.toLowerCase().replace(/[^a-z0-9+ ]/g,' ').replace(/\s+/g,' ').trim()}
   function rx(w){return new RegExp('\\b'+w.replace(/[+]/g,'\\+'))}
   function score(name,Q){var n=norm(name);if(n===Q.q)return 100;if(Q.all.test(n))return 60-Math.min(8,n.length/8);
     return Q.each.every(function(r){return r.test(n)})?30-Math.min(10,n.length/10):0}
-  function search(raw){
+  function onetSearch(raw){
     var q=norm(raw);if(!q||!JOBS)return[];q=ALIAS[q]||q;var Q={q:q,all:rx(q),each:q.split(' ').map(rx)};
     /* best name wins; a name people report using, and more names that match, break the ties */
     return JOBS.map(function(j){var best=score(j[1],Q)+5,via='',hits=0;j[2].forEach(function(a,i){var s=score(a,Q);if(s)hits++;if(s&&i<j[3])s+=8;if(s>best){best=s;via=a}});if(best<=5)best=0;else best+=Math.min(12,hits*3);return{j:j,s:best,via:via}})
-      .filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s}).slice(0,8)
-      .map(function(x){return{j:x.j,via:x.via,html:'<b>'+esc(x.j[1])+'</b><small>'+(x.via?'matches “'+esc(x.via)+'” · ':'')+esc(x.j[0])+'</small>'}});
+      .filter(function(x){return x.s>0}).sort(function(a,b){return b.s-a.s});
   }
-  function pick(j,via,scroll){
-    job={c:j[0],t:j[1]};
-    $('#pickedT').textContent=j[1];$('#pickedM').textContent=(via?'matched “'+via+'” · ':'')+'O*NET '+j[0];
+  function search(raw){
+    var t=raw.replace(/\s+/g,' ').trim();if(!t)return[];
+    var out=[{t:t,html:'<b>Use “'+esc(t)+'”</b><small>as you wrote it</small>'}];
+    var r=bankRole(t);if(r!=null&&norm(BANK[r][0])!==norm(t))out.push({t:BANK[r][0],r:r,html:'<b>'+esc(BANK[r][0])+'</b><small>'+BANK[r][2].length+' suggested tasks</small>'});
+    onetSearch(t).slice(0,6).forEach(function(x){out.push({t:x.j[1],c:x.j[0],html:'<b>'+esc(x.j[1])+'</b><small>'+(x.via?'matches “'+esc(x.via)+'” · ':'')+'O*NET '+esc(x.j[0])+'</small>'})});
+    return out;
+  }
+  function setJob(it,quiet){
+    var top=it.c?null:onetSearch(it.t)[0];
+    job={t:it.t.slice(0,80),c:it.c||(top&&top.s>=30?top.j[0]:null),r:it.r!=null?it.r:bankRole(it.t)};
+    var oj=job.c&&JOBS&&JOBS.filter(function(x){return x[0]===job.c})[0];
+    $('#pickedT').textContent=job.t;
+    $('#pickedM').textContent=[oj?'O*NET: '+oj[1]:'',job.r!=null?'bank: '+BANK[job.r][0]:''].filter(Boolean).join(' · ')||'no close match; suggestions come from the task bank';
     $('#askForm').hidden=true;$('#picked').hidden=false;
-    try{var u=new URL(location.href);u.searchParams.set('job',j[0]);history.replaceState(null,'',u)}catch(e){}
-    fetch(DATA+'w/'+j[0].slice(0,2)+'.json').then(function(r){return r.json()}).then(function(d){
-      base=(d[j[0]]||[]).map(function(t){return{t:t.t,s:t.s,m:t.m,j:t.j,r:t.r,c:t.c,u:t.u}});
-      var s=store.get(KEY,{}), ed=s.edits&&s.edits[j[0]];
-      tasks=base.map(function(t,i){var o=Object.assign({},t);if(ed&&ed[i]){o.m=ed[i][0];o.j=ed[i][1];o.r=ed[i][2];o.c=ed[i][3];o.u=ed[i][4]}return o});
-      s.code=j[0];store.set(KEY,s);
-      $('#hTitle').textContent=j[1];
-      document.body.classList.add('has-job');
-      step=0;refresh();
-      if(scroll)setTimeout(function(){$('#story').scrollIntoView({behavior:'smooth'})},60);
-    });
+    document.body.classList.add('has-job');
+    onetTasks=[];
+    var done=function(){changed();if(!quiet)setTimeout(function(){$('#tasks').scrollIntoView({behavior:'smooth'})},60)};
+    if(!job.c)return done();
+    fetch(DATA+'w/'+job.c.slice(0,2)+'.json').then(function(r){return r.json()}).then(function(d){onetTasks=d[job.c]||[]}).catch(function(){}).then(done);
   }
-  $('#change').addEventListener('click',function(){$('#picked').hidden=true;$('#askForm').hidden=false;var i=$('#jobq');i.value='';i.focus()});
-  K.combo($('#jobq'),$('#jobl'),search,function(it){pick(it.j,it.via,true)});
-  var QUICK=[['Management consultant','13-1111.00'],['Software developer','15-1252.00'],['Marketing manager','11-2021.00'],['Accountant','13-2011.00'],['Teacher','25-2031.00'],['Project manager','13-1082.00'],['Graphic designer','27-1024.00'],['Lawyer','23-1011.00']];
-  $('#quick').innerHTML=QUICK.map(function(q){return '<button type="button" data-c="'+q[1]+'">'+q[0]+'</button>'}).join('');
-  $('#quick').addEventListener('click',function(e){var b=e.target.closest('button[data-c]');if(!b||!JOBS)return;var j=JOBS.filter(function(x){return x[0]===b.dataset.c})[0];if(j)pick(j,b.textContent,true)});
+  $('#change').addEventListener('click',function(){$('#picked').hidden=true;$('#askForm').hidden=false;var i=$('#jobq');i.value=job?job.t:'';i.focus();i.select()});
+  K.combo($('#jobq'),$('#jobl'),search,function(it){setJob(it)});
+  var QUICK=['CA articleship','Kirana store owner','Ops lead, quick commerce','Software developer','Product manager','Teacher','Marketing manager','Management consultant'];
+  $('#quick').innerHTML=QUICK.map(function(q){return '<button type="button">'+esc(q)+'</button>'}).join('');
+  $('#quick').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&JOBS)setJob({t:b.textContent})});
 
-  fetch(DATA+'jobs.json').then(function(r){if(!r.ok)throw r;return r.json()}).catch(function(){$('#askForm .h').textContent='The job list did not load. Reload the page to try again.';return{jobs:[],avg:{auto:0}}}).then(function(d){
-    JOBS=d.jobs;AVG=d.avg;
-    var want=new URLSearchParams(location.search).get('job')||store.get(KEY,{}).code;
-    var j=want&&JOBS.filter(function(x){return x[0]===want})[0];if(j)pick(j,'',false);
+  var j1=fetch(DATA+'jobs.json').then(function(r){if(!r.ok)throw r;return r.json()}).catch(function(){return{jobs:[],avg:{auto:0}}});
+  var j2=fetch(DATA+'bank.json').then(function(r){if(!r.ok)throw r;return r.json()}).catch(function(){return{roles:[]}});
+  Promise.all([j1,j2]).then(function(d){
+    JOBS=d[0].jobs;AVG=d[0].avg;BANK=d[1].roles;
+    var h=/^#w=(.+)$/.exec(location.hash),ok=false;
+    if(h)try{ok=unpack(JSON.parse(unb64(h[1])));history.replaceState(null,'',location.href.split('#')[0])}catch(e){}
+    if(!ok)ok=unpack(store.get(KEY,null));
+    if(!ok)tasks=[blank(),blank(),blank()];
     if($('#jobq').value.trim())$('#jobq').dispatchEvent(new Event('input'));
   });
 
   /* ---------- layout mode, the rail, the K ---------- */
   var mq=matchMedia('(max-width:1000px)');tall=mq.matches;
-  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(function(){tall=mq.matches;if(job&&tasks.length){hideTip();build()}});
+  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(function(){tall=mq.matches;if(job&&week.length){hideTip();build()}});
   new IntersectionObserver(function(es){es.forEach(function(e){document.body.classList.toggle('sc-in',e.isIntersecting)})}).observe($('#story'));
 
   K.wbDefs();

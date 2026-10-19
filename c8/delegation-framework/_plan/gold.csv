@@ -1,0 +1,301 @@
+id,job,task,how_often,bucket,region,lang,note
+g001,CA articleship trainee,Reconcile bank statement with ledger in Tally for each client,monthly,deterministic,india,en,Balances must match to the rupee
+g002,GST practitioner,Check that an invoice has GSTIN and HSN codes,weekly,deterministic,india,en,Field presence; a program can check it
+g003,D2C founder,Resize product photos to 1080x1080 for the Shopify catalogue,weekly,deterministic,india,en,Pixel dimensions are a fixed rule
+g004,Kirana owner,Post the daily sales sheet to the staff WhatsApp group by 9 am,daily,deterministic,india,en,Posted before a deadline is checkable
+g005,GST practitioner,Match GSTR-2B with the purchase register and list mismatched invoices,monthly,deterministic,india,en,Invoice-level match has one right answer
+g006,CA articleship trainee,Compute TDS on contractor payments at the section 194C rates,monthly,deterministic,india,en,Rate table gives one answer
+g007,"HR executive, IT services firm","Check every new joiner has uploaded PAN, Aadhaar and offer letter in Zoho People",weekly,deterministic,india,en,File-exists check
+g008,Quick-commerce ops lead,Flag dark stores where order-to-dispatch time exceeded 3 minutes yesterday,daily,deterministic,india,en,Threshold on a number
+g009,Textile trader,Total the day's UPI receipts and match them to the cash book,daily,deterministic,india,en,Totals match or they don't
+g010,Clinic receptionist,Send an appointment reminder SMS to every patient booked for tomorrow,daily,deterministic,india,en,Sent to each booked patient is checkable
+g011,School teacher,Enter unit test marks into the school ERP and check no total exceeds 50,monthly,deterministic,india,en,Value inside a limit
+g012,Real-estate broker,"Check each listing has carpet area, RERA number and price filled in",weekly,deterministic,india,en,Required fields present
+g013,Wedding planner,Check the vendor advances in the budget sheet add up to the advance line,weekly,deterministic,india,en,Sum check
+g014,UPSC coaching teacher,Grade the prelims MCQ mock using the answer key,weekly,deterministic,india,en,Answer key gives one right answer
+g015,D2C founder,Export last month's Shiprocket orders and count RTOs by pincode,monthly,deterministic,india,en,Counting is a fixed rule
+g016,GST practitioner,Check that GSTR-1 for every client shows status Filed by the 11th,monthly,deterministic,india,en,Status and date check; filing itself not included
+g017,CA articleship trainee,Verify 26AS TDS credits match the TDS claimed in the ITR draft,quarterly,deterministic,india,en,Amounts match
+g018,"HR executive, IT services firm",Calculate pro-rata salary for mid-month joiners from the attendance sheet,monthly,deterministic,india,en,Formula gives one answer
+g019,Kirana owner,List items whose stock fell below the minimum level in the stock register,weekly,deterministic,india,en,Threshold rule
+g020,Quick-commerce ops lead,Check that every SKU in the planogram file has a bin location,weekly,deterministic,india,en,Field present
+g021,Textile trader,Convert fabric roll lengths from metres to yards for the buyer's order sheet,weekly,deterministic,india,en,Unit conversion
+g022,Clinic receptionist,Check each patient file has a scanned signed consent form,daily,deterministic,india,en,File exists; signing is not the task
+g023,School teacher,Mark attendance in the register from the biometric export,daily,deterministic,india,en,"Copy from export, one right answer"
+g024,Real-estate broker,Calculate stamp duty and registration charges for a flat in Pune,weekly,deterministic,india,en,Statutory rates give one answer
+g025,"Payroll accountant, Bengaluru startup",Check PF and ESI deductions match the statutory percentages,monthly,deterministic,india,en,Fixed percentages
+g026,D2C founder,Check the product page MRP matches the MRP on the label artwork,weekly,deterministic,india,en,Two values must match
+g027,GST practitioner,Validate e-way bill numbers on dispatch invoices against the portal export,weekly,deterministic,india,en,Lookup match
+g028,CA articleship trainee,Tick vouchers in Tally against bank entries for the vouching sample,monthly,deterministic,india,en,One-to-one matching
+g029,Quick-commerce ops lead,Compute rider payouts from completed orders and the per-order rate card,weekly,deterministic,india,en,Formula
+g030,Wedding planner,Check the guest RSVP sheet has no duplicate phone numbers,weekly,deterministic,india,en,Duplicate rule
+g031,"HR executive, IT services firm",Email payslip PDFs to every employee by the 1st,monthly,deterministic,india,en,Sent to each by a date is checkable
+g032,Kirana owner,Update billing software prices for the 20 items on the distributor's new list,monthly,deterministic,india,en,Values must equal the list
+g033,Textile trader,Check each bale's lot number on the packing list matches the invoice,weekly,deterministic,india,en,Exact match
+g034,UPSC coaching teacher,Rename lecture recordings to the coursecode_date format and upload to Drive,weekly,deterministic,india,en,Format rule plus file exists
+g035,School teacher,Check the question paper totals 80 marks and covers every blueprint chapter,quarterly,deterministic,india,en,Sum and list coverage
+g036,Chartered accountant,Check depreciation in the fixed asset register at Companies Act rates,quarterly,deterministic,india,en,Rate table
+g037,Clinic receptionist,Match the day's UPI total with appointments times the consultation fee,daily,deterministic,india,en,Arithmetic match
+g038,Quick-commerce ops lead,Check today's roster has at least 12 pickers per shift per store,daily,deterministic,india,en,Count against a minimum
+g039,D2C founder,Check every Meta ad URL carries the required UTM parameters,weekly,deterministic,india,en,Format present
+g040,"Accounts executive, logistics firm",Check vendor bank details in the payment file against the approved vendor master,weekly,deterministic,india,en,Match against master
+g041,"Account manager, IT services firm",Write the first draft of a client status email,weekly,probabilistic,india,en,Several good drafts; rubric can review it
+g042,"Bid manager, infra company","Summarise a 40-page tender into key dates, eligibility and penalties",monthly,probabilistic,india,en,Summary checkable against listed items
+g043,D2C founder,Tag support tickets by issue,daily,probabilistic,india,en,Category definitions; reviewers agree
+g044,"HR executive, IT services firm",Shortlist resumes against a written must-have list,weekly,probabilistic,india,en,Written must-haves make it reviewable
+g045,GST practitioner,Check this invoice looks right before it goes to the client,weekly,probabilistic,india,en,"Judgement, not one rule; still reviewable soon"
+g046,D2C founder,Write product descriptions for 30 new kurta SKUs,monthly,probabilistic,india,en,"Many versions; criteria like fabric, care, length"
+g047,UPSC coaching teacher,Prepare 20 practice questions on Indian polity for the weekly test,weekly,probabilistic,india,en,Reviewable against syllabus and difficulty criteria
+g048,Real-estate broker,Draft the WhatsApp listing message for a new 2BHK in Whitefield,weekly,probabilistic,india,en,Draft text; reviewable before sending
+g049,Wedding planner,Draft a day-wise itinerary for a three-day Udaipur wedding,monthly,probabilistic,india,en,Several valid plans; checklist reviewable
+g050,School teacher,Grade Class 9 essays against the school's marking rubric,monthly,probabilistic,india,en,Written rubric two teachers apply alike
+g051,CA articleship trainee,Draft notes to accounts for a private limited company,quarterly,probabilistic,india,en,Draft reviewed against Schedule III checklist
+g052,Clinic receptionist,Draft the reply to a patient's complaint about waiting time,weekly,probabilistic,india,en,"Draft only, not sent"
+g053,Quick-commerce ops lead,Write the weekly ops review on stockouts and late deliveries,weekly,probabilistic,india,en,Narrative over data; reviewable
+g054,Textile trader,Translate a buyer's English quality complaint into Gujarati for the weaver,weekly,probabilistic,india,en,Several valid translations; checkable for meaning
+g055,"HR executive, IT services firm",Draft the job description for a Java developer role,monthly,probabilistic,india,en,Draft reviewable against role requirements
+g056,Kirana owner,Write the Diwali offer message for the customer WhatsApp broadcast,quarterly,probabilistic,india,en,Draft text; offer details checkable
+g057,GST practitioner,Draft a reply to a GST notice for the partner to review,quarterly,probabilistic,india,en,Draft only; partner signs later
+g058,D2C founder,Summarise 200 Amazon reviews into top complaints and praises,monthly,probabilistic,india,en,Summary reviewable against the reviews
+g059,UPSC coaching teacher,Make a one-page summary of today's editorial in The Hindu,daily,probabilistic,india,en,Several good summaries; reviewable
+g060,"Account manager, IT services firm",Turn meeting notes into minutes with action items and owners,weekly,probabilistic,india,en,"Reviewable: owners, dates, decisions"
+g061,School teacher,Create a lesson plan on photosynthesis using the CBSE template,weekly,probabilistic,india,en,Template gives criteria
+g062,Real-estate broker,"Compare three projects for a buyer by price, possession date and amenities",weekly,probabilistic,india,en,Table reviewable against brochures
+g063,"Marketing executive, Mumbai agency",Write five caption options for a jewellery brand's Akshaya Tritiya post,quarterly,probabilistic,india,en,Options reviewed against brand brief
+g064,"HR executive, IT services firm",Group exit interview comments into themes,monthly,probabilistic,india,en,Theme assignment reviewable
+g065,CA articleship trainee,Draft the audit query list for the client from the trial balance,quarterly,probabilistic,india,en,Draft list reviewable by senior
+g066,Wedding planner,Draft the decorator brief from the couple's mood board notes,monthly,probabilistic,india,en,Draft reviewable against notes
+g067,Quick-commerce ops lead,"Classify refund requests as valid, fraud-suspect or unclear per the written policy",daily,probabilistic,india,en,"Written policy, judgement per case"
+g068,"Bid manager, infra company",Check a bid document covers every tender clause and reads clearly,monthly,probabilistic,india,en,Coverage plus clarity needs judgement with criteria
+g069,Textile trader,Prepare a price quote email for a Dubai buyer from the rate sheet,weekly,probabilistic,india,en,Draft email; rates checkable
+g070,D2C founder,Write the abandoned-cart email sequence,quarterly,probabilistic,india,en,Several good versions; rubric reviewable
+g071,Clinic receptionist,Summarise a patient's old prescriptions into a one-page history for the doctor,daily,probabilistic,india,en,Summary reviewable against prescriptions
+g072,UPSC coaching teacher,Evaluate mains answer copies against the institute's model-answer checklist,weekly,probabilistic,india,en,Checklist two evaluators apply alike
+g073,School teacher,Write report card comments for 40 students from their marks and notes,quarterly,probabilistic,india,en,Drafts reviewable against marks and notes
+g074,"Founder, edtech startup",Draft the monthly investor update email,monthly,probabilistic,india,en,Draft; figures and asks reviewable
+g075,"HR executive, IT services firm",Draft the leave policy FAQ from the policy PDF,quarterly,probabilistic,india,en,FAQ checkable against the PDF
+g076,Kirana owner,Write shelf signs for the new snacks section,monthly,probabilistic,india,en,Short text; reviewable soon
+g077,"Legal associate, Delhi law firm",Draft a rent agreement from the firm's template and the client's terms,weekly,probabilistic,india,en,Draft checked against template and terms
+g078,"Content writer, fintech",Simplify an RBI circular into a 300-word customer explainer,monthly,probabilistic,india,en,Accuracy and length reviewable
+g079,"Support lead, Bengaluru SaaS",Draft replies to Zendesk tickets for an agent to send,daily,probabilistic,india,en,Draft only; agent sends
+g080,Real-estate broker,Rewrite the listing to fit the 99acres character limit keeping all key features,weekly,probabilistic,india,en,Several valid rewrites; criteria stated
+g081,"Procurement manager, auto-parts firm",Negotiate payment terms with a supplier,quarterly,human,india,en,Live negotiation with a person
+g082,"Founder, Pune startup",Decide whom to hire for the ops manager role,quarterly,human,india,en,Authority; outcome shows months later
+g083,UPSC coaching teacher,Counsel a student who failed prelims,quarterly,human,india,en,"Live, with a person"
+g084,Kirana owner,Inspect stock at the godown,weekly,human,india,en,Physical presence
+g085,Chartered accountant,Sign the audit report,quarterly,human,india,en,Signature and authority
+g086,"Account manager, IT services firm",Send the reply under my name to the client on a call,weekly,human,india,en,Live call under own name
+g087,GST practitioner,Attend the GST officer's hearing for a client,quarterly,human,india,en,Live representation
+g088,Real-estate broker,Show the flat to buyers on a site visit,weekly,human,india,en,Physical and live
+g089,Wedding planner,Manage the baraat timing with the families on the day,quarterly,human,india,en,"Live, physical"
+g090,Clinic receptionist,Calm an angry patient at the front desk,weekly,human,india,en,Live conversation
+g091,School teacher,Conduct the parent-teacher meeting,quarterly,human,india,en,Live with parents
+g092,Textile trader,Check the hand-feel and shade of a new fabric lot at the mill,monthly,human,india,en,"Physical, touch and eye"
+g093,"HR executive, IT services firm",Run a harassment complaint inquiry meeting,quarterly,human,india,en,"Live, sensitive, needs authority"
+g094,Quick-commerce ops lead,Decide whether to open a new dark store in Gurugram Sector 57,quarterly,human,india,en,Outcome shows much later
+g095,D2C founder,Choose the brand's new tagline,quarterly,human,india,en,Taste; reviewers won't agree
+g096,CA articleship trainee,Physically verify cash and inventory at the client's warehouse,quarterly,human,india,en,Physical presence
+g097,Kirana owner,Decide whether to give udhaar to a regular customer,weekly,human,india,en,Judging a person; outcome later
+g098,"HR manager, IT services firm",Approve a final salary offer above the band,monthly,human,india,en,Needs authority
+g099,Real-estate broker,Close the deal with buyer and seller at the sub-registrar office,monthly,human,india,en,"Physical, signatures"
+g100,Wedding planner,Taste and pick the caterer's menu with the couple,quarterly,human,india,en,"Taste, live"
+g101,UPSC coaching teacher,Take the live doubt-clearing class on Zoom,daily,human,india,en,Live with students
+g102,School teacher,Invigilate the board practical exam in the lab,quarterly,human,india,en,Physical presence
+g103,Clinic receptionist,Hand over medicines and explain dosage to elderly patients,daily,human,india,en,In person
+g104,D2C founder,Make the brand feel premium,quarterly,human,india,en,Vague; no agreed criteria
+g105,"Founder, FMCG startup",Build a good relationship with our distributor in Lucknow,quarterly,human,india,en,"Vague, live, outcome later"
+g106,Textile trader,Recover an overdue payment from a Surat buyer over the phone,weekly,human,india,en,Live conversation
+g107,"HR executive, IT services firm",Tell an employee they are being laid off,quarterly,human,india,en,"Live, sensitive"
+g108,Quick-commerce ops lead,Walk the dark store to check FIFO on dairy shelves,daily,human,india,en,Physical presence
+g109,GST practitioner,Sign and file the client's GST return with the DSC,monthly,human,india,en,Signature and authority
+g110,Bank relationship manager,Meet a client at home to collect KYC originals,weekly,human,india,en,Physical presence
+g111,Kirana owner,Decide which atta brand to stock next year,quarterly,human,india,en,Outcome shows much later
+g112,"Event manager, Delhi",Host the stage as MC for a corporate offsite,quarterly,human,india,en,Live with people
+g113,Insurance agent,Convince a family to buy a term plan over chai,weekly,human,india,en,Live persuasion
+g114,School principal,Decide on a student's suspension,quarterly,human,india,en,Authority
+g115,Chartered accountant,Represent a client before the Income Tax Appellate Tribunal,quarterly,human,india,en,"Live, authority"
+g116,D2C founder,Pick which influencer to partner with for the Diwali campaign,quarterly,human,india,en,Result shows only after the campaign
+g117,UPSC coaching teacher,Motivate the batch before mains,quarterly,human,india,en,Vague and live
+g118,Clinic receptionist,Take the patient's BP before the doctor sees them,daily,human,india,en,"Physical, by hand"
+g119,Wedding planner,Handle the bride's family's last-minute seating change on the day,quarterly,human,india,en,Live on the day
+g120,"HR manager, IT services firm",Judge culture fit in a final-round interview,weekly,human,india,en,Live; no agreed criteria
+g121,GST practitioner,Har mahine GSTR-2B ko purchase register se match karna,monthly,deterministic,india,hinglish,Totals match or not
+g122,Kirana owner,Roz shaam ko UPI ka total cash book se milana,daily,deterministic,india,hinglish,Totals match
+g123,CA articleship trainee,Har client ka TDS challan amount Form 26Q se tally karna,quarterly,deterministic,india,hinglish,Amounts match
+g124,Quick-commerce ops lead,Jin SKUs ka stock 10 se kam hai unki list nikalna,daily,deterministic,india,hinglish,Threshold rule
+g125,"HR executive, IT services firm",Sab joiners ka PAN aur Aadhaar Zoho mein upload hua ya nahi check karna,weekly,deterministic,india,hinglish,File-exists check
+g126,D2C founder,Saari product photos ko 1080x1080 mein resize karna,weekly,deterministic,india,hinglish,Fixed dimensions
+g127,Textile trader,Packing list ke lot number invoice se match karna,weekly,deterministic,india,hinglish,Exact match
+g128,School teacher,Unit test ke marks ERP mein daalna aur check karna ki koi total 50 se upar na ho,monthly,deterministic,india,hinglish,Value inside a limit
+g129,Real-estate broker,Har listing mein RERA number daala hai ya nahi check karna,weekly,deterministic,india,hinglish,Field present
+g130,Clinic receptionist,Kal ke saare appointments ko reminder SMS bhejna,daily,deterministic,india,hinglish,"Sent to each, checkable"
+g131,"Account manager, IT services firm",Client ke liye weekly status email ka pehla draft likhna,weekly,probabilistic,india,hinglish,Draft; rubric reviewable
+g132,D2C founder,Support tickets ko issue ke hisaab se tag karna,daily,probabilistic,india,hinglish,Category definitions; reviewers agree
+g133,"HR executive, IT services firm",Must-have list ke hisaab se resumes shortlist karna,weekly,probabilistic,india,hinglish,Written must-haves
+g134,UPSC coaching teacher,Aaj ke editorial ka ek page ka summary banana,daily,probabilistic,india,hinglish,Summary reviewable
+g135,Real-estate broker,Naye 2BHK ka WhatsApp listing message likhna,weekly,probabilistic,india,hinglish,"Draft text, reviewable"
+g136,Kirana owner,Diwali offer ka broadcast message likhna,quarterly,probabilistic,india,hinglish,"Draft text, reviewable"
+g137,Wedding planner,Teen din ki shaadi ka day-wise itinerary banana,monthly,probabilistic,india,hinglish,Several valid plans; checklist
+g138,"Bid manager, infra company","40 page ke tender ka summary banana: dates, eligibility, penalties",monthly,probabilistic,india,hinglish,Checkable against listed items
+g139,GST practitioner,GST notice ka reply draft karna partner ke review ke liye,quarterly,probabilistic,india,hinglish,Draft only; partner signs
+g140,Quick-commerce ops lead,Stockouts aur late deliveries pe hafte ka ops review likhna,weekly,probabilistic,india,hinglish,Narrative over data; reviewable
+g141,"Procurement manager, auto-parts firm",Supplier se payment terms negotiate karna,quarterly,human,india,hinglish,Live negotiation
+g142,UPSC coaching teacher,Prelims mein fail hue student ko counsel karna,quarterly,human,india,hinglish,"Live, with a person"
+g143,Kirana owner,Godown jaake stock check karna,weekly,human,india,hinglish,Physical presence
+g144,Chartered accountant,Audit report sign karna,quarterly,human,india,hinglish,Signature and authority
+g145,"Founder, Pune startup",Ops manager ke liye kisko hire karna hai decide karna,quarterly,human,india,hinglish,Authority; outcome later
+g146,Textile trader,Surat wale buyer se phone pe pending payment nikalwana,weekly,human,india,hinglish,Live conversation
+g147,Wedding planner,Shaadi ke din families ke saath baraat ka timing sambhalna,quarterly,human,india,hinglish,"Live, physical"
+g148,Clinic receptionist,Front desk pe gusse wale patient ko shaant karna,weekly,human,india,hinglish,Live conversation
+g149,Real-estate broker,Buyers ko site visit pe flat dikhana,weekly,human,india,hinglish,Physical and live
+g150,"Account manager, IT services firm",Client ke call pe mere naam se reply dena,weekly,human,india,hinglish,Live call under own name
+g151,"Accounts payable clerk, US","Three-way match purchase orders, goods receipts and invoices before payment",daily,deterministic,global,en,Quantities and prices must match
+g152,"Bookkeeper, UK",Reconcile the bank statement with the ledger in Xero,monthly,deterministic,global,en,Balances match
+g153,QA engineer,Run the regression test suite and report failures,daily,deterministic,global,en,Tests pass or fail
+g154,"Payroll specialist, US",Check every timesheet totals 40 hours or carries an approved overtime code,weekly,deterministic,global,en,Sum plus code present
+g155,E-commerce manager,Resize banner images to 1920x600 and compress under 300 KB,weekly,deterministic,global,en,Dimensions and size limits
+g156,Data analyst,Refresh the weekly sales dashboard from the warehouse table,weekly,deterministic,global,en,Data matches source table
+g157,"Compliance analyst, UK bank",Check each new customer file has proof of address dated within 3 months,daily,deterministic,global,en,"Document present, date in range"
+g158,Office manager,Post the weekly rota to the team Slack channel by Monday 8 am,weekly,deterministic,global,en,Posted before a deadline
+g159,"Paralegal, US",Check every exhibit is numbered and listed in the exhibit index,weekly,deterministic,global,en,List match
+g160,"Logistics coordinator, Germany",Check every shipment has an HS code and a commercial invoice attached,daily,deterministic,global,en,Fields and files present
+g161,Marketing operations specialist,Check all campaign links return HTTP 200,weekly,deterministic,global,en,Status code check
+g162,Inventory analyst,Flag SKUs with fewer than 14 days of stock cover,weekly,deterministic,global,en,Threshold rule
+g163,Pharmacy technician,Check prescribed doses against the maximum-dose table,daily,deterministic,global,en,Value inside a limit
+g164,Recruiting coordinator,Send calendar invites for every scheduled interview,daily,deterministic,global,en,Invite exists per interview
+g165,"Accountant, Australia",Calculate GST at 10% on each invoice line,weekly,deterministic,global,en,Fixed rate
+g166,Travel coordinator,Check each traveller's passport is valid 6 months past the return date,weekly,deterministic,global,en,Date rule
+g167,Sales operations analyst,Dedupe CRM leads by email address,weekly,deterministic,global,en,Exact-match rule
+g168,"Secondary teacher, UK",Convert mock exam marks to grades using the boundary table,quarterly,deterministic,global,en,Lookup table
+g169,Grants administrator,"Check the application is under 2,000 words and has every required attachment",weekly,deterministic,global,en,Count and files present
+g170,IT support technician,Check all laptops have the latest OS patch installed,monthly,deterministic,global,en,Version check
+g171,Insurance claims processor,Check the claim amount is within the policy limit after the deductible,daily,deterministic,global,en,Arithmetic against a limit
+g172,"Property manager, US",Calculate late fees on rent paid after the 5th at the lease rate,monthly,deterministic,global,en,Formula from lease
+g173,"Bookkeeper, US",Categorise bank transactions using the vendor-to-account mapping table,weekly,deterministic,global,en,Mapping table gives one answer
+g174,Data engineer,Validate the nightly CSV has all 24 columns and no null customer IDs,daily,deterministic,global,en,Schema check
+g175,Content manager,Check every blog post has a meta description under 160 characters,weekly,deterministic,global,en,Present and length limit
+g176,Event coordinator,Check the registered attendee count does not exceed room capacity of 120,weekly,deterministic,global,en,Value inside a limit
+g177,"Tax preparer, US",Check W-2 wages match the amounts entered on Form 1040,quarterly,deterministic,global,en,Amounts match
+g178,Medical coder,Check each claim has a validly formatted ICD-10 code,daily,deterministic,global,en,Format check
+g179,Procurement analyst,"Check purchase orders above $10,000 have two approvals recorded",weekly,deterministic,global,en,Rule on recorded fields
+g180,Translation project manager,Check the translated file has the same segment count as the source,weekly,deterministic,global,en,Count match
+g181,"HR coordinator, UK",Check right-to-work documents are on file for every new starter,weekly,deterministic,global,en,File exists
+g182,Accounts receivable clerk,Send reminders to every customer 30 or more days past due,weekly,deterministic,global,en,Sent to each matching customer
+g183,Social media manager,Schedule the approved posts at the times in the content calendar,weekly,deterministic,global,en,Times match calendar
+g184,Retail store manager,Compare register totals with the POS end-of-day report,daily,deterministic,global,en,Totals match
+g185,Software developer,Make sure the build passes lint and unit tests before merging,daily,deterministic,global,en,Tests pass
+g186,Fleet manager,Flag vehicles overdue for service by mileage,weekly,deterministic,global,en,Threshold rule
+g187,External auditor,Recalculate interest expense from loan balances and rates,quarterly,deterministic,global,en,"Arithmetic, one answer"
+g188,Library assistant,Flag books overdue by more than 21 days,weekly,deterministic,global,en,Date rule
+g189,Operations analyst,Copy the vendor's PDF price list into the standard spreadsheet template,monthly,deterministic,global,en,Values must equal the source
+g190,Administrative assistant,Rename scanned contracts to the ClientName_Date format,weekly,deterministic,global,en,Format rule
+g191,Clinical research coordinator,Check each case report form has every mandatory field completed,weekly,deterministic,global,en,Fields present
+g192,"Accountant, Canada",Check the trial balance debits equal credits,monthly,deterministic,global,en,Totals match
+g193,"Real estate agent, US",Check listing photos are at least 2048 px wide for the MLS,weekly,deterministic,global,en,Value inside a limit
+g194,Customer success operations,Export accounts whose renewal date falls in the next 60 days,weekly,deterministic,global,en,Date filter
+g195,Copy editor,Check the manuscript against the house spelling list,weekly,deterministic,global,en,List lookup
+g196,Warehouse supervisor,Check pick-list quantities match shipped quantities in the WMS,daily,deterministic,global,en,Quantities match
+g197,Financial analyst,Convert EUR invoices to USD at the month-end ECB rate,monthly,deterministic,global,en,Fixed rate conversion
+g198,Hotel front office manager,Check every booking has a deposit recorded,daily,deterministic,global,en,Field present
+g199,"School administrator, US",Check each student has the required immunisation records on file,quarterly,deterministic,global,en,File exists
+g200,Bank operations analyst,Check SWIFT payment messages have a valid BIC and IBAN format,daily,deterministic,global,en,Format check
+g201,Management consultant,Write the first draft of a client status email,weekly,probabilistic,global,en,Several good drafts; rubric reviewable
+g202,Product manager,Summarise user interview notes into top five pain points with quotes,weekly,probabilistic,global,en,Reviewable against the notes
+g203,Support team lead,Tag support tickets by issue,daily,probabilistic,global,en,Category definitions; reviewers agree
+g204,Recruiter,Shortlist resumes against a written must-have list,weekly,probabilistic,global,en,Written must-haves
+g205,Marketing manager,Draft three subject lines for the newsletter,weekly,probabilistic,global,en,Options reviewed against brief
+g206,Strategy analyst,Summarise a 40-page industry report for the leadership team,monthly,probabilistic,global,en,Summary reviewable
+g207,"Solicitor, UK",First-pass review of an NDA against the firm's playbook,weekly,probabilistic,global,en,Playbook gives criteria
+g208,"Middle school teacher, US",Grade short-answer quiz responses against the written rubric,weekly,probabilistic,global,en,Written rubric
+g209,Grant writer,Draft the project narrative section of a grant proposal,quarterly,probabilistic,global,en,Draft reviewable against funder criteria
+g210,Customer success manager,Draft the QBR deck outline from account data,quarterly,probabilistic,global,en,Outline reviewable
+g211,Copywriter,Write product page copy for a new running shoe,monthly,probabilistic,global,en,Several versions; brief gives criteria
+g212,Journalist,Transcribe and clean up a recorded interview,weekly,probabilistic,global,en,Reviewable against the audio
+g213,"Paralegal, US",Summarise deposition transcripts into key admissions,weekly,probabilistic,global,en,Reviewable against transcript
+g214,HR generalist,Draft the job ad for a warehouse associate,monthly,probabilistic,global,en,Draft reviewable
+g215,Accountant,Check this expense report looks right,weekly,probabilistic,global,en,"Judgement, not a single policy rule"
+g216,Sales development rep,Personalise the opening line of 50 outbound emails from LinkedIn profiles,weekly,probabilistic,global,en,Reviewable per email
+g217,UX researcher,Cluster 300 survey responses into themes,quarterly,probabilistic,global,en,Theme assignment reviewable
+g218,Project manager,Turn meeting notes into minutes with owners and dates,weekly,probabilistic,global,en,Owners and dates reviewable
+g219,Software developer,Write first-pass review comments on a pull request,daily,probabilistic,global,en,Comments reviewable against guidelines
+g220,Translator,Translate a marketing brochure from English to Spanish,monthly,probabilistic,global,en,Several valid translations
+g221,Executive assistant,Draft the board meeting agenda from last minutes and open items,quarterly,probabilistic,global,en,Draft reviewable
+g222,Data analyst,Write the commentary explaining this month's churn numbers,monthly,probabilistic,global,en,Narrative over data
+g223,Social media manager,Draft replies to comments on the brand's Instagram post for approval,daily,probabilistic,global,en,Drafts approved before posting
+g224,"Real estate agent, US",Write the listing description for a 3-bed house in Austin,weekly,probabilistic,global,en,Several versions; facts checkable
+g225,Insurance underwriter,Summarise an applicant's risk file into the underwriting memo template,weekly,probabilistic,global,en,Template gives criteria
+g226,Procurement analyst,"Compare three supplier quotes on price, delivery and warranty in a table",monthly,probabilistic,global,en,Table reviewable against quotes
+g227,Nurse educator,Draft quiz questions from the infection-control policy,quarterly,probabilistic,global,en,Questions reviewable against policy
+g228,"Compliance analyst, UK","Flag marketing claims that may breach FCA rules, citing the rule",weekly,probabilistic,global,en,Citations make review possible
+g229,Product marketer,Write release notes from the list of shipped Jira tickets,weekly,probabilistic,global,en,Reviewable against tickets
+g230,Technical writer,Draft API documentation from the endpoint spec,monthly,probabilistic,global,en,Reviewable against spec
+g231,"Tutor, UK",Write feedback on a student's essay against the AQA mark scheme,weekly,probabilistic,global,en,Mark scheme gives criteria
+g232,Customer support agent,Draft the reply to a refund request per the refund policy,daily,probabilistic,global,en,Draft only; policy gives criteria
+g233,Office manager,Draft the onboarding checklist for new hires,quarterly,probabilistic,global,en,Draft reviewable
+g234,Research associate,Write a summary of 15 papers for a literature review,quarterly,probabilistic,global,en,Reviewable against the papers
+g235,"Bookkeeper, US",Categorise unusual bank transactions that have no mapping rule,monthly,probabilistic,global,en,No table; judgement but reviewable
+g236,Recruiter,Write rejection emails for unsuccessful candidates,weekly,probabilistic,global,en,Drafts reviewable
+g237,Investor relations manager,Draft the FAQ for the earnings call,quarterly,probabilistic,global,en,Draft reviewable against results
+g238,Event planner,Draft a run-of-show for a 200-person conference,quarterly,probabilistic,global,en,Draft reviewable
+g239,Sales manager,Summarise the week's call notes into pipeline risks,weekly,probabilistic,global,en,Reviewable against notes
+g240,E-commerce manager,Write alt text for 100 product images,monthly,probabilistic,global,en,Several valid versions; criteria clear
+g241,Software engineer,Write unit tests for an existing function,weekly,probabilistic,global,en,Coverage quality needs reviewer judgement
+g242,In-house counsel,Redline a supplier contract against the company's standard positions,weekly,probabilistic,global,en,Standard positions give criteria
+g243,Marketing analyst,Draft the monthly campaign performance narrative,monthly,probabilistic,global,en,Narrative over data
+g244,HR business partner,Summarise employee survey comments by department,quarterly,probabilistic,global,en,Summary reviewable
+g245,Content strategist,Outline a blog post from the brief and keyword list,weekly,probabilistic,global,en,Brief gives criteria
+g246,"Primary teacher, UK",Create worksheets for three reading levels,weekly,probabilistic,global,en,Reviewable against level criteria
+g247,Account executive,Draft the follow-up email after a demo,weekly,probabilistic,global,en,"Draft only, not sent"
+g248,Clinical research coordinator,Draft the plain-language patient information sheet,quarterly,probabilistic,global,en,Reviewable for accuracy and reading level
+g249,Chief of staff,Write the first draft of the weekly CEO update,weekly,probabilistic,global,en,Draft reviewable
+g250,Customer support lead,"Classify app store reviews as bug, feature request or praise",weekly,probabilistic,global,en,Category definitions
+g251,Sales director,Negotiate renewal pricing with a key account,quarterly,human,global,en,Live negotiation
+g252,Hiring manager,Decide whom to hire for the senior engineer role,quarterly,human,global,en,Authority; outcome shows later
+g253,Therapist,Run a counselling session,daily,human,global,en,Live with a person
+g254,Electrician,Rewire a kitchen circuit,weekly,human,global,en,"Physical, by hand"
+g255,Audit partner,Sign the audit opinion,quarterly,human,global,en,Signature and authority
+g256,Account executive,Send the reply under my name to the client on a live call,weekly,human,global,en,Live call under own name
+g257,Ward nurse,Administer medication to patients on the ward,daily,human,global,en,"Physical, by hand"
+g258,CEO,Set next year's company strategy,quarterly,human,global,en,Outcome shows much later
+g259,Store manager,Count the cash in the till at close,daily,human,global,en,Physical counting
+g260,Litigation lawyer,Represent the client in court,monthly,human,global,en,"Live, authority"
+g261,"Secondary teacher, US",Manage the classroom during lessons,daily,human,global,en,Live with people
+g262,HR manager,Tell an employee they are being let go,quarterly,human,global,en,"Live, sensitive"
+g263,"Real estate agent, US",Host an open house,weekly,human,global,en,Physical and live
+g264,"Building surveyor, UK",Inspect a property for damp and structural cracks,weekly,human,global,en,Physical presence
+g265,Brand director,Make the brand feel more modern,quarterly,human,global,en,Vague; no agreed criteria
+g266,Product manager,Decide which feature to build next quarter,quarterly,human,global,en,Outcome shows later
+g267,Angel investor,Decide whether to invest in a seed-stage startup,monthly,human,global,en,Outcome shows years later
+g268,Head chef,Taste and adjust a new menu dish,weekly,human,global,en,"Taste, physical"
+g269,Warehouse supervisor,Walk the floor to check safety compliance,daily,human,global,en,Physical presence
+g270,Notary public,Witness and notarise signatures,weekly,human,global,en,Presence and authority
+g271,Management consultant,Present findings to the client's board,quarterly,human,global,en,Live with people
+g272,Engineering manager,Give a struggling team member hard feedback in a 1:1,monthly,human,global,en,"Live, sensitive"
+g273,General practitioner,Examine a patient and make a diagnosis,daily,human,global,en,"Physical exam, authority"
+g274,Startup founder,Pitch investors in a meeting,monthly,human,global,en,Live persuasion
+g275,Customer success manager,Handle an escalation call with an angry customer,weekly,human,global,en,Live conversation
+g276,Event planner,Run the event on the day and fix problems as they arise,quarterly,human,global,en,"Live, physical"
+g277,Creative director,Pick the final logo direction,quarterly,human,global,en,Taste; reviewers won't agree
+g278,CFO,Approve the annual budget,quarterly,human,global,en,Authority
+g279,Engineering manager,Decide promotions for the team,quarterly,human,global,en,Authority; contested judgement
+g280,Field sales rep,Visit clients' stores to build relationships,weekly,human,global,en,"Physical, live, outcome later"
+g281,Plumber,Fix a leaking pipe at a customer's home,daily,human,global,en,"Physical, by hand"
+g282,Social worker,Do a home visit to assess a child's welfare,weekly,human,global,en,"Physical, sensitive"
+g283,Sales executive,Network at an industry conference,quarterly,human,global,en,Live; outcome later
+g284,Team lead,Improve team morale,quarterly,human,global,en,Vague; no agreed criteria
+g285,Pharmacist,Counsel a patient on a new prescription at the counter,daily,human,global,en,Live with a person
+g286,Procurement manager,Choose a supplier for a five-year contract,quarterly,human,global,en,Outcome shows much later
+g287,Marketing director,Make our content more engaging,monthly,human,global,en,Vague; no agreed criteria
+g288,Mediator,Mediate a dispute between two business partners,monthly,human,global,en,Live conversation
+g289,Construction site manager,Supervise concrete pouring on site,weekly,human,global,en,Physical presence
+g290,Recruiter,Close a candidate on accepting the offer over the phone,weekly,human,global,en,Live persuasion
+g291,Wedding photographer,Shoot a wedding,monthly,human,global,en,"Physical, live"
+g292,Venture partner,Sit in a portfolio company's board meeting,quarterly,human,global,en,"Live, authority"
+g293,Compliance officer,Sign off the regulatory filing as accountable officer,quarterly,human,global,en,Signature and authority
+g294,Phlebotomist,Draw blood samples from patients,daily,human,global,en,"Physical, by hand"
+g295,Engineering manager,Mentor a new graduate hire over six months,weekly,human,global,en,Live; outcome shows later
+g296,Copywriter,Write something that goes viral,weekly,human,global,en,Vague; result shows later
+g297,Tour guide,Lead a walking tour of the city,daily,human,global,en,"Live, physical"
+g298,Head of sales,Decide next year's territory split,quarterly,human,global,en,Authority; outcome later
+g299,Hiring manager,Run a behavioural interview with a candidate,weekly,human,global,en,Live conversation
+g300,Executive assistant,Represent the CEO at a supplier dinner,monthly,human,global,en,"Live, physical"

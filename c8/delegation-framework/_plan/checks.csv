@@ -1,0 +1,61 @@
+id,task,check,kind,expect_rule,expect_clear
+c01,Reconcile GSTR-2B with the purchase register,The GSTR-2B total matches the purchase register to the rupee,good_rule,1,1
+c02,Reconcile bank statement with Tally,The Tally closing balance equals the bank statement closing balance,good_rule,1,1
+c03,Resize product photos,Every image is exactly 1080x1080 px,good_rule,1,1
+c04,Check invoices before sending,Every invoice has a 15-character GSTIN and an HSN code on each line,good_rule,1,1
+c05,Post the daily sales sheet,The sheet is posted in the staff WhatsApp group before 9:00 am,good_rule,1,1
+c06,Run the regression suite,All tests pass with zero failures,good_rule,1,1
+c07,Validate the nightly CSV,The file has 24 columns and no empty customer_id,good_rule,1,1
+c08,Compute TDS on contractor payments,"TDS equals 1% of the payment for individuals and 2% for companies, rounded to the rupee",good_rule,1,1
+c09,Check timesheets,Each timesheet totals 40 hours or carries an approved overtime code,good_rule,1,1
+c10,Publish blog posts,Every post has a meta description under 160 characters,good_rule,1,1
+c11,Process insurance claims,The approved amount is at or below the policy limit minus the deductible,good_rule,1,1
+c12,Send payslips,Every employee on the payroll list has a payslip email sent by the 1st,good_rule,1,1
+c13,Close the month,Total debits equal total credits in the trial balance,good_rule,1,1
+c14,Build the low-stock list,Every SKU with fewer than 10 units appears in the list and no other SKU does,good_rule,1,1
+c15,Launch the email campaign,Every link in the email returns HTTP 200,good_rule,1,1
+c16,Reconcile GSTR-2B with the purchase register,The numbers look correct,vague_rule,0,0
+c17,Reconcile bank statement with Tally,Everything is reconciled properly,vague_rule,0,0
+c18,Resize product photos,Images are the right size,vague_rule,0,0
+c19,Check invoices before sending,Invoices are compliant,vague_rule,0,0
+c20,Post the daily sales sheet,The sheet is posted on time,vague_rule,0,0
+c21,Run the regression suite,The code works,vague_rule,0,0
+c22,Validate the nightly CSV,The data is clean,vague_rule,0,0
+c23,Compute TDS on contractor payments,TDS is calculated accurately,vague_rule,0,0
+c24,Check timesheets,Hours look reasonable,vague_rule,0,0
+c25,Review expense reports,Nothing suspicious in the claims,vague_rule,0,0
+c26,Build the low-stock list,Stock levels are fine,vague_rule,0,0
+c27,Run payroll,Salaries are correct,vague_rule,0,0
+c28,Prepare vendor payments,Bank details are verified properly,vague_rule,0,0
+c29,Refresh the sales dashboard,The dashboard is up to date,vague_rule,0,0
+c30,Onboard new customers,All KYC documents are in order,vague_rule,0,0
+c31,Draft the client status email,names the client's actual number ; no promise of dates ; under 150 words,good_rubric,0,1
+c32,Summarise a 40-page tender,states the bid due date and EMD amount ; lists every eligibility criterion ; cites the page for each penalty,good_rubric,0,1
+c33,Tag support tickets,each ticket has exactly one tag from the six-tag list ; refund requests are tagged Billing ; no ticket left untagged,good_rubric,0,1
+c34,Shortlist resumes,every shortlisted candidate has 3+ years of Java ; each has a one-line reason quoting the resume ; nobody missing a must-have is shortlisted,good_rubric,0,1
+c35,Write kurta product descriptions,mentions fabric and wash care ; makes no health claims ; 60 to 90 words,good_rubric,0,1
+c36,Draft a reply to a GST notice,answers each point of the notice by number ; cites the section relied on ; admits no new liability,good_rubric,0,1
+c37,Turn meeting notes into minutes,every action item has an owner and a date ; decisions listed separately ; nothing not in the notes,good_rubric,0,1
+c38,Write the WhatsApp listing message,"states price, carpet area and locality ; includes the RERA number ; under 80 words",good_rubric,0,1
+c39,Give essay feedback,quotes two specific lines from the essay ; names one strength and one fix ; uses the mark scheme's band words,good_rubric,0,1
+c40,Review an NDA against the playbook,flags every clause that differs from the playbook ; quotes the clause text ; suggests the playbook wording,good_rubric,0,1
+c41,Draft a refund reply,states the refund amount and timeline from the policy ; apologises once ; offers nothing beyond the policy,good_rubric,0,1
+c42,Draft the investor update,"includes MRR, burn and runway ; ends with one specific ask ; under 400 words",good_rubric,0,1
+c43,Theme survey comments,every comment is assigned to one theme ; each theme has two quotes ; no theme has fewer than three comments,good_rubric,0,1
+c44,Write release notes,one line per shipped ticket ; no ticket IDs or internal jargon ; breaking changes listed first,good_rubric,0,1
+c45,Summarise a patient's prescriptions,lists every current medicine with dose ; allergies at the top ; fits on one page,good_rubric,0,1
+c46,Draft the client status email,sounds professional ; is good quality ; client will like it,vague_rubric,0,0
+c47,Summarise a 40-page tender,captures the important stuff ; is concise ; is useful,vague_rubric,0,0
+c48,Write product page copy,is engaging ; feels on-brand ; sells the product,vague_rubric,0,0
+c49,Shortlist resumes,picks the best candidates ; is fair ; makes sense,vague_rubric,0,0
+c50,Write the WhatsApp listing message,is attractive ; catches attention ; is well written,vague_rubric,0,0
+c51,Turn meeting notes into minutes,are clear ; are complete ; are helpful,vague_rubric,0,0
+c52,Give essay feedback,is constructive ; is encouraging ; helps the student,vague_rubric,0,0
+c53,Draft the investor update,is compelling ; builds confidence ; looks polished,vague_rubric,0,0
+c54,Create a lesson plan,is engaging ; suits the class ; is creative,vague_rubric,0,0
+c55,Draft the wedding itinerary,is well planned ; the couple will love it ; feels premium,vague_rubric,0,0
+c56,Draft a reply to a GST notice,is strong ; is convincing ; protects the client,vague_rubric,0,0
+c57,Write release notes,are good ; are informative ; read well,vague_rubric,0,0
+c58,Theme survey comments,are insightful ; are meaningful ; cover everything important,vague_rubric,0,0
+c59,Write Instagram captions,are catchy ; are trendy ; will go viral,vague_rubric,0,0
+c60,Write the weekly ops review,is thorough ; is actionable ; leadership will be happy,vague_rubric,0,0
