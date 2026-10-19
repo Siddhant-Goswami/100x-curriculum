@@ -262,6 +262,7 @@ def page(p):
 <link rel="stylesheet" href="/c8/module-2/hackathon/brief.css">
 <script src="/c8/docs.js"></script>
 {TRACK}
+<script src="/c8/analytics.js" defer></script>
 </head>
 <body data-page="hk-{p['slug']}">
 <header class="top"><div class="in">

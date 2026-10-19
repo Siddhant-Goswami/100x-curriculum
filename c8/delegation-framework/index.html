@@ -167,6 +167,7 @@ details.words summary{cursor:pointer}
 .tw3 small{display:block;font-size:14px;color:var(--ink2)}
 .tw3 input:checked+span>b{text-decoration:line-through;text-decoration-color:var(--ink3)}
 </style>
+<script src="/c8/analytics.js" defer></script>
 </head>
 <body data-page="delegation-framework" class="read">
 <header class="top"><div class="in">
@@ -217,7 +218,7 @@ details.words summary{cursor:pointer}
       <div class="combo"><input id="jobq" type="text" autocomplete="off" spellcheck="false" maxlength="80" placeholder="For example: product manager, founder, management consultant"><ul id="jobl" hidden></ul></div>
       <div class="quick" id="quick" aria-label="Common jobs"></div>
     </div>
-    <div class="picked" id="picked" hidden>
+    <div class="picked" id="picked" data-nolabel hidden>
       <span class="pk">Your job</span><b id="pickedT"></b><small id="pickedM"></small>
       <button type="button" id="change">Change</button>
     </div>
@@ -225,7 +226,7 @@ details.words summary{cursor:pointer}
   <div id="tasks" data-need-job>
     <h3>Your tasks</h3>
     <p>One line per task, the way you would log it: "send the weekly sales summary to the regional head", not "reporting". Start with three, up to 12, with how often and how long each time.</p>
-    <div class="panel trows" id="rows"></div>
+    <div class="panel trows" id="rows" data-nolabel></div>
     <div class="btnrow"><button type="button" class="btn ghost" id="addRow">+ Add a task</button><button type="button" class="btn ghost" id="onet" hidden>Start from O*NET's list for this job</button></div>
     <div class="sugg" id="suggW" hidden><p class="h">Suggestions for your job. Tap one to add it, then edit it to match your week.</p><div class="quick add" id="sugg"></div></div>
     <div class="btnrow sortrow"><button type="button" class="btn" id="sort">Can I verify these?</button><span class="muted" id="sortMsg" aria-live="polite"></span></div>
@@ -244,7 +245,7 @@ details.words summary{cursor:pointer}
   <div data-need-week>
     <h3>Write the verifier for each task</h3>
     <p>An <span class="chipd det"></span>amber task can be checked by a rule a program could run. A <span class="chipd prob"></span>violet one needs up to three criteria a judge can apply the same way every time. Jev tests each one; a violet task stays human until its criteria are clear.</p>
-    <div class="panel" id="ck"></div>
+    <div class="panel" id="ck" data-nolabel></div>
     <div class="btnrow sortrow"><button type="button" class="btn" id="testCk">Test my verifiers</button><span class="muted ckmsg" id="ckMsg" aria-live="polite"></span></div>
   </div>
 </section>
@@ -258,7 +259,7 @@ details.words summary{cursor:pointer}
 <section class="sc" id="story" aria-label="Your job, task by task" data-need-week>
   <div class="sc-stage" id="stage" data-step="0">
     <div class="sc-head"><b id="hTitle"></b><span id="hHrs"></span></div>
-    <div class="sc-viz" id="viz"></div>
+    <div class="sc-viz" id="viz" data-nolabel></div>
     <div class="sc-legend" id="legend">
       <span style="--l:var(--hum);--ls:var(--hum-soft)">Stays human</span>
       <span style="--l:var(--prob);--ls:var(--prob-soft)">Augmented</span>
@@ -272,7 +273,7 @@ details.words summary{cursor:pointer}
 <section class="s" id="yours" data-need-week>
   <h2>Your tasks, one by one</h2>
   <p>Jev's colours are a starting point. You know your job better: change any colour, and say whether a mistake is cheap to undo. The map above follows.</p>
-  <div class="tw panel"><table class="wk" id="wk"></table></div>
+  <div class="tw panel"><table class="wk" id="wk" data-nolabel></table></div>
   <div class="wkft"><span id="wkSum"></span><button type="button" class="btn ghost" id="wkReset">Back to Jev's answers</button><button type="button" class="btn ghost" id="copy">Copy link to this week</button></div>
 </section>
 
@@ -283,7 +284,7 @@ details.words summary{cursor:pointer}
   <div class="panel runs" id="runs">
     <div class="runs-top"><label for="runT">Task</label><select id="runT"></select></div>
     <p class="h">Tap a run to score it: pass, fail, or not run yet.</p>
-    <div class="rbox" id="rbox"></div>
+    <div class="rbox" id="rbox" data-nolabel></div>
     <p class="rsum" id="rsum" aria-live="polite"></p>
   </div>
   <p>Feed the fixed failures back, and fine-tune a model on your own task. Coinbase did exactly this: it tuned a nine billion parameter open model on its own fraud data, and beat frontier models at catching fraud, faster and cheaper.</p>
@@ -586,6 +587,7 @@ details.words summary{cursor:pointer}
       else{d.tasks.forEach(function(r,i){var t=todo[i],was=t.b;t.b=t.jb=r.bucket;t.reason=r.reason;t.ask=r.ask;t.ans={};t.sig=r.sig;t.undo=r.undo;t.u=null;t.src='jev';if(was!==t.b)t.ver=false});
         var un=todo.filter(function(t){return t.ask.length}).length;
         $('#sortMsg').textContent='Sorted by '+d.model+'. See step 2.'+(un?' '+plural(un,'task needs','tasks need')+' your answer.':'')}
+      window.track&&track('sort',d.fallback?'fallback':['det','prob','hum'].map(function(k){return k+':'+todo.filter(function(t){return t.b===k}).length}).join(' '));
       changed();
       if(week.length&&!un0())setTimeout(function(){$('#verify').scrollIntoView({behavior:'smooth'})},80);
     });
@@ -625,6 +627,7 @@ details.words summary{cursor:pointer}
         if(r.bucket!==t.b){t.chk=r.bucket==='det'?chkText(t):(t.chk||'').trim();t.b=r.bucket}
         t.ver=r.verified;t.note=r.note});
       var ok=todo.filter(function(t){return t.ver}).length;$('#ckMsg').textContent=ok+' of '+todo.length+' passed.';
+      window.track&&track('verify',d.fallback?'fallback':ok+'/'+todo.length);
       changed();
     });
   });
