@@ -9,7 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { sortQuestions, checkQuestions, classify, judge, judgeCheck, jev } from '../../../api/verify.mjs';
+import { sortQuestions, checkQuestions, classify, judge, judgeCheck, judgeSig, jev } from '../../../api/verify.mjs';
 
 const HERE = path.dirname(new URL(import.meta.url).pathname);
 const CACHE = path.join(HERE, 'eval_cache.json'), LOG = path.join(HERE, 'eval_log.md');
@@ -83,12 +83,14 @@ function table(R) {
   return '| gold \\ got | det | prob | hum |\n|---|---|---|---|\n' + BUCKETS.map(a => '| ' + a + ' | ' + BUCKETS.map(b => R.m[a][b]).join(' | ') + ' |').join('\n');
 }
 
+const toSave = {}, toSaveChecks = {};
+const savedChecks = replay && fs.existsSync(SIGS) ? JSON.parse(fs.readFileSync(SIGS, 'utf8')).checks || {} : {};
 const lines = ['', '## Run ' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' + MODEL + (via ? ' · via ' + via : replay ? ' · replay of eval_sigs.json' : ''), ''];
 
 if (!args.includes('--checks-only')) {
   const gold = csv('gold.csv').slice(0, limit);
   const qs = sortQuestions();
-  const saved = replay ? JSON.parse(fs.readFileSync(SIGS, 'utf8')).sigs : {}, toSave = {};
+  const saved = replay ? JSON.parse(fs.readFileSync(SIGS, 'utf8')).sigs : {};
   const row = (g, c) => ({ id: g.id, gold: LONG[g.bucket], got: c.bucket, agree: c.sig.agree, unsure: c.ask.some(k => k !== 'split'), split: c.ask.includes('split'), asks: c.ask, region: g.profile || g.region, lang: g.lang, task: g.task });
   const rows = replay ? gold.filter(g => saved[g.id]).map(g => row(g, Object.assign(judge(saved[g.id]), { sig: saved[g.id] })))
   : via ? await viaChunks(gold, 12, async gs => {
@@ -100,7 +102,6 @@ if (!args.includes('--checks-only')) {
     const c = classify(a);
     return { id: g.id, gold: LONG[g.bucket], got: c.bucket, agree: c.sig.agree, unsure: c.ask.some(k => k !== 'split'), split: c.ask.includes('split'), asks: c.ask, region: g.region, lang: g.lang, task: g.task };
   });
-  if (via) fs.writeFileSync(SIGS, JSON.stringify({ model: MODEL, at: new Date().toISOString(), sigs: toSave }));
   const R = report(rows), bar = R.macroF1 >= 0.8 && R.humRecall >= 0.9 && R.unsure < 0.25;
   lines.push('**Sort, ' + R.n + ' tasks.** Accuracy ' + pct(R.acc) + ' · macro-F1 ' + R.macroF1.toFixed(3) + ' · human recall ' + pct(R.humRecall) +
     ' · a/b disagree ' + pct(R.disagree) + ' · unsure ' + pct(R.unsure) + ' · split asked ' + pct(R.split) + ' · ship bar ' + (bar ? 'MET' : 'not met'), '');
@@ -115,12 +116,15 @@ if (!args.includes('--checks-only')) {
   lines.push('', '<details><summary>' + miss.length + ' misses</summary>', '', miss.map(r => '- ' + r.id + ' ' + r.gold + ' → ' + r.got + (r.unsure ? ' (asked)' : '') + ': ' + r.task).join('\n'), '', '</details>', '');
 }
 
-if (!replay && fs.existsSync(path.join(HERE, 'checks.csv'))) {
+if (fs.existsSync(path.join(HERE, 'checks.csv')) && (!replay || Object.keys(savedChecks).length)) {
   const checks = csv('checks.csv').slice(0, limit), qs = checkQuestions();
-  const rows = via ? await viaChunks(checks, 12, async cs => {
-    const d = await remote('?step=check', { items: cs.map(c => ({ task: c.task, check: c.check, bucket: c.kind.endsWith('rule') ? 'det' : 'prob' })) });
-    /* the endpoint returns verdicts, not raw nouls: a verified rule stands in for is_rule, any verified check for is_clear */
-    return d.items.map((j, i) => ({ c: cs[i], clear: j.verified, rule: j.verified && j.bucket === 'det', verified: j.verified }));
+  const bucketOf = c => (c.kind.endsWith('rule') ? 'det' : 'prob');
+  const fromSig = (c, n) => ({ c, clear: n.is_clear >= 0.6, rule: n.is_rule >= 0.6, verified: judgeSig(bucketOf(c), n).verified });
+  const rows = replay ? checks.filter(c => savedChecks[c.id]).map(c => fromSig(c, savedChecks[c.id]))
+  : via ? await viaChunks(checks, 12, async cs => {
+    const d = await remote('?step=check', { items: cs.map(c => ({ task: c.task, check: c.check, bucket: bucketOf(c) })) });
+    d.items.forEach((j, i) => { toSaveChecks[cs[i].id] = j.sig; });
+    return d.items.map((j, i) => fromSig(cs[i], j.sig));
   }) : await pool(checks, 8, async c => {
     const a = await ask({ task: c.task, check: c.check }, qs);
     const j = judgeCheck(c.kind.endsWith('rule') ? 'det' : 'prob', a);
@@ -137,7 +141,8 @@ if (!replay && fs.existsSync(path.join(HERE, 'checks.csv'))) {
   lines.push('');
 }
 
-if (!via) fs.writeFileSync(CACHE, JSON.stringify(cache));
+if (via) fs.writeFileSync(SIGS, JSON.stringify({ model: MODEL, at: new Date().toISOString(), sigs: toSave, checks: toSaveChecks }));
+else if (!replay) fs.writeFileSync(CACHE, JSON.stringify(cache));
 if (!fs.existsSync(LOG)) fs.writeFileSync(LOG, '# Eval log: api/verify.mjs against the gold set\n\nOne entry per run of eval_verify.mjs. Tune only the criteria text and the thresholds.\n');
 if (!replay) fs.appendFileSync(LOG, lines.join('\n'));
 console.log(lines.join('\n'));

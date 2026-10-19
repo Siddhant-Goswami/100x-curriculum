@@ -53,7 +53,7 @@ export function checkQuestions() {
 
 /* ---------- combining the answers: all code, no model ---------- */
 /* Thresholds, tuned on _plan/gold.csv (see _plan/eval_log.md). The page's decide() uses the same numbers. */
-export const T = { live: 0.5, reach: 0.2, rule: 0.3, criteria: 0.4, fence: 0, top: 0.6, specific: 0.3 };
+export const T = { live: 0.5, reach: 0.2, rule: 0.3, criteria: 0.4, fence: 0, top: 0.6, specific: 0.3, isRule: 0.6, isClear: 0.6, fits: 0.6 };
 function argmax(p) { return Object.keys(p).reduce((a, b) => (p[b] > p[a] ? b : a)); }
 const REASON = {
   rule: 'a rule can check it', criteria: 'you can write the criteria', hum: "the quality can't be written as criteria",
@@ -94,15 +94,20 @@ export function classify(ans) {
   const sig = signals(ans);
   return Object.assign(judge(sig), { undo: +ans.undo.noul.toFixed(3), sig });
 }
-export function judgeCheck(bucket, ans) {
-  const r = ans.is_rule.noul, c = ans.is_clear.noul, f = ans.fits.noul, ok = v => v >= 0.6;
+/* A violet task is never promoted to amber by its criteria: a rubric that looks rule-like still needs judgement,
+   and promotion would let a judgement task run Autonomous. */
+export function judgeSig(bucket, n) {
+  const ok = (v, t) => v >= t;
   if (bucket === 'det') {
-    if (ok(r) && ok(f)) return { bucket: 'det', verified: true, note: 'A program could run this check.' };
-    return { bucket: 'prob', verified: ok(c) && ok(f), note: 'This check needs judgement; write it as criteria.' };
+    if (ok(n.is_rule, T.isRule) && ok(n.fits, T.fits)) return { bucket: 'det', verified: true, note: 'A program could run this check.' };
+    return { bucket: 'prob', verified: ok(n.is_clear, T.isClear) && ok(n.fits, T.fits), note: 'This check needs judgement; write it as criteria.' };
   }
-  if (ok(r) && ok(f)) return { bucket: 'det', verified: true, note: 'This is a fixed rule, so a program can run it.' };
-  if (ok(c) && ok(f)) return { bucket: 'prob', verified: true, note: 'Verified judgement: an LLM judge can apply these criteria.' };
-  return { bucket: 'prob', verified: false, note: !ok(f) ? "This doesn't test the task itself. What would a good one have?" : 'Make the criteria specific: what exactly would you look for?' };
+  if (ok(n.is_clear, T.isClear) && ok(n.fits, T.fits)) return { bucket: 'prob', verified: true, note: 'Verified judgement: an LLM judge can apply these criteria.' };
+  return { bucket: 'prob', verified: false, note: !ok(n.fits, T.fits) ? "This doesn't test the task itself. What would a good one have?" : 'Make the criteria specific: what exactly would you look for?' };
+}
+export function judgeCheck(bucket, ans) {
+  const n = round({ is_rule: ans.is_rule.noul, is_clear: ans.is_clear.noul, fits: ans.fits.noul });
+  return Object.assign(judgeSig(bucket, n), { sig: n });
 }
 function round(o) { return JSON.parse(JSON.stringify(o, (k, v) => (typeof v === 'number' ? +v.toFixed(3) : v))); }
 
