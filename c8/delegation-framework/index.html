@@ -111,8 +111,8 @@ details.words summary{cursor:pointer}
 /* the video beside the opening */
 .hero-v{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:28px;align-items:start}
 .vid{margin:44px 0 0}
-.vbox{position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#111;border:1px solid var(--line2);box-shadow:var(--float)}
-.vbox iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vbox{position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#F3F2EC;border:1px solid var(--line2);box-shadow:var(--float)}
+.vbox video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#F3F2EC;display:block}
 .vid figcaption{font-size:13px;color:var(--ink3);margin-top:8px;text-align:center}
 .vsteps{list-style:none;counter-reset:v;padding:0!important;margin:18px 0 0;display:grid;gap:2px}
 .vsteps li{counter-increment:v;margin:0}
@@ -192,7 +192,7 @@ details.words summary{cursor:pointer}
     </ol>
   </div>
   <figure class="vid">
-    <div class="vbox"><iframe src="https://drive.google.com/file/d/1D3_nKgI0JKPXVOvP2AbcH2iYOxfCRcfV/preview" title="Masterclass recap video, 3½ minutes" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+    <div class="vbox"><video src="/c8/delegation-framework/media/recap.mp4" poster="/c8/delegation-framework/media/recap.jpg" controls playsinline preload="metadata" aria-label="Masterclass recap video, 3½ minutes"></video></div>
     <figcaption>3½ min recap · <a href="https://drive.google.com/file/d/1D3_nKgI0JKPXVOvP2AbcH2iYOxfCRcfV/view" target="_blank" rel="noopener">Open in Drive</a></figcaption>
   </figure>
 </div>
