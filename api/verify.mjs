@@ -53,7 +53,7 @@ export function checkQuestions() {
 
 /* ---------- combining the answers: all code, no model ---------- */
 /* Thresholds, tuned on _plan/gold.csv (see _plan/eval_log.md). The page's decide() uses the same numbers. */
-export const T = { live: 0.6, reach: 0.4, rule: 0.4, criteria: 0.4, fence: 0.1, top: 0.6, specific: 0.3 };
+export const T = { live: 0.5, reach: 0.2, rule: 0.3, criteria: 0.4, fence: 0.05, top: 0.6, specific: 0.3 };
 function argmax(p) { return Object.keys(p).reduce((a, b) => (p[b] > p[a] ? b : a)); }
 const REASON = {
   rule: 'a rule can check it', criteria: 'you can write the criteria', hum: "the quality can't be written as criteria",

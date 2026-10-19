@@ -83,7 +83,7 @@ function table(R) {
   return '| gold \\ got | det | prob | hum |\n|---|---|---|---|\n' + BUCKETS.map(a => '| ' + a + ' | ' + BUCKETS.map(b => R.m[a][b]).join(' | ') + ' |').join('\n');
 }
 
-const lines = ['', '## Run ' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' + MODEL + (via ? ' · via ' + via : ''), ''];
+const lines = ['', '## Run ' + new Date().toISOString().slice(0, 16).replace('T', ' ') + ' · ' + MODEL + (via ? ' · via ' + via : replay ? ' · replay of eval_sigs.json' : ''), ''];
 
 if (!args.includes('--checks-only')) {
   const gold = csv('gold.csv').slice(0, limit);
@@ -94,7 +94,7 @@ if (!args.includes('--checks-only')) {
   : via ? await viaChunks(gold, 12, async gs => {
     const d = await remote('', { job: 'mixed', tasks: gs.map(g => ({ task: g.task, how_often: g.how_often })) });
     d.tasks.forEach((c, i) => { toSave[gs[i].id] = c.sig; });
-    return d.tasks.map((c, i) => { const g = gs[i]; return { id: g.id, gold: LONG[g.bucket], got: c.bucket, agree: c.sig.agree, unsure: c.ask.some(k => k !== 'split'), split: c.ask.includes('split'), asks: c.ask, region: g.region, lang: g.lang, task: g.task }; });
+    return d.tasks.map((c, i) => row(gs[i], c));
   }) : await pool(gold, 8, async g => {
     const a = await ask({ job: g.job, task: g.task, how_often: g.how_often.replace('_', ' a ') }, qs);
     const c = classify(a);

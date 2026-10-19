@@ -1,0 +1,301 @@
+id,profile,job,task,how_often,bucket,note
+g001,software_engineer,"Backend engineer, fintech startup",Check every PR has a linked Jira ticket before merge,daily,deterministic,Link present or absent; a bot can check
+g002,software_engineer,"Backend engineer, fintech startup",Run the unit test suite and fix failures before pushing,daily,deterministic,Tests pass or fail
+g003,software_engineer,"Frontend engineer, e-commerce",Fix ESLint errors flagged in the CI pipeline,daily,deterministic,Linter must return zero errors
+g004,software_engineer,"Backend engineer, fintech startup",Bump dependencies to clear critical CVEs from the security scan,weekly,deterministic,Scanner shows zero critical CVEs
+g005,software_engineer,"DevOps engineer, B2B SaaS",Rotate API keys older than 90 days,monthly,deterministic,Key age under a limit is a fixed rule
+g006,software_engineer,"Backend engineer, payments company",Reconcile daily payment ledger totals with the gateway settlement file,daily,deterministic,Totals match or they don't
+g007,software_engineer,"Full-stack engineer, edtech startup",Raise unit test coverage on the auth module to 80 percent,weekly,deterministic,Coverage number above a threshold
+g008,software_engineer,"SRE, SaaS company",Confirm nightly database backups exist and their checksums match,daily,deterministic,File exists and checksum matches
+g009,software_engineer,"Mobile engineer, consumer app",Bump the app version and build number before each release build,weekly,deterministic,Version fields set to expected values
+g010,software_engineer,"Backend engineer, logistics startup",Write a migration adding a non-null column with a default value,weekly,deterministic,Migration runs and schema matches the spec
+g011,software_engineer,"Data engineer, fintech",Check the daily ETL job loaded the same row count as the source,daily,deterministic,Row counts must match
+g012,software_engineer,"Frontend engineer, B2B SaaS",Fix TypeScript type errors after upgrading the React version,monthly,deterministic,Compiler passes with zero errors
+g013,software_engineer,"Senior engineer, B2B SaaS",Make the failing API contract tests pass after a schema change,weekly,deterministic,Contract tests pass or fail
+g014,software_engineer,"DevOps engineer, B2B SaaS",Renew TLS certificates expiring within 30 days,monthly,deterministic,Expiry date inside a limit is checkable
+g015,software_engineer,"Frontend engineer, e-commerce",Keep the JS bundle under the 250 KB budget in CI,weekly,deterministic,Size inside a limit
+g016,software_engineer,"Backend engineer, healthtech",Validate API responses against the OpenAPI schema in CI,daily,deterministic,Schema validation is a fixed rule
+g017,software_engineer,"SRE, fintech",Confirm p99 latency stays under 300 ms after each deploy,daily,deterministic,Value inside a limit
+g018,software_engineer,"Backend engineer, fintech startup",Run Prettier and Black on changed files before committing,daily,deterministic,Formatter check passes or fails
+g019,software_engineer,"Full-stack engineer, edtech startup",Add missing environment variables to staging so the config check passes,weekly,deterministic,Required fields present
+g020,software_engineer,"Mobile engineer, consumer app",Make the iOS build pass Xcode archive validation,monthly,deterministic,Validation passes or fails
+g021,software_engineer,"Senior engineer, B2B SaaS",Update the CHANGELOG with every merged PR number for the release,weekly,deterministic,Every PR listed or not
+g022,software_engineer,"Backend engineer, fintech startup",Remove feature flags that have been at 100 percent rollout for 30 days,monthly,deterministic,Flag state and age are fixed rules
+g023,software_engineer,"Data engineer, fintech",Fix the dbt tests failing on null and uniqueness checks,daily,deterministic,dbt tests pass or fail
+g024,software_engineer,"Backend engineer, fintech startup",Log hours against Jira tickets so the week totals 40,weekly,deterministic,Totals match
+g025,software_engineer,"Platform engineer, SaaS company",Delete Docker images older than 30 days from the registry,monthly,deterministic,Age limit is a fixed rule
+g026,software_engineer,"Backend engineer, fintech startup",Review a PR for readability and naming,daily,probabilistic,"Judgement, but a style checklist reviewers agree on"
+g027,software_engineer,"Backend engineer, fintech startup",Write the PR description explaining what changed and why,daily,probabilistic,Many valid versions; checkable against a template
+g028,software_engineer,"Senior engineer, B2B SaaS",Write a design doc for the new notification service,monthly,probabilistic,"Rubric: problem, options, trade-offs, rollout"
+g029,software_engineer,"Backend engineer, payments company",Write unit tests for edge cases in the pricing function,weekly,probabilistic,Which edge cases matter is checkable against a list
+g030,software_engineer,"SRE, SaaS company",Draft the postmortem for last night's outage,monthly,probabilistic,Template sections and timeline reviewers can check
+g031,software_engineer,"Tech lead, SaaS company",Triage new bug reports by severity and component,daily,probabilistic,Written severity rubric two reviewers would apply
+g032,software_engineer,"Backend engineer, fintech startup",Write usage docs with examples for the new endpoints,weekly,probabilistic,"Docs checklist: params, examples, errors"
+g033,software_engineer,"Backend engineer, logistics startup",Refactor the order service into smaller functions without changing behaviour,weekly,probabilistic,Tests prove behaviour; cleanliness judged by rubric
+g034,software_engineer,"Tech lead, SaaS company",Summarise this week's merged PRs for the team update,weekly,probabilistic,Several good summaries; accuracy is checkable
+g035,software_engineer,"SRE, SaaS company",Write the runbook for restarting the payments queue,monthly,probabilistic,Step checklist reviewers can agree on
+g036,software_engineer,"Full-stack engineer, edtech startup",Write a bug report with repro steps for a customer issue,weekly,probabilistic,"Checklist: steps, expected, actual, logs"
+g037,software_engineer,"Product engineer, B2B SaaS",Write customer-facing release notes from the sprint's tickets,weekly,probabilistic,Several versions; accuracy and tone checklist
+g038,software_engineer,"Senior engineer, B2B SaaS",Rename variables and add comments in a legacy module,monthly,probabilistic,Readability judged against a style guide
+g039,software_engineer,"Data engineer, fintech",Draft an RFC comparing Postgres and DynamoDB for the events store,quarterly,probabilistic,Options and trade-offs checkable against a rubric
+g040,software_engineer,"Tech lead, SaaS company",Review a junior engineer's PR and leave teaching comments,daily,probabilistic,Comment quality fits a review checklist
+g041,software_engineer,"Backend engineer, fintech startup",Add structured logging to the checkout flow,weekly,probabilistic,Which events to log follows written criteria
+g042,software_engineer,"DevOps engineer, B2B SaaS",Write a migration plan for moving cron jobs to a queue,quarterly,probabilistic,"Plan reviewable for steps, rollback, risks"
+g043,software_engineer,"Full-stack engineer, edtech startup",Write the onboarding guide for the local dev setup,quarterly,probabilistic,Checklist: a new hire can follow each step
+g044,software_engineer,"SRE, SaaS company",Classify Sentry errors into known issues and new ones,daily,probabilistic,Matching to known issues follows written criteria
+g045,software_engineer,"SRE, fintech",Write the incident update for the public status page,monthly,probabilistic,"Template: impact, cause, next update time"
+g046,software_engineer,"Tech lead, SaaS company",Break the product spec into Jira tickets with acceptance criteria,weekly,probabilistic,Several valid splits; criteria are reviewable
+g047,software_engineer,"QA-minded engineer, healthtech",Write a test plan for the new refund feature,monthly,probabilistic,Case coverage checkable by a checklist
+g048,software_engineer,"Tech lead, SaaS company",List tech debt items with effort and impact for each,quarterly,probabilistic,Listing is reviewable; choosing is a separate decision
+g049,software_engineer,"Frontend engineer, e-commerce",Write error messages for the signup form validation,monthly,probabilistic,"Copy rubric: clear, specific, actionable"
+g050,software_engineer,"SRE, SaaS company",Write the weekly on-call handover note,weekly,probabilistic,"Checklist: open alerts, actions, owners"
+g051,software_engineer,"Tech lead, SaaS company",Decide whether to rewrite the billing service,quarterly,human,Judgement call; payoff shows months later
+g052,software_engineer,"Senior engineer, B2B SaaS",Pair-program with a new hire on their first ticket,weekly,human,Happens live with a person
+g053,software_engineer,"SRE, SaaS company",Respond to a production pager alert at 3 am,weekly,human,Live incident unfolding in real time
+g054,software_engineer,"Senior engineer, B2B SaaS",Present the architecture proposal in the design review meeting,monthly,human,Live with people
+g055,software_engineer,"Tech lead, SaaS company",Mentor a junior engineer in a weekly one-on-one,weekly,human,Live; outcome shows over months
+g056,software_engineer,"Engineering manager, SaaS company",Choose the tech stack for a new product line,quarterly,human,Result shows much later
+g057,software_engineer,"Tech lead, SaaS company",Approve production deploys as the release owner,weekly,human,Needs a person's authority
+g058,software_engineer,"Senior engineer, B2B SaaS",Interview a backend candidate in a system design round,weekly,human,Live with people
+g059,software_engineer,"Engineering manager, SaaS company",Decide hire or no-hire in the interview debrief,weekly,human,Authority; outcome shows later
+g060,software_engineer,"Tech lead, SaaS company",Negotiate sprint scope with the product manager,weekly,human,Live negotiation
+g061,software_engineer,"Engineering manager, SaaS company",Give feedback to a teammate on a missed deadline,monthly,human,"Live, sensitive conversation"
+g062,software_engineer,"Tech lead, SaaS company",Facilitate the sprint retrospective,weekly,human,Live with the team
+g063,software_engineer,"Solutions engineer, API company",Join a customer call to debug their integration live,monthly,human,Live with a customer
+g064,software_engineer,"Engineering manager, SaaS company",Decide which tech debt to pay down this quarter,quarterly,human,Payoff shows later; no agreed criteria
+g065,software_engineer,"Security engineer, fintech",Sign off a security exception for a legacy service,quarterly,human,Needs a person's authority
+g066,software_engineer,"Senior engineer, B2B SaaS",Write peer feedback for a colleague's performance review,quarterly,human,Judging a person; no criteria reviewers agree on
+g067,software_engineer,"Product engineer, B2B SaaS",Demo the new feature to stakeholders in sprint review,weekly,human,Live with people
+g068,software_engineer,"Infra engineer, on-prem fintech",Swap a failed disk in the on-prem build server,quarterly,human,By hand in the physical world
+g069,software_engineer,"SRE, SaaS company",Lead the incident bridge call during an outage,monthly,human,Live coordination under pressure
+g070,software_engineer,"Tech lead, SaaS company",Decide whether to ship with a known bug before launch,monthly,human,Authority; consequences show later
+g071,software_engineer,"Tech lead, SaaS company",Push back on an unrealistic deadline from leadership,monthly,human,"Live, political conversation"
+g072,software_engineer,"Engineering manager, SaaS company",Settle a disagreement between two engineers on API design,monthly,human,"Live, interpersonal"
+g073,software_engineer,"Senior engineer, B2B SaaS",Give a tech talk at the internal engineering forum,quarterly,human,Live with an audience
+g074,software_engineer,"Engineering manager, SaaS company",Decide build vs buy for the feature flag system,quarterly,human,Outcome shows much later
+g075,software_engineer,"Backend engineer, fintech startup",Attend the daily standup and flag blockers,daily,human,Live with people
+g076,founder,"Founder, B2B SaaS",Reconcile Stripe payouts with the bank statement,weekly,deterministic,Totals must match
+g077,founder,"Founder, edtech startup",Run payroll so every salary matches the approved CTC sheet,monthly,deterministic,Amounts match a fixed sheet
+g078,founder,"Founder, D2C brand",Check every invoice raised this month has GSTIN and HSN codes,monthly,deterministic,Field presence; a program can check
+g079,founder,"Co-founder, fintech startup",Update the cap table after the SAFE conversion so shares sum to the total,quarterly,deterministic,Totals must reconcile
+g080,founder,"Founder, B2B SaaS","Pull MRR, churn and new signups into the KPI sheet",weekly,deterministic,Copied numbers must match the source
+g081,founder,"Founder, B2B SaaS",Check monthly burn stays under the board-approved budget,monthly,deterministic,Value inside a limit
+g082,founder,"Founder, D2C brand",Match every vendor invoice to a purchase order before payment,weekly,deterministic,Match or mismatch
+g083,founder,"Co-founder, fintech startup",Upload board documents to the data room in the agreed folder structure,quarterly,deterministic,Files exist in the required folders
+g084,founder,"Founder, edtech startup",Check all employees completed POSH training in the LMS,quarterly,deterministic,Completion status is a field
+g085,founder,"Solo founder, developer tools",Calculate runway in months from cash balance and burn,monthly,deterministic,"Fixed formula, one right answer"
+g086,founder,"Founder, B2B SaaS",Confirm every customer contract has a signed copy in the drive,monthly,deterministic,File exists or not
+g087,founder,"Founder, D2C brand",Post the daily sales numbers to the team Slack by 9 am,daily,deterministic,Right numbers posted by a set time
+g088,founder,"Founder, D2C brand",Check ad spend per channel stays within the weekly cap,weekly,deterministic,Value inside a limit
+g089,founder,"Solo founder, developer tools",Renew the domain and SSL certificate before expiry,quarterly,deterministic,Date check
+g090,founder,"Co-founder, fintech startup",Match investor wire receipts against the signed term sheet amounts,quarterly,deterministic,Amounts must match
+g091,founder,"Founder, edtech startup","Check each offer letter has PAN, start date and CTC filled",monthly,deterministic,Field presence
+g092,founder,"Founder, B2B SaaS",Count trial accounts that converted to paid this week,weekly,deterministic,"Fixed query, one count"
+g093,founder,"Solo founder, developer tools",Check SaaS tool seats billed match seats actually in use,monthly,deterministic,Counts must match
+g094,founder,"Co-founder, fintech startup",Verify ESOP vesting entries match the grant letters,quarterly,deterministic,Dates and numbers must match
+g095,founder,"Solo founder, developer tools",Check website uptime stayed above 99.9 percent last month,monthly,deterministic,Value inside a limit
+g096,founder,"Founder, B2B SaaS",Export the monthly P&L from Zoho Books to the investor folder,monthly,deterministic,File exists in the right place
+g097,founder,"Founder, edtech startup",Confirm TDS was deducted at the right rate on contractor payments,monthly,deterministic,Rate rule a program can apply
+g098,founder,"Founder, B2B SaaS",Update the CRM so every closed deal has amount and close date,weekly,deterministic,Fields present
+g099,founder,"Founder, D2C brand",Check Shopify inventory counts match the warehouse sheet,weekly,deterministic,Counts must match
+g100,founder,"Co-founder, fintech startup",Check each statutory due date on the compliance calendar is marked done,monthly,deterministic,Done or not done by a date
+g101,founder,"Founder, B2B SaaS",Draft the monthly investor update,monthly,probabilistic,"Template: metrics, wins, asks; reviewers agree"
+g102,founder,"Founder, B2B SaaS",Write the job description for the first sales hire,quarterly,probabilistic,"Checklist: role, must-haves, comp band"
+g103,founder,"Founder, edtech startup",Shortlist resumes against a written must-have list,weekly,probabilistic,Written criteria two reviewers apply alike
+g104,founder,"Founder, B2B SaaS",Write cold outbound emails to 20 target accounts,weekly,probabilistic,Personalisation and ask checkable by rubric
+g105,founder,"Solo founder, developer tools",Summarise ten customer interview transcripts into themes,monthly,probabilistic,Themes traceable to transcripts
+g106,founder,"Co-founder, fintech startup",Draft the pitch deck for the seed round,quarterly,probabilistic,File reviewed against a deck rubric; pitching is separate
+g107,founder,"Solo founder, developer tools",Write landing page copy for a new feature,monthly,probabilistic,"Rubric: benefit, proof, call to action"
+g108,founder,"Founder, B2B SaaS",Write the FAQ section for the pricing page,quarterly,probabilistic,Questions covered and accuracy are checkable
+g109,founder,"Founder, D2C brand",Tag support tickets by issue type,daily,probabilistic,Written tag definitions
+g110,founder,"Founder, D2C brand",Draft a reply to an angry customer email,weekly,probabilistic,Tone and resolution checklist; sending is separate
+g111,founder,"Founder, B2B SaaS",Write a competitor comparison table for the sales team,quarterly,probabilistic,Facts and fields reviewable
+g112,founder,"Co-founder, fintech startup",Draft the board meeting pre-read,quarterly,probabilistic,Template sections reviewable
+g113,founder,"Solo founder, developer tools",Write a LinkedIn post announcing a new customer,weekly,probabilistic,Brand voice guidelines act as the rubric
+g114,founder,"Founder, B2B SaaS",Turn a sales call recording into a CRM summary and next steps,daily,probabilistic,Accuracy against the recording is checkable
+g115,founder,"Founder, edtech startup",Draft the leave policy for the employee handbook,quarterly,probabilistic,"Checklist: legal minimums, clarity"
+g116,founder,"Founder, B2B SaaS",Write the onboarding email sequence for new trial users,quarterly,probabilistic,Rubric per email
+g117,founder,"Founder, B2B SaaS",Draft a customer case study from a call transcript,monthly,probabilistic,Facts match; structure follows a rubric
+g118,founder,"Founder, edtech startup",Write the weekly all-hands agenda,weekly,probabilistic,Template sections
+g119,founder,"Founder, B2B SaaS",Draft a pilot proposal for an enterprise prospect,monthly,probabilistic,"Scope, timeline, price sections reviewable"
+g120,founder,"Solo founder, developer tools",Write answers to the accelerator application questions,quarterly,probabilistic,Rubric per question
+g121,founder,"Solo founder, developer tools",Draft the hiring scorecard for an engineering role,quarterly,probabilistic,Criteria are reviewable
+g122,founder,"Founder, B2B SaaS",Summarise last month's churned customer exit surveys,monthly,probabilistic,Themes traceable to responses
+g123,founder,"Solo founder, developer tools",Write the product changelog post for users,weekly,probabilistic,Accuracy and clarity checklist
+g124,founder,"Co-founder, fintech startup",Research and list 30 investors who lead seed rounds in fintech,quarterly,probabilistic,Fit criteria written down in advance
+g125,founder,"Co-founder, fintech startup",Draft the press release for the funding announcement,quarterly,probabilistic,Press release format and facts checkable
+g126,founder,"Founder, B2B SaaS",Pitch to an investor on a call,weekly,human,Live with a person
+g127,founder,"Founder, B2B SaaS",Decide whom to hire as the first engineer,quarterly,human,Authority; outcome shows later
+g128,founder,"Co-founder, fintech startup",Negotiate the term sheet valuation with the lead investor,quarterly,human,Live negotiation
+g129,founder,"Co-founder, fintech startup",Sign the shareholder agreement,quarterly,human,Needs a person's signature
+g130,founder,"Founder, edtech startup",Decide whether to pivot to the enterprise segment,quarterly,human,Result shows much later
+g131,founder,"Founder, D2C brand",Let go of an underperforming employee,quarterly,human,"Live, sensitive, needs authority"
+g132,founder,"Founder, B2B SaaS",Run the quarterly board meeting,quarterly,human,Live with people
+g133,founder,"Founder, B2B SaaS",Close a deal on a sales call with a prospect,weekly,human,Live with a person
+g134,founder,"Founder, edtech startup",Set the company's annual goals and OKRs,quarterly,human,Judgement; results show much later
+g135,founder,"Solo founder, developer tools",Do customer discovery calls with new users,weekly,human,Live with people
+g136,founder,"Founder, edtech startup",Visit the new office space with the landlord before signing,quarterly,human,"Physical, in person"
+g137,founder,"Founder, D2C brand",Approve the monthly payroll release in the bank portal,monthly,human,Needs a person's authority
+g138,founder,"Founder, B2B SaaS",Decide pricing for the new enterprise tier,quarterly,human,Result shows later
+g139,founder,"Founder, B2B SaaS",Hold one-on-ones with each direct report,weekly,human,Live with people
+g140,founder,"Solo founder, developer tools",Speak on a panel at a startup conference,quarterly,human,Live with an audience
+g141,founder,"Co-founder, fintech startup",Resolve a co-founder disagreement on the equity split,quarterly,human,"Live, interpersonal"
+g142,founder,"Founder, D2C brand",Pack and ship sample kits to influencers,monthly,human,By hand in the physical world
+g143,founder,"Founder, D2C brand",Visit the manufacturer to check product quality,monthly,human,Physical inspection in person
+g144,founder,"Founder, B2B SaaS",Persuade a key engineer not to quit,quarterly,human,"Live, persuasive conversation"
+g145,founder,"Founder, D2C brand",Decide how much of the runway to spend on marketing,quarterly,human,Result shows much later
+g146,founder,"Founder, edtech startup",Rebuild team morale after a failed launch,quarterly,human,No agreed criteria; shows over time
+g147,founder,"Founder, D2C brand",Negotiate payment terms with a key supplier,monthly,human,Live negotiation
+g148,founder,"Founder, edtech startup",Present the company vision at the all-hands,monthly,human,Live with people
+g149,founder,"Founder, B2B SaaS",Sign customer contracts as the authorised signatory,weekly,human,Needs a person's signature
+g150,founder,"Co-founder, fintech startup",Network with angel investors at a founder dinner,monthly,human,Live with people
+g151,management_consultant,"Analyst, management consulting",Check every chart in the deck cites a source in the footnote,weekly,deterministic,Field present or missing
+g152,management_consultant,"Analyst, management consulting",Reconcile market sizing model totals with the source data tab,weekly,deterministic,Totals must match
+g153,management_consultant,"Analyst, management consulting","Format the deck to the firm template fonts, colours and logo placement",daily,deterministic,Template rules are fixed and checkable
+g154,management_consultant,"Associate, strategy consulting",Submit the weekly timesheet with hours split by engagement code,weekly,deterministic,Hours and codes match the tracker
+g155,management_consultant,"Associate, strategy consulting",Submit travel expenses with a receipt attached for every line,weekly,deterministic,Field present on every line
+g156,management_consultant,"Analyst, management consulting",Check slide numbers match the table of contents,weekly,deterministic,Match or mismatch
+g157,management_consultant,"Analyst, management consulting",Pull revenue figures from the client's ERP extract into the model,weekly,deterministic,Copied numbers must match the source
+g158,management_consultant,"Analyst, management consulting",Check the Excel model has no #REF or #DIV/0 errors,daily,deterministic,Error count must be zero
+g159,management_consultant,"Analyst, management consulting",Verify percentages in each pie chart sum to 100,weekly,deterministic,Fixed arithmetic rule
+g160,management_consultant,"Analyst, management consulting",Rename files in the client data room to the naming convention,weekly,deterministic,Names match a pattern
+g161,management_consultant,"Associate, strategy consulting",Complete the mandatory compliance training before the deadline,quarterly,deterministic,Done by a date
+g162,management_consultant,"Engagement manager, management consulting",Confirm every interviewee in the tracker has a signed NDA on file,monthly,deterministic,File exists or not
+g163,management_consultant,"Associate, strategy consulting",Check the deck is under the client's 20 MB email limit,weekly,deterministic,Size inside a limit
+g164,management_consultant,"Engagement manager, management consulting",Update the project tracker so every workstream has an owner and due date,weekly,deterministic,Fields present
+g165,management_consultant,"Analyst, management consulting",Convert figures from INR lakhs to crores consistently across tabs,weekly,deterministic,Fixed conversion
+g166,management_consultant,"Analyst, management consulting",Check the model's balance sheet balances in every forecast year,weekly,deterministic,Assets equal liabilities plus equity
+g167,management_consultant,"Engagement manager, management consulting",Run the conflict check for a new client in the firm database,monthly,deterministic,Lookup returns hit or no hit
+g168,management_consultant,"Consultant, operations practice",Check org chart headcount matches the HR data dump,weekly,deterministic,Counts must match
+g169,management_consultant,"Analyst, management consulting",Verify each survey segment meets the minimum sample of 30,weekly,deterministic,Value inside a limit
+g170,management_consultant,"Associate, strategy consulting",Cross-check every number in the exec summary against the backup slides,weekly,deterministic,Numbers must match
+g171,management_consultant,"Associate, strategy consulting",Book flights within the travel policy fare cap,weekly,deterministic,Value inside a limit
+g172,management_consultant,"Analyst, management consulting",Recalculate CAGR figures in the deck with the standard formula,weekly,deterministic,"Fixed formula, one right answer"
+g173,management_consultant,"Engagement manager, management consulting",Check every expert call in the log has an invoice and compliance form,monthly,deterministic,Files present or missing
+g174,management_consultant,"Associate, strategy consulting",Strip client names from case slides before uploading to the knowledge bank,monthly,deterministic,Names present or absent against a list
+g175,management_consultant,"Engagement manager, management consulting",Check the client invoice equals billed hours times agreed rates,monthly,deterministic,Arithmetic match
+g176,management_consultant,"Engagement manager, management consulting",Draft the weekly status report for the client,weekly,probabilistic,Template sections reviewers can check
+g177,management_consultant,"Analyst, management consulting",Summarise a 40-page industry report into one slide,weekly,probabilistic,Key points traceable to the source
+g178,management_consultant,"Associate, strategy consulting",Write interview guide questions for client stakeholders,monthly,probabilistic,Coverage of hypotheses is checkable
+g179,management_consultant,"Associate, strategy consulting",Synthesise notes from 12 expert calls into key themes,weekly,probabilistic,Themes traceable to notes
+g180,management_consultant,"Engagement manager, management consulting",Build the storyline for the steering committee deck,weekly,probabilistic,"Answer-first, MECE rubric reviewers share"
+g181,management_consultant,"Associate, strategy consulting",Write the executive summary slide,weekly,probabilistic,"Rubric: answer first, supported, concise"
+g182,management_consultant,"Engagement manager, management consulting",Draft the proposal for a new engagement,monthly,probabilistic,Sections and fit to the RFP reviewable
+g183,management_consultant,"Analyst, management consulting",Benchmark competitors' pricing from public sources into a table,weekly,probabilistic,Completeness and sourcing criteria
+g184,management_consultant,"Analyst, management consulting",Draft minutes and action items from a client workshop,weekly,probabilistic,Accuracy and owners checkable
+g185,management_consultant,"Analyst, management consulting",Code open-ended survey responses into categories,weekly,probabilistic,Written codebook criteria
+g186,management_consultant,"Associate, strategy consulting",Write the issue tree for the client's cost problem,monthly,probabilistic,MECE rubric reviewers agree on
+g187,management_consultant,"Associate, strategy consulting",Draft hypotheses for the profitability diagnostic,monthly,probabilistic,"Testable, specific, linked to data"
+g188,management_consultant,"Consultant, operations practice",Map the current order-to-cash process from interview notes,monthly,probabilistic,Steps traceable to interviews
+g189,management_consultant,"Associate, strategy consulting",Write a case study for the firm's knowledge bank,quarterly,probabilistic,Template and anonymisation checklist
+g190,management_consultant,"Analyst, management consulting",Draft the email requesting data from the client's finance team,weekly,probabilistic,"Clear list, format and deadline"
+g191,management_consultant,"Analyst, management consulting",Rewrite chart titles so each states the takeaway,daily,probabilistic,Action-title rubric
+g192,management_consultant,"Associate, strategy consulting",Summarise a 40-page tender into a list of requirements,monthly,probabilistic,Requirements traceable to the tender
+g193,management_consultant,"Engagement manager, management consulting",Draft the SOW scope and deliverables section,monthly,probabilistic,Draft reviewable; signing is separate
+g194,management_consultant,"Associate, strategy consulting",Prepare the pre-read for tomorrow's client workshop,weekly,probabilistic,Template and objectives checklist
+g195,management_consultant,"Analyst, management consulting",Profile 10 potential acquisition targets from public data,monthly,probabilistic,Profile template with written fit criteria
+g196,management_consultant,"Consultant, operations practice",Draft a vendor evaluation matrix against the client's criteria,monthly,probabilistic,Client criteria act as the rubric
+g197,management_consultant,"Analyst, management consulting",Rewrite a partner's bullet notes into clean slide text,daily,probabilistic,Faithful to notes; style guide applies
+g198,management_consultant,"Consultant, operations practice",Prepare the FAQ for a client town hall on the restructuring,quarterly,probabilistic,Questions covered and accuracy reviewable
+g199,management_consultant,"Consultant, operations practice",Draft the change management communication plan,monthly,probabilistic,"Audiences, messages, channels, timing checklist"
+g200,management_consultant,"Associate, strategy consulting",Write the weekly internal update for the partner,weekly,probabilistic,"Template: progress, risks, asks"
+g201,management_consultant,"Partner, management consulting",Present findings to the client CEO in the steering committee,monthly,human,Live with people
+g202,management_consultant,"Engagement manager, management consulting",Run a client workshop to align on priorities,monthly,human,Live with people
+g203,management_consultant,"Consultant, operations practice",Interview a plant manager on site about bottlenecks,weekly,human,Live and in person
+g204,management_consultant,"Partner, management consulting",Decide which recommendation to put in front of the board,monthly,human,Judgement; result shows later
+g205,management_consultant,"Partner, management consulting",Negotiate fees and scope changes with the client sponsor,quarterly,human,Live negotiation
+g206,management_consultant,"Partner, management consulting",Sign off the final deliverable as engagement partner,monthly,human,Needs a person's authority
+g207,management_consultant,"Engagement manager, management consulting",Build trust with a sceptical client CFO,monthly,human,No agreed criteria; shows over time
+g208,management_consultant,"Associate, strategy consulting",Conduct expert calls with industry specialists,weekly,human,Live with people
+g209,management_consultant,"Consultant, operations practice",Walk the warehouse floor to time-study picking operations,monthly,human,"Physical, in person"
+g210,management_consultant,"Engagement manager, management consulting",Deliver tough feedback to an analyst in their review,quarterly,human,"Live, sensitive conversation"
+g211,management_consultant,"Partner, management consulting",Pitch a follow-on engagement to the client,quarterly,human,Live persuasion
+g212,management_consultant,"Consultant, operations practice",Facilitate a role-play training session for client managers,quarterly,human,Live with people
+g213,management_consultant,"Engagement manager, management consulting",Mediate between two client executives with conflicting goals,monthly,human,"Live, interpersonal"
+g214,management_consultant,"Engagement manager, management consulting",Give the analyst a performance rating in the appraisal cycle,quarterly,human,Judging a person; needs authority
+g215,management_consultant,"Partner, management consulting",Decide how to staff consultants across engagements,monthly,human,Authority; outcome shows later
+g216,management_consultant,"Associate, strategy consulting",Interview MBA candidates in campus case rounds,quarterly,human,Live with people
+g217,management_consultant,"Partner, management consulting",Advise the client on whether to exit a business line,quarterly,human,Result shows much later
+g218,management_consultant,"Engagement manager, management consulting",Handle the client's angry call about a delayed deliverable,monthly,human,"Live, sensitive"
+g219,management_consultant,"Engagement manager, management consulting",Run the daily team check-in at the client site,daily,human,Live with people
+g220,management_consultant,"Partner, management consulting",Meet former clients over dinner to source new work,monthly,human,Live relationship building
+g221,management_consultant,"Consultant, operations practice",Track whether the cost programme delivers savings after 12 months,quarterly,human,Result shows only much later
+g222,management_consultant,"Consultant, operations practice",Coach client managers through rolling out the new process,weekly,human,Live coaching
+g223,management_consultant,"Partner, management consulting",Present the proposal orally in the client's vendor shortlist meeting,quarterly,human,Live with people
+g224,management_consultant,"Engagement manager, management consulting",Decide when to escalate a delivery risk to the partner,weekly,human,Judgement with no agreed criteria
+g225,management_consultant,"Engagement manager, management consulting",Present the weekly update to the client sponsor in person,weekly,human,Live; boundary with drafting the report
+g226,it_services,"Java developer, IT services",Fill the weekly timesheet in the client portal so hours match the tracker,weekly,deterministic,Hours must match the tracker
+g227,it_services,"QA engineer, IT services",Run the regression suite and log failed test cases in Jira,daily,deterministic,Tests pass or fail
+g228,it_services,"Scrum master, IT services",Move Jira tickets to Done only when all subtasks are closed,daily,deterministic,Subtask status is a fixed rule
+g229,it_services,"QA engineer, IT services",Execute test cases from the test plan and record pass or fail,daily,deterministic,Each case has an expected result
+g230,it_services,"L2 support engineer, IT services",Check every P1 ticket was acknowledged within the 15-minute SLA,daily,deterministic,Value inside a limit
+g231,it_services,"Java developer, IT services",Complete the mandatory InfoSec compliance course before the deadline,quarterly,deterministic,Done by a date
+g232,it_services,"Business analyst, IT services",Check the traceability matrix maps each requirement to a test case,weekly,deterministic,Every row has a link or not
+g233,it_services,"Java developer, IT services",Deploy the build to UAT and confirm the health check passes,weekly,deterministic,Health check passes or fails
+g234,it_services,"ETL developer, IT services",Verify migrated table row counts match the source extract,daily,deterministic,Counts must match
+g235,it_services,"Java developer, IT services",Fix SonarQube issues so the quality gate passes,weekly,deterministic,Gate passes or fails
+g236,it_services,"Project manager, IT services",Reconcile invoiced hours with approved timesheets,monthly,deterministic,Totals must match
+g237,it_services,"Scrum master, IT services",Check all team members filled timesheets by Friday 6 pm,weekly,deterministic,Filed by a deadline or not
+g238,it_services,"Project manager, IT services",Update the leave tracker so planned leaves match the HR portal,monthly,deterministic,Entries must match
+g239,it_services,"L2 support engineer, IT services",Restart the failed batch job and confirm all records processed,daily,deterministic,Processed count equals input count
+g240,it_services,"QA engineer, IT services",Mask PII columns in the test database per the masking rule,weekly,deterministic,Masking rule is fixed and checkable
+g241,it_services,"Project manager, IT services",Raise a change request in ServiceNow with all mandatory fields,weekly,deterministic,Fields present
+g242,it_services,"QA engineer, IT services",Verify the release notes list every ticket in the build,weekly,deterministic,Every ticket listed or not
+g243,it_services,"QA engineer, IT services",Run the automated smoke suite after each production deployment,weekly,deterministic,Suite passes or fails
+g244,it_services,"Scrum master, IT services",Update the sprint report so completed story points match Jira,weekly,deterministic,Numbers must match
+g245,it_services,"Business analyst, IT services",Validate API responses field by field against the mapping sheet,daily,deterministic,Each field matches or not
+g246,it_services,"L2 support engineer, IT services",Check server disk usage is below 80 percent in the morning health check,daily,deterministic,Value inside a limit
+g247,it_services,"L2 support engineer, IT services",Reset user passwords and unlock accounts as per the ticket,daily,deterministic,Account unlocked or not
+g248,it_services,"Infra engineer, IT services",Apply OS patches to servers listed in the patch schedule,monthly,deterministic,Patch level matches the schedule
+g249,it_services,"Delivery manager, IT services",Calculate each team member's billable utilisation for the month,monthly,deterministic,Fixed formula from timesheets
+g250,it_services,"Project manager, IT services",Verify each new resource's background check is complete before onboarding,monthly,deterministic,Status field complete or not
+g251,it_services,"QA engineer, IT services",Write test cases from the user stories for the new module,weekly,probabilistic,Coverage of acceptance criteria is checkable
+g252,it_services,"Business analyst, IT services",Write the BRD section for a new loan origination flow,monthly,probabilistic,BRD template and completeness checklist
+g253,it_services,"Project manager, IT services",Prepare the weekly status report with RAG status for the client,weekly,probabilistic,RAG rules written down; template sections
+g254,it_services,"Business analyst, IT services",Write user stories with acceptance criteria from workshop notes,weekly,probabilistic,INVEST checklist reviewers share
+g255,it_services,"L2 support engineer, IT services",Write the root cause analysis for a recurring P2 incident,monthly,probabilistic,5-whys template; evidence checkable
+g256,it_services,"Java developer, IT services",Review a teammate's Java code against the coding standards,daily,probabilistic,Written standards act as the rubric
+g257,it_services,"QA engineer, IT services",Write a defect report with steps to reproduce and screenshots,daily,probabilistic,"Checklist: steps, expected, actual, evidence"
+g258,it_services,"L2 support engineer, IT services",Draft a knowledge base article for a common L2 issue,weekly,probabilistic,Template and accuracy checklist
+g259,it_services,"L2 support engineer, IT services",Classify incoming tickets by category and priority,daily,probabilistic,Written priority matrix
+g260,it_services,"Scrum master, IT services",Draft minutes of the daily client call with action items,daily,probabilistic,Accuracy and owners checkable
+g261,it_services,"QA engineer, IT services",Write the test summary report at the end of the test cycle,monthly,probabilistic,Template sections and numbers reviewable
+g262,it_services,"Java developer, IT services",Prepare the KT document for a module before a teammate rolls off,monthly,probabilistic,Coverage checklist for the module
+g263,it_services,"Business analyst, IT services",Write the functional spec for a report from client requirements,monthly,probabilistic,Requirements traceable to the spec
+g264,it_services,"Delivery manager, IT services",Draft answers to the client's RFP technical questions,monthly,probabilistic,Each answer checkable against the question
+g265,it_services,"Java developer, IT services",Convert a legacy stored procedure into Java service code,weekly,probabilistic,Same outputs; readability against standards
+g266,it_services,"Scrum master, IT services",Prepare the sprint review summary for the client,weekly,probabilistic,"Template: done, not done, risks"
+g267,it_services,"Business analyst, IT services",Write the gap analysis between current and target process,monthly,probabilistic,Gaps traceable to both process maps
+g268,it_services,"Automation tester, IT services",Write Selenium scripts for the regression pack,weekly,probabilistic,Several designs; framework guidelines as rubric
+g269,it_services,"Project manager, IT services",Draft a reply to a client escalation email about a missed SLA,monthly,probabilistic,Tone and facts checklist; the call is separate
+g270,it_services,"Business analyst, IT services",Summarise a 100-page client process document into key requirements,monthly,probabilistic,Requirements traceable to the source
+g271,it_services,"Project manager, IT services",Draft risk register entries with mitigation plans,monthly,probabilistic,"Template: cause, impact, owner, mitigation"
+g272,it_services,"Release engineer, IT services",Write the deployment runbook for the weekend release,monthly,probabilistic,Steps and rollback checklist
+g273,it_services,"Business analyst, IT services",Prepare the impact analysis for a change request,weekly,probabilistic,Affected modules traceable and reviewable
+g274,it_services,"QA engineer, IT services",Prepare UAT test scenarios for the client's business users,monthly,probabilistic,Coverage of business flows is checkable
+g275,it_services,"Java developer, IT services",Write the quarterly self-appraisal summary of achievements,quarterly,probabilistic,Draft text reviewable for evidence; rating is separate
+g276,it_services,"Java developer, IT services",Attend the daily standup with the onshore client team,daily,human,Live with people
+g277,it_services,"Scrum master, IT services",Present the sprint demo to the client,weekly,human,Live with people
+g278,it_services,"Project manager, IT services",Get UAT sign-off from the client business owner,monthly,human,Needs a person's authority
+g279,it_services,"Project manager, IT services",Negotiate the change request effort estimate with the client,monthly,human,Live negotiation
+g280,it_services,"Business analyst, IT services",Run requirement gathering workshops with client stakeholders,weekly,human,Live with people
+g281,it_services,"Delivery manager, IT services",Rate team members in the annual appraisal cycle,quarterly,human,Judging people; needs authority
+g282,it_services,"Delivery manager, IT services",Handle an angry client on an escalation call,monthly,human,"Live, sensitive"
+g283,it_services,"L2 support engineer, IT services",Join the P1 incident bridge call with the client,monthly,human,Live coordination
+g284,it_services,"Delivery manager, IT services",Decide which resources to release from the project,quarterly,human,Authority; impact shows later
+g285,it_services,"Project manager, IT services",Interview candidates for a project opening,weekly,human,Live with people
+g286,it_services,"Scrum master, IT services",Run the sprint retrospective with the offshore and onsite team,weekly,human,Live with the team
+g287,it_services,"Delivery manager, IT services",Approve the go-live decision in the CAB meeting,weekly,human,"Authority, live"
+g288,it_services,"Team lead, IT services",Mentor freshers through their first project,weekly,human,Live; outcome shows over months
+g289,it_services,"Java developer, IT services",Give KT sessions to the incoming team over calls,monthly,human,Live with people
+g290,it_services,"Desktop support engineer, IT services",Replace a faulty network cable in the client's server room,quarterly,human,By hand in the physical world
+g291,it_services,"Desktop support engineer, IT services",Set up laptops for new joiners at the client office,monthly,human,"Physical, in person"
+g292,it_services,"Delivery manager, IT services",Build rapport with the client manager to win the renewal,quarterly,human,Result shows much later
+g293,it_services,"Project manager, IT services",Decide whether to escalate a slipping milestone to the delivery head,weekly,human,Judgement with no agreed criteria
+g294,it_services,"Project manager, IT services",Sign the project closure document as project manager,quarterly,human,Needs a person's signature
+g295,it_services,"Delivery manager, IT services",Convince the client to accept a revised timeline,quarterly,human,Live persuasion
+g296,it_services,"Scrum master, IT services",Resolve a conflict between two developers over task ownership,monthly,human,"Live, interpersonal"
+g297,it_services,"Business analyst, IT services",Shadow the client's users at the branch to observe the process,quarterly,human,"In person, physical setting"
+g298,it_services,"Delivery manager, IT services",Present the quarterly business review to the client's leadership,quarterly,human,Live with people
+g299,it_services,"Java developer, IT services",Ask for a project rotation in the one-on-one with my manager,quarterly,human,Live conversation
+g300,it_services,"QA engineer, IT services",Join the night release war room with the client team,monthly,human,Live with people

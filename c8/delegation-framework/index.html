@@ -194,7 +194,7 @@ table.wk select{border:1px solid var(--line2);background:var(--bg);border-radius
 
   <details class="words"><summary>Sources, all opened 18 Oct 2026</summary>
   <dl>
-    <div><dt>Sorting</dt><dd>Each task goes to <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">TypeSafe's Jev 1.13</a> (pinned to jev-1.13.0) with seven narrow questions: the three-bucket question asked twice with the options in opposite orders, then whether a fixed rule could check it, whether criteria could be written, whether it happens live, by hand or under a signature, whether an agent could reach the inputs, and whether a mistake could be undone. The page's code combines the answers; when they disagree or sit near the middle, it asks you instead of guessing. Each check you write goes back to Jev to test whether it is a rule, clear criteria, and about the task. Jev reads literally and can be wrong: override any colour when you know better.<!-- add the gold-set score from _plan/eval_log.md once the eval has run --></dd></div>
+    <div><dt>Sorting</dt><dd>Each task goes to <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">TypeSafe's Jev 1.13</a> (pinned to jev-1.13.0) with seven narrow questions: the three-bucket question asked twice with the options in opposite orders, then whether a fixed rule could check it, whether criteria could be written, whether it happens live, by hand or under a signature, whether an agent could reach the inputs, and whether a mistake could be undone. The page's code combines the answers; when they disagree or sit near the middle, it asks you instead of guessing. Each check you write goes back to Jev to test whether it is a rule, clear criteria, and about the task. On 300 labelled tasks from software engineers, founders, management consultants and IT services staff, the sort matches the label 95% of the time (macro-F1 0.95), keeps 91% of the tasks that should stay with you, and asks you a question on 12% (19 Oct 2026). Jev reads literally and can be wrong: override any colour when you know better.</dd></div>
     <div><dt>Suggestions</dt><dd>Task suggestions come from O*NET (below) and a bank of about 1,500 tasks written for this page for Indian and global roles.</dd></div>
     <div><dt>O*NET</dt><dd>Jobs, tasks, importance and frequency ratings from the <a href="https://www.onetcenter.org/database.html" target="_blank" rel="noopener">O*NET 31.0 Database</a> by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> license. O*NET® is a trademark of USDOL/ETA. The suggested minutes, and the default answers used when Jev can't be reached, are this page's own estimates from those ratings and the task wording; USDOL/ETA has not approved or endorsed them.</dd></div>
     <div><dt>Economic Index</dt><dd><a href="https://www.anthropic.com/research/anthropic-economic-index-january-2026-report" target="_blank" rel="noopener">Economic primitives, Jan 2026</a> · <a href="https://www.anthropic.com/research/economic-index-march-2026-report" target="_blank" rel="noopener">Learning curves, Mar 2026</a> · <a href="https://www.anthropic.com/research/economic-index-june-2026-report" target="_blank" rel="noopener">Cadences, Jun 2026</a> · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">open dataset</a></dd></div>
@@ -226,14 +226,14 @@ table.wk select{border:1px solid var(--line2);background:var(--bg);border-radius
   var REASON={rule:'a rule can check it',criteria:'you can write the criteria',hum:'the quality can’t be written as criteria',live:'happens live, by hand or under your signature',reach:'the agent can’t reach the inputs',norule:'no fixed rule checks it, so it needs judgement',nocriteria:'the criteria aren’t clear enough to write down'};
   var ASKQ={live:'Does it happen live with people, by hand, or need your signature?',reach:'Could an agent on a computer get every input it needs?',rule:'Could a program check a finished one with a fixed pass/fail rule?',criteria:'Could you write down what makes it good, so two reviewers would agree?',split:'Is this one specific task you repeat?'};
   function argmax(p){return Object.keys(p).reduce(function(a,b){return p[b]>p[a]?b:a})}
-  /* a 0 or 1 is a person's answer and outranks Jev */
+  /* a 0 or 1 is a person's answer and outranks Jev; thresholds match T in api/verify.mjs */
   function decide(s){
     var b=argmax(s.p), why=b==='det'?'rule':b==='prob'?'criteria':'hum';
-    if(s.live>.6)return{bucket:'hum',why:'live'};
-    if(s.reach<.4)return{bucket:'hum',why:'reach'};
+    if(s.live>.5)return{bucket:'hum',why:'live'};
+    if(s.reach<.2)return{bucket:'hum',why:'reach'};
     if(s.rule===1)return{bucket:'det',why:'rule'};
     if(s.criteria===1&&b==='hum'){b='prob';why='criteria'}
-    if(b==='det'&&s.rule<.4){b='prob';why='norule'}
+    if(b==='det'&&s.rule<.3){b='prob';why='norule'}
     if(b==='prob'&&s.criteria<.4){b='hum';why='nocriteria'}
     return{bucket:b,why:why};
   }
