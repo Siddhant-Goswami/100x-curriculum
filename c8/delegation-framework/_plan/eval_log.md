@@ -62,3 +62,62 @@ A sweep over the saved signals (live .5–.7, reach .2–.4, rule/criteria .3–
 Caveat: thresholds were tuned and scored on the same 300 tasks, and the labels were drafted by a model, not two people. Write a fresh held-out set before trusting the number further.
 
 Then fence 0 (asked for fewer questions after a live software-engineer week still asked on 4 of 10): questions only when the two orderings disagree or no bucket reaches .6. Replay: same accuracy 95.3%, macro-F1 0.953, human recall 91.0%; unsure 3.0% (rule 4, criteria 2, live 2, reach 1, split 1).
+
+## Run 2026-10-19 08:37 · jev-1.13.0 · via https://100x-curriculum.vercel.app
+
+**Sort, 300 tasks.** Accuracy 96.0% · macro-F1 0.960 · human recall 92.0% · a/b disagree 1.3% · unsure 3.3% · split asked 0.3% · ship bar MET
+
+- det: precision 97.1%, recall 99.0%, F1 0.980
+- prob: precision 92.4%, recall 97.0%, F1 0.946
+- hum: precision 98.9%, recall 92.0%, F1 0.953
+
+| gold \ got | det | prob | hum |
+|---|---|---|---|
+| det | 99 | 1 | 0 |
+| prob | 2 | 97 | 1 |
+| hum | 1 | 7 | 92 |
+
+- software_engineer (75): accuracy 93.3%, macro-F1 0.933, human recall 84.0%, unsure 1.3%
+- founder (75): accuracy 98.7%, macro-F1 0.987, human recall 96.0%, unsure 6.7%
+- management_consultant (75): accuracy 94.7%, macro-F1 0.947, human recall 92.0%, unsure 2.7%
+- it_services (75): accuracy 97.3%, macro-F1 0.973, human recall 96.0%, unsure 2.7%
+
+- questions asked: rule 4, live 3, reach 2, split 1, criteria 1
+
+<details><summary>12 misses</summary>
+
+- g029 prob → det: Write unit tests for edge cases in the pricing function
+- g051 hum → prob: Decide whether to rewrite the billing service
+- g061 hum → prob: Give feedback to a teammate on a missed deadline
+- g066 hum → prob: Write peer feedback for a colleague's performance review
+- g074 hum → prob: Decide build vs buy for the feature flag system
+- g130 hum → prob (asked): Decide whether to pivot to the enterprise segment
+- g153 det → prob: Format the deck to the firm template fonts, colours and logo placement
+- g188 prob → hum: Map the current order-to-cash process from interview notes
+- g221 hum → det: Track whether the cost programme delivers savings after 12 months
+- g224 hum → prob: Decide when to escalate a delivery risk to the partner
+- g268 prob → det: Write Selenium scripts for the regression pack
+- g293 hum → prob (asked): Decide whether to escalate a slipping milestone to the delivery head
+
+</details>
+
+**Checks, 60.** is_clear separates 83.3% (bar 85%: not met) · is_rule 93.3% · verified = good 83.3%
+
+- good_rule: verified 15 of 15
+- vague_rule: verified 4 of 15
+- good_rubric: verified 9 of 15
+- vague_rubric: verified 0 of 15
+
+## Run 2026-10-19 08:56 · jev-1.13.0 · via https://100x-curriculum.vercel.app
+
+**Checks, 60.** is_clear separates 88.3% (bar 85%: MET) · is_rule 73.3% · verified = good 85.0%
+
+- good_rule: verified 15 of 15
+- vague_rule: verified 4 of 15
+- good_rubric: verified 10 of 15
+- vague_rubric: verified 0 of 15
+
+### Production confirmation and checks, 19 Oct 2026
+Live run of the sort with the tuned thresholds (above): accuracy 96.0%, macro-F1 0.960, human recall 92.0%, unsure 3.3%, ship bar MET (slightly better than the replay; Jev's answers moved a little between runs). Weakest: software_engineer human recall 84% ("Decide whether to rewrite the billing service", "Give feedback to a teammate on a missed deadline" still go violet).
+
+Checks: violet criteria are no longer promoted to amber. Good rubrics score is_rule 0.5–0.9, so promotion fired on most of them, and in a live test it sent "Review pull requests" to Autonomous. A sweep over the saved check scores set isClear .45 (vague checks top out at .36), isRule .7, fits .6: checks right 96.7% (good_rule 15/15, good_rubric 15/15, vague_rubric 0/15, vague_rule 2/15 verified, as criteria).

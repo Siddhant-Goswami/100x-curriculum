@@ -9,7 +9,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { sortQuestions, checkQuestions, classify, judge, judgeCheck, judgeSig, jev } from '../../../api/verify.mjs';
+import { sortQuestions, checkQuestions, classify, judge, judgeCheck, judgeSig, jev, T } from '../../../api/verify.mjs';
 
 const HERE = path.dirname(new URL(import.meta.url).pathname);
 const CACHE = path.join(HERE, 'eval_cache.json'), LOG = path.join(HERE, 'eval_log.md');
@@ -119,7 +119,7 @@ if (!args.includes('--checks-only')) {
 if (fs.existsSync(path.join(HERE, 'checks.csv')) && (!replay || Object.keys(savedChecks).length)) {
   const checks = csv('checks.csv').slice(0, limit), qs = checkQuestions();
   const bucketOf = c => (c.kind.endsWith('rule') ? 'det' : 'prob');
-  const fromSig = (c, n) => ({ c, clear: n.is_clear >= 0.6, rule: n.is_rule >= 0.6, verified: judgeSig(bucketOf(c), n).verified });
+  const fromSig = (c, n) => ({ c, clear: n.is_clear >= T.isClear, rule: n.is_rule >= T.isRule, verified: judgeSig(bucketOf(c), n).verified });
   const rows = replay ? checks.filter(c => savedChecks[c.id]).map(c => fromSig(c, savedChecks[c.id]))
   : via ? await viaChunks(checks, 12, async cs => {
     const d = await remote('?step=check', { items: cs.map(c => ({ task: c.task, check: c.check, bucket: bucketOf(c) })) });
@@ -141,7 +141,11 @@ if (fs.existsSync(path.join(HERE, 'checks.csv')) && (!replay || Object.keys(save
   lines.push('');
 }
 
-if (via) fs.writeFileSync(SIGS, JSON.stringify({ model: MODEL, at: new Date().toISOString(), sigs: toSave, checks: toSaveChecks }));
+if (via) {
+  const old = fs.existsSync(SIGS) ? JSON.parse(fs.readFileSync(SIGS, 'utf8')) : {};
+  fs.writeFileSync(SIGS, JSON.stringify({ model: MODEL, at: new Date().toISOString(),
+    sigs: Object.keys(toSave).length ? toSave : old.sigs || {}, checks: Object.keys(toSaveChecks).length ? toSaveChecks : old.checks || {} }));
+}
 else if (!replay) fs.writeFileSync(CACHE, JSON.stringify(cache));
 if (!fs.existsSync(LOG)) fs.writeFileSync(LOG, '# Eval log: api/verify.mjs against the gold set\n\nOne entry per run of eval_verify.mjs. Tune only the criteria text and the thresholds.\n');
 if (!replay) fs.appendFileSync(LOG, lines.join('\n'));
