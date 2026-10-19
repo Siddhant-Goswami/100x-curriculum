@@ -36,7 +36,8 @@ export function sortQuestions() {
     criteria: { type: 'noul', instructions: 'Could the person write down criteria for a good `task` that two reviewers would apply the same way?',
       criteria: { true: 'Specific criteria, like a rubric or checklist, that two careful reviewers would agree on', false: 'Good and bad depend on taste, relationships or results that show up much later' } },
     live: { type: 'noul', instructions: "Does `task` happen live with people, by hand in the physical world, or need the person's signature or authority?" },
-    reach: { type: 'noul', instructions: 'Could an AI agent working on a computer get every input `task` needs?' },
+    reach: { type: 'noul', instructions: 'Are the inputs `task` needs available on a computer, as files, data, email or apps?',
+      criteria: { true: 'An AI agent with access to the person\'s computer accounts could open what the task needs', false: 'The inputs exist only in a physical place, in a live conversation, or in someone\'s head' } },
     undo: { type: 'noul', instructions: "If `task` were done wrong, could the mistake be caught and undone before it reaches a client, money or another person's numbers?" },
     specific: { type: 'noul', instructions: 'Is `task` one specific, repeatable task?',
       criteria: { true: 'One task with a clear output, such as "send the weekly sales summary to the regional head"', false: 'A broad area of work, such as "reporting" or "operations"' } }
@@ -51,43 +52,47 @@ export function checkQuestions() {
 }
 
 /* ---------- combining the answers: all code, no model ---------- */
-const BAND = [0.4, 0.6];
-const inBand = v => v >= BAND[0] && v <= BAND[1];
+/* Thresholds, tuned on _plan/gold.csv (see _plan/eval_log.md). The page's decide() uses the same numbers. */
+export const T = { live: 0.6, reach: 0.4, rule: 0.4, criteria: 0.4, fence: 0.1, top: 0.6, specific: 0.3 };
 function argmax(p) { return Object.keys(p).reduce((a, b) => (p[b] > p[a] ? b : a)); }
 const REASON = {
   rule: 'a rule can check it', criteria: 'you can write the criteria', hum: "the quality can't be written as criteria",
-  live: 'happens live, by hand or under your signature', reach: "the agent can't reach every input",
+  live: 'happens live, by hand or under your signature', reach: "the agent can't reach the inputs",
   norule: 'no fixed rule checks it, so it needs judgement', nocriteria: "the criteria aren't clear enough to write down"
 };
 /* The page runs the same decide() after the learner answers; a 0 or 1 there is a person's answer and outranks Jev. */
 export function decide(s) {
   let b = argmax(s.p), why = b === 'det' ? 'rule' : b === 'prob' ? 'criteria' : 'hum';
-  if (s.live > 0.6) return { bucket: 'hum', why: 'live' };
-  if (s.reach < 0.4) return { bucket: 'hum', why: 'reach' };
+  if (s.live > T.live) return { bucket: 'hum', why: 'live' };
+  if (s.reach < T.reach) return { bucket: 'hum', why: 'reach' };
   if (s.rule === 1) return { bucket: 'det', why: 'rule' };
   if (s.criteria === 1 && b === 'hum') { b = 'prob'; why = 'criteria'; }
-  if (b === 'det' && s.rule < 0.4) { b = 'prob'; why = 'norule'; }
-  if (b === 'prob' && s.criteria < 0.4) { b = 'hum'; why = 'nocriteria'; }
+  if (b === 'det' && s.rule < T.rule) { b = 'prob'; why = 'norule'; }
+  if (b === 'prob' && s.criteria < T.criteria) { b = 'hum'; why = 'nocriteria'; }
   return { bucket: b, why };
 }
-export function classify(ans) {
+/* At most one question per task: split a vague task first; otherwise only a question whose answer would change the bucket:
+   a guardrail sitting on the fence, or, when the two orderings disagree or the top bucket is weak, rule or criteria. */
+export function judge(sig) {
+  const d = decide(sig), shaky = !sig.agree || sig.p[argmax(sig.p)] < T.top;
+  const flips = k => decide(Object.assign({}, sig, { [k]: 1 })).bucket !== decide(Object.assign({}, sig, { [k]: 0 })).bucket;
+  const fence = k => Math.abs(sig[k] - 0.5) <= T.fence;
+  if (sig.specific < T.specific) return { bucket: d.bucket, p: +sig.p[d.bucket].toFixed(3), reason: REASON[d.why], ask: ['split'] };
+  const ask = ['live', 'reach', 'rule', 'criteria']
+    .filter(k => flips(k) && (fence(k) || (shaky && (k === 'rule' || k === 'criteria'))))
+    .sort((a, b) => Math.abs(sig[a] - 0.5) - Math.abs(sig[b] - 0.5)).slice(0, 1);
+  return { bucket: d.bucket, p: +sig.p[d.bucket].toFixed(3), reason: REASON[d.why], ask };
+}
+export function signals(ans) {
   const pa = ans.bucket_a.probabilities, pb = ans.bucket_b.probabilities, p = {};
   ORDER_A.forEach(k => { p[B[k]] = ((pa[k] || 0) + (pb[k] || 0)) / 2; });
   const n = k => ans[k].noul;
-  const sig = { p, rule: n('rule'), criteria: n('criteria'), live: n('live'), reach: n('reach'),
-    agree: ans.bucket_a.choice === ans.bucket_b.choice };
-  const d = decide(sig), top = argmax(p);
-  /* unsure: the two orderings disagree, the top bucket is weak, or a guardrail sits on the fence */
-  /* only ask what could change the answer: once live or reach has decided, rule and criteria don't matter */
-  const firm = d.why === 'live' || d.why === 'reach';
-  const ask = (firm ? ['live', 'reach'] : ['live', 'reach', 'rule', 'criteria']).filter(k => inBand(sig[k]));
-  if (!ask.length && !firm && (!sig.agree || p[top] < 0.6)) {
-    const two = Object.keys(p).sort((a, b) => p[b] - p[a]).slice(0, 2).sort().join('/');
-    ask.push(two === 'det/prob' ? 'rule' : two === 'hum/prob' ? 'criteria' : 'rule');
-  }
-  if (n('specific') < 0.4) ask.unshift('split');
-  return { bucket: d.bucket, p: +p[d.bucket].toFixed(3), reason: REASON[d.why], ask: ask.slice(0, 2),
-    undo: +n('undo').toFixed(3), sig: round(sig) };
+  return round({ p, rule: n('rule'), criteria: n('criteria'), live: n('live'), reach: n('reach'), specific: n('specific'),
+    agree: ans.bucket_a.choice === ans.bucket_b.choice });
+}
+export function classify(ans) {
+  const sig = signals(ans);
+  return Object.assign(judge(sig), { undo: +ans.undo.noul.toFixed(3), sig });
 }
 export function judgeCheck(bucket, ans) {
   const r = ans.is_rule.noul, c = ans.is_clear.noul, f = ans.fits.noul, ok = v => v >= 0.6;

@@ -223,7 +223,7 @@ table.wk select{border:1px solid var(--line2);background:var(--bg);border-radius
   /* ---------- the three buckets, combined in code: the same decide() as api/verify.mjs ---------- */
   var OFTEN=[['daily','Daily',5],['few_week','A few times a week',3],['weekly','Weekly',1],['monthly','Monthly',.25],['quarterly','Quarterly',.08]], PER={};
   OFTEN.forEach(function(o){PER[o[0]]=o[2]});
-  var REASON={rule:'a rule can check it',criteria:'you can write the criteria',hum:'the quality can’t be written as criteria',live:'happens live, by hand or under your signature',reach:'the agent can’t reach every input',norule:'no fixed rule checks it, so it needs judgement',nocriteria:'the criteria aren’t clear enough to write down'};
+  var REASON={rule:'a rule can check it',criteria:'you can write the criteria',hum:'the quality can’t be written as criteria',live:'happens live, by hand or under your signature',reach:'the agent can’t reach the inputs',norule:'no fixed rule checks it, so it needs judgement',nocriteria:'the criteria aren’t clear enough to write down'};
   var ASKQ={live:'Does it happen live with people, by hand, or need your signature?',reach:'Could an agent on a computer get every input it needs?',rule:'Could a program check a finished one with a fixed pass/fail rule?',criteria:'Could you write down what makes it good, so two reviewers would agree?',split:'Is this one specific task you repeat?'};
   function argmax(p){return Object.keys(p).reduce(function(a,b){return p[b]>p[a]?b:a})}
   /* a 0 or 1 is a person's answer and outranks Jev */
