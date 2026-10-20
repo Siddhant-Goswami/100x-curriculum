@@ -5,178 +5,136 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Token Tax Audit</title>
 <meta name="description" content="60 seconds: find where your Claude bill is leaking, and one fix to try before the webinar.">
-<meta name="theme-color" content="#14110F">
+<meta name="theme-color" content="#F4F3EF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171614" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: story-style, one screen at a time in a 480px phone column, primary action pinned to the bottom (thumb zone) */
+/* Layout: story-style, one screen at a time in a 480px phone column, primary action pinned to the bottom (thumb zone).
+   Look: the curriculum design system (c8/docs.css tokens, copied so the page stays standalone). Inter 500 headings, mono for labels and facts,
+   calm paper surfaces, coral only for the one action per screen, hum green for done. Motion is quiet; nothing bounces. */
 :root{
-  --bg:#FAF6F0; --panel:#F2EBE2; --card:#FFFFFF; --line:#E6DDD2;
-  --ink:#1A1714; --body:#3A332E; --muted:#6E655E; --faint:#A39A90;
-  --accent:#FF6B4A; --accent-ink:#C2411F; --accent-soft:#FFE3DA; --on-accent:#1A1714;
-  --good:#2F7A4F;
-  --f-display:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;
-  --f-body:"DM Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --bg:#F4F3EF;--bg2:#EDEBE5;--card:#FFFFFF;--ink:#1B1B1B;--ink2:#5A5A5A;--ink3:#8A8A8A;--line:#E2E0DA;--line2:#D4D1C9;
+  --coral:#F2603C;--coral-soft:#FDE9E2;--coral-ink:#B8431F;
+  --hum:#1E9B57;--hum-soft:#E1F4E8;--hum-ink:#167A44;
+  --code-bg:#1B1B1B;--code-ink:#E9E7E1;--code-dim:#8A8A8A;
+  --sans:'Inter',-apple-system,'Segoe UI',system-ui,sans-serif;--mono:'JetBrains Mono','SFMono-Regular',Menlo,monospace;
+  --e-out:cubic-bezier(.16,1,.3,1);
+  --float:0 1px 2px rgba(0,0,0,.06),0 6px 20px rgba(0,0,0,.08);
+  --r:12px;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#14110F; --panel:#24201D; --card:#1E1A17; --line:#36302B;
-  --ink:#FAF6F0; --body:#CFC6BC; --muted:#A39A90; --faint:#6E655E;
-  --accent:#FF6B4A; --accent-ink:#FF8A6E; --accent-soft:#3A2520; --on-accent:#1A1714;
-  --good:#6BC793; color-scheme:dark;
+  --bg:#171614;--bg2:#1F1E1B;--card:#232220;--ink:#EDEBE5;--ink2:#B5B2AA;--ink3:#7E7B74;--line:#34322D;--line2:#45423C;
+  --coral-soft:#3A241D;--coral-ink:#F49A80;--hum-soft:#17301F;--hum-ink:#6FCB92;
+  --code-bg:#0F0F0E;--code-ink:#E9E7E1;--float:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.4);
+  color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#14110F; --panel:#24201D; --card:#1E1A17; --line:#36302B;
-  --ink:#FAF6F0; --body:#CFC6BC; --muted:#A39A90; --faint:#6E655E;
-  --accent:#FF6B4A; --accent-ink:#FF8A6E; --accent-soft:#3A2520; --on-accent:#1A1714;
-  --good:#6BC793; color-scheme:dark;
+  --bg:#171614;--bg2:#1F1E1B;--card:#232220;--ink:#EDEBE5;--ink2:#B5B2AA;--ink3:#7E7B74;--line:#34322D;--line2:#45423C;
+  --coral-soft:#3A241D;--coral-ink:#F49A80;--hum-soft:#17301F;--hum-ink:#6FCB92;
+  --code-bg:#0F0F0E;--code-ink:#E9E7E1;--float:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.4);
+  color-scheme:dark;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--body);font:17px/1.5 var(--f-body);-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
 [hidden]{display:none!important}
-h1,h2,h3{font-family:var(--f-display);color:var(--ink);margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1,h2,h3{font-family:var(--sans);font-weight:500;color:var(--ink);margin:0;letter-spacing:-.03em;text-wrap:balance}
 p{margin:0}
-a{color:var(--accent-ink);text-underline-offset:2px}
-b{color:var(--ink)}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+a{color:var(--coral-ink);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+b{font-weight:500;color:var(--ink)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
 
 .app{max-width:480px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;
   padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
 
 /* top: story progress + back */
-.prog{display:flex;gap:4px;height:3px}
+.prog{display:flex;gap:4px;height:2px}
 .prog i{flex:1;background:var(--line);border-radius:2px;overflow:hidden;position:relative}
-.prog i::after{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.prog i::after{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .35s var(--e-out)}
 .prog i.on::after{transform:scaleX(1)}
-.bar{display:flex;align-items:center;justify-content:space-between;height:48px}
-.back{width:40px;height:40px;margin-left:-10px;border:0;background:none;color:var(--ink);font-size:1.5rem;line-height:1;cursor:pointer;border-radius:50%}
+.bar{display:flex;align-items:center;justify-content:space-between;height:52px}
+.back{width:36px;height:36px;margin-left:-4px;border:1px solid var(--line);background:var(--card);color:var(--ink2);font-size:1.0625rem;line-height:1;border-radius:8px;display:grid;place-items:center}
+.back:hover{color:var(--ink);border-color:var(--line2)}
 .back:disabled{visibility:hidden}
-.brand{font:700 .8125rem/1 var(--f-display);color:var(--ink)}
-.brand span{color:var(--accent-ink)}
-.count{font:500 .75rem/1 var(--f-mono);color:var(--muted);min-width:40px;text-align:right}
+.brand{font:600 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink)}
+.brand b{color:var(--coral);font-weight:600}
+.count{font:500 12px var(--mono);color:var(--ink3);min-width:36px;text-align:right}
 
 /* screens */
 #view{flex:1;display:flex;flex-direction:column}
-.scr{flex:1;display:flex;flex-direction:column;gap:18px;padding:12px 0 24px;animation:in .32s cubic-bezier(.2,.8,.2,1)}
+.scr{flex:1;display:flex;flex-direction:column;gap:16px;padding:16px 0 24px;animation:in .4s var(--e-out)}
 .scr.rev{animation-name:inrev}
-@keyframes in{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
-@keyframes inrev{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
-.eyebrow{font:500 .75rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
-.big{font-size:clamp(2.1rem,9.5vw,2.75rem);line-height:1.02;font-weight:700}
-.q{font-size:clamp(1.6rem,7vw,2rem);line-height:1.1;font-weight:700}
-.sub{font-size:1.0625rem;color:var(--body)}
-.tiny{font-size:.75rem;line-height:1.45;color:var(--muted)}
+@keyframes in{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+@keyframes inrev{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:none}}
+.eyebrow{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)}
+.eyebrow.act{color:var(--coral-ink)}
+.big{font-size:clamp(30px,8.5vw,40px);line-height:1.08}
+.q{font-size:clamp(24px,6.6vw,30px);line-height:1.15}
+.sub{font-size:17px;line-height:1.5;color:var(--ink2)}
+.tiny{font:12px/1.5 var(--mono);color:var(--ink3)}
 .grow{flex:1}
 
-/* pinned CTA */
-.cta{position:sticky;bottom:0;margin:0 -16px;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 30%);display:flex;flex-direction:column;gap:10px;align-items:stretch}
-.btn{font:700 1.0625rem/1 var(--f-display);border:0;border-radius:14px;padding:18px 20px;background:var(--accent);color:var(--on-accent);cursor:pointer;transition:transform .12s ease}
-.btn:active{transform:scale(.97)}
-.btn:disabled{background:var(--panel);color:var(--faint);cursor:not-allowed}
-.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
-.link{background:none;border:0;padding:6px;font:500 .9375rem var(--f-body);color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* pinned CTA: one coral button per screen */
+.cta{position:sticky;bottom:0;margin:0 -16px;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 30%);display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.btn{display:block;text-align:center;border:0;border-radius:9px;padding:15px 18px;background:var(--coral);color:#fff;font:500 16px var(--sans);transition:transform .12s}
+.btn:active{transform:scale(.98)}
+a.btn{text-decoration:none}
+.btn:disabled{background:var(--bg2);color:var(--ink3);cursor:not-allowed}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{border-color:var(--line2)}
+.link{background:none;border:0;padding:6px;font:500 14px var(--sans);color:var(--ink2);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
 
 /* intro visual */
-.split{display:flex;height:56px;border-radius:12px;overflow:hidden}
-.split div{display:flex;align-items:center;padding:0 12px;font:700 1rem/1 var(--f-display);white-space:nowrap;overflow:hidden;transform-origin:left;animation:grow .9s cubic-bezier(.2,.8,.2,1) both}
-.split .ctx{flex:85;background:var(--accent);color:var(--on-accent)}
-.split .out{flex:14;background:var(--ink);color:var(--bg);animation-delay:.25s}
-.split .inp{flex:1;background:var(--faint);animation-delay:.4s}
+.split{display:flex;height:44px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+.split div{display:flex;align-items:center;padding:0 12px;font:500 13px var(--mono);white-space:nowrap;overflow:hidden;transform-origin:left;animation:grow .8s var(--e-out) both}
+.split .ctx{flex:85;background:var(--ink);color:var(--bg)}
+.split .out{flex:14;background:var(--card);color:var(--ink2);animation-delay:.2s}
+.split .inp{flex:1;background:var(--bg2);animation-delay:.3s}
 @keyframes grow{from{transform:scaleX(0)}to{transform:none}}
-.keys{display:flex;justify-content:space-between;font-size:.875rem;color:var(--muted)}
-.pills{display:flex;gap:8px;flex-wrap:wrap}
-.pills span{font:500 .8125rem/1 var(--f-body);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:8px 12px}
+.keys{display:flex;justify-content:space-between;font:12px var(--mono);color:var(--ink3);margin-top:-8px}
+.pills{display:flex;gap:6px 16px;flex-wrap:wrap;justify-content:center;font:12px var(--mono);color:var(--ink3)}
+.pills span::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ink3);margin-right:7px;vertical-align:middle}
 
-/* options */
-.opts{display:flex;flex-direction:column;gap:10px}
-.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;font:500 1.0625rem/1.25 var(--f-body);color:var(--ink);background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px 18px;min-height:60px;cursor:pointer;transition:transform .12s ease,background .15s,border-color .15s}
-.opt small{display:block;font-size:.8125rem;color:var(--muted);font-weight:400;margin-top:3px}
-.opt:active{transform:scale(.98)}
-.opt::after{content:"";flex:none;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line)}
+/* options: solid cards; selected = ink, not coral */
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;font:500 16px/1.3 var(--sans);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:15px 16px;min-height:56px;transition:border-color .15s,background .15s}
+.opt small{display:block;font:12px var(--mono);color:var(--ink3);margin-top:3px}
+.opt:hover{border-color:var(--line2)}
+.opt::after{content:"";flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line2)}
 .opt.multi::after{border-radius:6px}
-.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
-.opt[aria-pressed="true"]::after{border-color:var(--accent);background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A1714' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/14px no-repeat}
+.opt[aria-pressed="true"]{border-color:var(--ink)}
+.opt[aria-pressed="true"]::after{border-color:var(--ink);background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F4F3EF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/12px no-repeat}
 
 /* scan */
-.scan{display:flex;flex-direction:column;gap:12px;margin-top:8px}
-.scan div{display:grid;grid-template-columns:1fr 40%;gap:12px;align-items:center;font:500 .9375rem var(--f-body);color:var(--muted)}
-.scan b{display:block;height:8px;border-radius:4px;background:var(--panel);overflow:hidden}
-.scan b::after{content:"";display:block;height:100%;width:var(--w);background:var(--faint);border-radius:4px;animation:grow .5s ease both;animation-delay:var(--d);transform-origin:left}
+.scan{display:flex;flex-direction:column;gap:12px;margin-top:4px}
+.scan div{display:grid;grid-template-columns:1fr 42%;gap:12px;align-items:center;font-size:15px;color:var(--ink2)}
+.scan b{display:block;height:6px;border-radius:99px;background:var(--bg2);overflow:hidden}
+.scan b::after{content:"";display:block;height:100%;width:var(--w);background:var(--ink3);border-radius:99px;animation:grow .6s var(--e-out) both;animation-delay:var(--d);transform-origin:left}
 
 /* result */
-.hero{background:var(--ink);color:var(--bg);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:10px}
-.hero .eyebrow{color:var(--accent)}
-.hero h1{color:var(--bg)}
-.hero p{color:var(--faint);font-size:1rem}
-.hero p b{color:var(--bg)}
-.stat{display:flex;align-items:baseline;gap:12px;border:1.5px solid var(--accent);border-radius:16px;padding:16px 18px}
-.stat .n{font:700 2.75rem/1 var(--f-display);color:var(--accent-ink);font-variant-numeric:tabular-nums}
-.stat .l{font-size:1rem;color:var(--ink);line-height:1.3}
-.alert{font-size:.9375rem;color:var(--ink);background:var(--accent-soft);border-radius:12px;padding:12px 14px}
-details.all{border-top:1px solid var(--line);padding-top:4px}
-details.all summary{cursor:pointer;font:500 .9375rem var(--f-body);color:var(--muted);padding:10px 0;list-style:none}
+.hero{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--coral);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:10px}
+.hero p{color:var(--ink2);font-size:16px;line-height:1.55}
+.stat{display:flex;align-items:baseline;gap:14px;background:var(--bg2);border-radius:10px;padding:16px 18px}
+.stat .n{font:500 34px/1 var(--sans);letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums}
+.stat .l{font-size:15px;color:var(--ink2);line-height:1.4}
+.alert{font-size:15px;color:var(--ink);border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px}
+details.all{border-top:1px solid var(--line);padding-top:2px}
+details.all summary{cursor:pointer;font:500 14px var(--sans);color:var(--ink2);padding:10px 0;list-style:none}
 details.all summary::-webkit-details-marker{display:none}
-details.all summary::after{content:" +"}
+details.all summary::after{content:" +";font-family:var(--mono)}
 details.all[open] summary::after{content:" \2212"}
 .ledger{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-.ledger li{display:grid;grid-template-columns:1fr 34%;gap:10px;align-items:center;font-size:.9375rem;color:var(--ink)}
-.ledger li.top{color:var(--accent-ink);font-weight:700}
-.ledger .track{height:8px;background:var(--panel);border-radius:4px;overflow:hidden}
-.ledger .fill{display:block;height:100%;background:var(--faint);border-radius:4px}
-.ledger li.top .fill{background:var(--accent)}
-.ledger em{font-style:normal;font-size:.75rem;color:var(--muted);font-weight:400}
+.ledger li{display:grid;grid-template-columns:1fr 36%;gap:10px;align-items:center;font-size:15px;color:var(--ink2)}
+.ledger li.top{color:var(--ink);font-weight:500}
+.ledger .track{height:6px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.ledger .fill{display:block;height:100%;background:var(--ink3);border-radius:99px}
+.ledger li.top .fill{background:var(--ink)}
+.ledger em{font:normal 11px var(--mono);color:var(--ink3)}
 
-/* fix steps */
-.time{align-self:flex-start;font:500 .75rem/1 var(--f-mono);color:var(--muted);background:var(--panel);border-radius:999px;padding:7px 10px}
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
-.steps li{counter-increment:s;display:grid;grid-template-columns:32px 1fr;gap:12px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px;font-size:1rem;color:var(--body);animation:in .3s ease}
-.steps li::before{content:counter(s);display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);font:700 .875rem/1 var(--f-display)}
-.steps li.done{opacity:.55;border-color:transparent;background:var(--panel)}
-.steps li.done::before{content:"\2713";background:var(--good);color:#fff}
-.steps li.now{border-color:var(--accent)}
-.steps li>div{min-width:0}
-.cmd{display:flex;align-items:center;gap:8px;background:#1A1714;border-radius:10px;padding:8px 8px 8px 12px;margin-top:8px;min-width:0}
-.cmd code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;color:#FAF6F0;font:400 .8125rem var(--f-mono)}
-.cmd button{font:500 .75rem/1 var(--f-mono);background:none;border:1px solid #6E655E;color:#FAF6F0;border-radius:6px;padding:7px 9px;cursor:pointer}
-
-/* calculators */
-.calc{border:1.5px solid var(--line);border-radius:16px;background:var(--card);padding:16px;display:flex;flex-direction:column;gap:12px}
-.calc h3{font-size:1rem}
-.drop{border:1.5px dashed var(--faint);border-radius:12px;padding:22px 14px;text-align:center;color:var(--ink);font-weight:500;cursor:pointer;display:block}
-.drop.over{border-color:var(--accent);background:var(--accent-soft)}
-.drop input{display:none}
-.stage canvas{display:block;max-width:100%;border-radius:8px;touch-action:none;cursor:crosshair;background:var(--panel)}
-.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
-.cell{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px;min-width:0}
-.cell .k{font-size:.75rem;color:var(--muted)}
-.cell .v{font:700 1.5rem/1.1 var(--f-display);color:var(--ink);font-variant-numeric:tabular-nums}
-.cell .d{font:400 .75rem/1.3 var(--f-mono);color:var(--muted)}
-.cell.hi{border-color:var(--accent)}
-.cell.hi .v{color:var(--accent-ink)}
-.uses{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.uses button{font:500 .75rem/1 var(--f-body);background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:999px;padding:7px 10px;cursor:pointer}
-textarea,input[type=text],input[type=email],input[type=number],select{font:inherit;font-size:1rem;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;width:100%}
-textarea{resize:vertical;min-height:96px;font-family:var(--f-mono);font-size:.875rem}
-
-/* number + send */
-.field{display:flex;flex-direction:column;gap:8px}
-.field label{font:700 1rem var(--f-display);color:var(--ink)}
-.field small{font-size:.8125rem;color:var(--muted)}
-.numin::-webkit-inner-spin-button,.numin::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-.numin{-moz-appearance:textfield;font:700 2.25rem/1 var(--f-display)!important;padding:14px 16px!important;font-variant-numeric:tabular-nums}
-.units{display:flex;gap:6px;flex-wrap:wrap}
-.units button{font:500 .8125rem/1 var(--f-body);background:none;border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:8px 11px;cursor:pointer}
-.units button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.status{font-size:.875rem;color:var(--muted);text-align:center}
-.status.err{color:var(--accent-ink)}
-.done-mark{width:72px;height:72px;border-radius:50%;background:var(--accent);display:grid;place-items:center;animation:pop .5s cubic-bezier(.2,1.4,.4,1) both}
-@keyframes pop{from{transform:scale(0)}to{transform:none}}
-
-.toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--bg);font:500 .9375rem var(--f-body);padding:12px 16px;border-radius:999px;transition:.25s;pointer-events:none;z-index:9;white-space:nowrap}
-.toast.on{opacity:1;transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -185,23 +143,21 @@ textarea{resize:vertical;min-height:96px;font-family:var(--f-mono);font-size:.87
   <div class="prog" id="prog" aria-hidden="true"></div>
   <div class="bar">
     <button class="back" id="back" type="button" aria-label="Back">&larr;</button>
-    <div class="brand">100x<span>Engineers</span></div>
+    <div class="brand">100x<b>&middot;</b>Engineers</div>
     <span class="count" id="count"></span>
   </div>
   <main id="view" aria-live="polite"></main>
 </div>
-<div class="toast" id="toast" role="status"></div>
 
 <script>
 // Apps Script web app bound to the "100x Token Tax audit" sheet (script in _plan/token-tax-audit/apps-script.gs).
-// Paste its /exec URL here; while blank, Send shows the thank-you screen but posts nothing.
+// Its /exec URL; while blank, the result screen shows but posts nothing.
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyrgxfEqS89pybB1-jgooKkQtdjyZ4SqceJOvs6jwhliBP-jebj5aDwakns5kgazgQH/exec';
-// Webinar details for the thank-you screen. Leave blank to show the fallback line.
+// Webinar details for the result screen. Leave blank to leave them out.
 const WEBINAR = { date: '', time: '', joinUrl: '' };
 
-const STORE = 'token-tax-audit:v2';
+const STORE = 'token-tax-audit:v3';
 const $ = s => document.querySelector(s);
-const fmt = n => Math.round(n).toLocaleString('en-GB');
 
 const TAXES = {
   1: { name: 'Raw-format', hook: 'You feed Claude <b>PDFs and raw files</b>. Every page is read as an image <b>plus</b> its text.',
@@ -220,59 +176,6 @@ const TAXES = {
        n: '40x', l: 'cheaper input on Haiku than Opus', basis: 'Haiku 5.5 $0.10 vs Opus 5.5 $4 per million input tokens, Oct 2026.' }
 };
 
-const cmd = c => '<div class="cmd"><code>' + c + '</code><button type="button">Copy</button></div>';
-const HW = {
-  'T1-app': { title: 'PDF vs Markdown', time: '2 min', calcs: ['pdf', 'paste'], unit: 'tokens',
-    steps: ['Drop your most-used PDF in the calculator below. <b>As PDF</b> is your before number.',
-            'Export the same doc as Markdown. Google Docs: File &rsaquo; Download &rsaquo; Markdown.',
-            'Paste the .md into the counter. That count is your after number.'] },
-  'T1-code': { title: 'Convert one PDF with MarkItDown', time: '3 min', calcs: ['pdf', 'paste'], unit: 'tokens',
-    steps: ['Drop a real PDF in the calculator below. <b>As PDF</b> is your before number.',
-            'Install MarkItDown:' + cmd("pip install 'markitdown[all]'"),
-            'Convert it:' + cmd('markitdown file.pdf -o file.md'),
-            'Paste file.md into the counter. That is your after number.'] },
-  'T2-app': { title: 'Crop one screenshot', time: '1 min', calcs: ['img'], unit: 'tokens',
-    steps: ['Screenshot something you would normally send Claude.',
-            'Drop it in the calculator below. <b>As sent</b> is your before number.',
-            'Drag across it to keep only what matters. <b>Cropped</b> is your after number.'] },
-  'T3-app': { title: 'Web search on vs off', time: '3 min', calcs: [], unit: '% of session',
-    steps: ['Open Settings &rsaquo; Usage. Note your session usage.',
-            'New chat, web search on, ask a real question. The usage jump is your before number.',
-            'New chat, search off, paste the one page you need, same question. That jump is your after.'] },
-  'T3-code': { title: 'Trim shell output with RTK', time: '1 day', calcs: [], unit: 'tokens',
-    steps: ['Install RTK:' + cmd('brew install rtk') + cmd('rtk init -g') + '<span class="tiny">Not on a Mac? <a href="https://github.com/rtk-ai/rtk" target="_blank" rel="noopener">RTK README</a></span>',
-            'Use Claude Code as normal for a day.',
-            'Run this. Without RTK is your before, with RTK is your after.' + cmd('rtk gain')] },
-  'T4-app': { title: 'Weigh what loads before you type', time: '1 min', calcs: ['paste'], unit: 'tokens',
-    steps: ['Copy the instructions from the Project you use most.',
-            'Paste them in the counter below. That is your before number. Every chat pays it.',
-            'Count connectors switched on (Settings &rsaquo; Connectors). Put it in the note later.'] },
-  'T4-code': { title: 'Read your startup bill', time: '1 min', calcs: [], unit: 'tokens',
-    steps: ['Start a fresh Claude Code session in your usual project.',
-            'Run:' + cmd('/context'),
-            'The biggest line (often MCP tools) is your before number.'] },
-  'T5-app': { title: 'Catch a cold cache', time: '2 hours, mostly waiting', calcs: [], unit: '% of session',
-    steps: ['In a long chat, send a message. Note how much Settings &rsaquo; Usage moved.',
-            'Leave it for 2 hours. The cache lasts about 1 hour.',
-            'Send a similar message. That jump is your before number. Put the first jump in the note.'] },
-  'T5-code': { title: 'Check your cache hit rate', time: '30 sec', calcs: [], unit: 'hit rate %',
-    steps: ['After a normal session, run:' + cmd('/usage'),
-            '<b>Prompt cache hit rate</b> is your before number. Higher is better.'] },
-  'T6-code': { title: 'Count what one task drags in', time: '5 min', calcs: [], unit: 'files',
-    steps: ['Pick a real task, like "find where we handle refunds".',
-            'Count the Read lines in the main chat. That is your before number.',
-            'Rerun it starting with "Use a subagent to find the relevant files, then report back". Count again. That is your after.'] },
-  'T7-app': { title: 'Same task, Opus vs Haiku', time: '3 min', calcs: [], unit: '% of session',
-    steps: ['Pick a routine task, like summarising notes.',
-            'Run it on Opus in a fresh chat. The Usage jump is your before number.',
-            'Run it on Haiku in a fresh chat. That jump is your after. Good enough?'] },
-  'T7-code': { title: 'How much of your spend is Opus?', time: '1 min', calcs: [], unit: '% of cost',
-    steps: ['Run:' + cmd('npx ccusage@latest daily'),
-            "Opus's share of last week's cost is your before number."] }
-};
-HW['T2-code'] = HW['T2-app'];
-const UNITS = ['tokens', '% of session', 'hit rate %', 'files', '% of cost'];
-
 const QS = [
   { k: 'where', q: 'Where do you use Claude most?', opts: [['app', 'Claude app', 'web, desktop or mobile'], ['code', 'Claude Code'], ['both', 'Both'], ['api', 'API or my own agents']] },
   { k: 'plan', q: 'Your plan?', opts: [['free', 'Free'], ['pro', 'Pro'], ['max', 'Max'], ['team', 'Team or Enterprise'], ['api', 'API']] },
@@ -282,12 +185,12 @@ const QS = [
   { k: 'model', q: 'Your go-to model?', opts: [['haiku', 'Haiku'], ['sonnet', 'Sonnet'], ['opus', 'Opus'], ['fable', 'Fable'], ['default', 'Whatever is default']] },
   { k: 'limit', q: 'How often do you hit a usage limit?', optional: true, opts: [['weekly', 'Every week'], ['monthly', 'Every month'], ['never', 'Never']] }
 ];
-// Screen order; progress segments cover everything after the intro.
-const ORDER = ['intro', ...QS.map(q => q.k), 'scan', 'result', 'fix', 'number', 'send', 'thanks'];
+// Screen order; the result is the last screen. Progress segments cover the questions and the result.
+const ORDER = ['intro', ...QS.map(q => q.k), 'scan', 'result'];
 const SEGS = ORDER.filter(s => s !== 'intro' && s !== 'scan');
 
 /* ---------- state ---------- */
-let state = { answers: {}, screen: 'intro', sent: false, measure: {}, stepAt: 0 };
+let state = { answers: {}, screen: 'intro', posted: '' };
 function load() { try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); if (s && s.answers) state = Object.assign(state, s); } catch (e) {} }
 function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {} }
 
@@ -307,7 +210,7 @@ function score(a) {
   s[5] += { often: 3, sometimes: 2 }[a.switch] || 0;
   s[7] += { opus: 3, fable: 3, default: 1 }[a.model] || 0;
   if (track === 'code') s[6] += a.where === 'api' ? 2 : 1;
-  // Ties go to the lower tax number; on the App track tax 6 has no homework, so it never wins.
+  // Ties go to the lower tax number; on the App track tax 6 (Claude Code only) never wins.
   let top = 0;
   for (let t = 1; t <= 7; t++) {
     if (track === 'app' && t === 6) continue;
@@ -317,12 +220,11 @@ function score(a) {
   if (ahead) top = 5;
   return { s, top, ahead, track };
 }
-const hwId = () => { const r = score(state.answers); return 'T' + r.top + '-' + r.track; };
 
 /* ---------- screens ---------- */
 const V = {};
 V.intro = () => `
-  <span class="eyebrow">60-second audit</span>
+  <span class="eyebrow act">60-second audit</span>
   <h1 class="big">Your Claude bill is leaking. Find where.</h1>
   <div class="split" role="img" aria-label="85% context re-read, 14% output, 1% new input"><div class="ctx">85%</div><div class="out">14%</div><div class="inp"></div></div>
   <div class="keys"><span>Re-reading context</span><span>What it writes</span></div>
@@ -330,7 +232,7 @@ V.intro = () => `
   <p class="tiny">Sample $0.55 Claude Code session, Anthropic docs.</p>
   <div class="grow"></div>
   <div class="cta">
-    <div class="pills"><span>7 taps</span><span>No signup</span><span>1 fix to try</span></div>
+    <div class="pills"><span>7 taps</span><span>No signup</span><span>Your biggest leak</span></div>
     <button class="btn" data-next>Find my leak</button>
   </div>`;
 
@@ -364,102 +266,33 @@ V.result = () => {
     <h1 class="big">${r.ahead ? 'Watch the cache break tax' : 'The ' + t.name + ' tax'}</h1>
     <p>${r.ahead ? 'Your setup is lean. Almost everyone still pays this one without noticing.' : t.hook}</p>
   </div>
-  <div class="stat"><span class="n" data-count="${t.n}">${t.n}</span><span class="l">${t.l}</span></div>
+  <div class="stat"><span class="n">${t.n}</span><span class="l">${t.l}</span></div>
   ${state.answers.limit === 'weekly' ? '<p class="alert">You hit limits every week. This is costing you working hours, not just tokens.</p>' : ''}
   <details class="all"><summary>See all 7 taxes</summary>
     <ol class="ledger">${order.map(n => `<li class="${!r.ahead && n === r.top ? 'top' : ''}"><span>${TAXES[n].name}${n === 6 && r.track === 'app' ? ' <em>Code only</em>' : ''}</span><span class="track"><span class="fill" style="width:${r.s[n] / max * 100}%"></span></span></li>`).join('')}</ol>
   </details>
   <p class="tiny">${t.basis}</p>
   <div class="grow"></div>
-  <div class="cta"><button class="btn" data-next>Get my fix</button></div>`;
-};
-
-V.fix = () => {
-  const r = score(state.answers), hw = HW[hwId()], at = Math.min(state.stepAt, hw.steps.length - 1);
-  const last = at === hw.steps.length - 1;
-  return `
-  <span class="eyebrow">Your homework &middot; ${r.track === 'app' ? 'no installs' : 'Code track'}</span>
-  <h2 class="q">${hw.title}</h2>
-  <span class="time">&#9201; ${hw.time}</span>
-  <ol class="steps">${hw.steps.slice(0, at + 1).map((s, i) => `<li class="${i < at ? 'done' : 'now'}"><div>${s}</div></li>`).join('')}</ol>
-  ${hw.calcs.map(c => CALC[c]).join('')}
-  ${r.top === 5 && state.answers.plan === 'api' ? '<p class="tiny">On the API the cache lasts 5 minutes, not an hour.</p>' : ''}
-  <div class="grow"></div>
-  <div class="cta">${last
-    ? '<button class="btn" data-next>I have my number</button><button class="link" data-later>I\'ll do it later</button>'
-    : '<button class="btn" data-step>Done, next step</button>'}</div>`;
-};
-
-const unitPills = (which, val) => `<div class="units" data-units="${which}">${UNITS.map(u => `<button type="button" aria-pressed="${u === val}">${u}</button>`).join('')}</div>`;
-V.number = () => {
-  const m = state.measure, hw = HW[hwId()];
-  return `
-  ${state.sent ? '<span class="eyebrow">Welcome back</span>' : ''}
-  <h2 class="q">${state.sent ? 'Add your after number' : 'What did you get?'}</h2>
-  <div class="field"><label for="before">Before</label>
-    <input class="numin" id="before" type="number" inputmode="decimal" step="any" min="0" placeholder="2691" value="${m.before ?? ''}">
-    ${unitPills('beforeUnit', m.beforeUnit || hw.unit)}</div>
-  <div class="field"><label for="after">After <small>optional, add it later</small></label>
-    <input class="numin" id="after" type="number" inputmode="decimal" step="any" min="0" placeholder="&middot;&middot;&middot;" value="${m.after ?? ''}">
-    ${unitPills('afterUnit', m.afterUnit || hw.unit)}</div>
-  <div class="grow"></div>
-  <div class="cta"><button class="btn" data-next ${m.before ? '' : 'disabled'}>Next</button></div>`;
-};
-
-V.send = () => {
-  const m = state.measure;
-  return `
-  <h2 class="q">Want your number read out live?</h2>
-  <p class="sub">Use the email you registered with so we can match it.</p>
-  <div class="field"><input id="email" type="email" autocomplete="email" placeholder="you@example.com" value="${m.email ?? ''}"></div>
-  <div class="field"><input id="note" type="text" placeholder="Anything surprise you? (optional)" value="${(m.note ?? '').replace(/"/g, '&quot;')}"></div>
-  <div class="grow"></div>
-  <div class="cta"><p class="status" id="sendStatus"></p><button class="btn" id="sendBtn">Send my audit</button></div>`;
-};
-
-V.thanks = () => `
-  <div class="grow" style="max-height:8vh"></div>
-  <div class="done-mark"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1A1714" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></div>
-  <h1 class="big">Sent. Bring your number.</h1>
-  <p class="sub">We'll read some out live. ${WEBINAR.date ? 'See you on <b>' + WEBINAR.date + (WEBINAR.time ? ' at ' + WEBINAR.time : '') + '</b>.' : 'The date and join link are in your registration email.'}</p>
-  ${WEBINAR.joinUrl ? `<a class="btn" style="text-align:center;text-decoration:none" href="${WEBINAR.joinUrl}" target="_blank" rel="noopener">Join link</a>` : ''}
-  <div class="grow"></div>
-  <div class="cta"><button class="btn ghost" data-go="number">Add my after number</button><button class="link" id="restart">Start over</button></div>`;
-
-/* ---------- calculators ---------- */
-const CALC = {
-  img: `<section class="calc" id="calc-img"><h3>Screenshot calculator</h3>
-    <label class="drop" id="imgDrop"><input type="file" id="imgFile" accept="image/*">Tap to add a screenshot</label>
-    <div class="stage" id="imgStage" hidden><canvas id="imgCanvas" aria-label="Your image. Drag across it to crop."></canvas><p class="tiny" style="margin-top:6px">Drag to crop. <button class="link" type="button" id="cropClear" style="font-size:inherit;padding:0">Clear</button></p></div>
-    <div class="out" id="imgOut"></div>
-    <p class="tiny">Runs on your device. Nothing is uploaded.</p></section>`,
-  pdf: `<section class="calc" id="calc-pdf"><h3>PDF calculator</h3>
-    <label class="drop" id="pdfDrop"><input type="file" id="pdfFile" accept="application/pdf,.pdf">Tap to add a PDF</label>
-    <p class="tiny" id="pdfStatus">Runs on your device. Nothing is uploaded.</p>
-    <div class="out" id="pdfOut"></div></section>`,
-  paste: `<section class="calc" id="calc-paste"><h3>Token counter</h3>
-    <textarea id="pasteBox" rows="4" placeholder="Paste text here"></textarea>
-    <div class="out" id="pasteOut"></div>
-    <p class="tiny">About characters &divide; 4. Real counts can run about 30% higher.</p></section>`
+  <div class="cta">
+    <p class="sub" style="text-align:center">The webinar shows how to cut it, step by step.${WEBINAR.date ? ' See you on <b>' + WEBINAR.date + (WEBINAR.time ? ' at ' + WEBINAR.time : '') + '</b>.' : ''}</p>
+    ${WEBINAR.joinUrl ? `<a class="btn" href="${WEBINAR.joinUrl}" target="_blank" rel="noopener">Join link</a>` : ''}
+    <button class="link" id="restart">Start over</button>
+  </div>`;
 };
 
 /* ---------- navigation ---------- */
 let dir = 1, scanTimer = null;
 const idx = s => ORDER.indexOf(s);
 function go(s, d) {
+  if (idx(s) < 0) s = 'intro';
   if (idx(s) > idx('limit') && answered(state.answers) < 6) s = ORDER[1 + REQUIRED.findIndex(k => !(k === 'feeds' ? (state.answers.feeds || []).length : state.answers[k]))];
   dir = d ?? (idx(s) >= idx(state.screen) ? 1 : -1);
   state.screen = s; save(); render();
 }
-function next() {
-  const s = state.screen;
-  if (s === 'fix') state.stepAt = 0;
-  go(ORDER[idx(s) + 1], 1);
-}
+function next() { go(ORDER[idx(state.screen) + 1], 1); }
 function prev() {
   let i = idx(state.screen) - 1;
   if (ORDER[i] === 'scan') i--;
-  if (state.screen === 'thanks') i = idx('result');
   if (i >= 0) go(ORDER[i], -1);
 }
 function render() {
@@ -473,10 +306,7 @@ function render() {
   $('#back').disabled = s === 'intro' || s === 'scan';
   scrollTo(0, 0);
   if (s === 'scan') scanTimer = setTimeout(() => go('result', 1), 1900);
-  if (s === 'result') countUp();
-  if (s === 'fix') bindCalcs();
-  if (s === 'number') bindNumber();
-  if (s === 'send') bindSend();
+  if (s === 'result') submit();
 }
 $('#back').addEventListener('click', prev);
 
@@ -499,223 +329,35 @@ document.addEventListener('click', e => {
     return;
   }
   if (t.closest('[data-next]')) return next();
-  const g = t.closest('[data-go]'); if (g) return go(g.dataset.go);
-  if (t.closest('[data-step]')) {
-    state.stepAt++; save();
-    const hw = HW[hwId()], at = state.stepAt, list = $('.steps');
-    list.lastElementChild.className = 'done';
-    list.insertAdjacentHTML('beforeend', '<li class="now"><div>' + hw.steps[at] + '</div></li>');
-    if (at === hw.steps.length - 1) $('.cta').innerHTML = '<button class="btn" data-next>I have my number</button><button class="link" data-later>I\'ll do it later</button>';
-    list.lastElementChild.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    return;
-  }
-  if (t.closest('[data-later]')) { toast('Saved. This page remembers you on this device.'); return go('send', 1); }
-  if (t.closest('#restart')) { state = { answers: {}, screen: 'intro', sent: false, measure: {}, stepAt: 0 }; save(); return go('intro', -1); }
-  const cp = t.closest('.cmd button');
-  if (cp) {
-    const code = cp.previousElementSibling;
-    const done = () => { cp.textContent = 'Copied'; setTimeout(() => cp.textContent = 'Copy', 1500); };
-    try { navigator.clipboard.writeText(code.textContent).then(done, () => selectText(code)); } catch (err) { selectText(code); }
-    return;
-  }
-  const u = t.closest('[data-use]');
-  if (u) {
-    state.measure[u.dataset.use] = String(+u.dataset.v);
-    state.measure[u.dataset.use + 'Unit'] = 'tokens'; save();
-    toast(fmt(+u.dataset.v) + ' saved as your ' + u.dataset.use + ' number');
-  }
+  if (t.closest('#restart')) { state = { answers: {}, screen: 'intro', posted: state.posted }; save(); return go('intro', -1); }
 });
-function selectText(el) { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
-let toastT;
-function toast(msg) { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('on'), 2200); }
 
-function countUp() {
-  const el = $('[data-count]'); if (!el) return;
-  const raw = el.dataset.count, m = raw.match(/^([\d.]+)(.*)$/);
-  if (!m || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const end = +m[1], dp = (m[1].split('.')[1] || '').length, t0 = performance.now();
-  const step = now => { const k = Math.min(1, (now - t0) / 900), e = 1 - Math.pow(1 - k, 3); el.textContent = (end * e).toFixed(dp) + m[2]; if (k < 1) requestAnimationFrame(step); };
-  requestAnimationFrame(step);
-}
-
-/* ---------- number + send ---------- */
-function bindNumber() {
-  const sync = () => {
-    state.measure.before = $('#before').value; state.measure.after = $('#after').value; save();
-    $('[data-next]').disabled = !state.measure.before;
-  };
-  $('#before').addEventListener('input', sync); $('#after').addEventListener('input', sync);
-  document.querySelectorAll('[data-units]').forEach(g => g.addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b) return;
-    g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b));
-    state.measure[g.dataset.units] = b.textContent; save();
-  }));
-  const hw = HW[hwId()];
-  state.measure.beforeUnit = state.measure.beforeUnit || hw.unit;
-  state.measure.afterUnit = state.measure.afterUnit || hw.unit;
-  if (!state.measure.before) setTimeout(() => $('#before').focus(), 350);
-}
+/* ---------- submit: the answers go to the sheet once per distinct set, when the result first shows ---------- */
 async function post(body) {
   // text/plain keeps this a simple request, so Apps Script needs no CORS preflight; no-cors means we can't read the reply.
   const send = () => fetch(SHEET_URL, { method: 'POST', mode: 'no-cors', headers: { 'content-type': 'text/plain;charset=utf-8' }, body });
   try { await send(); }
   catch (e) { await new Promise(r => setTimeout(r, 800)); await send(); }
 }
-function bindSend() {
-  const sync = () => { state.measure.email = $('#email').value.trim(); state.measure.note = $('#note').value; save(); };
-  $('#email').addEventListener('input', sync); $('#note').addEventListener('input', sync);
-  $('#sendBtn').addEventListener('click', async () => {
-    sync();
-    const m = state.measure, st = $('#sendStatus');
-    if (m.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(m.email)) { st.textContent = 'That email looks incomplete. Fix it or leave it blank.'; st.className = 'status err'; return; }
-    const r = score(state.answers), a = state.answers;
-    const fields = {
-      email: m.email || '', track: r.track === 'app' ? 'App' : 'Code', plan: a.plan,
-      top_tax: r.ahead ? '5 (ahead)' : String(r.top),
-      scores: [1, 2, 3, 4, 5, 6, 7].map(n => n + ':' + r.s[n]).join(','),
-      homework: hwId(),
-      before: m.before ? m.before + ' ' + m.beforeUnit : '',
-      after: m.after ? m.after + ' ' + m.afterUnit : '',
-      note: m.note || '',
-      where: a.where, feeds: (a.feeds || []).join(','), conns: a.conns,
-      switch: a.switch, model: a.model, limit: a.limit || ''
-    };
-    const btn = $('#sendBtn'); btn.disabled = true; st.className = 'status'; st.textContent = 'Sending…';
-    try {
-      if (!SHEET_URL) console.warn('Token Tax Audit: SHEET_URL not set yet, nothing was sent.', fields);
-      else await post(JSON.stringify(fields));
-      state.sent = true; save(); go('thanks', 1);
-    } catch (err) {
-      st.className = 'status err'; st.textContent = 'Could not send. Check your connection and try again.'; btn.disabled = false;
-    }
-  });
-}
-
-/* ---------- calculator wiring (runs each time the fix screen renders) ---------- */
-const useBtns = v => '<div class="uses"><button type="button" data-use="before" data-v="' + v + '">Use as before</button><button type="button" data-use="after" data-v="' + v + '">Use as after</button></div>';
-const cell = (k, v, d, hi) => '<div class="cell' + (hi ? ' hi' : '') + '"><span class="k">' + k + '</span><span class="v">' + fmt(v) + '</span><span class="d">' + d + '</span>' + useBtns(Math.round(v)) + '</div>';
-const pct = (a, b) => (a ? Math.max(0, Math.round((1 - b / a) * 100)) : 0) + '%';
-function dropZone(zone, input, handler) {
-  input.addEventListener('change', () => handler(input.files[0]));
-  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
-  zone.addEventListener('dragleave', () => zone.classList.remove('over'));
-  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); handler(e.dataTransfer.files[0]); });
-}
-function bindCalcs() {
-  if ($('#calc-img')) bindImg();
-  if ($('#calc-pdf')) dropZone($('#pdfDrop'), $('#pdfFile'), loadPdf);
-  if ($('#calc-paste')) { $('#pasteBox').addEventListener('input', renderPaste); }
-}
-
-/* screenshot: Claude 4.7+ caps the long edge at 2576 px, then 28 px tiles, at most 4784 tiles */
-function imgTokens(w, h) {
-  let W = w, H = h;
-  const long = Math.max(W, H);
-  if (long > 2576) { const k = 2576 / long; W = Math.round(W * k); H = Math.round(H * k); }
-  let t = Math.ceil(W / 28) * Math.ceil(H / 28);
-  if (t > 4784) {
-    let k = Math.sqrt(4784 / t);
-    while (Math.ceil(W * k / 28) * Math.ceil(H * k / 28) > 4784) k *= 0.995;
-    W = Math.floor(W * k); H = Math.floor(H * k);
-    t = Math.ceil(W / 28) * Math.ceil(H / 28);
-  }
-  return { t: Math.min(t, 4784), W, H };
-}
-function capTo(w, h, edge) { const k = Math.min(1, edge / Math.max(w, h)); return [Math.round(w * k), Math.round(h * k)]; }
-let img = null, crop = null, view = 1, cv, ctx;
-function bindImg() {
-  cv = $('#imgCanvas'); ctx = cv.getContext('2d'); crop = null;
-  if (img) { $('#imgStage').hidden = false; renderImg(); }
-  dropZone($('#imgDrop'), $('#imgFile'), loadImage);
-  let drag = null;
-  const pt = e => { const b = cv.getBoundingClientRect(), s = cv.width / b.width; return [(e.clientX - b.left) * s / view, (e.clientY - b.top) * s / view]; };
-  cv.addEventListener('pointerdown', e => { if (!img) return; cv.setPointerCapture(e.pointerId); drag = pt(e); });
-  cv.addEventListener('pointermove', e => {
-    if (!drag) return;
-    const [x, y] = pt(e), cl = (v, m) => Math.max(0, Math.min(m, v));
-    const x0 = cl(Math.min(drag[0], x), img.width), y0 = cl(Math.min(drag[1], y), img.height);
-    const x1 = cl(Math.max(drag[0], x), img.width), y1 = cl(Math.max(drag[1], y), img.height);
-    crop = { x: Math.round(x0), y: Math.round(y0), w: Math.round(x1 - x0), h: Math.round(y1 - y0) };
-    if (crop.w < 8 || crop.h < 8) crop = null;
-    renderImg();
-  });
-  cv.addEventListener('pointerup', () => { drag = null; });
-  $('#cropClear').addEventListener('click', () => { crop = null; renderImg(); });
-}
-function renderImg() {
-  if (!img) return;
-  const w = img.naturalWidth, h = img.naturalHeight;
-  const full = imgTokens(w, h), [rw, rh] = capTo(w, h, 1280), small = imgTokens(rw, rh);
-  let html = cell('As sent', full.t, w + '×' + h, !crop) + cell('Resized to 1,280 px', small.t, pct(full.t, small.t) + ' less');
-  if (crop) html += cell('Cropped', imgTokens(crop.w, crop.h).t, crop.w + '×' + crop.h + ', ' + pct(full.t, imgTokens(crop.w, crop.h).t) + ' less', true);
-  $('#imgOut').innerHTML = html;
-  drawImg();
-}
-function drawImg() {
-  if (!img || !cv) return;
-  const maxW = $('#imgStage').clientWidth || 440, maxH = 340;
-  view = Math.min(1, maxW / img.width, maxH / img.height);
-  cv.width = Math.round(img.width * view); cv.height = Math.round(img.height * view);
-  ctx.drawImage(img, 0, 0, cv.width, cv.height);
-  if (crop) {
-    const x = crop.x * view, y = crop.y * view, w = crop.w * view, h = crop.h * view;
-    ctx.fillStyle = 'rgba(26,23,20,.55)';
-    ctx.fillRect(0, 0, cv.width, y); ctx.fillRect(0, y + h, cv.width, cv.height - y - h);
-    ctx.fillRect(0, y, x, h); ctx.fillRect(x + w, y, cv.width - x - w, h);
-    ctx.strokeStyle = '#FF6B4A'; ctx.lineWidth = 2; ctx.strokeRect(x + 1, y + 1, w - 2, h - 2);
-  }
-}
-function loadImage(file) {
-  if (!file || !/^image\//.test(file.type)) return;
-  const im = new Image();
-  im.onload = () => { img = im; crop = null; $('#imgStage').hidden = false; $('#imgDrop').firstChild.nextSibling.textContent = 'Tap to swap image'; renderImg(); };
-  im.src = URL.createObjectURL(file);
-}
-addEventListener('resize', () => { if (img && $('#imgCanvas')) drawImg(); });
-
-/* PDF: each page is read as an image (about 1,500 tokens) plus its text (characters ÷ 4) */
-const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
-let pdfReady = null;
-function loadScript(src) { return new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = no; document.head.appendChild(s); }); }
-function pdfLib() {
-  // The worker script runs on the main thread (window.pdfjsWorker), so no cross-origin Worker is needed.
-  pdfReady = pdfReady || loadScript(PDFJS + 'pdf.min.js').then(() => loadScript(PDFJS + 'pdf.worker.min.js')).then(() => window.pdfjsLib);
-  return pdfReady;
-}
-const PAGE_IMG = 1500;
-async function loadPdf(file) {
-  if (!file) return;
-  const st = $('#pdfStatus');
-  st.className = 'tiny'; st.textContent = 'Reading ' + file.name + '…'; $('#pdfOut').innerHTML = '';
-  try {
-    const lib = await pdfLib();
-    lib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
-    const doc = await lib.getDocument({ data: await file.arrayBuffer() }).promise;
-    let chars = 0;
-    for (let i = 1; i <= doc.numPages; i++) {
-      const tc = await (await doc.getPage(i)).getTextContent();
-      chars += tc.items.reduce((n, it) => n + (it.str || '').length + (it.hasEOL ? 1 : 0), 0);
-      if (i % 10 === 0) st.textContent = 'Reading page ' + i + ' of ' + doc.numPages + '…';
-    }
-    const text = Math.ceil(chars / 4), imgs = doc.numPages * PAGE_IMG, asPdf = text + imgs;
-    st.textContent = doc.numPages + ' page' + (doc.numPages > 1 ? 's' : '') + '.' + (chars < 50 * doc.numPages ? ' Looks like a scan, so Claude relies on the page images.' : '');
-    $('#pdfOut').innerHTML = cell('As PDF', asPdf, 'text + page images') + cell('As Markdown', text, pct(asPdf, text) + ' less', true);
-  } catch (err) {
-    console.error(err);
-    st.className = 'status err'; st.textContent = 'Could not read that PDF. Remove any password and try again.';
-  }
-}
-
-/* paste counter */
-function renderPaste() {
-  const chars = $('#pasteBox').value.length, t = Math.ceil(chars / 4);
-  $('#pasteOut').innerHTML = chars ? cell('Tokens', t, fmt(chars) + ' characters', true) +
-    '<div class="cell"><span class="k">Over 20 turns</span><span class="v">$' + (t * 2 * 20 / 1e6).toFixed(2) + '</span><span class="d">Sonnet 5.5 input</span></div>' : '';
+function submit() {
+  const a = state.answers, r = score(a), key = JSON.stringify(a);
+  if (state.posted === key) return;
+  // Same columns as before; email, homework and the before/after numbers stay blank now that the page ends here.
+  const fields = {
+    email: '', track: r.track === 'app' ? 'App' : 'Code', plan: a.plan,
+    top_tax: r.ahead ? '5 (ahead)' : String(r.top),
+    scores: [1, 2, 3, 4, 5, 6, 7].map(n => n + ':' + r.s[n]).join(','),
+    homework: '', before: '', after: '', note: '',
+    where: a.where, feeds: (a.feeds || []).join(','), conns: a.conns,
+    switch: a.switch, model: a.model, limit: a.limit || ''
+  };
+  if (!SHEET_URL) { console.warn('Token Tax Audit: SHEET_URL not set yet, nothing was sent.', fields); return; }
+  post(JSON.stringify(fields)).then(() => { state.posted = key; save(); }, () => {});
 }
 
 /* ---------- boot ---------- */
 load();
-if (state.sent && state.screen === 'thanks') state.screen = 'number';
+if (idx(state.screen) < 0) state.screen = answered(state.answers) === 6 ? 'result' : 'intro';
 dir = 1; render();
 </script>
 </body>
