@@ -228,10 +228,6 @@ a.btn{text-decoration:none}
 .spark{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:1.5px;background:var(--hum);pointer-events:none;animation:spark .8s var(--e-out) both}
 @keyframes spark{from{opacity:1;transform:none}to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(120deg) scale(.4)}}
 
-.alert{display:flex;align-items:center;gap:12px;font-size:15px;line-height:1.45;color:var(--ink);border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px}
-.clock{flex:none;width:24px;height:24px;fill:none;stroke:var(--coral);stroke-width:1.8;stroke-linecap:round}
-.clock .hand{transform-origin:12px 12px;animation:spin 3s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
 /* the leak list: every tax this person pays, saving visible, fix withheld. One ticked (shown above), the rest "fixed live". */
 .more{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:20px;margin-top:6px}
 .more .sub{font-size:16px}
@@ -301,25 +297,25 @@ const $ = s => document.querySelector(s);
 const TAXES = {
   1: { name: 'Raw-format', hook: 'You feed Claude <b>PDFs and raw files</b>. Every page is read as an image <b>plus</b> its text.',
        fix: 'Send it as <b>Markdown</b>. Text only, no page images.', from: '7,000', to: '1,000', r: 14.3,
-       n: '86%', l: 'fewer tokens when the PDF goes in as Markdown', basis: '3-page PDF: about 7,000 tokens, about 1,000 as text. Anthropic PDF docs.' },
+       n: '86%', l: 'fewer tokens when the PDF goes in as Markdown' },
   2: { name: 'Screenshot', hook: 'One full-screen screenshot costs <b>2,691 tokens</b>. A 4K one costs <b>4,784</b>.',
        fix: '<b>Crop</b> to the part that matters.', from: '2,691', to: '484', r: 18,
-       n: '82%', l: 'fewer tokens when you crop first', basis: "Computed from Anthropic's image formula, Claude 4.7 and later." },
+       n: '82%', l: 'fewer tokens when you crop first' },
   3: { name: 'Noisy output', hook: 'Logs and search results sit in the chat, and Claude <b>re-reads them every turn</b>.',
        fix: '<b>Trim</b> the output before it lands in the chat.', from: '100%', to: '43%', r: 43,
-       n: '57%', l: 'fewer tokens on log-heavy debugging', basis: 'Headroom README (vendor figure). About 20% on a typical session.' },
+       n: '57%', l: 'fewer tokens on log-heavy debugging' },
   4: { name: 'Startup', hook: 'Connectors and instructions load <b>before you type a word</b>. 5 MCP servers is about 55,000 tokens.',
        fix: '<b>Tool search</b> loads a tool only when it is needed.', from: '55K', to: '8K', r: 15,
-       n: '85%', l: 'fewer startup tokens with tool search', basis: 'Anthropic, "Introducing advanced tool use", Nov 2025.' },
+       n: '85%', l: 'fewer startup tokens with tool search' },
   5: { name: 'Cache break', hook: 'Switching models or reopening old chats makes Claude <b>re-bill the whole chat</b> at full price.',
        fix: 'Stay on one model and the <b>cache</b> stays warm.', from: '$0.25', to: '$0.01', r: 4,
-       n: '25x', l: 'cheaper per turn when the cache stays warm', basis: '100K-token chat on Sonnet 5.5: $0.01 cached vs $0.25 rebuilt.' },
+       n: '25x', l: 'cheaper per turn when the cache stays warm' },
   6: { name: 'Middleman', hook: 'Data flows <b>through the main chat</b> even when Claude only needs to move it.',
        fix: 'A <b>script or subagent</b> moves the data. The chat only hears "done".', from: '150K', to: '2K', r: 1.3,
-       n: '98.7%', l: 'fewer tokens with subagents or code execution', basis: 'Anthropic, "Code execution with MCP", Nov 2025.' },
+       n: '98.7%', l: 'fewer tokens with subagents or code execution' },
   7: { name: 'One-model', hook: 'Routine work runs on the <b>top model at max effort</b>.',
        fix: '<b>Routine work</b> goes to Haiku. Opus keeps the hard part.', from: '$4', to: '$0.10', r: 2.5,
-       n: '40x', l: 'cheaper input on Haiku than Opus', basis: 'Haiku 5.5 $0.10 vs Opus 5.5 $4 per million input tokens, Oct 2026.' }
+       n: '40x', l: 'cheaper input on Haiku than Opus' }
 };
 
 // One picture per tax, drawn in a 320x156 box. Default state is the leak; the .fix class on .ill morphs it into the fix.
@@ -552,8 +548,6 @@ V.result = () => {
       <div class="br"><span>Fixed</span><b><i class="fixd" style="--r:${t.r}%"></i></b><em class="to">${t.to}</em></div>
     </div>
   </div>
-  ${state.answers.limit === 'weekly' ? `<p class="alert rise" style="--d:.45s"><svg class="clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="hand" d="M12 12V7"/><path d="M12 12h3"/></svg><span>Weekly limit hits cost you <b>working hours</b>, not just tokens.</span></p>` : ''}
-  <p class="tiny">${t.basis}</p>
   ${leakList(r, order)}
   ${deal()}
   ${useCase()}
