@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Token Tax Audit</title>
-<meta name="description" content="60 seconds: find where your Claude bill is leaking, and one fix to try before the webinar.">
+<meta name="description" content="60 seconds: find where your Claude bill is leaking, get one fix now, and see the list of the rest.">
 <meta name="theme-color" content="#F4F3EF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#171614" media="(prefers-color-scheme: dark)">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -206,19 +206,46 @@ a.btn{text-decoration:none}
 .clock{flex:none;width:24px;height:24px;fill:none;stroke:var(--coral);stroke-width:1.8;stroke-linecap:round}
 .clock .hand{transform-origin:12px 12px;animation:spin 3s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-details.all{border-top:1px solid var(--line);padding-top:2px}
-details.all summary{cursor:pointer;font:500 14px var(--sans);color:var(--ink2);padding:10px 0;list-style:none}
-details.all summary::-webkit-details-marker{display:none}
-details.all summary::after{content:" +";font-family:var(--mono)}
-details.all[open] summary::after{content:" \2212"}
-.ledger{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-.ledger li{display:grid;grid-template-columns:1fr 36%;gap:10px;align-items:center;font-size:15px;color:var(--ink2)}
-.ledger li.top{color:var(--ink);font-weight:500}
-.ledger .track{height:6px;background:var(--bg2);border-radius:99px;overflow:hidden}
-.ledger .fill{display:block;height:100%;background:var(--ink3);border-radius:99px}
-.ledger li.top .fill{background:var(--ink)}
-.ledger em{font:normal 11px var(--mono);color:var(--ink3)}
-details.all[open] .fill{transform-origin:left;animation:grow .7s var(--e-out) both;animation-delay:calc(var(--i) * 70ms)}
+/* the leak list: every tax this person pays, saving visible, fix withheld. One ticked (shown above), the rest "fixed live". */
+.more{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:20px;margin-top:6px}
+.more .sub{font-size:16px}
+.leaks{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column}
+.leaks li{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px;color:var(--ink);animation:rise .5s var(--e-out) both;animation-delay:calc(.7s + var(--i) * 90ms)}
+.leaks li:last-child{border-bottom:0}
+.leaks .nm{font-weight:500}
+.leaks .nm small{display:block;font:11px var(--mono);color:var(--ink3);font-weight:400}
+.leaks .sv{font:500 15px var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+.leaks .sv small{font-size:11px;color:var(--ink3);font-weight:400;margin-left:3px}
+.leaks .st{display:inline-flex;align-items:center;gap:5px;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);white-space:nowrap;min-width:92px;justify-content:flex-end}
+.leaks .st svg{width:11px;height:11px;flex:none}
+.leaks .st .play{fill:var(--ink3)}
+.leaks li.done .st{color:var(--hum-ink)}
+.leaks li.done .st svg{fill:none;stroke:var(--hum);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.leaks li.na{color:var(--ink3)}
+.leaks li.na .nm{font-weight:400}
+.leaks li.na .sv{color:var(--ink3);opacity:.6}
+.leaks li.na .st{color:var(--ink3);opacity:.6}
+.count-note{font-size:15px;line-height:1.5;color:var(--ink2);margin-top:4px}
+
+/* the deal: a plain offer with a price line */
+.deal{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;margin-top:8px}
+.deal h2{font-size:clamp(21px,5.8vw,25px);line-height:1.2}
+.terms{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.terms li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:15px;line-height:1.45;color:var(--ink2)}
+.terms li i{font:500 11px var(--mono);color:var(--ink3);padding-top:4px;font-style:normal}
+.price{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--line2);padding-top:12px;font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.price b{font:500 15px var(--mono);color:var(--ink);letter-spacing:0;text-transform:none}
+
+/* use-case form */
+.uc{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.uc label{font-size:15px;color:var(--ink2);line-height:1.45}
+.uc label b{display:block;font-size:16px;margin-bottom:2px}
+.uc textarea,.uc input{width:100%;font:16px/1.45 var(--sans);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;resize:none}
+.uc textarea::placeholder,.uc input::placeholder{color:var(--ink3)}
+.uc textarea:focus,.uc input:focus{outline:0;border-color:var(--ink)}
+.uc .ok{display:flex;align-items:center;gap:10px;background:var(--hum-soft);color:var(--hum-ink);border-radius:10px;padding:13px 14px;font-size:15px;line-height:1.4}
+.uc .ok b{color:inherit}
+.uc .ok svg{flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -239,7 +266,7 @@ details.all[open] .fill{transform-origin:left;animation:grow .7s var(--e-out) bo
 // Its /exec URL; while blank, the result screen shows but posts nothing.
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyrgxfEqS89pybB1-jgooKkQtdjyZ4SqceJOvs6jwhliBP-jebj5aDwakns5kgazgQH/exec';
 // Webinar details for the result screen. Leave blank to leave them out.
-const WEBINAR = { date: '', time: '', joinUrl: '' };
+const WEBINAR = { date: 'Sun 25 Oct', time: '3 PM IST', mins: 90, joinUrl: 'https://tally.so/r/GexeXo' };
 
 const STORE = 'token-tax-audit:v3';
 const $ = s => document.querySelector(s);
@@ -473,17 +500,66 @@ V.result = () => {
     </div>
   </div>
   ${state.answers.limit === 'weekly' ? `<p class="alert rise" style="--d:.45s"><svg class="clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="hand" d="M12 12V7"/><path d="M12 12h3"/></svg><span>Weekly limit hits cost you <b>working hours</b>, not just tokens.</span></p>` : ''}
-  <details class="all rise" style="--d:.55s"><summary>See all 7 taxes</summary>
-    <ol class="ledger">${order.map((n, i) => `<li class="${!r.ahead && n === r.top ? 'top' : ''}" style="--i:${i}"><span>${TAXES[n].name}${n === 6 && r.track === 'app' ? ' <em>Code only</em>' : ''}</span><span class="track"><span class="fill" style="width:${r.s[n] / max * 100}%"></span></span></li>`).join('')}</ol>
-  </details>
   <p class="tiny">${t.basis}</p>
+  ${leakList(r, order)}
+  ${deal()}
+  ${useCase()}
   <div class="grow"></div>
   <div class="cta">
-    <p class="sub" style="text-align:center">The webinar shows how to cut it, step by step.${WEBINAR.date ? ' See you on <b>' + WEBINAR.date + (WEBINAR.time ? ' at ' + WEBINAR.time : '') + '</b>.' : ''}</p>
-    ${WEBINAR.joinUrl ? `<a class="btn" href="${WEBINAR.joinUrl}" target="_blank" rel="noopener">Join link</a>` : ''}
+    <a class="btn" href="${WEBINAR.joinUrl}" target="_blank" rel="noopener">Save my seat, ${WEBINAR.date}</a>
     <button class="link" id="restart">Start over</button>
   </div>`;
 };
+
+// Every tax, sorted by score. The one shown above is ticked; the ones they pay are "fixed live"; the rest are "not yours".
+function leakList(r, order) {
+  const mine = order.filter(n => r.s[n] > 0 && !(n === 6 && r.track === 'app')).length;
+  const tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+  const play = '<svg viewBox="0 0 12 12" aria-hidden="true"><path class="play" d="M3 1.5l7 4.5-7 4.5z"/></svg>';
+  const rows = order.map((n, i) => {
+    const codeOnly = n === 6 && r.track === 'app', shown = n === r.top, pays = r.s[n] > 0 && !codeOnly;
+    const cls = shown ? 'done' : pays ? '' : 'na';
+    const st = shown ? tick + 'Shown above' : pays ? play + 'Fixed live' : codeOnly ? 'Code only' : 'Not yours';
+    return `<li class="${cls}" style="--i:${i}"><span class="nm">${TAXES[n].name}</span><span class="sv">${TAXES[n].n}<small>${/x$/.test(TAXES[n].n) ? 'cheaper' : 'less'}</small></span><span class="st">${st}</span></li>`;
+  }).join('');
+  return `
+  <div class="more rise" style="--d:.6s">
+    <span class="eyebrow">Your leak list</span>
+    <h2 class="q">${r.ahead ? 'Small leaks still add up.' : 'That was the easy one.'}</h2>
+    <p class="sub">${r.ahead ? 'Each one has a fix. The rest are shown live, on a real workflow.' : `One fix fits on a phone screen. You pay <b>${mine} of the 7</b>. The rest need a live demo.`}</p>
+    <ol class="leaks">${rows}</ol>
+    <p class="count-note">Each tax has its own technique. The webinar runs through all 7, plus 3 more for power users, on screen in ${WEBINAR.mins} minutes.</p>
+  </div>`;
+}
+
+function deal() {
+  return `
+  <div class="deal rise" style="--d:.75s">
+    <span class="eyebrow act">The deal</span>
+    <h2>${WEBINAR.mins} minutes. Every leak above, fixed on screen.</h2>
+    <ul class="terms">
+      <li><i>01</i><span><b>${WEBINAR.date}, ${WEBINAR.time}</b>, live on Zoom. Setup steps and a measured saving for each fix.</span></li>
+      <li><i>02</i><span><b>7 techniques</b>, one per tax, plus <b>3 bonus</b> ones for power users.</span></li>
+      <li><i>03</i><span>Tell us what you use Claude for. We pick <b>10 use cases</b> and write each a custom token-spend plan.</span></li>
+    </ul>
+    <p class="price"><span>Costs you</span><b>${WEBINAR.mins} minutes</b></p>
+  </div>`;
+}
+
+function useCase() {
+  const u = state.usecase || {};
+  const tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
+  if (u.sent) return `
+  <div class="uc rise" style="--d:.9s"><p class="ok">${tick}<span><b>You're in the running.</b> We pick the 10 before ${WEBINAR.date} and reply by email.</span></p></div>`;
+  return `
+  <form class="uc rise" id="uc" style="--d:.9s">
+    <label for="uctext"><b>Your use case</b>What do you use Claude for? One line is enough.</label>
+    <textarea id="uctext" rows="3" maxlength="500" placeholder="e.g. I summarise 40-page contracts every week in Claude Code" required>${esc(u.text || '')}</textarea>
+    <input type="email" id="ucmail" placeholder="Email, so the plan reaches you" autocomplete="email" value="${esc(u.email || '')}" required>
+    <button class="btn ghost" type="submit">Put me up for the 10</button>
+  </form>`;
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* ---------- result playback: leak, then fix, then the saving counts up; the picture keeps flipping until tapped ---------- */
 const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -580,7 +656,23 @@ document.addEventListener('click', e => {
   const st = t.closest('[data-st]');
   if (st) { clearTimers(); return setFix(st.dataset.st === '1'); }
   if (t.closest('[data-next]')) return next();
-  if (t.closest('#restart')) { state = { answers: {}, screen: 'intro', posted: state.posted }; save(); return go('intro', -1); }
+  if (t.closest('#restart')) { state = { answers: {}, screen: 'intro', posted: state.posted, usecase: state.usecase }; save(); return go('intro', -1); }
+});
+
+// Use-case form: posts a second row with the email and the use case in the note column, then shows the done state.
+document.addEventListener('submit', e => {
+  const f = e.target.closest('#uc'); if (!f) return;
+  e.preventDefault();
+  const text = $('#uctext').value.trim(), email = $('#ucmail').value.trim();
+  if (!text || !email) return;
+  state.usecase = { text, email, sent: true }; save();
+  const btn = f.querySelector('button'); btn.disabled = true; btn.textContent = 'Sending';
+  const r = score(state.answers);
+  post(JSON.stringify(Object.assign(fields(state.answers, r), { email, homework: 'use case', note: text }))).catch(() => {});
+  f.outerHTML = useCase();
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'uctext' || e.target.id === 'ucmail') { state.usecase = { text: $('#uctext').value, email: $('#ucmail').value }; save(); }
 });
 
 /* ---------- submit: the answers go to the sheet once per distinct set, when the result first shows ---------- */
@@ -590,11 +682,9 @@ async function post(body) {
   try { await send(); }
   catch (e) { await new Promise(r => setTimeout(r, 800)); await send(); }
 }
-function submit() {
-  const a = state.answers, r = score(a), key = JSON.stringify(a);
-  if (state.posted === key) return;
-  // Same columns as before; email, homework and the before/after numbers stay blank now that the page ends here.
-  const fields = {
+// Same columns as before. The answers row leaves email, homework and note blank; the use-case row fills them.
+function fields(a, r) {
+  return {
     email: '', track: r.track === 'app' ? 'App' : 'Code', plan: a.plan,
     top_tax: r.ahead ? '5 (ahead)' : String(r.top),
     scores: [1, 2, 3, 4, 5, 6, 7].map(n => n + ':' + r.s[n]).join(','),
@@ -602,8 +692,12 @@ function submit() {
     where: a.where, feeds: (a.feeds || []).join(','), conns: a.conns,
     switch: a.switch, model: a.model, limit: a.limit || ''
   };
-  if (!SHEET_URL) { console.warn('Token Tax Audit: SHEET_URL not set yet, nothing was sent.', fields); return; }
-  post(JSON.stringify(fields)).then(() => { state.posted = key; save(); }, () => {});
+}
+function submit() {
+  const a = state.answers, r = score(a), key = JSON.stringify(a);
+  if (state.posted === key) return;
+  if (!SHEET_URL) { console.warn('Token Tax Audit: SHEET_URL not set yet, nothing was sent.'); return; }
+  post(JSON.stringify(fields(a, r))).then(() => { state.posted = key; save(); }, () => {});
 }
 
 /* ---------- boot ---------- */
