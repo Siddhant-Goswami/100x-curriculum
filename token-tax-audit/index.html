@@ -13,7 +13,8 @@
 <style>
 /* Layout: story-style, one screen at a time in a 480px phone column, primary action pinned to the bottom (thumb zone).
    Look: the curriculum design system (c8/docs.css tokens, copied so the page stays standalone). Inter 500 headings, mono for labels and facts,
-   calm paper surfaces, coral only for the one action per screen, hum green for done. Motion is quiet; nothing bounces. */
+   calm paper surfaces, coral only for the one action per screen, hum green for done. Motion is quiet until the result,
+   which plays: the leak is drawn, flips to the fix, and the saving counts up. */
 :root{
   --bg:#F4F3EF;--bg2:#EDEBE5;--card:#FFFFFF;--ink:#1B1B1B;--ink2:#5A5A5A;--ink3:#8A8A8A;--line:#E2E0DA;--line2:#D4D1C9;
   --coral:#F2603C;--coral-soft:#FDE9E2;--coral-ink:#B8431F;
@@ -113,13 +114,98 @@ a.btn{text-decoration:none}
 .scan b{display:block;height:6px;border-radius:99px;background:var(--bg2);overflow:hidden}
 .scan b::after{content:"";display:block;height:100%;width:var(--w);background:var(--ink3);border-radius:99px;animation:grow .6s var(--e-out) both;animation-delay:var(--d);transform-origin:left}
 
-/* result */
-.hero{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--coral);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:10px}
-.hero p{color:var(--ink2);font-size:16px;line-height:1.55}
-.stat{display:flex;align-items:baseline;gap:14px;background:var(--bg2);border-radius:10px;padding:16px 18px}
-.stat .n{font:500 34px/1 var(--sans);letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums}
-.stat .l{font-size:15px;color:var(--ink2);line-height:1.4}
-.alert{font-size:15px;color:var(--ink);border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px}
+/* result: the leak plays as a picture that flips to the fix, then the saving counts up. Coral = leaking, hum green = fixed. */
+.rise{animation:rise .6s var(--e-out) both;animation-delay:var(--d,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+.hit{display:flex;flex-direction:column;gap:8px}
+.hit .eyebrow{display:inline-flex;align-items:center;gap:8px}
+.hit h1{animation:rise .7s var(--e-out) both}
+.hit .sub{font-size:16px}
+.eyebrow.okc{color:var(--hum-ink)}
+.drip{width:9px;height:14px;fill:var(--coral);animation:drip 2.4s ease-in infinite}
+@keyframes drip{0%{opacity:0;transform:translateY(-4px) scale(.5)}25%{opacity:1;transform:none}70%{opacity:0;transform:translateY(7px) scaleY(1.15)}100%{opacity:0}}
+.okmark{width:14px;height:14px;fill:none;stroke:var(--hum);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+
+.ill{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.seg{position:relative;display:grid;grid-template-columns:1fr 1fr;align-self:center;background:var(--bg2);border-radius:99px;padding:3px}
+.seg::before{content:"";position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);background:var(--card);border-radius:99px;box-shadow:var(--float);transition:transform .5s var(--e-out)}
+.ill.fix .seg::before{transform:translateX(100%)}
+.seg button{position:relative;border:0;background:none;padding:6px 14px;border-radius:99px;font:500 12px var(--mono);color:var(--ink3);transition:color .3s}
+.seg button[aria-pressed="true"]{color:var(--coral-ink)}
+.ill.fix .seg button[aria-pressed="true"]{color:var(--hum-ink)}
+.ill svg{display:block;width:100%;height:auto;overflow:visible}
+.ill svg *{transform-box:fill-box;transform-origin:0 0;transition:opacity .5s,transform .8s var(--e-out),fill .5s,stroke .5s}
+.ill .fx{opacity:0}
+.ill.fix .fx{opacity:1}
+.ill.fix .lk{opacity:0}
+.ill .mv{transform:var(--lk,none)}
+.ill.fix .mv{transform:var(--fx,none)}
+.ill.fix .dimfx{opacity:.2}
+.ill:not(.fix) .dimlk{opacity:.3}
+.ill text{font:500 9.5px var(--mono);fill:var(--ink3)}
+.ill text.k{fill:var(--ink2)}
+.ill text.m{text-anchor:middle}
+.ill text.lt{fill:var(--coral-ink)}
+.ill text.ok{fill:var(--hum-ink)}
+.ill .o{fill:none;stroke:var(--ink2);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+.ill .ol{fill:none;stroke:var(--line2);stroke-width:1.2}
+.ill .cd{fill:var(--card)}
+.ill .pap{fill:var(--bg)}
+.ill .pap2{fill:var(--bg2)}
+.ill .ink{fill:var(--ink)}
+.ill .dim{fill:var(--ink3)}
+.ill .term{fill:var(--code-bg)}
+.ill .tdim{fill:var(--code-dim)}
+.ill .red{fill:var(--coral)}
+.ill .okf{fill:var(--hum)}
+.ill .lsoft{fill:var(--coral-soft);stroke:var(--coral);stroke-width:1}
+.ill .osoft{fill:var(--hum-soft);stroke:var(--hum);stroke-width:1}
+.ill .sw{fill:var(--coral-soft);stroke:var(--coral);stroke-width:1}
+.ill.fix .sw{fill:var(--hum-soft);stroke:var(--hum)}
+.ill .swf{fill:var(--coral)}
+.ill.fix .swf{fill:var(--hum)}
+.ill .tx{fill:var(--ink3)}
+.ill.fix .tx{fill:var(--hum)}
+.ill .flow{fill:none;stroke-width:1.4;stroke-dasharray:3 4;animation:flow .9s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-14}}
+.ill .fl{stroke:var(--coral)}
+.ill .fo{stroke:var(--hum)}
+.ill .fk{stroke:var(--ink2)}
+.ill .fd{stroke:var(--ink3)}
+.ill.fix .swst{stroke:var(--hum)}
+.ill .brk{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;opacity:.35}
+.ill.fix .brk{opacity:1}
+.ill .sweep{fill:var(--coral);opacity:.22;animation:sweep 1.8s var(--e-out) infinite}
+@keyframes sweep{from{transform:none}to{transform:translateX(228px)}}
+.ill .strain{stroke:var(--coral);transform-origin:center;animation:strain 1.4s ease-in-out infinite}
+.ill.fix .strain{stroke:var(--ink2);animation:none}
+@keyframes strain{50%{transform:scale(1.06)}}
+.cap{display:grid;font-size:15px;line-height:1.5;color:var(--ink2)}
+.cap>span{grid-area:1/1;transition:opacity .45s}
+
+.win{background:var(--bg2);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.big-n{position:relative;display:flex;align-items:baseline;gap:12px}
+.big-n .n{display:inline-block;flex:none;font:500 44px/1 var(--sans);letter-spacing:-.04em;font-variant-numeric:tabular-nums;color:var(--ink);transition:color .6s}
+.win.go .n{color:var(--hum-ink)}
+.n.pop{animation:pop .5s var(--e-out)}
+@keyframes pop{35%{transform:scale(1.07)}}
+.big-n .l{font-size:15px;line-height:1.4;color:var(--ink2)}
+.bars{display:flex;flex-direction:column;gap:8px}
+.br{display:grid;grid-template-columns:44px 1fr 52px;gap:10px;align-items:center;font:500 12px var(--mono);color:var(--ink3)}
+.br b{height:8px;border-radius:99px;background:var(--bg);overflow:hidden}
+.br i{display:block;height:100%;width:100%;border-radius:99px;background:var(--coral)}
+.br .fixd{transition:width 1.2s var(--e-out),background .6s}
+.win.go .fixd{width:max(3%,var(--r));background:var(--hum)}
+.br em{font-style:normal;text-align:right;color:var(--ink2)}
+.br .to{opacity:0;transition:opacity .5s .7s}
+.win.go .to{opacity:1}
+.spark{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:1.5px;background:var(--hum);pointer-events:none;animation:spark .8s var(--e-out) both}
+@keyframes spark{from{opacity:1;transform:none}to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(120deg) scale(.4)}}
+
+.alert{display:flex;align-items:center;gap:12px;font-size:15px;line-height:1.45;color:var(--ink);border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 14px}
+.clock{flex:none;width:24px;height:24px;fill:none;stroke:var(--coral);stroke-width:1.8;stroke-linecap:round}
+.clock .hand{transform-origin:12px 12px;animation:spin 3s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 details.all{border-top:1px solid var(--line);padding-top:2px}
 details.all summary{cursor:pointer;font:500 14px var(--sans);color:var(--ink2);padding:10px 0;list-style:none}
 details.all summary::-webkit-details-marker{display:none}
@@ -132,6 +218,7 @@ details.all[open] summary::after{content:" \2212"}
 .ledger .fill{display:block;height:100%;background:var(--ink3);border-radius:99px}
 .ledger li.top .fill{background:var(--ink)}
 .ledger em{font:normal 11px var(--mono);color:var(--ink3)}
+details.all[open] .fill{transform-origin:left;animation:grow .7s var(--e-out) both;animation-delay:calc(var(--i) * 70ms)}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -157,21 +244,128 @@ const WEBINAR = { date: '', time: '', joinUrl: '' };
 const STORE = 'token-tax-audit:v3';
 const $ = s => document.querySelector(s);
 
+// hook = the leak, fix = the same picture once fixed; from/to/r = the "Now" and "Fixed" bars (r is the fixed share, in %).
 const TAXES = {
   1: { name: 'Raw-format', hook: 'You feed Claude <b>PDFs and raw files</b>. Every page is read as an image <b>plus</b> its text.',
+       fix: 'Send it as <b>Markdown</b>. Text only, no page images.', from: '7,000', to: '1,000', r: 14.3,
        n: '86%', l: 'fewer tokens when the PDF goes in as Markdown', basis: '3-page PDF: about 7,000 tokens, about 1,000 as text. Anthropic PDF docs.' },
   2: { name: 'Screenshot', hook: 'One full-screen screenshot costs <b>2,691 tokens</b>. A 4K one costs <b>4,784</b>.',
+       fix: '<b>Crop</b> to the part that matters.', from: '2,691', to: '484', r: 18,
        n: '82%', l: 'fewer tokens when you crop first', basis: "Computed from Anthropic's image formula, Claude 4.7 and later." },
   3: { name: 'Noisy output', hook: 'Logs and search results sit in the chat, and Claude <b>re-reads them every turn</b>.',
+       fix: '<b>Trim</b> the output before it lands in the chat.', from: '100%', to: '43%', r: 43,
        n: '57%', l: 'fewer tokens on log-heavy debugging', basis: 'Headroom README (vendor figure). About 20% on a typical session.' },
   4: { name: 'Startup', hook: 'Connectors and instructions load <b>before you type a word</b>. 5 MCP servers is about 55,000 tokens.',
+       fix: '<b>Tool search</b> loads a tool only when it is needed.', from: '55K', to: '8K', r: 15,
        n: '85%', l: 'fewer startup tokens with tool search', basis: 'Anthropic, "Introducing advanced tool use", Nov 2025.' },
   5: { name: 'Cache break', hook: 'Switching models or reopening old chats makes Claude <b>re-bill the whole chat</b> at full price.',
+       fix: 'Stay on one model and the <b>cache</b> stays warm.', from: '$0.25', to: '$0.01', r: 4,
        n: '25x', l: 'cheaper per turn when the cache stays warm', basis: '100K-token chat on Sonnet 5.5: $0.01 cached vs $0.25 rebuilt.' },
   6: { name: 'Middleman', hook: 'Data flows <b>through the main chat</b> even when Claude only needs to move it.',
+       fix: 'A <b>script or subagent</b> moves the data. The chat only hears "done".', from: '150K', to: '2K', r: 1.3,
        n: '98.7%', l: 'fewer tokens with subagents or code execution', basis: 'Anthropic, "Code execution with MCP", Nov 2025.' },
   7: { name: 'One-model', hook: 'Routine work runs on the <b>top model at max effort</b>.',
+       fix: '<b>Routine work</b> goes to Haiku. Opus keeps the hard part.', from: '$4', to: '$0.10', r: 2.5,
        n: '40x', l: 'cheaper input on Haiku than Opus', basis: 'Haiku 5.5 $0.10 vs Opus 5.5 $4 per million input tokens, Oct 2026.' }
+};
+
+// One picture per tax, drawn in a 320x156 box. Default state is the leak; the .fix class on .ill morphs it into the fix.
+// .lk shows only while leaking, .fx only once fixed, .mv moves from --lk to --fx, .sw/.swf/.tx turn coral to green.
+const ART = {
+  1: () => `
+    <path class="cd o" d="M17 30h37l16 16v68H17z"/><path class="o" d="M54 30v16h16"/>
+    ${[36, 28, 36, 22].map((w, i) => `<rect class="dim" x="25" y="${56 + i * 8}" width="${w}" height="3" rx="1.5"/>`).join('')}
+    <g class="lk"><rect class="red" x="25" y="94" width="28" height="13" rx="3"/><text x="39" y="103.5" class="m" style="fill:#fff">PDF</text></g>
+    <g class="fx"><rect class="okf" x="25" y="94" width="28" height="13" rx="3"/><text x="39" y="103.5" class="m" style="fill:#fff">MD</text></g>
+    <path class="flow fd" d="M78 72H112"/><path class="o" d="M108 68l5 4-5 4"/>
+    <rect class="pap ol" x="122" y="14" width="184" height="122" rx="10"/>
+    <text x="132" y="30">CLAUDE READS</text>
+    ${[38, 64, 90].map((y, i) => `
+      <g class="lk mv" style="--fx:scale(.3);transform-origin:center;transition-delay:${i * .08}s">
+        <rect class="lsoft" x="132" y="${y}" width="50" height="20" rx="3"/>
+        <path class="red" opacity=".55" d="M137 ${y + 17}l9-8 6 5 5-4 9 7z"/><circle class="red" cx="173" cy="${y + 6}" r="2.2"/>
+      </g>
+      <g class="mv" style="--fx:translateX(-58px);transition-delay:${.15 + i * .08}s">
+        <rect class="tx" x="190" y="${y + 4}" width="100" height="4" rx="2"/><rect class="tx" x="190" y="${y + 12}" width="72" height="4" rx="2"/>
+      </g>`).join('')}
+    <text x="296" y="128" class="e k lk" text-anchor="end">7,000 tokens</text><text x="296" y="128" class="ok fx" text-anchor="end">1,000 tokens</text>`,
+
+  2: () => {
+    let cells = '';
+    for (let r = 0; r < 5; r++) for (let c = 0; c < 12; c++) {
+      const keep = c >= 2 && c <= 5 && r >= 1 && r <= 3;
+      cells += `<rect class="sw${keep ? '' : ' dimfx'}" x="${46 + c * 19}" y="${14 + r * 20}" width="17" height="18" rx="2" style="transition-delay:${keep ? 0 : ((c + r) * .015).toFixed(3)}s"/>`;
+    }
+    // crop corners: drawn round the kept cells, pushed out to the screen edges while leaking
+    const corners = [['M82 42V32H92', -38, -20], ['M150 32H160V42', 114, -20], ['M82 84V94H92', -38, 20], ['M150 94H160V84', 114, 20]];
+    return `
+    <rect class="cd o" x="38" y="6" width="244" height="114" rx="7"/><path class="o" d="M160 120v8M144 128h32"/>
+    ${cells}
+    ${corners.map(([d, x, y]) => `<path class="brk mv" d="${d}" style="--lk:translate(${x}px,${y}px)"/>`).join('')}
+    <text x="160" y="146" class="m k lk">Full screen: 2,691 tokens</text><text x="160" y="146" class="m ok fx">Cropped: 484 tokens</text>`;
+  },
+
+  3: () => [['2 tests fail', 14], ['build ok', 56], ['1 warning', 98]].map(([s, y], i) => `
+    <text x="14" y="${y + 20}">turn ${i + 1}</text>
+    <g class="lk mv" style="--fx:scaleX(.25);transition-delay:${i * .08}s">
+      <rect class="term" x="56" y="${y}" width="176" height="34" rx="5"/>
+      ${[150, 120, 164, 96].map((w, j) => `<rect class="${j ? 'tdim' : 'red'}" x="64" y="${y + 6 + j * 6}" width="${w}" height="2.6" rx="1.3"/>`).join('')}
+    </g>
+    <g class="fx" style="transition-delay:${.2 + i * .08}s"><rect class="osoft" x="56" y="${y + 8}" width="${s.length * 6 + 18}" height="18" rx="9"/><text x="65" y="${y + 20.5}" class="ok">${s}</text></g>
+    <path class="flow fl swst" d="M236 ${y + 17}H270"/>`).join('') + `
+    <text x="290" y="10" class="m">re-read</text>
+    <rect class="pap2" x="278" y="16" width="24" height="116" rx="5"/>
+    <rect class="swf mv" x="278" y="16" width="24" height="116" rx="5" style="transform-origin:0 100%;--fx:scaleY(.43)"/>
+    <text x="290" y="148" class="m k lk">100%</text><text x="290" y="148" class="m ok fx">43%</text>`,
+
+  4: () => `<rect class="pap2" x="14" y="84" width="292" height="26" rx="6"/>` + [0, 1, 2, 3, 4].map(i => {
+    const x = 30 + i * 56, sx = 16 + i * 52;
+    return `
+    <g class="dimfx"><rect class="cd o" x="${x}" y="10" width="36" height="26" rx="6"/>
+      <path class="o" d="M${x + 14} 15v4M${x + 22} 15v4M${x + 11} 19h14v3a7 7 0 0 1-14 0zM${x + 18} 29v3"/></g>
+    <path class="flow fl dimfx" d="M${x + 18} 38L${sx + 25} 84"/>
+    <rect class="sw mv" x="${sx}" y="86" width="50" height="22" rx="4" style="--fx:translateX(${-43 * i}px) scaleX(.15);transition-delay:${i * .06}s"/>`;
+  }).join('') + `
+    <g class="mv" style="--fx:translateX(-216px);transition-delay:.2s"><rect class="ink" x="280" y="86" width="24" height="22" rx="4"/><text x="292" y="100.5" class="m" style="fill:var(--bg)">you</text></g>
+    <text x="160" y="134" class="m k lk">55K tokens before you type</text><text x="160" y="134" class="m ok fx">8K. The rest is room to work</text>`,
+
+  5: () => `
+    <g class="lk"><rect class="lsoft" x="78" y="10" width="64" height="22" rx="11"/><text x="110" y="24.5" class="m lt">Sonnet</text>
+      <path class="flow fl" d="M146 21H170"/><path class="o" style="stroke:var(--coral)" d="M166 17l5 4-5 4"/>
+      <rect class="lsoft" x="176" y="10" width="64" height="22" rx="11"/><text x="208" y="24.5" class="m lt">Opus</text></g>
+    <g class="fx"><rect class="osoft" x="128" y="10" width="64" height="22" rx="11"/><text x="160" y="24.5" class="m ok">Sonnet</text></g>
+    ${[0, 1, 2, 3, 4, 5, 6, 7].map(i => `<rect class="sw" x="${14 + i * 32}" y="52" width="28" height="40" rx="4" style="transition-delay:${i * .05}s"/>`).join('')}
+    <g class="fx">${[0, 1, 2, 3, 4, 5, 6, 7].map(i => { const cx = 28 + i * 32; return `<path class="o" style="stroke:var(--hum)" d="M${cx - 2.5} 71v-2.5a2.5 2.5 0 0 1 5 0V71"/><rect class="okf" x="${cx - 4}" y="71" width="8" height="6" rx="1.5"/>`; }).join('')}</g>
+    <g class="lk"><rect class="sweep" x="14" y="48" width="32" height="48" rx="5"/></g>
+    <rect class="ink" x="274" y="52" width="32" height="40" rx="4"/><text x="290" y="75.5" class="m" style="fill:var(--bg)">new</text>
+    <path class="ol" d="M14 100v5h252v-5"/>
+    <text x="140" y="122" class="m lt lk">whole chat billed again</text><text x="140" y="122" class="m ok fx">read from cache</text>`,
+
+  6: () => {
+    const top = 'M70 75C105 75 115 40 160 40S215 75 250 75', bot = 'M70 75C105 75 115 125 160 125S215 75 250 75';
+    const packets = (path, cls) => [0, 1, 2, 3, 4].map(i => `<rect class="${cls}" x="-3.5" y="-3.5" width="7" height="7" rx="1.5"><animateMotion dur="2.2s" repeatCount="indefinite" begin="${-i * .44}s" path="${path}"/></rect>`).join('');
+    return `
+    <path class="flow fl lk" d="${top}"/><path class="flow fo fx" d="${bot}"/>
+    <g class="lk">${packets(top, 'red')}</g><g class="fx">${packets(bot, 'okf')}</g>
+    <rect class="cd o" x="14" y="58" width="56" height="34" rx="6"/><text x="42" y="78.5" class="m k">Drive</text>
+    <rect class="cd o" x="250" y="58" width="56" height="34" rx="6"/><text x="278" y="78.5" class="m k">Sheet</text>
+    <g class="dimlk"><rect class="cd o" x="134" y="112" width="52" height="26" rx="6"/><text x="160" y="128.5" class="m k">script</text></g>
+    <path class="flow fd fx" d="M160 110V66"/><text x="166" y="92" class="ok fx">done</text>
+    <circle class="sw mv" cx="160" cy="40" r="24" style="transform-origin:center;--lk:scale(1.12)"/>
+    <text x="160" y="37" class="m k">chat</text>
+    <text x="160" y="50" class="m lt lk">150K</text><text x="160" y="50" class="m ok fx">2K</text>`;
+  },
+
+  7: () => {
+    const T = ['Rename files', 'Summarise', 'Format JSON', 'Tricky bug'], ys = [14, 48, 82, 116];
+    return T.map((_, i) => {
+      const y = ys[i] + 12;
+      return `<path class="flow fl lk" d="M114 ${y}C170 ${y} 180 48 228 48"/>
+      <path class="flow ${i < 3 ? 'fo' : 'fk'} fx" d="M114 ${y}C170 ${y} ${i < 3 ? '190 124 238 124' : '180 48 228 48'}"/>`;
+    }).join('') + T.map((t, i) => `<rect class="cd ${i < 3 ? 'ol' : 'o'}" x="14" y="${ys[i]}" width="100" height="24" rx="6"/><text x="24" y="${ys[i] + 15.5}" class="k">${t}</text>`).join('') + `
+    <circle class="cd o strain" cx="258" cy="48" r="30"/><text x="258" y="46" class="m k">Opus</text><text x="258" y="59" class="m">$4/M</text>
+    <g class="dimlk"><circle class="cd o" cx="258" cy="124" r="20"/><text x="258" y="123" class="m k">Haiku</text><text x="258" y="134" class="m" style="font-size:8px">$0.10</text></g>`;
+  }
 };
 
 const QS = [
@@ -257,16 +451,30 @@ V.scan = () => {
 V.result = () => {
   const r = score(state.answers), t = TAXES[r.top];
   const order = [1, 2, 3, 4, 5, 6, 7].sort((x, y) => r.s[y] - r.s[x] || x - y), max = Math.max(1, ...Object.values(r.s));
+  const suffix = t.n.replace(/^[\d.]+/, '');
   return `
-  <div class="hero">
-    <span class="eyebrow">${r.ahead ? "You're ahead of most" : 'Your biggest leak'}</span>
+  <div class="hit">
+    ${r.ahead
+      ? `<span class="eyebrow okc"><svg class="okmark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>You're ahead of most</span>`
+      : `<span class="eyebrow act"><svg class="drip" viewBox="0 0 10 16" aria-hidden="true"><path d="M5 1C5 1 1 6.5 1 9.5a4 4 0 0 0 8 0C9 6.5 5 1 5 1z"/></svg>Your biggest leak</span>`}
     <h1 class="big">${r.ahead ? 'Watch the cache break tax' : 'The ' + t.name + ' tax'}</h1>
-    <p>${r.ahead ? 'Your setup is lean. Almost everyone still pays this one without noticing.' : t.hook}</p>
+    ${r.ahead ? '<p class="sub">Your setup is lean. Almost everyone still pays this one without noticing.</p>' : ''}
   </div>
-  <div class="stat"><span class="n">${t.n}</span><span class="l">${t.l}</span></div>
-  ${state.answers.limit === 'weekly' ? '<p class="alert">You hit limits every week. This is costing you working hours, not just tokens.</p>' : ''}
-  <details class="all"><summary>See all 7 taxes</summary>
-    <ol class="ledger">${order.map(n => `<li class="${!r.ahead && n === r.top ? 'top' : ''}"><span>${TAXES[n].name}${n === 6 && r.track === 'app' ? ' <em>Code only</em>' : ''}</span><span class="track"><span class="fill" style="width:${r.s[n] / max * 100}%"></span></span></li>`).join('')}</ol>
+  <div class="ill rise" id="ill" style="--d:.15s">
+    <div class="seg" role="group" aria-label="Show"><button type="button" data-st="0" aria-pressed="true">Now</button><button type="button" data-st="1" aria-pressed="false">With the fix</button></div>
+    <svg viewBox="0 0 320 156" aria-hidden="true">${ART[r.top]()}</svg>
+    <p class="cap"><span class="lk">${t.hook}</span><span class="fx">${t.fix}</span></p>
+  </div>
+  <div class="win rise" id="win" style="--d:.3s">
+    <div class="big-n"><span class="n" data-n="${t.n}">${REDUCED ? t.n : '0' + suffix}</span><span class="l">${t.l}</span></div>
+    <div class="bars">
+      <div class="br"><span>Now</span><b><i></i></b><em>${t.from}</em></div>
+      <div class="br"><span>Fixed</span><b><i class="fixd" style="--r:${t.r}%"></i></b><em class="to">${t.to}</em></div>
+    </div>
+  </div>
+  ${state.answers.limit === 'weekly' ? `<p class="alert rise" style="--d:.45s"><svg class="clock" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path class="hand" d="M12 12V7"/><path d="M12 12h3"/></svg><span>Weekly limit hits cost you <b>working hours</b>, not just tokens.</span></p>` : ''}
+  <details class="all rise" style="--d:.55s"><summary>See all 7 taxes</summary>
+    <ol class="ledger">${order.map((n, i) => `<li class="${!r.ahead && n === r.top ? 'top' : ''}" style="--i:${i}"><span>${TAXES[n].name}${n === 6 && r.track === 'app' ? ' <em>Code only</em>' : ''}</span><span class="track"><span class="fill" style="width:${r.s[n] / max * 100}%"></span></span></li>`).join('')}</ol>
   </details>
   <p class="tiny">${t.basis}</p>
   <div class="grow"></div>
@@ -277,8 +485,52 @@ V.result = () => {
   </div>`;
 };
 
+/* ---------- result playback: leak, then fix, then the saving counts up; the picture keeps flipping until tapped ---------- */
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let timers = [];
+const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+const every = (fn, ms) => timers.push(setInterval(fn, ms));
+function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+
+function setFix(on) {
+  const ill = $('#ill'); if (!ill) return;
+  ill.classList.toggle('fix', on);
+  ill.querySelectorAll('[data-st]').forEach(b => b.setAttribute('aria-pressed', String((b.dataset.st === '1') === on)));
+  if (on) reward();
+}
+function reward() {
+  const win = $('#win'); if (!win || win.classList.contains('go')) return;
+  win.classList.add('go');
+  if (REDUCED) return;
+  const n = win.querySelector('.n');
+  countUp(n, 1100, () => { n.classList.add('pop'); sparks(n); });
+}
+function countUp(el, ms, done) {
+  const [, v, suf] = el.dataset.n.match(/^([\d.]+)(.*)$/), dp = (v.split('.')[1] || '').length, t0 = performance.now();
+  const step = now => {
+    const p = Math.min(1, (now - t0) / ms);
+    el.textContent = (+v * (1 - Math.pow(1 - p, 3))).toFixed(dp) + suf;
+    p < 1 ? requestAnimationFrame(step) : done();
+  };
+  requestAnimationFrame(step);
+}
+function sparks(el) {
+  const x = el.offsetLeft + el.offsetWidth / 2, y = el.offsetTop + el.offsetHeight / 2;
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('i'), a = i / 12 * Math.PI * 2 + Math.random() * .4, d = 28 + Math.random() * 24;
+    s.className = 'spark';
+    s.style.cssText = `left:${x}px;top:${y}px;--dx:${(Math.cos(a) * d).toFixed(1)}px;--dy:${(Math.sin(a) * d * .7).toFixed(1)}px;animation-delay:${i * 10}ms`;
+    s.addEventListener('animationend', () => s.remove());
+    el.parentNode.appendChild(s);
+  }
+}
+function playResult() {
+  if (REDUCED) { $('#ill svg').pauseAnimations(); return reward(); }
+  later(() => { setFix(true); every(() => setFix(!$('#ill').classList.contains('fix')), 3400); }, 1600);
+}
+
 /* ---------- navigation ---------- */
-let dir = 1, scanTimer = null;
+let dir = 1;
 const idx = s => ORDER.indexOf(s);
 function go(s, d) {
   if (idx(s) < 0) s = 'intro';
@@ -294,7 +546,7 @@ function prev() {
 }
 function render() {
   const s = state.screen, view = $('#view');
-  clearTimeout(scanTimer);
+  clearTimers();
   view.innerHTML = '<section class="scr' + (dir < 0 ? ' rev' : '') + '">' + V[s]() + '</section>';
   const seg = SEGS.indexOf(s), qn = QS.findIndex(q => q.k === s);
   $('#prog').innerHTML = SEGS.map((_, i) => '<i class="' + (i <= seg || s === 'scan' && i < QS.length ? 'on' : '') + '"></i>').join('');
@@ -302,8 +554,8 @@ function render() {
   $('#count').textContent = qn >= 0 ? (qn + 1) + '/' + QS.length : '';
   $('#back').disabled = s === 'intro' || s === 'scan';
   scrollTo(0, 0);
-  if (s === 'scan') scanTimer = setTimeout(() => go('result', 1), 1900);
-  if (s === 'result') submit();
+  if (s === 'scan') later(() => go('result', 1), 1900);
+  if (s === 'result') { submit(); playResult(); }
 }
 $('#back').addEventListener('click', prev);
 
@@ -325,6 +577,8 @@ document.addEventListener('click', e => {
     }
     return;
   }
+  const st = t.closest('[data-st]');
+  if (st) { clearTimers(); return setFix(st.dataset.st === '1'); }
   if (t.closest('[data-next]')) return next();
   if (t.closest('#restart')) { state = { answers: {}, screen: 'intro', posted: state.posted }; save(); return go('intro', -1); }
 });
