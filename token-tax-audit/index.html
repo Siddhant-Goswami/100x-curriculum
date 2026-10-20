@@ -96,8 +96,6 @@ a.btn{text-decoration:none}
 .split .inp{flex:1;background:var(--bg2);animation-delay:.3s}
 @keyframes grow{from{transform:scaleX(0)}to{transform:none}}
 .keys{display:flex;justify-content:space-between;font:12px var(--mono);color:var(--ink3);margin-top:-8px}
-.pills{display:flex;gap:6px 16px;flex-wrap:wrap;justify-content:center;font:12px var(--mono);color:var(--ink3)}
-.pills span::before{content:"";display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--ink3);margin-right:7px;vertical-align:middle}
 
 /* options: solid cards; selected = ink, not coral */
 .opts{display:flex;flex-direction:column;gap:8px}
@@ -232,7 +230,6 @@ V.intro = () => `
   <p class="tiny">Sample $0.55 Claude Code session, Anthropic docs.</p>
   <div class="grow"></div>
   <div class="cta">
-    <div class="pills"><span>7 taps</span><span>No signup</span><span>Your biggest leak</span></div>
     <button class="btn" data-next>Find my leak</button>
   </div>`;
 
