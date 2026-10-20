@@ -108,11 +108,37 @@ a.btn{text-decoration:none}
 .opt[aria-pressed="true"]{border-color:var(--ink)}
 .opt[aria-pressed="true"]::after{border-color:var(--ink);background:var(--ink) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F4F3EF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12l5 5 9-10'/%3E%3C/svg%3E") center/12px no-repeat}
 
-/* scan */
-.scan{display:flex;flex-direction:column;gap:12px;margin-top:4px}
-.scan div{display:grid;grid-template-columns:1fr 42%;gap:12px;align-items:center;font-size:15px;color:var(--ink2)}
+/* scan: each tax is checked in turn (--d), then stamped leak (coral) or clear (hum green); the headline counts leaks as they land. */
+.scan{display:flex;flex-direction:column;margin-top:4px}
+.scan .row{display:grid;grid-template-columns:22px 1fr 42%;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px;color:var(--ink3);opacity:.45;transition:opacity .3s,color .3s}
+.scan .row:last-child{border-bottom:0}
+.scan .row.on,.scan .row.hit,.scan .row.ok{opacity:1}
+.scan .row.hit{color:var(--ink)}
+.scan .row.ok{color:var(--ink2)}
+.scan .dot{position:relative;width:22px;height:22px;display:grid;place-items:center}
+.scan .dot::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--line2);transition:background .3s,transform .3s}
+.scan .row.on .dot::before{background:var(--ink);animation:pulse .7s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.5);opacity:.5}}
+.scan .row.hit .dot::before{background:var(--coral);transform:scale(1.25)}
+.scan .row.ok .dot::before{background:transparent;width:0;height:0}
+.scan .dot svg{position:absolute;width:14px;height:14px;fill:none;stroke:var(--hum);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s var(--e-out)}
+.scan .row.ok .dot svg{stroke-dashoffset:0}
 .scan b{display:block;height:6px;border-radius:99px;background:var(--bg2);overflow:hidden}
-.scan b::after{content:"";display:block;height:100%;width:var(--w);background:var(--ink3);border-radius:99px;animation:grow .6s var(--e-out) both;animation-delay:var(--d);transform-origin:left}
+.scan b::after{content:"";display:block;height:100%;width:var(--w);background:var(--ink3);border-radius:99px;transform:scaleX(0);transform-origin:left;transition:transform .5s var(--e-out),background .3s}
+.scan .row.hit b::after,.scan .row.ok b::after{transform:none}
+.scan .row.hit b::after{background:var(--coral)}
+.scan .row.ok b::after{background:var(--hum);opacity:.5}
+.scan .row.ok.zero b::after{transform:scaleX(0)}
+.scan .row.hit.top{color:var(--ink);font-weight:500}
+.scan .row.hit.top b::after{background:var(--coral)}
+.scan-h{display:flex;flex-direction:column;gap:6px}
+.scan-h .eyebrow{display:inline-flex;align-items:center;gap:8px}
+.scan-h .eyebrow .drip{opacity:0;transition:opacity .3s}
+.scan-h.found .eyebrow .drip{opacity:1}
+.scan-h .tally{font:500 12px var(--mono);color:var(--ink3);font-variant-numeric:tabular-nums;min-height:18px;transition:color .3s}
+.scan-h .tally b{color:var(--coral-ink)}
+.scan-h h2{transition:opacity .25s}
+.scan-h.found h2{animation:rise .45s var(--e-out)}
 
 /* result: the leak plays as a picture that flips to the fix, then the saving counts up. Coral = leaking, hum green = fixed. */
 .rise{animation:rise .6s var(--e-out) both;animation-delay:var(--d,0s)}
@@ -470,10 +496,37 @@ QS.forEach(q => { V[q.k] = () => qView(q); });
 
 V.scan = () => {
   const r = score(state.answers), max = Math.max(1, ...Object.values(r.s));
+  const tick = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>';
   return `
-  <h2 class="q">Checking 7 hidden taxes&hellip;</h2>
-  <div class="scan">${[1, 2, 3, 4, 5, 6, 7].map((n, i) => `<div><span>${TAXES[n].name}</span><b style="--w:${Math.max(6, r.s[n] / max * 100)}%;--d:${i * .16}s"></b></div>`).join('')}</div>`;
+  <div class="scan-h" id="scanh">
+    <span class="eyebrow act"><svg class="drip" viewBox="0 0 10 16" aria-hidden="true"><path d="M5 1C5 1 1 6.5 1 9.5a4 4 0 0 0 8 0C9 6.5 5 1 5 1z"/></svg>Scanning your setup</span>
+    <h2 class="q" id="scant">Checking 7 hidden taxes&hellip;</h2>
+    <p class="tally" id="tally">0 leaks found</p>
+  </div>
+  <div class="scan">${[1, 2, 3, 4, 5, 6, 7].map(n => `<div class="row" data-tax="${n}"><span class="dot">${tick}</span><span>${TAXES[n].name}</span><b style="--w:${Math.max(6, r.s[n] / max * 100)}%"></b></div>`).join('')}</div>`;
 };
+// Scan playback: 7 rows checked one after another, each stamped leak or clear, the count ticks up, then the headline names the biggest.
+const SCAN_STEP = 260, SCAN_HOLD = 1100;
+function playScan() {
+  const r = score(state.answers);
+  let found = 0;
+  [1, 2, 3, 4, 5, 6, 7].forEach((n, i) => {
+    const row = $(`.row[data-tax="${n}"]`);
+    later(() => row.classList.add('on'), i * SCAN_STEP);
+    later(() => {
+      row.classList.remove('on');
+      const leak = r.s[n] > 0 && !(n === 6 && r.track === 'app');
+      row.classList.add(leak ? 'hit' : 'ok');
+      if (!leak && r.s[n] === 0) row.classList.add('zero');
+      if (leak) { found++; $('#tally').innerHTML = `<b>${found}</b> leak${found === 1 ? '' : 's'} found`; }
+    }, (i + 1) * SCAN_STEP - 60);
+  });
+  later(() => {
+    const h = $('#scanh'); h.classList.add('found');
+    $('#scant').textContent = r.ahead ? 'Lean setup. One tax still bites.' : 'Biggest leak: ' + TAXES[r.top].name;
+    $(`.row[data-tax="${r.top}"]`).classList.add('top');
+  }, 7 * SCAN_STEP + 120);
+}
 
 V.result = () => {
   const r = score(state.answers), t = TAXES[r.top];
@@ -630,7 +683,7 @@ function render() {
   $('#count').textContent = qn >= 0 ? (qn + 1) + '/' + QS.length : '';
   $('#back').disabled = s === 'intro' || s === 'scan';
   scrollTo(0, 0);
-  if (s === 'scan') later(() => go('result', 1), 1900);
+  if (s === 'scan') { if (REDUCED) later(() => go('result', 1), 600); else { playScan(); later(() => go('result', 1), 7 * SCAN_STEP + 120 + SCAN_HOLD); } }
   if (s === 'result') { submit(); playResult(); }
 }
 $('#back').addEventListener('click', prev);
