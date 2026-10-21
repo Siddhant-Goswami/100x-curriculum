@@ -5,33 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Token Tax Audit</title>
 <meta name="description" content="60 seconds: find where your Claude bill is leaking, get one fix now, and see the list of the rest.">
-<meta name="theme-color" content="#F4F3EF" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#171614" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F7F7F7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: story-style, one screen at a time in a 480px phone column, primary action pinned to the bottom (thumb zone).
-   Look: the curriculum design system (c8/docs.css tokens, copied so the page stays standalone). Inter 500 headings, mono for labels and facts,
-   calm paper surfaces, coral only for the one action per screen, hum green for done. Motion is quiet until the result,
+   Look: matched to 100xengineers.com, where this page is embedded (Space Grotesk + JetBrains Mono, #F7F7F7 surface, #FE6242 coral, light only).
+   Mono for labels and facts, neutral grey surfaces, coral only for the one action per screen, hum green for done. Motion is quiet until the result,
    which plays: the leak is drawn, flips to the fix, and the saving counts up. */
 :root{
-  --bg:#F4F3EF;--bg2:#EDEBE5;--card:#FFFFFF;--ink:#1B1B1B;--ink2:#5A5A5A;--ink3:#8A8A8A;--line:#E2E0DA;--line2:#D4D1C9;
-  --coral:#F2603C;--coral-soft:#FDE9E2;--coral-ink:#B8431F;
-  --hum:#1E9B57;--hum-soft:#E1F4E8;--hum-ink:#167A44;
-  --code-bg:#1B1B1B;--code-ink:#E9E7E1;--code-dim:#8A8A8A;
-  --sans:'Inter',-apple-system,'Segoe UI',system-ui,sans-serif;--mono:'JetBrains Mono','SFMono-Regular',Menlo,monospace;
+  --bg:#F7F7F7;--bg2:#EFEFEF;--card:#FFFFFF;--ink:#1E1E1E;--ink2:#626262;--ink3:#8C8C8C;--line:#E7E7E7;--line2:#D9D9D9;
+  --coral:#FE6242;--coral-soft:#FFE1DB;--coral-ink:#D2432A;
+  --hum:#43B907;--hum-soft:#E9F7DF;--hum-ink:#2F8A05;
+  --code-bg:#1E1E1E;--code-ink:#EFEFEF;--code-dim:#8C8C8C;
+  --sans:'Space Grotesk',-apple-system,'Segoe UI',system-ui,sans-serif;--mono:'JetBrains Mono','SFMono-Regular',Menlo,monospace;
   --e-out:cubic-bezier(.16,1,.3,1);
   --float:0 1px 2px rgba(0,0,0,.06),0 6px 20px rgba(0,0,0,.08);
   --r:12px;
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#171614;--bg2:#1F1E1B;--card:#232220;--ink:#EDEBE5;--ink2:#B5B2AA;--ink3:#7E7B74;--line:#34322D;--line2:#45423C;
-  --coral-soft:#3A241D;--coral-ink:#F49A80;--hum-soft:#17301F;--hum-ink:#6FCB92;
-  --code-bg:#0F0F0E;--code-ink:#E9E7E1;--float:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.4);
-  color-scheme:dark;
-}}
 :root[data-theme="dark"]{
   --bg:#171614;--bg2:#1F1E1B;--card:#232220;--ink:#EDEBE5;--ink2:#B5B2AA;--ink3:#7E7B74;--line:#34322D;--line2:#45423C;
   --coral-soft:#3A241D;--coral-ink:#F49A80;--hum-soft:#17301F;--hum-ink:#6FCB92;
