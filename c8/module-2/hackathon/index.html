@@ -268,6 +268,28 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 #pick p,#pick button i{font-family:var(--mono);font-size:13.5px}
 #pick button{border-radius:0;font:700 16px var(--disp)}
 
+
+/* with no track picked, the track chip has nothing to show */
+html:not([data-hk]) .fact[href="/#HK"]{display:none}
+/* winners: three scratch cards; the rank shows, the name is under a scratch layer */
+.wins{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;list-style:none;padding:0;margin:0}
+.win{display:flex;flex-direction:column;gap:10px}
+.win .rk{display:flex;align-items:baseline;justify-content:space-between;font:700 30px/1 var(--disp);letter-spacing:-.03em;text-transform:uppercase;color:var(--coral-ink)}
+.win .rk small{font:500 11px var(--mono);letter-spacing:.08em;color:var(--ink3)}
+.sc{position:relative;flex:1;min-height:250px;background:var(--bg2);overflow:hidden;touch-action:none}
+.sc .in{padding:28px 22px;display:flex;flex-direction:column;gap:12px;height:100%;box-sizing:border-box}
+.sc h3{font:700 26px/1.05 var(--disp);letter-spacing:-.03em;text-transform:uppercase;margin:0}
+.sc .pb{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--coral-ink)}
+.sc p{margin:0;font:400 13.5px/1.6 var(--mono);color:var(--ink2)}
+.sc a{margin-top:auto;font:600 14px var(--disp)}
+.sc canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;transition:opacity .5s var(--e-out)}
+.sc.open{touch-action:auto}
+.sc.open canvas{opacity:0;pointer-events:none}
+.win .rv{align-self:flex-start;border:0;background:none;padding:0;font:500 12px var(--mono);color:var(--ink3);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.win .rv[hidden]{display:none}
+.win.w1 .sc{outline:2px solid var(--coral);outline-offset:-2px}
+@media (max-width:860px){.wins{grid-template-columns:1fr}.sc{min-height:220px}}
+@media (prefers-reduced-motion:reduce){.sc canvas{transition:none}}
 @media (max-width:860px){
   .sec{margin:0 -16px;padding:56px 16px;border-left:0;border-right:0}
   #submit{padding:0}
@@ -307,7 +329,7 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
 <body data-page="hackathon">
 <header class="top"><div class="in">
   <a class="brand" href="/#HK">100x<b>·</b><span>C8 Module 2</span></a>
-  <nav aria-label="Hackathon sections"><a href="#problems">Problems</a><a href="#moves">Moves</a><a href="#timeline">Timeline</a><a href="#checkins">Check-ins</a><a href="#rules">Rules</a><a href="#submit">Submit</a></nav>
+  <nav aria-label="Hackathon sections"><a href="#winners">Winners</a><a href="#problems">Problems</a><a href="#moves">Moves</a><a href="#timeline">Timeline</a><a href="#checkins">Check-ins</a><a href="#rules">Rules</a><a href="#submit">Submit</a></nav>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 
@@ -344,6 +366,22 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
       <div class="face"><p class="lab" id="clab"></p><div class="num" id="cnum"></div><p class="cap" id="ccap"></p></div>
     </div>
   </div>
+</section>
+
+<section class="sec" id="winners">
+  <h2>The <span>winners</span></h2>
+  <p class="sub">38 apps shipped in 72 hours. Scratch each card to reveal who placed.</p>
+  <ol class="wins">
+    <li class="win w3"><div class="rk">3rd<small>Place</small></div>
+      <div class="sc brk"><div class="in"><span class="pb">BillShield · No-code</span><h3>Sunil Abinandan</h3><p>Masked a real bill, kept the maths out of the AI, and added a guard that rejects any number the AI makes up.</p><a href="https://bill-shield-app.lovable.app" target="_blank" rel="noopener">Open the app</a></div><canvas aria-hidden="true"></canvas></div>
+      <button class="rv" type="button">Reveal without scratching</button></li>
+    <li class="win w2"><div class="rk">2nd<small>Place</small></div>
+      <div class="sc brk"><div class="in"><span class="pb">Concept Check · Code</span><h3>Shobhit Malekar</h3><p>Code, not the AI, judges each key point. A wrong answer leads straight back to the gap, and a stranger tested it honestly.</p><a href="https://concept-check.onrender.com" target="_blank" rel="noopener">Open the app</a></div><canvas aria-hidden="true"></canvas></div>
+      <button class="rv" type="button">Reveal without scratching</button></li>
+    <li class="win w1"><div class="rk">1st<small>Place</small></div>
+      <div class="sc brk"><div class="in"><span class="pb">BillShield · Code</span><h3>Prateek Wahi</h3><p>Checked real bills by hand first, let code count every rupee, and put the app in front of two strangers. Six of six check-ins.</p><a href="https://c8-hackathon-killbill2-0.vercel.app/" target="_blank" rel="noopener">Open the app</a></div><canvas aria-hidden="true"></canvas></div>
+      <button class="rv" type="button">Reveal without scratching</button></li>
+  </ol>
 </section>
 
 <section class="sec" id="problems">
@@ -492,7 +530,8 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   dlg.addEventListener('cancel',function(e){e.preventDefault()});
   dlg.addEventListener('close',function(){if(!root.hasAttribute('data-hk'))setTimeout(ask,0)});
   dlg.addEventListener('click',function(e){var b=e.target.closest('[data-pick]');if(!b)return;var t=b.dataset.pick;try{localStorage.setItem('c8m2-track',t)}catch(x){}apply(t);dlg.close?dlg.close():dlg.removeAttribute('open')});
-  if(!root.hasAttribute('data-hk')) ask();
+  /* after the hackathon ends the page is shared for results, so it stops insisting on a track */
+  if(!root.hasAttribute('data-hk') && Date.now()<Date.parse('2026-10-20T21:00:00+05:30')) ask();
   /* a track changed on the map, in another tab or before coming back, updates this page */
   addEventListener('storage',function(e){if(e.key==='c8m2-track')apply(e.newValue)});
   addEventListener('pageshow',function(){apply(read())});
@@ -584,6 +623,48 @@ html:not([data-hk="code"]) .t-code,html:not([data-hk="nocode"]) .t-nocode{displa
   /* Green and Yellow templates */
   var tabs=$$('.tabs button'), tpls=$$('.tpl');
   tabs.forEach(function(b){b.addEventListener('click',function(){tabs.forEach(function(x){x.setAttribute('aria-selected',x===b)});tpls.forEach(function(t){t.hidden=t.dataset.tpl!==b.dataset.tpl});var t=b.dataset.tpl;document.querySelector('.who span').textContent=t==='e'?'Sun, 3:04 PM':t==='g'?'Sun, 9:02 AM':'Sun, 9:05 AM';document.getElementById('attn').textContent=t==='e'?'bill-notes.jpg':'proof.jpg'})});
+})();
+</script>
+<script>
+/* scratch cards: drag to clear the layer; past half cleared, or on the button, the card opens and stays open */
+(function(){
+  var KEY='c8hk-won';
+  var seen={};try{seen=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(seen))}catch(e){}}
+  document.querySelectorAll('.win').forEach(function(w,i){
+    var sc=w.querySelector('.sc'),cv=sc.querySelector('canvas'),bt=w.querySelector('.rv'),id=w.className.match(/w\d/)[0];
+    var ctx=cv.getContext('2d'),dpr=Math.min(2,window.devicePixelRatio||1),down=false,last=null,moves=0;
+    function open(){sc.classList.add('open');bt.hidden=true;seen[id]=1;save()}
+    if(seen[id]){open();return}
+    function paint(){
+      var r=sc.getBoundingClientRect();cv.width=r.width*dpr;cv.height=r.height*dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);ctx.globalCompositeOperation='source-over';
+      ctx.fillStyle='#141210';ctx.fillRect(0,0,r.width,r.height);
+      ctx.strokeStyle='rgba(242,96,60,.28)';ctx.lineWidth=1.5;
+      for(var x=-r.height;x<r.width;x+=10){ctx.beginPath();ctx.moveTo(x,r.height);ctx.lineTo(x+r.height,0);ctx.stroke()}
+      ctx.fillStyle='#F2603C';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.font='700 22px "Space Grotesk", sans-serif';ctx.fillText('SCRATCH HERE',r.width/2,r.height/2-8);
+      ctx.fillStyle='#A39C94';ctx.font='400 12px "JetBrains Mono", monospace';ctx.fillText('drag to reveal',r.width/2,r.height/2+18);
+    }
+    function pt(e){var r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+    function scratch(p){
+      ctx.globalCompositeOperation='destination-out';ctx.strokeStyle='#000';ctx.lineCap='round';ctx.lineWidth=44;
+      ctx.beginPath();ctx.moveTo((last||p).x,(last||p).y);ctx.lineTo(p.x+.1,p.y);ctx.stroke();last=p;
+      if(++moves%12===0)check();
+    }
+    function check(){
+      var d=ctx.getImageData(0,0,cv.width,cv.height).data,n=0,t=0;
+      for(var k=3;k<d.length;k+=64){t++;if(d[k]===0)n++}
+      if(n/t>.5)open();
+    }
+    cv.addEventListener('pointerdown',function(e){down=true;last=null;cv.setPointerCapture(e.pointerId);scratch(pt(e))});
+    cv.addEventListener('pointermove',function(e){if(down)scratch(pt(e))});
+    function up(){if(down){down=false;check()}}
+    cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
+    bt.addEventListener('click',open);
+    (document.fonts&&document.fonts.ready||Promise.resolve()).then(paint);paint();
+    window.addEventListener('resize',function(){if(!sc.classList.contains('open'))paint()});
+  });
 })();
 </script>
 <footer><div class="wrap"><span>100xEngineers, Cohort 8, Module 2</span><a href="/#HK">Curriculum map</a></div></footer>
