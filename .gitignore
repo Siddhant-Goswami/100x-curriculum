@@ -1,4 +1,3 @@
 .DS_Store
 .vercel
 .env*
-_plan/analytics/events.jsonl

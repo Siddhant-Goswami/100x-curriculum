@@ -167,7 +167,7 @@ details.words summary{cursor:pointer}
 .tw3 small{display:block;font-size:14px;color:var(--ink2)}
 .tw3 input:checked+span>b{text-decoration:line-through;text-decoration-color:var(--ink3)}
 </style>
-<script src="/c8/analytics.js" defer></script>
+<script src="/analytics.js" defer></script>
 </head>
 <body data-page="delegation-framework" class="read">
 <header class="top"><div class="in">
@@ -587,7 +587,7 @@ details.words summary{cursor:pointer}
       else{d.tasks.forEach(function(r,i){var t=todo[i],was=t.b;t.b=t.jb=r.bucket;t.reason=r.reason;t.ask=r.ask;t.ans={};t.sig=r.sig;t.undo=r.undo;t.u=null;t.src='jev';if(was!==t.b)t.ver=false});
         var un=todo.filter(function(t){return t.ask.length}).length;
         $('#sortMsg').textContent='Sorted by '+d.model+'. See step 2.'+(un?' '+plural(un,'task needs','tasks need')+' your answer.':'')}
-      window.track&&track('sort',d.fallback?'fallback':['det','prob','hum'].map(function(k){return k+':'+todo.filter(function(t){return t.b===k}).length}).join(' '));
+      window.posthog&&posthog.capture('delegation_sort',{value:d.fallback?'fallback':['det','prob','hum'].map(function(k){return k+':'+todo.filter(function(t){return t.b===k}).length}).join(' ')});
       changed();
       if(week.length&&!un0())setTimeout(function(){$('#verify').scrollIntoView({behavior:'smooth'})},80);
     });
@@ -627,7 +627,7 @@ details.words summary{cursor:pointer}
         if(r.bucket!==t.b){t.chk=r.bucket==='det'?chkText(t):(t.chk||'').trim();t.b=r.bucket}
         t.ver=r.verified;t.note=r.note});
       var ok=todo.filter(function(t){return t.ver}).length;$('#ckMsg').textContent=ok+' of '+todo.length+' passed.';
-      window.track&&track('verify',d.fallback?'fallback':ok+'/'+todo.length);
+      window.posthog&&posthog.capture('delegation_verify',{value:d.fallback?'fallback':ok+'/'+todo.length});
       changed();
     });
   });

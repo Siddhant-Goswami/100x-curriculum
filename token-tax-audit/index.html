@@ -652,7 +652,7 @@ function go(s, d) {
   if (idx(s) > idx('limit') && answered(state.answers) < 6) s = ORDER[1 + REQUIRED.findIndex(k => !(k === 'feeds' ? (state.answers.feeds || []).length : state.answers[k]))];
   dir = d ?? (idx(s) >= idx(state.screen) ? 1 : -1);
   state.screen = s; save(); render();
-  if (window.track) track('screen', s);  // /c8/analytics.js: which screen people reach, for drop-off
+  if (window.posthog) posthog.capture('audit_screen', { screen: s });  // /analytics.js: which screen people reach, for drop-off
 }
 function next() { go(ORDER[idx(state.screen) + 1], 1); }
 function prev() {
@@ -745,6 +745,6 @@ load();
 if (idx(state.screen) < 0) state.screen = answered(state.answers) === 6 ? 'result' : 'intro';
 dir = 1; render();
 </script>
-<script src="/c8/analytics.js" defer></script>
+<script src="/analytics.js" defer></script>
 </body>
 </html>
