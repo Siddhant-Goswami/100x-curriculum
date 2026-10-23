@@ -284,6 +284,9 @@ const SHEET_URL = 'https://script.google.com/macros/s/AKfycbyrgxfEqS89pybB1-jgoo
 const WEBINAR = { date: 'Sun 25 Oct', time: '3 PM IST', mins: 90, joinUrl: 'https://class.100xengineers.com/kwPHBy' };
 
 const STORE = 'token-tax-audit:v3';
+// 'website' = the box on the 100xengineers.com homepage (an iframe); 'link' = the page opened on its own.
+const OPENED_AS = window.self !== window.top ? 'website' : 'link';
+const UTM = ['utm_source', 'utm_medium', 'utm_campaign'].map(k => new URLSearchParams(location.search).get(k) || '').join('/').replace(/\/+$/, '');
 const $ = s => document.querySelector(s);
 
 // hook = the leak, fix = the same picture once fixed; from/to/r = the "Now" and "Fixed" bars (r is the fixed share, in %).
@@ -411,7 +414,7 @@ const ART = {
 };
 
 const QS = [
-  { k: 'where', q: 'Where do you use Claude most?', opts: [['app', 'Claude app', 'web, desktop or mobile'], ['code', 'Claude Code'], ['both', 'Both'], ['api', 'API or my own agents']] },
+  { k: 'where', q: 'Where do you use Claude most?', opts: [['app', 'Claude app', 'web, desktop or mobile'], ['code', 'Claude Code'], ['both', 'Both'], ['api', 'API or my own agents'], ['other', 'Not Claude yet', 'ChatGPT, Gemini or others']] },
   { k: 'plan', q: 'Your plan?', opts: [['free', 'Free'], ['pro', 'Pro'], ['max', 'Max'], ['team', 'Team or Enterprise'], ['api', 'API']] },
   { k: 'feeds', q: 'What do you feed it?', hint: 'Pick all that apply', multi: true, opts: [['pdf', 'PDFs and docs'], ['img', 'Screenshots'], ['web', 'Web pages or search'], ['logs', 'Logs or test output'], ['sheet', 'Spreadsheets or JSON']] },
   { k: 'conns', q: 'How many connectors or MCP servers are on?', hint: 'Settings › Connectors', opts: [['0', 'None'], ['1-2', '1 or 2'], ['3-5', '3 to 5'], ['5+', 'More than 5'], ['unsure', 'Not sure']] },
@@ -430,7 +433,7 @@ function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } ca
 
 /* ---------- scoring ---------- */
 const REQUIRED = ['where', 'plan', 'feeds', 'conns', 'switch', 'model'];
-function trackOf(a) { return a.where === 'app' ? 'app' : 'code'; }
+function trackOf(a) { return a.where === 'app' || a.where === 'other' ? 'app' : 'code'; }  // 'other' = not on Claude yet, closest to the App track
 function answered(a) { return REQUIRED.filter(k => k === 'feeds' ? a.feeds && a.feeds.length : a[k]).length; }
 function score(a) {
   const s = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
@@ -730,7 +733,8 @@ function fields(a, r) {
     scores: [1, 2, 3, 4, 5, 6, 7].map(n => n + ':' + r.s[n]).join(','),
     homework: '', before: '', after: '', note: '',
     where: a.where, feeds: (a.feeds || []).join(','), conns: a.conns,
-    switch: a.switch, model: a.model, limit: a.limit || ''
+    switch: a.switch, model: a.model, limit: a.limit || '',
+    source: OPENED_AS, utm: UTM
   };
 }
 function submit() {
@@ -739,6 +743,17 @@ function submit() {
   if (!SHEET_URL) { console.warn('Token Tax Audit: SHEET_URL not set yet, nothing was sent.'); return; }
   post(JSON.stringify(fields(a, r))).then(() => { state.posted = key; save(); }, () => {});
 }
+
+/* ---------- seen: on the homepage the box loads before anyone scrolls to it, so count when half of it is on screen ---------- */
+addEventListener('load', () => {  // after /analytics.js, so window.posthog exists
+  if (!window.posthog || !window.IntersectionObserver) return;
+  const io = new IntersectionObserver(es => {
+    if (!es.some(e => e.isIntersecting)) return;
+    io.disconnect();
+    posthog.capture('audit_seen', { screen: state.screen });
+  }, { threshold: 0.5 });
+  io.observe(document.body);
+});
 
 /* ---------- boot ---------- */
 load();

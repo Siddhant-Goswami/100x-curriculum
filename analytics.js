@@ -4,6 +4,7 @@
    PostHog records page views, page leaves with scroll depth, clicks (autocapture) and session replays.
    Replays mask everything typed. Areas marked [data-nolabel] show a learner's own tasks, so they get
    the ph-no-capture class: no click text from them, and replays show a blank box in their place.
+   Every event also carries opened_as ('website' inside an iframe on another site, 'link' on its own).
    Custom events: window.posthog && posthog.capture(name, props). Skipped on localhost. */
 (function () {
   if (/^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname) || location.protocol === 'file:') return;
@@ -22,7 +23,8 @@
     defaults: '2025-05-24',
     person_profiles: 'identified_only',
     session_recording: { maskAllInputs: true },
-    loaded: function (ph) { ph.register({ site: project.site }); }
+    // opened_as: 'website' when the page sits in an iframe on another site (the 100xengineers.com homepage), 'link' when opened on its own
+    loaded: function (ph) { ph.register({ site: project.site, opened_as: window.self !== window.top ? 'website' : 'link' }); }
   });
 
   function hide() { [].forEach.call(document.querySelectorAll('[data-nolabel]'), function (el) { el.classList.add('ph-no-capture'); }); }
