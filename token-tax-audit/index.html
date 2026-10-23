@@ -258,6 +258,11 @@ a.btn{text-decoration:none}
 .uc textarea,.uc input{width:100%;font:16px/1.45 var(--sans);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;resize:none}
 .uc textarea::placeholder,.uc input::placeholder{color:var(--ink3)}
 .uc textarea:focus,.uc input:focus{outline:0;border-color:var(--ink)}
+.uc .picks{display:flex;flex-wrap:wrap;gap:6px}
+.uc .picks button{border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:99px;padding:7px 12px;font:14px/1.3 var(--sans);cursor:pointer}
+.uc .picks button[aria-pressed="true"]{border-color:var(--ink);color:var(--ink)}
+.uc .err{margin:0;font-size:14px;color:var(--ink);font-weight:600}
+.uc .err:empty{display:none}
 .uc .ok{display:flex;align-items:center;gap:10px;background:var(--hum-soft);color:var(--hum-ink);border-radius:10px;padding:13px 14px;font-size:15px;line-height:1.4}
 .uc .ok b{color:inherit}
 .uc .ok svg{flex:none;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
@@ -594,13 +599,17 @@ function useCase() {
   if (u.sent) return `
   <div class="uc rise" style="--d:.9s"><p class="ok">${tick}<span><b>You're in the running.</b> We pick the 10 before ${WEBINAR.date} and reply by email.</span></p></div>`;
   return `
-  <form class="uc rise" id="uc" style="--d:.9s">
-    <label for="uctext"><b>Your use case</b>What do you use Claude for? One line is enough.</label>
+  <form class="uc rise" id="uc" style="--d:.9s" novalidate>
+    <label for="uctext"><b>Your use case</b>What do you use Claude for? Tap one or write your own.</label>
+    <div class="picks">${((state.answers.feeds || []).length ? state.answers.feeds : Object.keys(PICKS)).map(k => `<button type="button" data-pick="${k}" aria-pressed="${(u.text || '').split('. ').includes(PICKS[k])}">${PICKS[k]}</button>`).join('')}</div>
     <textarea id="uctext" rows="3" maxlength="500" placeholder="e.g. I summarise 40-page contracts every week in Claude Code" required>${esc(u.text || '')}</textarea>
     <input type="email" id="ucmail" placeholder="Email, so the plan reaches you" autocomplete="email" value="${esc(u.email || '')}" required>
+    <p class="err" id="ucerr" role="alert"></p>
     <button class="btn ghost" type="submit">Put me up for the 10</button>
   </form>`;
 }
+// One-tap starters for the use-case box, from what they said they feed Claude.
+const PICKS = { pdf: 'Summarising long PDFs and docs', img: 'Reading screenshots', web: 'Research across web pages', logs: 'Debugging from logs and test output', sheet: 'Working with spreadsheets or JSON' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* ---------- result playback: leak, then fix, then the saving counts up; the picture keeps flipping until tapped ---------- */
@@ -699,6 +708,16 @@ document.addEventListener('click', e => {
   const st = t.closest('[data-st]');
   if (st) { clearTimers(); return setFix(st.dataset.st === '1'); }
   if (t.closest('[data-next]')) return next();
+  const pick = t.closest('[data-pick]');
+  if (pick) {  // picked starters fill the box; anything typed by hand stays
+    pick.setAttribute('aria-pressed', pick.getAttribute('aria-pressed') !== 'true');
+    const box = $('#uctext'), all = Object.values(PICKS);
+    const typed = box.value.split('. ').filter(x => x && !all.includes(x));
+    box.value = [...[...document.querySelectorAll('[data-pick][aria-pressed="true"]')].map(b => PICKS[b.dataset.pick]), ...typed].join('. ');
+    $('#ucerr').textContent = '';
+    state.usecase = { text: box.value, email: $('#ucmail').value }; save();
+    return;
+  }
   if (t.closest('#restart')) { state = { answers: {}, screen: 'intro', posted: state.posted, usecase: state.usecase }; save(); return go('intro', -1); }
 });
 
@@ -707,7 +726,15 @@ document.addEventListener('submit', e => {
   const f = e.target.closest('#uc'); if (!f) return;
   e.preventDefault();
   const text = $('#uctext').value.trim(), email = $('#ucmail').value.trim();
-  if (!text || !email) return;
+  // Say what's missing on the page: the browser's own "required" bubble often doesn't show inside the homepage box.
+  const miss = !text ? ['uctext', 'Tap a use case above or write one line.'] : !email ? ['ucmail', 'Add your email so the plan reaches you.']
+    : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? ['ucmail', 'That email looks off. Check it once.'] : null;
+  if (miss) {
+    $('#ucerr').textContent = miss[1]; $('#' + miss[0]).focus();
+    if (window.posthog) posthog.capture('usecase_blocked', { missing: miss[0] === 'uctext' ? 'text' : email ? 'bad_email' : 'email' });
+    return;
+  }
+  if (window.posthog) posthog.capture('usecase_sent');
   state.usecase = { text, email, sent: true }; save();
   const btn = f.querySelector('button'); btn.disabled = true; btn.textContent = 'Sending';
   const r = score(state.answers);
