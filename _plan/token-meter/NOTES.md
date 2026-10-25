@@ -5,8 +5,9 @@ Spec: "Token Meter one-pager spec.md" (25 Oct 2026). Live route: /token-meter (n
 ## Where things are
 - token-meter/index.html, meter.css, meter.js: modules 1 to 6, routing, result card
 - token-meter/import.js: Your sessions. B = Claude app export zip (JSZip 3.10.1 from cdnjs), A = token-meter.json
-- token-meter/prices.json: the one price file. The page and the CLI both read it
-- token-meter/cli/: the `npx token-meter` package (no dependencies). `npm publish` from that folder; prepack copies ../prices.json
+- token-meter/prices.json: the page's price file. The CLI repo has a copy; keep them the same
+- CLI: its own repo, github.com/Siddhant-Goswami/token-meter (local: ~/projects/100x/token-meter), published to npm as `token-meter`.
+  It carries its own copy of prices.json: when prices change, update both, bump the version and `npm publish`
 - "Count exactly" (modules 3, 4): bring your own key. The visitor pastes their Anthropic API key; the browser calls countTokens on
   api.anthropic.com directly with the official SDK (jsDelivr ESM, @anthropic-ai/sdk 0.133.0, dangerouslyAllowBrowser). No server route, no key of ours.
   Key kept in memory, or sessionStorage if they tick the box. A Claude subscription can't be connected: Anthropic has no sign-in for third-party apps.
@@ -31,4 +32,3 @@ Spec: "Token Meter one-pager spec.md" (25 Oct 2026). Live route: /token-meter (n
 - [x] Claude Code JSONL fields: checked 25 Oct. usage has cache_creation.ephemeral_5m/1h; images are base64 blocks in user content and inside tool_result
 - [ ] Launch date, and CTA target (footer link points to 100xengineers.com for now)
 - [ ] Check chars ÷ 3.5 against 20 count_tokens results before launch
-- [ ] Publish the CLI to npm as `token-meter` (name free on 25 Oct)
