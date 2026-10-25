@@ -1,6 +1,6 @@
 /* Token Meter. Look: the webinar deck (Space Grotesk headings, DM Sans body, JetBrains Mono numbers) on the 100x palette
    used by the Token Tax Audit: #F7F7F7 surface, coral #FE6242 for the one action, hum green for savings.
-   Two colours carry the lesson on every module: grey for old history Claude re-reads, coral for the new words.
+   Two colours carry the lesson on every module: grey for old history the AI re-reads, coral for the new words.
    The four cost categories keep their fixed colours inside "Show the maths".
    Under 1000px: one column, phone first. From 1000px: two panes (controls left, picture and big number right) sized to be read off a projector. */
 :root{
@@ -40,7 +40,7 @@ button{cursor:pointer}
 .price-on{font:500 13px var(--sans);color:var(--ink3);display:flex;align-items:center;gap:4px}
 .price-on::before{content:"·";margin-right:8px;color:var(--line2)}
 .price-on select{font:500 13px var(--mono);padding:2px 18px 2px 2px;border:0;border-bottom:1px solid var(--line2);border-radius:0;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238C8C8C' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 2px center;color:var(--ink);-webkit-appearance:none;appearance:none;cursor:pointer}
-@media (max-width:420px){.price-on span{display:none}}
+@media (max-width:420px){.price-on span{display:none}.price-on::before{margin-right:2px}.top{gap:8px}.price-on{min-width:0}.price-on select{min-width:0;max-width:30vw;text-overflow:ellipsis}}
 
 .steps{display:flex;gap:4px 18px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 14px;border-bottom:1px solid var(--line)}
 .steps::-webkit-scrollbar{display:none}
@@ -268,8 +268,20 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
 .mcard .meter i{display:block;height:100%;background:var(--coral)}
 .mcard.cheap .meter i{background:var(--hum)}
 
+/* pick your AI: three big cards before module 1 */
+.pcards{display:grid;grid-template-columns:1fr;gap:10px}
+@media (min-width:620px){.pcards{grid-template-columns:repeat(3,1fr)}}
+.pcard{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;min-height:44px;transition:border-color .15s,box-shadow .15s}
+.pcard:hover{border-color:var(--ink3)}
+.pcard[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.pcard b{font:600 26px var(--head);letter-spacing:-.03em}
+.pcard span{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)}
+.pcard small{margin-top:8px;font:13px/1.5 var(--mono);color:var(--ink2)}
+.price-on select+select{margin-left:4px}
+
 /* your sessions */
 .paths{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.paths.one{grid-template-columns:1fr}
 @media (max-width:620px){.paths{grid-template-columns:1fr}}
 .path{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px}
 .path ol{margin:0;padding-left:20px;font-size:14px;color:var(--ink2);display:flex;flex-direction:column;gap:4px}
@@ -342,6 +354,9 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
   .stage .sum{font-size:19px}
   .sum .n{font-size:56px}
   .mod.you{grid-template-columns:440px minmax(0,1fr)}
+  .mod.start{display:flex;max-width:900px;margin:0 auto;width:100%;padding-top:48px}
+  .start h1{font-size:44px}
+  .pcard{padding:24px}
   .mod .l,.mod .r{gap:14px}
   .mod .r{position:sticky;top:8px}
   h1{font-size:40px}

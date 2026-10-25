@@ -2,9 +2,11 @@
    Every price comes from prices.json. The big number on each module carries a basis tag (docs, calc, est).
    Files the user loads are read in this tab and never sent anywhere. The only network calls are prices.json,
    today's USD to INR rate from open.er-api.com, JSZip from cdnjs when a zip is dropped, PostHog events (names and small numbers only, never content), and
-   the visitor's own Anthropic key, straight to api.anthropic.com, when they press "Count exactly".
-   Teaching model: two colours everywhere. Grey is old history Claude stores and re-reads (cache write + cache read);
-   coral is the new words (your message + Claude's answer). The four-way split lives under "Show the maths". */
+   the visitor's own API key, straight to the chosen provider (Anthropic, OpenAI or Google), when they press "Count exactly".
+   The visitor picks their AI first (Claude, ChatGPT or Gemini). AI is that provider's entry in prices.json: its models, its cache rules,
+   its image rule and how it counts tokens. Every module reads it, so no module assumes one provider.
+   Teaching model: two colours everywhere. Grey is old history the AI stores and re-reads (cache write + cache read);
+   coral is the new words (your message + the AI's answer). The four-way split lives under "Show the maths". */
 (function () {
   'use strict';
   const $ = (s, r) => (r || document).querySelector(s);
@@ -24,17 +26,22 @@
   const est = s => Math.ceil(s.length / 3.5); /* estimator; check against 20 endpoint counts before launch */
   const WORD = 4 / 3; /* tokens per English word */
   const KEYS = ['read', 'write', 'output', 'input'];
-  const KLABEL = { read: 'Cache read: re-reading history', write: 'Cache write: storing new turns', output: "Output: Claude's answers", input: 'New input: your messages' };
+  const KLABEL = { read: 'Cache read: re-reading history', write: 'Cache write: storing new turns', output: "Output: the answers", input: 'New input: your messages' };
   const OLD = t => t.read + t.write, NEW = t => t.input + t.output;
   function track(name, props) { try { window.posthog && window.posthog.capture(name, props || {}); } catch (e) {} }
   const cue = (good, text) => `<span class="cue${good ? ' good' : ''}">${text}</span>`;
 
-  let PR, model = 'sonnet';
-  /* Haiku 5.5 charges more for prompts over 100K tokens; the prompt length includes cache reads and writes */
+  let PR, AI, prov = 'anthropic', model = 'sonnet';
+  /* a missing cache_write means storing costs the normal input price (Gemini); filled in once at load so the maths needn't ask */
+  function fill(p) { if (p.cache_write == null) p.cache_write = p.input; if (p.cache_write_1h == null) p.cache_write_1h = p.cache_write; return p; }
+  /* the price in force today: an announced change applies from its date. Some models charge more past a prompt size
+     (Haiku 5.5 over 100K, OpenAI over 272K, Gemini Pro over 200K); the prompt length includes cache reads and writes */
   function price(key, prompt) {
-    const m = PR.models[key];
+    let m = AI.models[key];
+    if (m.next && Date.now() >= Date.parse(m.next.from)) m = Object.assign({}, m, m.next);
     return m.long_prompt && prompt > m.long_prompt.over_tokens ? Object.assign({ name: m.name }, m.long_prompt) : m;
   }
+  const modelName = id => { const k = Object.keys(AI.models).find(k => k === id || AI.models[k].id === id); return k ? AI.models[k].name : id; };
   const done = new Set(), opened = new Set();
   function completed(mod) { if (!done.has(mod)) { done.add(mod); track('module_completed', { module: mod }); markSteps(); } }
 
@@ -82,22 +89,22 @@
   /* shrink cuts Claude's answer to that share of its words, the way module 2 shortens every answer */
   function bubbleHTML(i, hot, shrink = 0) {
     const [u, c] = SAMPLE[i % SAMPLE.length], w = c.replace(/…$/, '').split(' '), k = Math.max(2, Math.ceil(w.length * (1 - shrink)));
-    return `<div class="turn${hot ? ' hot' : ''}"><p class="b you"><b>You</b>${esc(u)}</p><p class="b cl"><b>Claude</b>${esc(k < w.length ? w.slice(0, k).join(' ').replace(/[,.:]$/, '') + '.' : c)}</p></div>`;
+    return `<div class="turn${hot ? ' hot' : ''}"><p class="b you"><b>You</b>${esc(u)}</p><p class="b cl"><b>${esc(AI.assistant)}</b>${esc(k < w.length ? w.slice(0, k).join(' ').replace(/[,.:]$/, '') + '.' : c)}</p></div>`;
   }
   const ktok = v => v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1) + 'K' : num(v);
-  /* the chat as Claude sees it at message `shown`, in two zones. Grey: what Claude reads again (its setup and every earlier message).
+  /* the chat as the AI sees it at message `shown`, in two zones. Grey: what it reads again (its setup and every earlier message).
      Coral: the new message and answer. Only the latest `keep` old turns are written out; the rest fold into one grey block that grows with them */
   function chatStackHTML({ shown, words, ctx, keep, shrink = 0 }) {
     const olds = shown - 1, fold = Math.max(0, olds - keep), u = words * WORD, turnT = u + u * (1 - shrink), oldT = ctx + olds * turnT;
     return `<div class="zone old"><p class="zh"><span>${shown > 1 ? 'Read again' : 'Read for the first time'}</span><span>${ktok(oldT)} tokens</span></p>` +
-      `<div class="ctx"><b>Claude's setup</b><span>${ctxLabel(ctx) === "Claude's own setup" ? 'its rules and tools, there before you typed' : ctxLabel(ctx).toLowerCase() + ', plus its rules and tools'} · ${ktok(ctx)}</span></div>` +
-      (fold ? `<div class="fold" style="height:${Math.min(64, 16 + fold * 3)}px"><span>${fold > 1 ? `Messages 1 to ${fold}` : 'Message 1'}, yours and Claude's</span></div>` : '') +
+      `<div class="ctx"><b>${esc(AI.assistant)}'s setup</b><span>${ctx < 100000 ? 'its rules and tools, there before you typed' : ctxLabel(ctx).toLowerCase() + ', plus its rules and tools'} · ${ktok(ctx)}</span></div>` +
+      (fold ? `<div class="fold" style="height:${Math.min(64, 16 + fold * 3)}px"><span>${fold > 1 ? `Messages 1 to ${fold}` : 'Message 1'}, yours and ${esc(AI.assistant)}'s</span></div>` : '') +
       Array.from({ length: olds - fold }, (_, k) => bubbleHTML(fold + k, false, shrink)).join('') + '</div>' +
       `<div class="zone new"><p class="zh"><span>New: message ${shown}</span><span>${ktok(turnT)} tokens</span></p>${bubbleHTML(shown - 1, true, shrink)}</div>`;
   }
   /* y-axis ticks for the per-message chart: about four round steps */
   function niceStep(max) { const raw = max / 4, mag = Math.pow(10, Math.floor(Math.log10(raw))); return [1, 2, 2.5, 5, 10].map(f => f * mag).find(v => v >= raw); }
-  const ctxLabel = v => v >= 200000 ? 'A whole document or codebase' : v >= 100000 ? 'Files or a Project' : "Claude's own setup";
+  const ctxLabel = v => v >= 200000 ? 'A whole document or codebase' : v >= 100000 ? 'Files or a Project' : `${AI.assistant}'s own setup`;
 
   /* ---------- 1. Where the money goes ---------- */
   const m1 = { turns: $('#m1-turns'), words: $('#m1-words'), ctx: $('#m1-ctx') };
@@ -120,8 +127,8 @@
     $('#m1-stack').innerHTML = chatStackHTML({ shown, words: +m1.words.value, ctx: +m1.ctx.value, keep: thumb ? 1 : 4 });
     const last = per[per.length - 1];
     $('#m1-live').textContent = stage === 'play'
-      ? `Message ${shown} of ${N}: before answering, Claude reads ${shown > 1 ? `its setup and all ${shown - 1} earlier message${shown > 2 ? 's' : ''}` : 'its whole setup'} again. This message cost ${usd(OLD(last) + NEW(last))}.`
-      : `${N} messages. The grey is what Claude read again.`;
+      ? `Message ${shown} of ${N}: before answering, ${AI.assistant} reads ${shown > 1 ? `its setup and all ${shown - 1} earlier message${shown > 2 ? 's' : ''}` : 'its whole setup'} again. This message cost ${usd(OLD(last) + NEW(last))}.`
+      : `${N} messages. The grey is what ${AI.assistant} read again.`;
     /* one column per message on a dollar axis. Message 1 stores the whole setup, so it can run off the top: it is cut and its price written above */
     const sum = t => OLD(t) + NEW(t), max = Math.max(...per.slice(1).map(sum), per.length === 1 ? sum(per[0]) : 0);
     const fx = money === 'INR' ? inr : 1, st = niceStep(max * fx) / fx, top = Math.ceil(max / st) * st, H = 200, every = Math.ceil(per.length / 10);
@@ -134,10 +141,11 @@
         `<em class="x">${i === 0 || (i + 1) % every === 0 || i === per.length - 1 ? i + 1 : ''}</em></span>`;
     }).join('');
     $('#m1-cols').innerHTML = `<div class="plot" style="height:${H}px">${grid}<div class="bars">${bars}</div></div><p class="xt">Message number</p>` +
-      (sum(per[0]) > top ? `<p class="cn">Message 1 runs off the chart: it is the first time Claude reads and stores its setup, which costs more than reading it again.</p>` : '');
+      (sum(per[0]) > top ? `<p class="cn">Message 1 runs off the chart: it is the first time ${AI.assistant} reads and stores its setup, which costs more than reading it again.</p>` : '');
     const old = 100 * OLD(tot) / tot.total;
-    $('#m1-head').innerHTML = `<span class="n">${pct(old)}</span>of what you paid for this ${shown}-message chat (<b>${usd(tot.total)}</b>) went on Claude storing and re-reading <b>old messages</b>. Your new words were the other ${pct(100 - old)} ${tag('calc')}`;
+    $('#m1-head').innerHTML = `<span class="n">${pct(old)}</span>of what you paid for this ${shown}-message chat (<b>${usd(tot.total)}</b>) went on ${AI.assistant} storing and re-reading <b>old messages</b>. Your new words were the other ${pct(100 - old)} ${tag('calc')}`;
     $('#m1-legend').innerHTML = legendHTML(tot);
+    $('#m1-maths').textContent = `Each message pays: old history × cache-read price, the last exchange × ${AI.cache.write_premium ? 'cache-write price' : `input price (${AI.name} charges nothing extra to store it)`}, your new message × input price, ${AI.assistant}'s answer × output price. Words to tokens at 4 ÷ 3 (estimate).`;
   }
   function playM1() {
     clearInterval(m1timer);
@@ -164,23 +172,29 @@
     const side = (t, label, shrink) => `<div class="side"><h3>${label}</h3><div class="tstack sm">${chatStackHTML({ shown: N, words: +m1.words.value, ctx: +m1.ctx.value, keep: 2, shrink })}</div><div class="tot">${usd(t.total)}<small>the bill</small></div><div class="meter"><i style="width:${(100 * t.total / a.total).toFixed(1)}%"></i></div></div>`;
     $('#m2-duo').innerHTML = side(a, 'Normal answers', 0) + side(b, `Answers ${m2s.value}% shorter`, s);
     const drop = 100 * (1 - b.total / a.total);
-    $('#m2-head').innerHTML = `${cue(true, 'Saved')}<span class="n good">${pct(drop)}</span><p>is all the bill drops when every answer is <b>${m2s.value}% shorter</b>. The grey pile, the part Claude re-reads, barely changed ${tag('calc')}</p>`;
+    $('#m2-head').innerHTML = `${cue(true, 'Saved')}<span class="n good">${pct(drop)}</span><p>is all the bill drops when every answer is <b>${m2s.value}% shorter</b>. The grey pile, the part ${AI.assistant} re-reads, barely changed ${tag('calc')}</p>`;
   }
 
   /* ---------- 3. Screenshot tax ---------- */
   const cv = $('#m3-canvas'), cx = cv.getContext('2d'), m3scale = $('#m3-scale');
-  const m3 = { img: null, W: 0, H: 0, crop: null, drag: null, sample: false, shownT: 0, tween: 0 };
-  const CAP = 2576, TILE = 28;
+  const m3 = { img: null, W: 0, H: 0, crop: null, drag: null, sample: false, shownT: 0, tween: 0, level: null };
+  /* each provider's image rule (prices.json image): "squares" counts px-sized squares, times mult, with the long edge capped at cap;
+     "flat" charges one fixed count per image, set by the detail level, whatever its size */
+  const LEVEL = { low: 'Low', medium: 'Medium', high: 'High', ultra_high: 'Ultra high' };
+  function fitCap(w, h) {
+    const cap = AI.image.cap, long = Math.max(w, h);
+    return cap && long > cap ? { w: Math.round(w * cap / long), h: Math.round(h * cap / long) } : { w, h };
+  }
   function effSize() {
     const c = m3.crop, s = +m3scale.value / 100;
-    let w = Math.max(1, Math.round(c.w * s)), h = Math.max(1, Math.round(c.h * s));
-    const long = Math.max(w, h);
-    if (long > CAP) { w = Math.round(w * CAP / long); h = Math.round(h * CAP / long); }
-    return { w, h };
+    return fitCap(Math.max(1, Math.round(c.w * s)), Math.max(1, Math.round(c.h * s)));
   }
+  const squares = (w, h) => Math.ceil(w / AI.image.px) * Math.ceil(h / AI.image.px);
   const imgTokens = (w, h) => {
-    const long = Math.max(w, h); if (long > CAP) { w = Math.round(w * CAP / long); h = Math.round(h * CAP / long); }
-    return Math.ceil(w / TILE) * Math.ceil(h / TILE);
+    const I = AI.image;
+    if (I.scheme === 'flat') return I.levels[m3.level || I.default];
+    ({ w, h } = fitCap(w, h));
+    return Math.ceil(squares(w, h) * (I.mult || 1));
   };
   function sampleImage() {
     const c = document.createElement('canvas'); c.width = 1920; c.height = 1080;
@@ -219,12 +233,12 @@
     cv.width = cw * dpr; cv.height = ch * dpr; cv.style.aspectRatio = cw + ' / ' + ch;
     cx.setTransform(dpr * d, 0, 0, dpr * d, 0, 0);
     cx.drawImage(m3.img, 0, 0);
-    const c = m3.crop, { w, h } = effSize(), cell = c.w / w * TILE; /* one 28 px tile, in source pixels */
+    const I = AI.image, flat = I.scheme === 'flat', c = m3.crop, { w, h } = effSize(), cell = flat ? 0 : c.w / w * I.px; /* one square, in source pixels */
     cx.fillStyle = 'rgba(30,30,30,.55)';
     cx.fillRect(0, 0, m3.W, c.y); cx.fillRect(0, c.y + c.h, m3.W, m3.H - c.y - c.h);
     cx.fillRect(0, c.y, c.x, c.h); cx.fillRect(c.x + c.w, c.y, m3.W - c.x - c.w, c.h);
     cx.strokeStyle = 'rgba(254,98,66,.55)'; cx.lineWidth = 1 / d; cx.beginPath();
-    if (cell * d >= 2) {
+    if (!flat && cell * d >= 2) {
       for (let x = c.x + cell; x < c.x + c.w; x += cell) { cx.moveTo(x, c.y); cx.lineTo(x, c.y + c.h); }
       for (let y = c.y + cell; y < c.y + c.h; y += cell) { cx.moveTo(c.x, y); cx.lineTo(c.x + c.w, y); }
     }
@@ -235,12 +249,20 @@
     [[c.x, c.y], [c.x + c.w, c.y], [c.x, c.y + c.h], [c.x + c.w, c.y + c.h]].forEach(([x, y]) => cx.fillRect(x - hs / 2, y - hs / 2, hs, hs));
     m3.d = d;
     $('#m3-scale-o').textContent = m3scale.value + '%';
-    const t = imgTokens(w, h), full = imgTokens(m3.W, m3.H), p = PR.models[model];
-    const isFull = t === full;
-    const sentence = `<p><b>${Math.ceil(w / TILE)} × ${Math.ceil(h / TILE)}</b> squares for a ${num(w)} × ${num(h)} px image` +
-      (isFull ? '' : `, <b>down from ${num(full)}</b> for the full one: ${pct(100 * (1 - t / full))} fewer`) +
-      `. ${usd(t * p.input / 1e6)} to send once, then it rides along in every later message ${tag('calc')}</p>`;
-    $('#m3-head').innerHTML = `${cue(!isFull, isFull ? 'Squares Claude charges for' : 'Squares after your crop')}<span class="n${isFull ? '' : ' good'}" id="m3-n">${num(m3.shownT || t)}</span>${sentence}`;
+    const t = imgTokens(w, h), full = imgTokens(m3.W, m3.H), p = price(model, 0), once = `${usd(t * p.input / 1e6)} to send once, then it rides along in every later message ${tag('calc')}`;
+    if (flat) {
+      const lv = m3.level || I.default, low = Math.min(...Object.values(I.levels));
+      $('#m3-head').innerHTML = `${cue(lv !== I.default, `Tokens ${esc(AI.assistant)} charges per image`)}<span class="n${lv !== I.default ? ' good' : ''}" id="m3-n">${num(m3.shownT || t)}</span>` +
+        `<p>at <b>${LEVEL[lv].toLowerCase()} detail</b>, whatever the size: this ${num(c.w)} × ${num(c.h)} px ${c.w === m3.W && c.h === m3.H ? 'image' : 'crop'} costs the same as any other. ` +
+        `${t > low ? `Low detail is ${num(low)}. ` : ''}Cropping still helps ${esc(AI.assistant)} look at the part that matters. ${once}</p>`;
+    } else {
+      const isFull = t === full, mult = I.mult && I.mult !== 1 ? ` × ${I.mult}` : '';
+      const tooBig = I.max_squares && squares(w, h) > I.max_squares ? ` ${esc(AI.assistant)} refuses images over ${num(I.max_squares)} squares.` : '';
+      const sentence = `<p><b>${Math.ceil(w / I.px)} × ${Math.ceil(h / I.px)}</b> squares${mult} for a ${num(w)} × ${num(h)} px image` +
+        (isFull ? '' : `, <b>down from ${num(full)}</b> for the full one: ${pct(100 * (1 - t / full))} fewer`) + `.${tooBig} ${once}</p>`;
+      const what = mult ? 'Tokens' : 'Squares';
+      $('#m3-head').innerHTML = `${cue(!isFull, isFull ? `${what} ${esc(AI.assistant)} charges for` : `${what} after your crop`)}<span class="n${isFull ? '' : ' good'}" id="m3-n">${num(m3.shownT || t)}</span>${sentence}`;
+    }
     tweenM3(t);
   }
   /* the big number counts up or down to the new tile count rather than jumping */
@@ -300,6 +322,23 @@
     const it = Array.from(e.clipboardData && e.clipboardData.items || []).find(i => /^image\//.test(i.type));
     if (it) takeFile(it.getAsFile());
   });
+  /* the image level picker only applies to providers that charge a flat count per image */
+  function levelsM3() {
+    const I = AI.image, flat = I.scheme === 'flat';
+    $('#m3-level-ctl').hidden = !flat; $('#m3-scale-ctl').hidden = flat;
+    $('#m3-crop800').classList.toggle('ghost', flat); /* cropping doesn't change a flat count, so it isn't the main action */
+    if (!flat) return;
+    m3.level = m3.level && I.levels[m3.level] ? m3.level : I.default;
+    $('#m3-level').innerHTML = Object.entries(I.levels).map(([k, v]) => `<button type="button" role="radio" data-l="${k}" aria-checked="${k === m3.level}">${LEVEL[k]} · ${num(v)}</button>`).join('');
+    $$('#m3-level button').forEach(b => { b.onclick = () => { m3.level = b.dataset.l; $$('#m3-level button').forEach(x => x.setAttribute('aria-checked', x === b)); renderM3(); completed(3); }; });
+  }
+  function textM3() {
+    const I = AI.image;
+    $('#m3-sub').textContent = I.scheme === 'flat'
+      ? `${AI.assistant} charges the same for every image, big or small. What sets the price is the detail level. Pick one and watch the count.`
+      : `${AI.assistant} cuts every image into ${I.px}-pixel squares and charges for each square. Crop to the part that matters and watch the count fall.`;
+    $('#m3-maths').textContent = `${I.rule} (${AI.name} docs).`;
+  }
   $('#m3-exact').onclick = withKey($('#m3-exact'), async () => {
     if (!m3.img) return;
     const { w, h } = effSize(), c = document.createElement('canvas'); c.width = w; c.height = h;
@@ -308,18 +347,19 @@
     if (data.length > 4e6) data = c.toDataURL('image/jpeg', 0.85);
     const media_type = data.slice(5, data.indexOf(';'));
     const out = $('#m3-exact-o'); out.textContent = 'Counting…';
-    const r = await exact([{ type: 'image', source: { type: 'base64', media_type, data: data.slice(data.indexOf(',') + 1) } }]);
-    out.innerHTML = r.error ? esc(r.error) : `Claude counts ${num(r.tokens)} tokens ${tag('docs')}`;
-    if (!r.error) track('exact_count_used', { module: 3 });
+    const r = await exact({ image: { media_type, data: data.slice(data.indexOf(',') + 1) } });
+    out.innerHTML = r.error ? esc(r.error) : `${esc(AI.assistant)} counts ${num(r.tokens)} tokens${AI.image.scheme === 'flat' ? ' at its default detail' : ''} ${tag('docs')}`;
+    if (!r.error) track('exact_count_used', { module: 3, provider: prov });
   });
-  /* Exact counts use the visitor's own Anthropic API key. The browser calls Anthropic directly with the official SDK
-     (loaded only on first use); the key and the content never touch our server. The key lives in this tab's memory,
-     or in sessionStorage if they tick "Keep for this tab", and is gone when the tab closes.
-     countTokens is free. Counts use Sonnet 5.5: the 4.7+ tokenizer gives about 30% more tokens than older models.
+  /* Exact counts use the visitor's own API key for the chosen provider. The browser calls the provider directly
+     (Anthropic through its official SDK, loaded only on first use; OpenAI's input_tokens and Google's countTokens with fetch);
+     the key and the content never touch our server. Each key lives in this tab's memory, or in sessionStorage if they tick
+     "Keep for this tab", and is gone when the tab closes. The model each provider counts with is in prices.json (count.model).
      The message wrapper adds a few tokens; the count of '.' (one token) is subtracted so the number is the content alone. */
-  const COUNT_MODEL = 'claude-sonnet-5-5', SDK = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.133.0/+esm';
-  let apiKey = '', client = null, base = null, pendingCount = null;
-  try { apiKey = sessionStorage.getItem('tm:key') || ''; } catch (e) {}
+  const SDK = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@0.133.0/+esm';
+  const keys = {}, bases = {}, keyName = p => p === 'anthropic' ? 'tm:key' : 'tm:key:' + p;
+  let client = null, pendingCount = null;
+  try { ['anthropic', 'openai', 'google'].forEach(p => { keys[p] = sessionStorage.getItem(keyName(p)) || ''; }); } catch (e) {}
   const keybox = $('#keybox');
   function askKey(where, run) {
     pendingCount = run;
@@ -328,32 +368,57 @@
   }
   keybox.addEventListener('submit', e => {
     e.preventDefault();
-    const k = $('#key-in').value.trim();
-    if (!/^sk-ant-/.test(k)) { $('#key-err').textContent = 'That doesn\'t look like an Anthropic API key. It starts with sk-ant-.'; return; }
-    apiKey = k; client = null; base = null; $('#key-in').value = ''; $('#key-err').textContent = '';
-    try { $('#key-keep').checked ? sessionStorage.setItem('tm:key', k) : sessionStorage.removeItem('tm:key'); } catch (e) {}
+    const k = $('#key-in').value.trim(), pre = AI.count.key_prefix;
+    if (!k.startsWith(pre)) { $('#key-err').textContent = `That doesn't look like an ${AI.name} API key. It starts with ${pre}.`; return; }
+    keys[prov] = k; bases[prov] = null; if (prov === 'anthropic') client = null; $('#key-in').value = ''; $('#key-err').textContent = '';
+    try { $('#key-keep').checked ? sessionStorage.setItem(keyName(prov), k) : sessionStorage.removeItem(keyName(prov)); } catch (e) {}
     keybox.hidden = true;
     if (pendingCount) { const r = pendingCount; pendingCount = null; r(); }
   });
   $('#key-cancel').onclick = () => { keybox.hidden = true; pendingCount = null; };
-  function forgetKey() { apiKey = ''; client = null; base = null; try { sessionStorage.removeItem('tm:key'); } catch (e) {} }
-  async function exact(content) {
+  function forgetKey() { keys[prov] = ''; bases[prov] = null; if (prov === 'anthropic') client = null; try { sessionStorage.removeItem(keyName(prov)); } catch (e) {} }
+  /* OpenAI sends its "wrong key" reply without a CORS header, so the browser only sees a failed fetch: status 0 */
+  async function post(url, headers, body) {
+    let r;
+    try { r = await fetch(url, { method: 'POST', headers: Object.assign({ 'content-type': 'application/json' }, headers), body: JSON.stringify(body) }); }
+    catch (e) { const x = new Error('network'); x.status = 0; throw x; }
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { const e = new Error((j.error && j.error.message) || r.statusText); e.status = r.status; throw e; }
+    return j;
+  }
+  /* one counter per provider. part is {text} or {image: {media_type, data}} (base64) */
+  const COUNT = {
+    async anthropic(part) {
+      if (!client) { const { default: Anthropic } = await import(SDK); client = new Anthropic({ apiKey: keys.anthropic, dangerouslyAllowBrowser: true }); }
+      const content = part.image ? [{ type: 'image', source: { type: 'base64', media_type: part.image.media_type, data: part.image.data } }] : part.text;
+      return (await client.messages.countTokens({ model: AI.count.model, messages: [{ role: 'user', content }] })).input_tokens;
+    },
+    async openai(part) {
+      const content = part.image ? [{ type: 'input_image', image_url: `data:${part.image.media_type};base64,${part.image.data}`, detail: 'auto' }] : [{ type: 'input_text', text: part.text }];
+      return (await post('https://api.openai.com/v1/responses/input_tokens', { authorization: 'Bearer ' + keys.openai }, { model: AI.count.model, input: [{ role: 'user', content }] })).input_tokens;
+    },
+    async google(part) {
+      const p = part.image ? { inline_data: { mime_type: part.image.media_type, data: part.image.data } } : { text: part.text };
+      return (await post(`https://generativelanguage.googleapis.com/v1beta/models/${AI.count.model}:countTokens`, { 'x-goog-api-key': keys.google }, { contents: [{ role: 'user', parts: [p] }] })).totalTokens;
+    }
+  };
+  async function exact(part) {
+    const count = COUNT[AI.count.kind];
     try {
-      if (!client) { const { default: Anthropic } = await import(SDK); client = new Anthropic({ apiKey, dangerouslyAllowBrowser: true }); client.E = Anthropic; }
-      const count = c => client.messages.countTokens({ model: COUNT_MODEL, messages: [{ role: 'user', content: c }] }).then(r => r.input_tokens);
-      if (base == null) base = await count('.') - 1;
-      return { tokens: Math.max(0, await count(content) - base) };
+      if (bases[prov] == null) bases[prov] = await count({ text: '.' }) - 1;
+      return { tokens: Math.max(0, await count(part) - bases[prov]) };
     } catch (e) {
-      const E = client && client.E;
-      if (E && e instanceof E.AuthenticationError) { forgetKey(); return { error: 'Anthropic rejected that key. Press Count exactly to enter it again.' }; }
-      if (E && e instanceof E.PermissionDeniedError) return { error: "That key can't use Sonnet 5.5." };
-      if (E && e instanceof E.RateLimitError) return { error: 'Your key hit its rate limit. Try again in a minute.' };
-      if (E && e instanceof E.BadRequestError) return { error: 'Claude could not read that input.' };
+      const st = e.status;
+      if (st === 401 || (st === 400 && /api.key/i.test(e.message || ''))) { forgetKey(); return { error: `${AI.name} rejected that key. Press Count exactly to enter it again.` }; }
+      if (st === 0) { forgetKey(); return { error: `Couldn't reach ${AI.name}, or it turned the key down. Check the key and your connection, then press Count exactly again.` }; }
+      if (st === 403) return { error: `That key can't use ${modelName(AI.count.model)}.` };
+      if (st === 429) return { error: 'Your key hit its rate limit. Try again in a minute.' };
+      if (st === 400) return { error: `${AI.assistant} could not read that input.` };
       return { error: 'Counting failed. The estimate still works.' };
     }
   }
   /* run now if a key is set, else ask for one first */
-  function withKey(btn, run) { return () => apiKey ? run() : askKey(btn, run); }
+  function withKey(btn, run) { return () => keys[prov] ? run() : askKey(btn, run); }
 
   /* ---------- 4. Format tax ---------- */
   const SAMPLES = {
@@ -452,7 +517,7 @@
     $('#m4-b-t').innerHTML = `${num(b)} tokens <small>· ${nb}% marks</small>`;
     $('#m4-exact-o').textContent = '';
     const drop = a ? 100 * (1 - b / a) : 0, from = { json: 'JSON', jsonx: 'JSON', html: 'HTML', text: 'raw text' }[kind];
-    $('#m4-head').innerHTML = a ? `${cue(drop > 0, drop > 0 ? 'Saved' : 'No change')}<span class="n${drop > 0 ? ' good' : ''}">${pct(Math.max(0, drop))}</span><p>fewer tokens as <b>${esc(label)}</b> than as ${from}: ${num(a)} down to ${num(b)}. The marks were ${na}% of the original and are ${nb}% now. Claude reads this again on every later message ${tag('est')}</p>` : '<p>Paste something, or pick a sample.</p>';
+    $('#m4-head').innerHTML = a ? `${cue(drop > 0, drop > 0 ? 'Saved' : 'No change')}<span class="n${drop > 0 ? ' good' : ''}">${pct(Math.max(0, drop))}</span><p>fewer tokens as <b>${esc(label)}</b> than as ${from}: ${num(a)} down to ${num(b)}. The marks were ${na}% of the original and are ${nb}% now. ${esc(AI.assistant)} reads this again on every later message ${tag('est')}</p>` : '<p>Paste something, or pick a sample.</p>';
     if (fromUser) completed(4);
   }
   $('#m4-sample').onchange = e => { if (e.target.value) { m4in.value = SAMPLES[e.target.value](); renderM4(true); } else { m4in.value = ''; renderM4(true); m4in.focus(); } };
@@ -462,24 +527,24 @@
   $('#m4-exact').onclick = withKey($('#m4-exact'), async () => {
     if (!m4in.value.trim()) return;
     const o = $('#m4-exact-o'); o.textContent = 'Counting…';
-    const a = await exact(m4in.value), b = a.error || !m4out.value.trim() ? { tokens: 0 } : await exact(m4out.value);
+    const a = await exact({ text: m4in.value }), b = a.error || !m4out.value.trim() ? { tokens: 0 } : await exact({ text: m4out.value });
     if (a.error || b.error) { o.textContent = a.error || b.error; return; }
-    o.innerHTML = `Claude counts ${num(a.tokens)} → ${num(b.tokens)}, ${pct(100 * (1 - b.tokens / a.tokens))} fewer ${tag('docs')}`;
-    track('exact_count_used', { module: 4 });
+    o.innerHTML = `${esc(AI.assistant)} counts ${num(a.tokens)} → ${num(b.tokens)}, ${pct(100 * (1 - b.tokens / a.tokens))} fewer ${tag('docs')}`;
+    track('exact_count_used', { module: 4, provider: prov });
   });
 
   /* ---------- 5. Restart fee (a cache break) ---------- */
   const M5 = { start: 100000, grow: 600, turns: 10 };
   let m5 = [];
   const EV = { model: 'Switched model', tool: 'Added a tool', wait: 'Came back the next day' };
-  function m5cost(n, broken) { const p = PR.models[model], hist = M5.start + (n - 1) * M5.grow; return hist * (broken ? p.cache_write : p.cache_read) / 1e6; }
+  function m5cost(n, broken) { const p = price(model, 0), hist = M5.start + (n - 1) * M5.grow; return hist * (broken ? p.cache_write : p.cache_read) / 1e6; }
   function stepM5(ev) {
     if (m5.length >= M5.turns) return;
     m5.push({ ev: ev || null }); renderM5();
     if (ev) completed(5);
   }
   function renderM5() {
-    const W = 640, H = 200, L = 44, B = 28, n = M5.turns, p = PR.models[model];
+    const W = 640, H = 200, L = 44, B = 28, n = M5.turns, p = AI.models[model];
     const pts = m5.map((t, i) => m5cost(i + 1, !!t.ev));
     const top = Math.max(m5cost(M5.turns, true), 0.01) * 1.1;
     const X = i => L + (W - L - 10) * i / (n - 1), Y = v => H - B - (H - B - 10) * v / top;
@@ -499,6 +564,9 @@
     $('#m5-turn').textContent = m5.length >= M5.turns ? 'All 10 messages sent. Start over to try other moves.' : `Message ${m5.length + 1} of 10 next. Each button sends one message.`;
     $$('#m5 [data-ev], #m5-next').forEach(b => { b.disabled = m5.length >= M5.turns; });
     $('#m5-head').innerHTML = `${cue(false, 'The restart fee')}<span class="n">${Math.round(broke / normal)}×</span><p>a message after a restart costs <b>${usd(broke)}</b> against ${usd(normal)} for a normal one on ${p.name} ${tag('calc')}${breaks ? `. Your ${breaks} restart${breaks > 1 ? 's' : ''} added <b>${usd(extra)}</b>` : ''}</p>`;
+    $('#m5-maths').textContent = 'The saved copy is called the cache. A normal message re-reads it at the cache-read price. Switching model, adding a tool, or waiting longer than the cache lifetime throws the copy away, and that message ' +
+      (AI.cache.write_premium ? 'stores the whole history again at the cache-write price.' : `pays the full input price on the whole history again. ${AI.name} charges nothing extra to store it, so its restart fee is smaller.`) +
+      ` The lifetime is ${AI.cache.lifetime} (${AI.name} docs).`;
   }
   $('#m5-next').onclick = () => stepM5(null);
   $$('#m5 [data-ev]').forEach(b => { b.onclick = () => stepM5(b.dataset.ev); });
@@ -517,16 +585,16 @@
   $$('#m6-task button').forEach(b => { b.onclick = () => { m6task = b.dataset.t; $$('#m6-task button').forEach(x => x.setAttribute('aria-checked', x === b)); renderM6(); completed(6); }; });
   $$('#m6-times button').forEach(b => { b.onclick = () => { m6n = +b.dataset.n; $$('#m6-times button').forEach(x => x.setAttribute('aria-checked', x === b)); renderM6(); completed(6); }; });
   function renderM6() {
-    const t = TASKS[m6task], rows = ['haiku', 'sonnet', 'opus'].map(k => {
+    const t = TASKS[m6task], rows = AI.tiers.map((k, j) => {
       const p = price(k, t.in), i = t.in * p.input / 1e6 * m6n, o = t.out * p.output / 1e6 * m6n;
-      return { k, name: PR.models[k].name, i, o, tot: i + o, rate: p.input };
+      return { k, j, name: AI.models[k].name, i, o, tot: i + o, rate: p.input };
     });
     const max = rows[2].tot, times = m6n > 1 ? `, ${num(m6n)} times` : '';
     $('#m6-scale').innerHTML = `<div class="track">${rows.map((r, i) => `<div class="dot${i === 0 ? ' cheap' : i === 2 ? ' dear' : ''}" style="left:${Math.max(1.5, 100 * r.tot / max).toFixed(1)}%"><b>${usd(r.tot)}</b><small>${r.name}</small></div>`).join('')}</div><div class="ends"><span>Cheapest</span><span>Same job${times}</span><span>Dearest</span></div>`;
-    $('#m6-cards').innerHTML = rows.map(r => `<div class="mcard${r.k === 'haiku' ? ' cheap' : ''}"><h3>${r.name}</h3><div class="tot">${usd(r.tot)}</div><div class="meter"><i style="width:${(100 * r.tot / max).toFixed(1)}%"></i></div><dl><dt>Reading</dt><dd>${usd(r.i)}</dd><dt>Writing</dt><dd>${usd(r.o)}</dd><dt>Price per M in</dt><dd>${usd(r.rate)}</dd></dl></div>`).join('');
+    $('#m6-cards').innerHTML = rows.map(r => `<div class="mcard${r.j === 0 ? ' cheap' : ''}"><h3>${r.name}</h3><div class="tot">${usd(r.tot)}</div><div class="meter"><i style="width:${(100 * r.tot / max).toFixed(1)}%"></i></div><dl><dt>Reading</dt><dd>${usd(r.i)}</dd><dt>Writing</dt><dd>${usd(r.o)}</dd><dt>Price per M in</dt><dd>${usd(r.rate)}</dd></dl></div>`).join('');
     const ratio = Math.round(rows[2].tot / rows[0].tot);
-    $('#m6-head').innerHTML = `${cue(true, 'Saved by picking the small model')}<span class="n good">${ratio}×</span><p>cheaper on Haiku than on Opus for "${t.label.toLowerCase()}"${times}: <b>${usd(rows[0].tot)}</b> against ${usd(rows[2].tot)} ${tag('calc')}</p>`;
-    $('#m6-how').innerHTML = `Job profile: ${t.what} (estimate). Cost = tokens × each model's price from Anthropic's pricing page.`;
+    $('#m6-head').innerHTML = `${cue(true, 'Saved by picking the small model')}<span class="n good">${ratio}×</span><p>cheaper on ${rows[0].name} than on ${rows[2].name} for "${t.label.toLowerCase()}"${times}: <b>${usd(rows[0].tot)}</b> against ${usd(rows[2].tot)} ${tag('calc')}</p>`;
+    $('#m6-how').innerHTML = `Job profile: ${t.what} (estimate). Cost = tokens × each model's price from ${AI.name}'s pricing page.`;
   }
 
   /* ---------- shared: drop targets ---------- */
@@ -537,27 +605,28 @@
   }
 
   /* ---------- your sessions (import.js adds the readers) ---------- */
-  window.TM = { PR: () => PR, model: () => model, price, chatCost, simulate, imgTokens, est, WORD, KEYS, stackHTML, legendHTML, tag, esc, num, usd, pct, track, dropTarget, cue };
+  window.TM = { PR: () => PR, AI: () => AI, prov: () => prov, model: () => model, price, chatCost, simulate, imgTokens, est, WORD, KEYS, stackHTML, legendHTML, tag, esc, num, usd, pct, track, dropTarget, cue };
 
   $('#cta').onclick = () => track('cta_clicked', { module: cur });
 
   /* ---------- routing: one module per screen ---------- */
-  const ORDER = ['m1', 'm2', 'm3', 'm4', 'm5', 'm6', 'you'];
-  let cur = 'm1';
+  const ORDER = ['start', 'm1', 'm2', 'm3', 'm4', 'm5', 'm6', 'you'];
+  let cur = 'm1', chosen = false; /* chosen: the visitor has picked their AI, now or on an earlier visit */
   function markSteps() {
     $$('#steps a').forEach(a => { const id = a.getAttribute('href').slice(1); a.classList.toggle('on', id === cur); a.classList.toggle('done', done.has(id === 'you' ? 'you' : +id.slice(1))); });
   }
   function route() {
-    const id = ORDER.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'm1';
+    const id = ORDER.includes(location.hash.slice(1)) ? location.hash.slice(1) : chosen ? 'm1' : 'start';
     cur = id;
     ORDER.forEach(o => { $('#' + o).hidden = o !== id; });
+    $('.pager').hidden = id === 'start';
     const i = ORDER.indexOf(id);
     $('#prev').href = '#' + ORDER[Math.max(0, i - 1)]; $('#prev').style.visibility = i ? '' : 'hidden';
     $('#next').href = '#' + ORDER[Math.min(ORDER.length - 1, i + 1)]; $('#next').style.visibility = i < ORDER.length - 1 ? '' : 'hidden';
     markSteps();
     const on = $('#steps a.on'); on && on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
     if (id === 'm3') { if (!m3.img) loadImage(sampleImage(), true); else renderM3(); }
-    const mod = id === 'you' ? 'you' : +id.slice(1);
+    const mod = id === 'you' || id === 'start' ? id : +id.slice(1);
     if (!opened.has(mod)) { opened.add(mod); track('module_opened', { module: mod }); }
     window.scrollTo(0, 0);
   }
@@ -566,6 +635,41 @@
   [m1.turns, m1.words, m1.ctx].forEach(el => el.addEventListener('input', () => { clearInterval(m1timer); m1shown = null; renderM1(); renderM2(); completed(1); }));
   m2s.addEventListener('input', () => { renderM2(); completed(2); });
   $('#model').onchange = e => { model = e.target.value; renderAll(); };
+  $('#prov').onchange = e => pickProvider(e.target.value, 'header');
+  /* switch every module to one provider: its models, its words, its image rule, its key */
+  function setProvider(p) {
+    prov = pickable(p) ? p : 'anthropic'; AI = PR.providers[prov]; model = AI.default;
+    $('#prov').value = prov;
+    $('#model').innerHTML = AI.tiers.map(k => `<option value="${k}"${k === model ? ' selected' : ''}>${esc(AI.models[k].name)}</option>`).join('');
+    $$('[data-ai]').forEach(e => { e.textContent = AI.assistant; });
+    $$('[data-co]').forEach(e => { e.textContent = AI.name; });
+    BASIS.docs = AI.name; WHY.docs = `Straight from ${AI.name}: its pricing page or docs`; WHY.calc = `Computed from ${AI.name}'s prices`;
+    $$('em.bs[data-b]').forEach(e => { e.textContent = BASIS[e.dataset.b]; e.title = WHY[e.dataset.b]; });
+    KLABEL.output = `Output: ${AI.assistant}'s answers`;
+    KLABEL.write = AI.cache.write_premium ? 'Cache write: storing new turns' : 'Storing new turns, at the input price';
+    m1.ctx.options[0].textContent = `Nothing much: ${AI.assistant}'s own setup, about 25K tokens`;
+    $('#src').href = AI.source;
+    $('#checked').textContent = new Date(AI.checked).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    $('#key-in').placeholder = AI.count.key_prefix + '…';
+    $('#key-note').innerHTML = `${esc(AI.count.note)} Your key goes from this browser straight to ${esc(AI.name)} and is never sent to us. Get one at <a href="${AI.count.key_url}" target="_blank" rel="noopener">${esc(AI.count.key_site)}</a>.`;
+    keybox.hidden = true; pendingCount = null; $('#key-err').textContent = '';
+    $('#m3-exact-o').textContent = ''; $('#m4-exact-o').textContent = '';
+    $$('#pcards button').forEach(b => b.setAttribute('aria-pressed', chosen && b.dataset.p === prov));
+    m3.level = null; levelsM3(); textM3();
+    try { localStorage.setItem('tm:prov', prov); } catch (e) {}
+    window.TM.onProvider && window.TM.onProvider();
+  }
+  function pickProvider(p, where) {
+    chosen = true; setProvider(p); renderAll();
+    track('provider_chosen', { provider: prov, where });
+  }
+  /* "open" in prices.json only prices the CLI's open-model logs; it has no key or image rule for the modules */
+  const pickable = p => !!(PR.providers[p] && PR.providers[p].picker !== false);
+  function startCards() {
+    $('#pcards').innerHTML = Object.entries(PR.providers).filter(([k]) => pickable(k)).map(([k, P]) =>
+      `<button type="button" class="pcard" data-p="${k}" aria-pressed="false"><b>${esc(P.assistant)}</b><span>${esc(P.name)}</span><small>${P.tiers.map(t => esc(P.models[t].name)).join(' · ')}</small></button>`).join('');
+    $$('#pcards button').forEach(b => { b.onclick = () => { pickProvider(b.dataset.p, 'start'); location.hash = '#m1'; }; });
+  }
   function setMoney(m) {
     money = m === 'INR' && inr ? 'INR' : 'USD';
     $$('#money button').forEach(b => b.setAttribute('aria-checked', b.dataset.c === money));
@@ -583,8 +687,11 @@
 
   fetch('/token-meter/prices.json').then(r => r.json()).then(p => {
     PR = p;
-    $$('em.bs:empty').forEach(e => { e.textContent = BASIS[e.dataset.b]; e.title = WHY[e.dataset.b]; });
-    $('#checked').textContent = new Date(p.checked).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    Object.values(p.providers).forEach(P => Object.values(P.models).forEach(m => { fill(m); if (m.long_prompt) fill(m.long_prompt); if (m.next) fill(m.next); }));
+    let savedProv = null; try { savedProv = localStorage.getItem('tm:prov'); } catch (e) {}
+    chosen = !!(savedProv && pickable(savedProv));
+    startCards();
+    setProvider(chosen ? savedProv : 'anthropic');
     m4in.value = SAMPLES.json();
     let saved = 'USD'; try { saved = localStorage.getItem('tm:money') || 'USD'; } catch (e) {}
     loadRate(p.usd_inr).then(() => { if (money === 'INR') renderAll(); });
