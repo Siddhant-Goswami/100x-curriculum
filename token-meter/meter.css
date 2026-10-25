@@ -279,11 +279,6 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
 .made{margin:0;font-size:13px;color:var(--ink3);text-align:center}
 .made a{color:var(--ink2);text-decoration:underline;text-underline-offset:2px}
 
-dialog{border:0;border-radius:16px;padding:16px;max-width:min(440px,92vw);background:var(--card)}
-dialog::backdrop{background:rgba(0,0,0,.55)}
-dialog canvas{display:block;width:100%;height:auto;border-radius:10px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.08)}
-dialog .row .btn{flex:1}
-
 .keybox{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--coral);border-radius:var(--r);padding:16px;margin-top:10px}
 .keybox input[type=password]{padding:11px 12px;border:1px solid var(--line2);border-radius:8px;font:14px var(--mono);width:100%}
 .keybox .keep{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink2)}

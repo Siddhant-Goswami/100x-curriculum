@@ -159,8 +159,6 @@
       html += '<p class="eyebrow">By model · module 6</p>' + table(['Model', 'Requests', 'Cost'], Object.entries(r.j.by_model).sort((a, x) => x[1].cost - a[1].cost).map(([k, v]) => [k, num(v.requests), v.cost == null ? 'not priced' : usd(v.cost)]));
     }
     out.innerHTML = html; out.hidden = false;
-    T.card({ tax: top.name, n: pct(share), line: `of my Claude spend, about ${usd(top.cost)} of ${usd(r.tot.total)}`, fix: top.fix, basis: est ? 'Estimated' : 'Computed from my logs' });
-    T.refreshCard();
   }
   function table(head, rows) {
     return `<div class="tbl"><table><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td class="${i ? 'num' : 'name'}">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;

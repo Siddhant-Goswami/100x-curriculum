@@ -110,7 +110,6 @@
     const old = 100 * OLD(tot) / tot.total;
     $('#m1-head').innerHTML = `<span class="n">${pct(old)}</span>of what you paid for this ${shown}-message chat (<b>${usd(tot.total)}</b>) went on Claude storing and re-reading <b>old messages</b>. Your new words were the other ${pct(100 - old)} ${tag('calc')}`;
     $('#m1-legend').innerHTML = legendHTML(tot);
-    CARD[1] = { tax: 'Re-read tax', n: pct(100 * OLD(full.tot) / full.tot.total), line: `of a ${N}-message chat is Claude re-reading history`, fix: 'Start a fresh chat with a summary every 15 to 20 messages.', basis: 'Computed' };
   }
   function playM1() {
     clearInterval(m1timer);
@@ -139,7 +138,6 @@
     $('#m2-duo').innerHTML = side(a, 'Normal answers', 72) + side(b, `Answers ${m2s.value}% shorter`, Math.max(6, 72 * (1 - s)));
     const drop = 100 * (1 - b.total / a.total);
     $('#m2-head').innerHTML = `${cue(true, 'Saved')}<span class="n good">${pct(drop)}</span><p>is all the bill drops when every answer is <b>${m2s.value}% shorter</b>. The grey pile, the part Claude re-reads, barely changed ${tag('calc')}</p>`;
-    CARD[2] = { tax: 'The Caveman myth', n: pct(drop), line: `saved by making every answer ${m2s.value}% shorter`, fix: 'Cut what Claude re-reads, not what it writes.', basis: 'Computed' };
   }
 
   /* ---------- 3. Screenshot tax ---------- */
@@ -217,7 +215,6 @@
       `. ${usd(t * p.input / 1e6)} to send once, then it rides along in every later message ${tag('calc')}</p>`;
     $('#m3-head').innerHTML = `${cue(!isFull, isFull ? 'Squares Claude charges for' : 'Squares after your crop')}<span class="n${isFull ? '' : ' good'}" id="m3-n">${num(m3.shownT || t)}</span>${sentence}`;
     tweenM3(t);
-    CARD[3] = { tax: 'Screenshot tax', n: num(t), line: `tokens for one ${num(w)} × ${num(h)} screenshot`, fix: 'Crop to the part that matters before you paste.', basis: 'Computed' };
   }
   /* the big number counts up or down to the new tile count rather than jumping */
   function tweenM3(target) {
@@ -429,7 +426,6 @@
     $('#m4-exact-o').textContent = '';
     const drop = a ? 100 * (1 - b / a) : 0, from = { json: 'JSON', jsonx: 'JSON', html: 'HTML', text: 'raw text' }[kind];
     $('#m4-head').innerHTML = a ? `${cue(drop > 0, drop > 0 ? 'Saved' : 'No change')}<span class="n${drop > 0 ? ' good' : ''}">${pct(Math.max(0, drop))}</span><p>fewer tokens as <b>${esc(label)}</b> than as ${from}: ${num(a)} down to ${num(b)}. The marks were ${na}% of the original and are ${nb}% now. Claude reads this again on every later message ${tag('est')}</p>` : '<p>Paste something, or pick a sample.</p>';
-    CARD[4] = { tax: 'Format tax', n: pct(Math.max(0, drop)), line: `fewer tokens as ${label} than as ${from}`, fix: 'Paste CSV or Markdown, not raw JSON or HTML.', basis: 'Estimate' };
     if (fromUser) completed(4);
   }
   $('#m4-sample').onchange = e => { if (e.target.value) { m4in.value = SAMPLES[e.target.value](); renderM4(true); } else { m4in.value = ''; renderM4(true); m4in.focus(); } };
@@ -476,7 +472,6 @@
     $('#m5-turn').textContent = m5.length >= M5.turns ? 'All 10 messages sent. Start over to try other moves.' : `Message ${m5.length + 1} of 10 next. Each button sends one message.`;
     $$('#m5 [data-ev], #m5-next').forEach(b => { b.disabled = m5.length >= M5.turns; });
     $('#m5-head').innerHTML = `${cue(false, 'The restart fee')}<span class="n">${Math.round(broke / normal)}×</span><p>a message after a restart costs <b>${usd(broke)}</b> against ${usd(normal)} for a normal one on ${p.name} ${tag('calc')}${breaks ? `. Your ${breaks} restart${breaks > 1 ? 's' : ''} added <b>${usd(extra)}</b>` : ''}</p>`;
-    CARD[5] = { tax: 'Restart fee', n: Math.round(broke / normal) + '×', line: 'what one message costs when Claude has to start over', fix: 'Pick the model and tools first, and keep going within the hour.', basis: 'Computed' };
   }
   $('#m5-next').onclick = () => stepM5(null);
   $$('#m5 [data-ev]').forEach(b => { b.onclick = () => stepM5(b.dataset.ev); });
@@ -505,7 +500,6 @@
     const ratio = Math.round(rows[2].tot / rows[0].tot);
     $('#m6-head').innerHTML = `${cue(true, 'Saved by picking the small model')}<span class="n good">${ratio}×</span><p>cheaper on Haiku than on Opus for "${t.label.toLowerCase()}"${times}: <b>${usd(rows[0].tot)}</b> against ${usd(rows[2].tot)} ${tag('calc')}</p>`;
     $('#m6-how').innerHTML = `Job profile: ${t.what} (estimate). Cost = tokens × each model's price from Anthropic's pricing page.`;
-    CARD[6] = { tax: 'One-model tax', n: ratio + '×', line: `what Opus costs over Haiku for "${t.label.toLowerCase()}"`, fix: `Send simple jobs like "${t.label.toLowerCase()}" to Haiku.`, basis: 'Anthropic prices' };
   }
 
   /* ---------- shared: drop targets ---------- */
@@ -516,61 +510,8 @@
   }
 
   /* ---------- your sessions (import.js adds the readers) ---------- */
-  window.TM = { PR: () => PR, model: () => model, price, chatCost, simulate, imgTokens, est, WORD, KEYS, stackHTML, legendHTML, tag, esc, num, usd, pct, track, dropTarget, cue, card: c => { CARD.you = c; } };
+  window.TM = { PR: () => PR, model: () => model, price, chatCost, simulate, imgTokens, est, WORD, KEYS, stackHTML, legendHTML, tag, esc, num, usd, pct, track, dropTarget, cue };
 
-  /* ---------- result card ---------- */
-  const CARD = {};
-  const dlg = $('#card'), cc = $('#card-canvas');
-  async function drawCard(c) {
-    await Promise.all(['700 80px "Space Grotesk"', '700 200px "JetBrains Mono"', '500 40px "DM Sans"', '600 28px "JetBrains Mono"'].map(f => document.fonts.load(f).catch(() => {})));
-    const g = cc.getContext('2d'), W = 1080, H = 1350, P = 88;
-    g.fillStyle = '#1E1E1E'; g.fillRect(0, 0, W, H);
-    g.fillStyle = '#FE6242'; g.fillRect(0, 0, W, 14);
-    g.font = '700 30px "JetBrains Mono", monospace'; g.fillStyle = '#FFFFFF'; g.fillText('TOKEN', P, 130); g.fillStyle = '#FE6242'; g.fillText('METER', P + g.measureText('TOKEN').width, 130);
-    g.font = '600 28px "JetBrains Mono", monospace'; g.fillStyle = '#8C8C8C'; g.fillText('MY BIGGEST TOKEN TAX', P, 300);
-    g.font = '700 84px "Space Grotesk", sans-serif'; g.fillStyle = '#FFFFFF'; wrap(g, c.tax, P, 400, W - 2 * P, 92);
-    let size = 220; g.font = `700 ${size}px "JetBrains Mono", monospace`;
-    while (g.measureText(c.n).width > W - 2 * P && size > 80) { size -= 10; g.font = `700 ${size}px "JetBrains Mono", monospace`; }
-    g.fillStyle = '#FE6242'; g.fillText(c.n, P - 6, 690);
-    g.font = '500 42px "DM Sans", sans-serif'; g.fillStyle = '#D6D6D6'; const y = wrap(g, c.line, P, 770, W - 2 * P, 56);
-    const by = Math.max(y + 60, 960);
-    g.fillStyle = '#2A2A2A'; round(g, P, by, W - 2 * P, 200, 24); g.fill();
-    g.font = '600 26px "JetBrains Mono", monospace'; g.fillStyle = '#7FDB4A'; g.fillText('THE FIX', P + 40, by + 62);
-    g.font = '500 40px "DM Sans", sans-serif'; g.fillStyle = '#FFFFFF'; wrap(g, c.fix, P + 40, by + 120, W - 2 * P - 80, 52);
-    g.font = '500 24px "JetBrains Mono", monospace'; g.fillStyle = '#8C8C8C';
-    g.fillText((c.basis || 'Computed').toUpperCase() + ' · PRICES CHECKED ' + PR.checked, P, H - 120);
-    g.fillText(location.host + '/token-meter', P, H - 80);
-  }
-  function wrap(g, text, x, y, max, lh) {
-    const words = String(text).split(' '); let line = '';
-    for (const w of words) { const t = line ? line + ' ' + w : w; if (g.measureText(t).width > max && line) { g.fillText(line, x, y); y += lh; line = w; } else line = t; }
-    g.fillText(line, x, y); return y;
-  }
-  function round(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
-  function currentCard() { const k = cur === 'you' ? 'you' : +cur.slice(1); return CARD[k]; }
-  $('#card-btn').onclick = async () => {
-    const c = currentCard(); if (!c) return;
-    await drawCard(c);
-    dlg.showModal ? dlg.showModal() : dlg.setAttribute('open', '');
-  };
-  $('#card-close').onclick = () => dlg.close();
-  const cardBlob = () => new Promise(r => cc.toBlob(r, 'image/png'));
-  $('#card-dl').onclick = async () => {
-    const url = URL.createObjectURL(await cardBlob()), a = document.createElement('a');
-    a.href = url; a.download = 'my-token-tax.png'; document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 2000);
-    track('card_shared', { method: 'download', module: cur });
-  };
-  $('#card-share').onclick = async () => {
-    const file = new File([await cardBlob()], 'my-token-tax.png', { type: 'image/png' });
-    const data = { files: [file], title: 'My biggest token tax', text: 'Find yours: ' + location.origin + '/token-meter' };
-    try {
-      if (navigator.canShare && navigator.canShare(data)) await navigator.share(data);
-      else if (navigator.share) await navigator.share({ title: data.title, text: data.text, url: location.origin + '/token-meter' });
-      else { await navigator.clipboard.writeText(location.origin + '/token-meter'); $('#card-share').textContent = 'Link copied'; }
-      track('card_shared', { method: 'share', module: cur });
-    } catch (e) { /* cancelled */ }
-  };
   $('#cta').onclick = () => track('cta_clicked', { module: cur });
 
   /* ---------- routing: one module per screen ---------- */
@@ -586,7 +527,6 @@
     const i = ORDER.indexOf(id);
     $('#prev').href = '#' + ORDER[Math.max(0, i - 1)]; $('#prev').style.visibility = i ? '' : 'hidden';
     $('#next').href = '#' + ORDER[Math.min(ORDER.length - 1, i + 1)]; $('#next').style.visibility = i < ORDER.length - 1 ? '' : 'hidden';
-    $('#card-btn').disabled = !currentCard();
     markSteps();
     const on = $('#steps a.on'); on && on.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
     if (id === 'm3') { if (!m3.img) loadImage(sampleImage(), true); else renderM3(); }
@@ -594,9 +534,8 @@
     if (!opened.has(mod)) { opened.add(mod); track('module_opened', { module: mod }); }
     window.scrollTo(0, 0);
   }
-  window.TM.refreshCard = () => { $('#card-btn').disabled = !currentCard(); };
 
-  function renderAll() { renderM1(); renderM2(); renderM3(); renderM4(); renderM5(); renderM6(); window.TM.rerender && window.TM.rerender(); window.TM.refreshCard(); }
+  function renderAll() { renderM1(); renderM2(); renderM3(); renderM4(); renderM5(); renderM6(); window.TM.rerender && window.TM.rerender(); }
   [m1.turns, m1.words, m1.ctx].forEach(el => el.addEventListener('input', () => { clearInterval(m1timer); m1shown = null; renderM1(); renderM2(); completed(1); }));
   m2s.addEventListener('input', () => { renderM2(); completed(2); });
   $('#model').onchange = e => { model = e.target.value; renderAll(); };
