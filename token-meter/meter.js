@@ -1,7 +1,7 @@
 /* Token Meter: six calculators, then the user's own history.
    Every price comes from prices.json. Every number on screen carries a basis tag (docs, calc, est).
    Files the user loads are read in this tab and never sent anywhere. The only network calls are prices.json,
-   JSZip from cdnjs when a zip is dropped, PostHog events (names and small numbers only, never content), and
+   today's USD to INR rate from open.er-api.com, JSZip from cdnjs when a zip is dropped, PostHog events (names and small numbers only, never content), and
    the visitor's own Anthropic key, straight to api.anthropic.com, when they press "Count exactly". */
 (function () {
   'use strict';
@@ -11,7 +11,12 @@
   const tag = b => `<em class="bs" data-b="${b}">${BASIS[b]}</em>`;
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const num = n => Math.round(n).toLocaleString('en-US');
-  const usd = v => '$' + (v >= 100 ? num(v) : v >= 1 ? v.toFixed(2) : v >= 0.1 ? v.toFixed(2) : v >= 0.01 ? v.toFixed(3) : v.toFixed(4));
+  /* prices are in USD; INR multiplies by today's rate. Named usd because every caller (and import.js) already uses it */
+  let money = 'USD', inr = 0;
+  const usd = v => {
+    const x = money === 'INR' ? v * inr : v;
+    return (money === 'INR' ? '₹' : '$') + (x >= 100 ? Math.round(x).toLocaleString(money === 'INR' ? 'en-IN' : 'en-US') : x >= 0.1 ? x.toFixed(2) : x >= 0.01 ? x.toFixed(3) : x.toFixed(4));
+  };
   const pct = v => (v >= 10 || v === 0 ? Math.round(v) : v.toFixed(1)) + '%';
   const est = s => Math.ceil(s.length / 3.5); /* estimator; check against 20 endpoint counts before launch */
   const WORD = 4 / 3; /* tokens per English word */
@@ -370,7 +375,7 @@
     track('exact_count_used', { module: 4 });
   });
 
-  /* ---------- 5. Cache breaker ---------- */
+  /* ---------- 5. Restart fee (a cache break) ---------- */
   const M5 = { start: 100000, grow: 600, turns: 10 };
   let m5 = [];
   const EV = { model: 'Switched model', tool: 'Added a tool', wait: 'Waited 61 minutes' };
@@ -396,7 +401,7 @@
     $('#m5-turn').textContent = m5.length >= M5.turns ? 'All 10 turns done. Restart to try other moves.' : `Turn ${m5.length + 1} of 10 next. Each button plays one turn.`;
     $$('#m5 [data-ev], #m5-next').forEach(b => { b.disabled = m5.length >= M5.turns; });
     $('#m5-head').innerHTML = `<span class="n">${usd(broke)}</span><p>for a turn after a break, against ${usd(normal)} for a normal turn on ${p.name}: ${Math.round(broke / normal)}× ${tag('calc')}${breaks ? `. Your ${breaks} break${breaks > 1 ? 's' : ''} added ${usd(extra)}` : ''}</p>`;
-    CARD[5] = { tax: 'Cache breaker', n: Math.round(broke / normal) + '×', line: 'what one turn costs after the cache breaks', fix: 'Pick the model and tools first, and keep going within the hour.', basis: 'Computed' };
+    CARD[5] = { tax: 'Restart fee', n: Math.round(broke / normal) + '×', line: 'what one turn costs when Claude has to start over', fix: 'Pick the model and tools first, and keep going within the hour.', basis: 'Computed' };
   }
   $('#m5-next').onclick = () => stepM5(null);
   $$('#m5 [data-ev]').forEach(b => { b.onclick = () => stepM5(b.dataset.ev); });
@@ -418,7 +423,7 @@
       return { k, name: PR.models[k].name, i, o, tot: i + o, rate: p.input };
     });
     const max = rows[2].tot;
-    $('#m6-cards').innerHTML = rows.map(r => `<div class="mcard${r.k === 'haiku' ? ' cheap' : ''}"><h3>${r.name}</h3><div class="tot">${usd(r.tot)}</div><div class="meter"><i style="width:${(100 * r.tot / max).toFixed(1)}%"></i></div><dl><dt>Input</dt><dd>${usd(r.i)}</dd><dt>Output</dt><dd>${usd(r.o)}</dd><dt>Input price</dt><dd>$${r.rate}/M</dd></dl></div>`).join('');
+    $('#m6-cards').innerHTML = rows.map(r => `<div class="mcard${r.k === 'haiku' ? ' cheap' : ''}"><h3>${r.name}</h3><div class="tot">${usd(r.tot)}</div><div class="meter"><i style="width:${(100 * r.tot / max).toFixed(1)}%"></i></div><dl><dt>Input</dt><dd>${usd(r.i)}</dd><dt>Output</dt><dd>${usd(r.o)}</dd><dt>Input price</dt><dd>${usd(r.rate)}/M</dd></dl></div>`).join('');
     const ratio = Math.round(rows[2].rate / rows[0].rate);
     $('#m6-head').innerHTML = `<span class="n good">1/${ratio}</span><p>Haiku input costs 1/${ratio} of Opus input ${tag('docs')}. This job: ${usd(rows[0].tot)} on Haiku, ${usd(rows[2].tot)} on Opus ${tag('calc')}</p>`;
     $('#m6-how').innerHTML = `Job profile: ${t.what} ${tag('est')}. Cost = tokens × each model's price ${tag('docs')}.`;
@@ -517,6 +522,19 @@
   [m1.turns, m1.words, m1.ctx].forEach(el => el.addEventListener('input', () => { renderM1(); renderM2(); completed(1); }));
   m2s.addEventListener('input', () => { renderM2(); completed(2); });
   $('#model').onchange = e => { model = e.target.value; renderAll(); };
+  function setMoney(m) {
+    money = m === 'INR' && inr ? 'INR' : 'USD';
+    $$('#money button').forEach(b => b.setAttribute('aria-checked', b.dataset.c === money));
+    $('#fx').hidden = money !== 'INR';
+    try { localStorage.setItem('tm:money', money); } catch (e) {}
+  }
+  $$('#money button').forEach(b => { b.onclick = () => { setMoney(b.dataset.c); renderAll(); track('currency_changed', { currency: money }); }; });
+  /* today's rate; prices.json carries a fallback so INR still works offline */
+  function loadRate(fallback) {
+    const show = (r, d) => { inr = r; $('#fx').textContent = `$1 = ₹${r.toFixed(2)}, rate of ${d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}.`; };
+    show(fallback.rate, new Date(fallback.checked));
+    return fetch('https://open.er-api.com/v6/latest/USD').then(r => r.json()).then(j => { if (j.rates && j.rates.INR) show(j.rates.INR, new Date(j.time_last_update_unix * 1000)); }).catch(() => {});
+  }
   let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(renderM3, 120); });
 
   fetch('/token-meter/prices.json').then(r => r.json()).then(p => {
@@ -524,6 +542,9 @@
     $$('em.bs:empty').forEach(e => { e.textContent = BASIS[e.dataset.b]; });
     $('#checked').textContent = new Date(p.checked).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     m4in.value = SAMPLES.json();
+    let saved = 'USD'; try { saved = localStorage.getItem('tm:money') || 'USD'; } catch (e) {}
+    loadRate(p.usd_inr).then(() => { if (money === 'INR') renderAll(); });
+    setMoney(saved);
     renderAll();
     window.addEventListener('hashchange', route);
     route();

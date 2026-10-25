@@ -29,8 +29,13 @@ button{cursor:pointer}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
 .brand{font:700 13px var(--mono);letter-spacing:.14em;color:var(--ink);text-decoration:none}
 .brand b{color:var(--coral);font-weight:700}
+.top .money{margin-left:auto;gap:0;flex-wrap:nowrap}
+.top .money button{min-height:30px;padding:5px 9px;font:500 12px var(--mono);border-radius:0}
+.top .money button:first-child{border-radius:8px 0 0 8px}
+.top .money button:last-child{border-radius:0 8px 8px 0;margin-left:-1px}
 .price-on{font:500 12px var(--mono);color:var(--ink3);display:flex;align-items:center;gap:6px}
 .price-on select{font:500 12px var(--mono);padding:6px 8px;border:1px solid var(--line2);border-radius:8px;background:var(--card)}
+@media (max-width:420px){.price-on{font-size:0;gap:0}}
 
 .steps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:4px 16px 12px}
 .steps::-webkit-scrollbar{display:none}

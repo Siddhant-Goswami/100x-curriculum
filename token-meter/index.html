@@ -17,6 +17,7 @@
 <div class="app">
   <header class="top">
     <a class="brand" href="#m1">TOKEN<b>METER</b></a>
+    <div class="money seg" id="money" role="radiogroup" aria-label="Currency"><button type="button" role="radio" data-c="USD" aria-checked="true">USD</button><button type="button" role="radio" data-c="INR" aria-checked="false">INR</button></div>
     <label class="price-on">Priced on
       <select id="model" aria-label="Model used for prices">
         <option value="haiku">Haiku 5.5</option>
@@ -31,7 +32,7 @@
     <a href="#m2"><i>2</i>The Caveman myth</a>
     <a href="#m3"><i>3</i>Screenshot tax</a>
     <a href="#m4"><i>4</i>Format tax</a>
-    <a href="#m5"><i>5</i>Cache breaker</a>
+    <a href="#m5"><i>5</i>Restart fee</a>
     <a href="#m6"><i>6</i>Pick the model</a>
     <a href="#you" class="you"><i>★</i>Your sessions</a>
   </nav>
@@ -142,8 +143,8 @@
   <!-- 5 -->
   <section class="mod" id="m5" data-mod="5" hidden>
     <p class="eyebrow">Module 5</p>
-    <h1>Cache breaker</h1>
-    <p class="sub">A chat with 100K tokens of history. Step through 10 turns. Some moves throw the cache away, and the next turn writes it all again.</p>
+    <h1>The restart fee</h1>
+    <p class="sub">Claude saves a copy of your chat so far, so each new turn can re-read it cheaply. That saved copy is called the cache. Some moves throw the copy away, and the next turn pays to save the whole chat again. Step through 10 turns of a long chat and try them.</p>
     <div class="controls">
       <div class="row">
         <button class="btn" id="m5-next" type="button">Next turn</button>
@@ -156,7 +157,7 @@
     </div>
     <div class="visual"><div class="line" id="m5-line"></div></div>
     <div class="headline" id="m5-head"></div>
-    <p class="tiny how">A normal turn reads the history at the cache-read price. After a break it pays the cache-write price on all of it. The cache lives 5 minutes on API keys and 1 hour on paid plans <em class="bs" data-b="docs"></em>.</p>
+    <p class="tiny how">Think of a shop that keeps your usual order ready. Come back soon with the same order and it's quick. Change the order, or stay away too long, and they start from scratch. For Claude, "too long" is 5 minutes on API keys and 1 hour on paid plans <em class="bs" data-b="docs"></em>.</p>
   </section>
 
   <!-- 6 -->
@@ -211,7 +212,7 @@
   </div>
 
   <footer class="foot">
-    <p class="tiny">Prices from Anthropic's pricing page, checked <span id="checked"></span>. Tags on each number: <em class="bs" data-b="docs"></em> <em class="bs" data-b="calc"></em> <em class="bs" data-b="est"></em></p>
+    <p class="tiny">Prices from Anthropic's pricing page, checked <span id="checked"></span>. <span id="fx" hidden></span> Tags on each number: <em class="bs" data-b="docs"></em> <em class="bs" data-b="calc"></em> <em class="bs" data-b="est"></em></p>
     <p class="made">Made by <a id="cta" href="https://www.100xengineers.com/" target="_blank" rel="noopener">100xEngineers</a></p>
   </footer>
 </div>

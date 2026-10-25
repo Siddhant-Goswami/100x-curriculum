@@ -110,7 +110,7 @@
       { id: 1, name: 'Long-chat tax', cost: splitSave, what: `${rows.filter(r => r.turns > SPLIT).length} chats ran past ${SPLIT} turns. Restarting each with a summary every ${SPLIT} turns saves this.`, fix: `Start a fresh chat with a summary every ${SPLIT} turns.` },
       { id: 3, name: 'Screenshot tax', cost: imgCost, what: `${num(imgs)} pasted images, each re-read on every later turn. Sizes aren't in the export, so each counts as about ${num(IMG)} tokens.`, fix: 'Crop to the part that matters before you paste.' },
       { id: 4, name: 'File tax', cost: fileCost, what: `${num(files)} files and pasted documents, carried through the rest of each chat.`, fix: 'Paste the part you need, as plain text or CSV.' },
-      { id: 5, name: 'Cache breaks', cost: breakExtra, what: `${num(breaks)} times you came back to a chat after more than an hour, so Claude wrote the whole history again.`, fix: 'Come back within the hour, or start a fresh chat with a summary.' },
+      { id: 5, name: 'Restart fees', cost: breakExtra, what: `${num(breaks)} times you came back to a chat after more than an hour, so Claude wrote the whole history again.`, fix: 'Come back within the hour, or start a fresh chat with a summary.' },
       { id: 2, name: 'Caveman savings', cost: outCost, what: 'What answers 75% shorter would save. Small, because the re-reads stay.', fix: 'Cut what Claude re-reads, not what it writes.' }
     ];
     return { kind: 'B', chats: rows.length, msgs, tokens, tot, rows, pasted, taxes, byModel, key };
@@ -125,7 +125,7 @@
       { id: 4, name: 'Noisy output', cost: g('noisy_output'), what: `${num((t.noisy_output || {}).count || 0)} tool results over 5,000 tokens, carried through the rest of their session.`, fix: 'Ask for summaries, use head, grep and limits, not whole files or logs.' },
       { id: 3, name: 'Screenshot tax', cost: g('screenshots'), what: `${num((t.screenshots || {}).count || 0)} images in your sessions, about ${num((t.screenshots || {}).tokens || 0)} tokens.`, fix: 'Crop screenshots, or describe the bug in text.' },
       { id: 1, name: 'Startup tax', cost: g('startup'), what: `Each session starts by writing about ${num((t.startup || {}).avg_first_write || 0)} tokens to the cache: CLAUDE.md, tools, MCP servers.`, fix: 'Trim CLAUDE.md and switch off MCP servers you don\'t use.' },
-      { id: 5, name: 'Cache breaks', cost: g('cache_breaks'), what: `${num((t.cache_breaks || {}).count || 0)} times a model switch or a long pause made Claude write the whole history again.`, fix: 'Pick the model first, and /clear instead of coming back hours later.' },
+      { id: 5, name: 'Restart fees', cost: g('cache_breaks'), what: `${num((t.cache_breaks || {}).count || 0)} times a model switch or a long pause made Claude write the whole history again.`, fix: 'Pick the model first, and /clear instead of coming back hours later.' },
       { id: 6, name: 'One-model tax', cost: g('one_model'), what: `${num((t.one_model || {}).count || 0)} quick jobs ran on Opus: 10 requests or fewer, each writing under 300 tokens. Haiku would have done them for less.`, fix: 'Use Haiku or Sonnet for quick lookups and edits.' }
     ];
     return { kind: 'A', j, tot, taxes };

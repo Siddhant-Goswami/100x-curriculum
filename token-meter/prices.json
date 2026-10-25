@@ -2,6 +2,7 @@
   "checked": "2026-10-25",
   "source": "https://platform.claude.com/docs/en/about-claude/pricing",
   "unit": "USD per million tokens",
+  "usd_inr": { "rate": 95.0, "checked": "2026-10-25", "note": "fallback only; the page fetches today's rate from open.er-api.com" },
   "cache_lifetime_minutes": {
     "api": 5,
     "paid_plan": 60
