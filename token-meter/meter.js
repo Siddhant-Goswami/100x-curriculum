@@ -519,7 +519,7 @@
   $('#model').onchange = e => { model = e.target.value; renderAll(); };
   let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(renderM3, 120); });
 
-  fetch('prices.json').then(r => r.json()).then(p => {
+  fetch('/token-meter/prices.json').then(r => r.json()).then(p => {
     PR = p;
     $$('em.bs:empty').forEach(e => { e.textContent = BASIS[e.dataset.b]; });
     $('#checked').textContent = new Date(p.checked).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -527,6 +527,6 @@
     renderAll();
     window.addEventListener('hashchange', route);
     route();
-    const s = document.createElement('script'); s.src = 'import.js'; document.body.appendChild(s);
+    const s = document.createElement('script'); s.src = '/token-meter/import.js'; document.body.appendChild(s);
   });
 })();
