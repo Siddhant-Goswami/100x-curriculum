@@ -93,7 +93,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
 .seg button[aria-checked=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
 
 /* basis tags */
-.bs{display:inline-block;font:600 9.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;font-style:normal;padding:3px 5px;border-radius:4px;vertical-align:2px;white-space:nowrap}
+.bs{display:inline-block;cursor:help;font:600 9.5px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;font-style:normal;padding:3px 5px;border-radius:4px;vertical-align:2px;white-space:nowrap}
 .bs[data-b=docs]{background:#E6EEF9;color:#2C5BA0}
 .bs[data-b=calc]{background:var(--hum-soft);color:var(--hum-ink)}
 .bs[data-b=bench]{background:#F3E8FA;color:#7A3FA0}
@@ -278,8 +278,9 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
 
 .pager{display:flex;justify-content:space-between;gap:8px;padding:16px 0;position:sticky;bottom:0;background:linear-gradient(transparent,var(--bg) 35%);padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
 .pager .btn{flex:1}
-.foot{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line);padding-top:16px}
-.made{margin:0;font-size:13px;color:var(--ink3);text-align:center}
+.foot{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:14px}
+.foot .tiny{font-size:11px;color:var(--ink3)}
+.made{margin:0;font-size:12px;color:var(--ink3);text-align:center}
 .made a{color:var(--ink2);text-decoration:underline;text-underline-offset:2px}
 
 .keybox{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--coral);border-radius:var(--r);padding:16px;margin-top:10px}
@@ -323,6 +324,6 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
   .pager{justify-content:flex-end;position:static;background:none}
   .pager .btn{flex:0 0 auto;min-width:150px}
   .pager #prev{margin-right:auto}
-  .foot .tiny{font-size:12px}
+  .foot .tiny{font-size:11px}
   .you .stats{grid-template-columns:repeat(4,1fr)}
 }

@@ -10,7 +10,8 @@
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
   const BASIS = { docs: 'Anthropic', calc: 'Computed', bench: 'Vendor benchmark', est: 'Estimate' };
-  const tag = b => `<em class="bs" data-b="${b}">${BASIS[b]}</em>`;
+  const WHY = { docs: 'Straight from Anthropic: its pricing page or docs', calc: 'Computed from Anthropic\'s prices', bench: 'A vendor benchmark', est: 'An estimate, not a count' };
+  const tag = b => `<em class="bs" data-b="${b}" title="${WHY[b]}">${BASIS[b]}</em>`;
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const num = n => Math.round(n).toLocaleString('en-US');
   /* prices are in USD; INR multiplies by today's rate. Named usd because every caller (and import.js) already uses it */
@@ -556,7 +557,7 @@
 
   fetch('/token-meter/prices.json').then(r => r.json()).then(p => {
     PR = p;
-    $$('em.bs:empty').forEach(e => { e.textContent = BASIS[e.dataset.b]; });
+    $$('em.bs:empty').forEach(e => { e.textContent = BASIS[e.dataset.b]; e.title = WHY[e.dataset.b]; });
     $('#checked').textContent = new Date(p.checked).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
     m4in.value = SAMPLES.json();
     let saved = 'USD'; try { saved = localStorage.getItem('tm:money') || 'USD'; } catch (e) {}
