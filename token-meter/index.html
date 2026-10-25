@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Token Meter</title>
-<meta name="description" content="Six calculators that show where your Claude tokens go, then load your own history and see your biggest token tax. Your files never leave your machine.">
+<meta name="description" content="Six calculators that show where your AI tokens go (Claude, ChatGPT or Gemini), then load your own history and see your biggest token tax. Your files never leave your machine.">
 <meta name="theme-color" content="#F7F7F7">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,11 +19,12 @@
     <a class="brand" href="#m1">TOKEN<b>METER</b></a>
     <div class="money seg" id="money" role="radiogroup" aria-label="Currency"><button type="button" role="radio" data-c="USD" aria-checked="true">USD</button><button type="button" role="radio" data-c="INR" aria-checked="false">INR</button></div>
     <label class="price-on"><span>Prices of</span>
-      <select id="model" aria-label="Model used for prices">
-        <option value="haiku">Haiku 5.5</option>
-        <option value="sonnet" selected>Sonnet 5.5</option>
-        <option value="opus">Opus 5.5</option>
+      <select id="prov" aria-label="AI provider">
+        <option value="anthropic">Claude</option>
+        <option value="openai">ChatGPT</option>
+        <option value="google">Gemini</option>
       </select>
+      <select id="model" aria-label="Model used for prices"></select>
     </label>
   </header>
 
@@ -39,12 +40,22 @@
 
   <main id="view">
 
+  <!-- 0: pick the AI. Every module then uses its prices and its rules -->
+  <section class="mod start" id="start" data-mod="start" hidden>
+    <div class="head">
+      <p class="eyebrow">Before you start</p>
+      <h1>Which AI do you use?</h1>
+      <p class="sub">Every module uses its prices and its rules. You can switch later at the top of the page.</p>
+    </div>
+    <div class="pcards" id="pcards"></div>
+  </section>
+
   <!-- 1 -->
   <section class="mod stage" id="m1" data-mod="1" data-stage="setup" hidden>
     <div class="head">
       <p class="eyebrow">Module 1</p>
       <h1>Where the money goes</h1>
-      <p class="sub">Every time you send a message, Claude reads the whole chat again from the top. Set up a chat, press play, and watch the pile of old messages grow.</p>
+      <p class="sub">Every time you send a message, <span data-ai>Claude</span> reads the whole chat again from the top. Set up a chat, press play, and watch the pile of old messages grow.</p>
     </div>
     <div class="chip" id="m1-chip"><span id="m1-chip-t"></span><button class="link" id="m1-change" type="button">Change the chat</button></div>
     <div class="controls" id="m1-ctl">
@@ -54,7 +65,7 @@
         <input type="range" id="m1-words" min="20" max="1000" step="10" value="100"></label>
       <label class="ctl"><span>What was in the chat before you typed</span>
         <select id="m1-ctx">
-          <option value="25000" selected>Nothing much: Claude's own setup, about 25K tokens</option>
+          <option value="25000" selected>Nothing much: its own setup, about 25K tokens</option>
           <option value="100000">Some files or a Project, about 100K tokens</option>
           <option value="200000">A whole document or codebase, about 200K tokens</option>
         </select></label>
@@ -67,14 +78,14 @@
       </div>
       <div class="reveal" id="m1-cost">
         <h3 class="ct">What each message cost</h3>
-        <p class="key"><span><s class="k-old"></s>Re-reading the setup and old messages</span><span><s class="k-new"></s>Your new message and Claude's answer</span></p>
+        <p class="key"><span><s class="k-old"></s>Re-reading the setup and old messages</span><span><s class="k-new"></s>Your new message and <span data-ai>Claude</span>'s answer</span></p>
         <div class="chart" id="m1-cols"></div>
       </div>
     </div>
     <p class="sum" id="m1-head"></p>
     <div class="row adv"><button class="btn dark" id="m1-more" type="button">What did each message cost?</button><button class="btn ghost" id="m1-replay" type="button">Replay</button></div>
     <details class="maths"><summary>Show the maths</summary>
-      <p>Each message pays: old history × cache-read price, the last exchange × cache-write price, your new message × input price, Claude's answer × output price. Words to tokens at 4 ÷ 3 (estimate).</p>
+      <p id="m1-maths"></p>
       <div class="legend" id="m1-legend"></div>
     </details>
   </section>
@@ -84,13 +95,13 @@
     <div class="l">
       <p class="eyebrow">Module 2</p>
       <h1>The Caveman myth</h1>
-      <p class="sub">"Tell Claude to answer like a caveman and save tokens." Shrink every answer and watch what the bill does.</p>
+      <p class="sub">"Tell <span data-ai>Claude</span> to answer like a caveman and save tokens." Shrink every answer and watch what the bill does.</p>
       <div class="controls">
-        <label class="ctl"><span>Make Claude's answers shorter by <output id="m2-shrink-o"></output></span>
+        <label class="ctl"><span>Make <span data-ai>Claude</span>'s answers shorter by <output id="m2-shrink-o"></output></span>
           <input type="range" id="m2-shrink" min="0" max="75" step="5" value="75"></label>
         <p class="tiny" id="m2-chat"></p>
       </div>
-      <details class="maths"><summary>Show the maths</summary><p>Same chat and maths as module 1. Only Claude's answers shrink, and so does the small part of history they make up.</p></details>
+      <details class="maths"><summary>Show the maths</summary><p>Same chat and maths as module 1. Only <span data-ai>Claude</span>'s answers shrink, and so does the small part of history they make up.</p></details>
     </div>
     <div class="r">
       <div class="visual"><div class="duo" id="m2-duo"></div></div>
@@ -103,28 +114,29 @@
     <div class="l">
       <p class="eyebrow">Module 3</p>
       <h1>Screenshot tax</h1>
-      <p class="sub">Claude cuts every image into 28-pixel squares and charges for each square. Crop to the part that matters and watch the count fall.</p>
+      <p class="sub" id="m3-sub"></p>
       <div class="controls">
         <div class="row">
           <button class="btn" id="m3-crop800" type="button">Crop to 800 × 450</button>
           <button class="btn ghost" id="m3-reset" type="button">Full image</button>
         </div>
-        <label class="ctl"><span>Shrink the image to <output id="m3-scale-o"></output></span>
+        <label class="ctl" id="m3-level-ctl"><span>Image detail</span><div class="seg" id="m3-level" role="radiogroup" aria-label="Image detail"></div></label>
+        <label class="ctl" id="m3-scale-ctl"><span>Shrink the image to <output id="m3-scale-o"></output></span>
           <input type="range" id="m3-scale" min="10" max="100" value="100"></label>
         <div class="row">
           <label class="btn ghost file">Use your own image<input type="file" id="m3-file" accept="image/*"></label>
           <button class="btn ghost" id="m3-sample" type="button">Use the sample</button>
         </div>
       </div>
-      <details class="exact"><summary>Check with Claude</summary>
+      <details class="exact"><summary>Check with <span data-ai>Claude</span></summary>
         <div class="row"><button class="btn ghost" id="m3-exact" type="button">Count exactly</button><span class="exact-out" id="m3-exact-o"></span></div>
-        <p class="tiny">Uses your own Anthropic API key. The cropped image goes from your browser to Anthropic, not to us.</p>
+        <p class="tiny">Uses your own <span data-co>Anthropic</span> API key. The cropped image goes from your browser to <span data-co>Anthropic</span>, not to us.</p>
       </details>
-      <details class="maths"><summary>Show the maths</summary><p>Tokens = ceil(width ÷ 28) × ceil(height ÷ 28), with the long edge capped at 2,576 px (Anthropic docs).</p></details>
+      <details class="maths"><summary>Show the maths</summary><p id="m3-maths"></p></details>
     </div>
     <div class="r">
       <div class="visual">
-        <div class="drop" id="m3-drop"><canvas id="m3-canvas" aria-label="Image with the 28 pixel grid"></canvas></div>
+        <div class="drop" id="m3-drop"><canvas id="m3-canvas" aria-label="Your image, with the squares it is counted in"></canvas></div>
         <p class="cap">Drag the corners to crop. Drag inside to move. Paste or drop any image.</p>
       </div>
       <div class="headline" id="m3-head"></div>
@@ -136,7 +148,7 @@
     <div class="l">
       <p class="eyebrow">Module 4</p>
       <h1>Format tax</h1>
-      <p class="sub">Every bracket, quote and indent is something Claude has to read. The coral marks show what you pay for that isn't words. Convert and watch them vanish.</p>
+      <p class="sub">Every bracket, quote and indent is something <span data-ai>Claude</span> has to read. The coral marks show what you pay for that isn't words. Convert and watch them vanish.</p>
       <div class="controls">
         <label class="ctl"><span>Start with</span>
           <select id="m4-sample" aria-label="Sample">
@@ -147,9 +159,9 @@
           </select></label>
         <label class="ctl"><span>Convert it</span><select id="m4-to" aria-label="Convert to"></select></label>
       </div>
-      <details class="exact"><summary>Check with Claude</summary>
+      <details class="exact"><summary>Check with <span data-ai>Claude</span></summary>
         <div class="row"><button class="btn ghost" id="m4-exact" type="button">Count exactly</button><span class="exact-out" id="m4-exact-o"></span></div>
-        <p class="tiny">Uses your own Anthropic API key. Both texts go from your browser to Anthropic, not to us.</p>
+        <p class="tiny">Uses your own <span data-co>Anthropic</span> API key. Both texts go from your browser to <span data-co>Anthropic</span>, not to us.</p>
       </details>
       <details class="maths"><summary>Show the maths</summary><p>Converted in your browser. Token estimate: characters ÷ 3.5. Marked characters are punctuation, brackets, quotes and indentation.</p></details>
     </div>
@@ -178,7 +190,7 @@
         </div>
         <p class="tiny" id="m5-turn"></p>
       </div>
-      <details class="maths"><summary>Show the maths</summary><p>The saved copy is called the cache. A normal message re-reads it at the cache-read price. Switching model, adding a tool, or waiting longer than the cache lifetime throws the copy away, and that message writes the whole history again at the cache-write price. The lifetime is 5 minutes on API keys and 1 hour on paid plans (Anthropic docs).</p></details>
+      <details class="maths"><summary>Show the maths</summary><p id="m5-maths"></p></details>
     </div>
     <div class="r">
       <div class="visual shopviz">
@@ -217,8 +229,8 @@
       <h1>Load your own history</h1>
       <p class="sub">See modules 1 to 6 with your own numbers. Your files are read in this browser tab. Nothing is uploaded.</p>
       <p class="note desk">Best on a laptop: you'll need the file from your email or terminal.</p>
-      <div class="paths">
-        <div class="path">
+      <div class="paths" id="paths">
+        <div class="path" id="b-path">
           <p class="eyebrow">Claude app</p>
           <ol>
             <li>In Claude, open Settings › Privacy › Export data.</li>
@@ -228,16 +240,16 @@
           <label class="dropzone" id="b-drop">Drop your export zip<input type="file" id="b-file" accept=".zip,application/zip,.json"></label>
         </div>
         <div class="path">
-          <p class="eyebrow">Claude Code</p>
+          <p class="eyebrow" id="a-name">Claude Code</p>
           <ol>
-            <li>In a terminal, run <code>npx 100x-token-meter</code>. It runs offline.</li>
+            <li>In a terminal, run <code>npx 100x-token-meter</code>. It runs offline, and also reads OpenCode and Hermes Agent, including open models on OpenRouter or Ollama.</li>
             <li>It writes <code>token-meter.json</code>: totals by tool, MCP server and skill. No prompts or code.</li>
             <li>Drop that file here.</li>
           </ol>
           <label class="dropzone" id="a-drop">Drop token-meter.json<input type="file" id="a-file" accept=".json,application/json"></label>
         </div>
       </div>
-      <div class="row"><button class="btn ghost" id="demo-btn" type="button">Demo: Claude app</button><button class="btn ghost" id="demo-a-btn" type="button">Demo: Claude Code</button><span class="tiny">Made-up histories, so you can see what comes out.</span></div>
+      <div class="row"><button class="btn ghost" id="demo-btn" type="button">Demo: Claude app</button><button class="btn ghost" id="demo-a-btn" type="button">Demo: <span id="demo-a-name">Claude Code</span></button><span class="tiny">Made-up histories, so you can see what comes out.</span></div>
       <p class="err" id="you-err" hidden></p>
     </div>
     <div class="r">
@@ -253,14 +265,14 @@
   </div>
 
   <footer class="foot">
-    <p class="tiny">Prices from Anthropic's pricing page, checked <span id="checked"></span>. <span id="fx" hidden></span></p>
+    <p class="tiny">Prices from <a id="src" href="https://platform.claude.com/docs/en/about-claude/pricing" target="_blank" rel="noopener"><span data-co>Anthropic</span>'s pricing page</a>, checked <span id="checked"></span>. <span id="fx" hidden></span></p>
     <p class="made">Made by <a id="cta" href="https://www.100xengineers.com/" target="_blank" rel="noopener">100xEngineers</a></p>
   </footer>
 </div>
 
 <form class="keybox" id="keybox" hidden autocomplete="off">
-  <label for="key-in"><b>Your Anthropic API key</b></label>
-  <p class="tiny">Counting is free: it doesn't use your credits. Your key goes from this browser straight to Anthropic and is never sent to us. Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>. A Claude subscription can't be used here.</p>
+  <label for="key-in"><b>Your <span data-co>Anthropic</span> API key</b></label>
+  <p class="tiny" id="key-note"></p>
   <input type="password" id="key-in" placeholder="sk-ant-…" spellcheck="false" autocomplete="off" aria-describedby="key-err">
   <label class="keep"><input type="checkbox" id="key-keep"> Remember it until I close this tab</label>
   <p class="err-inline" id="key-err" aria-live="polite"></p>
