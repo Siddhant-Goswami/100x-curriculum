@@ -71,10 +71,32 @@
   function legendHTML(tot) {
     return KEYS.map(k => `<div><s class="k-${k}"></s><span><b>${usd(tot[k])} · ${pct(100 * tot[k] / tot.total)}</b>${KLABEL[k]}</span></div>`).join('');
   }
-  /* a stack of chat bubbles: the starting context block, then one pair (you, Claude) per turn. hot = the newest pair in coral */
-  function pairsHTML(n, hot, cw, h) {
-    return Array.from({ length: n }, (_, i) => `<div class="pair${hot && i === n - 1 ? ' hot' : ''}" style="--h:${h}px;--cw:${cw}%"><i class="u"></i><i class="c"></i></div>`).join('');
+  /* module 1 writes a short sample chat so a beginner can see who wrote what. The text stands in for messages of the chosen length */
+  const SAMPLE = [
+    ['Plan a 3-day trip to Goa for me.', 'Sure. Day 1: north beaches and a sunset at Chapora Fort…'],
+    ['Make day 2 cheaper.', 'Swap the river cruise for a scooter ride to Divar Island…'],
+    ['Add a vegetarian lunch spot.', 'Try Vinayak in Assagao: thalis, about ₹300 each…'],
+    ['What if it rains?', 'Move the beaches to day 3 and visit the spice farm instead…'],
+    ['Put it all in a table.', 'Here it is: Day, Morning, Lunch, Evening, Cost…']
+  ];
+  /* shrink cuts Claude's answer to that share of its words, the way module 2 shortens every answer */
+  function bubbleHTML(i, hot, shrink = 0) {
+    const [u, c] = SAMPLE[i % SAMPLE.length], w = c.replace(/…$/, '').split(' '), k = Math.max(2, Math.ceil(w.length * (1 - shrink)));
+    return `<div class="turn${hot ? ' hot' : ''}"><p class="b you"><b>You</b>${esc(u)}</p><p class="b cl"><b>Claude</b>${esc(k < w.length ? w.slice(0, k).join(' ').replace(/[,.:]$/, '') + '.' : c)}</p></div>`;
   }
+  const ktok = v => v >= 1000 ? (v / 1000).toFixed(v >= 10000 ? 0 : 1) + 'K' : num(v);
+  /* the chat as Claude sees it at message `shown`, in two zones. Grey: what Claude reads again (its setup and every earlier message).
+     Coral: the new message and answer. Only the latest `keep` old turns are written out; the rest fold into one grey block that grows with them */
+  function chatStackHTML({ shown, words, ctx, keep, shrink = 0 }) {
+    const olds = shown - 1, fold = Math.max(0, olds - keep), u = words * WORD, turnT = u + u * (1 - shrink), oldT = ctx + olds * turnT;
+    return `<div class="zone old"><p class="zh"><span>${shown > 1 ? 'Read again' : 'Read for the first time'}</span><span>${ktok(oldT)} tokens</span></p>` +
+      `<div class="ctx"><b>Claude's setup</b><span>${ctxLabel(ctx) === "Claude's own setup" ? 'its rules and tools, there before you typed' : ctxLabel(ctx).toLowerCase() + ', plus its rules and tools'} · ${ktok(ctx)}</span></div>` +
+      (fold ? `<div class="fold" style="height:${Math.min(64, 16 + fold * 3)}px"><span>${fold > 1 ? `Messages 1 to ${fold}` : 'Message 1'}, yours and Claude's</span></div>` : '') +
+      Array.from({ length: olds - fold }, (_, k) => bubbleHTML(fold + k, false, shrink)).join('') + '</div>' +
+      `<div class="zone new"><p class="zh"><span>New: message ${shown}</span><span>${ktok(turnT)} tokens</span></p>${bubbleHTML(shown - 1, true, shrink)}</div>`;
+  }
+  /* y-axis ticks for the per-message chart: about four round steps */
+  function niceStep(max) { const raw = max / 4, mag = Math.pow(10, Math.floor(Math.log10(raw))); return [1, 2, 2.5, 5, 10].map(f => f * mag).find(v => v >= raw); }
   const ctxLabel = v => v >= 200000 ? 'A whole document or codebase' : v >= 100000 ? 'Files or a Project' : "Claude's own setup";
 
   /* ---------- 1. Where the money goes ---------- */
@@ -88,26 +110,31 @@
     m1sec.dataset.stage = s;
     $('#m1-more').textContent = s === 'cost' ? "What's the total?" : 'What did each message cost?';
     $('#m1-chip-t').textContent = `${m1.turns.value} messages · ${m1.words.value} words each · ${ctxLabel(+m1.ctx.value).toLowerCase()} before`;
-    if (s !== 'setup') setTimeout(renderM1, 420); /* the stack re-fits its rows once the height transition is done */
   }
   function renderM1() {
     const N = +m1.turns.value, shown = m1shown == null ? N : m1shown, stage = m1sec.dataset.stage;
     $('#m1-turns-o').textContent = N;
     $('#m1-words-o').textContent = m1.words.value;
     const full = chatCost(chatOpts()), { tot, per } = shown === N ? full : chatCost(chatOpts({ turns: shown }));
-    /* the stack: context block on top, then every turn so far; the newest pair is coral. Rows are fitted into the rows box */
-    const rowsEl = $('#m1-stack .rows'), rowsH = rowsEl ? rowsEl.clientHeight : 230;
-    const rowH = Math.max(1, Math.min(22, Math.floor((rowsH / shown - 3) / 2)));
-    $('#m1-stack').innerHTML = `<div class="ctx${shown === 1 ? ' hot' : ''}"><span>Before you typed: ${ctxLabel(+m1.ctx.value)}</span><span>${num(+m1.ctx.value / 1000)}K tokens</span></div>` +
-      `<div class="rows">${pairsHTML(shown, true, 72, rowH)}</div>` +
-      `<div class="lab"><span class="old">read again: <em>${shown > 1 ? (shown - 1) + ' old message' + (shown > 2 ? 's' : '') + ' + setup' : 'the setup'}</em></span><span class="new"><b>message ${shown}</b></span></div>`;
+    const thumb = stage === 'cost' || stage === 'total';
+    $('#m1-stack').innerHTML = chatStackHTML({ shown, words: +m1.words.value, ctx: +m1.ctx.value, keep: thumb ? 1 : 4 });
     const last = per[per.length - 1];
     $('#m1-live').textContent = stage === 'play'
-      ? `Message ${shown} of ${N}: before answering, Claude reads ${shown > 1 ? `the setup and all ${shown - 1} earlier message${shown > 2 ? 's' : ''}` : 'the whole setup'} again. This message cost ${usd(OLD(last) + NEW(last))}.`
+      ? `Message ${shown} of ${N}: before answering, Claude reads ${shown > 1 ? `its setup and all ${shown - 1} earlier message${shown > 2 ? 's' : ''}` : 'its whole setup'} again. This message cost ${usd(OLD(last) + NEW(last))}.`
       : `${N} messages. The grey is what Claude read again.`;
-    /* one column per turn, two colours. Turn 1 writes the whole starting context, so it is clipped at the top */
+    /* one column per message on a dollar axis. Message 1 stores the whole setup, so it can run off the top: it is cut and its price written above */
     const sum = t => OLD(t) + NEW(t), max = Math.max(...per.slice(1).map(sum), per.length === 1 ? sum(per[0]) : 0);
-    $('#m1-cols').innerHTML = per.map((t, i) => { const f = Math.min(1, max / sum(t)); return `<span title="Message ${i + 1}: ${usd(sum(t))}"${f < 1 ? ' class="clip"' : ''}><i class="k-old" style="height:${(200 * f * OLD(t) / max).toFixed(2)}px"></i><i class="k-new" style="height:${(200 * f * NEW(t) / max).toFixed(2)}px"></i></span>`; }).join('');
+    const fx = money === 'INR' ? inr : 1, st = niceStep(max * fx) / fx, top = Math.ceil(max / st) * st, H = 200, every = Math.ceil(per.length / 10);
+    const grid = Array.from({ length: Math.round(top / st) + 1 }, (_, k) => `<i style="bottom:${(H * k * st / top).toFixed(1)}px"><em>${k ? usd(k * st) : 0}</em></i>`).join('');
+    const bars = per.map((t, i) => {
+      const f = Math.min(1, top / sum(t)), lab = f < 1 || i === per.length - 1 || per.length <= 8;
+      return `<span title="Message ${i + 1}: ${usd(sum(t))}"${f < 1 ? ' class="clip"' : ''}>` +
+        `<i class="k-new" style="height:${(H * f * NEW(t) / top).toFixed(2)}px"></i><i class="k-old" style="height:${(H * f * OLD(t) / top).toFixed(2)}px"></i>` +
+        (lab ? `<em class="v">${usd(sum(t))}${f < 1 ? ' ↑' : ''}</em>` : '') +
+        `<em class="x">${i === 0 || (i + 1) % every === 0 || i === per.length - 1 ? i + 1 : ''}</em></span>`;
+    }).join('');
+    $('#m1-cols').innerHTML = `<div class="plot" style="height:${H}px">${grid}<div class="bars">${bars}</div></div><p class="xt">Message number</p>` +
+      (sum(per[0]) > top ? `<p class="cn">Message 1 runs off the chart: it is the first time Claude reads and stores its setup, which costs more than reading it again.</p>` : '');
     const old = 100 * OLD(tot) / tot.total;
     $('#m1-head').innerHTML = `<span class="n">${pct(old)}</span>of what you paid for this ${shown}-message chat (<b>${usd(tot.total)}</b>) went on Claude storing and re-reading <b>old messages</b>. Your new words were the other ${pct(100 - old)} ${tag('calc')}`;
     $('#m1-legend').innerHTML = legendHTML(tot);
@@ -134,9 +161,8 @@
     $('#m2-shrink-o').textContent = m2s.value + '%';
     const a = chatCost(chatOpts()).tot, b = chatCost(chatOpts({ shrink: s })).tot;
     $('#m2-chat').textContent = `The chat from module 1: ${N} messages, ${m1.words.value} words each, ${num(+m1.ctx.value / 1000)}K tokens before you typed.`;
-    const rowH = Math.max(3, Math.min(10, Math.floor(180 / N)));
-    const side = (t, label, cw) => `<div class="side"><h3>${label}</h3><div class="mini"><div class="ctx">Before you typed: ${num(+m1.ctx.value / 1000)}K tokens</div>${pairsHTML(N, false, cw, rowH)}</div><div class="tot">${usd(t.total)}<small>the bill</small></div><div class="meter"><i style="width:${(100 * t.total / a.total).toFixed(1)}%"></i></div></div>`;
-    $('#m2-duo').innerHTML = side(a, 'Normal answers', 72) + side(b, `Answers ${m2s.value}% shorter`, Math.max(6, 72 * (1 - s)));
+    const side = (t, label, shrink) => `<div class="side"><h3>${label}</h3><div class="tstack sm">${chatStackHTML({ shown: N, words: +m1.words.value, ctx: +m1.ctx.value, keep: 2, shrink })}</div><div class="tot">${usd(t.total)}<small>the bill</small></div><div class="meter"><i style="width:${(100 * t.total / a.total).toFixed(1)}%"></i></div></div>`;
+    $('#m2-duo').innerHTML = side(a, 'Normal answers', 0) + side(b, `Answers ${m2s.value}% shorter`, s);
     const drop = 100 * (1 - b.total / a.total);
     $('#m2-head').innerHTML = `${cue(true, 'Saved')}<span class="n good">${pct(drop)}</span><p>is all the bill drops when every answer is <b>${m2s.value}% shorter</b>. The grey pile, the part Claude re-reads, barely changed ${tag('calc')}</p>`;
   }

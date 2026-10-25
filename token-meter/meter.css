@@ -146,38 +146,58 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
 .sum b{color:var(--ink);font-weight:600}
 .stage[data-stage=play]:not(.played) .adv{visibility:hidden}
 .stage[data-stage=total] #m1-more{display:none}
-.tstack{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 12px 10px;display:flex;flex-direction:column;gap:3px;min-height:300px;position:relative;transition:padding .4s}
-.stage[data-stage=cost] .tstack,.stage[data-stage=total] .tstack{padding:8px;min-height:0}
-.stage[data-stage=cost] .tstack .rows,.stage[data-stage=total] .tstack .rows{height:150px}
-.stage[data-stage=cost] .tstack .ctx span:first-child,.stage[data-stage=total] .tstack .ctx span:first-child,.stage[data-stage=cost] .tstack .lab em,.stage[data-stage=total] .tstack .lab em{display:none}
-.tstack .ctx{border-radius:6px;background:var(--c-old);color:#fff;font:500 11px var(--mono);padding:6px 8px;display:flex;align-items:center;justify-content:space-between;flex:none;transition:background .3s}
-.tstack .ctx.hot{background:var(--c-new)}
-.tstack .rows{display:flex;flex-direction:column;gap:1px;height:230px;flex:none;justify-content:flex-start;overflow:hidden;transition:height .4s}
-.tstack .pair{display:flex;flex-direction:column;gap:1px;flex:none;padding-bottom:1px}
-.tstack .pair i{display:block;height:var(--h,8px);border-radius:3px;background:var(--c-old);transition:background .3s}
-.tstack .pair i.u{width:38%;margin-left:auto}
-.tstack .pair i.c{width:var(--cw,70%)}
-.tstack .pair.hot i{background:var(--c-new)}
-.tstack .lab{display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--ink3);padding-top:6px;margin-top:auto;border-top:1px dashed var(--line2)}
-.tstack .lab b{color:var(--coral-ink);font-weight:600}
-.tstack .lab em{font-style:normal;color:var(--ink2)}
-.tstack .lab .old::before,.tstack .lab .new::before{content:"";display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--c-old)}
-.tstack .lab .new::before{background:var(--c-new)}
+.tstack{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:10px;min-height:300px;transition:padding .4s}
+.stage[data-stage=cost] .tstack,.stage[data-stage=total] .tstack{padding:8px;min-height:0;gap:6px}
+/* two zones: grey = read again (setup + old turns), coral = the new turn. Each zone names itself and its size in tokens */
+.tstack .zone{display:flex;flex-direction:column;gap:4px;border-radius:8px;padding:8px;border:1px dashed var(--line2)}
+.tstack .zone.new{border:1.5px solid var(--c-new);background:#FFF7F5}
+.tstack .zh{display:flex;justify-content:space-between;gap:8px;font:600 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.tstack .zone.new .zh{color:var(--coral-ink)}
+.tstack .ctx{border-radius:6px;background:repeating-linear-gradient(-45deg,#D6D6D6 0 6px,#CDCDCD 6px 12px);color:var(--ink);padding:7px 9px;display:flex;flex-direction:column;flex:none;font-size:12px;line-height:1.35}
+.tstack .ctx b{font:600 12px var(--mono)}
+.tstack .ctx span{color:var(--ink2)}
+.tstack .fold{flex:none;border-radius:6px;background:var(--c-old);display:flex;align-items:center;justify-content:center;font:500 11px var(--mono);color:var(--ink2);min-height:16px;overflow:hidden;transition:height .25s var(--e-out)}
+/* chat bubbles: yours on the right, Claude's on the left, each named. Grey when old, coral when new */
+.tstack .turn{display:flex;flex-direction:column;gap:3px}
+.tstack .b{max-width:82%;padding:4px 9px;border-radius:10px;background:var(--c-old);color:var(--ink);font-size:12.5px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tstack .b b{font:600 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-right:7px;opacity:.7}
+.tstack .b.you{align-self:flex-end;border-bottom-right-radius:3px}
+.tstack .b.cl{align-self:flex-start;border-bottom-left-radius:3px}
+.tstack .turn.hot .b{background:var(--c-new);color:#fff}
+.tstack .turn.hot .b b{opacity:.85}
+.stage[data-stage=cost] .tstack .b,.stage[data-stage=total] .tstack .b{font-size:11px;max-width:92%}
+.stage[data-stage=cost] .tstack .ctx span,.stage[data-stage=total] .tstack .ctx span{display:none}
+.stage[data-stage=cost] .tstack .fold span,.stage[data-stage=total] .tstack .fold span{font-size:10px}
+/* per-message chart: dollar gridlines on the left, message numbers underneath */
 .reveal{display:flex;flex-direction:column;gap:8px;justify-content:flex-end}
-.reveal .cols{height:200px}
-.reveal .cols span i{transition:height .25s var(--e-out)}
+.reveal .ct{font-size:17px}
+.reveal .key{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13px;color:var(--ink2)}
+.reveal .key s{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:6px;text-decoration:none}
+.chart{padding:22px 0 0 56px}
+.chart .plot{position:relative;border-bottom:1px solid var(--ink3)}
+.chart .plot>i{position:absolute;left:0;right:0;height:0;border-top:1px dashed var(--line)}
+.chart .plot>i em{position:absolute;right:calc(100% + 8px);top:-8px;font:500 11px var(--mono);font-style:normal;color:var(--ink3);white-space:nowrap}
+.chart .bars{position:absolute;inset:0;display:flex;align-items:flex-end;gap:3px}
+.chart .bars span{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;position:relative}
+.chart .bars span i{display:block;flex:none;transition:height .25s var(--e-out)}
+.chart .bars span .k-new{order:1;border-radius:2px 2px 0 0}
+.chart .bars span .k-old{order:2}
+.chart .bars em{font-style:normal;font:500 10px var(--mono);color:var(--ink3);text-align:center;white-space:nowrap}
+.chart .bars .v{order:0;padding-bottom:3px;color:var(--ink2)}
+.chart .bars .clip .v{position:absolute;top:-18px;left:0;right:0;color:var(--ink)}
+.chart .bars span:last-child .v{align-self:flex-end}
+.chart .bars .x{position:absolute;top:calc(100% + 4px);left:0;right:0}
+.chart .xt{font:500 11px var(--mono);color:var(--ink3);text-align:center;padding-top:22px}
+.chart .cn{font-size:13px;color:var(--ink3);padding-top:6px}
 
 /* module 2: two transcripts */
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:560px){.duo{grid-template-columns:1fr}}
 .duo .side{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:8px}
 .duo .side h3{font-size:15px;color:var(--ink2);font-family:var(--sans);font-weight:500;letter-spacing:0}
-.duo .mini{display:flex;flex-direction:column;gap:3px;height:200px;overflow:hidden}
-.duo .mini .ctx{border-radius:5px;background:var(--c-old);flex:none;height:40px;color:#fff;font:500 11px var(--mono);padding:4px 8px}
-.duo .mini .pair{display:flex;flex-direction:column;gap:2px;flex:none}
-.duo .mini .pair i{display:block;height:var(--h,6px);border-radius:3px;background:var(--c-old)}
-.duo .mini .pair i.u{width:34%;margin-left:auto}
-.duo .mini .pair i.c{width:var(--cw,70%);background:var(--c-new)}
+.duo .tstack.sm{min-height:0;padding:8px;gap:6px;border:0;padding:0}
+.tstack.sm .b{font-size:11.5px;max-width:92%}
+.tstack.sm .ctx span{display:none}
 .duo .tot{display:flex;align-items:baseline;justify-content:space-between;font:700 22px var(--mono);letter-spacing:-.02em}
 .duo .tot small{font:500 11px var(--mono);color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
 .duo .meter{height:8px;border-radius:4px;background:var(--bg2);overflow:hidden}
@@ -299,9 +319,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
   .mod.stage{display:flex;align-items:stretch;max-width:820px;margin:0 auto;width:100%}
   .stage[data-stage=setup] .head h1{font-size:44px}
   .stage .tstack{min-height:340px}
-  .stage .tstack .rows{height:270px}
-  .stage[data-stage=cost] .body,.stage[data-stage=total] .body{grid-template-columns:260px 1fr;gap:28px}
-  .stage[data-stage=cost] .tstack .rows,.stage[data-stage=total] .tstack .rows{height:170px}
+  .stage[data-stage=cost] .body,.stage[data-stage=total] .body{grid-template-columns:280px 1fr;gap:28px}
   .stage .sum{font-size:19px}
   .sum .n{font-size:56px}
   .mod.you{grid-template-columns:440px minmax(0,1fr)}
@@ -316,9 +334,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
   .headline{padding:22px 24px 20px}
   .headline .n{font-size:84px}
   .headline p{font-size:19px}
-  .reveal .cols{height:220px}
-  .duo .mini{height:240px}
-  .edit{height:320px}
+    .edit{height:320px}
   .edit .hl,.edit textarea{font-size:13px}
   .legend div{font-size:13px}
   .pager{justify-content:flex-end;position:static;background:none}

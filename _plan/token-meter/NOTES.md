@@ -41,3 +41,7 @@ Spec: "Token Meter one-pager spec.md" (25 Oct 2026). Live route: /token-meter (n
   M5: shop ticket + stamps, 3 messages pre-played, "Come back tomorrow". M6: cost scale with three dots, Once / 1,000 times toggle.
   Your sessions: "Load a demo history" (demoExport in import.js, seeded, 14 chats).
 - One basis tag per module, on the big number. "Count exactly" sits under "Check with Claude". Pager: Make my card is ghost, Next is dark.
+- M1 (25 Oct, later): the chat stack shows a short sample chat (SAMPLE in meter.js, a Goa trip): You bubbles right, Claude left, each named.
+  Two zones: "Read again" (hatched setup block + old turns, earlier ones folded into one grey block) and "New: message N" in coral, each with its token count.
+  Per-message chart has a currency y-axis, message numbers, a written key, and a note when message 1 runs off the top.
+- M2 uses the same stack (chatStackHTML in meter.js) on both sides; the shorter side cuts Claude's sample answers to that share of their words.
