@@ -18,7 +18,7 @@
   <header class="top">
     <a class="brand" href="#m1">TOKEN<b>METER</b></a>
     <div class="money seg" id="money" role="radiogroup" aria-label="Currency"><button type="button" role="radio" data-c="USD" aria-checked="true">USD</button><button type="button" role="radio" data-c="INR" aria-checked="false">INR</button></div>
-    <label class="price-on">Priced on
+    <label class="price-on"><span>Prices of</span>
       <select id="model" aria-label="Model used for prices">
         <option value="haiku">Haiku 5.5</option>
         <option value="sonnet" selected>Sonnet 5.5</option>
@@ -41,178 +41,216 @@
 
   <!-- 1 -->
   <section class="mod" id="m1" data-mod="1" hidden>
-    <p class="eyebrow">Module 1</p>
-    <h1>Where the money goes</h1>
-    <p class="sub">Every turn, Claude re-reads the whole chat from its cache. Drag the chat longer and watch what you pay for.</p>
-    <div class="controls">
-      <label class="ctl"><span>Turns in the chat <output id="m1-turns-o"></output></span>
-        <input type="range" id="m1-turns" min="1" max="50" value="30"></label>
-      <label class="ctl"><span>Words per message <output id="m1-words-o"></output></span>
-        <input type="range" id="m1-words" min="20" max="1000" step="10" value="100"></label>
-      <label class="ctl"><span>Already in the chat before turn 1 <em class="bs" data-b="est"></em></span>
-        <select id="m1-ctx">
-          <option value="25000">Plain chat: system prompt and tools, about 25K tokens</option>
-          <option value="100000" selected>Chat with files or a Project, about 100K tokens</option>
-          <option value="200000">Long document or codebase, about 200K tokens</option>
-        </select></label>
+    <div class="l">
+      <p class="eyebrow">Module 1</p>
+      <h1>Where the money goes</h1>
+      <p class="sub">Every time you send a message, Claude reads the whole chat again from the top. Press play and watch the pile of old messages grow.</p>
+      <div class="controls">
+        <button class="btn" id="m1-play" type="button">▶ Play the chat</button>
+        <label class="ctl"><span>How many messages you send <output id="m1-turns-o"></output></span>
+          <input type="range" id="m1-turns" min="1" max="50" value="5"></label>
+        <label class="ctl"><span>How long each message is <output id="m1-words-o"></output></span>
+          <input type="range" id="m1-words" min="20" max="1000" step="10" value="100"></label>
+        <label class="ctl"><span>What was in the chat before you typed</span>
+          <select id="m1-ctx">
+            <option value="25000" selected>Nothing much: Claude's own setup, about 25K tokens</option>
+            <option value="100000">Some files or a Project, about 100K tokens</option>
+            <option value="200000">A whole document or codebase, about 200K tokens</option>
+          </select></label>
+      </div>
+      <details class="maths"><summary>Show the maths</summary>
+        <p>Each message pays: old history × cache-read price, the last exchange × cache-write price, your new message × input price, Claude's answer × output price. Words to tokens at 4 ÷ 3 (estimate).</p>
+        <div class="legend" id="m1-legend"></div>
+      </details>
     </div>
-    <div class="visual">
-      <div class="stack" id="m1-stack"></div>
-      <div class="legend" id="m1-legend"></div>
-      <p class="tiny">Each turn, one column. Turn 1 writes the starting context and runs off the top.</p>
-      <div class="cols" id="m1-cols"></div>
+    <div class="r">
+      <div class="visual chatviz">
+        <div class="tstack" id="m1-stack"></div>
+        <div class="turns">
+          <p class="cap">What each message costs. <s class="k-old"></s> old messages <s class="k-new"></s> new words</p>
+          <div class="cols" id="m1-cols"></div>
+        </div>
+      </div>
+      <div class="headline" id="m1-head"></div>
     </div>
-    <div class="headline" id="m1-head"></div>
-    <p class="tiny how">Turn n pays: history × cache-read price, the last exchange × cache-write price, your new message × input price, Claude's answer × output price. Words to tokens at 4 ÷ 3 <em class="bs" data-b="est"></em>.</p>
   </section>
 
   <!-- 2 -->
   <section class="mod" id="m2" data-mod="2" hidden>
-    <p class="eyebrow">Module 2</p>
-    <h1>The Caveman myth</h1>
-    <p class="sub">"Tell Claude to answer like a caveman and save tokens." Shrink every answer and see what the bill does.</p>
-    <div class="controls">
-      <label class="ctl"><span>Shrink Claude's answers by <output id="m2-shrink-o"></output></span>
-        <input type="range" id="m2-shrink" min="0" max="75" step="5" value="75"></label>
-      <p class="tiny" id="m2-chat"></p>
+    <div class="l">
+      <p class="eyebrow">Module 2</p>
+      <h1>The Caveman myth</h1>
+      <p class="sub">"Tell Claude to answer like a caveman and save tokens." Shrink every answer and watch what the bill does.</p>
+      <div class="controls">
+        <label class="ctl"><span>Make Claude's answers shorter by <output id="m2-shrink-o"></output></span>
+          <input type="range" id="m2-shrink" min="0" max="75" step="5" value="75"></label>
+        <p class="tiny" id="m2-chat"></p>
+      </div>
+      <details class="maths"><summary>Show the maths</summary><p>Same chat and maths as module 1. Only Claude's answers shrink, and so does the small part of history they make up.</p></details>
     </div>
-    <div class="visual">
-      <div class="duo" id="m2-duo"></div>
+    <div class="r">
+      <div class="visual"><div class="duo" id="m2-duo"></div></div>
+      <div class="headline" id="m2-head"></div>
     </div>
-    <div class="headline" id="m2-head"></div>
-    <p class="tiny how">Same chat and maths as module 1. Only output tokens shrink, and so does what later turns re-read.</p>
   </section>
 
   <!-- 3 -->
   <section class="mod" id="m3" data-mod="3" hidden>
-    <p class="eyebrow">Module 3</p>
-    <h1>Screenshot tax</h1>
-    <p class="sub">Claude cuts every image into 28 px squares and charges for each one. Crop and shrink to see the count fall.</p>
-    <div class="controls">
-      <div class="row">
-        <label class="btn ghost file">Drop or choose an image<input type="file" id="m3-file" accept="image/*"></label>
-        <button class="btn ghost" id="m3-sample" type="button">Use a sample</button>
-        <button class="btn ghost" id="m3-crop800" type="button">Crop to 800 × 450</button>
-        <button class="btn ghost" id="m3-reset" type="button">Full image</button>
+    <div class="l">
+      <p class="eyebrow">Module 3</p>
+      <h1>Screenshot tax</h1>
+      <p class="sub">Claude cuts every image into 28-pixel squares and charges for each square. Crop to the part that matters and watch the count fall.</p>
+      <div class="controls">
+        <div class="row">
+          <button class="btn" id="m3-crop800" type="button">Crop to 800 × 450</button>
+          <button class="btn ghost" id="m3-reset" type="button">Full image</button>
+        </div>
+        <label class="ctl"><span>Shrink the image to <output id="m3-scale-o"></output></span>
+          <input type="range" id="m3-scale" min="10" max="100" value="100"></label>
+        <div class="row">
+          <label class="btn ghost file">Use your own image<input type="file" id="m3-file" accept="image/*"></label>
+          <button class="btn ghost" id="m3-sample" type="button">Use the sample</button>
+        </div>
       </div>
-      <label class="ctl"><span>Resize <output id="m3-scale-o"></output></span>
-        <input type="range" id="m3-scale" min="10" max="100" value="100"></label>
+      <details class="exact"><summary>Check with Claude</summary>
+        <div class="row"><button class="btn ghost" id="m3-exact" type="button">Count exactly</button><span class="exact-out" id="m3-exact-o"></span></div>
+        <p class="tiny">Uses your own Anthropic API key. The cropped image goes from your browser to Anthropic, not to us.</p>
+      </details>
+      <details class="maths"><summary>Show the maths</summary><p>Tokens = ceil(width ÷ 28) × ceil(height ÷ 28), with the long edge capped at 2,576 px (Anthropic docs).</p></details>
     </div>
-    <div class="visual">
-      <div class="drop" id="m3-drop"><canvas id="m3-canvas" aria-label="Image with the 28 pixel grid"></canvas></div>
-      <p class="tiny">Drag the corners to crop. Drag inside to move the crop.</p>
+    <div class="r">
+      <div class="visual">
+        <div class="drop" id="m3-drop"><canvas id="m3-canvas" aria-label="Image with the 28 pixel grid"></canvas></div>
+        <p class="cap">Drag the corners to crop. Drag inside to move. Paste or drop any image.</p>
+      </div>
+      <div class="headline" id="m3-head"></div>
     </div>
-    <div class="headline" id="m3-head"></div>
-    <div class="exact">
-      <button class="btn ghost" id="m3-exact" type="button">Count exactly</button>
-      <span class="tiny">Uses your own Anthropic API key. The cropped image goes from your browser to Anthropic, not to us.</span>
-      <span class="exact-out" id="m3-exact-o"></span>
-    </div>
-    <p class="tiny how">Tokens = ceil(width ÷ 28) × ceil(height ÷ 28), with the long edge capped at 2,576 px <em class="bs" data-b="docs"></em>.</p>
   </section>
 
   <!-- 4 -->
   <section class="mod" id="m4" data-mod="4" hidden>
-    <p class="eyebrow">Module 4</p>
-    <h1>Format tax</h1>
-    <p class="sub">JSON and HTML carry a lot of punctuation Claude has to read. Paste yours, or pick a sample, and convert it.</p>
-    <div class="controls">
-      <div class="row">
-        <select id="m4-sample" aria-label="Sample">
-          <option value="">Pick a sample</option>
-          <option value="json" selected>JSON table: 20 customers</option>
-          <option value="html">HTML: a pricing page</option>
-          <option value="text">Text: a copied email thread</option>
-        </select>
-        <select id="m4-to" aria-label="Convert to"></select>
+    <div class="l">
+      <p class="eyebrow">Module 4</p>
+      <h1>Format tax</h1>
+      <p class="sub">Every bracket, quote and indent is something Claude has to read. The coral marks show what you pay for that isn't words. Convert and watch them vanish.</p>
+      <div class="controls">
+        <label class="ctl"><span>Start with</span>
+          <select id="m4-sample" aria-label="Sample">
+            <option value="">Your own paste</option>
+            <option value="json" selected>JSON: 5 customers</option>
+            <option value="html">HTML: a pricing page</option>
+            <option value="text">Text: a copied email thread</option>
+          </select></label>
+        <label class="ctl"><span>Convert it</span><select id="m4-to" aria-label="Convert to"></select></label>
       </div>
+      <details class="exact"><summary>Check with Claude</summary>
+        <div class="row"><button class="btn ghost" id="m4-exact" type="button">Count exactly</button><span class="exact-out" id="m4-exact-o"></span></div>
+        <p class="tiny">Uses your own Anthropic API key. Both texts go from your browser to Anthropic, not to us.</p>
+      </details>
+      <details class="maths"><summary>Show the maths</summary><p>Converted in your browser. Token estimate: characters ÷ 3.5. Marked characters are punctuation, brackets, quotes and indentation.</p></details>
     </div>
-    <div class="visual two">
-      <div class="pane"><div class="pane-h"><b>Original</b> <span id="m4-a-t"></span></div><textarea id="m4-in" spellcheck="false" aria-label="Paste JSON, HTML or text"></textarea></div>
-      <div class="pane"><div class="pane-h"><b id="m4-to-h">Converted</b> <span id="m4-b-t"></span></div><textarea id="m4-out" spellcheck="false" readonly aria-label="Converted"></textarea></div>
+    <div class="r">
+      <div class="visual two">
+        <div class="pane"><div class="pane-h"><b>Original</b> <span id="m4-a-t"></span></div><div class="edit"><pre class="hl" id="m4-in-hl" aria-hidden="true"></pre><textarea id="m4-in" spellcheck="false" aria-label="Paste JSON, HTML or text"></textarea></div></div>
+        <div class="pane"><div class="pane-h"><b id="m4-to-h">Converted</b> <span id="m4-b-t"></span></div><div class="edit"><pre class="hl" id="m4-out-hl" aria-hidden="true"></pre><textarea id="m4-out" spellcheck="false" readonly aria-label="Converted"></textarea></div></div>
+      </div>
+      <div class="headline" id="m4-head"></div>
     </div>
-    <div class="headline" id="m4-head"></div>
-    <div class="exact">
-      <button class="btn ghost" id="m4-exact" type="button">Count exactly</button>
-      <span class="tiny">Uses your own Anthropic API key. Both texts go from your browser to Anthropic, not to us.</span>
-      <span class="exact-out" id="m4-exact-o"></span>
-    </div>
-    <p class="tiny how">Converted in your browser. Estimate: characters ÷ 3.5 <em class="bs" data-b="est"></em>.</p>
   </section>
 
   <!-- 5 -->
   <section class="mod" id="m5" data-mod="5" hidden>
-    <p class="eyebrow">Module 5</p>
-    <h1>The restart fee</h1>
-    <p class="sub">Claude saves a copy of your chat so far, so each new turn can re-read it cheaply. That saved copy is called the cache. Some moves throw the copy away, and the next turn pays to save the whole chat again. Step through 10 turns of a long chat and try them.</p>
-    <div class="controls">
-      <div class="row">
-        <button class="btn" id="m5-next" type="button">Next turn</button>
-        <button class="btn ghost" data-ev="model" type="button">Switch model</button>
-        <button class="btn ghost" data-ev="tool" type="button">Add a tool</button>
-        <button class="btn ghost" data-ev="wait" type="button">Wait 61 minutes</button>
-        <button class="btn ghost" id="m5-reset" type="button">Restart</button>
+    <div class="l">
+      <p class="eyebrow">Module 5</p>
+      <h1>The restart fee</h1>
+      <p class="sub">Think of a shop that keeps your usual order ready. Come back soon with the same order and it's quick and cheap. Change the order, or stay away too long, and they start from scratch and charge for all of it.</p>
+      <div class="controls">
+        <div class="row">
+          <button class="btn" id="m5-next" type="button">Send a message</button>
+          <button class="btn ghost" data-ev="model" type="button">Switch model</button>
+          <button class="btn ghost" data-ev="tool" type="button">Add a tool</button>
+          <button class="btn ghost" data-ev="wait" type="button">Come back tomorrow</button>
+          <button class="btn ghost" id="m5-reset" type="button">Start over</button>
+        </div>
+        <p class="tiny" id="m5-turn"></p>
       </div>
-      <p class="tiny" id="m5-turn"></p>
+      <details class="maths"><summary>Show the maths</summary><p>The saved copy is called the cache. A normal message re-reads it at the cache-read price. Switching model, adding a tool, or waiting longer than the cache lifetime throws the copy away, and that message writes the whole history again at the cache-write price. The lifetime is 5 minutes on API keys and 1 hour on paid plans (Anthropic docs).</p></details>
     </div>
-    <div class="visual"><div class="line" id="m5-line"></div></div>
-    <div class="headline" id="m5-head"></div>
-    <p class="tiny how">Think of a shop that keeps your usual order ready. Come back soon with the same order and it's quick. Change the order, or stay away too long, and they start from scratch. For Claude, "too long" is 5 minutes on API keys and 1 hour on paid plans <em class="bs" data-b="docs"></em>.</p>
+    <div class="r">
+      <div class="visual shopviz">
+        <div class="shop" id="m5-shop"></div>
+        <div class="line" id="m5-line"></div>
+      </div>
+      <div class="headline" id="m5-head"></div>
+    </div>
   </section>
 
   <!-- 6 -->
   <section class="mod" id="m6" data-mod="6" hidden>
-    <p class="eyebrow">Module 6</p>
-    <h1>Pick the model</h1>
-    <p class="sub">The same job on three models. Most everyday jobs don't need the biggest one.</p>
-    <div class="controls">
-      <div class="seg" id="m6-task" role="radiogroup" aria-label="Task"></div>
+    <div class="l">
+      <p class="eyebrow">Module 6</p>
+      <h1>Pick the model</h1>
+      <p class="sub">The same job on three models. Most everyday jobs don't need the biggest one.</p>
+      <div class="controls">
+        <label class="ctl"><span>The job</span><div class="seg" id="m6-task" role="radiogroup" aria-label="Task"></div></label>
+        <label class="ctl"><span>How often</span><div class="seg" id="m6-times" role="radiogroup" aria-label="How often"><button type="button" role="radio" data-n="1" aria-checked="true">Once</button><button type="button" role="radio" data-n="1000" aria-checked="false">1,000 times</button></div></label>
+      </div>
+      <details class="maths"><summary>Show the maths</summary><p id="m6-how"></p></details>
     </div>
-    <div class="visual"><div class="cards3" id="m6-cards"></div></div>
-    <div class="headline" id="m6-head"></div>
-    <p class="tiny how" id="m6-how"></p>
+    <div class="r">
+      <div class="visual">
+        <div class="scale" id="m6-scale"></div>
+        <div class="cards3" id="m6-cards"></div>
+      </div>
+      <div class="headline" id="m6-head"></div>
+    </div>
   </section>
 
   <!-- your sessions -->
-  <section class="mod" id="you" data-mod="you" hidden>
-    <p class="eyebrow">Your sessions</p>
-    <h1>Load your own history</h1>
-    <p class="sub">See modules 1 to 6 with your own numbers. Your files are read in this browser tab. Nothing is uploaded.</p>
-    <p class="note desk">Best on a laptop: you'll need the file from your email or terminal.</p>
-    <div class="paths">
-      <div class="path">
-        <p class="eyebrow">Claude app</p>
-        <ol>
-          <li>In Claude, open Settings › Privacy › Export data.</li>
-          <li>Open the email from Anthropic. The link works for 24 hours.</li>
-          <li>Drop the zip here.</li>
-        </ol>
-        <label class="dropzone" id="b-drop">Drop your export zip<input type="file" id="b-file" accept=".zip,application/zip,.json"></label>
+  <section class="mod you" id="you" data-mod="you" hidden>
+    <div class="l">
+      <p class="eyebrow">Your sessions</p>
+      <h1>Load your own history</h1>
+      <p class="sub">See modules 1 to 6 with your own numbers. Your files are read in this browser tab. Nothing is uploaded.</p>
+      <p class="note desk">Best on a laptop: you'll need the file from your email or terminal.</p>
+      <div class="paths">
+        <div class="path">
+          <p class="eyebrow">Claude app</p>
+          <ol>
+            <li>In Claude, open Settings › Privacy › Export data.</li>
+            <li>Open the email from Anthropic. The link works for 24 hours.</li>
+            <li>Drop the zip here.</li>
+          </ol>
+          <label class="dropzone" id="b-drop">Drop your export zip<input type="file" id="b-file" accept=".zip,application/zip,.json"></label>
+        </div>
+        <div class="path">
+          <p class="eyebrow">Claude Code</p>
+          <ol>
+            <li>In a terminal, run <code>npx 100x-token-meter</code>. It runs offline.</li>
+            <li>It writes <code>token-meter.json</code>: totals only, no prompts or code.</li>
+            <li>Drop that file here.</li>
+          </ol>
+          <label class="dropzone" id="a-drop">Drop token-meter.json<input type="file" id="a-file" accept=".json,application/json"></label>
+        </div>
       </div>
-      <div class="path">
-        <p class="eyebrow">Claude Code</p>
-        <ol>
-          <li>In a terminal, run <code>npx 100x-token-meter</code>. It runs offline.</li>
-          <li>It writes <code>token-meter.json</code>: totals only, no prompts or code.</li>
-          <li>Drop that file here.</li>
-        </ol>
-        <label class="dropzone" id="a-drop">Drop token-meter.json<input type="file" id="a-file" accept=".json,application/json"></label>
-      </div>
+      <div class="row"><button class="btn ghost" id="demo-btn" type="button">Load a demo history</button><span class="tiny">A made-up Claude app export, so you can see what comes out.</span></div>
+      <p class="err" id="you-err" hidden></p>
     </div>
-    <p class="err" id="you-err" hidden></p>
-    <div id="you-out" class="ph-no-capture" hidden></div>
+    <div class="r">
+      <div id="you-out" class="ph-no-capture" hidden></div>
+    </div>
   </section>
 
   </main>
 
   <div class="pager">
     <a class="btn ghost" id="prev" href="#">Back</a>
-    <button class="btn" id="card-btn" type="button">Make my card</button>
-    <a class="btn ghost" id="next" href="#">Next</a>
+    <button class="btn ghost" id="card-btn" type="button">Make my card</button>
+    <a class="btn dark" id="next" href="#">Next</a>
   </div>
 
   <footer class="foot">
-    <p class="tiny">Prices from Anthropic's pricing page, checked <span id="checked"></span>. <span id="fx" hidden></span> Tags on each number: <em class="bs" data-b="docs"></em> <em class="bs" data-b="calc"></em> <em class="bs" data-b="est"></em></p>
+    <p class="tiny">Prices from Anthropic's pricing page, checked <span id="checked"></span>. <span id="fx" hidden></span> Tags on the big numbers: <em class="bs" data-b="docs"></em> straight from Anthropic, <em class="bs" data-b="calc"></em> computed from those prices, <em class="bs" data-b="est"></em> an estimate.</p>
     <p class="made">Made by <a id="cta" href="https://www.100xengineers.com/" target="_blank" rel="noopener">100xEngineers</a></p>
   </footer>
 </div>

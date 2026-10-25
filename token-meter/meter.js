@@ -1,8 +1,10 @@
 /* Token Meter: six calculators, then the user's own history.
-   Every price comes from prices.json. Every number on screen carries a basis tag (docs, calc, est).
+   Every price comes from prices.json. The big number on each module carries a basis tag (docs, calc, est).
    Files the user loads are read in this tab and never sent anywhere. The only network calls are prices.json,
    today's USD to INR rate from open.er-api.com, JSZip from cdnjs when a zip is dropped, PostHog events (names and small numbers only, never content), and
-   the visitor's own Anthropic key, straight to api.anthropic.com, when they press "Count exactly". */
+   the visitor's own Anthropic key, straight to api.anthropic.com, when they press "Count exactly".
+   Teaching model: two colours everywhere. Grey is old history Claude stores and re-reads (cache write + cache read);
+   coral is the new words (your message + Claude's answer). The four-way split lives under "Show the maths". */
 (function () {
   'use strict';
   const $ = (s, r) => (r || document).querySelector(s);
@@ -22,7 +24,9 @@
   const WORD = 4 / 3; /* tokens per English word */
   const KEYS = ['read', 'write', 'output', 'input'];
   const KLABEL = { read: 'Cache read: re-reading history', write: 'Cache write: storing new turns', output: "Output: Claude's answers", input: 'New input: your messages' };
+  const OLD = t => t.read + t.write, NEW = t => t.input + t.output;
   function track(name, props) { try { window.posthog && window.posthog.capture(name, props || {}); } catch (e) {} }
+  const cue = (good, text) => `<span class="cue${good ? ' good' : ''}">${text}</span>`;
 
   let PR, model = 'sonnet';
   /* Haiku 5.5 charges more for prompts over 100K tokens; the prompt length includes cache reads and writes */
@@ -63,44 +67,68 @@
   function stackHTML(tot) {
     return KEYS.map(k => `<i class="k-${k}" style="flex-grow:${tot[k] / tot.total || 0}" title="${KLABEL[k]}"></i>`).join('');
   }
-  function legendHTML(tot, b) {
-    return KEYS.map(k => `<div><s class="k-${k}"></s><span><b>${usd(tot[k])} · ${pct(100 * tot[k] / tot.total)}</b>${KLABEL[k]} ${tag(b)}</span></div>`).join('');
+  function legendHTML(tot) {
+    return KEYS.map(k => `<div><s class="k-${k}"></s><span><b>${usd(tot[k])} · ${pct(100 * tot[k] / tot.total)}</b>${KLABEL[k]}</span></div>`).join('');
   }
+  /* a stack of chat bubbles: the starting context block, then one pair (you, Claude) per turn. hot = the newest pair in coral */
+  function pairsHTML(n, hot, cw, h) {
+    return Array.from({ length: n }, (_, i) => `<div class="pair${hot && i === n - 1 ? ' hot' : ''}" style="--h:${h}px;--cw:${cw}%"><i class="u"></i><i class="c"></i></div>`).join('');
+  }
+  const ctxLabel = v => v >= 200000 ? 'A whole document or codebase' : v >= 100000 ? 'Files or a Project' : "Claude's own setup";
 
   /* ---------- 1. Where the money goes ---------- */
   const m1 = { turns: $('#m1-turns'), words: $('#m1-words'), ctx: $('#m1-ctx') };
   const chatOpts = extra => Object.assign({ turns: +m1.turns.value, words: +m1.words.value, ctx: +m1.ctx.value }, extra);
+  let m1shown = null, m1timer = 0; /* while playing, how many turns are on screen */
   function renderM1() {
-    $('#m1-turns-o').textContent = m1.turns.value;
+    const N = +m1.turns.value, shown = m1shown == null ? N : m1shown;
+    $('#m1-turns-o').textContent = N;
     $('#m1-words-o').textContent = m1.words.value;
-    const { tot, per } = chatCost(chatOpts());
-    $('#m1-stack').innerHTML = stackHTML(tot);
-    $('#m1-legend').innerHTML = legendHTML(tot, 'calc');
-    /* turn 1 writes the whole starting context, so it is scaled with the rest and clipped at the top */
-    const sum = t => KEYS.reduce((a, k) => a + t[k], 0), max = Math.max(...per.slice(1).map(sum), per.length === 1 ? sum(per[0]) : 0);
-    $('#m1-cols').innerHTML = per.map((t, i) => { const f = Math.min(1, max / sum(t)); return `<span title="Turn ${i + 1}: ${usd(sum(t))}"${f < 1 ? ' class="clip"' : ''}>${KEYS.map(k => `<i class="k-${k}" style="height:${(100 * f * t[k] / max).toFixed(2)}px"></i>`).join('')}</span>`; }).join('');
-    const cache = 100 * (tot.read + tot.write) / tot.total;
-    $('#m1-head').innerHTML = `<span class="n">${pct(cache)}</span><p>of this ${m1.turns.value}-turn chat (${usd(tot.total)}) is the cache: re-reading and storing history, not new words ${tag('calc')}</p>`;
-    CARD[1] = { tax: 'Re-read tax', n: pct(cache), line: `of a ${m1.turns.value}-turn chat is Claude re-reading history`, fix: 'Start a fresh chat with a summary every 15 to 20 turns.', basis: 'Computed' };
+    const full = chatCost(chatOpts()), { tot, per } = shown === N ? full : chatCost(chatOpts({ turns: shown }));
+    /* the stack: context block on top, then every turn so far; the newest pair is coral */
+    const rowH = Math.max(1, Math.min(20, Math.floor((230 / shown - 3) / 2))); /* two bubbles and gaps per pair, fitted into a fixed 230px */
+    $('#m1-stack').innerHTML = `<div class="ctx${shown === 1 ? ' hot' : ''}"><span>Before you typed: ${ctxLabel(+m1.ctx.value)}</span><span>${num(+m1.ctx.value / 1000)}K tokens</span></div>` +
+      `<div class="rows">${pairsHTML(shown, true, 72, rowH)}</div>` +
+      `<div class="lab"><span class="old">read again: <em>${shown > 1 ? (shown - 1) + ' old message' + (shown > 2 ? 's' : '') + ' + setup' : 'the setup'}</em></span><span class="new"><b>message ${shown}</b></span></div>`;
+    /* one column per turn, two colours. Turn 1 writes the whole starting context, so it is clipped at the top */
+    const sum = t => OLD(t) + NEW(t), max = Math.max(...per.slice(1).map(sum), per.length === 1 ? sum(per[0]) : 0);
+    $('#m1-cols').innerHTML = per.map((t, i) => { const f = Math.min(1, max / sum(t)); return `<span title="Message ${i + 1}: ${usd(sum(t))}"${f < 1 ? ' class="clip"' : ''}><i class="k-old" style="height:${(200 * f * OLD(t) / max).toFixed(2)}px"></i><i class="k-new" style="height:${(200 * f * NEW(t) / max).toFixed(2)}px"></i></span>`; }).join('');
+    const old = 100 * OLD(tot) / tot.total;
+    $('#m1-head').innerHTML = `${cue(false, 'What you pay for')}<span class="n">${pct(old)}</span><p>of this ${shown}-message chat (<b>${usd(tot.total)}</b>) is Claude storing and re-reading <b>old messages</b>. Your new words are the other ${pct(100 - old)} ${tag('calc')}</p>`;
+    $('#m1-legend').innerHTML = legendHTML(tot);
+    CARD[1] = { tax: 'Re-read tax', n: pct(100 * OLD(full.tot) / full.tot.total), line: `of a ${N}-message chat is Claude re-reading history`, fix: 'Start a fresh chat with a summary every 15 to 20 messages.', basis: 'Computed' };
   }
+  function playM1() {
+    clearInterval(m1timer);
+    const N = +m1.turns.value, step = Math.max(80, Math.min(400, 3000 / N));
+    m1shown = 1; renderM1(); completed(1);
+    $('#m1-play').disabled = true;
+    m1timer = setInterval(() => {
+      m1shown++;
+      if (m1shown >= N) { clearInterval(m1timer); m1shown = null; $('#m1-play').disabled = false; }
+      renderM1();
+    }, step);
+  }
+  $('#m1-play').onclick = playM1;
 
   /* ---------- 2. The Caveman myth ---------- */
   const m2s = $('#m2-shrink');
   function renderM2() {
-    const s = +m2s.value / 100;
+    const s = +m2s.value / 100, N = +m1.turns.value;
     $('#m2-shrink-o').textContent = m2s.value + '%';
     const a = chatCost(chatOpts()).tot, b = chatCost(chatOpts({ shrink: s })).tot;
-    $('#m2-chat').textContent = `Chat from module 1: ${m1.turns.value} turns, ${m1.words.value} words a message, ${num(+m1.ctx.value / 1000)}K tokens to start.`;
-    const bar = (t, label) => `<div class="bar"><div class="fill" style="height:${(180 * t.total / a.total).toFixed(1)}px">${KEYS.map(k => `<i class="k-${k}" style="height:${(100 * t[k] / t.total).toFixed(2)}%"></i>`).join('')}</div><p>${usd(t.total)}<small>${label}</small></p></div>`;
-    $('#m2-duo').innerHTML = bar(a, 'Normal answers') + bar(b, `Answers ${m2s.value}% shorter`);
+    $('#m2-chat').textContent = `The chat from module 1: ${N} messages, ${m1.words.value} words each, ${num(+m1.ctx.value / 1000)}K tokens before you typed.`;
+    const rowH = Math.max(3, Math.min(10, Math.floor(180 / N)));
+    const side = (t, label, cw) => `<div class="side"><h3>${label}</h3><div class="mini"><div class="ctx">Before you typed: ${num(+m1.ctx.value / 1000)}K tokens</div>${pairsHTML(N, false, cw, rowH)}</div><div class="tot">${usd(t.total)}<small>the bill</small></div><div class="meter"><i style="width:${(100 * t.total / a.total).toFixed(1)}%"></i></div></div>`;
+    $('#m2-duo').innerHTML = side(a, 'Normal answers', 72) + side(b, `Answers ${m2s.value}% shorter`, Math.max(6, 72 * (1 - s)));
     const drop = 100 * (1 - b.total / a.total);
-    $('#m2-head').innerHTML = `<span class="n">${pct(drop)}</span><p>is all the bill drops when every answer is ${m2s.value}% shorter. The re-reads stay ${tag('calc')}</p>`;
+    $('#m2-head').innerHTML = `${cue(true, 'Saved')}<span class="n good">${pct(drop)}</span><p>is all the bill drops when every answer is <b>${m2s.value}% shorter</b>. The grey pile, the part Claude re-reads, barely changed ${tag('calc')}</p>`;
     CARD[2] = { tax: 'The Caveman myth', n: pct(drop), line: `saved by making every answer ${m2s.value}% shorter`, fix: 'Cut what Claude re-reads, not what it writes.', basis: 'Computed' };
   }
 
   /* ---------- 3. Screenshot tax ---------- */
   const cv = $('#m3-canvas'), cx = cv.getContext('2d'), m3scale = $('#m3-scale');
-  const m3 = { img: null, W: 0, H: 0, crop: null, drag: null, sample: false };
+  const m3 = { img: null, W: 0, H: 0, crop: null, drag: null, sample: false, shownT: 0, tween: 0 };
   const CAP = 2576, TILE = 28;
   function effSize() {
     const c = m3.crop, s = +m3scale.value / 100;
@@ -166,9 +194,26 @@
     [[c.x, c.y], [c.x + c.w, c.y], [c.x, c.y + c.h], [c.x + c.w, c.y + c.h]].forEach(([x, y]) => cx.fillRect(x - hs / 2, y - hs / 2, hs, hs));
     m3.d = d;
     $('#m3-scale-o').textContent = m3scale.value + '%';
-    const t = imgTokens(w, h), p = PR.models[model];
-    $('#m3-head').innerHTML = `<span class="n">${num(t)}</span><p>tokens: ${num(w)} × ${num(h)} px is ${Math.ceil(w / TILE)} × ${Math.ceil(h / TILE)} tiles ${tag('calc')}. ${usd(t * p.input / 1e6)} to send once on ${p.name}, then it rides along in every later turn ${tag('calc')}</p>`;
+    const t = imgTokens(w, h), full = imgTokens(m3.W, m3.H), p = PR.models[model];
+    const isFull = t === full;
+    const sentence = `<p><b>${Math.ceil(w / TILE)} × ${Math.ceil(h / TILE)}</b> squares for a ${num(w)} × ${num(h)} px image` +
+      (isFull ? '' : `, <b>down from ${num(full)}</b> for the full one: ${pct(100 * (1 - t / full))} fewer`) +
+      `. ${usd(t * p.input / 1e6)} to send once, then it rides along in every later message ${tag('calc')}</p>`;
+    $('#m3-head').innerHTML = `${cue(!isFull, isFull ? 'Squares Claude charges for' : 'Squares after your crop')}<span class="n${isFull ? '' : ' good'}" id="m3-n">${num(m3.shownT || t)}</span>${sentence}`;
+    tweenM3(t);
     CARD[3] = { tax: 'Screenshot tax', n: num(t), line: `tokens for one ${num(w)} × ${num(h)} screenshot`, fix: 'Crop to the part that matters before you paste.', basis: 'Computed' };
+  }
+  /* the big number counts up or down to the new tile count rather than jumping */
+  function tweenM3(target) {
+    cancelAnimationFrame(m3.tween);
+    const from = m3.shownT || 0, t0 = performance.now(), dur = 450;
+    const step = now => {
+      const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+      m3.shownT = Math.round(from + (target - from) * e);
+      const el = $('#m3-n'); if (el) el.textContent = num(m3.shownT);
+      if (k < 1) m3.tween = requestAnimationFrame(step);
+    };
+    m3.tween = requestAnimationFrame(step);
   }
   function canvasPt(e) {
     const r = cv.getBoundingClientRect(), k = m3.W / r.width;
@@ -238,7 +283,7 @@
   const keybox = $('#keybox');
   function askKey(where, run) {
     pendingCount = run;
-    where.closest('.mod').querySelector('.exact').after(keybox);
+    where.closest('details.exact').after(keybox);
     keybox.hidden = false; $('#key-in').focus();
   }
   keybox.addEventListener('submit', e => {
@@ -272,10 +317,10 @@
 
   /* ---------- 4. Format tax ---------- */
   const SAMPLES = {
-    json: () => JSON.stringify(Array.from({ length: 20 }, (_, i) => ({
-      id: 1001 + i, name: ['Asha Rao', 'Vikram Shah', 'Neha Iyer', 'Rohan Das', 'Priya Nair'][i % 5] + ' ' + (i + 1),
-      email: 'user' + (i + 1) + '@example.com', plan: ['starter', 'pro', 'team', 'pro'][i % 4], seats: (i % 7) + 1,
-      mrr: [19, 49, 199, 49][i % 4] * ((i % 7) + 1), status: i % 6 ? 'active' : 'past_due', created_at: '2026-0' + ((i % 9) + 1) + '-1' + (i % 9) + 'T10:00:00Z'
+    json: () => JSON.stringify(Array.from({ length: 5 }, (_, i) => ({
+      id: 1001 + i, name: ['Asha Rao', 'Vikram Shah', 'Neha Iyer', 'Rohan Das', 'Priya Nair'][i],
+      email: 'user' + (i + 1) + '@example.com', plan: ['starter', 'pro', 'team', 'pro', 'starter'][i], seats: (i % 7) + 1,
+      mrr: [19, 49, 199, 49, 19][i] * ((i % 7) + 1), status: i % 4 ? 'active' : 'past_due', created_at: '2026-0' + (i + 1) + '-1' + i + 'T10:00:00Z'
     })), null, 2),
     html: () => `<div class="pricing-wrapper" style="padding:40px 0">\n  <div class="container mx-auto">\n    <h2 class="text-3xl font-bold text-center mb-8">Simple pricing</h2>\n` +
       [['Starter', '$19', ['1 seat', '5 projects', 'Email support']], ['Pro', '$49', ['5 seats', 'Unlimited projects', 'Priority support']], ['Team', '$199', ['25 seats', 'SSO', 'Dedicated manager']]].map(([n, p, f]) =>
@@ -283,8 +328,14 @@
       `\n  </div>\n  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());</script>\n</div>`,
     text: () => ['On Tue, 20 Oct 2026 at 10:14, Asha Rao <asha@example.com> wrote:', '>', '>   Hi team,', '>', '>   Can we move the launch to Friday?     The   deck needs   one more pass.', '>', '>   Thanks,', '>   Asha', '>', '> --', '> Asha Rao | Head of Growth | Example Inc.', '> This email and any attachments are confidential. If you are not the intended recipient, please delete it.', '', '', 'On Tue, 20 Oct 2026 at 11:02, Vikram Shah <vikram@example.com> wrote:', '>', '>   Friday works.     I will send the   final numbers by Thursday   evening.', '>', '> --', '> Vikram Shah | Finance | Example Inc.', '> This email and any attachments are confidential. If you are not the intended recipient, please delete it.'].join('\n')
   };
-  const m4in = $('#m4-in'), m4out = $('#m4-out'), m4to = $('#m4-to');
+  const m4in = $('#m4-in'), m4out = $('#m4-out'), m4to = $('#m4-to'), m4inHL = $('#m4-in-hl'), m4outHL = $('#m4-out-hl');
   let m4kind = '';
+  /* the characters that are not words: brackets, quotes, separators, tag punctuation, indentation and runs of spaces */
+  const NOISE = /([{}\[\]"'<>\/=;:,|\\`#*]+|^[ \t]+|[ \t]{2,}|^>+)/gm;
+  function noise(s) { let n = 0; s.replace(NOISE, m => { n += m.length; return m; }); return n; }
+  function highlight(pre, s) {
+    pre.innerHTML = esc(s).replace(/(&quot;|&#39;|&lt;|&gt;|&amp;|[{}\[\]\/=;:,|\\`#*]+|^[ \t]+|[ \t]{2,})/gm, m => `<mark>${m}</mark>`).replace(/<\/mark><mark>/g, '') + '\n';
+  }
   function detect(s) {
     const t = s.trim();
     if (/^[\[{]/.test(t)) { try { return { kind: 'json', data: JSON.parse(t) }; } catch (e) {} }
@@ -353,19 +404,22 @@
     else if (kind === 'html') out = htmlTo(s, to === 'md');
     else out = cleanText(s);
     m4out.value = out;
+    highlight(m4inHL, s); highlight(m4outHL, out);
     const a = est(s), b = est(out), label = FORMATS[kind].find(f => f[0] === to)[1];
+    const na = s.length ? Math.round(100 * noise(s) / s.length) : 0, nb = out.length ? Math.round(100 * noise(out) / out.length) : 0;
     $('#m4-to-h').textContent = label;
-    $('#m4-a-t').innerHTML = num(a) + ' tokens ' + tag('est');
-    $('#m4-b-t').innerHTML = num(b) + ' tokens ' + tag('est');
+    $('#m4-a-t').innerHTML = `${num(a)} tokens <small>· ${na}% marks</small>`;
+    $('#m4-b-t').innerHTML = `${num(b)} tokens <small>· ${nb}% marks</small>`;
     $('#m4-exact-o').textContent = '';
     const drop = a ? 100 * (1 - b / a) : 0, from = { json: 'JSON', jsonx: 'JSON', html: 'HTML', text: 'raw text' }[kind];
-    $('#m4-head').innerHTML = a ? `<span class="n${drop > 0 ? ' good' : ''}">${pct(Math.max(0, drop))}</span><p>fewer tokens as ${esc(label)} than as ${from}: ${num(a)} down to ${num(b)}. Claude reads it again on every later turn ${tag('est')}</p>` : '<p>Paste something above, or pick a sample.</p>';
+    $('#m4-head').innerHTML = a ? `${cue(drop > 0, drop > 0 ? 'Saved' : 'No change')}<span class="n${drop > 0 ? ' good' : ''}">${pct(Math.max(0, drop))}</span><p>fewer tokens as <b>${esc(label)}</b> than as ${from}: ${num(a)} down to ${num(b)}. The marks were ${na}% of the original and are ${nb}% now. Claude reads this again on every later message ${tag('est')}</p>` : '<p>Paste something, or pick a sample.</p>';
     CARD[4] = { tax: 'Format tax', n: pct(Math.max(0, drop)), line: `fewer tokens as ${label} than as ${from}`, fix: 'Paste CSV or Markdown, not raw JSON or HTML.', basis: 'Estimate' };
     if (fromUser) completed(4);
   }
-  $('#m4-sample').onchange = e => { if (e.target.value) { m4in.value = SAMPLES[e.target.value](); renderM4(true); } };
+  $('#m4-sample').onchange = e => { if (e.target.value) { m4in.value = SAMPLES[e.target.value](); renderM4(true); } else { m4in.value = ''; renderM4(true); m4in.focus(); } };
   m4in.addEventListener('input', () => { $('#m4-sample').value = ''; renderM4(true); });
   m4to.onchange = () => renderM4(true);
+  [[m4in, m4inHL], [m4out, m4outHL]].forEach(([ta, pre]) => ta.addEventListener('scroll', () => { pre.scrollTop = ta.scrollTop; pre.scrollLeft = ta.scrollLeft; }));
   $('#m4-exact').onclick = withKey($('#m4-exact'), async () => {
     if (!m4in.value.trim()) return;
     const o = $('#m4-exact-o'); o.textContent = 'Counting…';
@@ -378,7 +432,7 @@
   /* ---------- 5. Restart fee (a cache break) ---------- */
   const M5 = { start: 100000, grow: 600, turns: 10 };
   let m5 = [];
-  const EV = { model: 'Switched model', tool: 'Added a tool', wait: 'Waited 61 minutes' };
+  const EV = { model: 'Switched model', tool: 'Added a tool', wait: 'Came back the next day' };
   function m5cost(n, broken) { const p = PR.models[model], hist = M5.start + (n - 1) * M5.grow; return hist * (broken ? p.cache_write : p.cache_read) / 1e6; }
   function stepM5(ev) {
     if (m5.length >= M5.turns) return;
@@ -386,26 +440,32 @@
     if (ev) completed(5);
   }
   function renderM5() {
-    const W = 640, H = 220, L = 44, B = 28, n = M5.turns;
+    const W = 640, H = 200, L = 44, B = 28, n = M5.turns, p = PR.models[model];
     const pts = m5.map((t, i) => m5cost(i + 1, !!t.ev));
     const top = Math.max(m5cost(M5.turns, true), 0.01) * 1.1;
     const X = i => L + (W - L - 10) * i / (n - 1), Y = v => H - B - (H - B - 10) * v / top;
     const base = Array.from({ length: n }, (_, i) => `${X(i)},${Y(m5cost(i + 1, false))}`).join(' ');
-    const ticks = [0, top / 2, top].map(v => `<text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="#8C8C8C" font-family="JetBrains Mono,monospace">${usd(v)}</text><line x1="${L}" x2="${W - 10}" y1="${Y(v)}" y2="${Y(v)}" stroke="#E4E4E4"/>`).join('');
+    const ticks = [m5cost(1, false), m5cost(1, true)].map((v, i) => `<text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" fill="${i ? '#C8391F' : '#8C8C8C'}" font-family="JetBrains Mono,monospace">${usd(v)}</text><line x1="${L}" x2="${W - 10}" y1="${Y(v)}" y2="${Y(v)}" stroke="${i ? '#FFA48F' : '#E4E4E4'}" stroke-dasharray="${i ? '3 3' : ''}"/>`).join('');
     const xl = Array.from({ length: n }, (_, i) => `<text x="${X(i)}" y="${H - 8}" text-anchor="middle" font-size="11" fill="#8C8C8C" font-family="JetBrains Mono,monospace">${i + 1}</text>`).join('');
-    const line = pts.length > 1 ? `<polyline points="${pts.map((v, i) => `${X(i)},${Y(v)}`).join(' ')}" fill="none" stroke="#FE6242" stroke-width="2.5" stroke-linejoin="round"/>` : '';
-    const dots = pts.map((v, i) => `<circle cx="${X(i)}" cy="${Y(v)}" r="${m5[i].ev ? 6 : 4}" fill="${m5[i].ev ? '#FE6242' : '#1E1E1E'}"><title>Turn ${i + 1}: ${usd(v)}${m5[i].ev ? ' · ' + EV[m5[i].ev] : ''}</title></circle>` + (m5[i].ev ? `<text x="${X(i)}" y="${Y(v) - 12}" text-anchor="middle" font-size="11" fill="#C8391F" font-family="DM Sans,sans-serif">${EV[m5[i].ev]}</text>` : '')).join('');
-    $('#m5-line').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cost per turn">${ticks}${xl}<polyline points="${base}" fill="none" stroke="#D4D4D4" stroke-width="2" stroke-dasharray="4 4"/>${line}${dots}</svg>`;
-    const p = PR.models[model], normal = m5cost(1, false), broke = m5cost(1, true);
-    const breaks = m5.filter(t => t.ev).length, extra = m5.reduce((a, t, i) => a + (t.ev ? m5cost(i + 1, true) - m5cost(i + 1, false) : 0), 0);
-    $('#m5-turn').textContent = m5.length >= M5.turns ? 'All 10 turns done. Restart to try other moves.' : `Turn ${m5.length + 1} of 10 next. Each button plays one turn.`;
+    const line = pts.length > 1 ? `<polyline points="${pts.map((v, i) => `${X(i)},${Y(v)}`).join(' ')}" fill="none" stroke="#1E1E1E" stroke-width="2.5" stroke-linejoin="round"/>` : '';
+    const dots = pts.map((v, i) => `<circle cx="${X(i)}" cy="${Y(v)}" r="${m5[i].ev ? 6 : 4}" fill="${m5[i].ev ? '#FE6242' : '#1E1E1E'}"><title>Message ${i + 1}: ${usd(v)}${m5[i].ev ? ' · ' + EV[m5[i].ev] : ''}</title></circle>`).join('');
+    $('#m5-line').innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cost per message">${ticks}${xl}<polyline points="${base}" fill="none" stroke="#D4D4D4" stroke-width="2" stroke-dasharray="4 4"/>${line}${dots}</svg><p class="cap">What each message costs. Dashed grey: the usual price. Dashed coral: the restart price.</p>`;
+    /* the shop: a ticket for the saved order, one stamp per message, and what the last message cost */
+    const last = m5[m5.length - 1], i = m5.length, torn = !!(last && last.ev), normal = m5cost(1, false), broke = m5cost(1, true);
+    const lastCost = i ? m5cost(i, torn) : 0;
+    $('#m5-shop').innerHTML = `<div class="ticket${torn ? ' torn' : ''}"><p class="t">${torn ? 'Torn up: ' + EV[last.ev].toLowerCase() : 'Your usual order, kept ready'}</p><ul><li>Model: ${p.name}</li><li>Tools: the usual set</li><li>The chat so far: ${num((M5.start + Math.max(0, i - 1) * M5.grow) / 1000)}K tokens</li></ul></div>` +
+      `<div class="stamps">${Array.from({ length: n }, (_, k) => `<span class="${k < i ? (m5[k].ev ? 'brk' : 'ok') : ''}">${k < i ? (m5[k].ev ? '✕' : '✓') : k + 1}</span>`).join('')}</div>` +
+      (i ? `<div class="now"><span>Message ${i}: ${torn ? 'had to <b>rebuild the whole order</b>' : 'served from the saved order'}</span><b class="${torn ? 'brk' : ''}">${usd(lastCost)}</b><div class="bar"><i class="${torn ? 'brk' : ''}" style="width:${(100 * lastCost / broke).toFixed(1)}%"></i></div></div>` : '');
+    const breaks = m5.filter(t => t.ev).length, extra = m5.reduce((a, t, k) => a + (t.ev ? m5cost(k + 1, true) - m5cost(k + 1, false) : 0), 0);
+    $('#m5-turn').textContent = m5.length >= M5.turns ? 'All 10 messages sent. Start over to try other moves.' : `Message ${m5.length + 1} of 10 next. Each button sends one message.`;
     $$('#m5 [data-ev], #m5-next').forEach(b => { b.disabled = m5.length >= M5.turns; });
-    $('#m5-head').innerHTML = `<span class="n">${usd(broke)}</span><p>for a turn after a break, against ${usd(normal)} for a normal turn on ${p.name}: ${Math.round(broke / normal)}× ${tag('calc')}${breaks ? `. Your ${breaks} break${breaks > 1 ? 's' : ''} added ${usd(extra)}` : ''}</p>`;
-    CARD[5] = { tax: 'Restart fee', n: Math.round(broke / normal) + '×', line: 'what one turn costs when Claude has to start over', fix: 'Pick the model and tools first, and keep going within the hour.', basis: 'Computed' };
+    $('#m5-head').innerHTML = `${cue(false, 'The restart fee')}<span class="n">${Math.round(broke / normal)}×</span><p>a message after a restart costs <b>${usd(broke)}</b> against ${usd(normal)} for a normal one on ${p.name} ${tag('calc')}${breaks ? `. Your ${breaks} restart${breaks > 1 ? 's' : ''} added <b>${usd(extra)}</b>` : ''}</p>`;
+    CARD[5] = { tax: 'Restart fee', n: Math.round(broke / normal) + '×', line: 'what one message costs when Claude has to start over', fix: 'Pick the model and tools first, and keep going within the hour.', basis: 'Computed' };
   }
   $('#m5-next').onclick = () => stepM5(null);
   $$('#m5 [data-ev]').forEach(b => { b.onclick = () => stepM5(b.dataset.ev); });
-  $('#m5-reset').onclick = () => { m5 = []; renderM5(); };
+  $('#m5-reset').onclick = () => { m5 = [{ ev: null }, { ev: null }, { ev: null }]; renderM5(); };
+  m5 = [{ ev: null }, { ev: null }, { ev: null }]; /* three normal messages first, so the baseline is on screen before anyone presses anything */
 
   /* ---------- 6. Pick the model ---------- */
   /* token profiles per task: estimates of a typical run */
@@ -414,20 +474,22 @@
     log: { label: 'Summarise a log', in: 60000, out: 800, what: 'read a 60K-token log, write 800' },
     plan: { label: 'Plan a feature', in: 25000, out: 4000, what: 'read 25K tokens of context, write a 4K plan' }
   };
-  let m6task = 'search';
+  let m6task = 'search', m6n = 1;
   $('#m6-task').innerHTML = Object.entries(TASKS).map(([k, t]) => `<button type="button" role="radio" data-t="${k}" aria-checked="${k === m6task}">${t.label}</button>`).join('');
   $$('#m6-task button').forEach(b => { b.onclick = () => { m6task = b.dataset.t; $$('#m6-task button').forEach(x => x.setAttribute('aria-checked', x === b)); renderM6(); completed(6); }; });
+  $$('#m6-times button').forEach(b => { b.onclick = () => { m6n = +b.dataset.n; $$('#m6-times button').forEach(x => x.setAttribute('aria-checked', x === b)); renderM6(); completed(6); }; });
   function renderM6() {
     const t = TASKS[m6task], rows = ['haiku', 'sonnet', 'opus'].map(k => {
-      const p = price(k, t.in), i = t.in * p.input / 1e6, o = t.out * p.output / 1e6;
+      const p = price(k, t.in), i = t.in * p.input / 1e6 * m6n, o = t.out * p.output / 1e6 * m6n;
       return { k, name: PR.models[k].name, i, o, tot: i + o, rate: p.input };
     });
-    const max = rows[2].tot;
-    $('#m6-cards').innerHTML = rows.map(r => `<div class="mcard${r.k === 'haiku' ? ' cheap' : ''}"><h3>${r.name}</h3><div class="tot">${usd(r.tot)}</div><div class="meter"><i style="width:${(100 * r.tot / max).toFixed(1)}%"></i></div><dl><dt>Input</dt><dd>${usd(r.i)}</dd><dt>Output</dt><dd>${usd(r.o)}</dd><dt>Input price</dt><dd>${usd(r.rate)}/M</dd></dl></div>`).join('');
-    const ratio = Math.round(rows[2].rate / rows[0].rate);
-    $('#m6-head').innerHTML = `<span class="n good">1/${ratio}</span><p>Haiku input costs 1/${ratio} of Opus input ${tag('docs')}. This job: ${usd(rows[0].tot)} on Haiku, ${usd(rows[2].tot)} on Opus ${tag('calc')}</p>`;
-    $('#m6-how').innerHTML = `Job profile: ${t.what} ${tag('est')}. Cost = tokens × each model's price ${tag('docs')}.`;
-    CARD[6] = { tax: 'One-model tax', n: ratio + '×', line: 'what Opus input costs over Haiku', fix: `Send simple jobs like "${t.label.toLowerCase()}" to Haiku.`, basis: 'Anthropic prices' };
+    const max = rows[2].tot, times = m6n > 1 ? `, ${num(m6n)} times` : '';
+    $('#m6-scale').innerHTML = `<div class="track">${rows.map((r, i) => `<div class="dot${i === 0 ? ' cheap' : i === 2 ? ' dear' : ''}" style="left:${Math.max(1.5, 100 * r.tot / max).toFixed(1)}%"><b>${usd(r.tot)}</b><small>${r.name}</small></div>`).join('')}</div><div class="ends"><span>Cheapest</span><span>Same job${times}</span><span>Dearest</span></div>`;
+    $('#m6-cards').innerHTML = rows.map(r => `<div class="mcard${r.k === 'haiku' ? ' cheap' : ''}"><h3>${r.name}</h3><div class="tot">${usd(r.tot)}</div><div class="meter"><i style="width:${(100 * r.tot / max).toFixed(1)}%"></i></div><dl><dt>Reading</dt><dd>${usd(r.i)}</dd><dt>Writing</dt><dd>${usd(r.o)}</dd><dt>Price per M in</dt><dd>${usd(r.rate)}</dd></dl></div>`).join('');
+    const ratio = Math.round(rows[2].tot / rows[0].tot);
+    $('#m6-head').innerHTML = `${cue(true, 'Saved by picking the small model')}<span class="n good">${ratio}×</span><p>cheaper on Haiku than on Opus for "${t.label.toLowerCase()}"${times}: <b>${usd(rows[0].tot)}</b> against ${usd(rows[2].tot)} ${tag('calc')}</p>`;
+    $('#m6-how').innerHTML = `Job profile: ${t.what} (estimate). Cost = tokens × each model's price from Anthropic's pricing page.`;
+    CARD[6] = { tax: 'One-model tax', n: ratio + '×', line: `what Opus costs over Haiku for "${t.label.toLowerCase()}"`, fix: `Send simple jobs like "${t.label.toLowerCase()}" to Haiku.`, basis: 'Anthropic prices' };
   }
 
   /* ---------- shared: drop targets ---------- */
@@ -438,7 +500,7 @@
   }
 
   /* ---------- your sessions (import.js adds the readers) ---------- */
-  window.TM = { PR: () => PR, model: () => model, price, chatCost, simulate, imgTokens, est, WORD, KEYS, stackHTML, legendHTML, tag, esc, num, usd, pct, track, dropTarget, card: c => { CARD.you = c; } };
+  window.TM = { PR: () => PR, model: () => model, price, chatCost, simulate, imgTokens, est, WORD, KEYS, stackHTML, legendHTML, tag, esc, num, usd, pct, track, dropTarget, cue, card: c => { CARD.you = c; } };
 
   /* ---------- result card ---------- */
   const CARD = {};
@@ -519,7 +581,7 @@
   window.TM.refreshCard = () => { $('#card-btn').disabled = !currentCard(); };
 
   function renderAll() { renderM1(); renderM2(); renderM3(); renderM4(); renderM5(); renderM6(); window.TM.rerender && window.TM.rerender(); window.TM.refreshCard(); }
-  [m1.turns, m1.words, m1.ctx].forEach(el => el.addEventListener('input', () => { renderM1(); renderM2(); completed(1); }));
+  [m1.turns, m1.words, m1.ctx].forEach(el => el.addEventListener('input', () => { clearInterval(m1timer); m1shown = null; $('#m1-play').disabled = false; renderM1(); renderM2(); completed(1); }));
   m2s.addEventListener('input', () => { renderM2(); completed(2); });
   $('#model').onchange = e => { model = e.target.value; renderAll(); };
   function setMoney(m) {

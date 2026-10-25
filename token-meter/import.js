@@ -143,8 +143,8 @@
       ? [[num(r.chats), 'chats'], [r.tokens >= 1e6 ? (r.tokens / 1e6).toFixed(1) + 'M' : num(r.tokens), 'tokens of history'], [usd(r.tot.total), 'at API prices'], [pct(100 * r.tot.read / r.tot.total), 'was re-reading']]
       : [[num(r.j.sessions), 'sessions'], [usd(r.tot.total), 'at API prices'], [pct(100 * r.tot.read / r.tot.total), 'was cache reads'], [pct(100 * (r.tot.read + r.tot.write) / r.tot.total), 'was the cache']]
     ).map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join('') + '</div>';
-    html += `<p class="eyebrow">Where it went · module 1</p><div class="stack">${T.stackHTML(r.tot)}</div><div class="legend">${T.legendHTML(r.tot, b)}</div>`;
-    html += `<div class="headline"><span class="n">${pct(share)}</span><p>Your biggest tax is <b>${esc(top.name)}</b>: about ${usd(top.cost)} of ${usd(r.tot.total)} ${tag(b)}. ${esc(top.fix)}</p></div>`;
+    html += `<p class="eyebrow">Where it went · module 1</p><div class="stack">${T.stackHTML(r.tot)}</div><div class="legend">${T.legendHTML(r.tot)}</div>`;
+    html += `<div class="headline">${T.cue(false, 'Your biggest tax')}<span class="n">${pct(share)}</span><p><b>${esc(top.name)}</b>: about ${usd(top.cost)} of ${usd(r.tot.total)} ${tag(b)}. ${esc(top.fix)}</p></div>`;
     html += '<p class="eyebrow">Your taxes, biggest first</p><div class="taxes">' + taxes.map(t =>
       `<div class="tax${t === top ? ' lead' : ''}"><h3><a href="#m${t.id}">${esc(t.name)}</a></h3><span class="v">${usd(t.cost)} ${tag(b)}</span><div class="bar"><i style="width:${(100 * t.cost / max).toFixed(1)}%"></i></div><p>${esc(t.what)}</p></div>`).join('') + '</div>';
     if (est) {
@@ -179,6 +179,41 @@
     zone.classList.remove('busy'); zone.firstChild.textContent = label;
   }
   T.rerender = () => { if (last) try { render(last.kind === 'B' ? analyseB(last.data, T.model()) : analyseA(last.data)); } catch (e) {} };
+
+  /* ---------- demo: a made-up Claude app export, for showing the page without a real file ---------- */
+  /* Deterministic (seeded) so the demo looks the same every time it is shown. 14 chats over a month: a few long ones,
+     some pasted screenshots and files, two chats resumed the next day. Shaped exactly like the export reader expects. */
+  function demoExport() {
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const words = n => Array.from({ length: n }, (_, i) => ['the', 'plan', 'customer', 'draft', 'revenue', 'and', 'then', 'check', 'table', 'for', 'launch', 'week', 'email', 'summary', 'again'][(i * 7 + Math.floor(rnd() * 15)) % 15]).join(' ');
+    const chats = [
+      ['Launch plan for the webinar', 34, 0.3, 2, 1, true], ['Rewrite the pricing page', 9, 0.1, 0, 1, false], ['Debug the signup form', 27, 0.4, 5, 0, true],
+      ['Q3 board deck outline', 18, 0.2, 1, 2, false], ['Cold email variants', 6, 0, 0, 0, false], ['Summarise customer calls', 12, 0.1, 0, 3, false],
+      ['Hiring rubric for designers', 8, 0, 0, 0, false], ['Fix the invoice export', 22, 0.5, 4, 1, true], ['Trip to Jaipur', 5, 0, 1, 0, false],
+      ['SQL for churn by plan', 15, 0.3, 2, 0, false], ['Rename the product', 11, 0, 0, 0, false], ['Terms of service review', 7, 0.1, 0, 1, false],
+      ['Weekly metrics writeup', 25, 0.2, 3, 1, false], ['Onboarding emails', 10, 0, 0, 0, false]
+    ];
+    const t0 = Date.UTC(2026, 8, 20, 9, 0);
+    return chats.map(([name, turns, longness, imgs, files, resumed], ci) => {
+      const start = t0 + ci * 2 * 86400000 + Math.floor(rnd() * 8) * 3600000, msgs = [];
+      let at = start, imgLeft = imgs, fileLeft = files;
+      for (let k = 0; k < turns; k++) {
+        if (resumed && k === Math.floor(turns * 0.6)) at += 26 * 3600000; else at += (3 + Math.floor(rnd() * 6)) * 60000;
+        const u = { uuid: `u${ci}-${k}`, sender: 'human', text: words(20 + Math.floor(rnd() * 60)), created_at: new Date(at).toISOString(), attachments: [], files: [] };
+        if (imgLeft && rnd() < 0.5) { imgLeft--; u.files.push({ file_name: `Screenshot ${k + 1}.png`, file_kind: 'image' }); }
+        if (fileLeft && rnd() < 0.4) { fileLeft--; u.attachments.push({ file_name: ['brief.pdf', 'calls.docx', 'metrics.xlsx'][fileLeft % 3], extracted_content: words(900 + Math.floor(rnd() * 1500)) }); }
+        msgs.push(u);
+        at += 40000;
+        msgs.push({ uuid: `a${ci}-${k}`, sender: 'assistant', text: words(120 + Math.floor(rnd() * 400 * (1 + longness))), created_at: new Date(at).toISOString() });
+      }
+      return { uuid: 'c' + ci, name, created_at: new Date(start).toISOString(), chat_messages: msgs };
+    });
+  }
+  $('#demo-btn').onclick = () => {
+    err('');
+    try { const chats = demoExport(); last = { kind: 'B', data: chats }; render(analyseB(chats, T.model())); T.track('import_completed', { source: 'demo' }); document.querySelector('#steps a.you').classList.add('done'); }
+    catch (e) { err(e.message); }
+  };
   [['B', '#b-drop', '#b-file'], ['A', '#a-drop', '#a-file']].forEach(([k, z, f]) => {
     const zone = $(z);
     $(f).addEventListener('change', e => take(k, e.target.files[0], zone));

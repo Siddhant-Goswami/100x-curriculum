@@ -32,3 +32,12 @@ Spec: "Token Meter one-pager spec.md" (25 Oct 2026). Live route: /token-meter (n
 - [x] Claude Code JSONL fields: checked 25 Oct. usage has cache_creation.ephemeral_5m/1h; images are base64 blocks in user content and inside tool_result
 - [ ] Launch date, and CTA target (footer link points to 100xengineers.com for now)
 - [ ] Check chars ÷ 3.5 against 20 count_tokens results before launch
+
+## Teaching redesign (25 Oct, after the UI review)
+- Two panes from 1000px: controls left, picture + big number right, body 18px, headline number 84px. One column below that.
+- Two colours carry every lesson: grey = old history (cache read + write), coral = new words (input + output). The four-way split is under "Show the maths".
+- M1: "Play the chat" animates the bubble stack and per-message columns; defaults 5 messages, plain 25K chat. M2: two transcripts, answer bubbles shrink.
+  M3: number tweens, "down from N" when cropped, crop button is the coral one. M4: punctuation/indent highlighted in both panes (pre behind a transparent textarea), 5-row JSON sample.
+  M5: shop ticket + stamps, 3 messages pre-played, "Come back tomorrow". M6: cost scale with three dots, Once / 1,000 times toggle.
+  Your sessions: "Load a demo history" (demoExport in import.js, seeded, 14 chats).
+- One basis tag per module, on the big number. "Count exactly" sits under "Check with Claude". Pager: Make my card is ghost, Next is dark.
