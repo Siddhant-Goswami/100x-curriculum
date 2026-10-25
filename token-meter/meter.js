@@ -79,37 +79,53 @@
   /* ---------- 1. Where the money goes ---------- */
   const m1 = { turns: $('#m1-turns'), words: $('#m1-words'), ctx: $('#m1-ctx') };
   const chatOpts = extra => Object.assign({ turns: +m1.turns.value, words: +m1.words.value, ctx: +m1.ctx.value }, extra);
+  /* One thing on screen at a time. Stages: setup (controls and play), play (the chat alone, one message at a time),
+     cost (the chat shrinks to a thumbnail beside the per-message columns), total (the sum line appears). */
   let m1shown = null, m1timer = 0; /* while playing, how many turns are on screen */
+  const m1sec = $('#m1');
+  function m1stage(s) {
+    m1sec.dataset.stage = s;
+    $('#m1-more').textContent = s === 'cost' ? "What's the total?" : 'What did each message cost?';
+    $('#m1-chip-t').textContent = `${m1.turns.value} messages · ${m1.words.value} words each · ${ctxLabel(+m1.ctx.value).toLowerCase()} before`;
+    if (s !== 'setup') setTimeout(renderM1, 420); /* the stack re-fits its rows once the height transition is done */
+  }
   function renderM1() {
-    const N = +m1.turns.value, shown = m1shown == null ? N : m1shown;
+    const N = +m1.turns.value, shown = m1shown == null ? N : m1shown, stage = m1sec.dataset.stage;
     $('#m1-turns-o').textContent = N;
     $('#m1-words-o').textContent = m1.words.value;
     const full = chatCost(chatOpts()), { tot, per } = shown === N ? full : chatCost(chatOpts({ turns: shown }));
-    /* the stack: context block on top, then every turn so far; the newest pair is coral */
-    const rowH = Math.max(1, Math.min(20, Math.floor((230 / shown - 3) / 2))); /* two bubbles and gaps per pair, fitted into a fixed 230px */
+    /* the stack: context block on top, then every turn so far; the newest pair is coral. Rows are fitted into the rows box */
+    const rowsEl = $('#m1-stack .rows'), rowsH = rowsEl ? rowsEl.clientHeight : 230;
+    const rowH = Math.max(1, Math.min(22, Math.floor((rowsH / shown - 3) / 2)));
     $('#m1-stack').innerHTML = `<div class="ctx${shown === 1 ? ' hot' : ''}"><span>Before you typed: ${ctxLabel(+m1.ctx.value)}</span><span>${num(+m1.ctx.value / 1000)}K tokens</span></div>` +
       `<div class="rows">${pairsHTML(shown, true, 72, rowH)}</div>` +
       `<div class="lab"><span class="old">read again: <em>${shown > 1 ? (shown - 1) + ' old message' + (shown > 2 ? 's' : '') + ' + setup' : 'the setup'}</em></span><span class="new"><b>message ${shown}</b></span></div>`;
+    const last = per[per.length - 1];
+    $('#m1-live').textContent = stage === 'play'
+      ? `Message ${shown} of ${N}: before answering, Claude reads ${shown > 1 ? `the setup and all ${shown - 1} earlier message${shown > 2 ? 's' : ''}` : 'the whole setup'} again. This message cost ${usd(OLD(last) + NEW(last))}.`
+      : `${N} messages. The grey is what Claude read again.`;
     /* one column per turn, two colours. Turn 1 writes the whole starting context, so it is clipped at the top */
     const sum = t => OLD(t) + NEW(t), max = Math.max(...per.slice(1).map(sum), per.length === 1 ? sum(per[0]) : 0);
     $('#m1-cols').innerHTML = per.map((t, i) => { const f = Math.min(1, max / sum(t)); return `<span title="Message ${i + 1}: ${usd(sum(t))}"${f < 1 ? ' class="clip"' : ''}><i class="k-old" style="height:${(200 * f * OLD(t) / max).toFixed(2)}px"></i><i class="k-new" style="height:${(200 * f * NEW(t) / max).toFixed(2)}px"></i></span>`; }).join('');
     const old = 100 * OLD(tot) / tot.total;
-    $('#m1-head').innerHTML = `${cue(false, 'What you pay for')}<span class="n">${pct(old)}</span><p>of this ${shown}-message chat (<b>${usd(tot.total)}</b>) is Claude storing and re-reading <b>old messages</b>. Your new words are the other ${pct(100 - old)} ${tag('calc')}</p>`;
+    $('#m1-head').innerHTML = `<span class="n">${pct(old)}</span>of what you paid for this ${shown}-message chat (<b>${usd(tot.total)}</b>) went on Claude storing and re-reading <b>old messages</b>. Your new words were the other ${pct(100 - old)} ${tag('calc')}`;
     $('#m1-legend').innerHTML = legendHTML(tot);
     CARD[1] = { tax: 'Re-read tax', n: pct(100 * OLD(full.tot) / full.tot.total), line: `of a ${N}-message chat is Claude re-reading history`, fix: 'Start a fresh chat with a summary every 15 to 20 messages.', basis: 'Computed' };
   }
   function playM1() {
     clearInterval(m1timer);
-    const N = +m1.turns.value, step = Math.max(80, Math.min(400, 3000 / N));
-    m1shown = 1; renderM1(); completed(1);
-    $('#m1-play').disabled = true;
+    const N = +m1.turns.value, step = Math.max(120, Math.min(600, 4000 / N));
+    m1shown = 1; m1sec.classList.remove('played'); m1stage('play'); renderM1(); completed(1);
     m1timer = setInterval(() => {
       m1shown++;
-      if (m1shown >= N) { clearInterval(m1timer); m1shown = null; $('#m1-play').disabled = false; }
+      if (m1shown >= N) { clearInterval(m1timer); m1shown = null; m1sec.classList.add('played'); }
       renderM1();
     }, step);
   }
   $('#m1-play').onclick = playM1;
+  $('#m1-replay').onclick = playM1;
+  $('#m1-more').onclick = () => { clearInterval(m1timer); m1shown = null; m1stage(m1sec.dataset.stage === 'cost' ? 'total' : 'cost'); renderM1(); };
+  $('#m1-change').onclick = () => { clearInterval(m1timer); m1shown = null; m1stage('setup'); renderM1(); };
 
   /* ---------- 2. The Caveman myth ---------- */
   const m2s = $('#m2-shrink');
@@ -581,7 +597,7 @@
   window.TM.refreshCard = () => { $('#card-btn').disabled = !currentCard(); };
 
   function renderAll() { renderM1(); renderM2(); renderM3(); renderM4(); renderM5(); renderM6(); window.TM.rerender && window.TM.rerender(); window.TM.refreshCard(); }
-  [m1.turns, m1.words, m1.ctx].forEach(el => el.addEventListener('input', () => { clearInterval(m1timer); m1shown = null; $('#m1-play').disabled = false; renderM1(); renderM2(); completed(1); }));
+  [m1.turns, m1.words, m1.ctx].forEach(el => el.addEventListener('input', () => { clearInterval(m1timer); m1shown = null; renderM1(); renderM2(); completed(1); }));
   m2s.addEventListener('input', () => { renderM2(); completed(2); });
   $('#model').onchange = e => { model = e.target.value; renderAll(); };
   function setMoney(m) {

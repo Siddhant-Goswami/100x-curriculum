@@ -40,39 +40,42 @@
   <main id="view">
 
   <!-- 1 -->
-  <section class="mod" id="m1" data-mod="1" hidden>
-    <div class="l">
+  <section class="mod stage" id="m1" data-mod="1" data-stage="setup" hidden>
+    <div class="head">
       <p class="eyebrow">Module 1</p>
       <h1>Where the money goes</h1>
-      <p class="sub">Every time you send a message, Claude reads the whole chat again from the top. Press play and watch the pile of old messages grow.</p>
-      <div class="controls">
-        <button class="btn" id="m1-play" type="button">▶ Play the chat</button>
-        <label class="ctl"><span>How many messages you send <output id="m1-turns-o"></output></span>
-          <input type="range" id="m1-turns" min="1" max="50" value="5"></label>
-        <label class="ctl"><span>How long each message is <output id="m1-words-o"></output></span>
-          <input type="range" id="m1-words" min="20" max="1000" step="10" value="100"></label>
-        <label class="ctl"><span>What was in the chat before you typed</span>
-          <select id="m1-ctx">
-            <option value="25000" selected>Nothing much: Claude's own setup, about 25K tokens</option>
-            <option value="100000">Some files or a Project, about 100K tokens</option>
-            <option value="200000">A whole document or codebase, about 200K tokens</option>
-          </select></label>
-      </div>
-      <details class="maths"><summary>Show the maths</summary>
-        <p>Each message pays: old history × cache-read price, the last exchange × cache-write price, your new message × input price, Claude's answer × output price. Words to tokens at 4 ÷ 3 (estimate).</p>
-        <div class="legend" id="m1-legend"></div>
-      </details>
+      <p class="sub">Every time you send a message, Claude reads the whole chat again from the top. Set up a chat, press play, and watch the pile of old messages grow.</p>
     </div>
-    <div class="r">
-      <div class="visual chatviz">
+    <div class="chip" id="m1-chip"><span id="m1-chip-t"></span><button class="link" id="m1-change" type="button">Change the chat</button></div>
+    <div class="controls" id="m1-ctl">
+      <label class="ctl"><span>How many messages you send <output id="m1-turns-o"></output></span>
+        <input type="range" id="m1-turns" min="1" max="50" value="5"></label>
+      <label class="ctl"><span>How long each message is <output id="m1-words-o"></output></span>
+        <input type="range" id="m1-words" min="20" max="1000" step="10" value="100"></label>
+      <label class="ctl"><span>What was in the chat before you typed</span>
+        <select id="m1-ctx">
+          <option value="25000" selected>Nothing much: Claude's own setup, about 25K tokens</option>
+          <option value="100000">Some files or a Project, about 100K tokens</option>
+          <option value="200000">A whole document or codebase, about 200K tokens</option>
+        </select></label>
+      <button class="btn" id="m1-play" type="button">▶ Play the chat</button>
+    </div>
+    <div class="body" id="m1-body">
+      <div class="focus">
         <div class="tstack" id="m1-stack"></div>
-        <div class="turns">
-          <p class="cap">What each message costs. <s class="k-old"></s> old messages <s class="k-new"></s> new words</p>
-          <div class="cols" id="m1-cols"></div>
-        </div>
+        <p class="live" id="m1-live"></p>
       </div>
-      <div class="headline" id="m1-head"></div>
+      <div class="reveal" id="m1-cost">
+        <p class="cap">What each message cost. Every one re-reads more than the last. <s class="k-old"></s> old messages <s class="k-new"></s> new words</p>
+        <div class="cols" id="m1-cols"></div>
+      </div>
     </div>
+    <p class="sum" id="m1-head"></p>
+    <div class="row adv"><button class="btn dark" id="m1-more" type="button">What did each message cost?</button><button class="btn ghost" id="m1-replay" type="button">Replay</button></div>
+    <details class="maths"><summary>Show the maths</summary>
+      <p>Each message pays: old history × cache-read price, the last exchange × cache-write price, your new message × input price, Claude's answer × output price. Words to tokens at 4 ÷ 3 (estimate).</p>
+      <div class="legend" id="m1-legend"></div>
+    </details>
   </section>
 
   <!-- 2 -->
