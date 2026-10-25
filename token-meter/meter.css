@@ -32,19 +32,22 @@ button{cursor:pointer}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;height:56px}
 .brand{font:700 13px var(--mono);letter-spacing:.14em;color:var(--ink);text-decoration:none}
 .brand b{color:var(--coral);font-weight:700}
-.top .money{margin-left:auto;gap:0;flex-wrap:nowrap}
-.top .money button{min-height:30px;padding:5px 9px;font:500 12px var(--mono);border-radius:0}
-.top .money button:first-child{border-radius:8px 0 0 8px}
-.top .money button:last-child{border-radius:0 8px 8px 0;margin-left:-1px}
-.price-on{font:500 13px var(--sans);color:var(--ink2);display:flex;align-items:center;gap:8px}
-.price-on select{font:600 13px var(--mono);padding:6px 8px;border:1px solid var(--ink);border-radius:8px;background:var(--card);color:var(--ink)}
+/* the header settings read as one quiet line of text: USD / INR · Prices of Sonnet 5.5 */
+.top .money{margin-left:auto;gap:0;flex-wrap:nowrap;align-items:center}
+.top .money button{min-height:0;padding:2px 4px;border:0;background:none;font:500 13px var(--mono);color:var(--ink3);border-radius:4px}
+.top .money button[aria-checked=true]{color:var(--ink);background:none}
+.top .money button:first-child::after{content:"/";color:var(--line2);margin-left:6px}
+.price-on{font:500 13px var(--sans);color:var(--ink3);display:flex;align-items:center;gap:4px}
+.price-on::before{content:"·";margin-right:8px;color:var(--line2)}
+.price-on select{font:500 13px var(--mono);padding:2px 18px 2px 2px;border:0;border-bottom:1px solid var(--line2);border-radius:0;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238C8C8C' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 2px center;color:var(--ink);-webkit-appearance:none;appearance:none;cursor:pointer}
 @media (max-width:420px){.price-on span{display:none}}
 
-.steps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:4px 16px 12px}
+.steps{display:flex;gap:4px 18px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 14px;border-bottom:1px solid var(--line)}
 .steps::-webkit-scrollbar{display:none}
-.steps a{flex:none;display:flex;align-items:center;gap:6px;padding:7px 11px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink2);text-decoration:none;font:500 13px var(--sans);white-space:nowrap}
-.steps a i{font:600 11px var(--mono);font-style:normal;color:var(--ink3)}
-.steps a.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.steps a{flex:none;display:flex;align-items:center;gap:6px;padding:6px 0;border:0;border-bottom:2px solid transparent;border-radius:0;background:none;color:var(--ink3);text-decoration:none;font:500 13px var(--sans);white-space:nowrap}
+.steps a:hover{color:var(--ink2)}
+.steps a i{font:500 11px var(--mono);font-style:normal;color:var(--ink3)}
+.steps a.on{color:var(--ink);border-bottom-color:var(--ink);background:none}
 .steps a.on i{color:var(--coral)}
 .steps a.done:not(.on) i{color:var(--hum-ink)}
 
@@ -289,8 +292,8 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
 @media (min-width:1000px){
   body{font-size:18px}
   .app{max-width:1260px;padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(28px,env(safe-area-inset-right,0px))}
-  .steps{margin:0;padding:4px 0 14px;overflow:visible;flex-wrap:wrap}
-  .steps a{font-size:14px;padding:8px 13px}
+  .steps{margin:0;padding:2px 0 0;overflow:visible;flex-wrap:wrap;gap:4px 24px}
+  .steps a{font-size:14px;padding:8px 0 10px}
   .mod{display:grid;grid-template-columns:380px minmax(0,1fr);gap:16px 36px;align-items:start;padding-top:16px}
   .mod.stage{display:flex;align-items:stretch;max-width:820px;margin:0 auto;width:100%}
   .stage[data-stage=setup] .head h1{font-size:44px}
