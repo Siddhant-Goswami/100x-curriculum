@@ -161,8 +161,8 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
 .pager .btn{flex:1}
 .pager #card-btn{flex:1.4}
 .foot{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line);padding-top:16px}
-.cta{display:flex;justify-content:space-between;align-items:center;padding:16px;border-radius:var(--r);background:var(--card);border:1px solid var(--line);color:var(--ink);text-decoration:none;font:600 17px var(--head)}
-.cta span{color:var(--coral)}
+.made{margin:0;font-size:13px;color:var(--ink3);text-align:center}
+.made a{color:var(--ink2);text-decoration:underline;text-underline-offset:2px}
 
 dialog{border:0;border-radius:16px;padding:16px;max-width:min(440px,92vw);background:var(--card)}
 dialog::backdrop{background:rgba(0,0,0,.55)}
