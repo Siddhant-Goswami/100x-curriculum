@@ -6,7 +6,7 @@ Spec: "Token Meter one-pager spec.md" (25 Oct 2026). Live route: /token-meter (n
 - token-meter/index.html, meter.css, meter.js: modules 1 to 6, routing, result card
 - token-meter/import.js: Your sessions. B = Claude app export zip (JSZip 3.10.1 from cdnjs), A = token-meter.json
 - token-meter/prices.json: the page's price file. The CLI repo has a copy; keep them the same
-- CLI: its own repo, github.com/Siddhant-Goswami/token-meter (local: ~/projects/100x/token-meter), published to npm as `token-meter-cli` (`token-meter` was refused as too close to `tokenmeter`).
+- CLI: its own repo, github.com/Siddhant-Goswami/token-meter (local: ~/projects/100x/token-meter), published to npm as `100x-token-meter` (npm refused `token-meter` and `token-meter-cli` as matching `tokenmeter` and `tokenmeter-cli` with dashes removed).
   It carries its own copy of prices.json: when prices change, update both, bump the version and `npm publish`
 - "Count exactly" (modules 3, 4): bring your own key. The visitor pastes their Anthropic API key; the browser calls countTokens on
   api.anthropic.com directly with the official SDK (jsDelivr ESM, @anthropic-ai/sdk 0.133.0, dangerouslyAllowBrowser). No server route, no key of ours.
