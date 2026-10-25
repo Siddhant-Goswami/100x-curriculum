@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Token Meter</title>
+<meta name="description" content="Six calculators that show where your Claude tokens go, then load your own history and see your biggest token tax. Your files never leave your machine.">
+<meta name="theme-color" content="#F7F7F7">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="meter.css">
+<script src="/analytics.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="#m1">TOKEN<b>METER</b></a>
+    <label class="price-on">Priced on
+      <select id="model" aria-label="Model used for prices">
+        <option value="haiku">Haiku 5.5</option>
+        <option value="sonnet" selected>Sonnet 5.5</option>
+        <option value="opus">Opus 5.5</option>
+      </select>
+    </label>
+  </header>
+
+  <nav class="steps" id="steps" aria-label="Modules">
+    <a href="#m1"><i>1</i>Where the money goes</a>
+    <a href="#m2"><i>2</i>The Caveman myth</a>
+    <a href="#m3"><i>3</i>Screenshot tax</a>
+    <a href="#m4"><i>4</i>Format tax</a>
+    <a href="#m5"><i>5</i>Cache breaker</a>
+    <a href="#m6"><i>6</i>Pick the model</a>
+    <a href="#you" class="you"><i>★</i>Your sessions</a>
+  </nav>
+
+  <main id="view">
+
+  <!-- 1 -->
+  <section class="mod" id="m1" data-mod="1" hidden>
+    <p class="eyebrow">Module 1</p>
+    <h1>Where the money goes</h1>
+    <p class="sub">Every turn, Claude re-reads the whole chat from its cache. Drag the chat longer and watch what you pay for.</p>
+    <div class="controls">
+      <label class="ctl"><span>Turns in the chat <output id="m1-turns-o"></output></span>
+        <input type="range" id="m1-turns" min="1" max="50" value="30"></label>
+      <label class="ctl"><span>Words per message <output id="m1-words-o"></output></span>
+        <input type="range" id="m1-words" min="20" max="1000" step="10" value="100"></label>
+      <label class="ctl"><span>Already in the chat before turn 1 <em class="bs" data-b="est"></em></span>
+        <select id="m1-ctx">
+          <option value="25000">Plain chat: system prompt and tools, about 25K tokens</option>
+          <option value="100000" selected>Chat with files or a Project, about 100K tokens</option>
+          <option value="200000">Long document or codebase, about 200K tokens</option>
+        </select></label>
+    </div>
+    <div class="visual">
+      <div class="stack" id="m1-stack"></div>
+      <div class="legend" id="m1-legend"></div>
+      <p class="tiny">Each turn, one column. Turn 1 writes the starting context and runs off the top.</p>
+      <div class="cols" id="m1-cols"></div>
+    </div>
+    <div class="headline" id="m1-head"></div>
+    <p class="tiny how">Turn n pays: history × cache-read price, the last exchange × cache-write price, your new message × input price, Claude's answer × output price. Words to tokens at 4 ÷ 3 <em class="bs" data-b="est"></em>.</p>
+  </section>
+
+  <!-- 2 -->
+  <section class="mod" id="m2" data-mod="2" hidden>
+    <p class="eyebrow">Module 2</p>
+    <h1>The Caveman myth</h1>
+    <p class="sub">"Tell Claude to answer like a caveman and save tokens." Shrink every answer and see what the bill does.</p>
+    <div class="controls">
+      <label class="ctl"><span>Shrink Claude's answers by <output id="m2-shrink-o"></output></span>
+        <input type="range" id="m2-shrink" min="0" max="75" step="5" value="75"></label>
+      <p class="tiny" id="m2-chat"></p>
+    </div>
+    <div class="visual">
+      <div class="duo" id="m2-duo"></div>
+    </div>
+    <div class="headline" id="m2-head"></div>
+    <p class="tiny how">Same chat and maths as module 1. Only output tokens shrink, and so does what later turns re-read.</p>
+  </section>
+
+  <!-- 3 -->
+  <section class="mod" id="m3" data-mod="3" hidden>
+    <p class="eyebrow">Module 3</p>
+    <h1>Screenshot tax</h1>
+    <p class="sub">Claude cuts every image into 28 px squares and charges for each one. Crop and shrink to see the count fall.</p>
+    <div class="controls">
+      <div class="row">
+        <label class="btn ghost file">Drop or choose an image<input type="file" id="m3-file" accept="image/*"></label>
+        <button class="btn ghost" id="m3-sample" type="button">Use a sample</button>
+        <button class="btn ghost" id="m3-crop800" type="button">Crop to 800 × 450</button>
+        <button class="btn ghost" id="m3-reset" type="button">Full image</button>
+      </div>
+      <label class="ctl"><span>Resize <output id="m3-scale-o"></output></span>
+        <input type="range" id="m3-scale" min="10" max="100" value="100"></label>
+    </div>
+    <div class="visual">
+      <div class="drop" id="m3-drop"><canvas id="m3-canvas" aria-label="Image with the 28 pixel grid"></canvas></div>
+      <p class="tiny">Drag the corners to crop. Drag inside to move the crop.</p>
+    </div>
+    <div class="headline" id="m3-head"></div>
+    <div class="exact">
+      <button class="btn ghost" id="m3-exact" type="button">Count exactly</button>
+      <span class="tiny">Uses your own Anthropic API key. The cropped image goes from your browser to Anthropic, not to us.</span>
+      <span class="exact-out" id="m3-exact-o"></span>
+    </div>
+    <p class="tiny how">Tokens = ceil(width ÷ 28) × ceil(height ÷ 28), with the long edge capped at 2,576 px <em class="bs" data-b="docs"></em>.</p>
+  </section>
+
+  <!-- 4 -->
+  <section class="mod" id="m4" data-mod="4" hidden>
+    <p class="eyebrow">Module 4</p>
+    <h1>Format tax</h1>
+    <p class="sub">JSON and HTML carry a lot of punctuation Claude has to read. Paste yours, or pick a sample, and convert it.</p>
+    <div class="controls">
+      <div class="row">
+        <select id="m4-sample" aria-label="Sample">
+          <option value="">Pick a sample</option>
+          <option value="json" selected>JSON table: 20 customers</option>
+          <option value="html">HTML: a pricing page</option>
+          <option value="text">Text: a copied email thread</option>
+        </select>
+        <select id="m4-to" aria-label="Convert to"></select>
+      </div>
+    </div>
+    <div class="visual two">
+      <div class="pane"><div class="pane-h"><b>Original</b> <span id="m4-a-t"></span></div><textarea id="m4-in" spellcheck="false" aria-label="Paste JSON, HTML or text"></textarea></div>
+      <div class="pane"><div class="pane-h"><b id="m4-to-h">Converted</b> <span id="m4-b-t"></span></div><textarea id="m4-out" spellcheck="false" readonly aria-label="Converted"></textarea></div>
+    </div>
+    <div class="headline" id="m4-head"></div>
+    <div class="exact">
+      <button class="btn ghost" id="m4-exact" type="button">Count exactly</button>
+      <span class="tiny">Uses your own Anthropic API key. Both texts go from your browser to Anthropic, not to us.</span>
+      <span class="exact-out" id="m4-exact-o"></span>
+    </div>
+    <p class="tiny how">Converted in your browser. Estimate: characters ÷ 3.5 <em class="bs" data-b="est"></em>.</p>
+  </section>
+
+  <!-- 5 -->
+  <section class="mod" id="m5" data-mod="5" hidden>
+    <p class="eyebrow">Module 5</p>
+    <h1>Cache breaker</h1>
+    <p class="sub">A chat with 100K tokens of history. Step through 10 turns. Some moves throw the cache away, and the next turn writes it all again.</p>
+    <div class="controls">
+      <div class="row">
+        <button class="btn" id="m5-next" type="button">Next turn</button>
+        <button class="btn ghost" data-ev="model" type="button">Switch model</button>
+        <button class="btn ghost" data-ev="tool" type="button">Add a tool</button>
+        <button class="btn ghost" data-ev="wait" type="button">Wait 61 minutes</button>
+        <button class="btn ghost" id="m5-reset" type="button">Restart</button>
+      </div>
+      <p class="tiny" id="m5-turn"></p>
+    </div>
+    <div class="visual"><div class="line" id="m5-line"></div></div>
+    <div class="headline" id="m5-head"></div>
+    <p class="tiny how">A normal turn reads the history at the cache-read price. After a break it pays the cache-write price on all of it. The cache lives 5 minutes on API keys and 1 hour on paid plans <em class="bs" data-b="docs"></em>.</p>
+  </section>
+
+  <!-- 6 -->
+  <section class="mod" id="m6" data-mod="6" hidden>
+    <p class="eyebrow">Module 6</p>
+    <h1>Pick the model</h1>
+    <p class="sub">The same job on three models. Most everyday jobs don't need the biggest one.</p>
+    <div class="controls">
+      <div class="seg" id="m6-task" role="radiogroup" aria-label="Task"></div>
+    </div>
+    <div class="visual"><div class="cards3" id="m6-cards"></div></div>
+    <div class="headline" id="m6-head"></div>
+    <p class="tiny how" id="m6-how"></p>
+  </section>
+
+  <!-- your sessions -->
+  <section class="mod" id="you" data-mod="you" hidden>
+    <p class="eyebrow">Your sessions</p>
+    <h1>Load your own history</h1>
+    <p class="sub">See modules 1 to 6 with your own numbers. Your files are read in this browser tab. Nothing is uploaded.</p>
+    <p class="note desk">Best on a laptop: you'll need the file from your email or terminal.</p>
+    <div class="paths">
+      <div class="path">
+        <p class="eyebrow">Claude app</p>
+        <ol>
+          <li>In Claude, open Settings › Privacy › Export data.</li>
+          <li>Open the email from Anthropic. The link works for 24 hours.</li>
+          <li>Drop the zip here.</li>
+        </ol>
+        <label class="dropzone" id="b-drop">Drop your export zip<input type="file" id="b-file" accept=".zip,application/zip,.json"></label>
+      </div>
+      <div class="path">
+        <p class="eyebrow">Claude Code</p>
+        <ol>
+          <li>In a terminal, run <code>npx token-meter</code>. It runs offline.</li>
+          <li>It writes <code>token-meter.json</code>: totals only, no prompts or code.</li>
+          <li>Drop that file here.</li>
+        </ol>
+        <label class="dropzone" id="a-drop">Drop token-meter.json<input type="file" id="a-file" accept=".json,application/json"></label>
+      </div>
+    </div>
+    <p class="err" id="you-err" hidden></p>
+    <div id="you-out" class="ph-no-capture" hidden></div>
+  </section>
+
+  </main>
+
+  <div class="pager">
+    <a class="btn ghost" id="prev" href="#">Back</a>
+    <button class="btn" id="card-btn" type="button">Make my card</button>
+    <a class="btn ghost" id="next" href="#">Next</a>
+  </div>
+
+  <footer class="foot">
+    <p class="tiny">Prices from Anthropic's pricing page, checked <span id="checked"></span>. Tags on each number: <em class="bs" data-b="docs"></em> <em class="bs" data-b="calc"></em> <em class="bs" data-b="est"></em></p>
+    <a class="cta" id="cta" href="https://www.100xengineers.com/" target="_blank" rel="noopener">Cut your Claude bill with 100x <span>→</span></a>
+  </footer>
+</div>
+
+<form class="keybox" id="keybox" hidden autocomplete="off">
+  <label for="key-in"><b>Your Anthropic API key</b></label>
+  <p class="tiny">Counting is free: it doesn't use your credits. Your key goes from this browser straight to Anthropic and is never sent to us. Get one at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>. A Claude subscription can't be used here.</p>
+  <input type="password" id="key-in" placeholder="sk-ant-…" spellcheck="false" autocomplete="off" aria-describedby="key-err">
+  <label class="keep"><input type="checkbox" id="key-keep"> Remember it until I close this tab</label>
+  <p class="err-inline" id="key-err" aria-live="polite"></p>
+  <div class="row"><button class="btn" type="submit">Count</button><button class="btn ghost" type="button" id="key-cancel">Cancel</button></div>
+</form>
+
+<dialog id="card">
+  <canvas id="card-canvas" width="1080" height="1350"></canvas>
+  <div class="row">
+    <button class="btn" id="card-dl" type="button">Download</button>
+    <button class="btn ghost" id="card-share" type="button">Share</button>
+    <button class="btn ghost" id="card-close" type="button">Close</button>
+  </div>
+</dialog>
+
+<script src="meter.js"></script>
+</body>
+</html>
