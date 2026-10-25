@@ -149,7 +149,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
 .tax p{grid-column:1/-1;font-size:14px;color:var(--ink2)}
 .tax .bar{grid-column:1/-1;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden}
 .tax .bar i{display:block;height:100%;background:var(--coral)}
-.tax.top{border-color:var(--coral);box-shadow:0 0 0 1px var(--coral)}
+.tax.lead{border-color:var(--coral);box-shadow:0 0 0 1px var(--coral)}
 .tbl{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
 .tbl table{border-collapse:collapse;width:100%;font-size:13px}
 .tbl th,.tbl td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}

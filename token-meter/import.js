@@ -146,7 +146,7 @@
     html += `<p class="eyebrow">Where it went · module 1</p><div class="stack">${T.stackHTML(r.tot)}</div><div class="legend">${T.legendHTML(r.tot, b)}</div>`;
     html += `<div class="headline"><span class="n">${pct(share)}</span><p>Your biggest tax is <b>${esc(top.name)}</b>: about ${usd(top.cost)} of ${usd(r.tot.total)} ${tag(b)}. ${esc(top.fix)}</p></div>`;
     html += '<p class="eyebrow">Your taxes, biggest first</p><div class="taxes">' + taxes.map(t =>
-      `<div class="tax${t === top ? ' top' : ''}"><h3><a href="#m${t.id}">${esc(t.name)}</a></h3><span class="v">${usd(t.cost)} ${tag(b)}</span><div class="bar"><i style="width:${(100 * t.cost / max).toFixed(1)}%"></i></div><p>${esc(t.what)}</p></div>`).join('') + '</div>';
+      `<div class="tax${t === top ? ' lead' : ''}"><h3><a href="#m${t.id}">${esc(t.name)}</a></h3><span class="v">${usd(t.cost)} ${tag(b)}</span><div class="bar"><i style="width:${(100 * t.cost / max).toFixed(1)}%"></i></div><p>${esc(t.what)}</p></div>`).join('') + '</div>';
     if (est) {
       html += '<p class="eyebrow">Same history on each model · module 6</p><div class="cards3">' + ['haiku', 'sonnet', 'opus'].map(k =>
         `<div class="mcard${k === 'haiku' ? ' cheap' : ''}"><h3>${P.models[k].name}</h3><div class="tot">${usd(r.byModel[k])}</div><div class="meter"><i style="width:${(100 * r.byModel[k] / r.byModel.opus).toFixed(1)}%"></i></div></div>`).join('') + '</div>';
