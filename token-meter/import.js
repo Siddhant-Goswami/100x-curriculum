@@ -1,7 +1,7 @@
 /* Token Meter: your own sessions. Two readers, both in the browser; nothing here makes a network call except loading JSZip.
    B, the Claude app export (main build): unzip, read conversations.json, estimate tokens per message, rebuild each chat's cost
    turn by turn with the same simulator as module 1. The export has no token counts, so every number here is an estimate.
-   A, Claude Code: read the token-meter.json summary that `npx token-meter` writes. Those totals come from the logs' own usage fields.
+   A, Claude Code: read the token-meter.json summary that `npx token-meter-cli` writes. Those totals come from the logs' own usage fields.
    The export's field names are not confirmed yet (open question 1 in _plan/token-meter/NOTES.md); the reader accepts the known
    shape (chat_messages with sender, text, content, created_at, attachments, files) and says so when it finds something else. */
 (function () {
@@ -118,7 +118,7 @@
 
   /* ---------- A: Claude Code summary ---------- */
   function analyseA(j) {
-    if (!j || j.tool !== 'token-meter' || !j.totals) throw new Error("This isn't a token-meter.json file. Run npx token-meter and drop the file it writes.");
+    if (!j || j.tool !== 'token-meter' || !j.totals) throw new Error("This isn't a token-meter.json file. Run npx token-meter-cli and drop the file it writes.");
     const c = j.totals.cost, tot = { read: c.cache_read, write: c.cache_write, output: c.output, input: c.input, total: c.total };
     const t = j.taxes || {}, g = k => (t[k] && t[k].cost) || 0;
     const taxes = [
