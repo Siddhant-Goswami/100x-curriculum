@@ -1,7 +1,7 @@
 /* Token Meter: your own sessions. Two readers, both in the browser; nothing here makes a network call except loading JSZip.
    B, the Claude app export (main build): unzip, read conversations.json, estimate tokens per message, rebuild each chat's cost
    turn by turn with the same simulator as module 1. The export has no token counts, so every number here is an estimate.
-   A, coding agents: read the token-meter.json summary that `npx 100x-token-meter` writes from Claude Code, Codex CLI, Gemini CLI, OpenCode
+   A, coding agents: read the token-meter.json summary that `npx 100x-token-meter` writes from Claude Code, Codex CLI, Gemini CLI
    or Hermes Agent logs. Those totals come from the logs' own usage fields. The file says which tool and provider it came from (version 3),
    and the words follow it. Tools that keep session totals only (Hermes) send null taxes and no by_source; by_tool[x].measured says what each had.
    B is the Claude app only, so it shows when Claude is the chosen AI.
@@ -22,7 +22,6 @@
     'claude-code': { label: 'Claude Code', prov: 'anthropic', memory: 'CLAUDE.md', clear: '/clear', notes: "Claude Code's notes" },
     codex: { label: 'Codex CLI', prov: 'openai', memory: 'AGENTS.md', clear: '/new', notes: "Codex's notes" },
     'gemini-cli': { label: 'Gemini CLI', prov: 'google', memory: 'GEMINI.md', clear: '/clear', notes: "Gemini CLI's notes" },
-    opencode: { label: 'OpenCode', prov: null, memory: 'AGENTS.md', clear: '/new', notes: "OpenCode's notes" },
     hermes: { label: 'Hermes Agent', prov: null, memory: 'SOUL.md and AGENTS.md', clear: '/new', notes: "Hermes's notes" },
     mixed: { label: 'coding agent', prov: null, memory: 'your memory files (CLAUDE.md, AGENTS.md, GEMINI.md)', clear: 'a fresh session', notes: "The tools' own notes" }
   };

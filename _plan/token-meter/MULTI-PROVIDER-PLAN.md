@@ -1,6 +1,6 @@
 # Token Meter: model-agnostic plan
 
-Written 25 Oct 2026. Status: phase 0, phase 1 and the CLI part of phase 2 built on 25 Oct, plus OpenCode, Hermes Agent and open-model prices (phase 3, hosted part; see NOTES.md). The ChatGPT export import is next.
+Written 25 Oct 2026. Status: phase 0, phase 1 and the CLI part of phase 2 built on 25 Oct, plus Hermes Agent and open-model prices (phase 3, hosted part; see NOTES.md). OpenCode is held back until it's checked on real data. The ChatGPT export import is next.
 
 Goal: the same six lessons and the "Your sessions" import, for any LLM. We get there in phases: first the top three
 providers (Anthropic, OpenAI, Google), then open-weight models, then a generic path for anything else.

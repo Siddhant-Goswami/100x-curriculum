@@ -85,8 +85,11 @@ Spec: "Token Meter one-pager spec.md" (25 Oct 2026). Live route: /token-meter (n
 - Checked: Claude Code and Codex numbers unchanged on this machine; Hermes on real data (840 requests, 365 days); OpenCode only on made-up data,
   because the one real session failed on an expired OpenRouter key.
 
+- 26 Oct: OpenCode dropped from the 0.3.0 release (CLI reader, --tool opencode, README, import.js), because its field names were only checked
+  on made-up data. The reader is in commit 8b7dec0 of the CLI repo, ready to bring back.
+
 ## Still open (providers)
-- [ ] OpenCode: run one real session (fix the OpenRouter key) and confirm the per-message field names (tokens.input/output/reasoning/cache.read/write)
+- [ ] OpenCode: bring the reader back from CLI commit 8b7dec0 after one real session confirms the per-message field names (tokens.input/output/reasoning/cache.read/write)
 - [ ] Hermes: confirm input_tokens excludes cache reads when a hosted provider caches (all local rows so far have no cache)
 - [ ] Try Count exactly with a real OpenAI key and a real Gemini key
 - [ ] Publish CLI 0.3.0 (npm publish) and push the CLI repo
