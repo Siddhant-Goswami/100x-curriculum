@@ -131,6 +131,30 @@
     return { kind: 'A', j, tot, taxes };
   }
 
+  /* ---------- A: where the money went, by source (token-meter.json version 2 and later) ---------- */
+  const GROUPS = [
+    ['agent', 'Subagents', 'Helpers Claude started. Each reads its own setup and files, so this is often the biggest line.'],
+    ['tool', 'Built-in tools', 'What Claude asked Bash, Read, Edit and the rest for, and what came back. Big results get re-read on every later step.'],
+    ['mcp', 'MCP servers', 'Calls to connected servers, plus their instructions, loaded every session whether you use them or not.'],
+    ['skill', 'Skills', 'Skill instructions Claude loaded, plus the list of every skill it sees each session.'],
+    ['setup', 'Startup', 'System prompt, CLAUDE.md and the tool list, paid again in every session.'],
+    ['prompts', 'Your prompts', 'What you typed. Usually a small share: the cost is in what your prompts set off.'],
+    ['replies', "Claude's replies", 'What Claude wrote back to you, and its thinking.'],
+    ['notes', "Claude Code's notes", 'Reminders and command output Claude Code adds on its own.']
+  ];
+  function sourcesHTML(list, total) {
+    const groups = GROUPS.map(([kind, name, what]) => {
+      const items = list.filter(x => x.kind === kind), cost = items.reduce((a, x) => a + x.cost, 0);
+      return { kind, name, what, items, cost, calls: items.reduce((a, x) => a + (x.calls || 0), 0) };
+    }).filter(g => g.cost > 0).sort((a, b) => b.cost - a.cost);
+    const max = groups[0] ? groups[0].cost : 1;
+    return '<p class="eyebrow">Where it went, by source</p><div class="srcs">' + groups.map(g => {
+      const named = g.items.length > 1 || (g.items[0] && g.items[0].name && !['agent', 'prompts', 'replies', 'notes'].includes(g.kind));
+      const rows = named ? `<ul>${g.items.map(x => `<li><span>${esc(x.name)}</span><em>${x.calls ? num(x.calls) + (x.calls === 1 ? ' call' : ' calls') : ''}</em><b>${usd(x.cost)}</b></li>`).join('')}</ul>` : '';
+      return `<details class="src"${named ? '' : ' data-flat'}><summary><span class="nm">${g.name}</span><span class="v">${usd(g.cost)} <small>${pct(100 * g.cost / total)}</small></span><span class="bar"><i style="width:${(100 * g.cost / max).toFixed(1)}%"></i></span></summary><p>${esc(g.what)}${g.kind === 'agent' && g.calls ? ` Claude started ${num(g.calls)}.` : ''}</p>${rows}</details>`;
+    }).join('') + `</div><p class="tiny">Each request's real cost is shared over what was in Claude's context, by estimated size ${tag('est')}. Names only: no prompts or code are in the file.</p>`;
+  }
+
   /* ---------- render ---------- */
   function render(r) {
     const out = $('#you-out'), P = T.PR(), est = r.kind === 'B', b = est ? 'est' : 'calc';
@@ -155,7 +179,11 @@
       const split = r.rows.filter(x => x.save > 0).sort((a, x) => x.save - a.save).slice(0, 10);
       if (split.length) html += `<p class="eyebrow">Chats that should have been split</p>` + table(['Chat', 'Turns', 'Saving if split every ' + SPLIT], split.map(x => [x.name, x.turns, usd(x.save)]));
       if (r.pasted.length) html += `<details><summary class="eyebrow">Images and files found in your messages (${num(r.pasted.length)})</summary>` + table(['Name', 'In chat', 'Kind', 'Tokens'], r.pasted.slice(0, 200).map(x => [x.name, x.chat || 'Untitled', x.kind, num(x.tokens) + (x.basis === 'guess' ? ' (guess)' : '')])) + '</details>';
-    } else if (r.j.by_model) {
+    } else {
+      if (r.j.by_source && r.j.by_source.length) html += sourcesHTML(r.j.by_source, r.tot.total);
+      else html += '<p class="tiny">For a split by tool, MCP server and skill, run <code>npx 100x-token-meter@latest</code> again and drop the new file.</p>';
+    }
+    if (!est && r.j.by_model) {
       html += '<p class="eyebrow">By model · module 6</p>' + table(['Model', 'Requests', 'Cost'], Object.entries(r.j.by_model).sort((a, x) => x[1].cost - a[1].cost).map(([k, v]) => [k, num(v.requests), v.cost == null ? 'not priced' : usd(v.cost)]));
     }
     out.innerHTML = html; out.hidden = false;
@@ -207,6 +235,27 @@
       return { uuid: 'c' + ci, name, created_at: new Date(start).toISOString(), chat_messages: msgs };
     });
   }
+  /* a made-up token-meter.json, shaped like the CLI's version 2 output */
+  function demoCode() {
+    const src = [
+      ['agent', 'Subagents', 48.2, 0, 61], ['tool', 'Bash', 31.4, 0, 820], ['tool', 'Read', 14.9, 0, 410], ['tool', 'Edit', 6.2, 0, 230], ['tool', 'Write', 4.1, 0, 38], ['tool', 'Grep', 2.7, 0, 160],
+      ['setup', 'System prompt, CLAUDE.md and tool definitions', 17.6, 0, 0], ['setup', 'Tool list', 6.3, 0, 0],
+      ['mcp', 'playwright', 9.8, 0, 140], ['mcp', 'github', 3.1, 0, 52], ['mcp', 'Server instructions, loaded every session', 2.4, 0, 0], ['mcp', 'notion', 0.6, 0, 6],
+      ['skill', 'Skill list, loaded every session', 3.2, 0, 0], ['skill', 'frontend-design', 1.4, 0, 4], ['skill', 'pdf', 0.5, 0, 2],
+      ['replies', "Claude's replies", 5.3, 0, 0], ['prompts', 'Your prompts', 1.2, 0, 0], ['notes', "Claude Code's own notes", 2.1, 0, 0]
+    ].map(([kind, name, cost, tokens, calls]) => ({ kind, name, cost, tokens, calls }));
+    const total = src.reduce((a, x) => a + x.cost, 0);
+    const cost = { cache_read: total * 0.58, cache_write: total * 0.27, output: total * 0.12, input: total * 0.03, total };
+    return { tool: 'token-meter', version: 2, source: 'claude-code', prices_checked: T.PR().checked, period: { days: 30, from: '2026-09-25T09:00:00.000Z', to: '2026-10-24T18:00:00.000Z' },
+      sessions: 46, requests: 2380, totals: { cost }, by_source: src.sort((a, b) => b.cost - a.cost),
+      by_model: { 'claude-sonnet-5-5': { requests: 2010, cost: total * 0.71 }, 'claude-opus-5-5': { requests: 260, cost: total * 0.26 }, 'claude-haiku-5-5': { requests: 110, cost: total * 0.03 } },
+      taxes: { noisy_output: { count: 74, cost: 21.5 }, screenshots: { count: 31, tokens: 48000, cost: 3.9 }, startup: { sessions: 46, avg_first_write: 21400, cost: 23.9 }, cache_breaks: { count: 12, cost: 6.8 }, one_model: { count: 9, cost: 1.7 } } };
+  }
+  $('#demo-a-btn').onclick = () => {
+    err('');
+    try { const j = demoCode(); last = { kind: 'A', data: j }; render(analyseA(j)); T.track('import_completed', { source: 'demo_code' }); document.querySelector('#steps a.you').classList.add('done'); }
+    catch (e) { err(e.message); }
+  };
   $('#demo-btn').onclick = () => {
     err('');
     try { const chats = demoExport(); last = { kind: 'B', data: chats }; render(analyseB(chats, T.model())); T.track('import_completed', { source: 'demo' }); document.querySelector('#steps a.you').classList.add('done'); }

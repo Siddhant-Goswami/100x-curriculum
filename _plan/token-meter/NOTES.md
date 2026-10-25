@@ -45,3 +45,7 @@ Spec: "Token Meter one-pager spec.md" (25 Oct 2026). Live route: /token-meter (n
   Two zones: "Read again" (hatched setup block + old turns, earlier ones folded into one grey block) and "New: message N" in coral, each with its token count.
   Per-message chart has a currency y-axis, message numbers, a written key, and a note when message 1 runs off the top.
 - M2 uses the same stack (chatStackHTML in meter.js) on both sides; the shorter side cuts Claude's sample answers to that share of their words.
+- Your sessions, Claude Code (25 Oct): CLI 0.2.0 writes by_source (kind: setup, prompts, replies, tool, mcp, skill, agent, notes; name, cost, tokens, calls).
+  Each request's real cost is shared over its context by estimated size, so the split sums to the real total. Skill content = isMeta text after a Skill call
+  or a non-built-in slash command; skill_listing and mcp_instructions_delta attachments get their own lines. Page: sourcesHTML in import.js, grouped and
+  expandable; "Demo: Claude Code" loads demoCode(). Older (version 1) files show a line asking for npx 100x-token-meter@latest.
