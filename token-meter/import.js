@@ -179,6 +179,8 @@
     let html = `<h2>${est ? 'Your Claude app history' : `Your ${esc(r.tl.label)} sessions`} ${est ? tag('est') : ''}</h2>`;
     if (est) html += `<p class="tiny">Every number here is Estimated: the export has text and times, not token counts. Priced on ${AI.models[r.key].name}, as if every turn re-read the full history, with ${num(CTX)} tokens of system prompt per chat and a 1-hour cache.</p>`;
     else html += `<p class="tiny">From your local logs, ${esc(r.j.period.from.slice(0, 10))} to ${esc(r.j.period.to.slice(0, 10))}: ${num(r.j.sessions)} sessions, ${num(r.j.requests)} requests. Priced with prices.json from ${esc(r.j.prices_checked || '')}.</p>`;
+    /* Codex logs no cache writes, so new tokens are priced as plain input. OpenAI bills 30-minute writes at 1.25x input */
+    if (!est && r.j.by_tool && r.j.by_tool.codex) html += `<p class="tiny">Codex's logs don't say which new tokens were stored in the cache, so they're priced as plain input. If OpenAI billed them as 30-minute cache writes (1.25× input)${r.j.source === 'codex' && !r.j.totals.tokens.cache_write ? `, add up to ${usd(0.25 * r.tot.input)}` : ', the Codex part would be up to a quarter more on input'}.</p>`;
     html += '<div class="stats">' + (est
       ? [[num(r.chats), 'chats'], [r.tokens >= 1e6 ? (r.tokens / 1e6).toFixed(1) + 'M' : num(r.tokens), 'tokens of history'], [usd(r.tot.total), 'at API prices'], [pct(100 * r.tot.read / r.tot.total), 'was re-reading']]
       : [[num(r.j.sessions), 'sessions'], [usd(r.tot.total), 'at API prices'], [pct(100 * r.tot.read / r.tot.total), 'was cache reads'], [pct(100 * (r.tot.read + r.tot.write) / r.tot.total), 'was the cache']]
