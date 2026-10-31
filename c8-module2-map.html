@@ -1014,6 +1014,7 @@ function guideFor(s){ var g=GUIDES[s.id]; if(!g) return null; return g.all || (t
 function tickKey(s,st,t){ return 'c8m2-tick-'+s.id+'-'+st+'-'+t; }
 function tickOn(s,st,t){ return sget(tickKey(s,st,t))==='1'; }
 function workProgress(s,g){
+  return null; /* the worksheets moved off the card; the lecture pages carry them */
   g=g||guideFor(s); if(!g) return null;
   var done=0,total=0, stages=g.stages.map(function(st){ var dd=0; st.ticks.forEach(function(t){ total++; if(tickOn(s,st.id,t.id)){ dd++; done++; } }); return {id:st.id,done:dd,total:st.ticks.length}; });
   var cur=-1; for(var i=0;i<stages.length;i++){ if(stages[i].done<stages[i].total){ cur=i; break; } }
@@ -1530,7 +1531,6 @@ function formatLabel(s){
 function agendaHTML(s){
   var when = s.kind==='lec' ? fmt(s.date)+' · Week '+s.w : s.due ? 'Due '+fmt(s.due) : s.date ? fmt(s.date) : s.id==='b2' ? 'Self-paced · Week 0' : (s.type||'');
   var rows = [['When', esc(when)], ['Format', formatLabel(s)]];
-  if(s.arc) rows.push(['Arc', esc(s.arc)]);
   var lead = track==='code' && s.codeOwner ? s.codeOwner : s.owner;
   if(lead) rows.push(['Led by', esc(lead)]);
   return '<h3>Agenda</h3><dl class="ag">'+rows.map(function(r){ return '<dt>'+r[0]+'</dt><dd>'+r[1]+'</dd>'; }).join('')+'</dl>';
@@ -1549,11 +1549,23 @@ function wtbA1HTML(){ var u=gl('wtbA1'); return u ? '<a class="hub" href="'+esc(
 function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>See a worked example: Aarav, Discovery to MVP</b><i>The full coach run, condensed: discovery document and 21-day manual MVP plan</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* The hackathon page sits on the hackathon bridge. */
 function hackHTML(){ var u=gl('hackathon'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the hackathon page</b><i>Pick a problem, the five moves, timeline, rules, submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
+/* A lecture that has happened shows one line and four key points from its notes (RECAP in guides.js); the pages hold the rest. */
+function recapFor(s){ var r=(typeof RECAP!=='undefined')&&RECAP[s.id]; if(!r) return null; return r.all || (track && r[track]) || null; }
+function recapHTML(r){
+  return '<div class="can"><b>In one line</b><span>'+esc(r.line)+'</span></div>'+
+    '<div class="can"><b>Key points</b><ol>'+r.points.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ol></div>';
+}
+function trackSwHTML(s){
+  if(!s.nocode) return '';
+  return '<h3>Your track <span class="tsw" role="radiogroup" aria-label="Track"><button type="button" role="radio" data-track="nocode" aria-checked="'+(track==='nocode')+'">No-code</button><button type="button" role="radio" data-track="code" aria-checked="'+(track==='code')+'">Code</button></span></h3>';
+}
 function trackBitsHTML(s){
-  var h = (s.id==='b1' ? wtbNotesHTML() : '') + (s.id==='L2' ? l02HTML() : '') + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + loHTML(s) + toolsHTML(s);
+  var r = s.kind==='lec' ? recapFor(s) : null;
+  var h = (s.id==='b1' ? wtbNotesHTML() : '') + (s.id==='L2' ? l02HTML() : '') + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s));
+  if(r) return h + recapHTML(r) + trackSwHTML(s);
+  h += canHTML(s) + loHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
   if(cl) h += '<div class="cliff"><b>THE CLIFF</b>'+esc(cl)+'</div>';
-  h += workHTML(s);
   return h;
 }
 function stopCard(s, focus){
@@ -1734,8 +1746,6 @@ TRAVEL.forEach(function(s){
   INDEX.push({stop:s, label:s.t, sub:(s.kind==='lec'?'Lecture '+s.n+' · ':'')+s.cont.name+' · '+status(s).txt, ic:s.num, c:s.cont, hay:(s.t+' '+(s.tCode||'')+' '+(s.kw||'')+' '+tools+' lecture '+(s.n||'')).toLowerCase(), go:function(){ selectStop(s.id); }});
   tools.split(/,\s*/).forEach(function(tl){ tl=tl.trim(); if(tl) INDEX.push({toolOf:s, label:tl, sub:'Tool · '+s.t, ic:'⚙', c:s.cont, hay:tl.toLowerCase(), go:function(){ selectStop(s.id); }}); });
 });
-Object.keys(GUIDES).forEach(function(id){ var s=ST[id]; if(!s) return; Object.keys(GUIDES[id]).forEach(function(tr){ var g=GUIDES[id][tr];
-  INDEX.push({label:'Checklist: '+g.name, sub:'Worksheet · Lecture '+s.n+(tr==='all'?'':' · '+(tr==='code'?'code':'no-code')+' track'), ic:'☑', c:s.cont, hay:('checklist worksheet '+g.name+' '+(g.kw||'')).toLowerCase(), go:function(){ if(tr!=='all' && track!==tr) setTrack(tr); selectStop(id); setTimeout(function(){ var w=document.getElementById('work'); if(w) w.scrollIntoView({block:'start'}); }, 120); }}); }); });
 REGIONS.forEach(function(r){ INDEX.push({label:r.name, sub:'Region · '+CONTS[r.c].name, ic:'◌', c:CONTS[r.c], hay:(r.name+' '+r.desc).toLowerCase(), go:function(){ selectRegion(r.id); }}); });
 Object.keys(CONTS).forEach(function(k){ var C=CONTS[k]; INDEX.push({label:C.name, sub:'Territory · '+C.verif, ic:'◆', c:C, hay:(C.name+' '+C.sub+' '+C.verif).toLowerCase(), go:function(){ selectCont(k); }}); });
 [['North Star','Destination · four elements, the mom test','★','north star goal destination mom test',function(){ act('star'); }],

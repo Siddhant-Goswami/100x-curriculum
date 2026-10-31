@@ -756,3 +756,89 @@ GUIDES.L9 = { all: {
   ],
   kw: 'llm language model first principles probabilistic deterministic orange purple hallucination system prompt verifier verifiers rule jason wei asymmetry of verification rule judgment atomic task north star aarav monday 80 percent jagged edge nurse automate augment human fineweb tokens qwen ollama practice set verify your own job'
 }};
+
+/* What the map card shows for a lecture that has happened: one line and four key points, taken from
+   that lecture's notes page. Keyed by stop id, then 'all' or a track. A lecture with no entry here
+   (upcoming, or the no-code side of a practical) shows the sheet's plan instead. Keep each point to one line. */
+var RECAP = {
+  L1: { all: {
+    line: 'The gap between what models can do and what businesses earn is a verifier gap. Know how you will verify an output before you build.',
+    points: [
+      'A newsroom project saved 2% against a 10% bar: nobody had written down what good meant.',
+      'A better model, better prompts, more data and more time did not fix it.',
+      "The Verifier's Law: if you cannot write the verifier, you cannot build the system.",
+      'Three boxes organise the module: verifiable by a rule, by judgment, or not at all.'
+    ]}},
+  L2: { all: {
+    line: 'An interface lets two systems that do not understand each other communicate. You build it from a common language and a protocol.',
+    points: [
+      'The smiley game failed twice: first no shared language, then no rules for the humans.',
+      'Phone call, letter, meme, ChatGPT: name the two systems before naming the interface.',
+      'The UI is the first interface. The machine, the operating system and the browser sit beneath it.',
+      "Between your machine and the company's sits the second interface: the API, over HTTP."
+    ]}},
+  L3: { code: {
+    line: 'You do not choose an interface. You derive it from the output your user needs, and in Gradio it is then four lines.',
+    points: [
+      'Solve for one named user. Write 10 golden pairs and a verifier with a number before any code.',
+      'The room voted 17 for a search box; one follow-up question made chat the answer.',
+      'gr.Interface and gr.ChatInterface: input, process and output in Python.',
+      'Run it on localhost and log every error you hit.'
+    ]}},
+  L4: { all: {
+    line: 'Every request between two machines carries an address, an action, a key and a package. Every reply carries a code and a package.',
+    points: [
+      'A UI alone is a face with no brain. The work happens on another machine.',
+      'Round Three: a machine that answers only in status codes.',
+      'The six parts of a request and a reply, named.',
+      'CRUD maps to methods: POST, GET, PUT or PATCH, DELETE.'
+    ]}},
+  L5: { code: {
+    line: 'An LLM is a machine at an address, reached like any API. The process is your prompt plus your user\'s input, sent there.',
+    points: [
+      'The empty process in the chat became one line: a call to the Groq API.',
+      'Working is not the same as useful. The verifier decides, not the code.',
+      'Prompt plus input is the package. When it fails, go to the source and read the 404.',
+      'requests.post shows the URL and the POST that the library was hiding.'
+    ]}},
+  L6: { all: {
+    line: 'Storage is a way to remember. Keep it on your server, and store only what the app needs to answer next time.',
+    points: [
+      "Aarav's app forgets everything once the conversation ends.",
+      'Three questions give the shape: what are the things, what does each have, how do they connect.',
+      'History is a row, not a cell. Rows for facts, files for bytes.',
+      'The Modelling Lab turns it into seven levels you play.'
+    ]}},
+  L7: { code: {
+    line: "Three machines: the user's, yours, and the one you pay for. Keep the key on the only one you control.",
+    points: [
+      'A key in the browser is a key for everyone: the leak.',
+      'Strip the app to one function and put it behind an API.',
+      'Deploy it and read the status codes.',
+      'Gradio becomes a client of your own API.'
+    ]}},
+  L8: { code: {
+    line: 'Decide what is worth storing before you store it, then let the server remember.',
+    points: [
+      'Local first, then production. Read the logs on someone else\'s machine.',
+      'memory.txt works for one user and breaks once many people write.',
+      'Postgres on Supabase: one more machine at an address, with the same four dials.',
+      'Every row knows whose it is.'
+    ]}},
+  L9: { all: {
+    line: 'An LLM earns its place only where the output needs judgment. Ask two things: can you verify it, and do you have the data?',
+    points: [
+      'The bare model is text in, text out. One query was enough to break it.',
+      "Aarav's Monday, task by task: verified by a rule, by judgment, or not at all.",
+      'About 80% of the tasks in alumni jobs are verifiable. Find your 20% that is not.',
+      'Data is bigger than you think. A verifier does not mean automation next quarter.'
+    ]}},
+  L10: { all: {
+    line: 'The model asks, the system acts. The model writes the request; the backend validates it, runs it, verifies the result and logs it.',
+    points: [
+      'Answers go wrong from missing context or missing live data.',
+      'Extraction is the trick: the model names the tool and fills in the arguments.',
+      'Three layers: the LLM, the backend, the deterministic tool. The log is the proof.',
+      'MCP replaces N times M adapters. For one tool, it can be overkill.'
+    ]}}
+};
