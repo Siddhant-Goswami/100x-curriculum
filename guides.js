@@ -108,7 +108,7 @@ var GUIDE_LINKS = {
   l09Rule: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s09',
   l09Aarav: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s10',
   l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
-  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s06',
+  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04',
   jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
   delegation: '/c8/delegation-framework/'
 };
@@ -714,22 +714,19 @@ GUIDES.L9 = { all: {
   ],
   rule: 'Start left of the line. Your task list comes from your own calendar and tools, not from an LLM. "It\'s subjective" is not a verifier.',
   stages: [
-    {id:'sheet', name:'Your task sheet', short:'Sheet', sub:'Practice set, Track A or B',
-     intro:'One real working week, Monday to Friday. Track B if you are not working: one interview and two job postings.',
+    {id:'sheet', name:'Your sheet', short:'Sheet', sub:'Practice set, sections 01 and 02',
+     intro:'Your North Star first, then last week in the template. Aarav\'s week is the first tab.',
      ticks:[
-       {id:'guess', t:'Wrote my guess for the share of verifiable tasks before counting'},
-       {id:'log', t:'Logged every atomic task of one week from my calendar and tools', link:'l09TrackA', linkLabel:'Track A'},
-       {id:'verify', t:'An outcome and a verifier on every row: the rule, or the judge, signal and time', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
-       {id:'data', t:'Cost if wrong, data and bucket on every row; checked the judgment rows with my judge'}
+       {id:'ns', t:'North Star written: by a date, a role, a specific thing, at a level', link:'l09Practice', linkLabel:'Practice set'},
+       {id:'log', t:'Listed every task from last week, from my calendar, mail and Slack', link:'l09TrackA', linkLabel:'Fill the sheet'},
+       {id:'verify', t:'Done right when, North Star, and who or what checks it on every row', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
+       {id:'pick', t:'Picked one task to build a model for, and showed the sheet to my judge'}
      ]},
-    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 06',
-     intro:'Deliverables 1 to 4 are the minimum; 5 to 9 are the full submission.',
+    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 04',
+     intro:'The sheet, shared, and one line on what surprised you.',
      ticks:[
-       {id:'number', t:'My numbers: prediction, tasks verifiable, hours verifiable, verifiable with data', link:'l09Submit', linkLabel:'What to submit'},
-       {id:'running', t:'One Automate row taken off my plate this week, minutes saved stated'},
-       {id:'candidate', t:'My candidate task: needs an LLM, verifier, data source, count, local use confirmed'},
-       {id:'golden', t:'Checklists for the candidate task and ten golden pairs from real past cases'},
-       {id:'line', t:'Line test on the candidate task: each step orange or purple, a reason for every purple', link:'l09Line', linkLabel:'Can the orange box fix it?'}
+       {id:'shared', t:'Shared my copy of the sheet', link:'l09Submit', linkLabel:'What to submit'},
+       {id:'surprise', t:'One line on the verdict that surprised me'}
      ]}
   ],
   actions: [
@@ -740,7 +737,7 @@ GUIDES.L9 = { all: {
   read: [
     ['Lecture 9 overview', 'l09Hub', 'The lecture, in order, and done equals.'],
     ['Notes', 'l09Notes', 'What was said, with the whiteboard: the hallucinated tracks, the line, the Verifier\'s Rule, Aarav\'s Monday.'],
-    ['Practice set', 'l09Practice', 'Verify your own job: a warm-up, two tracks, Aarav\'s week, nine things to submit.'],
+    ['Practice set', 'l09Practice', 'Verify your own job: your North Star, last week in the template, one task picked.'],
     ['The delegation framework', 'delegation', 'A second opinion on your buckets: automate, augment, human.']
   ],
   words: [
