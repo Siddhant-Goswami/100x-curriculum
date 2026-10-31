@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Orientation and State of AI 2026 | 100xEngineers</title>
+<meta name="description" content="Post-read notes for Lecture 1: a failed newsroom project in 2023, four easy answers that were not the bottleneck, the Verifier's Law, McKinsey and Stanford on the value gap, the FDE money, Ogilvy in 15 criteria, the verify game, and the three boxes that organise the next eight weeks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+/* the whiteboard sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}.wb .ln .c-hum{stroke:var(--hum)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-hum{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .z-act{stroke:var(--coral);stroke-dasharray:7 8;stroke-width:2}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .scrib{stroke:var(--ink3);stroke-width:1.8}
+.wb .ln .dotf{fill:currentColor;stroke:none}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}.wb .tx .c-hum{fill:var(--hum-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l01-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L1">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 1 pages"><a href="/c8/module-2/lecture-01-orientation/">Overview</a><a href="/c8/module-2/lecture-01-orientation/notes">Notes</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared whiteboard defs: wobble filter, arrowheads, a person -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Post-read notes · Lecture 1</p>
+  <h1>The verifier is the job</h1>
+  <p class="dek">From a failed project in 2023 to the three boxes that organise the next eight weeks. One story, four fixes that failed, two reports, the money, then a game that derived the module. Come back to sections 08 to 12 before you build anything.</p>
+  <div class="meta"><span>Sat 19 Sep 2026</span><span>Instructor: Siddhant Goswami</span><span>Both tracks</span></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Where we stood: week 0, two of three done</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Assignment 1 in three steps: observation found, ticked; discovery run, ticked; MVP plan, still to do. 21 days, counting from the workshop.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="50" width="220" height="90" rx="10"/>
+    <rect class="f-card" x="270" y="50" width="220" height="90" rx="10"/>
+    <rect class="f-act" x="520" y="50" width="220" height="90" rx="10"/>
+    <path class="c-hum" d="M202 70 L211 80 L226 60 M452 70 L461 80 L476 60"/>
+    <path class="arw" d="M244 95 H264" marker-end="url(#ah)"/>
+    <path class="arw" d="M494 95 H514" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="30" class="s">Assignment 1 · where most of the room was</text>
+    <text x="130" y="94" class="m">1 · observation</text>
+    <text x="130" y="120" class="xxs">found</text>
+    <text x="380" y="94" class="m">2 · discovery</text>
+    <text x="380" y="120" class="xxs">run with the skill</text>
+    <text x="630" y="94" class="m c-act">3 · MVP plan</text>
+    <text x="630" y="120" class="xxs">still to generate</text>
+    <text x="380" y="186" class="xs c-act">21 days, counting from the workshop</text>
+    <text x="380" y="214" class="xxs c-mute">56 industries: what to build is learned through exercises, not a lecture</text>
+  </g>
+</svg>
+<figcaption>Week 0, "what to build", picked up where the workshop left it.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>56 unique industries in the room.</b> That is the design constraint: "what to build" cannot be taught as a lecture, only learned through exercises.</li>
+  <li><b>A hand raise:</b> most had found an observation and run discovery. The plan was still to generate.</li>
+</ul>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>One sentence from an editor, 2023</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="A bar chart of time saved. The CEO's bar is 10 percent of P&L, drawn as a green dashed line. The project achieved 2 percent after eight months. Below, the editor's sentence: this is good, but I still have to spend my time on it.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M140 140 H700"/>
+    <rect class="f-act" x="140" y="70" width="93" height="40" rx="4"/>
+    <path class="c-hum" d="M607 44 V140" stroke-dasharray="6 6"/>
+  </g>
+  <g class="tx">
+    <text x="70" y="96" class="xs">time saved</text>
+    <text x="250" y="98" class="m c-act l">2%</text>
+    <text x="607" y="34" class="xs c-hum">the CEO's bar: 10%+</text>
+    <text x="420" y="100" class="xxs c-mute">8 months · research tool + 200-word column</text>
+    <text x="140" y="164" class="xxs">0</text>
+    <text x="607" y="164" class="xxs">10%</text>
+    <text x="380" y="222" class="m c-ink">"This is good, but I still have to spend my time on it."</text>
+  </g>
+</svg>
+<figcaption>About 8 points under target. The CEO and the editors were both right.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The client.</b> A publicly traded media company, the world's third largest newspaper by distribution, tens of thousands of editors. December 2022, a month after ChatGPT.</li>
+  <li><b>The brief, fuzzy by design.</b> Walk the floor, find what AI can do, build it, give us a number. Metric: time saved. Threshold: double-digit impact on the P&amp;L.</li>
+  <li><b>Eight months.</b> An internal Perplexity on GPT-3.5 for research, and an editing workflow that turned research into an exact 200-word column.</li>
+  <li><b>Result: 2%.</b> The CEO said it was not significant. The editors said the sentence above.</li>
+</ul>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The room diagnoses it</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Three diagnoses from the chat, each marked true: wrong metric, it must land on the P&L; incomplete brief, the norm, completing it is the skill; stakeholders, top and ground saw different problems. None was the load-bearing failure.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="30" width="220" height="110" rx="10"/>
+    <rect class="f-card" x="270" y="30" width="220" height="110" rx="10"/>
+    <rect class="f-card" x="520" y="30" width="220" height="110" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="130" y="74" class="m">wrong metric</text>
+    <text x="130" y="102" class="xxs">it must land on the P&amp;L</text>
+    <text x="380" y="74" class="m">incomplete brief</text>
+    <text x="380" y="102" class="xxs">the norm; completing it</text>
+    <text x="380" y="122" class="xxs">is the skill</text>
+    <text x="630" y="74" class="m">stakeholders</text>
+    <text x="630" y="102" class="xxs">top and ground saw</text>
+    <text x="630" y="122" class="xxs">different problems</text>
+    <text x="130" y="170" class="xs c-hum">true</text>
+    <text x="380" y="170" class="xs c-hum">true</text>
+    <text x="630" y="170" class="xs c-hum">true</text>
+    <text x="380" y="214" class="m c-act">none was the load-bearing failure</text>
+  </g>
+</svg>
+<figcaption>A patient describes symptoms; the doctor diagnoses. CEOs give incomplete briefs because they are time-poor and vendor-rich.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Wrong metric</b> (Vineet, Shubham). Work that neither saves cost nor raises revenue does not get paid for.</li>
+  <li><b>Incomplete problem statement</b> (Purna, Satyaki). True, and normal. Completing it is the skill.</li>
+  <li><b>Real stakeholders, bottom-up adoption</b> (Krishnan, Arjit Gupta). Both landed.</li>
+</ul>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Killing the four easy answers</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Four easy answers crossed out, each with its reason. A better model: benchmarks saturate, 2 would become 5, not 20. Better prompts: the editors could not state the instruction. More data: the fine-tune did worse, catastrophic forgetting. More time: more output at the same standard.">
+  <g class="ln" filter="url(#wob)">
+    <path class="c-act" d="M80 64 H220 M80 114 H220 M105 164 H195 M105 214 H195"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="26" class="s">four easy answers, none the bottleneck</text>
+    <text x="150" y="70" class="m">a better model</text>
+    <text x="150" y="120" class="m">better prompts</text>
+    <text x="150" y="170" class="m">more data</text>
+    <text x="150" y="220" class="m">more time</text>
+    <text x="290" y="70" class="xs l">benchmarks saturate; 2 might become 5, not 20</text>
+    <text x="290" y="120" class="xs l">the editors could not state the instruction</text>
+    <text x="290" y="170" class="xs l">the fine-tune did worse: catastrophic forgetting</text>
+    <text x="290" y="220" class="xs l">more output, at the same standard</text>
+  </g>
+</svg>
+<figcaption>Each fix was real. None sat where the failure was.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>A better model.</b> SWE-bench Verified went from about 60% to near 100% in a year (Stanford HAI AI Index 2026), yet engineering hiring rose and FDE roles grew about 1,000%. A benchmark measures a task, not a job.</li>
+  <li><b>Better prompts.</b> A prompt encodes an instruction. The editors could not state theirs: a good front page is "attention grabbing", "relatable". Ask a marketer of ten years what makes a good hook: "It should stop the scroll." Expertise settles into the subconscious.</li>
+  <li><b>More data.</b> Month eight: fine-tune on years of published articles. It performed worse. Full fine-tuning rewrites the weights where old knowledge lived; a new behaviour costs an old one. That is <b>catastrophic forgetting</b>, covered in the fine-tuning lecture.</li>
+  <li><b>More time.</b> Time without a standard produces more output at the same standard.</li>
+</ul>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>What was actually missing</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="An editor with a thought bubble: what is a good article, never written down. On the right, two bars of about equal length: writing it yourself, and checking the AI draft. About the same time, so writing it yourself is rational.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="60" y="70"/>
+    <circle cx="118" cy="70" r="3"/>
+    <circle cx="130" cy="60" r="4"/>
+    <ellipse class="dash ink" cx="260" cy="60" rx="120" ry="42"/>
+    <rect class="f-card" x="430" y="110" width="260" height="28" rx="4"/>
+    <rect class="f-act" x="430" y="180" width="250" height="28" rx="4"/>
+  </g>
+  <g class="tx">
+    <text x="260" y="58" class="xs c-ink">what is a good article?</text>
+    <text x="260" y="82" class="xxs c-mute">never written down</text>
+    <text x="86" y="226" class="xs">editor</text>
+    <text x="430" y="100" class="xs l">write it yourself</text>
+    <text x="430" y="170" class="xs l">check the AI draft</text>
+    <text x="560" y="240" class="xxs c-mute">about the same time, so writing it is rational</text>
+  </g>
+</svg>
+<figcaption>The workflows were fine. Judgment was the bottleneck, and judgment had no written form.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Only the editors knew what a good article looked like,</b> and nobody had written it down. They lacked the vocabulary; the instructor, who had never published one, was the least qualified to write it.</li>
+  <li><b>So checking cost as much as writing.</b> A 200 to 500 word article checked for mistakes and facts is, by the end, an article written.</li>
+</ul>
+<p class="pull">The Verifier's Law: if you cannot write the verifier, you cannot build the system, and you cannot claim the capability.</p>
+<p>That is why domain expertise is valuable in 2026: the expert is the only source of the verifier.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Same failure at scale: two reports</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="A line chart from 2025 to 2026. Model capability, in purple, climbs from about 60 percent on SWE-bench to near 100. EBIT impact, in coral, stays flat at 37 percent of organisations reporting any.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M80 40 V250 H560"/>
+    <path class="c-prob" d="M200 160 L520 60"/>
+    <path class="c-act" d="M200 205 H520"/>
+    <circle class="f-prob" cx="200" cy="160" r="6"/><circle class="f-prob" cx="520" cy="60" r="6"/>
+    <circle class="f-act" cx="200" cy="205" r="6"/><circle class="f-act" cx="520" cy="205" r="6"/>
+  </g>
+  <g class="tx">
+    <text x="200" y="144" class="xs c-prob">~60%</text>
+    <text x="520" y="44" class="xs c-prob">near 100%</text>
+    <text x="200" y="232" class="xs c-act">37%</text>
+    <text x="520" y="232" class="xs c-act">37%</text>
+    <text x="200" y="276" class="xxs">2025</text>
+    <text x="520" y="276" class="xxs">2026</text>
+    <text x="570" y="96" class="m c-prob l">model capability</text>
+    <text x="570" y="120" class="xxs l">SWE-bench Verified</text>
+    <text x="570" y="200" class="m c-act l">EBIT impact</text>
+    <text x="570" y="224" class="xxs l">orgs reporting any</text>
+  </g>
+</svg>
+<figcaption>Capability climbs; enterprise EBIT stays flat.</figcaption>
+</figure>
+<table class="dials">
+  <tr><th>Source</th><th>Finding</th></tr>
+  <tr><td>McKinsey, The State of AI 2026 (25 Aug 2026, 1,719 respondents)</td><td>80% say AI improved their own productivity. 37% report any positive EBIT contribution, flat on 2025. 6% are high performers (5%+ of EBIT from AI), also flat.</td></tr>
+  <tr><td>Stanford HAI, AI Index 2026</td><td>SWE-bench Verified about 60% to near 100%. 88% of organisations have adopted AI. US private AI investment $285.9B in 2025. Agent deployment across business functions still in single digits.</td></tr>
+</table>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Follow the money</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 260" role="img" aria-label="A timeline of 2026. April to May, Google Cloud: FDE roles across 8 countries. 4 May, Anthropic's Ode: 1.5 billion dollars, about 100 engineers. 11 May, OpenAI: 4 billion plus, about 150 FDEs. September, Accenture and Google: up to 1,000 FDEs. Over 5.5 billion dollars in one quarter, on people, not models.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M30 120 H730" marker-end="url(#ah)"/>
+    <circle class="f-act" cx="110" cy="120" r="7"/>
+    <circle class="f-act" cx="290" cy="120" r="7"/>
+    <circle class="f-act" cx="470" cy="120" r="7"/>
+    <circle class="f-act" cx="650" cy="120" r="7"/>
+  </g>
+  <g class="tx">
+    <text x="110" y="100" class="xs">Apr–May</text>
+    <text x="290" y="100" class="xs">4 May</text>
+    <text x="470" y="100" class="xs">11 May</text>
+    <text x="650" y="100" class="xs">Sep</text>
+    <text x="110" y="160" class="m">Google Cloud</text>
+    <text x="110" y="186" class="xxs">FDE roles, 8 countries</text>
+    <text x="290" y="160" class="m">Anthropic · Ode</text>
+    <text x="290" y="186" class="xxs">$1.5B · ~100 engineers</text>
+    <text x="470" y="160" class="m">OpenAI</text>
+    <text x="470" y="186" class="xxs">$4B+ · ~150 FDEs</text>
+    <text x="650" y="160" class="m">Accenture + Google</text>
+    <text x="650" y="186" class="xxs">up to 1,000 FDEs</text>
+    <text x="380" y="40" class="s">2026</text>
+    <text x="380" y="240" class="m c-act">$5.5B+ in one quarter, on people, not models</text>
+  </g>
+</svg>
+<figcaption>Five such units in under four months, all paying for engineers inside enterprises.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The 6% who captured value</b> built Claude Code, Cursor, Lovable, Codex. In every case engineers who knew what good code looks like had written it down, so the model could tell right from wrong and the loop ran fast. No secret sauce; a written verifier.</li>
+  <li><b>4 May.</b> Anthropic with Blackstone, Hellman &amp; Friedman and Goldman Sachs forms a $1.5B services firm, later named Ode. Goldman: having the model alone does not change how you operate.</li>
+  <li><b>11 May.</b> OpenAI launches a deployment company, $4B+ from 19 investors, about 150 FDEs on day one. Its CTO: never a greater gap between what models can do and what enterprises use them for.</li>
+  <li><b>April to May.</b> Google Cloud's Thomas Kurian: the era of the pilot is over.</li>
+  <li><b>September.</b> Accenture and Google Cloud, up to 1,000 FDEs for Gemini Enterprise. The fifth such unit in under four months.</li>
+</ul>
+<p class="pull">It is not a technology problem. Most experts have never written down how they judge, so every output routes through them.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>What a verifier looks like: Ogilvy in 15 criteria</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 280" role="img" aria-label="A loop. The model writes a draft. Your verifier, 15 Ogilvy criteria, scores it. If the score is not 100, improve and re-score, back to the model. If it is, ship. A model with tools in a loop against a success condition is an agent.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-prob" x="40" y="100" width="160" height="60" rx="10"/>
+    <rect class="f-act" x="280" y="100" width="210" height="60" rx="10"/>
+    <rect class="f-card" x="560" y="100" width="170" height="60" rx="10"/>
+    <path class="arw" d="M206 130 H272" marker-end="url(#ah)"/>
+    <path class="arw" d="M496 130 H552" marker-end="url(#ah)"/>
+    <path class="c-act" d="M640 94 C640 30 120 30 120 92" marker-end="url(#ahc)"/>
+    <path class="arw" d="M645 166 V200" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="138" class="m c-prob">model</text>
+    <text x="385" y="128" class="m c-act">your verifier</text>
+    <text x="385" y="150" class="xxs">15 Ogilvy criteria</text>
+    <text x="645" y="138" class="m">score = 100?</text>
+    <text x="239" y="120" class="xxs">draft</text>
+    <text x="524" y="120" class="xxs">score</text>
+    <text x="380" y="42" class="xs c-act">no: improve, re-score</text>
+    <text x="660" y="190" class="xxs l">yes</text>
+    <text x="645" y="228" class="m c-hum">ship</text>
+    <text x="300" y="232" class="xs c-ink">model + tools + a loop + a success condition = an agent</text>
+  </g>
+</svg>
+<figcaption>Loop engineering: verifier, threshold, improve, re-score, stop.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>A verifier is a written judgment of how you judge something.</b> In 1959 David Ogilvy wrote the Rolls-Royce headline still called the best: <i>At 60 miles an hour the loudest noise in this new Rolls-Royce comes from the electric clock.</i> In 1983 he wrote down every rule behind how he judged copy. That book is why Ogilvy &amp; Mather runs without him.</li>
+  <li><b>Compressed into one prompt.</b> For the first 100x website: score the copy out of 100 on 15 Ogilvy-inspired criteria (positioning, unique benefit, headline, reader focus, tone, simple language, evidence, emotion, story and more). A dead expert's judgment, still useful.</li>
+  <li><b>Then loop it.</b> Give the verifier, set the threshold, and let the model score, improve and re-score until it gets there. That is an <b>agent</b>; designing the loop is <b>loop engineering</b>.</li>
+</ul>
+<p class="pull">Do not ask the LLM to write your verifier. It returns the average of every expert, and the same slop anyone gets. Start with the task in your own job where you spend the most time judging.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>The verify game, round one: an app that adds two numbers</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 280" role="img" aria-label="Input, two numbers; process, add; output, the sum. Below, the golden dataset: 1 plus 2 gives 3, 3 plus 2 gives 5. Anyone who can read can verify.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="30" width="200" height="80" rx="10"/>
+    <rect class="f-det" x="280" y="30" width="200" height="80" rx="10"/>
+    <rect class="f-card" x="540" y="30" width="200" height="80" rx="10"/>
+    <path class="arw" d="M226 70 H272" marker-end="url(#ah)"/>
+    <path class="arw" d="M486 70 H532" marker-end="url(#ah)"/>
+    <rect class="f-act" x="220" y="150" width="320" height="116" rx="10"/>
+    <path class="thin" d="M240 190 H520"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="66" class="m">input</text>
+    <text x="120" y="92" class="xxs">two numbers</text>
+    <text x="380" y="66" class="m c-det">process</text>
+    <text x="380" y="92" class="xxs">add</text>
+    <text x="640" y="66" class="m">output</text>
+    <text x="640" y="92" class="xxs">the sum</text>
+    <text x="380" y="180" class="m c-act">golden dataset</text>
+    <text x="380" y="220" class="m">1 + 2 → 3</text>
+    <text x="380" y="252" class="m">3 + 2 → 5</text>
+    <text x="650" y="200" class="xxs">anyone who can</text>
+    <text x="650" y="222" class="xxs">read can verify</text>
+  </g>
+</svg>
+<figcaption>No calculator allowed. Know the process, define the input and output, write the ideal pairs.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The rule of the game:</b> write a criterion you could hand to a stranger or a model so they can verify the thing without you.</li>
+  <li><b>Know the process yourself.</b> You cannot verify addition unless you know what it is. Expertise is the precondition.</li>
+  <li><b>Define the input</b> (two numbers, not a cat and a dog) and <b>the output</b> (the sum, every time).</li>
+  <li><b>Write ideal input-output pairs.</b> That set has a name: the <b>golden dataset</b>. Every ML engineer at the labs has built one.</li>
+  <li><b>Input, process, output</b> will be asked in every lecture from here. Most blocked questions are blocked because one of the three is unclear.</li>
+</ul>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Round two: has someone cleared the high school exam?</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Two inputs: X, the pass mark, 33 percent; Y, the score, 80 percent. Process: is Y at least X? Output: yes. The threshold changes by board; the rule does not.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="24" width="210" height="64" rx="9"/>
+    <rect class="f-card" x="20" y="108" width="210" height="64" rx="9"/>
+    <rect class="f-det" x="300" y="66" width="200" height="64" rx="9"/>
+    <rect class="f-hum" x="580" y="66" width="160" height="64" rx="9"/>
+    <path class="arw" d="M236 56 L292 88" marker-end="url(#ah)"/>
+    <path class="arw" d="M236 140 L292 110" marker-end="url(#ah)"/>
+    <path class="arw" d="M506 98 H572" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="125" y="54" class="m">X = 33%</text>
+    <text x="125" y="76" class="xxs">the pass mark (CBSE)</text>
+    <text x="125" y="138" class="m">Y = 80%</text>
+    <text x="125" y="160" class="xxs">the score</text>
+    <text x="400" y="106" class="m c-det">is Y ≥ X?</text>
+    <text x="660" y="106" class="m c-hum">yes</text>
+    <text x="380" y="210" class="xs c-ink">the threshold changes by board; the rule does not</text>
+  </g>
+</svg>
+<figcaption>Neha's answer, as it went on the board. Another rule-based verifier.</figcaption>
+</figure>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Round three: a million-dollar refund</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="The rule: if the cost of issues Y exceeds the car's cost X, refund. A coral question underneath: who supplies Y, and was it engineered a day before the warranty ended? On the right, a support executive with ten years of refunds, accountable if wrong, asked whether the story smells right. The output is binary: yes or no.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="30" y="30" width="300" height="80" rx="10"/>
+    <path class="c-act" d="M180 150 V118" marker-end="url(#ahc)"/>
+    <path class="arw c-prob" d="M340 70 H540" marker-end="url(#ahv)"/>
+    <use href="#person" x="570" y="30"/>
+    <rect class="f-hum" x="480" y="230" width="100" height="40" rx="8"/>
+    <rect class="f-card" x="610" y="230" width="100" height="40" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="64" class="m c-det">Y &gt; X → refund</text>
+    <text x="180" y="92" class="xxs">issues Y vs the car's cost X</text>
+    <text x="180" y="176" class="m c-act">who supplies Y?</text>
+    <text x="180" y="200" class="xxs">engineered a day before the warranty ended?</text>
+    <text x="440" y="56" class="xxs c-prob">does the story smell right?</text>
+    <text x="596" y="190" class="xs">support exec, 10 yrs</text>
+    <text x="596" y="212" class="xxs">accountable if wrong</text>
+    <text x="530" y="256" class="m c-hum">yes</text>
+    <text x="660" y="256" class="m">no</text>
+    <text x="470" y="256" class="xxs r">binary, no 50-50</text>
+    <text x="380" y="298" class="xs c-act">clear output, undefined inputs: the 2023 brief again</text>
+  </g>
+</svg>
+<figcaption>A rule cannot verify this. Judgment can.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The case.</b> Should a Rolls-Royce customer get a refund? About 7.5 crore in India, close to a million dollars. The output is yes or no.</li>
+  <li><b>Varun's rule.</b> Inputs: the car's cost X and the cost of issues within warranty Y. If Y exceeds X, refund. Same shape as the exam rule.</li>
+  <li><b>The counter.</b> The comparison is trivial; getting the numbers is the work. Shipped as written, the rule can be gamed.</li>
+  <li><b>Judgment-based verification.</b> Before the final output, ask a support executive who has done refunds for ten years and answers for mistakes. Same input, different output depending on whether the story smells right.</li>
+  <li><b>Judgment has two sources:</b> a human, or an artificial one. Some transfers from human to model once written down, as Ogilvy's did. Some does not.</li>
+</ul>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>The three boxes: the next eight weeks</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Three rounds, three labels. Verifiable by a rule: deterministic, weeks 1 to 4. By judgment: probabilistic, weeks 4 to 8. By nothing yet: human in the loop, the last 4 weeks. Together they are AI system design, turning week 0's inputs into outputs that get the job done.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="30" width="230" height="70" rx="10"/>
+    <rect class="f-card" x="265" y="30" width="230" height="70" rx="10"/>
+    <rect class="f-card" x="510" y="30" width="230" height="70" rx="10"/>
+    <path class="arw" d="M135 106 V128" marker-end="url(#ah)"/>
+    <path class="arw" d="M380 106 V128" marker-end="url(#ah)"/>
+    <path class="arw" d="M625 106 V128" marker-end="url(#ah)"/>
+    <rect class="f-det" x="20" y="136" width="230" height="74" rx="10"/>
+    <rect class="f-prob" x="265" y="136" width="230" height="74" rx="10"/>
+    <rect class="f-hum" x="510" y="136" width="230" height="74" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="135" y="62" class="m">a rule</text>
+    <text x="135" y="86" class="xxs">same input, same output</text>
+    <text x="380" y="62" class="m">judgment</text>
+    <text x="380" y="86" class="xxs">writable, output may vary</text>
+    <text x="625" y="62" class="m">nothing yet</text>
+    <text x="625" y="86" class="xxs">felt, not articulated</text>
+    <text x="135" y="172" class="m c-det">deterministic</text>
+    <text x="135" y="196" class="xxs">weeks 1 to 4</text>
+    <text x="380" y="172" class="m c-prob">probabilistic</text>
+    <text x="380" y="196" class="xxs">weeks 4 to 8</text>
+    <text x="625" y="172" class="m c-hum">human in the loop</text>
+    <text x="625" y="196" class="xxs">last 4 weeks</text>
+    <text x="380" y="252" class="m c-act">together: AI system design</text>
+    <text x="380" y="280" class="xxs">the inputs you found in week 0 → the outputs that get the job done</text>
+  </g>
+</svg>
+<figcaption>Every lecture from here is one box, or the bridge between two.</figcaption>
+</figure>
+<table class="dials">
+  <tr><th>Verifiable by</th><th>System</th><th>What we build with</th></tr>
+  <tr><td>A rule</td><td>Deterministic</td><td>Python on the code track; a visual builder with Rahul on no-code. Interfaces, APIs, UIs, databases, connected to LLMs.</td></tr>
+  <tr><td>Judgment</td><td>Probabilistic</td><td>LLM deep dive. Verifiers as prompts and eval criteria. MCP, RAG, fine-tuning.</td></tr>
+  <tr><td>Nothing yet</td><td>Human in the loop</td><td>Agents, artificial and human, and a process for finding which tasks do not transfer.</td></tr>
+</table>
+<p class="pull">Ask this every time: how do I verify whether this output is correct? No answer, no build.</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>From the Q&amp;A</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="Your rule in English goes to an LLM, which writes Python, the code. Your golden pairs become the unit tests that check the code. The compiler catches syntax, not misread judgment.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="40" width="190" height="70" rx="10"/>
+    <rect class="f-prob" x="280" y="40" width="200" height="70" rx="10"/>
+    <rect class="f-card" x="550" y="40" width="190" height="70" rx="10"/>
+    <path class="arw" d="M216 75 H272" marker-end="url(#ah)"/>
+    <path class="arw" d="M486 75 H542" marker-end="url(#ah)"/>
+    <rect class="f-act" x="280" y="160" width="200" height="64" rx="10"/>
+    <path class="c-act" d="M486 192 Q645 192 645 118" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="115" y="72" class="m">your rule</text>
+    <text x="115" y="96" class="xxs">in English</text>
+    <text x="380" y="72" class="m c-prob">LLM</text>
+    <text x="380" y="96" class="xxs">writes the Python</text>
+    <text x="645" y="82" class="m">the code</text>
+    <text x="380" y="190" class="m c-act">golden pairs</text>
+    <text x="380" y="212" class="xxs">= your unit tests</text>
+    <text x="130" y="170" class="xxs">the compiler catches syntax,</text>
+    <text x="130" y="192" class="xxs">not misread judgment</text>
+  </g>
+</svg>
+<figcaption>Writing code may no longer be the job. Reviewing it is.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Why agents and Python, if a script would do?</b> (Varun) For a fixed process with a fixed verifier, state the rule and let the LLM write the Python. Then: how do you verify the translation? Ambiguity becomes a bug, and unreliable things do not reach production. To verify the code you must read the language. That is the case against vibe coding: if an app costs no effort, a billion people can build it.</li>
+  <li><b>Deterministic MVP first?</b> (Neha) Yes. You control everything in a deterministic system. Nobody, the labs included, controls a probabilistic output, only its distribution. One of the busiest teams at OpenAI builds no product and writes evals.</li>
+  <li><b>Does no-code skip the logic?</b> (Nishant) No. Combined lectures carry the principles; Rahul's sessions carry the same logic. Code is paying upfront for control, like owning a car instead of renting.</li>
+  <li><b>Which tool for a second brain?</b> (Devang) No tool recommendation, on principle. Bring the observation, the North Star and how success is measured; the tool follows.</li>
+  <li><b>Already built something?</b> (Jagdeep) Run the exercise on it anyway: observation, hypothesis, what was built. Track switching (Arjit) goes to Rahul at the no-code orientation.</li>
+</ul>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>What to do next</h2>
+<ol class="steps">
+  <li><b>Finish Assignment 1 step three.</b> Generate the plan and publish your MVP tracker. Due Fri 9 Oct. No observation worth building? Look at what you live now: your job, your peers, this cohort's routine.</li>
+  <li><b>Name your high-judgment task.</b> Where you spend the most time judging rather than doing. One line: input, process, output.</li>
+  <li><b>Write three golden pairs by hand.</b> Three inputs with outputs you would accept, plus one you would reject and why. No LLM in this step.</li>
+  <li><b>Run the stranger test.</b> Hand the pairs and the rule to someone outside your field. If they cannot verify an output without asking you, it is not a verifier yet.</li>
+</ol>
+<p>References from the room: McKinsey, <i>The State of AI 2026</i>; Stanford HAI, <i>AI Index 2026</i>; David Ogilvy, <i>Ogilvy on Advertising</i> (1983), read for the principles; OpenCode, an open-source alternative to Claude Code.</p>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Verifier</dt><dd>A written judgment of how you decide an output is good, usable by a stranger or a model without you.</dd>
+  <dt>The Verifier's Law</dt><dd>If you cannot write the verifier, you cannot build the system, and you cannot claim the capability.</dd>
+  <dt>Input, process, output</dt><dd>The first principle of building anything.</dd>
+  <dt>Golden dataset</dt><dd>Your ideal input-output pairs, written down. Test set for a rule; unit tests for the code.</dd>
+  <dt>Rule-based verification</dt><dd>Same input, same output, checkable by anyone who can read the rule.</dd>
+  <dt>Judgment-based verification</dt><dd>Writable and handable, but the output may vary for the same input.</dd>
+  <dt>Deterministic system</dt><dd>Verifiable by a rule.</dd>
+  <dt>Probabilistic system</dt><dd>Output varies for the same input; LLMs. You control the input, never the output.</dd>
+  <dt>Human in the loop</dt><dd>Where judgment cannot be articulated, so cannot transfer to a model.</dd>
+  <dt>Agent</dt><dd>A model doing a job with tools, in a loop, against a defined success condition.</dd>
+  <dt>Loop engineering</dt><dd>Designing that loop: verifier, threshold, improve, re-score, stop.</dd>
+  <dt>Catastrophic forgetting</dt><dd>Full fine-tuning overwrites weights holding prior knowledge.</dd>
+  <dt>FDE</dt><dd>Forward-deployed engineer: placed inside an enterprise to close the capability-to-value gap.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>The gap between what models can do and what businesses earn from them is not a capability gap. It is a verifier gap. If you cannot write down how you judge an output well enough that a stranger, or a model, could apply it, you cannot build a system for that task. Every lecture from here is one of three boxes: verifiable by a rule, by judgment, or not at all.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/#b3">Assignment 1: First Proof</a></li>
+  <li><a href="/c8/module-2/lecture-02-what-is-an-interface/notes">Lecture 2: what is an interface</a></li>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9: verifiable means automatable</a></li>
+  <li><a href="/#L1">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 1: Orientation and State of AI 2026</span><a href="/#L1">Curriculum map</a><a href="/c8/module-2/lecture-01-orientation/">All Lecture 1 pages</a></div></footer>
+</body>
+</html>

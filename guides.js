@@ -17,6 +17,8 @@ var GUIDE_LINKS = {
   aarav: 'https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l',
   wtbExample: '/c8/module-2/what-to-build/aarav-example',  /* What to build: Aarav's Discovery to MVP, worked example */
   wtbNotes: '/c8/module-2/what-to-build/idea-to-app-notes',  /* Week 0 Idea to App workshop, post-read notes */
+  l01Hub: '/c8/module-2/lecture-01-orientation/',
+  l01Notes: '/c8/module-2/lecture-01-orientation/notes',  /* Lecture 1 Orientation and State of AI 2026, post-read notes */
   l02Hub: '/c8/module-2/lecture-02-what-is-an-interface/',
   l02Notes: '/c8/module-2/lecture-02-what-is-an-interface/notes',  /* Lecture 2 What is an interface, post-read notes */
   l03Hub: '/c8/module-2/lecture-03-building-ui/',  /* Lecture 3 Building UI, code track */

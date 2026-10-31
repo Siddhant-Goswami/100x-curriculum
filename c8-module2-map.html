@@ -143,6 +143,8 @@ button{font:inherit;color:inherit}
 .pin .flag path.cloth{fill:#fff;stroke:var(--ink);stroke-width:1.2}
 .pin.cleared .flag path.cloth{fill:var(--coral);stroke:var(--coral)}
 .pin .pl{position:absolute;left:calc(50% + 20px);top:50%;transform:translateY(-50%);white-space:nowrap;text-align:left;opacity:0;pointer-events:none;transition:opacity .2s var(--e-out)}
+.pin.flip .pl{left:auto;right:calc(50% + 20px);text-align:right}
+@media (max-width:760px){ .pin .pl{white-space:normal;width:max-content;max-width:calc(50vw - 32px)} }
 .lv3 .pin .pl,.pin:hover .pl,.pin:focus-visible .pl,.pin.sel .pl,.pin.near .pl{opacity:1}
 .pl b{display:block;font:500 13.5px/1.25 var(--sans);color:var(--ink)}
 .pl i{display:block;font:normal 10px var(--mono);color:var(--ink2);text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
@@ -1289,12 +1291,13 @@ TRAVEL.filter(function(s){ return s.kind==='bridge'; }).forEach(function(s){ var
 /* Stop pins */
 var FLAG = '<svg class="flag" viewBox="0 0 14 18" aria-hidden="true"><path class="pole" d="M2 17V1.5"/><path class="cloth" d="M2.5 2h9l-2.2 3.2L11.5 8.5h-9z"/></svg>';
 TRAVEL.forEach(function(s){ var C=s.cont;
-  s.item = addItem('', s.x, s.y, 1, 3, 'pin', {tag:'button','data-stop':s.id,style:'--c:'+C.c+';--soft:'+C.soft+';--ci:'+C.ci});
+  s.item = addItem('', s.x, s.y, 1, 3, 'pin', {tag:'button','data-stop':s.id,style:'--c:'+C.c+';--soft:'+C.soft+';--ci:'+C.ci}); s.item.pin = true;
   renderPin(s);
 });
 function renderPin(s){
   var st = status(s), el = s.item.el, C = s.cont;
-  el.className = 'ov pin '+st.cls+(s.item.on?' on':'')+(s.done?' is-cp':'')+(s.done&&cpDone(s)?' cleared':'')+(sget('c8m2-note-'+s.id)?' has-note':'')+(selected===s.id?' sel':'');
+  s.item.plw = 0;
+  el.className = 'ov pin '+(s.item.fl?'flip ':'')+st.cls+(s.item.on?' on':'')+(s.done?' is-cp':'')+(s.done&&cpDone(s)?' cleared':'')+(sget('c8m2-note-'+s.id)?' has-note':'')+(selected===s.id?' sel':'');
   var label = s.kind==='lec' ? 'Lecture '+s.n : s.kind==='camp' ? 'What to build' : s.kind==='m3' ? 'Module 3' : 'Bridge';
   var P = workProgress(s), ring = '';
   if(P && P.done){ var rr=16.5, f=P.done/P.total, a=f*2*Math.PI, ex=(19+rr*Math.sin(a)).toFixed(2), ey=(19-rr*Math.cos(a)).toFixed(2);
@@ -1359,11 +1362,14 @@ function render(t){
   if(lv!==LV){ stage.classList.remove('lv0','lv1','lv2','lv3'); stage.classList.add('lv'+lv); stage.dataset.level=lv; LV=lv; onLevel(lv); }
   var co = clamp((1.3 - Z)/0.28, 0, 1);
   coverEl.style.opacity = co; coverEl.style.pointerEvents = co>.3 ? 'auto':'none';
+  var SW = stage.clientWidth; /* a pin label that would run off the right edge sits on the left of its pin */
+  if(SW!==render.sw){ render.sw=SW; items.forEach(function(it){ it.plw=0; }); }
   for(var i=0;i<items.length;i++){ var it=items[i];
     var x=Math.round(t.x+it.x*t.k), y=Math.round(t.y+it.y*t.k);
     it.el.style.transform = 'translate('+x+'px,'+y+'px)'+it.sfx;
     var on = lv>=it.lmin && lv<=it.lmax;
     if(on!==it.on){ it.on=on; it.el.classList.toggle('on',on); }
+    if(it.pin && on){ var pl=it.el.querySelector('.pl'); if(pl){ if(!it.plw) it.plw=pl.offsetWidth; var fl = x+20+it.plw > SW-8 && x-20-it.plw > 8; if(fl!==it.fl){ it.fl=fl; it.el.classList.toggle('flip',fl); } } }
   }
   ov.style.setProperty('--k', t.k.toFixed(4)); stage.classList.toggle('tiny', t.k < .26);
   var cw = INCARD.w*t.k, narrow = cw < 230, tight = cw < 110;
@@ -1544,6 +1550,7 @@ function hubHTML(s){
 }
 /* What to build: the worked Aarav example sits on the discovery stop, the Assignment 1 bridge and the camp cards. */
 function wtbNotesHTML(){ var u=gl('wtbNotes'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Read the workshop notes</b><i>North Star, observation, hypothesis, the Mom Test, the manual MVP</i></span><em aria-hidden="true">→</em></a>' : ''; }
+function l01HTML(){ var u=gl('l01Hub'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the Lecture 1 pages</b><i>The overview and the notes with the whiteboard</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function l02HTML(){ var u=gl('l02Hub'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the Lecture 2 pages</b><i>The overview and the notes with the whiteboard</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function wtbA1HTML(){ var u=gl('wtbA1'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Read the Assignment 1 brief</b><i>The five steps, the Input-Process-Output card, what to submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>See a worked example: Aarav, Discovery to MVP</b><i>The full coach run, condensed: discovery document and 21-day manual MVP plan</i></span><em aria-hidden="true">→</em></a>' : ''; }
@@ -1563,7 +1570,7 @@ function trackSwHTML(s){
 }
 function trackBitsHTML(s){
   var r = s.kind==='lec' ? recapFor(s) : null;
-  var h = (s.id==='b1' ? wtbNotesHTML() : '') + (s.id==='L2' ? l02HTML() : '') + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s));
+  var h = (s.id==='b1' ? wtbNotesHTML() : '') + (s.id==='L1' ? l01HTML() : '') + (s.id==='L2' ? l02HTML() : '') + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s));
   if(r) return h + recapHTML(r) + trackSwHTML(s);
   h += canHTML(s) + loHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
