@@ -97,7 +97,18 @@ var GUIDE_LINKS = {
   l08Remember: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s15',
   l08Proof: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s18',
   l08Turn: '/c8/module-2/lecture-08-end-to-end-mvp/whiteboard#s20',
-  fastapiTutorial: 'https://fastapi.tiangolo.com/tutorial/'
+  fastapiTutorial: 'https://fastapi.tiangolo.com/tutorial/',
+  /* Lecture 9 · LLMs from first principles (both tracks, pages in c8/module-2/lecture-09-llms-from-first-principles) */
+  l09Hub: '/c8/module-2/lecture-09-llms-from-first-principles/',
+  l09Notes: '/c8/module-2/lecture-09-llms-from-first-principles/notes',
+  l09Practice: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set',
+  l09Line: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s05',
+  l09Rule: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s09',
+  l09Aarav: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s10',
+  l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
+  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s05',
+  jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
+  delegation: '/c8/delegation-framework/'
 };
 
 var HELLO_WORLD = [
@@ -682,4 +693,60 @@ GUIDES.L8 = { code: {
     ['The hackathon', 'hackathon', 'Pick a problem, run the five moves, earn the verdict.']
   ],
   kw: 'end to end mvp deploy live url supabase database sql schema create table references memory.txt read-only file system two writers insert select sdk create_client service key secret key publishable key row level security fetch index.html gradio cors verified hackathon'
+}};
+
+/* Lecture 9 · LLMs from first principles (Fri 30 October 2026, both tracks). First session of the probabilistic half.
+   Source: the Lecture 9 Post-Read Notes and Practice Set 1, Verify Your Own Job. */
+GUIDES.L9 = { all: {
+  hub: {link:'l09Hub', title:'Open the Lecture 9 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l09Notes','Notes'],['l09Practice','Practice set']]},
+  name: 'Verify your own job',
+  sub: 'Lecture 9 · 30 October 2026 · both tracks',
+  due: false,  /* no deadline row until the date is set */
+  keep: 'An LLM earns its place only where the output cannot be checked by a rule and needs judgment. Whether a machine can learn that judgment depends on two things, in order: can you verify the output, and do you have the data.',
+  ideas: [
+    ['Text in, text out.', 'The bare model, checked live in the Groq playground. Build from what you can verify.'],
+    ['Right template, wrong data.', 'Asked which 100x track to pick, GPT OSS gave a good framework for seven tracks that do not exist. That is hallucination.'],
+    ['Place every step on one side of the line.', 'Scraping and storing are orange. A system prompt only means something to an LLM, so that step is purple, and so is the system.'],
+    ['Rule or judgment.', '1 + 2 = 3 is checked by a rule. A refund decision or "when will I get a job?" needs judgment, and that is where a probabilistic system belongs.'],
+    ['Verification first, data second.', 'The Verifier\'s Rule: the easier a task is to verify, the easier it is to train AI on. About 80% of alumni tasks are verifiable.']
+  ],
+  rule: 'Start left of the line. Your task list comes from your own calendar and tools, not from an LLM. "It\'s subjective" is not a verifier.',
+  stages: [
+    {id:'sheet', name:'Your task sheet', short:'Sheet', sub:'Practice set, Track A or B',
+     intro:'One real working week, Monday to Friday. Track B if you are not working: one interview and two job postings.',
+     ticks:[
+       {id:'guess', t:'Wrote my guess for the share of verifiable tasks before counting'},
+       {id:'log', t:'Logged every atomic task of one week from my calendar and tools', link:'l09TrackA', linkLabel:'Track A'},
+       {id:'verify', t:'A North Star and a verifier on every row: the rule, or the judge and the signal', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
+       {id:'data', t:'Bucketed every row and marked where its data lives and how much'}
+     ]},
+    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 05',
+     intro:'Five things, from section 05 of the practice set.',
+     ticks:[
+       {id:'number', t:'My number: prediction, verifiable share, verifiable with data', link:'l09Submit', linkLabel:'What to submit'},
+       {id:'running', t:'One Automate verifier running as a formula or script, pass or fail on a real output'},
+       {id:'candidate', t:'My candidate task: verifier, data source, count, why it matters'},
+       {id:'line', t:'Line test: one idea as steps, each orange or purple, a reason for every purple', link:'l09Line', linkLabel:'Can the orange box fix it?'}
+     ]}
+  ],
+  actions: [
+    {id:'sat', t:'Lecture 10, Sat 31 Oct', how:'Tool calling and MCP: the model asks for an action, it does not take it.'},
+    {id:'wei', t:'Read Jason Wei on the asymmetry of verification', how:'The one rule the probabilistic half is built on.', link:'jasonWei', linkLabel:'The essay'}
+  ],
+  next: 'Next: Lecture 10, tool calling and MCP. Your candidate task is what the rest of the module is built around.',
+  read: [
+    ['Lecture 9 overview', 'l09Hub', 'The lecture, in order, and done equals.'],
+    ['Notes', 'l09Notes', 'What was said, with the whiteboard: the hallucinated tracks, the line, the Verifier\'s Rule, Aarav\'s Monday.'],
+    ['Practice set', 'l09Practice', 'Verify your own job: two tracks, the rules, five things to submit.'],
+    ['The delegation framework', 'delegation', 'A second opinion on your buckets: automate, augment, human.']
+  ],
+  words: [
+    ['Deterministic system', 'Rule-based. The same input always gives the same output. The orange box.'],
+    ['Probabilistic system', 'Prediction-based. The same input can give different outputs. The purple box.'],
+    ['Hallucination', 'A response with the right shape and the wrong data.'],
+    ['Verifier\'s Rule', 'How easy a task is to train AI on is proportional to how verifiable it is.'],
+    ['Atomic task', 'A unit of work specific enough that you can be held accountable for it.'],
+    ['Jagged edge', 'AI capability rises unevenly, fastest where outputs are easiest to verify.']
+  ],
+  kw: 'llm language model first principles probabilistic deterministic orange purple hallucination system prompt verifier verifiers rule jason wei asymmetry of verification rule judgment atomic task north star aarav monday 80 percent jagged edge nurse automate augment human fineweb tokens qwen ollama practice set verify your own job'
 }};

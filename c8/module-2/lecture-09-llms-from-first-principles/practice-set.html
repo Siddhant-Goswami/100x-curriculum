@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Practice Set: Verify Your Own Job | 100xEngineers</title>
+<meta name="description" content="Practice set after Lecture 9 of the 100xEngineers Cohort 8 Module 2: list every atomic task from one real working week, write how each one is verified, mark which have the data a machine would need, and pick the task you will build a model for.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read .o{color:var(--det-ink);font-weight:500}
+body.read .p{color:var(--prob-ink);font-weight:500}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l09-practice-set" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L9">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 9 pages"><a href="/c8/module-2/lecture-09-llms-from-first-principles/">Overview</a><a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Notes</a><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Practice set 1 · Lecture 9 · Both tracks</p>
+  <h1>Verify your own job</h1>
+  <p class="dek">One real working week. Every atomic task. A verifier, or the reason there isn't one.</p>
+  <div class="meta"><span>Follows Lecture 9, Fri 30 Oct 2026.</span></div>
+</div>
+
+<div class="call"><p class="kick">The brief</p><p>List every atomic task from one real working week, write how each task's output is verified, and mark which of them already have the data a machine would need to learn them. Across 100x alumni, about 80% of tasks were verifiable. This sheet tells you your number.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Why this exists</h2>
+<ul>
+  <li><b>Aarav was a proxy.</b> In the lecture his three Monday tasks all passed. The skill is drawing the line between rule and judgment on work you are actually paid for. <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s10">Notes, section 10.</a></li>
+  <li><b>It is the input to the next four weeks.</b> You will pick one task from this sheet, gather its data, and end the module evaluating a model on it. A vague sheet means a vague model.</li>
+  <li><b>A verifier is not automation next quarter.</b> How soon depends on how much data it takes, usually more than you think.</li>
+  <li><b>A rule-verifiable task may not need an LLM at all.</b> Start left of the line.</li>
+</ul>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Track A: your own job <span class="ready" data-ready="a">0 of 7 ready</span></h2>
+<p>Preferred. If you have any paid work at all, freelance included, use this track.</p>
+<div data-stage="a">
+<ul class="ck">
+<li><input type="checkbox" id="a0"><label for="a0"><span class="t">Predict first</span><span class="h">Before bucketing anything, write your guess for the share of your tasks that are verifiable. Do not change it later.</span></label></li>
+<li><input type="checkbox" id="a1"><label for="a1"><span class="t">Log the week</span><span class="h">Monday to Friday, every task, from your calendar, inbox, Jira, Slack and files, not from memory. Leave out meetings that produce no output of yours.</span></label></li>
+<li><input type="checkbox" id="a2"><label for="a2"><span class="t">Make every row atomic</span><span class="h">Could someone hold you accountable for this one output? "Collect last quarter's sales data from Databricks" passes. "Support the business" does not; split it until it passes.</span></label></li>
+<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Write each task's North Star</span><span class="h">One line on the outcome it serves (Aarav's research served cost saved on the P&amp;L). Cannot write it? Flag the row. Unclear purpose is the usual reason a task looks unverifiable.</span></label></li>
+<li><input type="checkbox" id="a4"><label for="a4"><span class="t">Write the verifier</span><span class="h">For a rule, the rule itself: "total sales minus Q1 and Q2 must equal the Q3 figure". For judgment, the judge, the signal, and when: "manager, at appraisal, against cost saved between Q3 and Q4". No verifier: say what is missing.</span></label></li>
+<li><input type="checkbox" id="a5"><label for="a5"><span class="t">Bucket it, then mark the data</span><span class="h">Automate (rule), Augment (judgment), or Human (not verifiable, or human by nature, like the nurse helping a patient bathe). For every verifiable row: do past examples of input and correct output exist, where, and roughly how many?</span></label></li>
+<li><input type="checkbox" id="a6"><label for="a6"><span class="t">Count</span><span class="h">The share of rows that are verifiable, and the share verifiable with data already available. Put both next to your prediction.</span></label></li>
+</ul>
+</div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Track B: the job you want <span class="ready" data-ready="b">0 of 3 ready</span></h2>
+<p>Not working right now? Reconstruct a week from evidence. It is the weaker version on purpose: you are verifying someone else's week.</p>
+<div data-stage="b">
+<ul class="ck">
+<li><input type="checkbox" id="b1"><label for="b1"><span class="t">Talk to one person doing the role</span><span class="h">Ask the lecture's question: what tasks do you actually do, day by day? Their week is your raw data.</span></label></li>
+<li><input type="checkbox" id="b2"><label for="b2"><span class="t">Cross-check against two real job postings</span><span class="h">Keep only tasks that both the person and a posting confirm.</span></label></li>
+<li><input type="checkbox" id="b3"><label for="b3"><span class="t">Run every Track A step on that week</span><span class="h">Prediction first, then the same columns, plus each row's source: interview or posting.</span></label></li>
+</ul>
+</div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Rules</h2>
+<ul>
+  <li><b>Predict before you count.</b> The gap between guess and count is part of the result.</li>
+  <li><b>Your week, not a generic one.</b> Do not ask an LLM to list the tasks of your role. A list inferred from a job title is the average job, and the average job is exactly what a lab can already buy data for. An LLM may help you phrase a verifier or give a second opinion on a bucket.</li>
+  <li><b>"It's subjective" is not a verifier.</b> Every judgment row names a judge and a signal. If you cannot name either, the row is unverifiable for now, and you say why.</li>
+  <li><b>Start deterministic.</b> For every Automate row, note whether it needs an LLM at all, or whether a script, formula or template would do.</li>
+  <li><b>Model work stays locked.</b> No training, fine-tuning or agent building on these tasks until the sheet is in. To experiment on the side, use a local open-source model (Qwen 3.5 on <a href="https://ollama.com" target="_blank" rel="noopener">Ollama</a>).</li>
+</ul>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>What to submit <span class="ready" data-ready="sub">0 of 5 ready</span></h2>
+<p>Use the template on the LMS once it is posted. These are the columns it must contain either way.</p>
+<div data-stage="sub">
+<ul class="ck">
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. Task sheet</span><span class="h">One full working week, one atomic task per row. Columns: Day, Task, North Star, Verifier, Type (rule, judgment, none), Bucket (automate, augment, human), Data (exists or not, where, approximate count), and Source for Track B.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. Your number</span><span class="h">Three percentages side by side: your prediction (written first), the share verifiable, the share verifiable with data available.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. One rule, running</span><span class="h">One Automate row with its verifier as a sheet formula or short script that returns pass or fail on a real past output. A screenshot or file showing it run.</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Candidate task</span><span class="h">The one task you would build a model for over the next four weeks: its verifier, where its data lives, how many examples exist, and one line on why it matters to your North Star.</span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">5. Line test</span><span class="h">One idea from your North Star as steps, each marked <span class="o">orange</span> or <span class="p">purple</span>, with a sentence for every purple step on why a rule cannot do it. <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s05">Notes, section 05.</a></span></label></li>
+</ul>
+</div>
+<h3>The worked example</h3>
+<table class="dials">
+<tr><th>Aarav's task</th><th>Verifier</th><th>Verdict</th></tr>
+<tr><td>Collect last quarter's data from Databricks</td><td>Total sales minus Q1 and Q2 equals the Q3 figure; output matches the schema</td><td>rule</td></tr>
+<tr><td>Research current pricing trends</td><td>Manager, at appraisal, against cost saved between Q3 and Q4</td><td>judgment and outcome</td></tr>
+<tr><td>Generate the presentation</td><td>Checked against the data collected and the research conclusions</td><td>verifiable</td></tr>
+</table>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>When you are stuck</h2>
+<p>Not sure whether a task is verifiable? Write the best verifier you can and flag the row. Never leave it blank. A flagged row is a good question for the next live session or office hour.</p>
+<p>For a second opinion on a bucket, paste your own tasks into <a href="/c8/delegation-framework/">the delegation framework</a>. It sorts what you give it; it does not write your list.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>After you submit</h2>
+<p>Your candidate task becomes the task the rest of this module is built around: data first, then a model, then an evaluation of that model on your own job. A sharp verifier and a real data source get you to the evaluation. "Help the team" gets you four weeks of rewriting this sheet.</p>
+<p class="sig">Find your own number before someone else does.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9 notes</a></li>
+  <li><a href="/c8/delegation-framework/">The delegation framework</a></li>
+  <li><a href="/#L9">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 9: LLMs from first principles</span><a href="/#L9">Curriculum map</a><a href="/c8/module-2/lecture-09-llms-from-first-principles/">All Lecture 9 pages</a></div></footer>
+</body>
+</html>

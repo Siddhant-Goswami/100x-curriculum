@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: LLMs from First Principles | 100xEngineers</title>
+<meta name="description" content="Post-read notes for Lecture 9: six weeks on one whiteboard, text in and text out, a hallucinated track list, the line between rules and prediction, verification by rule or by judgment, the Verifier's Rule, Aarav's Monday task by task, and the 80% finding.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read .o{color:var(--det-ink);font-weight:500}
+body.read .p{color:var(--prob-ink);font-weight:500}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the whiteboard sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}.wb .ln .c-hum{stroke:var(--hum)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-hum{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .z-det{stroke:var(--det);stroke-dasharray:7 8;stroke-width:2}
+.wb .ln .z-prob{stroke:var(--prob);stroke-dasharray:7 8;stroke-width:2}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .scrib{stroke:var(--ink3);stroke-width:1.8}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}.wb .tx .c-hum{fill:var(--hum-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l09-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L9">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 9 pages"><a href="/c8/module-2/lecture-09-llms-from-first-principles/">Overview</a><a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Notes</a><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared whiteboard defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <!-- a person. 52 x 128 -->
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <!-- a database cylinder. 90 x 70 -->
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Post-read notes · Lecture 9</p>
+  <h1>Verifiable means automatable</h1>
+  <p class="dek">From a hallucinated track list to the question every job now has to answer. The model stayed closed tonight; the lecture was about where the line between rules and prediction sits.</p>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Six weeks on one whiteboard</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 370" role="img" aria-label="The Module 2 roadmap. What to build, week 0: North Star and Observation. Then how to build, weeks 1 to 8. AI system design: input, then three boxes, deterministic in weeks 1 to 4, probabilistic in weeks 4 to 8, human in the loop in weeks 8 to 12, then output. Under each, how it is verified: by a rule, same input same output; by judgement you can write down and hand to a stranger; not verifiable yet and expensive to get wrong.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="120" y="14" width="200" height="72" rx="10"/>
+    <rect class="f-card" x="440" y="14" width="200" height="72" rx="10"/>
+    <path class="arw" d="M326 50 H432" marker-end="url(#ah)"/>
+    <path class="arw" d="M540 92 V134" marker-end="url(#ah)"/>
+    <path class="dash ink" d="M100 140 H660 V262 H100 Z"/>
+    <rect class="f-det" x="118" y="164" width="164" height="54" rx="9"/>
+    <rect class="f-prob" x="298" y="164" width="164" height="54" rx="9"/>
+    <rect class="f-hum" x="478" y="164" width="164" height="54" rx="9"/>
+    <rect class="f-card" x="104" y="282" width="180" height="70" rx="8"/>
+    <rect class="f-card" x="290" y="282" width="180" height="70" rx="8"/>
+    <rect class="f-card" x="476" y="282" width="180" height="70" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="220" y="46" class="m">what to build?</text>
+    <text x="220" y="72" class="xxs">week 0 · North Star, Observation</text>
+    <text x="540" y="46" class="m">how to build?</text>
+    <text x="540" y="72" class="xxs">weeks 1 to 8</text>
+    <text x="380" y="130" class="s">AI system design</text>
+    <text x="54" y="208" class="m">input</text>
+    <text x="708" y="208" class="m">output</text>
+    <text x="200" y="198" class="m c-det">deterministic</text>
+    <text x="380" y="198" class="m c-prob">probabilistic</text>
+    <text x="560" y="198" class="m c-hum">human in the loop</text>
+    <text x="200" y="248" class="xxs">weeks 1 to 4</text>
+    <text x="380" y="248" class="xxs">weeks 4 to 8</text>
+    <text x="560" y="248" class="xxs">weeks 8 to 12</text>
+    <text x="194" y="312" class="xxs c-ink">by a rule:</text>
+    <text x="194" y="334" class="xxs">same input, same output</text>
+    <text x="380" y="312" class="xxs c-ink">by judgement you can</text>
+    <text x="380" y="334" class="xxs">write down, hand over</text>
+    <text x="566" y="312" class="xxs c-ink">not verifiable yet,</text>
+    <text x="566" y="334" class="xxs">expensive to get wrong</text>
+    <text x="50" y="322" class="xxs c-mute">how is it</text>
+    <text x="50" y="342" class="xxs c-mute">verified?</text>
+  </g>
+</svg>
+<figcaption>The module: what to build, then how. Each box is defined by how its output is verified.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Client</b> is the first interface: the browser, the device, the UI a person touches.</li>
+  <li><b>Server</b> holds the business logic. For us, the diagnoser that turns a workflow into an automation plan for Aarav.</li>
+  <li><b>API</b> is the second interface: address, action, package, key. <b>Data</b> lives in files, then in a database.</li>
+  <li><b>All of that is <span class="o">orange</span>:</b> deterministic, same input, same output.</li>
+  <li><b>One box is <span class="p">purple</span>:</b> the LLM, GPT OSS on GroqCloud, called through an API like any other service. ChatGPT has the same ratio: a POST with the prompt, a status code back, and Postgres underneath at over a billion users.</li>
+  <li><b>Drawing this for a new problem is the HLD round.</b> A student interviewing at Anthropic was asked to design a web research agent: inputs, outputs, client, server, data, and where the LLM is actually needed. No code.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="An orange dashed zone labelled deterministic holds client, server and data with SQL, joined by API arrows. A purple dashed zone labelled probabilistic holds the LLM, joined to the server by an API arrow. Note: the orange system makes the model usable.">
+  <g class="ln" filter="url(#wob)">
+    <path class="z-det" d="M20 40 H520 V290 H20 Z"/>
+    <path class="z-prob" d="M574 40 H740 V290 H574 Z"/>
+    <rect class="f-card" x="44" y="100" width="124" height="60" rx="9"/>
+    <rect class="f-card" x="262" y="100" width="140" height="60" rx="9"/>
+    <use href="#db" x="287" y="205"/>
+    <rect class="f-prob" x="600" y="100" width="114" height="60" rx="9"/>
+    <path class="arw" d="M174 130 H254" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw" d="M332 166 V198" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw c-prob" d="M408 130 H592" marker-start="url(#ahv)" marker-end="url(#ahv)"/>
+  </g>
+  <g class="tx">
+    <text x="270" y="30" class="m c-det">deterministic · same input, same output</text>
+    <text x="657" y="30" class="m c-prob">probabilistic</text>
+    <text x="106" y="137" class="m">client</text>
+    <text x="332" y="137" class="m">server</text>
+    <text x="657" y="137" class="m c-prob">LLM</text>
+    <text x="214" y="120" class="xxs">API</text>
+    <text x="500" y="120" class="xxs c-prob">API</text>
+    <text x="360" y="186" class="xxs l">API</text>
+    <text x="332" y="248" class="xs">data</text>
+    <text x="410" y="248" class="xxs l">SQL</text>
+    <text x="106" y="186" class="xxs">first interface</text>
+    <text x="657" y="186" class="xxs">GPT OSS on Groq</text>
+    <text x="380" y="320" class="xs c-act">the model is useful; the orange system makes it usable</text>
+  </g>
+</svg>
+<figcaption>Six weeks on one board, and one purple box.</figcaption>
+</figure>
+<p class="pull">The model is the useful part. The orange system around it is what makes it usable.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Why the second mountain is steeper</h2>
+<ul class="pt">
+  <li><b>From about 5 out of 10 to about 8.</b> An estimate from seven cohorts and roughly 2,500 students.</li>
+  <li><b>A UI breaks where you can see it.</b> A model gives a different answer tomorrow, after an update, or for another user. Even its builders cannot fully say why; that is its own field, interpretability.</li>
+  <li><b>Answers that shift are normal,</b> not a sign you broke something. The series stays practical; research depth goes in extra resources.</li>
+  <li><b>The most common mistake in past cohorts:</b> reaching for the LLM first, even for jobs it is bad at, like storing information.</li>
+</ul>
+<p class="pull">Start left of the line. Move a step into the purple box only when you cannot verify its output with rules. Given two equal solutions, the rule-based one wins: reproducible, cheaper, predictable at scale.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Input and output of the bare model</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="Input: text. An arrow into a dashed process box holding the LLM, GPT OSS 120B. An arrow out to output: text. Below: checked live in the Groq playground.">
+  <g class="ln" filter="url(#wob)">
+    <path class="dash ink" d="M250 30 H510 V160 H250 Z"/>
+    <rect class="f-prob" x="290" y="66" width="180" height="62" rx="10"/>
+    <path class="arw" d="M150 96 H282" marker-end="url(#ah)"/>
+    <path class="arw" d="M478 96 H610" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="22" class="xs">process</text>
+    <text x="380" y="96" class="m c-prob">LLM</text>
+    <text x="380" y="118" class="xxs">GPT OSS 120B</text>
+    <text x="90" y="86" class="s">input</text>
+    <text x="90" y="114" class="m">text</text>
+    <text x="670" y="86" class="s">output</text>
+    <text x="670" y="114" class="m">text</text>
+    <text x="380" y="200" class="xs">checked live in the Groq playground · tokens and embeddings are not what you hand it</text>
+  </g>
+</svg>
+<figcaption>Zoom into the purple box.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Same framing as the UI and the API:</b> input, process, output.</li>
+  <li><b>The chat said tokens, vectors, embeddings, prompts.</b> Each one got the same request: define it in one line a peer can follow. A term you cannot unpack hides the mechanism. Embeddings are not what you hand the model.</li>
+  <li><b>The answer we could check live:</b> open GPT OSS 120B in the Groq playground, type text, get text back. <b>Text in, text out.</b> Some models take images and audio; for our reference model, this is the verified truth, and we build from verified truth.</li>
+</ul>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The query that broke it</h2>
+<blockquote class="q9">Which track should I choose in 100x Engineers cohort?</blockquote>
+<ul class="pt">
+  <li><b>The shape was right.</b> A decision framework, assessment questions, a mapping from answers to tracks, a checklist. Close to what a good mentor would give.</li>
+  <li><b>The data was wrong.</b> Front-end, back-end, full-stack, data and ML, DevOps, product, security. None of them exist.</li>
+  <li><b>The real choice has two axes.</b> A career track (entrepreneurship or career acceleration, set by your North Star) and an execution path (code, low-code, no-code, set by your background).</li>
+  <li><b>We fixed the constraint:</b> one answer, no follow-up questions. Under that, an assessment framework is the right template.</li>
+  <li><b>Right template, wrong data: hallucination.</b> It is why this model, as is, cannot be the career coach on the 100x website.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 380" role="img" aria-label="Input: which track should I choose in 100x Engineers cohort? The output is a long page: a self-assessment framework, ticked, and a list of tracks. The tracks it recommended, all struck through: front-end, back-end, full-stack, data and ML, DevOps, product, security. Missing data caused the hallucination. The real choice has two axes: career track, entrepreneurship or career acceleration, and execution path, code, low-code or no-code.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="20" width="290" height="72" rx="9"/>
+    <path class="arw c-prob" d="M165 98 V126" marker-end="url(#ahv)"/>
+    <rect class="f-card" x="40" y="132" width="250" height="232" rx="6"/>
+    <path class="scrib" d="M62 190 H262 M62 204 H240 M62 218 H256 M62 232 H226 M62 282 H262 M62 296 H250 M62 310 H236 M62 324 H260 M62 338 H220"/>
+    <path class="c-hum" d="M248 160 l7 8 l14 -18"/>
+    <path class="c-act" d="M248 252 l20 20 M268 252 l-20 20"/>
+    <path class="c-act thin" d="M374 92 H476 M552 92 H654 M374 126 H476 M552 126 H654 M374 160 H476 M552 160 H654 M374 194 H476"/>
+    <path class="arw c-act" d="M362 224 Q330 250 296 262" marker-end="url(#ahc)"/>
+    <rect class="f-hum" x="356" y="262" width="384" height="102" rx="9"/>
+  </g>
+  <g class="tx">
+    <text x="165" y="50" class="xs c-ink">Which track should I choose</text>
+    <text x="165" y="76" class="xs c-ink">in 100x Engineers cohort?</text>
+    <text x="150" y="168" class="xs">self-assessment framework</text>
+    <text x="150" y="262" class="xs">the tracks</text>
+    <text x="548" y="50" class="s">the tracks it recommended</text>
+    <text x="425" y="98" class="xs">front-end</text><text x="603" y="98" class="xs">DevOps</text>
+    <text x="425" y="132" class="xs">back-end</text><text x="603" y="132" class="xs">product</text>
+    <text x="425" y="166" class="xs">full-stack</text><text x="603" y="166" class="xs">security</text>
+    <text x="425" y="200" class="xs">data and ML</text>
+    <text x="586" y="210" class="xs c-act">none of them exist:</text>
+    <text x="586" y="236" class="xs c-act">missing data → hallucination</text>
+    <text x="548" y="292" class="m c-hum">the real choice, two axes</text>
+    <text x="372" y="322" class="xxs l">career track: entrepreneurship or career acceleration</text>
+    <text x="372" y="348" class="xxs l">execution path: code, low-code or no-code</text>
+  </g>
+</svg>
+<figcaption>Right template, wrong data.</figcaption>
+</figure>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Can the orange box fix it?</h2>
+<p>Satyaki's proposal, tested step by step against the line:</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 390" role="img" aria-label="Satyaki's proposal. An orange zone with client, server and data, and a purple zone with the LLM. Steps: 1, collect info about the cohort with a scraper, orange. 2, store it as a JSON or Markdown file, orange. 3, a system prompt telling the model to read the file before answering, purple, only an LLM can read it. 4, return the output, both. One purple step makes the system probabilistic.">
+  <g class="ln" filter="url(#wob)">
+    <path class="z-det" d="M20 30 H470 V180 H20 Z"/>
+    <path class="z-prob" d="M530 30 H740 V180 H530 Z"/>
+    <rect class="f-card" x="44" y="70" width="110" height="50" rx="8"/>
+    <rect class="f-card" x="214" y="70" width="120" height="50" rx="8"/>
+    <rect class="f-card" x="364" y="110" width="84" height="46" rx="8"/>
+    <rect class="f-prob" x="578" y="80" width="116" height="52" rx="8"/>
+    <path class="arw" d="M160 95 H206" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw" d="M338 110 L360 124" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw c-prob" d="M340 88 H570" marker-start="url(#ahv)" marker-end="url(#ahv)"/>
+    <rect class="f-det" x="586" y="206" width="110" height="28" rx="6"/>
+    <rect class="f-det" x="586" y="244" width="110" height="28" rx="6"/>
+    <rect class="f-prob" x="586" y="282" width="110" height="28" rx="6"/>
+    <rect class="f-card" x="586" y="320" width="110" height="28" rx="6"/>
+  </g>
+  <g class="tx">
+    <text x="245" y="22" class="xs c-det">deterministic</text>
+    <text x="635" y="22" class="xs c-prob">probabilistic</text>
+    <text x="99" y="101" class="m">client</text>
+    <text x="274" y="101" class="m">server</text>
+    <text x="406" y="139" class="xs">data</text>
+    <text x="636" y="112" class="m c-prob">LLM</text>
+    <text x="30" y="226" class="xs c-ink l">1 · collect all info about the cohort, with a scraper</text>
+    <text x="30" y="264" class="xs c-ink l">2 · store it in a .json or .md file</text>
+    <text x="30" y="302" class="xs c-ink l">3 · a system prompt: read the file before answering</text>
+    <text x="30" y="340" class="xs c-ink l">4 · return the output</text>
+    <text x="641" y="226" class="xxs c-det">orange</text>
+    <text x="641" y="264" class="xxs c-det">orange</text>
+    <text x="641" y="302" class="xxs c-prob">purple</text>
+    <text x="641" y="340" class="xxs">both</text>
+    <text x="380" y="380" class="xs c-act">a system prompt means nothing to a Python script, so the system is probabilistic</text>
+  </g>
+</svg>
+<figcaption>Steps 1 and 2 are orange. Step 3 only works with an LLM, and step 4 inherits it.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The design was not wrong. The procedure is the point.</b> Write the solution as steps, place each step on one side of the line. If any step only works with an LLM, the system is probabilistic whether you meant it or not.</li>
+  <li><b>Kandarp, in chat:</b> if you cannot write the verifier, you cannot build the system.</li>
+  <li><b>Sampreet:</b> if you do not know what the right answer looks like, find a domain expert before you build.</li>
+</ul>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>The deterministic answer already existed</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="Input: which track should I choose? An orange zone with client, server and data. The server fetches from the data store, and the output is a template: the assessment, track data, and a decision-making framework. One API call, one template, the right answer every time.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="14" y="112" width="190" height="66" rx="9"/>
+    <path class="arw" d="M210 145 H254" marker-end="url(#ah)"/>
+    <path class="z-det" d="M262 40 H500 V280 H262 Z"/>
+    <rect class="f-card" x="274" y="80" width="80" height="46" rx="8"/>
+    <rect class="f-card" x="396" y="80" width="88" height="46" rx="8"/>
+    <use href="#db" x="395" y="188"/>
+    <path class="arw" d="M358 103 H390" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw c-det" d="M440 132 V182" marker-start="url(#ahd)" marker-end="url(#ahd)"/>
+    <path class="arw" d="M506 160 H546" marker-end="url(#ah)"/>
+    <rect class="f-det" x="552" y="70" width="190" height="190" rx="9"/>
+  </g>
+  <g class="tx">
+    <text x="109" y="140" class="xs c-ink">Which track should</text>
+    <text x="109" y="164" class="xs c-ink">I choose?</text>
+    <text x="381" y="30" class="xs c-det">deterministic</text>
+    <text x="314" y="109" class="xs">client</text>
+    <text x="440" y="109" class="xs">server</text>
+    <text x="440" y="272" class="xxs">curriculum DB</text>
+    <text x="350" y="166" class="xxs">fetch from</text>
+    <text x="350" y="186" class="xxs">the data store</text>
+    <text x="647" y="104" class="m c-det">template</text>
+    <text x="570" y="146" class="xs c-ink l">1 · the assessment</text>
+    <text x="570" y="184" class="xs c-ink l">2 · track data</text>
+    <text x="570" y="222" class="xs c-ink l">3 · decision framework</text>
+    <text x="380" y="316" class="xs c-act">one API call, one template, the right answer every time</text>
+  </g>
+</svg>
+<figcaption>One API call, one template.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Define the template:</b> how the assessment works, the tracks that actually exist, and a decision framework (this North Star and this background, choose this).</li>
+  <li><b>Fetch the track data from the database</b> that powers the curriculum, not the website. The website updates slowly; the database is current. One API call, one template, the right answer every time.</li>
+  <li><b>Cohort 1 did exactly this.</b> No team, no credits: each recurring question got its own decision framework as a plain HTML page. Test it with five real users, as Assignment 1 taught. If they can decide from it, it works.</li>
+  <li><b>Steps are a process; anyone can copy them.</b> Knowing which side of the line a problem falls on before you design is intuition. Learnable, not teachable. Run it on 30 problem statements over 30 days and it becomes subconscious.</li>
+</ul>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Where rules run out</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="Input: when will I get a job? Answer requires human judgment, drawn as a person. It depends on who you are, what you can actually do, the role you want, and the job market. No database holds it, yet a mentor who has watched many students can estimate it.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="40" y="24" width="260" height="62" rx="9"/>
+    <path class="arw" d="M170 92 V146" marker-end="url(#ah)"/>
+    <g style="color:var(--hum)"><use href="#person" transform="translate(146 154) scale(.8)"/></g>
+    <path class="dash ink" d="M400 24 H740 V230 H400 Z"/>
+  </g>
+  <g class="tx">
+    <text x="170" y="62" class="m">When will I get a job?</text>
+    <text x="186" y="126" class="xs l">answer requires</text>
+    <text x="170" y="284" class="m c-hum">human judgment</text>
+    <text x="570" y="58" class="s">depends on</text>
+    <text x="570" y="98" class="xs c-ink">who you are</text>
+    <text x="570" y="130" class="xs c-ink">what you can actually do</text>
+    <text x="570" y="162" class="xs c-ink">the role you want</text>
+    <text x="570" y="194" class="xs c-ink">the job market</text>
+    <text x="570" y="262" class="xs c-act">no database holds it; some rule is always missing</text>
+    <text x="570" y="290" class="xs">a mentor can still estimate it</text>
+  </g>
+</svg>
+<figcaption>Where rules run out.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Same student, now on the code track.</b> The question came from a real test of an AI assistant in Cohort 6.</li>
+  <li><b>No database holds the answer, no template produces it.</b> It depends on who you are, what you can actually do, the role you want, and the market. Some rule will always be missing.</li>
+  <li><b>A 100x mentor can still estimate it,</b> because they have watched many students make the journey and formed a judgment.</li>
+  <li><b>Verification by rule:</b> 1 + 2 is always 3. You can use an LLM; you do not need one.</li>
+  <li><b>Verification by judgment:</b> whether a customer deserves a refund (from Lecture 1). Grey areas, settled by patterns an experienced support executive learned from past cases. When the check needs judgment, a probabilistic system belongs in the design.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="Two panels. Verification by rule: an app that adds two numbers. 1 plus 2 is 3, 2 plus 2 is 4, 3 plus 2 is 5. An LLM is optional. Verification by judgment: should this customer get a refund? Grey areas, settled by an experienced support executive's past cases. A golden dataset of ideal input and output pairs. A probabilistic system belongs here.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="20" y="20" width="350" height="280" rx="10"/>
+    <rect class="f-prob" x="390" y="20" width="350" height="280" rx="10"/>
+    <g style="color:var(--prob)"><use href="#person" transform="translate(410 150) scale(.6)"/></g>
+  </g>
+  <g class="tx">
+    <text x="195" y="56" class="m c-det">verification by rule</text>
+    <text x="195" y="94" class="xs">how do you verify an app</text>
+    <text x="195" y="118" class="xs">that adds two numbers?</text>
+    <text x="195" y="164" class="s c-ink">1 + 2 = 3</text>
+    <text x="195" y="196" class="s c-ink">2 + 2 = 4</text>
+    <text x="195" y="228" class="s c-ink">3 + 2 = 5</text>
+    <text x="195" y="278" class="xs c-det">an LLM is optional</text>
+    <text x="565" y="56" class="m c-prob">verification by judgment</text>
+    <text x="565" y="94" class="xs">should this customer</text>
+    <text x="565" y="118" class="xs">get a refund?</text>
+    <text x="460" y="168" class="xs c-ink l">grey areas, settled by</text>
+    <text x="460" y="192" class="xs c-ink l">a support executive's</text>
+    <text x="460" y="216" class="xs c-ink l">past cases</text>
+    <text x="565" y="250" class="xxs">golden dataset: ideal input and output pairs</text>
+    <text x="565" y="282" class="xs c-prob">a probabilistic system belongs here</text>
+  </g>
+</svg>
+<figcaption>Verification by rule, verification by judgment.</figcaption>
+</figure>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Can a machine learn judgment?</h2>
+<p>Humans form judgment from experience. For a machine, the equivalent is data. The room's answers:</p>
+<ul class="pt">
+  <li><b>Past data</b> (Anupama and many others). Necessary. Every FAQ ever answered at 100x is not enough on its own.</li>
+  <li><b>Data alone breaks down</b> (Varun). Context bloats and models hallucinate more as it grows. Maybe LLMs guide judgment rather than make it.</li>
+  <li><b>Decision theory</b> (Prateek). Fuzzy multi-criteria decision-making: gather human judgment through surveys, pairwise comparisons and linguistic scales, then turn it into rules. Works for one category of problem, not all.</li>
+  <li><b>A human in the loop</b> (Satyaki). A person checks the machine's judgment against theirs and corrects it over time.</li>
+  <li><b>Reward and punishment</b> (Samarth). The right instinct, but you cannot deny a machine a salary. What a reward looks like to a model is open for the coming weeks.</li>
+</ul>
+<p class="pull">It depends, on two things in a fixed order. Swasti and Mustafa got there first: verification first, data second.</p>
+<ul class="pt">
+  <li><b>Mountains of data, no way to tell right from wrong:</b> the model cannot learn.</li>
+  <li><b>A perfect verifier, no examples:</b> it cannot learn either. A person who knows the rules still needs worked examples to build intuition.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="Can a machine learn judgment? It depends on two things in order. First, how verifiable is the task? Second, how much data do we have? If yes, what do we need: a verifier and data. Data without a verifier teaches nothing; a verifier without data has nothing to teach.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M380 62 V96" marker-end="url(#ah)"/>
+    <rect class="f-act" x="90" y="130" width="260" height="92" rx="10"/>
+    <rect class="f-card" x="410" y="130" width="260" height="92" rx="10"/>
+    <path class="arw c-act" d="M356 176 H402" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="46" class="h">can a machine learn judgment?</text>
+    <text x="380" y="120" class="s">depends on</text>
+    <text x="220" y="168" class="m c-act">1 · verifier</text>
+    <text x="220" y="198" class="xs">how verifiable is the task?</text>
+    <text x="540" y="168" class="m">2 · data</text>
+    <text x="540" y="198" class="xs">how much data do we have?</text>
+    <text x="220" y="256" class="xxs">data, no verifier: it cannot tell right from wrong</text>
+    <text x="540" y="256" class="xxs">verifier, no data: no examples to learn from</text>
+    <text x="380" y="304" class="m c-act">if you can verify it and the data exists, a machine can learn it</text>
+  </g>
+</svg>
+<figcaption>Verifier first, data second.</figcaption>
+</figure>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>The Verifier's Rule, revisited</h2>
+<ul class="pt">
+  <li><b>From the first lecture:</b> <a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Jason Wei on the asymmetry of verification</a>. It is now the guiding rule for the probabilistic half.</li>
+  <li><b>In one line:</b> the ease of training AI on a task is proportional to how verifiable the task is. Every task that is possible to solve and easy to verify will be solved by AI.</li>
+  <li><b>The benchmarks show it.</b> Graduate STEM exams and competition maths have a correct answer for every question, and decades of past papers. Models ace them.</li>
+  <li><b>So read benchmarks with care.</b> Acing a verifiable test with enough examples shows the rule working, not general intelligence.</li>
+</ul>
+<p class="pull">If you can verify a task and the data exists or can be collected, a machine can learn it.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Aarav's Monday, task by task</h2>
+<ul class="pt">
+  <li><b>Monday:</b> email (urgent tickets, feedback, holidays), then Jira, then Slack and a handful of other apps.</li>
+  <li><b>From Jira, the top item:</b> a presentation for upper management on what the company can do next quarter to cut spend and improve the P&amp;L.</li>
+  <li><b>An atomic task</b> is specific enough that he can be held accountable for it. "Help my company grow" is not one.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 400" role="img" aria-label="Aarav opens email, Jira and Slack on Monday. His to-do: 1, collect last quarter's data; 2, research pricing trends; 3, generate the presentation. Can it be verified? Yes: total sales minus Q1 and Q2 equals Q3, a rule. Yes: North Star cost saved, seen between Q3 and Q4, judgment. Yes: against the data and the research. Below, the exercise grid: tasks, verifier, data.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" transform="translate(30 40) scale(.75)"/>
+    <rect class="f-act" x="20" y="160" width="40" height="30" rx="5"/>
+    <rect class="f-card" x="66" y="160" width="40" height="30" rx="5"/>
+    <rect class="f-card" x="112" y="160" width="40" height="30" rx="5"/>
+    <rect class="f-card" x="190" y="30" width="230" height="160" rx="8"/>
+    <path class="arw" d="M426 110 H446" marker-end="url(#ah)"/>
+    <path class="dash ink" d="M60 228 H700 V384 H60 Z"/>
+    <path class="dash ink" d="M60 262 H700 M60 312 H700 M270 228 V312 M490 228 V312"/>
+  </g>
+  <g class="tx">
+    <text x="50" y="148" class="m">Aarav</text>
+    <text x="86" y="214" class="xxs">email, Jira, Slack</text>
+    <text x="40" y="181" class="xxs c-act">M</text><text x="86" y="181" class="xxs">T</text><text x="132" y="181" class="xxs">W</text>
+    <text x="305" y="58" class="m">to do</text>
+    <text x="206" y="96" class="xs c-ink l">1 · collect Q3 data</text>
+    <text x="206" y="134" class="xs c-ink l">2 · research pricing</text>
+    <text x="206" y="172" class="xs c-ink l">3 · generate the PPT</text>
+    <text x="600" y="58" class="s">can it be verified?</text>
+    <text x="456" y="96" class="xs c-hum l">yes</text><text x="490" y="96" class="xxs l">sales − Q1 − Q2 = Q3 · <tspan class="c-det">rule</tspan></text>
+    <text x="456" y="134" class="xs c-hum l">yes</text><text x="490" y="134" class="xxs l">cost saved, Q3 → Q4 · <tspan class="c-prob">judgment</tspan></text>
+    <text x="456" y="172" class="xs c-hum l">yes</text><text x="490" y="172" class="xxs l">the data and the research</text>
+    <text x="165" y="252" class="m">tasks</text>
+    <text x="380" y="252" class="m">verifier</text>
+    <text x="595" y="252" class="m">data</text>
+    <text x="165" y="292" class="xxs c-mute">collect Q3 data</text>
+    <text x="380" y="292" class="xxs c-mute">the sum rule</text>
+    <text x="595" y="292" class="xxs c-mute">past quarters</text>
+    <text x="380" y="356" class="xs c-act">your turn: every atomic task of your week</text>
+  </g>
+</svg>
+<figcaption>Aarav's Monday, and the exercise grid.</figcaption>
+</figure>
+<table class="dials">
+<tr><th>Aarav's task</th><th>How it is verified</th><th>Verdict</th></tr>
+<tr><td>Collect last quarter's data from Databricks and other tools</td><td>Rule. Total sales minus Q1 and Q2 must equal the Q3 figure collected. The output matches the expected schema.</td><td>Verifiable by rule</td></tr>
+<tr><td>Research current pricing trends</td><td>Judgment. No rule says what to research or when to stop. But his manager already verifies it at appraisal, and the North Star (cost saved) shows up in the P&amp;L between Q3 and Q4.</td><td>Verifiable by judgment and outcome</td></tr>
+<tr><td>Generate the presentation</td><td>Checked against the data collected and the research conclusions.</td><td>Verifiable</td></tr>
+</table>
+<ul class="pt">
+  <li><b>All three are verifiable,</b> and they are most of what Aarav is paid for outside meetings.</li>
+  <li><b>A task becomes verifiable the moment its outcome is clear.</b> The only time you cannot write a verifier is when you do not know what the task is for. That is why the North Star exercise opened the cohort.</li>
+</ul>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>The 80% finding</h2>
+<ul class="pt">
+  <li><b>Across three years of 100x alumni jobs, about 80% of tasks are verifiable.</b> Not automated today: verifiable. Some have the data, some not yet. When the data arrives, and labs are working on exactly that, they become automatable.</li>
+  <li><b>Six months of asking people hit by layoffs</b> what they actually did: 80% to 90% verifiable, every time.</li>
+  <li><b>Not a doomsday lecture.</b> It changes what upskilling means. Ten lectures on neural networks change nothing if your tasks are the ones a lab can verify and buy data for. The useful question is which 20% to 30% of your work is not easily verifiable, and how to spend more time there.</li>
+  <li><b>Karpathy's jagged edge.</b> GPT-4 to GPT-5: the skills that jumped (maths, reading, writing, knowledge) are the verifiable ones.</li>
+  <li><b>Anthropic's jobs as bundles of tasks, with a nurse.</b> Ordering ward supplies: automated (the list and invoice make it easy to verify). Monitoring patients, discharge instructions, shift plans: augmented. Helping a patient bathe: human. Automated is <span class="o">orange</span>, augmented is <span class="p">purple</span>.</li>
+  <li><b>If more than 80% of your week sits in the automated band,</b> use this module to shift it.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="A bar: about 80% of alumni tasks are verifiable and waiting only on data; the rest is yours. Below, a nurse's job as a bundle of tasks. Automated: order ward supplies. Augmented: monitor patients, discharge instructions, shift plans. Human: help a patient bathe.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="40" y="50" width="544" height="56" rx="8"/>
+    <rect class="f-hum" x="584" y="50" width="136" height="56" rx="8"/>
+    <rect class="f-det" x="30" y="184" width="220" height="110" rx="9"/>
+    <rect class="f-prob" x="270" y="184" width="220" height="110" rx="9"/>
+    <rect class="f-hum" x="510" y="184" width="220" height="110" rx="9"/>
+  </g>
+  <g class="tx">
+    <text x="312" y="85" class="m c-det">~80% verifiable · waiting on data</text>
+    <text x="652" y="85" class="m c-hum">yours</text>
+    <text x="380" y="34" class="xs">tasks of 100x alumni, over three years</text>
+    <text x="380" y="164" class="s">a nurse's job, as a bundle of tasks</text>
+    <text x="140" y="218" class="m c-det">automated</text>
+    <text x="140" y="252" class="xs c-ink">order ward supplies</text>
+    <text x="140" y="276" class="xxs">the invoice verifies it</text>
+    <text x="380" y="218" class="m c-prob">augmented</text>
+    <text x="380" y="248" class="xxs c-ink">monitor patients,</text>
+    <text x="380" y="268" class="xxs c-ink">discharge instructions,</text>
+    <text x="380" y="288" class="xxs c-ink">shift plans</text>
+    <text x="620" y="218" class="m c-hum">human</text>
+    <text x="620" y="252" class="xs c-ink">help a patient bathe</text>
+  </g>
+</svg>
+<figcaption>About 80% verifiable, and a nurse's job as a bundle of tasks.</figcaption>
+</figure>
+<p class="pull">Before someone else automates your job, verify it yourself.</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Data is bigger than you think</h2>
+<ul class="pt">
+  <li><b>A verifier is not automation next quarter.</b> How long a task has left depends on how much data it takes to make a model reliable at it.</li>
+  <li><b>For scale:</b> <a href="https://huggingface.co/datasets/HuggingFaceFW/fineweb" target="_blank" rel="noopener">FineWeb</a>, a public web crawl, is 44 TB and 15 trillion tokens (words turned into numbers). Roughly the floor for testing even a small language model. GPT-class and Claude-class models use 10 to 100 times more.</li>
+  <li><b>To experiment tonight,</b> use an open-source model, ideally locally, not a hosted proprietary one (the reason comes in a later session). The instructor's go-to: Qwen 3.5 on <a href="https://ollama.com" target="_blank" rel="noopener">Ollama</a>. Needs 6 to 7 GB, runs on a 16 GB laptop, works from Claude Code, OpenCode, Hermes or any terminal tool.</li>
+</ul>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>From the chat, and where this goes</h2>
+<ul class="pt">
+  <li><b>"Can parts of a research task be deterministic, like which accounts to search?"</b> (Abhishek) Yes. Most real tasks are a mix. Start deterministic; move a step to purple only when rules cannot verify it.</li>
+  <li><b>The next four weeks:</b> a task from your own job, its verification criteria, its data, then a model built or trained for it (the route depends on the task). Context, harness and behaviour along the way. The finish line is a model evaluated on your own job.</li>
+  <li><b>Tomorrow:</b> connecting the model to tools, with tool calling. The weekend build series starts now too.</li>
+</ul>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Deterministic system</dt><dd>Rule-based. The same input always gives the same output. The orange box.</dd>
+  <dt>Probabilistic system</dt><dd>Prediction-based. The same input can give different outputs. The purple box.</dd>
+  <dt>HLD round</dt><dd>The whiteboard interview: design a system from a problem statement, no code.</dd>
+  <dt>Hallucination</dt><dd>A response with the right shape and the wrong data.</dd>
+  <dt>System prompt</dt><dd>An instruction only an LLM can act on. Its presence makes a step purple.</dd>
+  <dt>Verification by rule</dt><dd>The output can be checked by writing rules, like 1 + 2 = 3.</dd>
+  <dt>Verification by judgment</dt><dd>The check needs experience, like a refund decision or a pricing strategy.</dd>
+  <dt>Verifier's Rule</dt><dd>How easy a task is to train AI on is proportional to how verifiable it is.</dd>
+  <dt>Atomic task</dt><dd>A unit of work specific enough that you can be held accountable for it.</dd>
+  <dt>Jagged edge</dt><dd>AI capability rises unevenly, fastest where outputs are easiest to verify.</dd>
+  <dt>Tokens</dt><dd>Words turned into numbers. The unit models are trained and measured in.</dd>
+</dl>
+</details>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>Before the practice set</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Six cards. Predict: your guess for the verifiable share, written first. Log the week: every atomic task, from your calendar. North Star: the outcome each task serves. Verifier: the rule, or the judge and the signal. Bucket and data: automate, augment or human, and where the examples live. Rules: your week, not an LLM's; it's subjective is not a verifier.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="16" width="226" height="116" rx="8" transform="rotate(-1.5 133 74)"/>
+    <rect class="f-card" x="267" y="16" width="226" height="116" rx="8" transform="rotate(1 380 74)"/>
+    <rect class="f-card" x="514" y="16" width="226" height="116" rx="8" transform="rotate(-1 627 74)"/>
+    <rect class="f-card" x="20" y="156" width="226" height="116" rx="8" transform="rotate(1 133 214)"/>
+    <rect class="f-card" x="267" y="156" width="226" height="116" rx="8" transform="rotate(-1.5 380 214)"/>
+    <rect class="f-act" x="514" y="156" width="226" height="116" rx="8" transform="rotate(1.5 627 214)"/>
+  </g>
+  <g class="tx">
+    <text x="133" y="58" class="m">1 · predict</text><text x="133" y="90" class="xs">your guess for the</text><text x="133" y="114" class="xs">verifiable share, first</text>
+    <text x="380" y="58" class="m">2 · log the week</text><text x="380" y="90" class="xs">every atomic task,</text><text x="380" y="114" class="xs">from your calendar</text>
+    <text x="627" y="58" class="m">3 · North Star</text><text x="627" y="90" class="xs">the outcome each</text><text x="627" y="114" class="xs">task serves</text>
+    <text x="133" y="198" class="m">4 · verifier</text><text x="133" y="230" class="xs">the rule, or the</text><text x="133" y="254" class="xs">judge and the signal</text>
+    <text x="380" y="198" class="m">5 · bucket and data</text><text x="380" y="230" class="xs">automate, augment, human;</text><text x="380" y="254" class="xs">where the examples live</text>
+    <text x="627" y="198" class="m c-act">rules</text><text x="627" y="230" class="xs">your week, not an LLM's</text><text x="627" y="254" class="xs">"subjective" is no verifier</text>
+  </g>
+</svg>
+<figcaption>Your turn.</figcaption>
+</figure>
+<p>All of it is in the <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">practice set</a>. Sections 05, 08 and 10 above are the ones to reread first.</p>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>An LLM earns its place only where the output cannot be checked by a rule and needs judgment. Whether a machine can learn that judgment depends on two things, in this order: can you verify the output, and do you have the data. Run that test on every task in your own job and you will know which parts are about to be automated, and which stay yours.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set: verify your own job</a></li>
+  <li><a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Jason Wei: asymmetry of verification</a></li>
+  <li><a href="/c8/delegation-framework/">The delegation framework: automate, augment, human</a></li>
+  <li><a href="/#L9">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 9: LLMs from first principles</span><a href="/#L9">Curriculum map</a><a href="/c8/module-2/lecture-09-llms-from-first-principles/">All Lecture 9 pages</a></div></footer>
+</body>
+</html>
