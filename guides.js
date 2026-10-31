@@ -717,15 +717,15 @@ GUIDES.L9 = { all: {
      ticks:[
        {id:'guess', t:'Wrote my guess for the share of verifiable tasks before counting'},
        {id:'log', t:'Logged every atomic task of one week from my calendar and tools', link:'l09TrackA', linkLabel:'Track A'},
-       {id:'verify', t:'An outcome, a verifier and its speed on every row: the rule, or the judge, signal and time', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
+       {id:'verify', t:'An outcome and a verifier on every row: the rule, or the judge, signal and time', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
        {id:'data', t:'Cost if wrong, data and bucket on every row; checked the judgment rows with my judge'}
      ]},
     {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 06',
      intro:'Deliverables 1 to 4 are the minimum; 5 to 9 are the full submission.',
      ticks:[
-       {id:'number', t:'My numbers: prediction, tasks verifiable, hours verifiable, verifiable fast with data', link:'l09Submit', linkLabel:'What to submit'},
+       {id:'number', t:'My numbers: prediction, tasks verifiable, hours verifiable, verifiable with data', link:'l09Submit', linkLabel:'What to submit'},
        {id:'running', t:'One Automate row taken off my plate this week, minutes saved stated'},
-       {id:'candidate', t:'My candidate task: needs an LLM, verifier and speed, data source, count, local use confirmed'},
+       {id:'candidate', t:'My candidate task: needs an LLM, verifier, data source, count, local use confirmed'},
        {id:'golden', t:'Checklists for the candidate task and ten golden pairs from real past cases'},
        {id:'line', t:'Line test on the candidate task: each step orange or purple, a reason for every purple', link:'l09Line', linkLabel:'Can the orange box fix it?'}
      ]}

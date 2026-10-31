@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Practice Set: Verify Your Own Job | 100xEngineers</title>
-<meta name="description" content="Practice set after Lecture 9 of the 100xEngineers Cohort 8 Module 2: log every atomic task from one real working week, write how each is verified and how fast, mark which have the data a machine would need, and pick the task you will build a model for.">
+<meta name="description" content="Practice set after Lecture 9 of the 100xEngineers Cohort 8 Module 2: log every atomic task from one real working week, write how each is verified, mark which have the data a machine would need, and pick the task you will build a model for.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -35,18 +35,18 @@ body.read .p{color:var(--prob-ink);font-weight:500}
   <div class="meta"><span>Follows Lecture 9, Fri 30 Oct 2026.</span></div>
 </div>
 
-<div class="call"><p class="kick">The brief</p><p>Log every atomic task from your last full working week. For each: how its output is verified, how fast that check answers, and whether the data a machine would need exists. Then pick the one task you will build a model for.</p></div>
+<div class="call"><p class="kick">The brief</p><p>Log every atomic task from last week. For each, write how its output is verified and whether the data a machine would need exists. Then pick the one task you will build a model for. <a href="https://docs.google.com/spreadsheets/d/1QbuRsvhH9LpZIRgYKoDd83rMmXqLPTooGeY_55FzwNY/copy" target="_blank" rel="noopener">Copy the template.</a></p></div>
 
 <section class="s" id="s00"><h2>Why this exists</h2>
 <ul>
-  <li><b>Aarav was a proxy.</b> The skill is drawing the rule-versus-judgment line on work <i>you</i> are paid for. <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s10">Notes, section 10.</a></li>
-  <li><b>It is the input to the rest of Module 2.</b> Your candidate task becomes your data, model and evaluation.</li>
-  <li><b>Verifiable is not automated.</b> A slow verifier or missing data keeps a task human for years. This sheet measures both.</li>
+  <li><b>Aarav was a proxy.</b> Now draw the rule-versus-judgment line on work <i>you</i> are paid for. <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s10">Notes, section 10.</a></li>
+  <li><b>It feeds the rest of Module 2.</b> Your candidate task becomes your data, model and evaluation.</li>
+  <li><b>Verifiable is not automated.</b> A slow verifier or missing data keeps a task human for years.</li>
 </ul>
 </section>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Warm-up: spot the flaw</h2>
-<p>Ten minutes. Each row has exactly one flaw, all common in past cohorts. Name it before you start. <a href="#answers">Answers are at the end.</a></p>
+<p>Ten minutes. Each row has one flaw. <a href="#answers">Answers at the end.</a></p>
 <div class="tw"><table>
 <tr><th>#</th><th>Task</th><th>Verifier written</th><th>Type given</th></tr>
 <tr><td>A</td><td>Support the category team with analytics</td><td>Category head is happy</td><td>Judgment</td></tr>
@@ -58,93 +58,90 @@ body.read .p{color:var(--prob-ink);font-weight:500}
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>Track A: your own job <span class="ready" data-ready="a">0 of 7 ready</span></h2>
-<p>Use this track if you have any paid work at all, freelance included. Do your first five rows in the live session; then copy the template, which has Aarav's rows pre-filled, and overwrite them.</p>
+<p>For anyone with paid work, freelance included. Start in the live session, then <a href="https://docs.google.com/spreadsheets/d/1QbuRsvhH9LpZIRgYKoDd83rMmXqLPTooGeY_55FzwNY/copy" target="_blank" rel="noopener">copy the template</a> and overwrite Aarav's rows.</p>
 <div data-stage="a">
 <ul class="ck">
-<li><input type="checkbox" id="a0"><label for="a0"><span class="t">Predict</span><span class="h">1 minute. Your guess for the share of your tasks that are verifiable. Do not change it later.</span></label></li>
-<li><input type="checkbox" id="a1"><label for="a1"><span class="t">Dump</span><span class="h">20 minutes. Open last week's calendar, sent mail, Jira, Slack and file history. One line per output, with minutes spent. Not from memory. Meetings with no output of yours: one line, total hours.</span></label></li>
-<li><input type="checkbox" id="a2"><label for="a2"><span class="t">Clean</span><span class="h">10 minutes. Split any line no one could hold you accountable for ("support the business"). Merge any line too small to be checked on its own ("rename a tab"). Expect 25 to 60 rows.</span></label></li>
-<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Verify</span><span class="h">The main work. For each row: Outcome, Verifier, Speed, Type. Rule rows first; they take seconds. Flag anything you cannot write and move on.</span></label></li>
-<li><input type="checkbox" id="a4"><label for="a4"><span class="t">Decide</span><span class="h">20 minutes. Cost if wrong, Data, Bucket. Then a 3 to 5 line checklist for your candidate task and up to three other judgment rows you would want a machine to draft: what the judge actually looks for. For Aarav's Slack asks: driver named, every number traced, cause plausible, action suggested, under 150 words.</span></label></li>
-<li><input type="checkbox" id="a5"><label for="a5"><span class="t">Check with your judge</span><span class="h">10 minutes. Show the judgment rows to your manager or client: "Is this how you actually check my work? What would make you reject it?" Fix the rows from what they say.</span></label></li>
-<li><input type="checkbox" id="a6"><label for="a6"><span class="t">Count</span><span class="h"><a href="#s06">Section 06</a>, deliverable 2.</span></label></li>
+<li><input type="checkbox" id="a0"><label for="a0"><span class="t">Predict</span><span class="h">1 minute. Guess the share of your tasks that are verifiable. Never change it.</span></label></li>
+<li><input type="checkbox" id="a1"><label for="a1"><span class="t">Dump</span><span class="h">20 minutes. From last week's calendar, sent mail, Jira, Slack and files, not memory: one line per output, with minutes. Meetings with no output of yours: one line, total hours.</span></label></li>
+<li><input type="checkbox" id="a2"><label for="a2"><span class="t">Clean</span><span class="h">10 minutes. Split lines no one could hold you accountable for ("support the business"); merge lines too small to check ("rename a tab"). Expect 25 to 60 rows.</span></label></li>
+<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Verify</span><span class="h">The main work. Outcome, Verifier and Type for each row, rule rows first. Can't write one? Flag it and move on.</span></label></li>
+<li><input type="checkbox" id="a4"><label for="a4"><span class="t">Decide</span><span class="h">20 minutes. Cost if wrong, Data, Bucket. Then a 3 to 5 line checklist of what the judge looks for, for your candidate task and up to three judgment rows. Aarav's: driver named, every number traced, cause plausible, action suggested, under 150 words.</span></label></li>
+<li><input type="checkbox" id="a5"><label for="a5"><span class="t">Check with your judge</span><span class="h">10 minutes. Ask your manager or client: "Is this how you check my work? What would make you reject it?" Fix the rows.</span></label></li>
+<li><input type="checkbox" id="a6"><label for="a6"><span class="t">Count</span><span class="h">Deliverable 2, in <a href="#s06">section 06</a>.</span></label></li>
 </ul>
 </div>
 <h3>The columns</h3>
 <div class="tw"><table>
 <tr><th>Column</th><th>What to write</th></tr>
 <tr><td>Task</td><td>The output, as a verb and a noun</td></tr>
-<tr><td>Minutes</td><td>Rough time spent on it that week</td></tr>
-<tr><td>Outcome</td><td>What the output is for, in one line: who uses it and for what decision. Not your week-0 North Star; that is where you want your career to go. Can't write it? Flag the row: you cannot verify work you cannot place.</td></tr>
-<tr><td>Verifier</td><td>Rule: the rule itself. Judgment: who judges, on what signal, and when. None: what is missing.</td></tr>
-<tr><td>Speed</td><td>How fast the verifier answers: seconds, same day, days, quarter or longer</td></tr>
+<tr><td>Minutes</td><td>Time spent that week</td></tr>
+<tr><td>Outcome</td><td>Who uses it, for what decision. Not your career North Star. Can't write it? Flag the row.</td></tr>
+<tr><td>Verifier</td><td>Rule: the rule. Judgment: judge · signal · when. None: what is missing.</td></tr>
 <tr><td>Type</td><td>Rule, judgment, mixed or none</td></tr>
 <tr><td>Cost if wrong</td><td>Low, medium or high</td></tr>
-<tr><td>Data</td><td>Do past input and correct-output pairs exist? Where? How many: under 10, 10 to 100, 100 to 1,000, over 1,000</td></tr>
-<tr><td>Bucket</td><td>Automate, augment or human (see <a href="#s04">rule 4</a>)</td></tr>
+<tr><td>Data</td><td>Past input and correct-output pairs: where, and how many (under 10, 10 to 100, 100 to 1,000, over 1,000)</td></tr>
+<tr><td>Bucket</td><td>Automate, augment or human (<a href="#s04">rule 4</a>)</td></tr>
 </table></div>
-<p>Speed, Type, Cost and Bucket are dropdowns in the template. Day of the week is not a column; order rows however you like.</p>
-<p>A verifier that answers in a quarter or longer is an <b>outcome signal</b>. Record it, but it does not count toward your third number: a model cannot learn from feedback that arrives months later, mixed with everything else that moved.</p>
+<p>A verifier that only answers in a quarter or longer is an <b>outcome signal</b>: record it, but type the row none. A model cannot learn from feedback that arrives months later, mixed with everything else that moved.</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Track B: the job you want <span class="ready" data-ready="b">0 of 4 ready</span></h2>
-<p>Not working right now? Reconstruct one real person's week. It is the weaker version on purpose: you are verifying someone else's work.</p>
+<p>Not working? Reconstruct one real person's week. Weaker on purpose: you are verifying someone else's work.</p>
 <div data-stage="b">
 <ul class="ck">
-<li><input type="checkbox" id="b1"><label for="b1"><span class="t">Interview one person in the role</span><span class="h">Ask about a specific past day, not the job in general: "Open your calendar for last Tuesday. What did you produce, and who checked it?" General answers ("I do analysis") are not data.</span></label></li>
-<li><input type="checkbox" id="b2"><label for="b2"><span class="t">Ask for one real artifact</span><span class="h">An anonymized query, report, ticket or deck. You need it for deliverable 3.</span></label></li>
-<li><input type="checkbox" id="b3"><label for="b3"><span class="t">Use two job postings as a check, not a filter</span><span class="h">Mark which logged tasks a posting also mentions. Postings list responsibilities, not atomic tasks, so do not delete rows they miss.</span></label></li>
-<li><input type="checkbox" id="b4"><label for="b4"><span class="t">Run every Track A step on that week</span><span class="h">Plus a Source column: interview, artifact or posting.</span></label></li>
+<li><input type="checkbox" id="b1"><label for="b1"><span class="t">Interview one person in the role</span><span class="h">About a specific day: "Open your calendar for last Tuesday. What did you produce, and who checked it?" "I do analysis" is not data.</span></label></li>
+<li><input type="checkbox" id="b2"><label for="b2"><span class="t">Get one real artifact</span><span class="h">An anonymized query, report, ticket or deck, for deliverables 3 and 4. A public dataset or report also works; say which.</span></label></li>
+<li><input type="checkbox" id="b3"><label for="b3"><span class="t">Check against two job postings</span><span class="h">Mark the tasks a posting also mentions. Don't delete the rest: postings list responsibilities, not tasks.</span></label></li>
+<li><input type="checkbox" id="b4"><label for="b4"><span class="t">Run every Track A step</span><span class="h">Plus a Source column: interview, artifact or posting.</span></label></li>
 </ul>
 </div>
-<p>For deliverables 3 and 4, use the artifact you collected or a public equivalent (a public dataset, a published report). Say which.</p>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Rules</h2>
 <ol>
   <li><b>Predict before you count.</b> The gap is part of the result.</li>
-  <li><b>Your week, not a generic one.</b> Do not ask an LLM to list your role's tasks; that gives the average job, which labs can already buy data for. An LLM may cluster your <i>exported</i> calendar and Slack into rows, phrase a verifier, or second-guess a bucket.</li>
-  <li><b>"It's subjective" is not a verifier.</b> Every judgment row names a judge, a signal and a time. Can't? Type is none; say what is missing.</li>
+  <li><b>Your week, not a generic one.</b> An LLM listing your role's tasks gives the average job, which labs already buy data for. It may cluster your <i>exported</i> calendar and Slack, phrase a verifier, or second-guess a bucket.</li>
+  <li><b>"It's subjective" is not a verifier.</b> Name a judge, a signal and a time, or type the row none and say what is missing.</li>
   <li><b>Bucket on verifier, data and cost, not type alone.</b>
     <ul>
       <li><i>Automate:</i> a check catches mistakes without a person, the data exists, a miss is cheap.</li>
-      <li><i>Augment:</i> a machine drafts, a person signs off, because the check needs judgment or a miss is expensive.</li>
-      <li><i>Human:</i> no verifier yet, or only an outcome signal on a high-cost decision, or human by nature.</li>
+      <li><i>Augment:</i> a machine drafts and a person signs off, because the check needs judgment or a miss is expensive.</li>
+      <li><i>Human:</i> no verifier yet, only an outcome signal on a costly decision, or human by nature.</li>
     </ul></li>
-  <li><b>Verified by rule is not produced by rule.</b> For each rule row, note whether a script or template can <i>produce</i> it. If yes, no LLM. SQL from a vague question still needs an LLM to write, while a rule checks it.</li>
-  <li><b>Model work stays locked</b> until the sheet is in, except <a href="#s07">section 07</a>. Company data never goes into a hosted chatbot; confirm you may use your candidate task's data on your own machine.</li>
+  <li><b>Verified by rule is not produced by rule.</b> If a script or template can <i>produce</i> a rule row, no LLM. SQL from a vague question still needs one to write it; a rule checks it.</li>
+  <li><b>Model work stays locked</b> until the sheet is in, except <a href="#s07">section 07</a>. Company data never goes into a hosted chatbot; confirm you may use it on your own machine.</li>
 </ol>
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Worked example: Aarav's week</h2>
-<p>Aarav is a business analyst at a mid-size D2C apparel brand in Bengaluru, working in Databricks, Power BI, Sheets, Jira, Slack and SAP exports from finance. Nine of his 41 rows are below, chosen to cover every type and bucket; Outcome is the task's purpose, not his personal North Star. Your sheet needs every row.</p>
+<p>A business analyst at a D2C apparel brand in Bengaluru (Databricks, Power BI, Sheets, Jira, Slack, SAP exports). Nine of his 41 rows, covering every type and bucket. Your sheet needs every row.</p>
 <div class="tw"><table>
-<tr><th>Task</th><th>Outcome</th><th>Min</th><th>Verifier (judge · signal · when)</th><th>Speed</th><th>Type</th><th>Cost if wrong</th><th>Data</th><th>Bucket</th></tr>
-<tr><td>Pull last week's GMV, orders, AOV and return rate into the weekly business review deck</td><td>Leadership reviews correct numbers at Monday 11am</td><td>90</td><td>Totals match the Databricks gold table; GMV within 0.5% of finance's SAP export</td><td>Seconds</td><td>Rule</td><td>Medium</td><td>52 past weekly pulls, notebook history</td><td>Automate: scheduled notebook and sheet formula, no LLM</td></tr>
-<tr><td>Answer the category manager's Slack ask: why did Pune returns jump 38% last week?</td><td>Category gross margin</td><td>120</td><td>Category manager · accepts the root cause and acts on it with no follow-up question · within 2 days</td><td>Days</td><td>Judgment</td><td>Medium</td><td>About 140 past asks in #analytics-requests, each with his reply and what happened next</td><td>Augment</td></tr>
-<tr><td>Pull Q3 sales by channel for the cost-cut deck</td><td>Cost saved on the P&amp;L</td><td>60</td><td>Year-to-date minus Q1 and Q2 equals Q3; schema matches; within 0.5% of SAP</td><td>Seconds</td><td>Rule</td><td>High</td><td>11 past quarterly pulls, Databricks</td><td>Automate, no LLM</td></tr>
-<tr><td>Write SQL for repeat-purchase rate by acquisition channel for the growth team</td><td>CAC payback decisions</td><td>75</td><td>Cohort sizes sum to total new customers; June cohort matches the signed-off Power BI number</td><td>Seconds</td><td>Rule</td><td>Medium</td><td>About 60 saved queries in the team repo, each with the question it answered</td><td>Automate: LLM drafts the SQL, the rule checks it</td></tr>
-<tr><td>Write user stories and acceptance criteria for "Buy 2, get 10% off" in Jira</td><td>Feature ships without rework</td><td>90</td><td>Rule: every criterion is Given/When/Then. Judgment: PM and QA lead pass it at refinement with no clarifying questions · Thursday</td><td>Days</td><td>Mixed</td><td>Medium</td><td>About 200 past stories in Jira, with reopen counts</td><td>Augment</td></tr>
-<tr><td>Competitor pricing scan for the Q4 pricing recommendation</td><td>Cost saved on the P&amp;L</td><td>180</td><td>Manager · would take it to the CFO, and every price has a dated source link · by Friday. Outcome signal: margin, Q3 to Q4</td><td>Days</td><td>Judgment</td><td>High</td><td>6 past pricing docs with manager comments, Drive</td><td>Augment</td></tr>
-<tr><td>A/B test readout for the one-page checkout</td><td>Checkout conversion</td><td>120</td><td>Rule: sample-ratio check passes, confidence interval computed correctly. Judgment: growth lead agrees with the ship call · same day</td><td>Same day</td><td>Mixed</td><td>High</td><td>18 past readouts in Confluence, each with the final decision</td><td>Augment</td></tr>
-<tr><td>Build the Q4 cost-cut deck for leadership</td><td>Cost saved on the P&amp;L</td><td>240</td><td>Rule: every number traces to the Q3 pull. Judgment: manager approves it for the CFO with no rework · same day</td><td>Same day</td><td>Mixed</td><td>High</td><td>About 20 past leadership decks with version history</td><td>Augment</td></tr>
-<tr><td>Present the recommendation to the CFO and handle pushback live</td><td>Leadership decision</td><td>60</td><td>None at task time. Outcome signal: savings realized next quarter</td><td>Quarter or longer</td><td>None</td><td>High</td><td>None usable</td><td>Human</td></tr>
+<tr><th>Task</th><th>Outcome</th><th>Min</th><th>Verifier (judge · signal · when)</th><th>Type</th><th>Cost if wrong</th><th>Data</th><th>Bucket</th></tr>
+<tr><td>Pull last week's GMV, orders, AOV and return rate into the weekly business review deck</td><td>Leadership reviews correct numbers at Monday 11am</td><td>90</td><td>Totals match the Databricks gold table; GMV within 0.5% of finance's SAP export</td><td>Rule</td><td>Medium</td><td>52 past weekly pulls, notebook history</td><td>Automate: scheduled notebook and sheet formula, no LLM</td></tr>
+<tr><td>Answer the category manager's Slack ask: why did Pune returns jump 38% last week?</td><td>Category gross margin</td><td>120</td><td>Category manager · accepts the root cause and acts on it with no follow-up question · within 2 days</td><td>Judgment</td><td>Medium</td><td>About 140 past asks in #analytics-requests, each with his reply and what happened next</td><td>Augment</td></tr>
+<tr><td>Pull Q3 sales by channel for the cost-cut deck</td><td>Cost saved on the P&amp;L</td><td>60</td><td>Year-to-date minus Q1 and Q2 equals Q3; schema matches; within 0.5% of SAP</td><td>Rule</td><td>High</td><td>11 past quarterly pulls, Databricks</td><td>Automate, no LLM</td></tr>
+<tr><td>Write SQL for repeat-purchase rate by acquisition channel for the growth team</td><td>CAC payback decisions</td><td>75</td><td>Cohort sizes sum to total new customers; June cohort matches the signed-off Power BI number</td><td>Rule</td><td>Medium</td><td>About 60 saved queries in the team repo, each with the question it answered</td><td>Automate: LLM drafts the SQL, the rule checks it</td></tr>
+<tr><td>Write user stories and acceptance criteria for "Buy 2, get 10% off" in Jira</td><td>Feature ships without rework</td><td>90</td><td>Rule: every criterion is Given/When/Then. Judgment: PM and QA lead pass it at refinement with no clarifying questions · Thursday</td><td>Mixed</td><td>Medium</td><td>About 200 past stories in Jira, with reopen counts</td><td>Augment</td></tr>
+<tr><td>Competitor pricing scan for the Q4 pricing recommendation</td><td>Cost saved on the P&amp;L</td><td>180</td><td>Manager · would take it to the CFO, and every price has a dated source link · by Friday. Outcome signal: margin, Q3 to Q4</td><td>Judgment</td><td>High</td><td>6 past pricing docs with manager comments, Drive</td><td>Augment</td></tr>
+<tr><td>A/B test readout for the one-page checkout</td><td>Checkout conversion</td><td>120</td><td>Rule: sample-ratio check passes, confidence interval computed correctly. Judgment: growth lead agrees with the ship call · same day</td><td>Mixed</td><td>High</td><td>18 past readouts in Confluence, each with the final decision</td><td>Augment</td></tr>
+<tr><td>Build the Q4 cost-cut deck for leadership</td><td>Cost saved on the P&amp;L</td><td>240</td><td>Rule: every number traces to the Q3 pull. Judgment: manager approves it for the CFO with no rework · same day</td><td>Mixed</td><td>High</td><td>About 20 past leadership decks with version history</td><td>Augment</td></tr>
+<tr><td>Present the recommendation to the CFO and handle pushback live</td><td>Leadership decision</td><td>60</td><td>None at task time. Outcome signal: savings realized next quarter</td><td>None</td><td>High</td><td>None usable</td><td>Human</td></tr>
 </table></div>
-<p>Meetings with no output of his: 6.5 hours, logged as one line.</p>
+<p>Plus one line: 6.5 hours of meetings with no output of his.</p>
 
 <h3>His candidate task</h3>
-<p><b>"Why did metric X move?" Slack asks.</b> Needs an LLM to produce, verifier answers within two days, about 140 past examples, roughly 6 hours a week, and his manager approved using the channel export and aggregated tables locally. The SQL row was the safer pick (a rule makes it easy to evaluate); he chose the asks because they cost twice the time and sit closer to his North Star.</p>
+<p><b>"Why did metric X move?" Slack asks.</b> Needs an LLM, judged within two days, about 140 past examples, roughly 6 hours a week, and his manager approved using the channel export and aggregated tables locally. The SQL row was safer to evaluate; he chose the asks because they take twice the time and sit closer to his North Star.</p>
 
 <h3>Line test on that task</h3>
 <ol>
-  <li>Turn the ask into metric, region, period and comparison. <span class="o">Orange</span>, once asks come through a Slack form instead of free text.</li>
+  <li>Turn the ask into metric, region, period and comparison. <span class="o">Orange</span>, once asks come through a Slack form.</li>
   <li>Pull the metric and its baseline with SQL. <span class="o">Orange.</span></li>
-  <li>Break the change down by SKU, courier, pincode and channel. <span class="o">Orange:</span> it is arithmetic.</li>
-  <li>Pick the driver that explains it and name the likely cause. <span class="p">Purple:</span> "one SKU is 62% of the extra returns" is arithmetic, but "because the size chart changed" comes from patterns in past cases.</li>
-  <li>Write the reply for the category manager. <span class="p">Purple:</span> what to say depends on who reads it and what they can act on.</li>
+  <li>Break the change down by SKU, courier, pincode and channel. <span class="o">Orange:</span> arithmetic.</li>
+  <li>Pick the driver and name the likely cause. <span class="p">Purple:</span> "62% of the extra returns are one SKU" is arithmetic; "because the size chart changed" comes from patterns in past cases.</li>
+  <li>Write the reply. <span class="p">Purple:</span> it depends on who reads it and what they can act on.</li>
   <li>Check every number in the reply against step 3. <span class="o">Orange.</span></li>
 </ol>
-<p>Four of six steps are orange. The model only has to do steps 4 and 5.</p>
+<p>The model only has to do steps 4 and 5.</p>
 
 <h3>One golden pair</h3>
 <div class="tw"><table>
@@ -152,8 +149,7 @@ body.read .p{color:var(--prob-ink);font-weight:500}
 <tr><td>"Pune returns up 38% week on week (week of 19 Oct). Why?" plus the step 3 breakdown</td><td>62% of the extra returns come from one SKU, women's straight-fit jeans in sizes 28 and 30, reason code "too small". Its size chart changed on 14 Oct. Couriers show no single driver. Suggest reverting the chart and rechecking next Monday.</td><td>Category manager reverted the chart on 21 Oct; returns were back to baseline within a week. Accepted, no follow-up.</td></tr>
 </table></div>
 
-<h3>Same columns, other roles</h3>
-<p>One rule row and one judgment row each, so you can see your own job in the sheet.</p>
+<h3>Other roles</h3>
 <div class="tw"><table>
 <tr><th>Role</th><th>Task</th><th>Verifier</th><th>Type</th><th>Bucket</th></tr>
 <tr><td>Backend engineer</td><td>Fix the failing payment webhook retry</td><td>CI green, the three regression tests pass · minutes</td><td>Rule</td><td>Automate: LLM writes, tests check</td></tr>
@@ -166,65 +162,65 @@ body.read .p{color:var(--prob-ink);font-weight:500}
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>What to submit <span class="ready" data-ready="sub">0 of 9 ready</span></h2>
-<p>Copy the template <span class="pend">sheet template</span>. Deliverables 1 to 4 are the minimum; 5 to 9 are the full submission and what the module builds on.</p>
+<p>Everything goes in <a href="https://docs.google.com/spreadsheets/d/1QbuRsvhH9LpZIRgYKoDd83rMmXqLPTooGeY_55FzwNY/copy" target="_blank" rel="noopener">the template</a>, one tab each. 1 to 4 are the minimum; 5 to 9 complete it and carry the module.</p>
 <div data-stage="sub">
 <ul class="ck">
-<li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. Task sheet</span><span class="h">One full week, one atomic task per row, every column filled, plus the meetings line and your judge's corrections.</span></label></li>
-<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. Your numbers</span><span class="h">Prediction first, then: share of tasks verifiable; share of <i>hours</i> verifiable; share verifiable with a verifier that answers within days and data that exists. Plus one line: which verdict surprised you, and why?</span></label></li>
-<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. One row, automated this week</span><span class="h">Pick one Automate row and remove yourself from it: a scheduled script, a formula, a template, a Zapier flow. Report minutes saved per week. Aarav's weekly pull went from 90 minutes to 5.</span></label></li>
-<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Candidate task</span><span class="h">Must need an LLM to produce. Verifier and speed, where the data lives, how many examples, confirmation you may use it locally, and one line on why it matters to your North Star.</span></label></li>
-<li><input type="checkbox" id="d5"><label for="d5"><span class="t">5. Checklists</span><span class="h">The 3 to 5 line checklists from step 5: your candidate task plus up to three judgment rows. The candidate task's checklist is your week-4 eval rubric.</span></label></li>
-<li><input type="checkbox" id="d6"><label for="d6"><span class="t">6. Line test on the candidate task</span><span class="h">Each step <span class="o">orange</span> or <span class="p">purple</span>; one sentence per purple step on why a rule cannot do it. <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s05">Notes, section 05.</a></span></label></li>
-<li><input type="checkbox" id="d7"><label for="d7"><span class="t">7. Ten golden pairs</span><span class="h">Input, ideal output, judge's verdict, from real past cases. Version one of your module-end evaluation set.</span></label></li>
-<li><input type="checkbox" id="d8"><label for="d8"><span class="t">8. My 20%</span><span class="h">The judgment rows with high cost-if-wrong and slow verifiers. These stay yours longest. One concrete move for next month: ask to own one of them, shadow whoever does, or spend the hours from deliverable 3 there.</span></label></li>
-<li><input type="checkbox" id="d9"><label for="d9"><span class="t">9. Peer break</span><span class="h">Swap sheets with a peer; each tries to break three of the other's verifiers. Fix or defend before submitting.</span></label></li>
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">1. Task sheet</span><span class="h">A full week, every column filled, the meetings line, and your judge's corrections.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">2. Your numbers</span><span class="h">Your prediction, then the share of tasks verifiable, of <i>hours</i> verifiable, and of tasks verifiable with data that exists. One line on the verdict that surprised you.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">3. One row, automated this week</span><span class="h">Remove yourself from one Automate row: a script, formula, template or Zapier flow. Minutes saved per week. Aarav's weekly pull: 90 to 5.</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">4. Candidate task</span><span class="h">Needs an LLM to produce. Its verifier, where the data lives, how many examples, confirmation you may use it locally, and why it matters to your North Star.</span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">5. Checklists</span><span class="h">From step 5. The candidate task's checklist becomes your week-4 eval rubric.</span></label></li>
+<li><input type="checkbox" id="d6"><label for="d6"><span class="t">6. Line test on the candidate task</span><span class="h">Each step <span class="o">orange</span> or <span class="p">purple</span>, with one sentence per purple step on why a rule cannot do it. <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s05">Notes, section 05.</a></span></label></li>
+<li><input type="checkbox" id="d7"><label for="d7"><span class="t">7. Ten golden pairs</span><span class="h">Input, ideal output and judge's verdict, from real past cases. Version one of your evaluation set.</span></label></li>
+<li><input type="checkbox" id="d8"><label for="d8"><span class="t">8. My 20%</span><span class="h">Judgment rows with a high cost if wrong and slow verifiers: they stay yours longest. One move for next month: own one, shadow whoever does, or spend the hours from deliverable 3 there.</span></label></li>
+<li><input type="checkbox" id="d9"><label for="d9"><span class="t">9. Peer break</span><span class="h">Swap sheets; each tries to break three of the other's verifiers. Fix or defend.</span></label></li>
 </ul>
 </div>
 </section>
 
 <section class="s" id="s07"><h2><span class="n">07</span>Optional stretch: your first baseline</h2>
-<p>45 minutes. See how a small open model does on your own task before you build anything.</p>
+<p>45 minutes, to see how a small open model does on your task before you build anything.</p>
 <ol>
-  <li>Install Qwen 3.5 on <a href="https://ollama.com" target="_blank" rel="noopener">Ollama</a>. It needs about 7 GB and runs on a 16 GB laptop. Local only: no hosted models, and anonymize anything sensitive.</li>
-  <li>Give it the input from three of your golden pairs, with no extra instructions.</li>
-  <li>For each output, mark two things: <b>template</b> (right shape?) and <b>data</b> (right facts?).</li>
-  <li>Write one line on what it got wrong and what it was missing to get it right.</li>
+  <li>Install Qwen 3.5 on <a href="https://ollama.com" target="_blank" rel="noopener">Ollama</a> (about 7 GB, runs on a 16 GB laptop). Local only; anonymize anything sensitive.</li>
+  <li>Give it the input from three golden pairs, with no extra instructions.</li>
+  <li>Mark each output: <b>template</b> (right shape?) and <b>data</b> (right facts?).</li>
+  <li>One line on what it got wrong and what it was missing.</li>
 </ol>
-<p>Right template, wrong data is the hallucination from <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s04">Notes, section 04</a>, on your own work. Aarav's run produced a tidy root-cause reply that blamed courier delays; it never saw the size-chart change. These three scores are the baseline your model must beat in week four.</p>
+<p>Right template, wrong data is the hallucination from <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s04">Notes, section 04</a>. Aarav's run gave a tidy reply blaming courier delays; it never saw the size-chart change. These scores are the baseline your model must beat in week four.</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>How it is reviewed</h2>
 <div class="tw"><table>
 <tr><th>Deliverable</th><th>Passes</th><th>Sent back</th></tr>
-<tr><td>Task sheet</td><td>25 or more atomic rows from records; every judgment row names judge, signal, time; judge consulted</td><td>Under 15 rows, tasks inferred from a job title, blank verifiers</td></tr>
-<tr><td>Numbers</td><td>Prediction dated before the count; all three shares; one honest surprise</td><td>Prediction missing or edited; quarter-long verifiers counted as fast</td></tr>
+<tr><td>Task sheet</td><td>25+ atomic rows from records; every judgment row names judge, signal, time; judge consulted</td><td>Under 15 rows, tasks inferred from a job title, blank verifiers</td></tr>
+<tr><td>Numbers</td><td>Prediction dated before the count; all three shares; one honest surprise</td><td>Prediction missing or edited; outcome signals counted as verifiable</td></tr>
 <tr><td>Row automated</td><td>Runs without you; minutes saved stated</td><td>A plan to automate it</td></tr>
-<tr><td>Candidate task</td><td>Needs an LLM; verifier answers within days; 100 or more examples you may use</td><td>A rule task a script solves; data you cannot take out of work</td></tr>
-<tr><td>Checklists</td><td>Each line is checkable by a new hire on day one</td><td>"Good quality", "makes sense"</td></tr>
+<tr><td>Candidate task</td><td>Needs an LLM; judged within days; 100+ examples you may use</td><td>A rule task a script solves; data you cannot take out of work</td></tr>
+<tr><td>Checklists</td><td>Each line checkable by a new hire on day one</td><td>"Good quality", "makes sense"</td></tr>
 <tr><td>Line test</td><td>Every step marked, every purple step justified</td><td>Whole task marked purple</td></tr>
-<tr><td>Golden pairs</td><td>Ten real cases, each with a judge's verdict</td><td>Invented examples, or outputs with no verdict</td></tr>
+<tr><td>Golden pairs</td><td>Ten real cases, each with a judge's verdict</td><td>Invented examples, or no verdict</td></tr>
 <tr><td>My 20%</td><td>Named rows and one dated move</td><td>"Focus more on strategy"</td></tr>
 <tr><td>Peer break</td><td>Three comments received and answered</td><td>No changes and no defence</td></tr>
 </table></div>
 </section>
 
 <section class="s" id="s09"><h2><span class="n">09</span>After you count</h2>
-<p><b>When you are stuck,</b> write the best verifier you can and flag the row. Never leave it blank. Flagged rows are good questions for the next live session or office hours. For a second opinion on a bucket, paste your own tasks into <a href="/c8/delegation-framework/">the delegation framework</a>. It sorts your list; it does not write it.</p>
+<p><b>Stuck?</b> Write the best verifier you can and flag the row; never leave it blank. Bring flagged rows to the next live session or office hours. For a second opinion on a bucket, paste your tasks into <a href="/c8/delegation-framework/">the delegation framework</a>. It sorts your list; it does not write it.</p>
 <h3>Aarav's numbers</h3>
 <div class="tw"><table>
-<tr><th>Prediction</th><th>Tasks verifiable</th><th>Hours verifiable</th><th>Verifiable, fast, with data</th></tr>
+<tr><th>Prediction</th><th>Tasks verifiable</th><th>Hours verifiable</th><th>Verifiable, with data</th></tr>
 <tr><td>50%</td><td>85% (35 of 41)</td><td>63%</td><td>54% (22 of 41)</td></tr>
 </table></div>
-<p>His prediction was off by 35 points. The 85% to 54% gap is work a machine cannot learn yet, for lack of data or a fast verifier. That gap, and the hours no rule covers, are where his time should shift.</p>
-<p><b>The cohort benchmark:</b> across three years of 100x alumni jobs, about 80% of tasks were verifiable. Compare it with your second number, not your third. After submissions close, the next live session shows the cohort's numbers by role and the most common surprising rows.</p>
-<p><b>What happens next:</b> your candidate task carries the rest of Module 2: data, then a model, then an evaluation against your ten golden pairs. "Help the team" gets you four weeks of rewriting this sheet.</p>
+<p>Off by 35 points. The gap from 85% to 54% is work a machine cannot learn yet, for lack of data. That gap, and the hours no rule covers, are where his time should shift.</p>
+<p><b>Cohort benchmark:</b> about 80% of tasks in 100x alumni jobs were verifiable. Compare it with your second number, not your third. The next live session shows the cohort's numbers by role.</p>
+<p><b>Next:</b> your candidate task carries the rest of Module 2: data, a model, then an evaluation against your ten golden pairs. "Help the team" gets you four weeks of rewriting this sheet.</p>
 <h3 id="answers">Warm-up answers</h3>
 <ul>
   <li><b>A.</b> Not atomic. Split it into outputs someone checks, like "weekly sell-through report for the category team".</li>
   <li><b>B.</b> No judge or signal. Try: finance controller · signs off the reconciliation · same day.</li>
-  <li><b>C.</b> Wrong type. Dashboard totals reconcile to the source, so it is a rule, and "manager reviews it" is not the verifier.</li>
-  <li><b>D.</b> Too small. Fold it into the weekly business review row it belongs to.</li>
-  <li><b>E.</b> An outcome signal only, a year late. Add a fast judge: manager signs off the assumptions and sources that week.</li>
+  <li><b>C.</b> Wrong type. Dashboard totals reconcile to the source: a rule. "Manager reviews it" is not the verifier.</li>
+  <li><b>D.</b> Too small. Fold it into the weekly business review row.</li>
+  <li><b>E.</b> Only an outcome signal, a year late. Add a fast judge: manager signs off the assumptions and sources that week.</li>
 </ul>
 </section>
 
