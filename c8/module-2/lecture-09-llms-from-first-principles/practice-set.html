@@ -35,7 +35,7 @@ body.read .p{color:var(--prob-ink);font-weight:500}
   <div class="meta"><span>Follows Lecture 9, Fri 30 Oct 2026.</span></div>
 </div>
 
-<div class="call"><p class="kick">The brief</p><p>Write your North Star. List every atomic task from last week. For each, write its success criteria, whether it moves your North Star, its verifier, and whether the data exists. <a href="https://docs.google.com/spreadsheets/d/1QbuRsvhH9LpZIRgYKoDd83rMmXqLPTooGeY_55FzwNY/copy" target="_blank" rel="noopener">Copy the template</a>: Aarav's week is the first tab, yours is the second.</p></div>
+<div class="call"><p class="kick">The brief</p><p>Write your North Star. List every atomic task from last week. For each, write its success criteria, whether it moves your North Star, its verifier and verification type, and whether the data exists. <a href="https://docs.google.com/spreadsheets/d/1QbuRsvhH9LpZIRgYKoDd83rMmXqLPTooGeY_55FzwNY/copy" target="_blank" rel="noopener">Copy the template</a>: Aarav's week is the first tab, yours is the second.</p></div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Start with your North Star</h2>
 <p>One sentence, six months out: <b>By [month + year], I am [role or identity] doing [specific thing] at [level, income or scale].</b> Someone outside the cohort should be able to check it on the date. <a href="/c8/module-2/what-to-build/idea-to-app-notes#s02">Week 0 notes, sections 02 and 03.</a></p>
@@ -48,7 +48,7 @@ body.read .p{color:var(--prob-ink);font-weight:500}
 <li><input type="checkbox" id="a0"><label for="a0"><span class="t">Guess first</span><span class="h">The share of your tasks that are verifiable. Don't change it later.</span></label></li>
 <li><input type="checkbox" id="a1"><label for="a1"><span class="t">List last week</span><span class="h">From your calendar, sent mail and Slack, not memory. One row per atomic task, with the time spent. Expect 25 to 60 rows.</span></label></li>
 <li><input type="checkbox" id="a2"><label for="a2"><span class="t">Success criteria, and does it move your North Star?</span><span class="h">What must be true for it to count as done. If it moves your North Star not at all, stop there.</span></label></li>
-<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Verifier, then data</span><span class="h">A rule ("totals match finance's export"), or a judge, a signal and a time ("manager · approves with no rework · same day"). "It's subjective" is not a verifier; one that only answers months later is verification type None. Then the data: how many past input and output pairs exist.</span></label></li>
+<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Verifier, verification type, data</span><span class="h">The verifier is a rule ("totals match finance's export") or a judge, a signal and a time ("manager · approves with no rework · same day"). Verification type: Rule, Judgment or Unverifiable. "It's subjective", or an answer that only comes months later, is Unverifiable. Data: how many past input and output pairs exist. Then the bucket: see <a href="#s03">Rules</a>.</span></label></li>
 <li><input type="checkbox" id="a5"><label for="a5"><span class="t">Show it to your judge</span><span class="h">Ask your manager or client: "Is this how you check my work?" Fix what they correct.</span></label></li>
 </ul>
 </div>
@@ -59,7 +59,7 @@ body.read .p{color:var(--prob-ink);font-weight:500}
 <section class="s" id="s03"><h2><span class="n">03</span>Rules</h2>
 <ul>
   <li><b>Your week, from your records.</b> An LLM listing your role's tasks gives you the average job, not yours.</li>
-  <li><b>Bucket on the verifier and the data, not the type alone.</b> Automate when a rule catches mistakes and the data exists. Augment when a judge has to sign off. Human when there is no verifier yet.</li>
+  <li><b>Bucket on the verifier and the data, not the verification type alone.</b> Automate when a rule catches mistakes and the data exists. Augment when a judge has to sign off. Human when it is unverifiable.</li>
   <li><b>If a script or formula can produce it, no LLM.</b></li>
   <li><b>Company data stays on your machine.</b> No model work on these tasks until the sheet is in.</li>
 </ul>

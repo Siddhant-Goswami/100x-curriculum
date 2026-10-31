@@ -21,7 +21,7 @@ COLUMNS = [  # header, width, dropdown options
     ('Success criteria\n(what must be true for it to count as done)', 34, None),
     ('Moves my North Star?\n(Not at all: stop here)', 17, ['A lot', 'A little', 'Not at all']),
     ('Verifier\n(a rule, or judge · signal · when)', 44, None),
-    ('Verification type', 14, ['Rule', 'Judgment', 'None']),
+    ('Verification type', 17, ['Rule', 'Judgment', 'Unverifiable']),
     ('Data\n(past input and output pairs)', 16, ['None', 'Under 10', '10 to 100', 'Over 100']),
     ('Bucket', 14, ['Automate', 'Augment', 'Human']),
 ]
@@ -44,7 +44,7 @@ def build(ws, title, north_star, guess, rows):
         ws[f'B{i}'].fill = INPUT_FILL
     ws['B3'].number_format = '0%'
 
-    typed = f'(COUNTIF({rng("F")},"Rule")+COUNTIF({rng("F")},"Judgment")+COUNTIF({rng("F")},"None"))'
+    typed = f'(COUNTIF({rng("F")},"Rule")+COUNTIF({rng("F")},"Judgment")+COUNTIF({rng("F")},"Unverifiable"))'
     checkable = f'(COUNTIF({rng("F")},"Rule")+COUNTIF({rng("F")},"Judgment"))'
     hours = f'(SUMIFS({rng("B")},{rng("F")},"Rule")+SUMIFS({rng("B")},{rng("F")},"Judgment"))'
     all_hours = f'(SUMIFS({rng("B")},{rng("F")},"<>"))'
@@ -117,7 +117,7 @@ AARAV = [
     ['Present the recommendation to the CFO and handle pushback', 60,
      'The CFO approves the cuts', 'A lot',
      'Nobody at the time. Savings show up next quarter: too late to learn from',
-     'None', 'None', 'Human'],
+     'Unverifiable', 'None', 'Human'],
 ]
 
 wb = Workbook()
