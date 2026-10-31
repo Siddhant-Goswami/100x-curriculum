@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: What Is an Interface | 100xEngineers</title>
+<meta name="description" content="Post-read notes for Lecture 2: the smiley game the room lost twice, the definition of an interface derived from it, then tested on a phone call, a letter, a meme and ChatGPT, down to the layers behind the screen, the API, HTML and HTTP.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+/* the whiteboard sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}.wb .ln .c-hum{stroke:var(--hum)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-hum{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .z-act{stroke:var(--coral);stroke-dasharray:7 8;stroke-width:2}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .scrib{stroke:var(--ink3);stroke-width:1.8}
+.wb .ln .dotf{fill:currentColor;stroke:none}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}.wb .tx .c-hum{fill:var(--hum-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l02-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L2">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 2 pages"><a href="/c8/module-2/lecture-02-what-is-an-interface/">Overview</a><a href="/c8/module-2/lecture-02-what-is-an-interface/notes">Notes</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared whiteboard defs: wobble filter, arrowheads, a person -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Post-read notes · Lecture 2</p>
+  <h1>The first interface</h1>
+  <p class="dek">An interface derived from a game the room lost twice, then tested on a phone call, a letter, a meme and ChatGPT. Read sections 03 to 05 slowly: everything after applies one idea. Come back to section 11 before the API lecture.</p>
+  <div class="meta"><span>Fri 25 Sep 2026</span><span>Instructor: Siddhant Goswami</span><span>Both tracks</span></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>One principle, three kinds of verification</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Three bins. Checkable by a rule: deterministic, code and no-code, weeks 1 to 4. Checkable by judgment a stranger can apply: probabilistic, handed to an LLM. Not verifiable: specific knowledge, a human stays in the loop, weeks 8 to 12. Below: input, process, output.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="20" y="30" width="230" height="110" rx="10"/>
+    <rect class="f-prob" x="265" y="30" width="230" height="110" rx="10"/>
+    <rect class="f-hum" x="510" y="30" width="230" height="110" rx="10"/>
+    <path class="arw" d="M270 196 H330" marker-end="url(#ah)"/>
+    <path class="arw" d="M440 196 H500" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="135" y="70" class="m c-det">a rule</text>
+    <text x="135" y="96" class="xxs">same input, same output</text>
+    <text x="135" y="120" class="xxs">code, no-code · weeks 1 to 4</text>
+    <text x="380" y="70" class="m c-prob">judgment</text>
+    <text x="380" y="96" class="xxs">a stranger judges as well</text>
+    <text x="380" y="120" class="xxs">→ hand it to an LLM</text>
+    <text x="625" y="70" class="m c-hum">not at all</text>
+    <text x="625" y="96" class="xxs">specific knowledge</text>
+    <text x="625" y="120" class="xxs">human in loop · weeks 8 to 12</text>
+    <text x="215" y="202" class="m">input</text>
+    <text x="385" y="202" class="m c-act">process</text>
+    <text x="555" y="202" class="m">output</text>
+  </g>
+</svg>
+<figcaption>Last week's game, sorted. Everything derives from input, process, output.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>A rule.</b> Same input, same output. Build it with what already exists: code and no-code tools. Weeks 1 to 4.</li>
+  <li><b>Judgment.</b> No rule, but you can extract the judgment and hand it to a stranger who then judges as well as you. That judgment can now go to an LLM.</li>
+  <li><b>Not at all.</b> What Naval calls <a href="https://nav.al/specific-knowledge">specific knowledge</a>: what you do better than anyone and cannot pass on. A human stays in the loop, weeks 8 to 12.</li>
+</ul>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The summit map: two mountains, four bridges</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="A summit route over two mountains, deterministic and probabilistic, then locked agents. Four flags: Assignment 1 at base camp, the hackathon after deterministic, Assignment 2 after probabilistic, the final capstone after agents. You are the input, the North Star is the output, 12 weeks is the process.">
+  <g class="ln" filter="url(#wob)">
+    <path class="c-det" d="M60 170 L200 60 L330 170"/>
+    <path class="c-prob" d="M330 170 L470 50 L610 170"/>
+    <path class="c-hum" d="M610 170 L680 100 L740 170" stroke-dasharray="6 7"/>
+    <path class="scrib" d="M20 170 H750"/>
+    <path class="c-act" d="M60 170 V136 L80 143 L60 150 M330 170 V136 L350 143 L330 150 M610 170 V136 L630 143 L610 150 M740 170 V136 L760 143 L740 150"/>
+  </g>
+  <g class="tx">
+    <text x="200" y="150" class="xs c-det">deterministic</text>
+    <text x="470" y="150" class="xs c-prob">probabilistic</text>
+    <text x="680" y="88" class="xxs c-hum">agents · locked</text>
+    <text x="60" y="196" class="xxs c-act">Assignment 1</text>
+    <text x="330" y="196" class="xxs c-act">Hackathon</text>
+    <text x="610" y="196" class="xxs c-act">Assignment 2</text>
+    <text x="720" y="214" class="xxs c-act">Capstone</text>
+    <text x="380" y="24" class="s">you (input) → 12 weeks (process) → North Star (output)</text>
+  </g>
+</svg>
+<figcaption>The four bridges are the only mandatory parts.</figcaption>
+</figure>
+<p>The same principle, applied to the cohort, on the <a href="/">100x roadmap</a>. Base camp is week 0; <a href="/c8/module-2/what-to-build/assignment-1">Assignment 1</a> is the first bridge.</p>
+<table class="dials">
+  <tr><th>Stage</th><th>What happens there</th><th>Bridge out</th></tr>
+  <tr><td>Deterministic</td><td>Orientation, interfaces, your first UI, APIs, database, launch. An end-to-end system deployed by about 17 October.</td><td>The hackathon</td></tr>
+  <tr><td>Probabilistic</td><td>Models, tool calling, MCP, retrieval, then fine-tuning and data preparation.</td><td>Assignment 2</td></tr>
+  <tr><td>Agents (locked)</td><td>Opens only for those who finish Assignments 1, 2 and the hackathon. About 6 lectures, then 4 weeks of capstone.</td><td>Final capstone</td></tr>
+</table>
+<p>From Lecture 3 the tracks split: code in Python with Siddhant, no-code with Rahul. Same destination, different vehicle. Hackathons bring the biggest transformation and the biggest drop-off. Expect both.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Round one: a hundred programmers, one machine, no smiley</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Many people on the left send messages through one Zoom chat to Siddhant acting as a machine at a whiteboard. The whiteboard stays empty: no smiley. Rules: one action per message, in order, no guessing.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" transform="translate(30,60) scale(.55)"/>
+    <use href="#person" transform="translate(70,40) scale(.55)"/>
+    <use href="#person" transform="translate(110,70) scale(.55)"/>
+    <use href="#person" transform="translate(60,120) scale(.55)"/>
+    <use href="#person" transform="translate(110,135) scale(.55)"/>
+    <rect class="f-card" x="250" y="70" width="170" height="90" rx="10"/>
+    <path class="arw" d="M160 115 H244" marker-end="url(#ah)"/>
+    <path class="arw" d="M426 115 H500" marker-end="url(#ah)"/>
+    <use href="#person" transform="translate(510,60) scale(.8)"/>
+    <rect class="f-card" x="580" y="50" width="160" height="120" rx="6"/>
+    <circle class="z-act" cx="660" cy="110" r="36"/>
+  </g>
+  <g class="tx">
+    <text x="90" y="226" class="xxs">100+ programmers</text>
+    <text x="335" y="110" class="m">Zoom chat</text>
+    <text x="335" y="134" class="xxs">1 action per message</text>
+    <text x="545" y="196" class="xxs">the machine</text>
+    <text x="660" y="118" class="m c-act">?</text>
+    <text x="660" y="196" class="xxs">no smiley</text>
+    <text x="380" y="30" class="s">no one asked which language the machine understands</text>
+  </g>
+</svg>
+<figcaption>Two minutes. An old-fashioned machine: no AI, no guessing.</figcaption>
+</figure>
+<p>Siddhant became a machine for two minutes. The goal: get him to draw a smiley on his whiteboard. Pasting an emoji or an image did not count.</p>
+<ul class="pt">
+  <li><b>Input.</b> Instructions only from the Zoom chat.</li>
+  <li><b>Execution.</b> One action per message, in the exact order messages arrive. Two people sending different actions: both run, in sequence.</li>
+  <li><b>No guessing.</b> An unclear, incorrect or unknown instruction produces nothing.</li>
+</ul>
+<p>More than 100 people failed. The room's diagnosis: no coordination, instructions not detailed enough, no one leading. Siddhant added the one nobody offered: no one asked the machine which language it understands.</p>
+<p class="pull">When a deterministic machine fails, the fault is almost always on our side: an instruction we did not articulate, or a team that did not coordinate. Debugging is mostly finding which.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Round two: a common language, still no smiley</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 210" role="img" aria-label="Round two had a command list. Three failures: go to 0, but where is 0,0; pick a pen, which is English, not a command; and a hundred voices at once, no coordination.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="50" width="230" height="110" rx="10"/>
+    <rect class="f-card" x="265" y="50" width="230" height="110" rx="10"/>
+    <rect class="f-act" x="510" y="50" width="230" height="110" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="30" class="s">a common language fixed one problem of two</text>
+    <text x="135" y="90" class="m">"go to 0"</text>
+    <text x="135" y="118" class="xxs">takes x and y.</text>
+    <text x="135" y="140" class="xxs">where is 0,0?</text>
+    <text x="380" y="90" class="m">"pick a pen"</text>
+    <text x="380" y="118" class="xxs">English, not a command.</text>
+    <text x="380" y="140" class="xxs">"circle 5" = radius 5</text>
+    <text x="625" y="90" class="m c-act">100 voices</text>
+    <text x="625" y="118" class="xxs">one machine, many orders</text>
+    <text x="625" y="140" class="xxs">at once</text>
+    <text x="380" y="196" class="xs">errors grow with the number of people instructing the machine</text>
+  </g>
+</svg>
+<figcaption>Far more specific than round one, and it still failed.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>An underspecified command.</b> "Go to 0". The command took X and Y, with 0,0 at a corner Siddhant had chosen. Nobody asked where; someone could have probed with small coordinates until the cursor reached the toolbar.</li>
+  <li><b>Commands the machine never had.</b> "Pick a pen" is English. "Circle R" is not a command either: "circle 5" draws a circle of radius 5. Three messages saying "circle" draw three identical circles.</li>
+  <li><b>Too many programmers.</b> One machine taking orders from a hundred people does not finish the task.</li>
+</ul>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Two systems, and the bridge between them</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Two boxes, the room of humans and the machine. Between them a bridge made of two planks: a common language, and a protocol, the rules both sides follow. Together they are the interface, and the channel runs both ways.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-hum" x="20" y="60" width="180" height="110" rx="10"/>
+    <rect class="f-det" x="560" y="60" width="180" height="110" rx="10"/>
+    <rect class="f-act" x="250" y="70" width="260" height="38" rx="6"/>
+    <rect class="f-act" x="250" y="122" width="260" height="38" rx="6"/>
+    <path class="arw" d="M206 115 H244" marker-end="url(#ah)" marker-start="url(#ah)"/>
+    <path class="arw" d="M516 115 H554" marker-end="url(#ah)" marker-start="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="110" y="112" class="m">the room</text>
+    <text x="110" y="138" class="xxs">humans</text>
+    <text x="650" y="112" class="m">the machine</text>
+    <text x="650" y="138" class="xxs">Siddhant</text>
+    <text x="380" y="95" class="xs c-ink">common language</text>
+    <text x="380" y="147" class="xs c-ink">protocol: rules for both sides</text>
+    <text x="380" y="40" class="m c-act">interface</text>
+    <text x="380" y="210" class="xxs c-mute">the game had rules only for the machine. nobody wrote rules for the humans.</text>
+  </g>
+</svg>
+<figcaption>Language plus protocol. The most important definition for the rest of the cohort.</figcaption>
+</figure>
+<p>The game, redrawn as two boxes. Two things were missing between them: a <b>common language</b>, which round two supplied, and a set of rules. The subtle failure: the rules covered only the machine.</p>
+<p>The winning version: pick one point of contact. Everyone else sends suggestions to that person, and only they write in the chat. Go to 0,0; nothing happens; adjust; reach the toolbar; click; draw. The agreed rules are a <b>protocol</b>. Language plus protocol opens a channel that runs both ways. That bridge is an <b>interface</b>.</p>
+<p class="pull">An interface is the boundary, bridge, or point of interaction where two separate systems, components, or entities meet and communicate.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>The phone call: the wire is not the interface</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 210" role="img" aria-label="One person in Germany speaking German, one in India speaking Hindi, joined by a phone wire with every part working. No communication happens. The hardware is part of the interface, not the whole of it.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" transform="translate(70,40) scale(.8)"/>
+    <use href="#person" transform="translate(640,40) scale(.8)"/>
+    <path class="scrib" d="M130 90 C 250 60, 300 120, 380 90 S 520 60, 630 90"/>
+    <path class="c-act" d="M330 150 L430 190 M430 150 L330 190"/>
+  </g>
+  <g class="tx">
+    <text x="90" y="170" class="m">Germany</text>
+    <text x="90" y="194" class="xxs">speaks German</text>
+    <text x="660" y="170" class="m">India</text>
+    <text x="660" y="194" class="xxs">speaks Hindi</text>
+    <text x="380" y="36" class="xs">wire, signal, mic, speaker: all working</text>
+    <text x="380" y="140" class="xs c-act">no communication</text>
+  </g>
+</svg>
+<figcaption>Every part the room named is still there.</figcaption>
+</figure>
+<p>The room answered with parts: phone line, cable, network, signal, speaker, microphone. Fix the language (both speak German) and there are still rules: one says hello, the other replies, each works out why the other called. The hardware is needed. It is part of the interface, not the whole of it.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>The letter: find the two systems first</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="A sender and a receiver, joined by the postal service. Inside the postal service: envelope, address, stamp, fee, delivery. The address alone is not the interface; the postal service is.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" transform="translate(40,40) scale(.75)"/>
+    <use href="#person" transform="translate(680,40) scale(.75)"/>
+    <rect class="f-act" x="200" y="50" width="360" height="100" rx="10"/>
+    <path class="arw" d="M110 100 H194" marker-end="url(#ah)"/>
+    <path class="arw" d="M566 100 H664" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="60" y="186" class="xxs">sender</text>
+    <text x="700" y="186" class="xxs">receiver</text>
+    <text x="380" y="88" class="m c-act">the postal service</text>
+    <text x="380" y="116" class="xxs">envelope · address · stamp · fee</text>
+    <text x="380" y="136" class="xxs">refuses an envelope with no address</text>
+    <text x="380" y="186" class="xs">the address alone, never</text>
+  </g>
+</svg>
+<figcaption>The two systems are not in the picture. Name them first.</figcaption>
+</figure>
+<p>Answers: envelope, letter, address, stamp, PIN code, even a pigeon. The method: name the two systems before anything else. A letter goes from a sender to a receiver: two people, with pen and paper instead of a phone. Common language: say Hindi. Rules: envelope, address, post office, stamp, fee, wait. Every answer typed in chat is in there, as a component.</p>
+<p>The one system doing all of it is the postal service. It sets the rules and runs the delivery. The postal service can be called an interface; the address never can.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>The meme as an interface</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 210" role="img" aria-label="A two-panel template: rejecting a 50-page document, approving one meme that explains it in 5 seconds. Shared context is the common language; the fixed panels are the rules.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="200" y="30" width="360" height="66" rx="6"/>
+    <rect class="f-card" x="200" y="104" width="360" height="66" rx="6"/>
+    <path class="c-act" d="M220 50 L246 76 M246 50 L220 76"/>
+    <path class="c-hum" d="M220 140 L232 152 L250 124"/>
+  </g>
+  <g class="tx">
+    <text x="400" y="70" class="m">a 50-page document</text>
+    <text x="400" y="144" class="m">one meme, 5 seconds</text>
+    <text x="100" y="66" class="xs">common language</text>
+    <text x="100" y="88" class="xxs">shared context</text>
+    <text x="660" y="66" class="xs">rules</text>
+    <text x="660" y="88" class="xxs">the fixed panels</text>
+    <text x="380" y="200" class="xs c-act">change every word, the template still works</text>
+  </g>
+</svg>
+<figcaption>Two images: the I, Robot scene, and the Drake template.</figcaption>
+</figure>
+<p>In the I, Robot scene Will Smith asks a robot why it is so often biased and wrong; it answers, because you built and trained me. The Drake template rejects a 50-page document and approves one meme. The answer is <b>meme</b>.</p>
+<ul class="pt">
+  <li><b>Common language:</b> shared context. You laugh hardest if you have seen the scene.</li>
+  <li><b>Rules:</b> the template's fixed panels. Accusation, mirror, realization; or rejection, approval.</li>
+  <li><b>Why it spreads.</b> Richard Dawkins coined the word in <i>The Selfish Gene</i>: a unit of culture passed by imitation. It activates context the audience already has, so one image replaces an essay. Siddhant's claim: one of the highest-bandwidth cognitive interfaces ever invented.</li>
+</ul>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>ChatGPT: the screen is the first interface</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="A human, the ChatGPT screen, and an LLM running on a machine. The prompt goes in, the reply comes out. The screen is the graphical user interface, the UI. In the game, the Zoom chat was the UI.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" transform="translate(50,40) scale(.8)"/>
+    <rect class="f-act" x="250" y="40" width="260" height="110" rx="10"/>
+    <rect class="f-prob" x="590" y="55" width="150" height="80" rx="10"/>
+    <path class="arw" d="M120 80 H244" marker-end="url(#ah)"/>
+    <path class="arw" d="M244 112 H120" marker-end="url(#ah)"/>
+    <path class="arw" d="M516 95 H584" marker-end="url(#ah)" marker-start="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="70" class="xxs">prompt</text>
+    <text x="180" y="134" class="xxs">reply</text>
+    <text x="380" y="90" class="m c-act">GUI = UI</text>
+    <text x="380" y="118" class="xxs">the whole screen</text>
+    <text x="665" y="102" class="m c-prob">LLM</text>
+    <text x="75" y="190" class="xxs">user</text>
+    <text x="380" y="190" class="xs">in the game, the Zoom chat was the UI</text>
+  </g>
+</svg>
+<figcaption>Systems, input and output first. Then the interface can be named.</figcaption>
+</figure>
+<p>Answers ranged from natural language to "the entire screen". Method first: the two systems are a human and an LLM (software that must run on a machine). Input: the prompt. Output: the reply. Common language: English. Rules: recall the game, where one tool, the Zoom chat, received input and passed it across.</p>
+<p>Software calls its customers users (software and drugs are the only two industries that do). The interface between a user and a machine, made of graphics you click, type into and touch, is a <b>graphical user interface</b>, now simply the <b>user interface</b> (UI). In ChatGPT, the whole screen is. This is the first interface.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Behind the screen: the Inspect tool</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="Chrome's Network tab after typing hey and pressing send: a burst of entries, JavaScript, a conversation request naming the model, data coming back, frame.html, CSS files, and images after a refresh.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="200" y="20" width="360" height="190" rx="8"/>
+    <path class="scrib" d="M200 56 H560"/>
+    <path class="arw" d="M80 110 H190" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="96" class="m c-act">"hey"</text>
+    <text x="120" y="140" class="xxs">send</text>
+    <text x="380" y="45" class="xs">Network</text>
+    <text x="220" y="86" class="xxs l">script.js</text>
+    <text x="220" y="112" class="xxs l">conversation  · model name</text>
+    <text x="220" y="138" class="xxs l">data coming back</text>
+    <text x="220" y="164" class="xxs l">frame.html · styles.css</text>
+    <text x="220" y="190" class="xxs l c-mute">images (after a refresh)</text>
+    <text x="660" y="100" class="xs">one send,</text>
+    <text x="660" y="124" class="xs">many trips</text>
+  </g>
+</svg>
+<figcaption>Right click, Inspect, Network, clear, send.</figcaption>
+</figure>
+<p>Most people think the screen is all of ChatGPT. It is only the part that talks to you. You do not need to read the Network tab yet. The point: pressing send makes your machine send information on your behalf, at several levels: you to machine, machine to browser, browser to internet provider, and on to ChatGPT.</p>
+<p class="pull">If you cannot identify the systems behind an existing app, you cannot build one like it.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>The boxes: where the UI actually sits</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="A stack, left to right: the machine, a MacBook; through the operating system to the browser, Chrome; to the UI, ChatGPT's screen; then over the internet to the company's machine at OpenAI. The UI is the last of three layers you pass through.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="60" width="150" height="90" rx="10"/>
+    <rect class="f-card" x="215" y="60" width="150" height="90" rx="10"/>
+    <rect class="f-act" x="410" y="60" width="150" height="90" rx="10"/>
+    <rect class="f-det" x="605" y="60" width="135" height="90" rx="10"/>
+    <path class="arw" d="M174 105 H209" marker-end="url(#ah)"/>
+    <path class="arw" d="M369 105 H404" marker-end="url(#ah)"/>
+    <path class="dash ink" d="M564 105 H599"/>
+  </g>
+  <g class="tx">
+    <text x="95" y="100" class="m">1 machine</text>
+    <text x="95" y="126" class="xxs">MacBook</text>
+    <text x="290" y="100" class="m">2 browser</text>
+    <text x="290" y="126" class="xxs">Chrome</text>
+    <text x="485" y="100" class="m c-act">3 UI</text>
+    <text x="485" y="126" class="xxs">ChatGPT's screen</text>
+    <text x="672" y="100" class="m c-det">4 company</text>
+    <text x="672" y="126" class="xxs">OpenAI's machine</text>
+    <text x="95" y="184" class="xxs">via the OS</text>
+    <text x="290" y="184" class="xxs">via command lines</text>
+    <text x="485" y="184" class="xxs">via the GUI</text>
+    <text x="672" y="184" class="xxs">section 12</text>
+    <text x="380" y="34" class="s">hardware, OS, internet, browser: then a UI</text>
+    <text x="380" y="232" class="xs c-act">the screen is not the system</text>
+  </g>
+</svg>
+<figcaption>Start from the minimum conditions to open ChatGPT at all. That fixes the order.</figcaption>
+</figure>
+<table class="dials">
+  <tr><th>Box</th><th>What it is</th><th>Example</th><th>Interface into it</th></tr>
+  <tr><td>1</td><td>The machine</td><td>MacBook Pro, iPhone, Android phone, any laptop</td><td>The <b>operating system</b>: macOS, iOS, Android</td></tr>
+  <tr><td>2</td><td>The browser: an application, not the UI</td><td>Chrome, Safari, Firefox</td><td>Command lines between machine and browser</td></tr>
+  <tr><td>3</td><td>The UI</td><td>ChatGPT's screen</td><td>The graphical user interface</td></tr>
+  <tr><td>4</td><td>The company's machine</td><td>OpenAI's machine, serving ChatGPT and the model</td><td>Section 12</td></tr>
+</table>
+<p>A user never touches the UI directly. A keystroke becomes an electrical signal; the operating system lets you use the hardware; the machine opens the browser; the browser fetches the app; only then is there a UI. This applies to every app on the internet.</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>The second machine, and the second interface</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 210" role="img" aria-label="Your MacBook with macOS, and OpenAI's machine with Linux on NVIDIA hardware. chatgpt.com is converted to an IP address, the address on the envelope. Different OS, different hardware: the bridge between them is the API.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="50" width="200" height="100" rx="10"/>
+    <rect class="f-det" x="540" y="50" width="200" height="100" rx="10"/>
+    <rect class="f-act" x="300" y="78" width="160" height="44" rx="8"/>
+    <path class="arw" d="M226 100 H294" marker-end="url(#ah)" marker-start="url(#ah)"/>
+    <path class="arw" d="M466 100 H534" marker-end="url(#ah)" marker-start="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="94" class="m">your MacBook</text>
+    <text x="120" y="120" class="xxs">macOS</text>
+    <text x="640" y="94" class="m c-det">OpenAI</text>
+    <text x="640" y="120" class="xxs">Linux · NVIDIA</text>
+    <text x="380" y="107" class="m c-act">API</text>
+    <text x="380" y="36" class="xs">chatgpt.com → IP address</text>
+    <text x="380" y="186" class="xxs c-mute">machine to machine: application programming interface</text>
+  </g>
+</svg>
+<figcaption>Two machines that may share nothing.</figcaption>
+</figure>
+<p>Typing chatgpt.com starts a trip. Your internet provider confirms a connection, then the name becomes an <b>IP address</b>: numbers, the most precise language machines share. It is the address on the envelope, and it leads to another machine, owned by OpenAI, listening for requests. The full routing: <a href="https://howdns.works/">how DNS works</a>.</p>
+<p>Siddhant's is a MacBook Pro; OpenAI's might run Linux on NVIDIA hardware. Neither understands the other. The room named the bridge: the <b>API</b>, Application Programming Interface, the machine-to-machine interface.</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>HTML, HTTP, and the rules the room never wrote</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Binary at the bottom, the one language every machine shares; Python, C++, Java and JavaScript above it. For the web: HTML is the common language, HTTP is the protocol. A request goes out, a response comes back, and every request stands on its own.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="150" width="300" height="56" rx="8"/>
+    <rect class="f-card" x="20" y="80" width="300" height="56" rx="8"/>
+    <rect class="f-act" x="400" y="40" width="160" height="56" rx="8"/>
+    <rect class="f-act" x="580" y="40" width="160" height="56" rx="8"/>
+    <path class="arw" d="M440 140 H700" marker-end="url(#ah)"/>
+    <path class="arw" d="M700 180 H440" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="170" y="184" class="m">binary: 0 and 1</text>
+    <text x="170" y="114" class="xs">Python · C++ · Java · JS</text>
+    <text x="170" y="40" class="xxs c-mute">every machine shares the bottom row</text>
+    <text x="480" y="66" class="m c-act">HTML</text>
+    <text x="480" y="88" class="xxs">language</text>
+    <text x="660" y="66" class="m c-act">HTTP</text>
+    <text x="660" y="88" class="xxs">protocol</text>
+    <text x="570" y="132" class="xxs">request: URL, method</text>
+    <text x="570" y="200" class="xxs">response: status, HTML</text>
+    <text x="570" y="224" class="xxs c-mute">each request stands on its own</text>
+  </g>
+</svg>
+<figcaption>Tim Berners-Lee, CERN: a global hypertext system.</figcaption>
+</figure>
+<p>Every machine, from laptops to AirPods, shares one language: <b>binary</b>. High-level languages sit on top and map down to it. Before the internet, every machine had its own language, so someone had to agree on a common one.</p>
+<p>For the web that was Tim Berners-Lee at CERN. He built <b>HTML</b> (Hypertext Markup Language) as the common language for structuring pages, and <b>HTTP</b> (Hypertext Transfer Protocol) as the rules for moving them. Hypertext links to another page; linking every page to every other became the world wide web.</p>
+<p>In the Network tab, the first entry after a refresh is a request (URL, method, status code) and a response, originally always an HTML page. One rule is built in: every request stands on its own, so the receiver needs no backstory. That is the protocol the room never wrote: what to send, who sends it, in what form, and how the response is read.</p>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>One abstraction, many APIs</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 170" role="img" aria-label="API is the broad term. Over the internet: HTTP API. Saving files to storage: a file API such as FTP. Even your keyboard and your operating system.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-act" x="300" y="20" width="160" height="50" rx="8"/>
+    <rect class="f-card" x="20" y="110" width="220" height="50" rx="8"/>
+    <rect class="f-card" x="270" y="110" width="220" height="50" rx="8"/>
+    <rect class="f-card" x="520" y="110" width="220" height="50" rx="8"/>
+    <path class="arw" d="M330 74 L150 104 M380 74 V104 M430 74 L610 104" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="52" class="m c-act">API</text>
+    <text x="130" y="141" class="xs">internet: HTTP API</text>
+    <text x="380" y="141" class="xs">storage: FTP</text>
+    <text x="630" y="141" class="xs">keyboard ↔ OS</text>
+  </g>
+</svg>
+<figcaption>The kind depends on the environment.</figcaption>
+</figure>
+<p>Any two machines communicating need an API. Over the internet it is an <b>HTTP API</b>; you build your first one soon. The definition, applied six times:</p>
+<table class="dials">
+  <tr><th>Two systems</th><th>Common language</th><th>Rules</th><th>The interface</th></tr>
+  <tr><td>The room and Siddhant as machine</td><td>The round two commands</td><td>One action per message, in order; nothing for the humans</td><td>The Zoom chat, as UI</td></tr>
+  <tr><td>Two people on a phone</td><td>German</td><td>Hello, wait, reply, state the reason</td><td>Language, etiquette and hardware together; never the wire alone</td></tr>
+  <tr><td>Sender and receiver of a letter</td><td>Hindi</td><td>Envelope, address, stamp, fee, delivery</td><td>The postal service</td></tr>
+  <tr><td>A meme maker and an audience</td><td>Shared context</td><td>The template's fixed panels</td><td>The meme</td></tr>
+  <tr><td>A human and an LLM</td><td>English and about 94 others</td><td>Type, click, send, read</td><td>The GUI: the whole screen</td></tr>
+  <tr><td>Your MacBook and OpenAI's machine</td><td>Binary, then HTML</td><td>HTTP</td><td>Web UI and HTTP API</td></tr>
+</table>
+</section>
+
+<section class="s" id="s15"><h2><span class="n">15</span>From the Q&amp;A</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 190" role="img" aria-label="Siddhant's first app was built for Android. Most users turned out to be on iOS: different OS, different hardware, so the interface had to be built differently.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="60" y="40" width="240" height="100" rx="12"/>
+    <rect class="f-act" x="460" y="40" width="240" height="100" rx="12"/>
+    <path class="arw" d="M306 90 H454" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="84" class="m">built for Android</text>
+    <text x="180" y="110" class="xxs">layers 1 and 2: Android</text>
+    <text x="580" y="84" class="m c-act">users on iOS</text>
+    <text x="580" y="110" class="xxs">different OS, hardware</text>
+    <text x="380" y="176" class="xs">for a simple form, layers 1 and 2 may not matter. often they do.</text>
+  </g>
+</svg>
+<figcaption>Layers below the UI decide what the UI can do.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Do layers 1 and 2 matter if I only build the UI?</b> (Neha Agrawal) Sometimes not; often yes. For deeper hardware control, they decide what your UI can and cannot do.</li>
+  <li><b>Is the common language the interface?</b> (Swasti) No. Establishing it is step one of building one.</li>
+  <li><b>Where do binary and Python come in?</b> (Saiteja) Binary is the one language a macOS and a Linux machine are guaranteed to share. Assembly maps a handful of commands to zeros and ones, like the round two list; each language above abstracts further, up to English.</li>
+  <li><b>Do I need HTML and CSS for the code track?</b> (Mohit) No. Python throughout, with libraries that translate it into HTML, CSS and JavaScript. The one exception is SQL, in the database lecture.</li>
+  <li><b>How do I find 10 people for my manual MVP?</b> (Hardik) Finding them is the exercise. If you cannot find 5 to 10 people for whom the problem is painful, pick a different observation.</li>
+  <li><b>My hypothesis keeps changing.</b> Good. If it is not changing, you are not learning. Log each change and its cause; the log is part of a good Assignment 1.</li>
+</ul>
+</section>
+
+<section class="s" id="s16"><h2><span class="n">16</span>What to do next</h2>
+<ol class="steps">
+  <li><b>Replay round two properly.</b> Using only the command list, write the full ordered sequence one point of contact would have sent to draw the smiley. Every message must be a valid command.</li>
+  <li><b>Inspect one app you use daily.</b> Inspect, Network, clear, do one action, screenshot. Name three kinds of file that came back.</li>
+  <li><b>Draw the boxes for that app.</b> Machine, operating system, browser, UI, the company's machine. Label the interface between each pair; leave a question mark where you do not know yet.</li>
+  <li><b>Code track: finish the <a href="https://courses.bigbinaryacademy.com/learn-python/">Big Binary Python</a> exercise.</b> The one prerequisite for Lecture 3.</li>
+  <li><b>Keep <a href="/c8/module-2/what-to-build/assignment-1">Assignment 1</a> moving</b> (due Fri 9 Oct), and log every change to your observation and hypothesis, with what caused it.</li>
+</ol>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Specific knowledge</dt><dd>What you do better than anyone and cannot hand to a stranger as a rule or a judgment.</dd>
+  <dt>Common language</dt><dd>A vocabulary both systems understand. Step one of an interface, not the interface.</dd>
+  <dt>Protocol</dt><dd>The rules both sides follow: who speaks, in what order, in what form.</dd>
+  <dt>Interface</dt><dd>The boundary, bridge, or point of interaction where two separate systems meet and communicate.</dd>
+  <dt>GUI, UI</dt><dd>The interface between a user and a machine, made of graphics you click, type into and touch.</dd>
+  <dt>Operating system</dt><dd>The interface that lets a human use a machine's hardware.</dd>
+  <dt>IP address</dt><dd>The numeric address of a machine on the internet; the envelope's address for websites.</dd>
+  <dt>API</dt><dd>The interface between two machines. HTTP API when the medium is the internet.</dd>
+  <dt>HTML</dt><dd>The common language for structuring web pages.</dd>
+  <dt>HTTP</dt><dd>The protocol for requests and responses between machines on the web.</dd>
+  <dt>Binary</dt><dd>Zeros and ones: the only language every machine shares.</dd>
+  <dt>Meme</dt><dd>A unit of culture spread by imitation: shared context plus a template's fixed rules.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>An interface is not a wire, a language, or a screen. It is whatever lets two systems that do not understand each other meet and communicate, and you build one from two things: a common language, and a set of rules both sides follow. The UI is the first interface you meet: between a human and a machine. Behind it sit more systems (hardware, operating system, browser), every pair joined by its own interface.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-03-building-ui/notes">Lecture 3, code track: building UI</a></li>
+  <li><a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4: API as the second interface</a></li>
+  <li><a href="/#L2">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 2: What is an interface</span><a href="/#L2">Curriculum map</a><a href="/c8/module-2/lecture-02-what-is-an-interface/">All Lecture 2 pages</a></div></footer>
+</body>
+</html>

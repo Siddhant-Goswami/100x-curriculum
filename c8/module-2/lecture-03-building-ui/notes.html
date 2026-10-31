@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Building UI, Design to Code | 100xEngineers</title>
+<meta name="description" content="Post-read notes for Lecture 3, code track: from one named user to three boxes on a whiteboard, ten golden pairs, a verifier worked in minutes, the vote for a search box that one follow-up overturned, and four lines of Gradio that restate the whiteboard.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+/* the whiteboard sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}.wb .ln .c-hum{stroke:var(--hum)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-hum{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .z-act{stroke:var(--coral);stroke-dasharray:7 8;stroke-width:2}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .scrib{stroke:var(--ink3);stroke-width:1.8}
+.wb .ln .dotf{fill:currentColor;stroke:none}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}.wb .tx .c-hum{fill:var(--hum-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:9px;padding:12px 14px;font:13.5px/1.5 var(--mono);overflow-x:auto;margin:6px 0 14px}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l03-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L3">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 3 pages"><a href="/c8/module-2/lecture-03-building-ui/">Overview</a><a href="/c8/module-2/lecture-03-building-ui/notes">Notes</a><a href="/c8/module-2/lecture-03-building-ui/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+
+<!-- shared whiteboard defs: wobble filter, arrowheads, a person -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Post-read notes · Lecture 3 · Code track</p>
+  <h1>Building UI: design to code</h1>
+  <p class="dek">From Aarav's Friday status report to four lines of Gradio, by way of a vote that lost. Read sections 02 to 09 once, slowly, with your own observation open beside them. Come back to 11 to 13 when you sit down to install and run.</p>
+  <div class="meta"><span>Sat 26 Sep 2026</span><span>Instructor: Siddhant Goswami</span><span>Code track</span></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The room check: who had done week 0</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="The prerequisite: one observation, one hypothesis, one conversation with a real user. More than 10 hands. Until 9 October, try more observations and speak to more people. When building is a commodity, finding users is the part AI cannot do.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="40" width="220" height="80" rx="10"/>
+    <rect class="f-card" x="270" y="40" width="220" height="80" rx="10"/>
+    <rect class="f-hum" x="520" y="40" width="220" height="80" rx="10"/>
+    <path class="c-hum" d="M200 60 L209 70 L224 50 M450 60 L459 70 L474 50"/>
+  </g>
+  <g class="tx">
+    <text x="130" y="88" class="m">1 observation</text>
+    <text x="380" y="88" class="m">1 hypothesis</text>
+    <text x="630" y="80" class="m c-hum">1 real user</text>
+    <text x="630" y="104" class="xxs">a single interview counts</text>
+    <text x="380" y="160" class="xs">you are not married to one observation. try more until 9 Oct.</text>
+    <text x="380" y="188" class="xs c-act">finding users: the part AI cannot yet do</text>
+  </g>
+</svg>
+<figcaption>More than 10 hands went up.</figcaption>
+</figure>
+<p>The prerequisite was one observation, one hypothesis and one conversation with a real user. Two framing points before any design. You are not married to one observation: until the Assignment 1 deadline (9 October), the more observations you try and people you speak to, the better you get at testing assumptions. And when building becomes a commodity, finding the right users and solving their problem is the part AI cannot yet do.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Start from one person, not a persona</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 210" role="img" aria-label="On the left, a crowd labelled with categories, marketers, cafe owners, doctors, crossed out. On the right, one named person: Aarav, business analyst, Pune, three tabs open. Solve for him, then talk to more people like him.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" transform="translate(40,50) scale(.5)"/>
+    <use href="#person" transform="translate(80,40) scale(.5)"/>
+    <use href="#person" transform="translate(120,55) scale(.5)"/>
+    <use href="#person" transform="translate(160,45) scale(.5)"/>
+    <path class="c-act" d="M30 40 L210 130 M210 40 L30 130"/>
+    <path class="arw" d="M260 95 H420" marker-end="url(#ah)"/>
+    <use href="#person" transform="translate(480,30)"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="170" class="xs">a category</text>
+    <text x="120" y="194" class="xxs">marketers, cafe owners, doctors</text>
+    <text x="640" y="70" class="m c-act">Aarav</text>
+    <text x="640" y="96" class="xxs">business analyst</text>
+    <text x="640" y="118" class="xxs">IT company, Pune</text>
+    <text x="640" y="140" class="xxs">three tabs open</text>
+    <text x="340" y="80" class="xxs">one named person</text>
+  </g>
+</svg>
+<figcaption>Once it works for one person, talk to more people like them.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The observation.</b> Ambitious early career professionals in urban India arrive AI-aware and motivated, but fail at selection, scoping and first proof. They see AI at the category level and cannot turn it into one grounded workflow. It contains no solution: an observation reports what you saw, and stops.</li>
+  <li><b>The hypothesis.</b> They are stuck because they lack a method to go from broad AI possibility to one scoped workflow. Test: a workflow diagnosis system plus a guided build sprint, and 60% of active students identify one user, map one repeated workflow, build an AI-assisted version and demo it within 90 days. At 10 people, 6 of 10.</li>
+  <li><b>The move.</b> Do not solve for a category. Solve for one named person.</li>
+</ul>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The cheapest test is three boxes on a whiteboard</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="Three boxes: a text field where Aarav describes a workflow he repeats, a Done button, and a plan that comes back. The test is not whether he likes it: following it must save about 1 hour a week.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="50" width="250" height="80" rx="8"/>
+    <rect class="f-act" x="320" y="66" width="110" height="48" rx="24"/>
+    <rect class="f-card" x="480" y="50" width="260" height="80" rx="8"/>
+    <path class="arw" d="M274 90 H314" marker-end="url(#ah)"/>
+    <path class="arw" d="M434 90 H474" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="145" y="84" class="xs">"I open Jira, check status,</text>
+    <text x="145" y="108" class="xs">email my manager..."</text>
+    <text x="375" y="97" class="m c-act">Done</text>
+    <text x="610" y="96" class="m">a plan</text>
+    <text x="145" y="30" class="xxs c-mute">input: 3 to 4 lines</text>
+    <text x="610" y="30" class="xxs c-mute">output</text>
+    <text x="380" y="180" class="xs c-act">test: does following it save 1 hour a week?</text>
+  </g>
+</svg>
+<figcaption>No code written, no system designed.</figcaption>
+</figure>
+<p>The hypothesis names two solutions. Take only part one, the diagnosis, and find the cheapest way to test it with Aarav. The input came from a message to him: what is the one thing you repeat every week, in 3 to 4 lines? His reply, compressed, is the input. The output is a plan for automating part of it.</p>
+<p>The success test is not whether Aarav likes the plan. It is whether following it saves him time, say 1 hour a week. If it saves nothing, the plan failed. <b>Designing</b> meant understanding what the user needs and the minimum solution that tests it. It does not mean opening Figma.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Prateek's observation, and the stranger test</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="Prateek's spec, marked. Observation: too generic, an organisation is not a person. Hypothesis: noticeably faster has no number. Input and output: good, specific and concise.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="40" width="230" height="110" rx="10"/>
+    <rect class="f-card" x="265" y="40" width="230" height="110" rx="10"/>
+    <rect class="f-hum" x="510" y="40" width="230" height="110" rx="10"/>
+    <path class="c-act" d="M210 56 L232 78 M232 56 L210 78 M455 56 L477 78 M477 56 L455 78"/>
+    <path class="c-hum" d="M700 66 L709 76 L724 56"/>
+  </g>
+  <g class="tx">
+    <text x="125" y="84" class="m">observation</text>
+    <text x="125" y="112" class="xxs">"organisation" is</text>
+    <text x="125" y="132" class="xxs">not a person</text>
+    <text x="370" y="84" class="m">hypothesis</text>
+    <text x="370" y="112" class="xxs">"noticeably faster":</text>
+    <text x="370" y="132" class="xxs">no number, no stop rule</text>
+    <text x="615" y="84" class="m c-hum">input, output</text>
+    <text x="615" y="112" class="xxs">specific, concise,</text>
+    <text x="615" y="132" class="xxs">checkable against a source</text>
+    <text x="380" y="188" class="xs">could a stranger outside your industry picture the problem?</text>
+  </g>
+</svg>
+<figcaption>One spec from the chat, marked live.</figcaption>
+</figure>
+<p>Prateek's: project knowledge exists, but access depends on personal memory and network, so under deadline people reuse the precedent they remember rather than the best fit.</p>
+<ul class="pt">
+  <li><b>Observation: too generic.</b> "Organization" does not say finance, healthcare or education, and an organization is not a person. Name the one person who hits this most often, with their designation, and write from their point of view.</li>
+  <li><b>Hypothesis: no number.</b> "Noticeably faster" cannot be falsified. Add a measurement and a stop rule, or you keep spending time with no signal for when to pivot.</li>
+  <li><b>Input and output: good.</b> Senior experts retrieving a specific fact or project assumption, getting back a concise, source-grounded answer they can check.</li>
+</ul>
+<p>The format to post in the code track channel: observation, North Star, hypothesis, user, input, output.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Ten golden pairs before one line of code</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="A stack of input and output pairs, labelled golden dataset: 10 to 20 to start, 100 to 200 for production, gathered from real users. Beside it, the Lecture 1 check: 1 plus 2 equals 3, same output means it works.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="30" width="190" height="36" rx="6"/>
+    <rect class="f-card" x="250" y="30" width="190" height="36" rx="6"/>
+    <rect class="f-card" x="20" y="78" width="190" height="36" rx="6"/>
+    <rect class="f-card" x="250" y="78" width="190" height="36" rx="6"/>
+    <rect class="f-card" x="20" y="126" width="190" height="36" rx="6"/>
+    <rect class="f-card" x="250" y="126" width="190" height="36" rx="6"/>
+    <path class="arw" d="M214 48 H244 M214 96 H244 M214 144 H244"/>
+    <rect class="f-act" x="520" y="50" width="220" height="100" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="115" y="54" class="xs">input 1</text><text x="345" y="54" class="xs">output 1</text>
+    <text x="115" y="102" class="xs">input 2</text><text x="345" y="102" class="xs">output 2</text>
+    <text x="115" y="150" class="xs">input 10</text><text x="345" y="150" class="xs">output 10</text>
+    <text x="230" y="198" class="m">golden dataset</text>
+    <text x="230" y="216" class="xxs c-mute">10 to 20 to start · 100 to 200 for production</text>
+    <text x="630" y="92" class="m c-act">1 + 2 = 3</text>
+    <text x="630" y="120" class="xxs">same output: it works</text>
+  </g>
+</svg>
+<figcaption>Gathered by talking to real users. If you cannot, do not move ahead.</figcaption>
+</figure>
+<p>One input and one output is an example, not enough to build against. Write at least 10 to 20 pairs: the exact text a real user would type, and the output that would solve their problem. If you are the user, write them yourself and check them with people like you. This is the <b>golden dataset</b>; it returns in the probabilistic module for evals and fine-tuning.</p>
+<p>Recall the Lecture 1 game: to verify an app that adds two numbers, you write 1 + 2 = 3 and a few more, and compare. The golden dataset is what tells you whether your verifier will be deterministic, probabilistic or a human in the loop.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>The verifier is a threshold, worked in minutes</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="A threshold line at 60 minutes a week. The email step: 15 minutes a day by hand. Plan A cuts it to 5, saving 50 minutes a week, close to the line: pass. Plan B cuts it to 10, saving 25 minutes a week: fail.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M120 180 H700"/>
+    <rect class="f-hum" x="160" y="60" width="140" height="120" rx="4"/>
+    <rect class="f-act" x="420" y="120" width="140" height="60" rx="4"/>
+    <path class="c-det" d="M120 46 H700" stroke-dasharray="7 7"/>
+  </g>
+  <g class="tx">
+    <text x="690" y="36" class="xs c-det r">threshold: 1 hour a week</text>
+    <text x="230" y="126" class="m">50 min</text>
+    <text x="490" y="156" class="m">25 min</text>
+    <text x="230" y="204" class="xxs">15 → 5 min a day: pass</text>
+    <text x="490" y="204" class="xxs">15 → 10 min a day: fail</text>
+    <text x="60" y="120" class="xxs">saved</text>
+    <text x="60" y="140" class="xxs">per week</text>
+  </g>
+</svg>
+<figcaption>Same plan shape, same tool. One passes, one fails.</figcaption>
+</figure>
+<p>Say the email step is Aarav's biggest time sink: 15 minutes a day by hand. With the plan it takes 5. That saves 10 a day, 50 minutes over a 5-day week, close to the 1 hour bar. The plan passes. If the plan only cuts it to 10 minutes, that is 25 minutes a week, and it fails.</p>
+<p class="pull">A good output clears a number you wrote down before you built anything. Without a threshold it is a demo, not impact.</p>
+<p>The written verifier for Aarav's first golden pair asked for four things in the output: a metric with a baseline, the named bottleneck, a test on past input with known answers, and a list of what is out of scope.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Test-driven development, written in English</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 190" role="img" aria-label="Test first, then the software, then pass. The tests are now mostly in English. The spec: observation, North Star, hypothesis, user, golden dataset, verifiers.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-act" x="40" y="40" width="180" height="70" rx="10"/>
+    <rect class="f-card" x="290" y="40" width="180" height="70" rx="10"/>
+    <rect class="f-hum" x="540" y="40" width="180" height="70" rx="10"/>
+    <path class="arw" d="M224 75 H284" marker-end="url(#ah)"/>
+    <path class="arw" d="M474 75 H534" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="130" y="72" class="m c-act">1 · the test</text>
+    <text x="130" y="96" class="xxs">now in English</text>
+    <text x="380" y="80" class="m">2 · the software</text>
+    <text x="630" y="80" class="m c-hum">3 · it passes</text>
+    <text x="380" y="160" class="xs">spec = observation, North Star, hypothesis, user,</text>
+    <text x="380" y="184" class="xs">golden dataset, verifiers</text>
+  </g>
+</svg>
+<figcaption>Only the language changes. The philosophy does not.</figcaption>
+</figure>
+<p><b>Test-driven development (TDD)</b> says write the test before the software; once the software passes your codified tests, you know it works. Hard to keep up, so few people do. What changes now is the language: most of your tests will be in English.</p>
+<p>Almost everyone uses AI, utilization sits under 20%, and the impact on real earnings is in single digits. Building without a verifier is how that gap stays wide. Mask anything proprietary (percentages, or X, Y, Z) but share the spec, because that is what makes feedback possible.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Two systems, one interface</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="Aarav, a human, and a plan generator that runs on a machine. Between them, a user interface. Text in, text out, which means a manual MVP is possible before building anything.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" transform="translate(50,30) scale(.85)"/>
+    <rect class="f-act" x="250" y="50" width="240" height="90" rx="10"/>
+    <rect class="f-det" x="570" y="50" width="170" height="90" rx="10"/>
+    <path class="arw" d="M120 95 H244" marker-end="url(#ah)" marker-start="url(#ah)"/>
+    <path class="arw" d="M496 95 H564" marker-end="url(#ah)" marker-start="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="80" y="180" class="xxs">Aarav</text>
+    <text x="370" y="90" class="m c-act">user interface</text>
+    <text x="370" y="116" class="xxs">English · HTTP</text>
+    <text x="655" y="90" class="m c-det">plan</text>
+    <text x="655" y="116" class="xxs">generator</text>
+    <text x="180" y="78" class="xxs">text</text>
+    <text x="530" y="78" class="xxs">text</text>
+    <text x="440" y="186" class="xs c-act">text in, text out: run it by hand first</text>
+  </g>
+</svg>
+<figcaption>Lecture 2's question, applied to Aarav.</figcaption>
+</figure>
+<p>Two systems: Aarav, and a workflow plan generator that can run on a machine. Anupma named what sits between: a <b>user interface</b>, with a common language (English, text fields) and rules (the web's HTTP). Golden pair 1, written live:</p>
+<blockquote>"I'm a business analyst at a mid-sized IT company in Pune. Every Friday, I make the weekly status report for our client. I open Jira, filter tickets closed this week, copy them into a Word template, then go through email and Slack to find blockers... Takes around 3 hours. My manager usually edits the risk section because I miss things."</blockquote>
+<p>Input type: text. Output type: text. So you can run a <b>manual MVP</b> before building anything: take Aarav's description on a call, write the plan yourself (with or without ChatGPT), send it, and see if it saves him time.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>The vote that lost</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Votes: search box 17, chat 13, form 3. Then Aarav reads the plan and asks: what does backtesting mean? A search box has no memory, so he would retype everything. Chat wins.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M40 190 H400"/>
+    <rect class="f-card" x="60" y="54" width="80" height="136" rx="4"/>
+    <rect class="f-act" x="180" y="86" width="80" height="104" rx="4"/>
+    <rect class="f-card" x="300" y="166" width="80" height="24" rx="4"/>
+    <path class="c-act" d="M70 70 L130 130 M130 70 L70 130"/>
+    <rect class="f-card" x="460" y="60" width="280" height="80" rx="12"/>
+  </g>
+  <g class="tx">
+    <text x="100" y="44" class="m">17</text>
+    <text x="220" y="76" class="m c-act">13</text>
+    <text x="340" y="156" class="m">3</text>
+    <text x="100" y="214" class="xs">search</text>
+    <text x="220" y="214" class="xs c-act">chat</text>
+    <text x="340" y="214" class="xs">form</text>
+    <text x="600" y="96" class="m">"What does</text>
+    <text x="600" y="122" class="m">backtesting mean?"</text>
+    <text x="600" y="172" class="xs">search: no memory, no context.</text>
+    <text x="600" y="196" class="xs">retype everything.</text>
+  </g>
+</svg>
+<figcaption>The majority choice fell to one realistic follow-up.</figcaption>
+</figure>
+<table class="dials">
+  <tr><th>Interface</th><th>Votes</th><th>What the replay showed</th></tr>
+  <tr><td>Search box</td><td>17</td><td>No memory, no context. A follow-up means retyping the whole description, and an AI plan may come back different each run.</td></tr>
+  <tr><td>Form</td><td>3</td><td>Fields Aarav does not need, and no way to ask about the plan once it arrives.</td></tr>
+  <tr><td>Chat</td><td>13</td><td>Holds context, supports follow-ups until Aarav is satisfied. The winner.</td></tr>
+</table>
+<p>Siddhant replayed the golden output, a day-by-day build plan with time saved as the metric, and Aarav asked: "What does backtesting mean?" How do you ask Google a follow-up? Swasti named the cost: remember the plan, retype, search again. Anupma named the missing property: no memory, no context. Bhavani added that it does not look like a conversation.</p>
+<p class="pull">Pick the interface after you replay the user's conversation with your ideal output, never before.</p>
+<p>Rule of thumb: about 90% of first problems fit one of three. One query, one answer: search. Many inputs: form. Follow-ups that need memory: chat. Build the cheapest one first and add nothing until it is verified. That is the <b>V0</b>, or MVP.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Vibe code or first principles: the difference is control</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 190" role="img" aria-label="Two routes to the same chat. Top: one prompt to Claude Code, Lovable or Gemini. Bottom: Python from first principles, knowing what every line does. Both arrive at a working chat. The difference is control.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="30" width="250" height="56" rx="8"/>
+    <rect class="f-card" x="20" y="110" width="250" height="56" rx="8"/>
+    <rect class="f-act" x="540" y="68" width="200" height="60" rx="10"/>
+    <path class="arw" d="M274 58 Q420 58 534 90" marker-end="url(#ah)"/>
+    <path class="arw" d="M274 138 Q420 138 534 108" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="145" y="64" class="xs">vibe code: one prompt</text>
+    <text x="145" y="144" class="xs">first principles: Python</text>
+    <text x="640" y="104" class="m c-act">a working chat</text>
+    <text x="400" y="104" class="m">control</text>
+  </g>
+</svg>
+<figcaption>Siddhant did not say which is better. Do both.</figcaption>
+</figure>
+<p>Vibe code it with one prompt to Claude Code, Lovable, OpenAI or Gemini. Or write it from first principles in Python, AI allowed, understanding what every line does and why. Both produce a working chat. Tonight's task: do both and write a three-line review of what each gave you.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Why Python, and why Gradio</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 190" role="img" aria-label="Before 2021: three languages, HTML, CSS and JavaScript, to ship one thing. In 2026: one language, Python, with Gradio for chat, forms and search, and Streamlit for dashboards.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="40" width="300" height="100" rx="10"/>
+    <rect class="f-act" x="440" y="40" width="300" height="100" rx="10"/>
+    <path class="arw" d="M326 90 H434" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="170" y="80" class="m">HTML + CSS + JS</text>
+    <text x="170" y="108" class="xxs">three languages, one app</text>
+    <text x="590" y="80" class="m c-act">Python</text>
+    <text x="590" y="108" class="xxs">Gradio · Streamlit</text>
+    <text x="380" y="176" class="xs">one language for the next 16 weeks</text>
+  </g>
+</svg>
+<figcaption>Python libraries now bridge the gap to the web.</figcaption>
+</figure>
+<p>The web is HTML; styling and scripting grew around it, and Python was never part of it. Until about 2021 Siddhant taught UI in JavaScript, HTML and CSS, and beginners had to learn three languages to ship one thing.</p>
+<table class="dials">
+  <tr><th>Library</th><th>Use it for</th></tr>
+  <tr><td>Gradio</td><td>Chat, forms, search-style inputs: any interface without heavy charts. Siddhant's default. Part of Hugging Face; AUTOMATIC1111, the Stable Diffusion UI with about 165,000 GitHub stars, runs on it.</td></tr>
+  <tr><td>Streamlit</td><td>Data-heavy front ends: dashboards and charts that update. Comes later.</td></tr>
+</table>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Four lines that are the whiteboard</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="The Gradio Hello World mapped to the whiteboard. The function argument, name, is the input. The function body is the process. What follows return is the output. gr.Interface declares input and output types: the language and the rules.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="60" width="200" height="70" rx="10"/>
+    <rect class="f-prob" x="280" y="60" width="200" height="70" rx="10"/>
+    <rect class="f-card" x="540" y="60" width="200" height="70" rx="10"/>
+    <path class="arw" d="M224 95 H274" marker-end="url(#ah)"/>
+    <path class="arw" d="M484 95 H534" marker-end="url(#ah)"/>
+    <path class="z-act" d="M10 40 H750 V150 H10 Z"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="92" class="m">input</text>
+    <text x="120" y="116" class="xxs">def greet(name)</text>
+    <text x="380" y="92" class="m c-prob">process</text>
+    <text x="380" y="116" class="xxs">the function body</text>
+    <text x="640" y="92" class="m">output</text>
+    <text x="640" y="116" class="xxs">return "Hello " + name</text>
+    <text x="380" y="28" class="xs c-act">gr.Interface: the language and the rules</text>
+    <text x="380" y="184" class="xs">later, the process becomes a call to a model</text>
+  </g>
+</svg>
+<figcaption>The smiley exercise, solved for machines.</figcaption>
+</figure>
+<p>The Gradio Hello World takes a name and returns a greeting:</p>
+<pre class="code">import gradio as gr
+
+def greet(name):
+    return "Hello " + name
+
+demo = gr.Interface(fn=greet, inputs="text", outputs="text")
+demo.launch()</pre>
+<p>The function argument is the input. What follows <code>return</code> is the output. The body is the <b>process</b>, here almost nothing. <code>gr.Interface</code> is the interface: it declares input and output types, the common language and the rules. <code>fn</code> means function. For chat, swap the interface. Gradio's own example just echoes you:</p>
+<pre class="code">import gradio as gr
+
+def respond(message, history):
+    return "You typed: " + message
+
+gr.ChatInterface(fn=respond).launch()</pre>
+<p>Learn Gradio from <a href="https://gradio.app/docs">its documentation</a>, not from an LLM. Asking Claude gets you an answer; the docs get you the rabbit holes in the left rail (website widgets, Slack bots, Discord bots).</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Setting up, and the errors you should want tonight</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 190" role="img" aria-label="Four steps: install Python, install one IDE, make a folder with app.py, then pip install gradio and python app.py, which prints a local link. Errors on the way are the point.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="40" width="160" height="70" rx="10"/>
+    <rect class="f-card" x="210" y="40" width="160" height="70" rx="10"/>
+    <rect class="f-card" x="400" y="40" width="160" height="70" rx="10"/>
+    <rect class="f-act" x="590" y="40" width="150" height="70" rx="10"/>
+    <path class="arw" d="M184 75 H204 M374 75 H394 M564 75 H584" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="100" y="72" class="m">Python</text>
+    <text x="100" y="96" class="xxs">python.org</text>
+    <text x="290" y="72" class="m">one IDE</text>
+    <text x="290" y="96" class="xxs">VS Code is free</text>
+    <text x="480" y="72" class="m">folder</text>
+    <text x="480" y="96" class="xxs">app.py</text>
+    <text x="665" y="72" class="m c-act">run</text>
+    <text x="665" y="96" class="xxs">localhost link</text>
+    <text x="380" y="160" class="xs">python not found, gradio not installed: that is the point</text>
+  </g>
+</svg>
+<figcaption>Solving them yourself starts the debugging muscle.</figcaption>
+</figure>
+<ol class="steps">
+  <li><b>Install Python</b> from <a href="https://www.python.org/downloads/">python.org</a>.</li>
+  <li><b>Install one IDE:</b> Google Antigravity, Cursor or VS Code. An IDE is a notepad for code where you read and review before you push anything anywhere. VS Code is free; Antigravity is free with generous limits; Cursor has a paid plan for its models.</li>
+  <li><b>Make a folder</b>, open it in the IDE, create <code>app.py</code> and paste the Hello World.</li>
+  <li><b>Run</b> <code>pip install gradio</code>, then <code>python app.py</code>, and open the local link it prints.</li>
+</ol>
+<p>If <code>def</code>, <code>return</code> and functions are unfamiliar, finish the <a href="https://courses.bigbinaryacademy.com/learn-python/">Big Binary Python</a> prerequisite first; lectures will not teach Python syntax. The next office hour reviews your work and your errors, then puts it on a shareable link.</p>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>From the Q&amp;A</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 180" role="img" aria-label="Solution first: I am building WhatsApp agents, which leaves nothing to decide by. Observation first: observation, input, output, process, then the interface.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="40" width="280" height="80" rx="10"/>
+    <rect class="f-hum" x="400" y="40" width="340" height="80" rx="10"/>
+    <path class="c-act" d="M40 54 L280 106"/>
+  </g>
+  <g class="tx">
+    <text x="160" y="76" class="m">"WhatsApp agents"</text>
+    <text x="160" y="100" class="xxs">solution first</text>
+    <text x="570" y="76" class="m c-hum">observation → input, output</text>
+    <text x="570" y="100" class="xxs">→ process → the interface</text>
+    <text x="380" y="160" class="xs">interface design is contextual: who, what goal, what ideal pair</text>
+  </g>
+</svg>
+<figcaption>Naming the solution in the first line leaves nothing to decide by.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Trackers in, exception table out: form or chat?</b> (Charu) No answer without the spec. Walk your user's journey the way we walked Aarav's, then ask.</li>
+  <li><b>My project is building WhatsApp agents.</b> (Kandarp) That is solution-first. Start from observation, input, output and process.</li>
+  <li><b>My hypothesis changes after every interview.</b> Then do not build yet. To learn the process, use Aarav's documents. Spend real build hours only on a problem you can test with real people.</li>
+  <li><b>First time coding, from marketing.</b> (Saiteja) You have company: across cohorts the split moved to about 60-40 first-time coders. Siddhant's own start: in a first-year break, one app a day, end to end, on a link, for 30 days. Today's is Hello World.</li>
+  <li><b>Not sure my problem is big or monetizable.</b> (Mayuresh) It does not have to be. A Cohort 6 non-coder built 100+ apps in 3 months and has since raised funding. Volume compounds only if the projects point the same way.</li>
+  <li><b>Should the North Star be a product?</b> No. It is a direction. Most reduce to a better job (define the role) or building something of your own (define what and for whom), six months out.</li>
+</ul>
+</section>
+
+<section class="s" id="s15"><h2><span class="n">15</span>What to do next</h2>
+<ol class="steps">
+  <li><b>Post your spec</b> in the code track channel: observation, North Star, hypothesis with a number, one named user, input, output.</li>
+  <li><b>Write 10 golden pairs</b> with a real user, plus one verifier with a baseline and a threshold.</li>
+  <li><b>Replay one pair</b> and write the follow-up your user will ask. Pick search, form or chat from it.</li>
+  <li><b>Get Hello World running locally</b> in Gradio, then the chat echo. Log every error and how you fixed it.</li>
+  <li><b>Build the chat twice</b> (vibe coded and first principles) and write the three-line review.</li>
+</ol>
+<p>All five are in the <a href="/c8/module-2/lecture-03-building-ui/practice-set">practice set</a>.</p>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Observation</dt><dd>What you saw a real person struggle with, from lived experience, with no solution in it.</dd>
+  <dt>Hypothesis</dt><dd>Your assumed cause plus a test with a number, a deadline and a stop rule.</dd>
+  <dt>Designing</dt><dd>Working out what the user needs and the minimum solution that tests it.</dd>
+  <dt>Golden dataset</dt><dd>Ideal input and output pairs from real users: 10 to 20 to start, 100 to 200 for production.</dd>
+  <dt>Verifier</dt><dd>The check that decides if an output is good, usually a threshold against a baseline.</dd>
+  <dt>TDD</dt><dd>Write the test before the software; now the test is often in English.</dd>
+  <dt>Spec</dt><dd>Observation, North Star, hypothesis, user, golden dataset, verifiers.</dd>
+  <dt>User interface</dt><dd>The interface between a human and a machine: a common language plus rules.</dd>
+  <dt>Manual MVP</dt><dd>Running the input to output loop by hand before building any technology.</dd>
+  <dt>V0 / MVP</dt><dd>The cheapest build that can test the hypothesis, and nothing more.</dd>
+  <dt>Process</dt><dd>The function that turns input into output.</dd>
+  <dt>IDE</dt><dd>An editor for reading, writing and reviewing code on your machine.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>You do not choose an interface. You derive it from the output your user needs. Write the ideal input and ideal output first, replay what your user will do with that output, and the interface falls out of the replay. The room voted 17 to 13 for a search box, and one follow-up question overturned the vote. Code is the last step, and in Gradio it is four lines that restate the whiteboard.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-03-building-ui/practice-set">Practice set: replay before you render</a></li>
+  <li><a href="/c8/module-2/lecture-02-what-is-an-interface/notes">Lecture 2: what is an interface</a></li>
+  <li><a href="/#L3">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 3: Building UI, code track</span><a href="/#L3">Curriculum map</a><a href="/c8/module-2/lecture-03-building-ui/">All Lecture 3 pages</a></div></footer>
+</body>
+</html>

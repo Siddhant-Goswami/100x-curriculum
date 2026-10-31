@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Practice Set: Replay Before You Render | 100xEngineers</title>
+<meta name="description" content="Practice set after Lecture 3, code track: a spec for one real user, 10 golden pairs, a numeric verifier, one replayed follow-up that picks the interface, then that interface running locally in Gradio next to a vibe-coded version.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:9px;padding:12px 14px;font:13.5px/1.5 var(--mono);overflow-x:auto;margin:6px 0 14px}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l03-practice-set" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L3">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 3 pages"><a href="/c8/module-2/lecture-03-building-ui/">Overview</a><a href="/c8/module-2/lecture-03-building-ui/notes">Notes</a><a href="/c8/module-2/lecture-03-building-ui/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Practice set · Lecture 3 · Code track</p>
+  <h1>Replay before you render</h1>
+  <p class="dek">One real user. Ten golden pairs. A chat running on your own machine.</p>
+  <div class="meta"><span>Follows Lecture 3, Sat 26 Sep 2026.</span><span>Post in the code track channel.</span></div>
+</div>
+
+<div class="call"><p class="kick">The brief</p><p>Write a spec for one real user with 10 golden pairs and a numeric verifier, replay one pair to derive the interface, then run that interface locally in Gradio and compare it with a vibe-coded version.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Why this exists</h2>
+<p>Aarav's status report was a proxy. The skill is not Gradio; it is deriving an interface from an output. In the lecture, 17 people voted for a search box and one follow-up question overturned it (<a href="/c8/module-2/lecture-03-building-ui/notes#s09">notes, section 09</a>). Run the same replay on your own user, where nobody hands you the answer.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Track A: your own problem (preferred) <span class="ready" data-ready="a">0 of 6 ready</span></h2>
+<div data-stage="a">
+<ul class="ck">
+<li><input type="checkbox" id="a1"><label for="a1"><span class="t">Write the spec</span><span class="h">Observation (no solution in it, readable by a stranger), North Star (6 months, a direction not a product), hypothesis with a number, a deadline and a stop rule, one named user with their designation, input, output.</span></label></li>
+<li><input type="checkbox" id="a2"><label for="a2"><span class="t">Collect 10 golden pairs</span><span class="h">The exact text your user would type and the output that would solve their problem. From the user, not from your head. If you are the user, check them with two people like you.</span></label></li>
+<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Write the verifier</span><span class="h">Baseline, threshold and the arithmetic, the way Aarav's was worked: 15 minutes to 5, 10 a day, 50 a week against a 1 hour bar. State what a failing output looks like in the same units.</span></label></li>
+<li><input type="checkbox" id="a4"><label for="a4"><span class="t">Replay one pair</span><span class="h">Take your best golden output and write the first follow-up your user would ask after reading it. Then pick search, form or chat, with the one-line reason the replay gave you.</span></label></li>
+<li><input type="checkbox" id="a5"><label for="a5"><span class="t">Build it in Gradio, locally</span><span class="h">Hello World first. Then the interface you picked, with an echo or placeholder process, and input and output types that match your spec.</span></label></li>
+<li><input type="checkbox" id="a6"><label for="a6"><span class="t">Vibe code the same interface</span><span class="h">Any tool you like. Then a three-line review: what each route gave you, and what the difference was.</span></label></li>
+</ul>
+</div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Track B: Aarav's documents</h2>
+<p>Use the <a href="https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l">discovery document</a> and the <a href="https://docs.google.com/document/d/1qg8zt7yHflGM7ojtnUBSPj2e_I3ACYapztGZQnzJa_c/edit?tab=t.0">golden pairs</a>. Run the same loop with Aarav as the user and pair 1 (the Friday status report, about 3 hours) as your anchor. Two changes stop this from being a copy:</p>
+<ul>
+  <li><b>Write 3 new pairs yourself</b> for other repeated tasks Aarav could plausibly have, each with its own verifier.</li>
+  <li><b>Replay a different follow-up</b>, not "What does backtesting mean?". If your replay still lands on chat, say why in your own words.</li>
+</ul>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Rules of the build</h2>
+<ul>
+  <li><b>Gradio only.</b> No deployment yet; the office hour takes your local app to a link.</li>
+  <li><b>Predict before you run.</b> Write down your interface pick before the replay, and the error you expect before your first <code>python app.py</code>. Keep both, even when wrong.</li>
+  <li><b>Docs before chatbots.</b> Learn <code>gr.Interface</code> and <code>gr.ChatInterface</code> from the <a href="https://gradio.app/docs">Gradio documentation</a>. Ask an LLM only after you have read the relevant page.</li>
+  <li><b>AI is allowed, blind pasting is not.</b> You must be able to point at the input, the process and the output in every line of your first-principles version.</li>
+  <li><b>Log every error.</b> Message, cause, fix. Python not found and Gradio not installed count. The office hour reviews this log.</li>
+  <li><b>Mask, do not withhold.</b> Replace proprietary numbers with percentages or X, Y, Z, but share the spec.</li>
+</ul>
+<p>The starting template:</p>
+<pre class="code">import gradio as gr
+
+def respond(message, history):
+    return "You typed: " + message
+
+gr.ChatInterface(fn=respond).launch()</pre>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>What to submit <span class="ready" data-ready="sub">0 of 8 ready</span></h2>
+<div data-stage="sub">
+<ul class="ck">
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">Spec</span><span class="h">Observation, North Star, hypothesis with a number and a stop rule, one named user with designation, input, output.</span></label></li>
+<li><input type="checkbox" id="d2"><label for="d2"><span class="t">Golden dataset</span><span class="h">At least 10 input and output pairs, each input written as the user would type it. Track B: 3 new pairs of your own.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">Verifier</span><span class="h">Baseline, threshold, the arithmetic, and one example of an output that fails it.</span></label></li>
+<li><input type="checkbox" id="d4"><label for="d4"><span class="t">Replay note</span><span class="h">Your pre-replay pick, the follow-up question, the final interface, and the one-line reason.</span></label></li>
+<li><input type="checkbox" id="d5"><label for="d5"><span class="t">Screenshots</span><span class="h">Hello World and your chosen interface, both running on localhost on your machine.</span></label></li>
+<li><input type="checkbox" id="d6"><label for="d6"><span class="t">Code</span><span class="h">Your app.py, with a comment marking input, process and output.</span></label></li>
+<li><input type="checkbox" id="d7"><label for="d7"><span class="t">Error log</span><span class="h">Every error hit, with cause and fix.</span></label></li>
+<li><input type="checkbox" id="d8"><label for="d8"><span class="t">Three-line review</span><span class="h">Vibe coded versus first principles: what each gave you, and the difference.</span></label></li>
+</ul>
+</div>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>When you are stuck</h2>
+<p>Post everything in the code track channel. Stuck on installation: post the exact error message and what you already tried. First-time coders: pair up with someone else starting out and compare errors; one person's fix is often another's blocker.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>After you submit</h2>
+<p>The next office hour reviews your specs and error logs live, then puts your local app on a shareable link.</p>
+<p class="sig">Start from the output. The interface follows.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-03-building-ui/notes">Lecture 3 notes</a></li>
+  <li><a href="/c8/module-2/what-to-build/aarav-example">Aarav, Discovery to MVP</a></li>
+  <li><a href="/#L3">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 3: Building UI, code track</span><a href="/#L3">Curriculum map</a><a href="/c8/module-2/lecture-03-building-ui/">All Lecture 3 pages</a></div></footer>
+</body>
+</html>

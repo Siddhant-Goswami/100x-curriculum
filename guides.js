@@ -8,15 +8,20 @@ var GUIDE_LINKS = {
   discordCode: '',       /* the code track channel on Discord */
   discordSupport: '',    /* a support ticket on Discord */
   submitForm: '',        /* the Assignment 1 submission form */
-  lmsFirstInterface: '', /* post-read notes for the interface lecture, on the LMS */
+  lmsFirstInterface: '/c8/module-2/lecture-02-what-is-an-interface/notes', /* Lecture 2 post-read notes */
   essay: '',             /* Siddhant's essay on language as the interface, when ready */
   webinar: '',           /* Sridev's webinar recording, when uploaded */
   /* Known links */
-  postRead: 'https://docs.google.com/document/d/1Lg8tmLADqTH9w7Cej0n7TcXa-Bd8m7u0VbaQXDbz5ns/edit?usp=sharing',
-  practiceSet: 'https://docs.google.com/document/d/1J-Qi-nan-fYTur1LFu88AFSkyuBMNjHdlZKM7SdzdWM/edit?usp=sharing',
+  postRead: '/c8/module-2/lecture-03-building-ui/notes',  /* Lecture 3 code track post-read notes */
+  practiceSet: '/c8/module-2/lecture-03-building-ui/practice-set',
   aarav: 'https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l',
   wtbExample: '/c8/module-2/what-to-build/aarav-example',  /* What to build: Aarav's Discovery to MVP, worked example */
   wtbNotes: '/c8/module-2/what-to-build/idea-to-app-notes',  /* Week 0 Idea to App workshop, post-read notes */
+  l02Hub: '/c8/module-2/lecture-02-what-is-an-interface/',
+  l02Notes: '/c8/module-2/lecture-02-what-is-an-interface/notes',  /* Lecture 2 What is an interface, post-read notes */
+  l03Hub: '/c8/module-2/lecture-03-building-ui/',  /* Lecture 3 Building UI, code track */
+  l03Notes: '/c8/module-2/lecture-03-building-ui/notes',
+  l03Practice: '/c8/module-2/lecture-03-building-ui/practice-set',
   wtbA1: '/c8/module-2/what-to-build/assignment-1',  /* Assignment 1: First Proof brief */
   hackathon: '/c8/module-2/hackathon/',  /* the hackathon page: problems, five moves, rules, schedule, submit */
   golden: 'https://docs.google.com/document/d/1qg8zt7yHflGM7ojtnUBSPj2e_I3ACYapztGZQnzJa_c/edit?tab=t.0',
@@ -164,6 +169,7 @@ var CHAT_TEMPLATE = [
 var GUIDES = {};
 
 GUIDES.L3 = { code: {
+  hub: {link:'l03Hub', title:'Open the Lecture 3 pages', sub:'The notes with the whiteboard, and the practice set', more:[['l03Notes','Notes'],['l03Practice','Practice set']]},
   name: 'Spec first, then forty lines',
   sub: 'Office hour companion · 1 October 2026',
   keep: 'Implementation is the last step. Write the spec (North Star, observation, hypothesis, one user, golden input and output pairs, a verifier) before you open an editor. Once the spec exists, the first version of your app is a template: the golden input and golden output pasted in as text, a four-line function that returns one or the other, and a chat interface Gradio gives you for free. Intelligence comes next week. The interface does not care where the answer comes from.',
@@ -244,11 +250,11 @@ GUIDES.L3 = { code: {
     ['Gradio', 'gradioDocs', 'pip install gradio', 'The library that draws the chat or form interface. Installed from the terminal, not downloaded.']
   ],
   read: [
-    ['Post-read notes: Building UI, Design to Code', 'postRead', "The derivation of Aarav's interface and the first Gradio code. Sections 12, 13 and 16 are the setup sections."],
+    ['Post-read notes: Building UI, Design to Code', 'postRead', "The derivation of Aarav's interface and the first Gradio code. Sections 12, 13 and 15 are the setup sections."],
     ['Practice set: Replay Before You Render', 'practiceSet', 'The exercise this office hour was built on. Track A and Track B are defined here.'],
     ['Aarav discovery document', 'aarav', 'The Track B starting point. Replace Aarav with yourself.'],
     ['Golden pair template', 'golden', 'The format for input, output and verification plan.'],
-    ['Post-read notes: The First Interface', 'lmsFirstInterface', 'Why an interface exists, and the input, process, output frame every later lecture reuses. On the LMS.'],
+    ['Post-read notes: The First Interface', 'lmsFirstInterface', 'Why an interface exists, and the input, process, output frame every later lecture reuses.'],
     ['Big Binary Python prerequisite', 'bigbinaryPython', 'Python syntax: variables, functions, if, return. Do it if the template was hard to read.'],
     ['Gradio quickstart', 'gradioQuick', 'The official two-minute version of Hello World with gr.Interface.'],
     ['Gradio chatbot guide', 'gradioChat', 'gr.ChatInterface explained: the interface the template uses.']
