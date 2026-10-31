@@ -260,12 +260,12 @@ button{font:inherit;color:inherit}
 .scrub input:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--ring)}
 
 /* Panel */
-.panel{position:absolute;left:16px;top:120px;bottom:112px;z-index:18;width:min(var(--pw),calc(100vw - 32px));border-radius:18px;display:flex;flex-direction:column;overflow:hidden;opacity:0;visibility:hidden;transform:translateX(-12px);transition:opacity .2s var(--e-in),transform .2s var(--e-in),visibility 0s linear .2s}
+.panel{position:absolute;left:16px;top:120px;max-height:calc(100% - 232px);z-index:18;width:min(var(--pw),calc(100vw - 32px));border-radius:18px;display:flex;flex-direction:column;overflow:hidden;opacity:0;visibility:hidden;transform:translateX(-12px);transition:opacity .2s var(--e-in),transform .2s var(--e-in),visibility 0s linear .2s}
 .panel.open{opacity:1;visibility:visible;transform:none;transition:opacity .28s var(--e-out),transform .28s var(--e-out),visibility 0s}
 .panel .band{height:6px;background:var(--c,var(--coral));flex:0 0 auto}
 .panel .phd{display:flex;align-items:center;justify-content:space-between;padding:10px 10px 0 18px;flex:0 0 auto}
 .panel .phd .k{font:600 10.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ci,var(--coral))}
-.panel .pb{padding:4px 18px 18px;overflow:auto;flex:1;overscroll-behavior:contain}
+.panel .pb{padding:4px 18px 18px;overflow:auto;flex:0 1 auto;min-height:0;overscroll-behavior:contain}
 .panel .pb.swap{animation:up .22s var(--e-out)}
 .panel h2{margin:4px 0 10px;font-size:24px;line-height:1.15;letter-spacing:-.02em;font-weight:500;text-wrap:balance}
 .panel h2:focus{outline:none}
@@ -540,7 +540,7 @@ button.pill.terr:active{transform:scale(.97)}
   .status{top:auto;bottom:calc(112px + var(--sab));right:auto;left:16px}
   .layers{bottom:calc(160px + var(--sab))}
   .top{width:calc(100vw - 32px)}
-  .panel{left:0;right:0;top:auto;bottom:0;width:100%;height:62vh;max-height:calc(100% - 118px);border-radius:20px 20px 0 0;transform:translateY(24px);padding-bottom:var(--sab)}
+  .panel{left:0;right:0;top:auto;bottom:0;width:100%;max-height:min(62vh,calc(100% - 118px));border-radius:20px 20px 0 0;transform:translateY(24px);padding-bottom:var(--sab)}
   .panel.open{transform:none}
   .panel.drag{transition:none}
   .panel::before{content:"";position:absolute;left:50%;top:10px;width:40px;height:4px;margin-left:-20px;border-radius:2px;background:var(--line);z-index:1}
