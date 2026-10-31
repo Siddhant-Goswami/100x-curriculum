@@ -16,6 +16,8 @@ var GUIDE_LINKS = {
   practiceSet: 'https://docs.google.com/document/d/1J-Qi-nan-fYTur1LFu88AFSkyuBMNjHdlZKM7SdzdWM/edit?usp=sharing',
   aarav: 'https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l',
   wtbExample: '/c8/module-2/what-to-build/aarav-example',  /* What to build: Aarav's Discovery to MVP, worked example */
+  wtbNotes: '/c8/module-2/what-to-build/idea-to-app-notes',  /* Week 0 Idea to App workshop, post-read notes */
+  wtbA1: '/c8/module-2/what-to-build/assignment-1',  /* Assignment 1: First Proof brief */
   hackathon: '/c8/module-2/hackathon/',  /* the hackathon page: problems, five moves, rules, schedule, submit */
   golden: 'https://docs.google.com/document/d/1qg8zt7yHflGM7ojtnUBSPj2e_I3ACYapztGZQnzJa_c/edit?tab=t.0',
   python: 'https://www.python.org/downloads/',

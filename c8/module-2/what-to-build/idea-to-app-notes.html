@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Workshop Notes: Idea to App | 100xEngineers</title>
+<meta name="description" content="Post-read notes for the Week 0 Idea to App workshop: the North Star with four elements, the mom test for a North Star, observation before idea, hypotheses that can fail, the simulated Mom Test interview, the manual MVP, and input, process, output.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+/* the whiteboard sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}.wb .ln .c-hum{stroke:var(--hum)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-hum{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .z-act{stroke:var(--coral);stroke-dasharray:7 8;stroke-width:2}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .scrib{stroke:var(--ink3);stroke-width:1.8}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}.wb .tx .c-hum{fill:var(--hum-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="wtb-workshop-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#b1">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="What to build pages"><a href="/#b1">Workshop</a><a href="/c8/module-2/what-to-build/idea-to-app-notes">Notes</a><a href="/c8/module-2/what-to-build/aarav-example">Worked example</a><a href="/c8/module-2/what-to-build/assignment-1">Assignment 1</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared whiteboard defs: wobble filter, arrowheads, a person -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Post-read notes · Idea to App workshop · Week 0</p>
+  <h1>Observation before idea</h1>
+  <p class="dek">A 21-day journey from discovery to a minimum viable product. What was said, in the order the room heard it. Read once end to end, then come back to sections 03, 09 and 11 while you do Assignment 1.</p>
+  <div class="meta"><span>Fri 18 Sep 2026</span><span>Instructor: Siddhant Goswami</span><span>Both tracks</span></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The room: 1,400 years of experience</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Three cards. 66% working professionals, median 8 plus years. Plus 68% from outside tech, 57 industries. Equals about 1,400 years of experience in one room. Your industry is the raw material.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="30" width="200" height="130" rx="10"/>
+    <rect class="f-card" x="280" y="30" width="220" height="130" rx="10"/>
+    <rect class="f-act" x="560" y="30" width="180" height="130" rx="10"/>
+    <path d="M240 95 H262 M251 84 V106"/>
+    <path d="M520 89 H542 M520 101 H542"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="82" class="h">66%</text>
+    <text x="120" y="112" class="xs">working professionals</text>
+    <text x="120" y="138" class="xxs">median 8+ years</text>
+    <text x="390" y="82" class="h">68%</text>
+    <text x="390" y="112" class="xs">from outside tech</text>
+    <text x="390" y="138" class="xxs">57 industries</text>
+    <text x="650" y="82" class="h c-act">~1,400</text>
+    <text x="650" y="112" class="xs">years of experience</text>
+    <text x="650" y="138" class="xxs">in one room</text>
+    <text x="380" y="214" class="m c-act">your industry is the raw material</text>
+  </g>
+</svg>
+<figcaption>The room, added up. Applied AI is industry agnostic; what you know is the input.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The Launchpad numbers.</b> 66% working professionals, median 8+ years of experience. 68% from outside tech, across 57 industries. About 1,400 years of experience in one room.</li>
+  <li><b>Applied AI is industry agnostic.</b> Everyone in your field says "I cannot build software". The first one to codify their judgment and scale it wins.</li>
+  <li><b>That experience is the raw material</b> for the next eight weeks.</li>
+</ul>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>A North Star has four elements</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="A North Star drawn as a bridge. On the left a person, labelled role or identity: AI real estate consultant. On the right a box, $15,000 a month, labelled level, income or scale. Above, a calendar card: December 2026, the timeline. The bridge between them is the specific thing: automating lead gen, the element most people left out.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="88" y="96"/>
+    <path class="c-act" d="M150 210 Q353 96 556 210"/>
+    <path d="M150 210 H556"/>
+    <path class="thin" d="M250 210 V160 M353 210 V152 M456 210 V160"/>
+    <rect class="f-act" x="560" y="160" width="170" height="70" rx="10"/>
+    <rect class="f-card" x="590" y="20" width="140" height="62" rx="9"/>
+    <path class="thin" d="M590 40 H730"/>
+  </g>
+  <g class="tx">
+    <text x="353" y="96" class="m c-act">the specific thing</text>
+    <text x="353" y="122" class="xxs">automating lead gen</text>
+    <text x="353" y="240" class="xxs c-mute">the one most people left out</text>
+    <text x="114" y="262" class="xs c-ink">role / identity</text>
+    <text x="114" y="284" class="xxs">AI real estate consultant</text>
+    <text x="645" y="203" class="m">$15,000 / mo</text>
+    <text x="645" y="262" class="xs c-ink">level · income · scale</text>
+    <text x="660" y="70" class="m">Dec 2026</text>
+    <text x="660" y="108" class="xxs">timeline</text>
+  </g>
+</svg>
+<figcaption>Four elements. The specific thing is the bridge from who you are to the number.</figcaption>
+</figure>
+<p>Two North Stars were pulled apart on the whiteboard. Kaushik: by December 2026, a dental tourism company running fully on AI agents except the patient calls, at $500 a month recurring. A C6 student: by December 2026, an AI real estate consultant in the UAE automating lead generation for agencies, at $15,000 a month.</p>
+<ul class="pt">
+  <li><b>Timeline.</b> A date, six months out. A North Star for this cohort, not for your life.</li>
+  <li><b>Role and identity.</b> What people will call you. "Leading an AI-powered engineering workflow" is a task, and begs the question of who leads it.</li>
+  <li><b>Level, income or scale.</b> The quantity you will have on the date. Money, a designation, an appraisal or a measured impact, as long as it is a number.</li>
+  <li><b>The specific thing.</b> The one workflow that bridges the role to the number. For the UAE consultant, automating lead gen. Almost everyone left this out.</li>
+</ul>
+<p>Three from chat, reviewed live:</p>
+<ul class="pt">
+  <li><b>Anand.</b> Timeline and a task, no identity. "100x productivity" with no baseline to measure against.</li>
+  <li><b>Prateek.</b> "Build the top 5 AI use cases at my organisation." A constraint (a quarter of a 75-person team using them) in place of an outcome, and a specific thing that was still generic.</li>
+  <li><b>Saiteja.</b> Passed all four: growth marketer or indie maker, marketing the AEO tool he already built, to 1K MRR.</li>
+</ul>
+<p class="pull">The North Star defines the goal. It never explains the route.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The mom test for a North Star</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="The mom test. A person in the middle: mom, on the date. Left card: 1K MRR, an invoice, verifiable. Right card: 100x productivity, 100x of what, a wish. Below: an absolute number, or a baseline you already measured.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="354" y="24"/>
+    <rect class="f-hum" x="20" y="40" width="270" height="100" rx="10"/>
+    <rect class="f-act" x="470" y="40" width="270" height="100" rx="10"/>
+    <path class="arw" d="M342 90 H298" marker-end="url(#ah)"/>
+    <path class="arw" d="M418 90 H462" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="155" y="82" class="m">"1K MRR"</text>
+    <text x="155" y="114" class="xs">an invoice proves it</text>
+    <text x="155" y="176" class="m c-hum">verifiable</text>
+    <text x="605" y="82" class="m">"100x productivity"</text>
+    <text x="605" y="114" class="xs">100x of what?</text>
+    <text x="605" y="176" class="m c-act">a wish</text>
+    <text x="380" y="182" class="xs">mom, on the date</text>
+    <text x="380" y="240" class="xs c-ink">an absolute number, or a baseline you already measured</text>
+  </g>
+</svg>
+<figcaption>Could someone who does not know the jargon check it on the date?</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Send the sentence to your mother</b>, or anyone older who does not know the jargon. On the date, can she verify whether it happened?</li>
+  <li><b>Saiteja: yes.</b> 1,000 MRR is a bank statement or an invoice.</li>
+  <li><b>Anand: no.</b> Nobody can check "100x productivity", because there is no number for today.</li>
+  <li><b>So the scale is absolute</b>, or relative to a baseline you have already measured and written down. "100x better" with no baseline is a wish.</li>
+  <li><b>It may evolve, never stay vague.</b> When you reach it (Saiteja may hit 1K MRR next month), rewrite it.</li>
+</ul>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The path is a proof, not a plan</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="A dashed line from today to the North Star. A short solid coral step from today: the proof, the first $10 or $20, 0.1% of the value already real. The rest of the line: the plan comes later.">
+  <g class="ln" filter="url(#wob)">
+    <circle cx="60" cy="150" r="8"/>
+    <path class="dash ink" d="M150 150 H676"/>
+    <path class="c-act" d="M68 150 H140" marker-end="url(#ahc)"/>
+    <path class="f-act" d="M700 124 L707 142 L726 143 L711 155 L716 174 L700 163 L684 174 L689 155 L674 143 L693 142 Z"/>
+  </g>
+  <g class="tx">
+    <text x="60" y="192" class="xs">today</text>
+    <text x="700" y="208" class="xs">North Star</text>
+    <text x="110" y="92" class="m c-act">proof</text>
+    <text x="110" y="118" class="xxs">first $10 or $20</text>
+    <text x="410" y="136" class="xxs c-mute">the plan comes later</text>
+    <text x="400" y="40" class="s">not a plan: the smallest evidence that 0.1% is real</text>
+  </g>
+</svg>
+<figcaption>Research works by building evidence. Stage 2 is the first piece of it.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>No standard path exists.</b> Build the app, build agents, take another course: everyone has their own answer. Module 2 borrows from research, which works by building evidence.</li>
+  <li><b>Stage 2 is a proof:</b> the smallest demonstration that 0.1% of the value already exists. For Saiteja, the first $10 or $20 his tool earns, not a marketing strategy.</li>
+</ul>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Week 0, and why the order changed</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 280" role="img" aria-label="A dashed zone labelled week 0, what to build, holds three cards: discovery, what is worth building; manual MVP, what it looks like by hand; process, what to automate. An arrow down to weeks 1 to 8, how to build.">
+  <g class="ln" filter="url(#wob)">
+    <path class="z-act" d="M20 44 H740 V170 H20 Z"/>
+    <rect class="f-card" x="40" y="66" width="210" height="84" rx="9"/>
+    <rect class="f-card" x="275" y="66" width="210" height="84" rx="9"/>
+    <rect class="f-card" x="510" y="66" width="210" height="84" rx="9"/>
+    <path class="arw" d="M256 108 H268" marker-end="url(#ah)"/>
+    <path class="arw" d="M491 108 H503" marker-end="url(#ah)"/>
+    <path class="arw" d="M380 178 V204" marker-end="url(#ah)"/>
+    <rect class="f-card" x="160" y="212" width="440" height="54" rx="9"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="32" class="m c-act">week 0 · what to build</text>
+    <text x="145" y="102" class="m">discovery</text>
+    <text x="145" y="130" class="xxs">what is worth building?</text>
+    <text x="380" y="102" class="m">manual MVP</text>
+    <text x="380" y="130" class="xxs">what it looks like by hand</text>
+    <text x="615" y="102" class="m">process</text>
+    <text x="615" y="130" class="xxs">what to automate</text>
+    <text x="380" y="246" class="m">weeks 1 to 8 · how to build</text>
+  </g>
+</svg>
+<figcaption>Three questions before any building. Until C6, the capstones failed here, not at the code.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Weeks 1 to 8 teach how to build:</b> LLMs, making them trustworthy, harnesses, loops, agents, fine-tuning.</li>
+  <li><b>Week 0 answers three questions first.</b> What is worth building (discovery). What the manual version looks like (the MVP). What in it should be automated (the process).</li>
+  <li><b>Six cohorts of evidence.</b> Until C6 the capstones were low impact. Students could build. They did not know what to build.</li>
+  <li><b>So no artificial problem solved live while you watch.</b> You solve yours. No clear North Star yet? Fill the Launchpad form and ask for a review.</li>
+</ul>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Aarav at 12.38 AM: what an observation looks like</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="Aarav's loop, drawn as a clockwise ring: anxiety, tutorial, tool, idea, overthinking, back to anxiety. In the middle: 12.38 AM, high ambition, low clarity. 11 ideas, 19 tutorials, 0 final.">
+  <g class="ln" filter="url(#wob)">
+    <path class="c-act" d="M428 43 A230 120 0 0 1 579 100" marker-end="url(#ahc)"/>
+    <path class="c-act" d="M609 147 A230 120 0 0 1 551 240" marker-end="url(#ahc)"/>
+    <path class="c-act" d="M474 270 A230 120 0 0 1 286 270" marker-end="url(#ahc)"/>
+    <path class="c-act" d="M209 240 A230 120 0 0 1 151 147" marker-end="url(#ahc)"/>
+    <path class="c-act" d="M181 100 A230 120 0 0 1 332 43" marker-end="url(#ahc)"/>
+    <rect class="f-card" x="330" y="22" width="100" height="36" rx="8"/>
+    <rect class="f-card" x="549" y="105" width="100" height="36" rx="8"/>
+    <rect class="f-card" x="480" y="239" width="70" height="36" rx="8"/>
+    <rect class="f-card" x="210" y="239" width="70" height="36" rx="8"/>
+    <rect class="f-card" x="91" y="105" width="140" height="36" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="47" class="m">anxiety</text>
+    <text x="599" y="130" class="m">tutorial</text>
+    <text x="515" y="264" class="m">tool</text>
+    <text x="245" y="264" class="m">idea</text>
+    <text x="161" y="130" class="m">overthinking</text>
+    <text x="380" y="140" class="h">12.38 AM</text>
+    <text x="380" y="172" class="xs c-ink">high ambition, low clarity</text>
+    <text x="380" y="202" class="xxs">11 ideas · 19 tutorials · 0 final</text>
+  </g>
+</svg>
+<figcaption>Not laziness, not lack of information. He needs one real workflow worth solving.</figcaption>
+</figure>
+<p><em>It is 12.38 AM in Pune. Aarav is at his desk with three tabs open: a YouTube video called Top 10 AI Agent Projects to Build in 2026, an n8n automation tutorial, and his own resume. He has been staring at one bullet point for 11 minutes.</em></p>
+<ul class="pt">
+  <li><b>Who.</b> 26, Tier 2 BTech, three years a business analyst at a mid-size IT services company. Neither non-technical nor deeply technical.</li>
+  <li><b>What he has tried.</b> ChatGPT, Claude, Perplexity, Cursor, n8n, every agent tutorial. 11 startup ideas in Notion, 3 finished, 19 tutorials bookmarked, a folder called AI Projects Final with nothing final in it.</li>
+  <li><b>At work.</b> His manager wants "AI productivity" because the client asked. Everyone makes a deck. Nobody knows what to build.</li>
+  <li><b>The diagnosis.</b> High ambition, low clarity. Anxiety, tutorial, tool, idea, overthinking, more anxiety. He needs one real workflow worth solving.</li>
+</ul>
+<ul class="pt">
+  <li><b>It came from sitting next to Aarav</b>, day after day. It is not in any model's training data. What you have lived and nobody else has is the only moat left.</li>
+  <li><b>An observation</b> is a detailed record of a real person, from your own experience, with no solution in it. "People want to automate workflows, so I will build five agents" is rejected on day one.</li>
+  <li><b>Your North Star tells you where to look.</b> Saiteja's says: sit with growth marketers and watch what breaks.</li>
+</ul>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Story to subject to evidence to causal chain</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="Four cards left to right with arrows: story, Aarav at 12.38 AM; subject, who, where, how they behave; evidence, what already confirms it; causal chain, why, step by step, as assumptions.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="16" y="60" width="152" height="110" rx="10"/>
+    <rect class="f-card" x="208" y="60" width="152" height="110" rx="10"/>
+    <rect class="f-card" x="400" y="60" width="152" height="110" rx="10"/>
+    <rect class="f-act" x="592" y="60" width="152" height="110" rx="10"/>
+    <path class="arw" d="M172 115 H200" marker-end="url(#ah)"/>
+    <path class="arw" d="M364 115 H392" marker-end="url(#ah)"/>
+    <path class="arw" d="M556 115 H584" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="34" class="s">a story can be wrong, so make it checkable</text>
+    <text x="92" y="100" class="m">story</text>
+    <text x="92" y="128" class="xxs">Aarav, 12.38 AM</text>
+    <text x="92" y="150" class="xxs">one person</text>
+    <text x="284" y="100" class="m">subject</text>
+    <text x="284" y="128" class="xxs">who, where,</text>
+    <text x="284" y="150" class="xxs">how they behave</text>
+    <text x="476" y="100" class="m">evidence</text>
+    <text x="476" y="128" class="xxs">what already</text>
+    <text x="476" y="150" class="xxs">confirms it</text>
+    <text x="668" y="100" class="m c-act">causal chain</text>
+    <text x="668" y="128" class="xxs">why, step by step</text>
+    <text x="668" y="150" class="xxs">as assumptions</text>
+  </g>
+</svg>
+<figcaption>The four moves the coach makes on your observation.</figcaption>
+</figure>
+<p>A story can be wrong. The discovery-to-mvp-coach skill asks questions for 60 to 90 minutes and turns it into something checkable. Four moves, on Aarav's own document:</p>
+<ul class="pt">
+  <li><b>Compress the observation</b> into a paragraph about a segment: ambitious early-career professionals in urban India, AI-aware and motivated, who fail at selection, scoping and the first proof.</li>
+  <li><b>Define the subject.</b> Where they live, their role, their behaviour: AI content daily in bursts, 5 to 15 posts saved a week, one or two new tools tried a day. Demographic, behavioural, financial, psychological and structural markers.</li>
+  <li><b>Audit the evidence.</b> What already confirms what you saw? Passive consumption turning active across every cohort; MOOCs with very high enrolment and very low completion.</li>
+  <li><b>Write the causal chain</b>, labelled as assumptions. AI changes fast, so urgency without direction. The feed rewards novelty, so overload. No mental model to filter, so every idea feels possible. Stacked: the builder's anxiety.</li>
+</ul>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>A hypothesis must be able to fail</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 280" role="img" aria-label="A bar from 0% to 100% of 250 students within 90 days. A coral dashed line at 60%. Left of it, shaded coral: the belief is false. Right of it, shaded green: it holds, for now. A hypothesis names what kills it.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-act" x="60" y="140" width="384" height="44" rx="4"/>
+    <rect class="f-hum" x="444" y="140" width="256" height="44" rx="4"/>
+    <path class="c-act" d="M444 96 V206" stroke-dasharray="6 6"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="40" class="s">250 students · 90 days · one real workflow, built and demoed</text>
+    <text x="252" y="126" class="m c-act">under 60%: the belief is false</text>
+    <text x="572" y="126" class="m c-hum">60%+: it holds, for now</text>
+    <text x="60" y="210" class="xxs">0%</text>
+    <text x="444" y="228" class="xs c-act">60%</text>
+    <text x="700" y="210" class="xxs">100%</text>
+    <text x="380" y="266" class="xs c-ink">a hypothesis names the result that kills it</text>
+  </g>
+</svg>
+<figcaption>Aarav's hypothesis, with its kill line drawn in.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>A hypothesis</b> is your belief about what the problem is, how you would solve it, and how you would know you were wrong. The last clause is the point: maybe the observation is bias.</li>
+  <li><b>Aarav's.</b> Ambitious early-career professionals in urban India who are AI-aware but have no shipped proof are stuck because they lack a method to turn broad AI possibility into one workflow worth solving. With a structured workflow diagnosis and a guided sprint, at least 60% of active students will find one real user, map one repeated workflow, build a working AI-assisted version and present a credible demo within 90 days.</li>
+  <li><b>What kills it.</b> Fewer than 60% of 250. Under 40% with a credible demo. Students finish diagnosis but still do not build. They want placement, not proof (a different buyer). They cannot find real workflows even with guidance (the gap is upstream).</li>
+  <li><b>Run the skill</b> rather than the template alone. Subject, problem, cause, intervention, a number, a deadline, and what kills it.</li>
+</ul>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Stress test: the Mom Test, simulated</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="An interview. On the left a person, you; on the right a person, Rohan, 27, simulated. Between them four rules, each crossing out one thing for another: your idea becomes their life, the future becomes the past, generalities become specifics, opinions become emotions.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="40" y="44"/>
+    <use href="#person" x="668" y="44"/>
+    <path class="scrib" d="M234 66 H306 M230 116 H310 M222 166 H318 M238 216 H302"/>
+    <path class="arw" d="M336 72 H420" marker-end="url(#ah)"/>
+    <path class="arw" d="M336 122 H420" marker-end="url(#ah)"/>
+    <path class="arw" d="M336 172 H420" marker-end="url(#ah)"/>
+    <path class="arw" d="M336 222 H420" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="270" y="30" class="xs c-mute">not</text>
+    <text x="500" y="30" class="xs c-hum">but</text>
+    <text x="270" y="72" class="xs c-mute">your idea</text>
+    <text x="270" y="122" class="xs c-mute">the future</text>
+    <text x="270" y="172" class="xs c-mute">generalities</text>
+    <text x="270" y="222" class="xs c-mute">opinions</text>
+    <text x="500" y="76" class="m c-hum">their life</text>
+    <text x="500" y="126" class="m c-hum">the past</text>
+    <text x="500" y="176" class="m c-hum">specifics</text>
+    <text x="500" y="226" class="m c-hum">emotions</text>
+    <text x="66" y="200" class="m">you</text>
+    <text x="694" y="200" class="m">Rohan, 27</text>
+    <text x="694" y="222" class="xxs">simulated</text>
+    <text x="380" y="286" class="xs c-ink">then it grades you; you leave with 4 or 5 real questions</text>
+  </g>
+</svg>
+<figcaption>The Mom Test's four rules, practised on a simulated person before the real ones.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Phase 6 of the skill forces the practice</b> most students skip. It lists every assumption so far (add your own), asks your confidence in each, then plays a person from your segment. In Aarav's run: Rohan Verma, 27, business analyst, an hour of AI content a day. You interview him.</li>
+  <li><b>The rules,</b> from Rob Fitzpatrick's <i>The Mom Test</i>. Read the whole book.</li>
+</ul>
+<ul class="pt">
+  <li><b>Talk about their life, not your idea.</b></li>
+  <li><b>Ask about the past, not the future.</b></li>
+  <li><b>Listen for specifics, not generalities.</b></li>
+  <li><b>Dig on emotions, not opinions.</b></li>
+</ul>
+<ul class="pt">
+  <li><b>Then it grades you:</b> strong moves, missed questions, what to listen for. You leave with four or five questions for a real conversation.</li>
+  <li><b>Practice, not a replacement.</b> Real interviews are mandatory: 2 to 5 people minimum.</li>
+</ul>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Cohort zero: 10 people, Rs 21,000, 21 days</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="Ten circles for cohort zero. Nine are filled green, one is empty. A coral dashed line after the sixth circle marks the bar, 6 of 10. Above: 10 people, Rs 21,000 each, 21 days, no software. Below: 9 of 10 presented a credible demo.">
+  <g class="ln" filter="url(#wob)">
+    <circle class="f-hum" cx="120" cy="110" r="20"/>
+    <circle class="f-hum" cx="176" cy="110" r="20"/>
+    <circle class="f-hum" cx="232" cy="110" r="20"/>
+    <circle class="f-hum" cx="288" cy="110" r="20"/>
+    <circle class="f-hum" cx="344" cy="110" r="20"/>
+    <circle class="f-hum" cx="400" cy="110" r="20"/>
+    <circle class="f-hum" cx="456" cy="110" r="20"/>
+    <circle class="f-hum" cx="512" cy="110" r="20"/>
+    <circle class="f-hum" cx="568" cy="110" r="20"/>
+    <circle class="f-card" cx="624" cy="110" r="20"/>
+    <path class="c-act" d="M428 72 V146" stroke-dasharray="6 6"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="34" class="s">10 people · Rs 21,000 each · 21 days · no software</text>
+    <text x="428" y="64" class="xxs c-act">the bar: 6 of 10</text>
+    <text x="380" y="180" class="m c-hum">9 of 10 presented a credible demo</text>
+    <text x="380" y="214" class="xxs c-mute">then the 3-month programme, then the 6-month one you are in</text>
+  </g>
+</svg>
+<figcaption>Cohort zero tested the hypothesis by hand before any software existed.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Phase 7 is a manual MVP plan:</b> who you recruit, what you deliver, what you measure, what you charge.</li>
+  <li><b>The one on screen was 100xEngineers' own.</b> Ten people, Rs 21,000 each, 21 days, no software, to test the hypothesis above. The bar was 60%. Nine of ten presented a credible demo. One later raised Rs 1 crore from NVIDIA and Startup India. The 3-month and then 6-month programmes grew from what those ten said.</li>
+  <li><b>The counter-example.</b> Earlier workshops handed out five trending ideas to paste into a builder. It produced a pile of AI slop and value for nobody. Two of the instructor's businesses failed before this one for lack of a standard process. This is that process.</li>
+</ul>
+<p class="pull">If you cannot test it by hand, do not build it. Do it by hand once, then decide what to automate.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Input, process, output</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Input, process, output. Input: the messy stand-up transcript. Process: paste into an LLM, summarise, format, send. Output: a summary you can decide on, by email. From next week the process splits into a deterministic part, if length is 0 then error 500 every time, and a probabilistic part, the LLM may answer differently each call.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="50" width="200" height="100" rx="10"/>
+    <rect class="f-act" x="280" y="50" width="200" height="100" rx="10"/>
+    <rect class="f-card" x="540" y="50" width="200" height="100" rx="10"/>
+    <path class="arw" d="M226 100 H272" marker-end="url(#ah)"/>
+    <path class="arw" d="M486 100 H532" marker-end="url(#ah)"/>
+    <path class="arw" d="M380 156 V200" marker-end="url(#ah)"/>
+    <rect class="f-det" x="40" y="208" width="330" height="76" rx="9"/>
+    <rect class="f-prob" x="390" y="208" width="330" height="76" rx="9"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="88" class="m">input</text>
+    <text x="120" y="114" class="xxs">messy stand-up</text>
+    <text x="120" y="136" class="xxs">transcript</text>
+    <text x="380" y="88" class="m c-act">process</text>
+    <text x="380" y="114" class="xxs">paste into an LLM,</text>
+    <text x="380" y="136" class="xxs">summarise, format, send</text>
+    <text x="640" y="88" class="m">output</text>
+    <text x="640" y="114" class="xxs">a summary to decide on,</text>
+    <text x="640" y="136" class="xxs">by email</text>
+    <text x="120" y="34" class="xxs c-mute">write it down first</text>
+    <text x="640" y="34" class="xxs c-mute">write it down first</text>
+    <text x="392" y="184" class="xxs c-mute l">from next week</text>
+    <text x="205" y="240" class="m c-det">deterministic</text>
+    <text x="205" y="268" class="xxs">if length is 0 → error 500, every time</text>
+    <text x="555" y="240" class="m c-prob">probabilistic</text>
+    <text x="555" y="268" class="xxs">the LLM may answer differently</text>
+  </g>
+</svg>
+<figcaption>Every piece of software is three words. Do the middle by hand once, then decide what to automate.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Every piece of software, and every SOP, is three words.</b> Write down the inputs, write down the outputs, define the process between them. The manual MVP is where you find yours.</li>
+  <li><b>The weekly stand-up.</b> A 15-person team, too many updates for one founder, so an assistant was hired. <b>Input:</b> the messy transcript. <b>Output:</b> a summary brief enough to decide on, by email. <b>Process:</b> paste into an LLM, summarise, format, send.</li>
+  <li><b>No tool needed.</b> Resist agents. Do the most manual thing that works, once, and write down what you did, including how you judged when two sources disagreed. "I used my judgment" is the rabbit hole; how you judge is the question.</li>
+  <li><b>From next week it becomes a system.</b> Some parts <b>deterministic</b>: "if the transcript length is 0, print error 500" does so every time. Some <b>probabilistic</b>: an LLM may answer differently each call. Which is which, and what cannot be automated, is weeks 1 to 8.</li>
+</ul>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Where is the app? A tracker, not a product</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 260" role="img" aria-label="An MVP plan card with lines of text, an arrow labelled paste into Lovable, publish, to a 21-day tracker card with a grid of 21 squares, the first four ticked. Below: a link anyone can open, update it daily.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="50" width="170" height="160" rx="10"/>
+    <path class="scrib" d="M54 104 H176 M54 128 H160 M54 152 H176 M54 176 H140"/>
+    <path class="arw" d="M212 130 H428" marker-end="url(#ah)"/>
+    <rect class="f-card" x="440" y="30" width="300" height="190" rx="10"/>
+    <rect x="464" y="84" width="26" height="26" rx="4"/><rect x="500" y="84" width="26" height="26" rx="4"/><rect x="536" y="84" width="26" height="26" rx="4"/><rect x="572" y="84" width="26" height="26" rx="4"/><rect x="608" y="84" width="26" height="26" rx="4"/><rect x="644" y="84" width="26" height="26" rx="4"/><rect x="680" y="84" width="26" height="26" rx="4"/>
+    <rect x="464" y="122" width="26" height="26" rx="4"/><rect x="500" y="122" width="26" height="26" rx="4"/><rect x="536" y="122" width="26" height="26" rx="4"/><rect x="572" y="122" width="26" height="26" rx="4"/><rect x="608" y="122" width="26" height="26" rx="4"/><rect x="644" y="122" width="26" height="26" rx="4"/><rect x="680" y="122" width="26" height="26" rx="4"/>
+    <rect x="464" y="160" width="26" height="26" rx="4"/><rect x="500" y="160" width="26" height="26" rx="4"/><rect x="536" y="160" width="26" height="26" rx="4"/><rect x="572" y="160" width="26" height="26" rx="4"/><rect x="608" y="160" width="26" height="26" rx="4"/><rect x="644" y="160" width="26" height="26" rx="4"/><rect x="680" y="160" width="26" height="26" rx="4"/>
+    <path class="c-act" d="M470 98 L475 104 L485 91 M506 98 L511 104 L521 91 M542 98 L547 104 L557 91 M578 98 L583 104 L593 91"/>
+  </g>
+  <g class="tx">
+    <text x="115" y="84" class="m">MVP plan</text>
+    <text x="320" y="118" class="xs">paste into Lovable</text>
+    <text x="320" y="156" class="xxs">publish</text>
+    <text x="590" y="66" class="m">21-day tracker</text>
+    <text x="590" y="250" class="xxs">a link anyone can open · update it daily</text>
+  </g>
+</svg>
+<figcaption>No backend, no database yet. The link tracks the manual work; it is not the product.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The MVP is manual, so there is nothing to build yet.</b> The link is a personal dashboard.</li>
+  <li><b>Paste your MVP plan into Lovable</b> (or Google AI Studio, any builder) and ask for a tracker of every line item in the 21-day pilot. Check the preview, click Publish, share the link.</li>
+  <li><b>No backend, no database yet.</b> Whatever breaks is a learning item for the next two weeks.</li>
+  <li><b>Update it daily</b>, which means doing the work daily.</li>
+</ul>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>From the Q&amp;A</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 260" role="img" aria-label="Charu's math on the left: 3 hours times $100 is $300 a week. A 15-minute review instead saves about $275 a week per PM. A coral arrow carries that to the right, where there are only two metrics: revenue up, or cost or time down. Charu's report lands on cost or time down.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M180 90 V128" marker-end="url(#ah)"/>
+    <rect class="f-card" x="430" y="80" width="140" height="90" rx="10"/>
+    <rect class="f-hum" x="600" y="80" width="140" height="90" rx="10"/>
+    <path class="c-act" d="M300 196 Q470 250 664 178" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="70" class="m">3 h × $100 = $300 / week</text>
+    <text x="180" y="156" class="xs">a 15-minute review instead</text>
+    <text x="180" y="196" class="m c-hum">saves ~$275 / week per PM</text>
+    <text x="585" y="50" class="s">only two metrics</text>
+    <text x="500" y="122" class="m">revenue ↑</text>
+    <text x="500" y="150" class="xxs">increased</text>
+    <text x="670" y="122" class="m c-hum">cost or time ↓</text>
+    <text x="670" y="150" class="xxs">saved</text>
+  </g>
+</svg>
+<figcaption>Charu's Friday report becomes her specific thing once it has a number.</figcaption>
+</figure>
+<p><b>Charu's Friday report.</b> North Star: by March 2027, an AI-enabled project manager with up to a 100% increase in total compensation. Timeline, identity and income present; the specific thing missing. Her observation supplied it: every Friday a PM pulls from several systems to build a status report, and when the facts differ she cannot tell which is right, though she answers for what leadership reads.</p>
+<ul class="pt">
+  <li><b>Put a number on it.</b> 3 hours a week at $100 an hour is $300 a week per PM. Cut to a 15-minute review and that saves $250 to $300 a week per PM, compounding across the team.</li>
+  <li><b>The observation must align with the North Star</b>, and in doing so supplies the specificity it lacked.</li>
+</ul>
+<p class="pull">Only two metrics move compensation: revenue increased, or cost and time saved. Pick the one your observation touches and put a number on it.</p>
+<p>A student who replaced a $10,000 Slack bill with a configured open-source messenger had a proof his manager could not ignore, and a freelance offer for every other company paying the same bill.</p>
+<ul class="pt">
+  <li><b>Time budget.</b> 8 to 10 hours a week, about 1 to 1.5 hours a day. No upper limit.</li>
+  <li><b>How long validation takes.</b> The skill, 40 to 90 minutes. Four calls of 15 to 20 minutes each. 3 to 4 hours in all; double it for safety.</li>
+  <li><b>Pivoting.</b> Expected. Around 90% may change their idea by week 2. Run one cycle to the end before starting another.</li>
+  <li><b>Several incentives.</b> Mohit's North Star had four. Keep one, and add the industry: that is where the observation lives.</li>
+  <li><b>"What are you charging".</b> A validation device. If the problem is internal to your team, write not applicable and keep the time-saved metric.</li>
+  <li><b>Competitors already exist.</b> Sai's question, why validate when paying customers exist: answered with data in the orientation.</li>
+  <li><b>Certifications and portfolios</b> are proxies. Clarity on your specific thing beats another certificate.</li>
+</ul>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>What to do next</h2>
+<ol class="steps">
+  <li><b>Rewrite your North Star</b> with all four elements and run the mom test on it. No North Star yet? Fill the Launchpad form first.</li>
+  <li><b>Write your observation</b> at the depth of the Pune story: a real person, a real desk, real numbers, no solution.</li>
+  <li><b>Run discovery-to-mvp-coach</b> (skill file on the LMS; Settings, Customise, Skills, then <code>/discovery-to-mvp-coach</code>). 60 to 90 minutes. Keep the discovery document and the MVP plan.</li>
+  <li><b>Publish a 21-day tracker</b> from the MVP plan in Lovable or any builder.</li>
+  <li><b>Start the manual MVP.</b> Speak to 2 to 5 real people with the questions the simulation gave you, and write down the input, process and output of what you delivered by hand. Full brief in Assignment 1.</li>
+</ol>
+<details class="words"><summary>Words from this workshop</summary>
+<dl>
+  <dt>North Star</dt><dd>A six-month goal with four elements: timeline, role and identity, level or income or scale, and the specific thing that bridges them.</dd>
+  <dt>The mom test (North Star)</dt><dd>Can someone else verify on the date whether it happened? Absolute number, or relative to a measured baseline.</dd>
+  <dt>Done Equals</dt><dd>The artefact that proves the outcome. Here: a tracker link.</dd>
+  <dt>Observation</dt><dd>A detailed record of a real person's problem, from your lived experience, with no solution.</dd>
+  <dt>Subject</dt><dd>Who you are solving for: demographic, behavioural, financial, psychological and structural markers.</dd>
+  <dt>Evidence audit</dt><dd>What already exists that confirms or contradicts what you observed.</dd>
+  <dt>Causal chain</dt><dd>The causes you believe produced the observation, labelled as assumptions.</dd>
+  <dt>Hypothesis</dt><dd>Subject, problem, cause, intervention, a number, a deadline, and the condition that makes it false.</dd>
+  <dt>Falsifiable</dt><dd>Written so a specific result would prove it wrong. Aarav's: under 60% of 250 within 90 days.</dd>
+  <dt>The Mom Test (the book)</dt><dd>Their life, not your idea; the past, not the future; specifics, not generalities; emotions, not opinions.</dd>
+  <dt>Manual MVP</dt><dd>Deliver the value by hand to 2 to 5 real people before any software.</dd>
+  <dt>Input, process, output</dt><dd>The three words all software reduces to. Define the first and last; the middle is what you automate.</dd>
+  <dt>Deterministic</dt><dd>Rule-based. Does exactly what it is told, the same way every time.</dd>
+  <dt>Probabilistic</dt><dd>An LLM. May answer differently on each call.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>The idea does not come first. The observation does, from your own lived experience, aimed by a North Star with four elements and written as a hypothesis that can be proven false. Nothing gets automated until you have done it by hand once and written down the input, the process and the output.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/what-to-build/aarav-example">Worked example: Aarav, Discovery to MVP</a></li>
+  <li><a href="/#b2">Discovery to hypothesis</a></li>
+  <li><a href="/c8/module-2/what-to-build/assignment-1">Assignment 1: First Proof</a></li>
+  <li><a href="/#b1">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Week 0: Idea to App workshop</span><a href="/#b1">Curriculum map</a></div></footer>
+</body>
+</html>

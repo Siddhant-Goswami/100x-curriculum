@@ -1543,11 +1543,13 @@ function hubHTML(s){
     (hb.more&&hb.more.length?'<div class="hubs">'+hb.more.filter(function(m){ return gl(m[0]); }).map(function(m){ return '<a href="'+esc(gl(m[0]))+'">'+esc(m[1])+'</a>'; }).join('')+'</div>':'');
 }
 /* What to build: the worked Aarav example sits on the discovery stop, the Assignment 1 bridge and the camp cards. */
+function wtbNotesHTML(){ var u=gl('wtbNotes'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Read the workshop notes</b><i>North Star, observation, hypothesis, the Mom Test, the manual MVP</i></span><em aria-hidden="true">→</em></a>' : ''; }
+function wtbA1HTML(){ var u=gl('wtbA1'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Read the Assignment 1 brief</b><i>The five steps, the Input-Process-Output card, what to submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>See a worked example: Aarav, Discovery to MVP</b><i>The full coach run, condensed: discovery document and 21-day manual MVP plan</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* The hackathon page sits on the hackathon bridge. */
 function hackHTML(){ var u=gl('hackathon'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the hackathon page</b><i>Pick a problem, the five moves, timeline, rules, submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function trackBitsHTML(s){
-  var h = (s.id==='b2'||s.id==='b3' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + loHTML(s) + toolsHTML(s);
+  var h = (s.id==='b1' ? wtbNotesHTML() : '') + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2'||s.id==='b3' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s)) + canHTML(s) + loHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
   if(cl) h += '<div class="cliff"><b>THE CLIFF</b>'+esc(cl)+'</div>';
   h += workHTML(s);
