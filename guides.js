@@ -106,7 +106,7 @@ var GUIDE_LINKS = {
   l09Rule: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s09',
   l09Aarav: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s10',
   l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
-  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s05',
+  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s06',
   jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
   delegation: '/c8/delegation-framework/'
 };
@@ -717,16 +717,17 @@ GUIDES.L9 = { all: {
      ticks:[
        {id:'guess', t:'Wrote my guess for the share of verifiable tasks before counting'},
        {id:'log', t:'Logged every atomic task of one week from my calendar and tools', link:'l09TrackA', linkLabel:'Track A'},
-       {id:'verify', t:'A North Star and a verifier on every row: the rule, or the judge and the signal', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
-       {id:'data', t:'Bucketed every row and marked where its data lives and how much'}
+       {id:'verify', t:'An outcome, a verifier and its speed on every row: the rule, or the judge, signal and time', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
+       {id:'data', t:'Cost if wrong, data and bucket on every row; checked the judgment rows with my judge'}
      ]},
-    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 05',
-     intro:'Five things, from section 05 of the practice set.',
+    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 06',
+     intro:'Deliverables 1 to 4 are the minimum; 5 to 9 are the full submission.',
      ticks:[
-       {id:'number', t:'My number: prediction, verifiable share, verifiable with data', link:'l09Submit', linkLabel:'What to submit'},
-       {id:'running', t:'One Automate verifier running as a formula or script, pass or fail on a real output'},
-       {id:'candidate', t:'My candidate task: verifier, data source, count, why it matters'},
-       {id:'line', t:'Line test: one idea as steps, each orange or purple, a reason for every purple', link:'l09Line', linkLabel:'Can the orange box fix it?'}
+       {id:'number', t:'My numbers: prediction, tasks verifiable, hours verifiable, verifiable fast with data', link:'l09Submit', linkLabel:'What to submit'},
+       {id:'running', t:'One Automate row taken off my plate this week, minutes saved stated'},
+       {id:'candidate', t:'My candidate task: needs an LLM, verifier and speed, data source, count, local use confirmed'},
+       {id:'golden', t:'Checklists for the candidate task and ten golden pairs from real past cases'},
+       {id:'line', t:'Line test on the candidate task: each step orange or purple, a reason for every purple', link:'l09Line', linkLabel:'Can the orange box fix it?'}
      ]}
   ],
   actions: [
@@ -737,7 +738,7 @@ GUIDES.L9 = { all: {
   read: [
     ['Lecture 9 overview', 'l09Hub', 'The lecture, in order, and done equals.'],
     ['Notes', 'l09Notes', 'What was said, with the whiteboard: the hallucinated tracks, the line, the Verifier\'s Rule, Aarav\'s Monday.'],
-    ['Practice set', 'l09Practice', 'Verify your own job: two tracks, the rules, five things to submit.'],
+    ['Practice set', 'l09Practice', 'Verify your own job: a warm-up, two tracks, Aarav\'s week, nine things to submit.'],
     ['The delegation framework', 'delegation', 'A second opinion on your buckets: automate, augment, human.']
   ],
   words: [
