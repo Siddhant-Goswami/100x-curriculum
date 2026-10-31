@@ -718,9 +718,9 @@ GUIDES.L9 = { all: {
      intro:'Your North Star first, then last week in the template. Aarav\'s week is the first tab.',
      ticks:[
        {id:'ns', t:'North Star written: by a date, a role, a specific thing, at a level', link:'l09Practice', linkLabel:'Practice set'},
-       {id:'log', t:'Listed every task from last week, from my calendar, mail and Slack', link:'l09TrackA', linkLabel:'Fill the sheet'},
-       {id:'verify', t:'Done right when, North Star, and who or what checks it on every row', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
-       {id:'pick', t:'Picked one task to build a model for, and showed the sheet to my judge'}
+       {id:'log', t:'Listed every atomic task from last week, from my calendar, mail and Slack', link:'l09TrackA', linkLabel:'Fill the sheet'},
+       {id:'verify', t:'Success criteria, North Star, verifier and data on every row', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
+       {id:'judge', t:'Showed the sheet to my judge and fixed what they corrected'}
      ]},
     {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 04',
      intro:'The sheet, shared, and one line on what surprised you.',
@@ -737,7 +737,7 @@ GUIDES.L9 = { all: {
   read: [
     ['Lecture 9 overview', 'l09Hub', 'The lecture, in order, and done equals.'],
     ['Notes', 'l09Notes', 'What was said, with the whiteboard: the hallucinated tracks, the line, the Verifier\'s Rule, Aarav\'s Monday.'],
-    ['Practice set', 'l09Practice', 'Verify your own job: your North Star, last week in the template, one task picked.'],
+    ['Practice set', 'l09Practice', 'Verify your own job: your North Star, then every atomic task of last week with its verifier and data.'],
     ['The delegation framework', 'delegation', 'A second opinion on your buckets: automate, augment, human.']
   ],
   words: [

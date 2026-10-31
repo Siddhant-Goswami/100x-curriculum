@@ -16,15 +16,14 @@ WRAP = Alignment(wrap_text=True, vertical='top')
 H, FIRST, LAST = 8, 9, 88  # header row, first and last task rows
 
 COLUMNS = [  # header, width, dropdown options
-    ('Task\n(verb + what you produced)', 36, None),
-    ('Minutes\nlast week', 10, None),
-    ('Done right when…\n(what must be true for it to count as done well)', 34, None),
+    ('Atomic task\n(verb + what you produced)', 36, None),
+    ('Time spent\n(minutes)', 10, None),
+    ('Success criteria\n(what must be true for it to count as done)', 34, None),
     ('Moves my North Star?\n(Not at all: stop here)', 17, ['A lot', 'A little', 'Not at all']),
-    ('Who or what checks it\n(a rule, or judge · signal · when)', 44, None),
-    ('Type', 14, ['Rule', 'Judgment', 'None']),
-    ('Past examples\n(input + correct output)', 16, ['None', 'Under 10', '10 to 100', 'Over 100']),
+    ('Verifier\n(a rule, or judge · signal · when)', 44, None),
+    ('Verification type', 14, ['Rule', 'Judgment', 'None']),
+    ('Data\n(past input and output pairs)', 16, ['None', 'Under 10', '10 to 100', 'Over 100']),
     ('Bucket', 14, ['Automate', 'Augment', 'Human']),
-    ('Build a model for this?\n(pick one)', 13, ['Yes']),
 ]
 
 
@@ -37,7 +36,7 @@ def build(ws, title, north_star, guess, rows):
     ws['A1'].font = Font(bold=True, size=14)
     top = [
         ('My North Star: By [month + year], I am [role or identity] doing [specific thing] at [level, income or scale].', north_star),
-        ('My guess, before counting: share of tasks a rule or a judge can check', guess),
+        ('My guess, before counting: share of tasks that are verifiable', guess),
     ]
     for i, (label, value) in enumerate(top, start=2):
         ws[f'A{i}'], ws[f'B{i}'] = label, value
@@ -52,9 +51,9 @@ def build(ws, title, north_star, guess, rows):
     with_data = '+'.join(f'COUNTIFS({rng("F")},"{t}",{rng("G")},"<>None",{rng("G")},"<>")'
                          for t in ('Rule', 'Judgment'))
     for i, (label, formula) in enumerate([
-        ('Tasks a rule or a judge can check', f'=IFERROR({checkable}/{typed},"")'),
-        ('Hours a rule or a judge can check', f'=IFERROR({hours}/{all_hours},"")'),
-        ('Checkable, with past examples', f'=IFERROR(({with_data})/{typed},"")'),
+        ('Verifiable tasks', f'=IFERROR({checkable}/{typed},"")'),
+        ('Verifiable time', f'=IFERROR({hours}/{all_hours},"")'),
+        ('Verifiable, and the data exists', f'=IFERROR(({with_data})/{typed},"")'),
     ], start=4):
         ws[f'A{i}'], ws[f'B{i}'] = label, formula
         ws[f'B{i}'].number_format = '0%'
@@ -92,7 +91,7 @@ AARAV = [
     ["Answer the category manager's Slack ask: why did Pune returns jump 38% last week?", 120,
      'The manager acts on the root cause without a follow-up question', 'A lot',
      'Category manager · acts on it with no follow-up question · within 2 days',
-     'Judgment', 'Over 100', 'Augment', 'Yes'],
+     'Judgment', 'Over 100', 'Augment'],
     ['Pull Q3 sales by channel for the cost-cut deck', 60,
      'Q3 numbers in the deck match finance', 'A little',
      'Rule: year-to-date minus Q1 and Q2 equals Q3; within 0.5% of SAP',
@@ -127,5 +126,5 @@ build(wb.active, "Aarav's week · example (9 of his 41 rows)",
       'answers for leadership with AI drafting them, at a 20% raise over my current pay.', 0.5, AARAV)
 wb.active.title = "Aarav's week (example)"
 ws = wb.create_sheet('Your week')
-build(ws, 'Your week · one row per thing you produced last week, from your calendar, mail and Slack', '', None, [])
+build(ws, 'Your week · one row per atomic task from last week, from your calendar, mail and Slack', '', None, [])
 wb.save(sys.argv[1])
