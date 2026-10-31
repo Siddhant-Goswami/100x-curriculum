@@ -1550,6 +1550,8 @@ function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" hr
 /* The hackathon page sits on the hackathon bridge. */
 function hackHTML(){ var u=gl('hackathon'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the hackathon page</b><i>Pick a problem, the five moves, timeline, rules, submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* A lecture that has happened shows one line and four key points from its notes (RECAP in guides.js); the pages hold the rest. */
+/* A lecture that has not happened yet shows only its title and a Coming soon badge. */
+function upcomingLec(s){ return s.kind==='lec' && s.date && days(TODAY,s.date)>0; }
 function recapFor(s){ var r=(typeof RECAP!=='undefined')&&RECAP[s.id]; if(!r) return null; return r.all || (track && r[track]) || null; }
 function recapHTML(r){
   return '<div class="can"><b>In one line</b><span>'+esc(r.line)+'</span></div>'+
@@ -1576,6 +1578,8 @@ function stopCard(s, focus){
   if(s.kind==='m3'){
     h += '<p>Module 3 runs for about three weeks: <b>six lectures</b> on agents built for humans. They are locked until you cross the <b>Assignment 2</b> bridge after Lecture 18. Titles, tools and dates appear here when they open.</p>';
     h += '<p>After the sixth lecture you start your <b>final capstone</b>, the last bridge to your North Star.</p>';
+  } else if(upcomingLec(s)){
+    h += '<p class="soon"><span class="pill hot">Coming soon</span></p>';
   } else {
     h += '<div id="trackBits">'+trackBitsHTML(s)+'</div>';
   }
@@ -1583,12 +1587,12 @@ function stopCard(s, focus){
   if(s.id==='HK') h += '<div class="law"><b>WHY A BRIDGE</b>Deterministic ends with Lecture 8 and a deployed MVP. The hackathon runs '+fmt(s.date)+' to '+fmt(s.end)+(s.results?', with results on '+fmt(s.results):'')+'. Then Lecture 9 opens Probabilistic, where nothing is guaranteed to repeat.</div>';
   if(s.id==='A2') h += '<div class="law"><b>WHY A BRIDGE</b>Probabilistic ends with Lecture 18. Assignment 2 puts what you built there to work, and handing it in is what unlocks Module 3.</div>';
   if(s.id==='cap') h += '<div class="law"><b>THE LAST BRIDGE</b>Module 3 ends, the capstone begins. It is built for the North Star you wrote at the start, and measured against it.</div>';
-  if(s.done){
+  if(s.done && !upcomingLec(s)){
     var open=cpOpen(s), on=cpDone(s);
     h += '<div class="cp"><div class="h">'+FLAG.replace('class="flag"','')+'Checkpoint '+(s.cp+1)+' of '+CHECKS.length+'</div>'+esc(s.done)+
       '<label class="chk'+(open?'':' off')+'"><input type="checkbox" data-cp="'+s.id+'"'+(on?' checked':'')+(open?'':' disabled')+'> '+(open?'I cleared this. Plant the flag.':'You can plant this flag after '+fmt(s.date))+'</label></div>';
   }
-  if(s.kind!=='m3') h += '<h3>Field note</h3><div class="note"><label class="vh" for="note">Field note</label><textarea id="note" data-note="'+s.id+'" placeholder="What did you observe at this stop? Only you can see this.">'+esc(sget('c8m2-note-'+s.id)||'')+'</textarea><div class="saved" id="savedMsg"></div></div>';
+  if(s.kind!=='m3' && !upcomingLec(s)) h += '<h3>Field note</h3><div class="note"><label class="vh" for="note">Field note</label><textarea id="note" data-note="'+s.id+'" placeholder="What did you observe at this stop? Only you can see this.">'+esc(sget('c8m2-note-'+s.id)||'')+'</textarea><div class="saved" id="savedMsg"></div></div>';
   var prev = TRAVEL[TRAVEL.indexOf(s)-1], next = TRAVEL[TRAVEL.indexOf(s)+1];
   h += '<div class="nav2"><button type="button" data-stop="'+(prev?prev.id:'')+'"'+(prev?'':' disabled')+'><b>← Previous</b><span>'+(prev?esc(prev.t):'Start')+'</span></button><button type="button" class="nx" data-stop="'+(next?next.id:'')+'"'+(next?'':' disabled')+'><b>Next stop →</b><span>'+(next?esc(next.t):'North Star')+'</span></button></div>';
   openPanel('stop:'+s.id, kick, C, h, focus);
