@@ -730,7 +730,7 @@ GUIDES.L9 = { all: {
     ['Right template, wrong data.', 'Asked which 100x track to pick, GPT OSS gave a good framework for seven tracks that do not exist. That is hallucination.'],
     ['Place every step on one side of the line.', 'Scraping and storing are orange. A system prompt only means something to an LLM, so that step is purple, and so is the system.'],
     ['Rule or judgment.', '1 + 2 = 3 is checked by a rule. A refund decision or "when will I get a job?" needs judgment, and that is where a probabilistic system belongs.'],
-    ['Verification first, data second.', 'The Verifier\'s Rule: the easier a task is to verify, the easier it is to train AI on. About 80% of alumni tasks are verifiable.']
+    ['Verification first, data second.', 'The Verifier\'s Rule: the easier a task is to verify, the easier it is to train AI on.']
   ],
   rule: 'Start left of the line. Your task list comes from your own calendar and tools, not from an LLM. "It\'s subjective" is not a verifier.',
   stages: [
@@ -773,7 +773,7 @@ GUIDES.L9 = { all: {
     ['Atomic task', 'A unit of work specific enough that you can be held accountable for it.'],
     ['Jagged edge', 'AI capability rises unevenly, fastest where outputs are easiest to verify.']
   ],
-  kw: 'llm language model first principles probabilistic deterministic orange purple hallucination system prompt verifier verifiers rule jason wei asymmetry of verification rule judgment atomic task north star aarav monday 80 percent jagged edge nurse automate augment human fineweb tokens qwen ollama practice set verify your own job'
+  kw: 'llm language model first principles probabilistic deterministic orange purple hallucination system prompt verifier verifiers rule jason wei asymmetry of verification rule judgment atomic task north star aarav monday jagged edge nurse automate augment human fineweb tokens qwen ollama practice set verify your own job'
 }};
 
 GUIDES.L10 = { all: {
@@ -896,7 +896,7 @@ var RECAP = {
     points: [
       'The bare model is text in, text out. One query was enough to break it.',
       "Aarav's Monday, task by task: verified by a rule, by judgment, or not at all.",
-      'About 80% of the tasks in alumni jobs are verifiable. Find your 20% that is not.',
+      'Verifiable tasks wait only on data. Find the part of your work that is not verifiable.',
       'Data is bigger than you think. A verifier does not mean automation next quarter.'
     ]}},
   L10: { all: {
