@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Tool Calling and MCP, Part 1 | 100xEngineers</title>
+<meta name="description" content="Notes for Lecture 10, part 1: one track question scored 1, 5 and 7 out of 10, why models hallucinate (missing context plus a habit of never saying no), why an API alone cannot be the bridge, electing JSON, keeping only the server, and naming it: function calling, the reverse call.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read .o{color:var(--det-ink);font-weight:500}
+body.read .p{color:var(--prob-ink);font-weight:500}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the whiteboard sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}.wb .ln .c-hum{stroke:var(--hum)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-hum{fill:var(--hum-soft);stroke:var(--hum)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .z-det{stroke:var(--det);stroke-dasharray:7 8;stroke-width:2}
+.wb .ln .z-prob{stroke:var(--prob);stroke-dasharray:7 8;stroke-width:2}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .scrib{stroke:var(--ink3);stroke-width:1.8}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:15px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}.wb .tx .c-hum{fill:var(--hum-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l10-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L10">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 10 pages"><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/">Overview</a><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Notes</a><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared whiteboard defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="phone" style="overflow:visible">
+      <rect x="0" y="0" width="34" height="60" rx="6" vector-effect="non-scaling-stroke"/>
+      <path d="M12 52 H22" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 10, part 1 · 31 October 2026</p>
+  <h1>You already derived function calling</h1>
+  <p class="dek">One query, three attempts, one formula, one interface. We started from a made-up track recommendation and ended at the bridge between probabilistic and deterministic systems, all on one whiteboard.</p>
+</div>
+
+<p class="pull">More data shrinks hallucination but does not cure it. The bridge to a trusted data source is a deterministic server that speaks JSON and makes requests for the model. OpenAI shipped it in June 2023 and called it function calling.</p>
+
+<p>Sections 01 to 08: why models hallucinate, and why more data is not enough. Sections 09 to 15: building the bridge that supplies context automatically, and its real name. Section 16: the Q&amp;A. It builds on <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9</a> and the API lectures (<a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes#s03">Lecture 4</a>, <a href="/c8/module-2/lecture-05-building-apis/notes">Lecture 5</a>). If sections 12 to 14 feel shaky, reread those before next week's build.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Back to base camp: the practice set is the same exercise</h2>
+<p>We opened on <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Lecture 9's practice set</a>, because everything after it was the same exercise run on an LLM. For every task in your job, the sheet asks for the task and time spent, its success criteria and whether it moves your North Star, the verifier, real input and output pairs (your golden dataset), and the bucket.</p>
+<table class="dials">
+  <tr><th>Verification type</th><th>Bucket</th><th>What it means</th></tr>
+  <tr><td>Rule-based</td><td><span class="o">Automate now</span></td><td>A written rule can check the output, so don't wait.</td></tr>
+  <tr><td>Judgement-based</td><td><span class="p">Augment</span></td><td>You stay in the loop and AI helps. Augmenting is not automating.</td></tr>
+  <tr><td>Not verifiable (yet)</td><td>Keep human</td><td>Leave it alone until you can verify it.</td></tr>
+</table>
+<p>Keep the sheet open. Section 08 uses the same input and output pairs to diagnose a hallucination.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The query that broke yesterday</h2>
+<blockquote class="q9">Which track should I choose in 100x Engineers cohort?</blockquote>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="The question goes into the bare GPT-OSS 120B model. Out comes a list of tracks that do not exist, crossed out, scored 1 out of 10. Below, the missing data: two career tracks and two execution paths.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="50" width="220" height="64" rx="8"/>
+    <path class="arw c-prob" d="M246 82 H296" marker-end="url(#ahv)"/>
+    <rect class="f-prob" x="304" y="52" width="130" height="60" rx="9"/>
+    <path class="arw c-prob" d="M440 82 H490" marker-end="url(#ahv)"/>
+    <rect class="f-card" x="498" y="30" width="242" height="104" rx="8"/>
+    <path class="c-act" d="M706 42 l18 18 M724 42 l-18 18"/>
+    <path class="dash ink" d="M150 176 H610 V246 H150 Z"/>
+  </g>
+  <g class="tx">
+    <text x="130" y="78" class="xs c-ink">which track should I choose</text>
+    <text x="130" y="100" class="xs c-ink">in 100x Engineers cohort?</text>
+    <text x="369" y="88" class="m c-prob">GPT-OSS</text>
+    <text x="369" y="136" class="xxs">bare model, Groq</text>
+    <text x="610" y="66" class="xxs">Frontend Engineer, Backend,</text>
+    <text x="610" y="90" class="xxs">Data, ML, DevOps, Product…</text>
+    <text x="610" y="118" class="xxs c-mute">convincing shape, made-up tracks</text>
+    <text x="700" y="162" class="m c-act">1/10</text>
+    <text x="380" y="168" class="xxs c-mute">missing data</text>
+    <text x="380" y="204" class="xs c-det">career track: Entrepreneurship or Career Accelerator</text>
+    <text x="380" y="232" class="xs c-det">execution path: Code or No Code</text>
+  </g>
+</svg>
+<figcaption>Yesterday's run. The model had never seen the real tracks.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Bare model, not a chat product.</b> GPT-OSS 120B in the GroqCloud playground, because that is what you build on.</li>
+  <li><b>The real structure is small.</b> Two career tracks (Entrepreneurship, Career Accelerator) and two execution paths (Code, No Code). The site changed after the model's training cutoff.</li>
+  <li><b>1 out of 10.</b> The one point was for a framework shape worth borrowing. A confident, well-formatted answer built on facts the model doesn't have is a <b>hallucination</b>. Yesterday's diagnosis: <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s04">the data was missing</a>.</li>
+</ul>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Round one: paste the missing data, score 5</h2>
+<ul class="pt">
+  <li><b>Half the room had proposed it yesterday.</b> A short block describing the real tracks went above the same question.</li>
+  <li><b>Better, and a different shape.</b> Same model, same question, a different framework from yesterday's: a live reminder that a probabilistic system predicts rather than retrieves. It got Code, No Code, Entrepreneurship and Career Accelerator right.</li>
+  <li><b>It still made up the details.</b> JavaScript and Go for the Code track (Python is primary, Go isn't taught). Bubble, Webflow and Zapier for No Code: none of them are taught.</li>
+</ul>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Round two: paste the whole curriculum, score 7</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three runs side by side. Lecture 9: the question alone, 1 out of 10. Round one: question plus tracks, 5 out of 10. Round two: question plus tracks plus curriculum.csv, 7 out of 10, still names Zapier.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="40" y="60" width="180" height="38" rx="7"/>
+    <path class="arw c-prob" d="M130 106 V196" marker-end="url(#ahv)"/>
+    <rect class="f-card" x="290" y="60" width="180" height="38" rx="7"/>
+    <rect class="f-det" x="290" y="104" width="180" height="38" rx="7"/>
+    <path class="arw c-prob" d="M380 150 V196" marker-end="url(#ahv)"/>
+    <rect class="f-card" x="540" y="60" width="180" height="38" rx="7"/>
+    <rect class="f-det" x="540" y="104" width="180" height="38" rx="7"/>
+    <rect class="f-det" x="540" y="148" width="180" height="38" rx="7"/>
+    <path class="arw c-prob" d="M630 190 V196" marker-end="url(#ahv)"/>
+    <rect class="f-prob" x="85" y="204" width="90" height="40" rx="8"/>
+    <rect class="f-prob" x="335" y="204" width="90" height="40" rx="8"/>
+    <rect class="f-prob" x="585" y="204" width="90" height="40" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="130" y="40" class="m">Lecture 9</text>
+    <text x="380" y="40" class="m">round one</text>
+    <text x="630" y="40" class="m">round two</text>
+    <text x="130" y="85" class="xxs c-ink">the question</text>
+    <text x="380" y="85" class="xxs c-ink">the question</text>
+    <text x="380" y="129" class="xxs c-det">+ the tracks</text>
+    <text x="630" y="85" class="xxs c-ink">the question</text>
+    <text x="630" y="129" class="xxs c-det">+ the tracks</text>
+    <text x="630" y="173" class="xxs c-det">+ curriculum.csv</text>
+    <text x="130" y="230" class="xs c-prob">LLM</text>
+    <text x="380" y="230" class="xs c-prob">LLM</text>
+    <text x="630" y="230" class="xs c-prob">LLM</text>
+    <text x="130" y="284" class="m">1/10</text>
+    <text x="380" y="284" class="m">5/10</text>
+    <text x="630" y="284" class="m c-act">7/10</text>
+    <text x="130" y="312" class="xxs c-mute">invented tracks</text>
+    <text x="380" y="312" class="xxs c-mute">JavaScript, Go, Bubble</text>
+    <text x="630" y="312" class="xxs c-mute">still names Zapier</text>
+  </g>
+</svg>
+<figcaption>Same model, same question. Only the context changed, and the score stopped short of 10.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The full C8 calendar went in as CSV.</b> One snag first: pasted as a sheet, it reached the model as an image. It had to be plain text before the model could read it.</li>
+  <li><b>The best answer yet.</b> The real parts of the Code track (UI, API, database, the tools and the arcs), and a sharper decision framework.</li>
+  <li><b>It still named Zapier,</b> which appears nowhere in the pasted curriculum. Held at 7, not the 8 some of you offered, because it was still wrong after being given almost everything.</li>
+</ul>
+<p class="pull">Supplying data to a system that predicts reduces hallucination. It doesn't remove it.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Why do models hallucinate? The room, then Karpathy</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="A line from search engine, zero dreaming, to LLM, all dreaming. Below, a dashed box labelled LLM assistant holds client, APIs, data, tools and a small purple model box.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M80 70 H680" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="dash ink" d="M60 150 H700 V270 H60 Z"/>
+    <rect class="f-card" x="84" y="190" width="100" height="48" rx="8"/>
+    <rect class="f-card" x="204" y="190" width="100" height="48" rx="8"/>
+    <rect class="f-card" x="324" y="190" width="100" height="48" rx="8"/>
+    <rect class="f-card" x="444" y="190" width="100" height="48" rx="8"/>
+    <rect class="f-prob" x="576" y="190" width="100" height="48" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="80" y="44" class="m l">search engine</text>
+    <text x="680" y="44" class="m r c-prob">LLM</text>
+    <text x="80" y="102" class="xxs l">zero dreaming: never new</text>
+    <text x="680" y="102" class="xxs r">all dreaming: a prompt starts it</text>
+    <text x="380" y="140" class="xs">LLM assistant: the whole system, and where hallucination is a problem</text>
+    <text x="134" y="220" class="xs">client</text>
+    <text x="254" y="220" class="xs">APIs</text>
+    <text x="374" y="220" class="xs">data</text>
+    <text x="494" y="220" class="xs">tools</text>
+    <text x="626" y="220" class="xs c-prob">model</text>
+  </g>
+</svg>
+<figcaption>Karpathy's framing: the model only dreams. The assistant around it is what lands in the wrong territory.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>From chat, raw.</b> Swasti: it hasn't been trained to say no. Van: output is mandatory, so it fills gaps. Mayuresh and Antriksh: knowledge cutoff, no ground truth (but we supplied both, and it didn't stop). Varun: the path between input and output isn't defined by rules. Abhishek: a prediction engine, not a logic engine. Chetan: built to keep generating, not to stop and check.</li>
+  <li><b>Abhishek and Chetan came closest,</b> and echoed Andrej Karpathy. In his words, roughly: hallucination is all LLMs do. We only call it a hallucination when the dream lands somewhere factually wrong. The LLM has no hallucination problem; the <b>LLM assistant</b> does. His fixes: retrieval, in-context learning, verification chains, tool use.</li>
+  <li><b>That is the ChatGPT we took apart.</b> A client, APIs, data stores and a model (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s10">Lecture 2</a>). The model is one box; the assistant is the whole system.</li>
+  <li><b>Partly an expectation problem.</b> If you want the correct record every time and no creativity, build an <span class="o">orange</span> system: client, server, database. When the data is missing it returns 404 instead of guessing.</li>
+</ul>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>The model that cannot say no</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="Hallucination equals missing context plus the trained behaviour of never saying no. Below, a bar of instruction-data records in which a sliver under 5 percent are the model declining.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="210" y="40" width="210" height="64" rx="9"/>
+    <rect class="f-prob" x="480" y="40" width="250" height="64" rx="9"/>
+    <rect class="f-card" x="60" y="190" width="640" height="34" rx="6"/>
+    <rect class="f-act" x="672" y="190" width="28" height="34" rx="4"/>
+  </g>
+  <g class="tx">
+    <text x="110" y="80" class="m">hallucination =</text>
+    <text x="315" y="78" class="m c-det">missing context</text>
+    <text x="450" y="80" class="m">+</text>
+    <text x="605" y="70" class="m c-prob">never says no</text>
+    <text x="605" y="94" class="xxs">trained behavior</text>
+    <text x="60" y="176" class="xs l">OpenOrca: system prompt, question, ideal response</text>
+    <text x="370" y="212" class="xxs">the model answers</text>
+    <text x="700" y="256" class="xxs r c-act">under 5%: "I don't know"</text>
+  </g>
+</svg>
+<figcaption>Fix only the context and the behavior still fills whatever gap remains. That is why the score stopped at 7.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>We opened OpenOrca,</b> an open instruction dataset. Each record: a <b>system prompt</b> (a helpful assistant that always explains), a question, and an ideal response. The same shape as your practice-set sheet, input and ideal output, repeated hundreds of thousands of times.</li>
+  <li><b>Look at the ratio.</b> In the roughly 30,000 records we scrolled through, fewer than 5% were the model saying it doesn't know. The model is trained to predict, not to decline. People-pleasing, in a model.</li>
+  <li><b>Our query sounds familiar; the entity doesn't.</b> It has seen thousands of "which option should I choose" questions, never 100x Engineers. So it assumes, builds a plausible framework, and fills the gaps with whatever was common. That's how two-year-old no-code tools got in.</li>
+  <li><b>Why "context", not "data".</b> Context is the data that reaches the model inside its context window. The word carries through every lecture from here.</li>
+</ul>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Two proposals, tested live</h2>
+<ul class="pt">
+  <li><b>A better prompt (Antriksh).</b> Define "better" first. If it means more context, round two was already the ideal input. Role and goal wording still raise the score. <b>Verdict:</b> better prompts improve the answer, and in our test they didn't remove the hallucination.</li>
+  <li><b>Temperature near zero (Swasti).</b> <b>Temperature</b> controls randomness in the output. Set to 0, full-context prompt, rerun: still hallucinating. <b>Verdict:</b> a deterministic wrong answer is still wrong. Swasti's follow-up, a low value plus a system prompt, is yours to run and report back.</li>
+</ul>
+<p class="pull">If you think something fixes hallucination, write it as steps and run it today. Any definition you hear is a hypothesis until your own test says otherwise.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Diagnose each case: the golden pair</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Ideal input on top. Below, the ideal output, ticked, beside the model's output with untaught tools circled. The difference points to the reason: missing context.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="160" y="20" width="440" height="44" rx="8"/>
+    <path class="arw" d="M300 70 L200 100" marker-end="url(#ah)"/>
+    <path class="arw" d="M460 70 L560 100" marker-end="url(#ah)"/>
+    <rect class="f-card" x="40" y="106" width="300" height="96" rx="8"/>
+    <path class="c-hum" d="M306 120 l8 9 l16 -20"/>
+    <rect class="f-card" x="420" y="106" width="300" height="96" rx="8"/>
+    <ellipse class="c-act" cx="570" cy="176" rx="118" ry="18"/>
+    <path class="arw" d="M346 154 H414" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw" d="M380 210 V238" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="48" class="xs c-ink">ideal input: which track should I choose?</text>
+    <text x="190" y="134" class="m">ideal output</text>
+    <text x="190" y="162" class="xxs">round-two answer, untaught</text>
+    <text x="190" y="184" class="xxs">tools removed</text>
+    <text x="570" y="134" class="m c-prob">model output</text>
+    <text x="570" y="158" class="xxs">same answer, plus</text>
+    <text x="570" y="182" class="xxs">Zapier, Bubble, Webflow</text>
+    <text x="380" y="144" class="xxs">compare</text>
+    <text x="380" y="266" class="xs c-det">reason: missing context. The No Code tools were never in the copy we pasted.</text>
+  </g>
+</svg>
+<figcaption>Input, ideal output, actual output. The difference names the cause.</figcaption>
+</figure>
+<ol>
+  <li>Write the <b>ideal input</b>: the breaking query.</li>
+  <li>Write the <b>ideal output</b>: the round-two answer with the untaught tools removed. Together they are one <b>golden dataset</b> entry (<a href="/c8/module-2/lecture-01-orientation/notes#s09">Lecture 1</a>).</li>
+  <li>Run the input, put the output beside the ideal, and ask what caused the difference.</li>
+</ol>
+<p>This time the cause was plain. The instructor's copy of the curriculum says the No Code track uses UI builders but never names one. The missing information was missing from our own data too. Adding the real set (Lovable, Google AI Studio, Antigravity) closes the gap.</p>
+<p>The formula is a sum. For many queries the only gap is missing context; for others the behavior fills gaps you didn't know you had. Missing context is the most common cause, which is why the next question matters.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Automate the paste: a data source and a bridge</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 260" role="img" aria-label="If the reason is missing context, supply it. A data source holding the curriculum docs on the left, the LLM on the right, and a dashed line with a question mark between them: the bridge.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#db" x="70" y="100" class="c-det"/>
+    <path class="dash ink" d="M190 135 H560"/>
+    <rect class="f-prob" x="580" y="104" width="130" height="62" rx="9"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="40" class="xs">if the reason is missing context, then supply the missing context</text>
+    <text x="115" y="200" class="m c-det">1 · data source</text>
+    <text x="115" y="226" class="xxs">curriculum docs, Drive</text>
+    <text x="375" y="122" class="h c-act">?</text>
+    <text x="375" y="170" class="m">2 · bridge</text>
+    <text x="375" y="198" class="xxs">no human, never stale,</text>
+    <text x="375" y="222" class="xxs">any format: sheet, HTML, PDF</text>
+    <text x="645" y="142" class="m c-prob">LLM</text>
+  </g>
+</svg>
+<figcaption>Pasting by hand doesn't scale to every user. Two things are needed, and most designs skipped both.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>You can't ask every user to paste the curriculum first.</b> So: can we automate supplying the missing context? The one rule was to describe it in words the class already knows, not names like MCP.</li>
+  <li><b>The room's first designs.</b> Mohit: prompt, the LLM checks via a tool, output. Antriksh: decide which APIs to call, get the context, run the prompt. Hardik: context through the system prompt. Mayuresh: gather from the repository, pass both to the LLM.</li>
+  <li><b>Missing assumption one: where does the context come from?</b> A trusted <b>data source</b> that actually contains it. For us, the curriculum repository every instructor writes into. If it isn't in your data source, no model, tool, protocol or fine-tuning run can supply it.</li>
+  <li><b>Missing assumption two: what carries it?</b> Instructors keep adding material (Rahul, Pranay, and soon Tejas, who has fine-tuned models in production and teaches the last part of this module). You need a <b>bridge</b> that doesn't go stale and needs no human.</li>
+  <li><b>The chat named the bridge: an API,</b> a common language plus a set of rules (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s05">Lecture 2</a>). Shout-out to Alex, Anand, Satyaki, Swasti, Shubham, Anupama, Anuj, Sai Teja, Abhishek and Antriksh. Section 12 tests that answer.</li>
+</ul>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Ten minutes to build the bridge</h2>
+<p>The challenge: connect the C8 curriculum CSV to GPT-OSS 120B on GroqCloud and answer the breaking query from it automatically. Any tool, code or no code, localhost counts. The bar: the manual 7 out of 10, with no pasting.</p>
+<ul class="pt">
+  <li><b>Anand</b> built a tool so the assistant could fetch the CSV on every prompt. Live, the tool rejected its arguments and the run failed.</li>
+  <li><b>Abhineet</b>, with Gemini guiding, stored the CSV and fetched it as context for each question. It ran end to end. He rated the answer 6, below what pasting got.</li>
+  <li><b>Why did almost nobody finish?</b> On paper it is two boxes and one interface, and you have shipped APIs and full apps across a month. Sai Teja named it: he couldn't investigate the errors. That is the car from onboarding week: a rented car with a driver works until it breaks, and then only someone who can drive can fix it.</li>
+</ul>
+<p class="pull">You can outsource your thinking. You cannot outsource your understanding.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>What the model actually needs to receive</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="A data source, curriculum.csv, feeds the data card. Input, instruction and data cards stack into one prompt, which goes to the LLM. Prompt equals data plus instruction plus input.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#db" x="30" y="150" class="c-det"/>
+    <path class="arw c-det" d="M126 182 H196" marker-end="url(#ahd)"/>
+    <rect class="f-card" x="204" y="40" width="270" height="48" rx="8"/>
+    <rect class="f-card" x="204" y="100" width="270" height="48" rx="8"/>
+    <rect class="f-det" x="204" y="160" width="270" height="48" rx="8"/>
+    <path class="scrib" d="M490 44 Q510 44 510 70 V100 Q510 124 528 124 Q510 124 510 148 V178 Q510 204 490 204"/>
+    <path class="arw c-prob" d="M536 124 H596" marker-end="url(#ahv)"/>
+    <rect class="f-prob" x="604" y="94" width="120" height="60" rx="9"/>
+  </g>
+  <g class="tx">
+    <text x="75" y="248" class="xs c-det">curriculum.csv</text>
+    <text x="339" y="70" class="xs c-ink">input: the question, as typed</text>
+    <text x="339" y="130" class="xs c-ink">instruction: use this for 100x</text>
+    <text x="339" y="190" class="xs c-det">data: the CSV, as text</text>
+    <text x="664" y="130" class="m c-prob">LLM</text>
+    <text x="380" y="252" class="xs">prompt = data + instruction + input</text>
+  </g>
+</svg>
+<figcaption>We produced the 7 out of 10 by hand, so we know exactly what has to arrive.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Three parts in one prompt.</b> The input, as typed. An instruction as plain as "Here is the 100x curriculum. Whenever someone asks about 100x Engineers, use it." The data: CSV is already text, so it goes in as is. The same "prompt plus input equals package" from <a href="/c8/module-2/lecture-05-building-apis/notes#s11">Lecture 5</a>.</li>
+  <li><b>The parts list looks short.</b> One chat completions call to GroqCloud with your key, the dataset, this prompt. On paper, solved.</li>
+  <li><b>Is anything else needed?</b> Hand those three to an AI and ask for the app, and it still won't do the job right. Mohit's instinct pointed at the gap: something has to sit between the two sides. The room assumed that something was the API.</li>
+</ul>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Testing the assumption: can an API be the bridge?</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="A file card, curriculum.csv, that speaks no language, and a purple LLM that cannot hold a contract. Between them the word API is crossed out: nothing has been agreed.">
+  <g class="ln" filter="url(#wob)">
+    <path class="f-card" d="M40 60 H190 L220 90 V180 H40 Z"/>
+    <path class="thin" d="M190 60 V90 H220"/>
+    <rect class="f-prob" x="560" y="70" width="160" height="100" rx="10"/>
+    <path class="dash ink" d="M232 120 H548"/>
+    <path class="c-act" d="M350 92 l60 56 M410 92 l-60 56"/>
+  </g>
+  <g class="tx">
+    <text x="130" y="112" class="m">curriculum</text>
+    <text x="130" y="138" class="m">.csv</text>
+    <text x="130" y="212" class="xxs">a file: speaks no language,</text>
+    <text x="130" y="234" class="xxs">can't send or answer a request</text>
+    <text x="380" y="80" class="m">API?</text>
+    <text x="380" y="190" class="xxs">nothing agreed:</text>
+    <text x="380" y="212" class="xxs">no common language, no rules</text>
+    <text x="640" y="128" class="m c-prob">LLM</text>
+    <text x="640" y="212" class="xxs">probabilistic: can't hold</text>
+    <text x="640" y="234" class="xxs">a contract the same way twice</text>
+  </g>
+</svg>
+<figcaption>An API needs two machines that agree. Neither side here can.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The data source is a file.</b> Text separated by commas. It can't maintain itself, send a request, answer one, or return a status code.</li>
+  <li><b>The model is probabilistic.</b> You can send it prompts, but you can't be sure what comes back, today or after the next update. Expecting it to hold up its side of a contract every time is the mistake.</li>
+  <li><b>Nothing was agreed.</b> No common language, no rules. English? This lecture is in English; it could have been in Hindi.</li>
+  <li><b>The answer came from habit,</b> "connect things with an API", not from asking what exactly is being connected and how each side communicates. An interface needs its two ingredients first.</li>
+</ul>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Electing a common language</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 280" role="img" aria-label="Interface equals two things. One, a common language: CSV, binary and English crossed out, JSON circled. Two, a set of rules: client, server, URL, status codes, and the four methods POST, GET, PUT or PATCH, DELETE.">
+  <g class="ln" filter="url(#wob)">
+    <path class="dash ink" d="M20 30 H740 V260 H20 Z"/>
+    <path class="thin" d="M380 60 V240"/>
+    <path class="scrib" d="M66 128 H128 M166 128 H236 M84 176 H172"/>
+    <ellipse class="c-det" cx="276" cy="170" rx="48" ry="22"/>
+  </g>
+  <g class="tx">
+    <text x="200" y="70" class="m">1 · common language</text>
+    <text x="97" y="134" class="xs">CSV</text>
+    <text x="201" y="134" class="xs">binary</text>
+    <text x="128" y="182" class="xs">English</text>
+    <text x="276" y="178" class="m c-det">JSON</text>
+    <text x="200" y="230" class="xxs">every API already speaks it</text>
+    <text x="560" y="70" class="m">2 · set of rules</text>
+    <text x="560" y="120" class="xs">client, server, URL</text>
+    <text x="560" y="148" class="xs">200, 404 …</text>
+    <text x="560" y="186" class="xs c-det">POST · GET · PUT/PATCH · DELETE</text>
+    <text x="560" y="230" class="xxs">reused from Module 1</text>
+  </g>
+</svg>
+<figcaption>Lecture 2's definition, applied to the model and the data source.</figcaption>
+</figure>
+<table class="dials">
+  <tr><th>Candidate</th><th>Proposed by</th><th>Verdict</th></tr>
+  <tr><td>CSV</td><td>Antriksh</td><td>A file format, not a language. A CSV can hold English, or even JSON.</td></tr>
+  <tr><td>Binary</td><td>Satyaki</td><td>What machines run on, but you can't read or check it. If you can't verify, you can't build.</td></tr>
+  <tr><td>Plain text, Markdown</td><td>several</td><td>File formats; the language inside is English.</td></tr>
+  <tr><td>English</td><td>the room</td><td>Works for one file, then breaks. It ties you to sources in that language and must be translated into machine instructions anyway.</td></tr>
+  <tr><td>JSON</td><td>many</td><td><span class="o">Elected.</span></td></tr>
+</table>
+<p>We already chose JSON once, for APIs. The web runs on JavaScript, so every site understands JSON, which is why it became how machines talk. Every <span class="o">orange</span> system we built already speaks it, so only the model has to learn it, and asked live, GPT-OSS said it can read, generate and validate JSON. If the source later moves to a Google Sheet, JSON still reaches it; English wouldn't.</p>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>Reuse the rules, keep only the server</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 320" role="img" aria-label="The orange deterministic zone: client crossed out, database crossed out, the server kept. The server reads curriculum.csv in JSON and talks to the purple LLM over an API in JSON. Under the server: address, action, key, package.">
+  <g class="ln" filter="url(#wob)">
+    <path class="z-det" d="M20 40 H520 V300 H20 Z"/>
+    <path class="z-prob" d="M574 40 H740 V300 H574 Z"/>
+    <rect class="f-card" x="44" y="76" width="110" height="52" rx="9"/>
+    <path class="scrib" d="M48 80 L150 124 M150 80 L48 124"/>
+    <use href="#db" x="54" y="196"/>
+    <path class="scrib" d="M52 196 L148 274 M148 196 L52 274"/>
+    <rect class="f-det" x="250" y="120" width="150" height="66" rx="10"/>
+    <path class="f-card" d="M430 202 H480 L500 222 V266 H430 Z"/>
+    <path class="arw c-det" d="M362 192 L426 224" marker-start="url(#ahd)" marker-end="url(#ahd)"/>
+    <path class="arw c-prob" d="M406 140 H596" marker-end="url(#ahv)"/>
+    <path class="arw c-prob" d="M596 166 H406" marker-end="url(#ahv)"/>
+    <rect class="f-prob" x="600" y="120" width="114" height="66" rx="9"/>
+  </g>
+  <g class="tx">
+    <text x="270" y="30" class="m c-det">deterministic</text>
+    <text x="657" y="30" class="m c-prob">probabilistic</text>
+    <text x="99" y="108" class="xs c-mute">client</text>
+    <text x="99" y="292" class="xxs c-mute">database</text>
+    <text x="325" y="160" class="m c-det">server</text>
+    <text x="250" y="214" class="xxs l">address · action</text>
+    <text x="250" y="236" class="xxs l">key · package</text>
+    <text x="465" y="290" class="xxs">curriculum.csv</text>
+    <text x="408" y="200" class="xxxs c-det">JSON</text>
+    <text x="500" y="130" class="xxs c-prob">API · JSON</text>
+    <text x="657" y="160" class="m c-prob">LLM</text>
+  </g>
+</svg>
+<figcaption>Strip the system you have built for six weeks down to the one box that can act.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>The rules, reused.</b> Client and server, a URL to name a resource, status codes (200, 404), and the four methods: POST create, GET read, PUT or PATCH update, DELETE delete. Every request needs an address, an action, a key and a package (<a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes#s03">Lecture 4</a>).</li>
+  <li><b>Who performs them?</b> Not the file; it can't return a 200. Not the model; even ChatGPT's model doesn't make these calls itself. Anand and others got there from first principles: the deterministic system.</li>
+  <li><b>But not all of it.</b> The database goes: the data already lives in the data source. The client goes: this is machine to machine. <b>The server stays.</b> It runs every operation, speaks JSON, reaches anything with an API (Gmail, WhatsApp, a Google Sheet), and already reaches the LLM.</li>
+  <li><b>Nothing inside it predicts.</b> That orange box is the interface the room was looking for.</li>
+</ul>
+</section>
+
+<section class="s" id="s15"><h2><span class="n">15</span>Naming it: function calling, and the reverse call</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 380" role="img" aria-label="Six numbered steps. 1, the person asks the server. 2, the server sends the question and the tool description to the LLM. 3, in coral, the LLM sends back a tool call asking the server to read curriculum.csv. 4, the server reads the data source. 5, the server sends the result to the LLM. 6, the LLM answers, through the server, to the person.">
+  <defs><style>.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}</style></defs>
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="34" y="90" style="stroke:var(--ink2)"/>
+    <rect class="f-det" x="250" y="70" width="140" height="190" rx="10"/>
+    <rect class="f-prob" x="600" y="70" width="130" height="190" rx="10"/>
+    <use href="#db" x="275" y="282" class="c-det"/>
+    <path class="arw" d="M94 110 H242" marker-end="url(#ah)"/>
+    <path class="arw c-prob" d="M398 100 H592" marker-end="url(#ahv)"/>
+    <path class="arw c-act" d="M592 150 H398" marker-end="url(#ahc)"/>
+    <path class="arw c-det" d="M320 266 V280" marker-start="url(#ahd)" marker-end="url(#ahd)"/>
+    <path class="arw c-prob" d="M398 196 H592" marker-end="url(#ahv)"/>
+    <path class="arw" d="M592 236 H398" marker-end="url(#ah)"/>
+    <path class="arw" d="M242 236 H94" marker-end="url(#ah)"/>
+    <circle class="badge" cx="168" cy="110" r="11"/>
+    <circle class="badge" cx="495" cy="100" r="11"/>
+    <circle class="badge act" cx="495" cy="150" r="11"/>
+    <circle class="badge" cx="350" cy="276" r="11"/>
+    <circle class="badge" cx="495" cy="196" r="11"/>
+    <circle class="badge" cx="495" cy="236" r="11"/>
+  </g>
+  <g class="tx">
+    <text x="320" y="56" class="m c-det">server</text>
+    <text x="665" y="56" class="m c-prob">LLM</text>
+    <text x="60" y="250" class="xxs">person</text>
+    <text x="168" y="114" class="bn">1</text>
+    <text x="168" y="96" class="xxs">question</text>
+    <text x="495" y="104" class="bn">2</text>
+    <text x="495" y="86" class="xxs c-prob">question + tool description</text>
+    <text x="495" y="154" class="bn">3</text>
+    <text x="495" y="178" class="xxs c-act">tool call: read curriculum.csv</text>
+    <text x="350" y="280" class="bn">4</text>
+    <text x="395" y="314" class="xxs c-det l">runs the read</text>
+    <text x="320" y="374" class="xxs c-det">curriculum.csv</text>
+    <text x="495" y="200" class="bn">5</text>
+    <text x="320" y="170" class="xxs">executes,</text>
+    <text x="320" y="192" class="xxs">speaks JSON</text>
+    <text x="665" y="160" class="xxs">decides it</text>
+    <text x="665" y="182" class="xxs">needs the tool</text>
+    <text x="495" y="240" class="bn">6</text>
+    <text x="495" y="260" class="xxs">answer</text>
+    <text x="545" y="216" class="xxs c-prob">result</text>
+  </g>
+</svg>
+<figcaption>Steps 2 and 5 run the way calls always have, server to model. Step 3 is the reversal: the model asks the server to act for it.</figcaption>
+</figure>
+<p>On 13 June 2023 OpenAI announced what the room had just drawn: a more reliable way to connect GPT to external tools and APIs, with models fine-tuned to detect when a function needs calling. Their example was the weather in Boston. They called it <b>function calling</b>; today it's also called <b>tool calling</b>. Read their flow against our board:</p>
+<ol>
+  <li><b>The request.</b> Your app sends the input plus a description of the available functions, in JSON schema: the language we elected.</li>
+  <li><b>The decision.</b> The model decides whether it needs a tool and, if so, emits a <b>tool call</b>: JSON naming the function and its arguments.</li>
+  <li><b>The execution.</b> Your backend, the <b>execution environment</b>, intercepts that JSON, runs the real query or API call, and collects the result.</li>
+  <li><b>The final response.</b> The backend sends the result back, and the model turns it into a sentence.</li>
+</ol>
+<ul class="pt">
+  <li><b>The one new thing is the direction.</b> For four weeks our server called the LLM. Now give the model "We have curriculum.csv. Use it when someone asks about 100x Engineers." When such a question arrives, the model asks the server to make the request for it, with address, action, key and package. The server runs it and the data lands in the context window. That is the automation the challenge asked for.</li>
+  <li><b>It is the foundation for what comes next:</b> MCP, agent-to-agent communication, and the work on connecting probabilistic and deterministic systems all build on it.</li>
+</ul>
+<p class="pull">Until now, deterministic called probabilistic. With tool calling, probabilistic asks deterministic to act. When an agent fails, check that handoff first.</p>
+</section>
+
+<section class="s" id="s16"><h2><span class="n">16</span>From the Q&amp;A</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="Two ways to route. Left, purple: an English instruction lets the LLM pick among M1, M2 code, M2 no code and M3, followed most of the time. Right, orange: the LLM only extracts the keyword tool calling; the server searches keyword lists and picks the file.">
+  <g class="ln" filter="url(#wob)">
+    <path class="thin" d="M380 30 V290"/>
+    <rect class="f-prob" x="40" y="120" width="100" height="56" rx="9"/>
+    <rect class="f-card" x="230" y="60" width="110" height="36" rx="7"/>
+    <rect class="f-card" x="230" y="106" width="110" height="36" rx="7"/>
+    <rect class="f-card" x="230" y="152" width="110" height="36" rx="7"/>
+    <rect class="f-card" x="230" y="198" width="110" height="36" rx="7"/>
+    <path class="arw c-prob" d="M146 140 L224 80 M146 145 L224 124 M146 152 L224 168 M146 158 L224 214" marker-end="url(#ahv)"/>
+    <rect class="f-prob" x="410" y="120" width="100" height="56" rx="9"/>
+    <path class="arw c-prob" d="M516 148 H556" marker-end="url(#ahv)"/>
+    <rect class="f-det" x="564" y="60" width="170" height="176" rx="9"/>
+    <rect class="f-card" x="578" y="150" width="142" height="30" rx="6"/>
+  </g>
+  <g class="tx">
+    <text x="200" y="30" class="m c-prob">routing in English</text>
+    <text x="90" y="154" class="xs c-prob">LLM</text>
+    <text x="285" y="84" class="xs">M1 diffusion</text>
+    <text x="285" y="130" class="xs">M2 code</text>
+    <text x="285" y="176" class="xs">M2 no code</text>
+    <text x="285" y="222" class="xs">M3 agents</text>
+    <text x="200" y="276" class="xxs">followed most of the time, not every time</text>
+    <text x="570" y="30" class="m c-det">routing by search</text>
+    <text x="460" y="104" class="xxs">"what is tool calling?"</text>
+    <text x="460" y="154" class="xs c-prob">LLM</text>
+    <text x="460" y="200" class="xxs c-prob">→ "tool calling"</text>
+    <text x="649" y="88" class="xs c-det">server: keyword lists</text>
+    <text x="649" y="122" class="xxs">M1: diffusion, images…</text>
+    <text x="649" y="170" class="xxs c-ink">M2: LLM, tool calling…</text>
+    <text x="649" y="212" class="xxs">M3: agents…</text>
+    <text x="570" y="276" class="xxs">a plain search picks the file, every time</text>
+  </g>
+</svg>
+<figcaption>Move the decision you can't afford to get wrong to the deterministic side.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Anand: if we give the model several API calls, does every prompt run all of them?</b> It depends on the instruction. List every file (M1, M2 code, M2 no code, M3) under "use these for 100x questions" and it calls them all. Routing in English ("LLMs, use M2; diffusion, M1; agents, M3") works surprisingly well, but routing is where you want no creativity, and it is followed most of the time, not every time. The fix: keep a keyword list per module, ask the model only to pull out the concepts ("tool calling"), and let the server search the lists. Start simple; switch to search as sources multiply. Alex called it <b>indexing</b>; the RAG lecture picks it up.</li>
+  <li><b>Satyaki: so in ChatGPT the request goes UI to server to LLM, and back?</b> Yes, exactly what the network tab showed when we took ChatGPT apart (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s10">Lecture 2</a>).</li>
+  <li><b>Antriksh: so before 2023 no LLM could reliably tell you the time or the weather?</b> Correct. In 2022 many companies, the instructor's included, built their own servers to bridge exactly this gap, which is what you are building now.</li>
+</ul>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Hallucination</dt><dd>A confident answer that lands in factually wrong territory. For the model, it is the same act as every right answer: prediction.</dd>
+  <dt>LLM assistant</dt><dd>The whole system around the model: client, APIs, data, tools. This is what we stop from hallucinating.</dd>
+  <dt>Missing context</dt><dd>Data the answer needs that never reached the context window. The most common cause.</dd>
+  <dt>Can't-say-no behavior</dt><dd>The trained habit of always answering, from instruction data where under 5% of responses decline.</dd>
+  <dt>System prompt</dt><dd>The instruction that tells the model how to behave.</dd>
+  <dt>Golden dataset</dt><dd>Ideal input and output pairs from your own experience. Used to diagnose, evaluate, and later fine-tune.</dd>
+  <dt>Temperature</dt><dd>Controls randomness in the output. Lowering it doesn't supply missing context.</dd>
+  <dt>Data source</dt><dd>The trusted store that must hold the missing context before any bridge can help.</dd>
+  <dt>Interface</dt><dd>A common language plus a set of rules that lets two systems communicate.</dd>
+  <dt>JSON</dt><dd>The web's common language, elected because every API already speaks it and the model can learn it.</dd>
+  <dt>Function calling (tool calling)</dt><dd>The model asks a deterministic server to run a request for it and return the result.</dd>
+  <dt>Tool call</dt><dd>The model's JSON naming the function and its arguments.</dd>
+  <dt>Execution environment</dt><dd>Your backend: intercepts the tool call, runs it, returns the raw result.</dd>
+</dl>
+</details>
+</section>
+
+<section class="s" id="s17"><h2><span class="n">17</span>Before Tuesday's office hours</h2>
+<ol>
+  <li><b>Finish <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Lecture 9's practice set</a></b> in your copy of the sheet: every task with its verifier type, golden pairs and bucket.</li>
+  <li><b>Break the model on your own query.</b> One question from your job, on GPT-OSS 120B in the <a href="https://console.groq.com/playground" target="_blank" rel="noopener">GroqCloud playground</a>, bare, then with context. Score each out of 10 against your golden pair and write down the root cause.</li>
+  <li><b>Run one fix experiment.</b> Low temperature plus a system prompt, a better instruction, or your own idea. Write it as steps, run it, post the result in Discord.</li>
+  <li><b>Build the reverse call.</b> Start from the code template (Code track) or Rahul's template (No Code track). Give the model the instruction and a tool that reads the curriculum CSV, and have your server run the call it asks for. UI or CLI both count. It passes when the breaking query gets at least the 7 out of 10 answer with no pasting.</li>
+  <li><b>Bring it to Tuesday's office hours.</b> Next week we build this live, both tracks.</li>
+</ol>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>A model hallucinates when missing context meets a trained habit of never saying no. You can fix the context half with a bridge to a trusted data source. That bridge isn't an API alone: a file speaks no language and a model can't make requests. It is a deterministic server that speaks JSON and makes the request for the model. If you can derive that interface from first principles, you can derive every protocol built on it.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="https://openai.com/index/function-calling-and-other-api-updates/" target="_blank" rel="noopener">OpenAI, 13 June 2023: function calling</a></li>
+  <li><a href="https://x.com/karpathy/status/1733299213503787018" target="_blank" rel="noopener">Andrej Karpathy on hallucination: the dream machine</a></li>
+  <li><a href="https://huggingface.co/datasets/Open-Orca/OpenOrca" target="_blank" rel="noopener">The OpenOrca instruction dataset</a></li>
+  <li><a href="https://console.groq.com/docs/api-reference#chat-create" target="_blank" rel="noopener">GroqCloud chat completions reference</a></li>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s04">Lecture 9: the query that broke it</a></li>
+  <li><a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s05">Lecture 2: two systems, and the bridge between them</a></li>
+  <li><a href="/#L10">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 10: Tool calling and MCP, part 1</span><a href="/#L10">Curriculum map</a><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/">All Lecture 10 pages</a></div></footer>
+</body>
+</html>

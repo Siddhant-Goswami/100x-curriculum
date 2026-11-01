@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tool Calling and MCP | 100xEngineers</title>
+<meta name="description" content="Cohort 8 Module 2, Lecture 10, part 1. Why models hallucinate, why more data is not a cure, and the bridge derived from first principles: a deterministic server that speaks JSON and runs requests for the model. Function calling, and the reverse call.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+.when{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
+.when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
+.when .kick{margin:0}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l10-index" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L10">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 10 pages"><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/">Overview</a><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Notes</a><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Lecture 10 · Sat 31 Oct 2026 · Both tracks</p>
+  <h1>Tool calling and MCP</h1>
+  <p class="dek">The model asks for an action. It never takes one.</p>
+</div>
+
+<div class="call"><p class="kick">The lecture in one line</p><p>More data shrinks hallucination but does not cure it. The bridge to a trusted data source is a deterministic server that speaks JSON and makes requests for the model: function calling.</p></div>
+
+<div class="when"><p class="kick">01</p><h2>The lecture</h2></div>
+<ol class="steps">
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s04">Three rounds of context: 1, 5, then 7 out of 10</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">The model that cannot say no</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s08">Diagnose each case: the golden pair</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s09">Automate the paste: a data source and a bridge</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Can an API be the bridge?</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s13">Electing a common language: JSON</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s14">Keep only the server</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s15">Naming it: function calling, and the reverse call</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s16">From the Q&amp;A: routing by search</a></li>
+</ol>
+
+<div class="when"><p class="kick">02</p><h2>Done equals</h2></div>
+<p>Your own query broken and scored against a golden pair, one fix experiment run, and the reverse call built: the breaking query scores 7 out of 10 or more with no pasting. Bring it to Tuesday's office hours, 3 Nov.</p>
+
+<div class="when"><p class="kick">03</p><h2>When you need it</h2></div>
+<ul>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Notes: what was said, with the whiteboard</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set">Practice set: break it, then build the bridge</a></li>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Lecture 9 practice set: finish it first</a></li>
+  <li><a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s05">Lecture 2: an interface is a common language plus rules</a></li>
+  <li><a href="/#L10">Checklist on the map</a></li>
+</ul>
+
+<p class="sig">You cannot outsource your understanding.<small>Next week: we build the reverse call live, for both tracks.</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 10: Tool calling and MCP</span><a href="/#L10">Curriculum map</a><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/">All Lecture 10 pages</a></div></footer>
+</body>
+</html>

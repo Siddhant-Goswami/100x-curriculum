@@ -117,7 +117,24 @@ var GUIDE_LINKS = {
   l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
   l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04',
   jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
-  delegation: '/c8/delegation-framework/'
+  delegation: '/c8/delegation-framework/',
+  /* Lecture 10 · Tool calling and MCP (both tracks, pages in c8/module-2/lecture-10-tool-calling-and-mcp) */
+  l10Hub: '/c8/module-2/lecture-10-tool-calling-and-mcp/',
+  l10Notes: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes',
+  l10Practice: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set',
+  l10Golden: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s08',
+  l10Formula: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06',
+  l10Proposals: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s07',
+  l10Reverse: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s15',
+  l10Sheet: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s01',
+  l10Break: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s02',
+  l10Fix: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s03',
+  l10Build: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s04',
+  l10Bring: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s05',
+  groqPlay: 'https://console.groq.com/playground',
+  l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
+  l07Police: '/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s07',
+  mcpSite: 'https://modelcontextprotocol.io/'
 };
 
 var HELLO_WORLD = [
@@ -759,6 +776,74 @@ GUIDES.L9 = { all: {
   kw: 'llm language model first principles probabilistic deterministic orange purple hallucination system prompt verifier verifiers rule jason wei asymmetry of verification rule judgment atomic task north star aarav monday 80 percent jagged edge nurse automate augment human fineweb tokens qwen ollama practice set verify your own job'
 }};
 
+GUIDES.L10 = { all: {
+  hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set']]},
+  name: 'Break it, then build the bridge',
+  sub: 'Lecture 10 · 31 October 2026 · both tracks',
+  due: false,  /* bring it to Tuesday's office hours, 3 Nov */
+  keep: 'More data shrinks hallucination but does not cure it. The bridge to a data source is a deterministic server that speaks JSON and runs requests for the model: function calling.',
+  ideas: [
+    ['Data is not a cure.', 'Same query, more context: 1, then 5, then 7 out of 10. It still named Zapier.'],
+    ['The formula.', 'Hallucination = missing context + a trained habit of never saying no.'],
+    ['Diagnose each case.', 'Ideal input, ideal output, actual output. The difference names the cause.'],
+    ['An API alone is not the bridge.', 'A file speaks no language, and a model cannot make requests. The server is the bridge: JSON plus the API rules you know.'],
+    ['The reverse call.', 'The model asks the server to act. The server runs it and returns the result.']
+  ],
+  rule: 'Write the golden pair before any run, and score every attempt against it.',
+  stages: [
+    {id:'sheet', name:'Finish Lecture 9\'s practice set', short:'Step 1', sub:'Practice set, section 01',
+     intro:'Your sheet is where the golden pair comes from.',
+     ticks:[
+       {id:'sheet', t:'Every task has its verifier type, golden pairs and bucket', link:'l10Sheet', linkLabel:'Section 01'}
+     ]},
+    {id:'break', name:'Break the model on your own query', short:'Step 2', sub:'Practice set, section 02',
+     intro:'One question from your job, on GPT-OSS 120B in the Groq playground: bare, then with context.',
+     ticks:[
+       {id:'pair', t:'Wrote one golden pair before running anything', link:'l10Golden', linkLabel:'The golden pair'},
+       {id:'bare', t:'Ran it bare and scored it out of 10', link:'groqPlay', linkLabel:'Groq playground'},
+       {id:'ctx', t:'Ran it with context and scored it again', link:'l10Break', linkLabel:'Section 02'},
+       {id:'cause', t:'Wrote the root cause: missing context, or the habit of never saying no', link:'l10Formula', linkLabel:'The formula'}
+     ]},
+    {id:'fix', name:'Run one fix experiment', short:'Step 3', sub:'Practice set, section 03',
+     intro:'One change, written as steps, run against the same golden pair.',
+     ticks:[
+       {id:'steps', t:'Wrote the fix as steps, with what you expect', link:'l10Proposals', linkLabel:'Two proposals'},
+       {id:'run', t:'Ran it and scored it', link:'l10Fix', linkLabel:'Section 03'},
+       {id:'post', t:'Posted the result in Discord'}
+     ]},
+    {id:'build', name:'Build the reverse call', short:'Step 4', sub:'Practice set, section 04',
+     intro:'The model asks your server to read the curriculum CSV; your server runs the read.',
+     ticks:[
+       {id:'tpl', t:'Started from your track\'s template', link:'l10Build', linkLabel:'Section 04'},
+       {id:'tool', t:'Gave the model the instruction and a tool that reads the CSV', link:'l10Reverse', linkLabel:'The reverse call'},
+       {id:'exec', t:'Your server runs the call the model asks for'},
+       {id:'score', t:'The breaking query scores 7 or more, with no pasting'}
+     ]}
+  ],
+  actions: [
+    {id:'oh', t:'Bring it to Tuesday\'s office hours, 3 Nov', how:'Your score table, your fix result, and your build running, or the error and why it happened.', link:'l10Bring', linkLabel:'What to bring'}
+  ],
+  next: 'Next week we build the reverse call live, for both tracks.',
+  read: [
+    ['Lecture 10 overview', 'l10Hub', 'The lecture, in order.'],
+    ['Notes', 'l10Notes', 'What was said, with the whiteboard: three rounds of context, why models hallucinate, the bridge, JSON, the server, and function calling.'],
+    ['Practice set', 'l10Practice', 'Break it, then build the bridge: your own query scored, one fix, the reverse call.'],
+    ['Lecture 2, section 05', 'l02Bridge', 'An interface is a common language plus rules.'],
+    ['Lecture 9 practice set', 'l09Practice', 'Where your golden pairs come from.']
+  ],
+  words: [
+    ['Hallucination', 'A confident answer that lands in factually wrong territory.'],
+    ['Missing context', 'Data the answer needs that never reached the context window.'],
+    ['Golden dataset', 'Ideal input and output pairs. Used to diagnose, evaluate and later fine-tune.'],
+    ['Temperature', 'Controls randomness. Lowering it does not supply missing context.'],
+    ['Interface', 'A common language plus a set of rules.'],
+    ['Function calling', 'The model asks a deterministic server to run a request for it and return the result.'],
+    ['Tool call', 'The model\'s JSON naming the function and its arguments.'],
+    ['Execution environment', 'Your backend: runs the tool call and returns the raw result.']
+  ],
+  kw: 'tool calling function calling hallucination missing context never says no openorca karpathy temperature golden pair golden dataset data source bridge interface json crud server execution environment reverse call curriculum csv groq gpt-oss playground indexing routing keywords practice set break it build the bridge'
+}};
+
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from
    that lecture's notes page. Keyed by stop id, then 'all' or a track. A lecture with no entry here
    (upcoming, or the no-code side of a practical) shows the sheet's plan instead. Keep each point to one line. */
@@ -836,11 +921,11 @@ var RECAP = {
       'Data is bigger than you think. A verifier does not mean automation next quarter.'
     ]}},
   L10: { all: {
-    line: 'The model asks, the system acts. The model writes the request; the backend validates it, runs it, verifies the result and logs it.',
+    line: 'More data shrinks hallucination but does not cure it. The bridge to a data source is a deterministic server that speaks JSON and runs requests for the model: function calling.',
     points: [
-      'Answers go wrong from missing context or missing live data.',
-      'Extraction is the trick: the model names the tool and fills in the arguments.',
-      'Three layers: the LLM, the backend, the deterministic tool. The log is the proof.',
-      'MCP replaces N times M adapters. For one tool, it can be overkill.'
+      'Same query, more context: 1, then 5, then 7 out of 10. It still named Zapier.',
+      'Hallucination = missing context + a trained habit of never saying no.',
+      'An API alone cannot be the bridge: a file speaks no language, and a model cannot make requests.',
+      'The reverse call: the model asks the server to act, the server runs it and returns the result.'
     ]}}
 };
