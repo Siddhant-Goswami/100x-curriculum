@@ -86,7 +86,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--coral);outline-offs
     <p class="kick">Instructor guide · AI evals · four steps</p>
     <h1>How would you know if it was wrong?</h1>
     <p class="dek">How to run the evals session so that every idea arrives after the room has already felt the problem it solves. One running example, one question asked four times, a guess locked before every reveal.</p>
-    <div class="meta"><span>90 minutes in a room, 60 if tight</span><span>Works with 8 to 80 people</span><span>Store support agent, order 4821, throughout</span><span>Updated 1 Nov 2026</span></div>
+    <div class="meta"><span>45 minutes in a room</span><span>Works with 8 to 80 people</span><span>Store support agent, order 4821, throughout</span><span>Updated 1 Nov 2026</span></div>
   </header>
 
   <div class="call"><p class="kick">The one rule of the session</p><p>Never say a word before the room has done the thing it names. Not "eval", not "rubric", not "judge". The room taps the wrong word, then you say "grader". The room writes a question down, then you say "failure mode". If you catch yourself defining something, stop and make them do it first.</p></div>
@@ -106,12 +106,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--coral);outline-offs
   <section>
     <h2>Before the room arrives</h2>
     <ul class="ck">
-      <li><b>Open the lab yourself the night before</b> at <a href="https://100x-curriculum.vercel.app/c8/evals-lab/" target="_blank" rel="noopener">100x-curriculum.vercel.app/c8/evals-lab</a> and run all four steps with "Use the recorded run". About 35 minutes alone. You need to have felt every reveal to time them.</li>
+      <li><b>Open the lab yourself the night before</b> at <a href="https://100x-curriculum.vercel.app/c8/evals-lab/" target="_blank" rel="noopener">100x-curriculum.vercel.app/c8/evals-lab</a> and run all four steps with "Use the recorded run". About 25 minutes alone. You need to have felt every reveal to time them.</li>
       <li><b>Have a Groq key in the browser you will project.</b> Students have one from Lecture 5. The live judge makes step 3 land; the recorded run is the fallback and reproduces the numbers below exactly.</li>
       <li><b>Projector shows the lab, not slides.</b> The lab is the deck. Keep the notes page open in a second tab for the research numbers when someone asks for a source.</li>
       <li><b>Everyone opens the lab on their own laptop too.</b> The guesses are theirs. Phones work for steps 1 and 3; the rubric in step 2 wants a keyboard.</li>
       <li><b>A whiteboard with four empty columns</b> headed Look, Write it down, Check the checker, Change one thing. You fill each column with one sentence at the end of its step, in the room's words.</li>
-      <li><b>The lab is one point per screen.</b> Thirty-four screens across the four steps, the first one the setup. The headline of each screen is the instruction (a coral dot marks it), the framed box under it is the one thing to look at or do, and the Continue button does not exist until that thing is done. Enter or the right arrow is Continue; number keys pick options. On a laptop or projector a sketch sits beside every screen and changes as the room acts: point at it when you say the line. Phones show the screen alone. Do not skip ahead on the projector; the room's laptops are gated the same way.</li>
+      <li><b>The lab is one point per screen.</b> Twenty-eight screens across the four steps, the first one the setup. The headline of each screen is the instruction (a coral dot marks it), the framed box under it is the one thing to look at or do, and the Continue button does not exist until that thing is done. Enter or the right arrow is Continue; number keys pick options. On a laptop or projector a sketch sits beside every screen and changes as the room acts: point at it when you say the line. Phones show the screen alone. Do not skip ahead on the projector; the room's laptops are gated the same way.</li>
       <li><b>Clear the lab state if you reuse a machine.</b> Run <code>localStorage.removeItem('c8.evalslab.v3')</code> in the console.</li>
     </ul>
   </section>
@@ -134,35 +134,35 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--coral);outline-offs
   </section>
 
   <section>
-    <h2>Run of show, 90 minutes</h2>
+    <h2>Run of show, 45 minutes</h2>
     <div class="tw"><table>
       <tr><th>Clock</th><th>What happens</th><th>You</th></tr>
-      <tr><td class="t">0:00</td><td>Lab on screen: the setup screen, thirty seconds. An online store, an agent on support, five tools, thirty replies this morning, a model that grades them.</td><td>"Nobody reads these replies before they go out. A model does." Then Continue: "Read the three cards. Tap the word that is wrong." Say nothing else.</td></tr>
-      <tr><td class="t">0:03</td><td>Step 1: Thursday found, refund card tapped, guess locked, five traces by eye.</td><td>Hands up for each guess bucket before you reveal. Count aloud.</td></tr>
-      <tr><td class="t">0:18</td><td>Whiteboard column 1 filled. Step 2 begins: name the six piles.</td><td>Walk the room. Read three names aloud. Ask the two-colleagues test of each.</td></tr>
-      <tr><td class="t">0:30</td><td>Code or judge per pile, the reveal, then the rubric written and locked.</td><td>Hands up: how many piles can code answer? Most say half. Enjoy the reveal.</td></tr>
-      <tr><td class="t">0:45</td><td>Guess on row 2 locked, judge runs live on your key, face down.</td><td>Do not look at the cards while they land. Say so.</td></tr>
-      <tr><td class="t">0:48</td><td>Step 3: twenty hand labels, in silence.</td><td>Timer on screen, six minutes. One labeller each, no conferring.</td></tr>
-      <tr><td class="t">0:56</td><td>Turn the judge over. Two rates, the missed row, the one-number toggle.</td><td>Read the judge's reason for row 2 aloud. Toggle "one accuracy number" and ask what it hides.</td></tr>
-      <tr><td class="t">1:03</td><td>Gift note, allow-list, 403, guess on the judge, the two attacks.</td><td>Hands up before "Grade both". The split is usually even. It should not be.</td></tr>
-      <tr><td class="t">1:12</td><td>Step 4: pick the change, guess, before and after, the bill.</td><td>Ask what the format column would have shown if it were a judge, not code.</td></tr>
-      <tr><td class="t">1:20</td><td>Three runs, pass^3 guess, the sliders.</td><td>Move k to 10 and let the room watch pass^k fall.</td></tr>
-      <tr><td class="t">1:25</td><td>Your sheet, CSV, the coding-agent trace, keep this.</td><td>Give them ninety seconds for the transfer question. Read four answers aloud.</td></tr>
-      <tr><td class="t">1:30</td><td>Practice set, due before the next office hour.</td><td>One sentence: "same four steps, your product, thirty rows."</td></tr>
+      <tr><td class="t">0:00</td><td>Setup screen, thirty seconds. Then "Tap the word that is wrong."</td><td>"Nobody reads these replies before they go out. A model does." Then say nothing until Thursday is found.</td></tr>
+      <tr><td class="t">0:02</td><td>Step 1: Thursday found, refund card tapped, guess locked, three traces by eye, 18 of 30.</td><td>Hands up for each guess bucket before you reveal. Count aloud.</td></tr>
+      <tr><td class="t">0:08</td><td>Whiteboard column 1. Step 2: name the six piles, one per screen.</td><td>Walk the room. Read two names aloud. Ask the two-colleagues test of each.</td></tr>
+      <tr><td class="t">0:13</td><td>Instructor's six with the scale card. Guess. Code or judge per pile.</td><td>Hands up: how many piles can code answer? Most say half. Enjoy the reveal.</td></tr>
+      <tr><td class="t">0:17</td><td>Rubric written and locked. Guess on row 2. Judge runs, recorded run, face down.</td><td>"Use the masterclass rubric" after two minutes for anyone stuck. The lock is the point.</td></tr>
+      <tr><td class="t">0:21</td><td>Step 3: twenty hand labels, in silence.</td><td>Timer on screen, four minutes. One labeller each, no conferring.</td></tr>
+      <tr><td class="t">0:26</td><td>Turn the judge over. Two rates and the missed row on one screen.</td><td>Read the judge's reason for row 2 aloud. Point at the two off-diagonal boxes on the board.</td></tr>
+      <tr><td class="t">0:29</td><td>Gift note: allow-list off, then on, same screen. Guess on the judge. Grade both.</td><td>Hands up before "Grade both". The split is usually even. It should not be.</td></tr>
+      <tr><td class="t">0:34</td><td>Step 4: pick the change, guess, before and after with the bill.</td><td>Ask what the format column would have shown if it were a judge, not code.</td></tr>
+      <tr><td class="t">0:38</td><td>Three runs, pass^3 guess, the curves.</td><td>Move k to 10 once and let the room watch pass^k fall. Do not linger.</td></tr>
+      <tr><td class="t">0:41</td><td>The coding-agent trace, then the closing screen with the CSV.</td><td>Sixty seconds for the transfer question. Read two answers aloud. Make them download the sheet.</td></tr>
+      <tr><td class="t">0:45</td><td>Practice set, due before the next office hour.</td><td>One sentence: "same four steps, your product, thirty rows."</td></tr>
     </table></div>
-    <p>For a 60-minute slot: three traces instead of five in step 1, use the recorded run instead of the live judge, skip the sliders in step 4 after the 42% reveal, and keep the transfer trace. Never cut the hand labelling; it is the step people remember.</p>
+    <p>If you have 60 minutes: read rows 9 and 13 aloud from the "see all thirty" fold after the three traces, run the live judge on your key instead of the recorded run, and read four answers aloud on the transfer question. Never cut the hand labelling; it is the step people remember.</p>
   </section>
 
   <section>
     <h2>Each step in the room</h2>
 
     <div class="step">
-      <div class="sh"><p class="kick">Step 1 · 15 minutes</p><h2>Look</h2><p class="q">Is it wrong?</p></div>
+      <div class="sh"><p class="kick">Step 1 · 8 minutes</p><h2>Look</h2><p class="q">Is it wrong?</p></div>
       <div class="col"><p class="kick">What the room does</p>
         <ul><li>Taps the wrong word on the projected trace. Someone finds Thursday in under ten seconds. Let the silence sit, then point at the PASS stamp.</li>
         <li>Taps the card that says what happened on the refund trace. The state card, not the answer.</li>
         <li>Locks a guess: how many of thirty are wrong. Hands up per bucket.</li>
-        <li>Reads five traces and types one sentence each, or presses "Nothing wrong". Then sees all thirty with the instructor's line.</li></ul></div>
+        <li>Reads three traces and types one sentence each, or presses "Nothing wrong". Then sees all thirty with the instructor's line.</li></ul></div>
       <div class="col"><p class="kick">What you say, and when</p>
         <div class="say">After Thursday: <b>"You just did what the grader could not. The grader is a model. A model on top of a model is not code."</b></div>
         <div class="say">After the refund card: <b>"Grade the database, not the sentence."</b> Write it in column 1.</div>
@@ -174,9 +174,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--coral);outline-offs
     </div>
 
     <div class="step">
-      <div class="sh"><p class="kick">Step 2 · 30 minutes</p><h2>Write the question down</h2><p class="q">What would you check, every time?</p></div>
+      <div class="sh"><p class="kick">Step 2 · 13 minutes</p><h2>Write the question down</h2><p class="q">What would you check, every time?</p></div>
       <div class="col"><p class="kick">What the room does</p>
-        <ul><li>Names six pre-sorted piles as yes-or-no questions, one pile per screen. Compares with the instructor's six.</li>
+        <ul><li>Names six pre-sorted piles as yes-or-no questions, one pile per screen. Compares with the instructor's six, with the scale-versus-yes-or-no card on the same screen.</li>
         <li>Locks a guess: how many could code answer.</li>
         <li>Picks code or a model, one pile per screen. Picking code runs the check on thirty rows at once and shows the count.</li>
         <li>Writes the judge's one question for made-up detail, with PASS, FAIL plus quote, UNKNOWN. Locks it.</li>
@@ -193,12 +193,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--coral);outline-offs
     </div>
 
     <div class="step">
-      <div class="sh"><p class="kick">Step 3 · 25 minutes</p><h2>Check the checker</h2><p class="q">Is the judge right?</p></div>
+      <div class="sh"><p class="kick">Step 3 · 13 minutes</p><h2>Check the checker</h2><p class="q">Is the judge right?</p></div>
       <div class="col"><p class="kick">What the room does</p>
-        <ul><li>Labels twenty rows PASS or FAIL by hand, one row per screen, two big buttons, before the judge is visible. Six minutes, silent.</li>
-        <li>Turns the judge over. Sees the two-by-two, the two rates, the missed row 2, their row-2 guess.</li>
-        <li>Toggles "one accuracy number" and reads what it hides.</li>
-        <li>Asks the gift-note question with the allow-list off, then on. Reads the 403 in the log.</li>
+        <ul><li>Labels twenty rows PASS or FAIL by hand, one row per screen, two big buttons, before the judge is visible. Four minutes, silent.</li>
+        <li>Turns the judge over. Sees the two-by-two, then the two rates and the missed row 2 with their row-2 guess on one screen.</li>
+        <li>Asks the gift-note question with the allow-list off, then on, on the same screen. Reads the 403 in the log.</li>
         <li>Locks a guess: does the allow-list protect the judge? Grades the two planted answers.</li></ul></div>
       <div class="col"><p class="kick">What you say, and when</p>
         <div class="say">Before labelling: <b>"One labeller. You are the ground. If you disagree with your neighbour, that is a rubric problem, not a vote."</b></div>
@@ -211,12 +210,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--coral);outline-offs
     </div>
 
     <div class="step">
-      <div class="sh"><p class="kick">Step 4 · 20 minutes</p><h2>Change one thing, look again</h2><p class="q">Did it get better?</p></div>
+      <div class="sh"><p class="kick">Step 4 · 11 minutes</p><h2>Change one thing, look again</h2><p class="q">Did it get better?</p></div>
       <div class="col"><p class="kick">What the room does</p>
         <ul><li>Picks one change. Locks a guess: fix and break none, fix and break others, nothing.</li>
-        <li>Reads before and after per column, the regression and capability split, the bill.</li>
+        <li>Reads before and after per column with the bill beneath it.</li>
         <li>Runs row 2 three times. Locks a guess on pass^3. Moves the sliders.</li>
-        <li>Downloads the sheet. Writes the question for the coding-agent trace. Reads "keep this".</li></ul></div>
+        <li>Writes the question for the coding-agent trace. Reads "keep this" and downloads the sheet from the closing screen.</li></ul></div>
       <div class="col"><p class="kick">What you say, and when</p>
         <div class="say">After the table: <b>"Two columns went to zero and one got worse. You only know the second part because the thirty were frozen and the format column is code."</b></div>
         <div class="say">After 42%: <b>"One pass in three is the demo. Three in three is the customer."</b></div>

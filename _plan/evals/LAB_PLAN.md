@@ -127,3 +127,18 @@ User: phone layout is fine; on a 14-inch MacBook the spare width should carry vi
 ## 14. Setup screen, 1 Nov 2026
 
 User asked for context before the first tap: `#b10` (step 1, 1 of 6) says what the agent is, which five tools it can call (amber reads, coral money moves), that it answered thirty customers this morning and that a second model grades the replies. Reading screen, Continue immediately. The board draws customer → agent → store, the five tools, the thirty replies and the judge. 34 screens now. The run-of-show 0:00 line in the instructor guide changed to match.
+
+## 15. Compressed to 45 minutes, 1 Nov 2026
+
+User asked for the deck to fit a 45-minute session. 34 screens became 28 without dropping a step or a guess:
+
+| Was | Now |
+|---|---|
+| Five traces by eye (1, 5, 9, 13, 14) | Three (1, 5, 14): a wrong count, a missing tool call, a pass. `FIVE` holds three. |
+| b22 scale-versus-yes-or-no screen | Folded under the instructor's six on b23. |
+| b33 two rates with the one-number toggle, b34 the missed row | One screen, b33: two rates (the accuracy number quoted inside the first card) and the flagged row. |
+| b35 allow-list off, b36 allow-list on | One screen, b35, two buttons in sequence; gate needs both. Board switches to the wall once on. |
+| b43 before and after, b44 two suites, b45 the bill | b43 with the bill beneath the table; the two-suites idea is a sentence in the closing "why freeze" fold. |
+| b49 your sheet | Summary grid and CSV button on the closing screen b411. |
+
+Run of show in the instructor guide rewritten for 45 minutes (8 / 13 / 13 / 11), with a 60-minute variant in one paragraph. Unused ids (b22, b34, b36, b44, b45, b49) fall back to the setup screen.

@@ -93,7 +93,7 @@
     <h1 id="b15-h"></h1>
     <p class="ctx">Most of them read fine as sentences. You only caught them by looking at the tool result next to the answer.</p>
     <div id="b15-gres"></div>
-    <div class="derive"><p class="kick">What you now know</p><p>Your eyes work. They found Thursday in ten seconds and four more in five minutes. They will not read thirty rows after every change to the prompt, and the next person will not read them the way you did. <b>Write the question down.</b></p></div>
+    <div class="derive"><p class="kick">What you now know</p><p>Your eyes work. They found Thursday in ten seconds and two more in three minutes. They will not read thirty rows after every change to the prompt, and the next person will not read them the way you did. <b>Write the question down.</b></p></div>
     <details class="why"><summary>See all thirty with the instructor's line</summary><div class="sheet mini" id="m1-table"></div></details>
     <details class="why"><summary>Why read by hand, and why the whole trace</summary><p>Anthropic's guide says 20 to 50 tasks drawn from real failures is a great start, and that the first rule is "read the transcripts". Fewer and you see only the failure you expected. Write your sentences before any model suggests failures to you; suggestions anchor what you see. Only the first failure per row: in a long trace the later ones cascade from it. Whole trace, not just the answer: row 5 reads fine as a sentence, and the log shows no tool call.</p></details>
   </section>
@@ -105,20 +105,16 @@
     <div class="stage" id="m2-one"></div>
   </section>
 
-  <section class="beat" id="b22" hidden>
-    <h1>A scale hides disagreement. A yes or no exposes it.</h1>
-    <p class="ctx">Same row, three graders, two ways of asking.</p>
-    <div class="scale">
-      <div><p class="kick">Score row 2 out of five</p><div class="graders"><span>3</span><span>4</span><span>2</span></div><small>three graders, three numbers</small></div>
-      <div><p class="kick">Is there a made-up detail?</p><div class="graders yes"><span>yes</span><span>yes</span><span>yes</span></div><small>a scale hides disagreement. a yes or no exposes it.</small></div>
-    </div>
-    <p class="note">In a 2026 rubric study, judges hit 87% exact agreement with experts on yes-or-no criteria and 38 to 58% on scales.</p>
-  </section>
 
   <section class="beat" id="b23" hidden>
     <h1>Yours against the instructor's.</h1>
     <p class="ctx">Cut differently is fine. From here the lab uses the instructor's six so the screens line up.</p>
     <div class="modes" id="m2-modes"></div>
+    <p class="note"><b>Why yes or no.</b> The same row, three graders, two ways of asking.</p>
+    <div class="scale">
+      <div><p class="kick">Score row 2 out of five</p><div class="graders"><span>3</span><span>4</span><span>2</span></div><small>three graders, three numbers</small></div>
+      <div><p class="kick">Is there a made-up detail?</p><div class="graders yes"><span>yes</span><span>yes</span><span>yes</span></div><small>a scale hides disagreement. a yes or no exposes it.</small></div>
+    </div>
   </section>
 
   <section class="beat" id="b24" hidden>
@@ -193,18 +189,12 @@
   </section>
 
   <section class="beat" id="b33" hidden>
-    <h1>Two rates, never one.</h1>
-    <p class="ctx">Of the real failures, how many did it catch. Of the real passes, how many did it pass.</p>
+    <h1>Two rates, and the row it missed.</h1>
+    <p class="ctx">Of the real failures, how many it caught. Of the real passes, how many it passed. Never one accuracy number: it hides which way the judge is wrong.</p>
     <div class="rates" id="m5-rates"></div>
-    <label class="tog"><input type="checkbox" id="m5-one-cb"> Show one accuracy number instead</label>
-    <p class="note" id="m5-oneT" hidden></p>
-  </section>
-
-  <section class="beat" id="b34" hidden>
-    <h1>The row it missed.</h1>
-    <p class="ctx">This one row tells you more about the judge than the two rates do. It is what you hand in.</p>
     <div class="flag" id="m5-flag"></div>
   </section>
+
 
   <section class="beat" id="b35" hidden>
     <h1 class="do">Ask the usual question and read the log.</h1>
@@ -214,18 +204,12 @@
       <div class="actrow"><button class="btn go" type="button" id="m8-ask-off">Ask: when will 4821 arrive?</button></div>
       <div class="trace" id="m8-trace-off" hidden></div>
     </div>
-    <div class="after" id="m8-verdict-off" hidden><p class="big">The model followed the note. <span class="c">Nothing in your code stood in the way.</span></p><p>That the model followed it is not the finding. The finding is whether anything stopped it.</p></div>
-  </section>
-
-  <section class="beat" id="b36" hidden>
-    <h1 class="do">Ask again, with the stop in code.</h1>
-    <p class="ctx">Refunds now need a human: the tool is off the allow-list. Same note, same question.</p>
-    <div class="stage">
+    <div class="after" id="m8-verdict-off" hidden><p class="big">The model followed the note. <span class="c">Nothing in your code stood in the way.</span></p><p>That the model followed it is not the finding. The finding is whether anything stopped it. So put the stop in code: refunds now need a human, the tool is off the allow-list. Same note, same question.</p>
       <div class="actrow"><button class="btn go" type="button" id="m8-ask-on">Ask again, allow-list on</button></div>
-      <div class="trace" id="m8-trace-on" hidden></div>
-    </div>
+      <div class="trace" id="m8-trace-on" hidden></div></div>
     <div class="after" id="m8-verdict-on" hidden><p class="big">403. Logged. <span class="c">The seventh question, and it is a rule.</span></p><p>The model still asked for the refund. The allow-list refused it, the log shows the attempt, and "did it call anything outside the allow-list?" is now a column in the frozen thirty.</p></div>
   </section>
+
 
   <section class="beat" id="b37" hidden>
     <p class="kick c">Guess first</p>
@@ -263,23 +247,14 @@
   </section>
 
   <section class="beat" id="b43" hidden>
-    <h1>Before and after.</h1>
+    <h1>Before and after, and the bill.</h1>
     <p class="ctx" id="m7-what"></p>
     <div id="b43-gres"></div>
     <div class="sheet" id="m7-table"></div>
-  </section>
-
-  <section class="beat" id="b44" hidden>
-    <h1>Two suites.</h1>
-    <p class="ctx">The rows that passed before should keep passing. The rows that failed before are the hill to climb.</p>
-    <div class="split" id="m7-split"></div>
-  </section>
-
-  <section class="beat" id="b45" hidden>
-    <h1>The bill.</h1>
-    <p class="ctx">Both numbers go in the change log. The person who pays is not the person who writes the prompt.</p>
     <div class="bill" id="m7-bill"></div>
   </section>
+
+
 
   <section class="beat" id="b46" hidden>
     <h1 class="do">Run row 2 three times.</h1>
@@ -311,13 +286,6 @@
     </div>
   </section>
 
-  <section class="beat" id="b49" hidden>
-    <h1>Your sheet.</h1>
-    <p class="ctx">Everything you wrote and every number it produced, in the columns the practice set asks for.</p>
-    <div class="summ" id="you-summ"></div>
-    <div class="actrow"><button class="btn ghost" type="button" id="you-csv">Download as CSV</button></div>
-    <details class="why"><summary>See the thirty rows</summary><div class="sheet" id="you-table"></div></details>
-  </section>
 
   <section class="beat" id="b410" hidden>
     <h1 class="do">Write the one question you would check on every run.</h1>
@@ -334,9 +302,12 @@
     <p class="ctx">How would I know if it was wrong? Of the answer. Of thirty answers. Of the checker. Of the change.</p>
     <div class="derive"><p class="kick">What you now know</p><p>A number only means something against a frozen set, over more than one run, next to the number from before. Improvement is a diff, not a score.</p>
       <div class="keep"><p class="kick">Keep this</p><p>Look at the traces yourself before you write anything. Turn each failure into a question with a yes or no answer. Let code answer every one it can, and most it can. For the rest, write the rubric before you look, hand the judge the source, label twenty by hand, and report two rates and the row it missed. Freeze the set. Change one thing. Run it three times.</p></div></div>
-    <div class="actrow"><a class="btn go" href="/c8/module-2/ai-evals/practice-set">Do it on your own product</a><a class="btn ghost" href="/c8/module-2/ai-evals/notes">Read the notes</a></div>
+    <p class="note"><b>Your sheet.</b> Everything you wrote and every number it produced, in the columns the practice set asks for.</p>
+    <div class="summ" id="you-summ"></div>
+    <div class="actrow"><button class="btn go" type="button" id="you-csv">Download your sheet as CSV</button><a class="btn ghost" href="/c8/module-2/ai-evals/practice-set">Do it on your own product</a><a class="btn ghost" href="/c8/module-2/ai-evals/notes">Read the notes</a></div>
+    <details class="why"><summary>See the thirty rows</summary><div class="sheet" id="you-table"></div></details>
     <details class="why"><summary>Words you earned in this lab</summary><dl id="gloss"></dl></details>
-    <details class="why"><summary>Why freeze, why pass^k, and why the bill</summary><p>Do not add the row that embarrassed you and quietly drop the one that always passes, or the suite learns your changes and stops measuring them. New rows go in a separate tab and get promoted at the next freeze. Anthropic splits suites in two: a regression suite near 100% and a capability suite that starts low. pass@k is the chance of at least one success in k tries; pass^k is the chance all k succeed. At 75% per run, pass^3 is 42%. Reset state between trials. Fix at the cheapest layer that moves the number, and write the cost next to the result.</p></details>
+    <details class="why"><summary>Why freeze, why pass^k, and why the bill</summary><p>Do not add the row that embarrassed you and quietly drop the one that always passes, or the suite learns your changes and stops measuring them. New rows go in a separate tab and get promoted at the next freeze. Anthropic splits suites in two: a regression suite of the rows that passed before, which should stay near 100%, and a capability suite of the rows that failed, the hill to climb. Here the change graduated several rows and broke two in the regression suite; the format column caught it because it is code. pass@k is the chance of at least one success in k tries; pass^k is the chance all k succeed. At 75% per run, pass^3 is 42%. Reset state between trials. Fix at the cheapest layer that moves the number, and write the cost next to the result.</p></details>
     <p class="tiny">Further, one line each. Frameworks (Harbor, Braintrust, LangSmith, Langfuse, Arize) are only as good as the rows you run through them. No source of truth to hand the judge: compare before and after in blind pairs, the way GDPval graded expert work. Automated evals are one layer: production monitoring for ground truth, a few transcripts read every week, a human study when you calibrate the judge. Source: <a href="https://www.anthropic.com/research/demystifying-evals-for-ai-agents" target="_blank" rel="noopener">Anthropic, Demystifying evals for AI agents</a>.</p>
     <p class="tiny">Made by <a href="https://www.100xengineers.com/" target="_blank" rel="noopener">100xEngineers</a> · <a href="/c8/module-2/ai-evals/">AI evals masterclass</a></p>
   </section>

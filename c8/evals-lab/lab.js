@@ -132,16 +132,16 @@
       else { el.classList.add('miss'); setTimeout(() => el.classList.remove('miss'), 400); nudge.hidden = false; nudge.textContent = el.dataset.w === 'trial' ? 'That is what the model said happened. Which card shows what actually happened?' : 'Not that one. Which card shows the world after the run?'; }
     });
   }
-  const FIVE = [1, 5, 9, 13, 14];
+  const FIVE = [1, 5, 14];
   function b14() {
     const box = $('#m1-box'), i = S.m1.i, N = FIVE.length;
-    if (i >= N) { $('#b14-ctx').textContent = 'Five read. Your line and the instructor\'s, side by side.'; box.innerHTML = `<div class="done"><div class="sheet mini">${tableM1(FIVE)}</div></div>`; return; }
+    if (i >= N) { $('#b14-ctx').textContent = 'Three read. Your line and the instructor\'s, side by side.'; box.innerHTML = `<div class="done"><div class="sheet mini">${tableM1(FIVE)}</div></div>`; return; }
     const r = row(FIVE[i]), saved = S.m1.saved[r.n];
     $('#b14-ctx').textContent = 'Read the whole trace, including the tool call. If nothing is wrong, say so.';
     box.innerHTML = counter('Trace ' + r.n, i, N) + `<div class="trace">${traceHTML(r, { state: r.state !== 'no change' })}</div>` +
       (saved === undefined
         ? `<form class="ask" id="m1-form"><input type="text" id="m1-in" maxlength="120" placeholder="The first thing wrong, in plain words" autocomplete="off" value="${esc(S.m1.sent[r.n] || '')}"><button class="btn go" type="submit">Save</button><button class="btn ghost" type="button" id="m1-dash">Nothing wrong</button></form>`
-        : `<div class="cmp"><div class="you${saved ? '' : ' dash'}"><span class="kick">you</span>${saved ? esc(saved) : 'nothing wrong'}</div><div class="ins${r.wrong ? '' : ' dash'}"><span class="kick">instructor</span>${r.wrong ? esc(r.wrong) : 'nothing wrong. <small>A row that passes is a finding too.</small>'}</div></div><div class="actrow"><button class="btn go" type="button" id="m1-next">${i + 1 < N ? 'Next trace' : 'See all five'}</button></div>`);
+        : `<div class="cmp"><div class="you${saved ? '' : ' dash'}"><span class="kick">you</span>${saved ? esc(saved) : 'nothing wrong'}</div><div class="ins${r.wrong ? '' : ' dash'}"><span class="kick">instructor</span>${r.wrong ? esc(r.wrong) : 'nothing wrong. <small>A row that passes is a finding too.</small>'}</div></div><div class="actrow"><button class="btn go" type="button" id="m1-next">${i + 1 < N ? 'Next trace' : 'See all three'}</button></div>`);
     const inp = $('#m1-in');
     if (inp) {
       inp.focus();
@@ -313,17 +313,12 @@
   }
   $('#m5-uncover').onclick = () => { S.m5.uncovered = true; save(); earn('rates'); track('m5_uncovered', { live: S.m4.live }); b32(); gate(); };
   function b33() {
-    if (!S.m5.uncovered) { $('#m5-rates').innerHTML = '<div><span class="kick">not yet</span><b>—</b><small>turn the judge over first</small></div>'; return; }
-    const t = tally(), one = $('#m5-one-cb').checked;
-    $('#m5-rates').classList.toggle('one', one);
-    $('#m5-rates').innerHTML = one ? `<div><span class="kick">accuracy</span><b>${pct((t.caught.length + t.agreed.length) / 20)}</b><small>one number. a judge that passes everything would score ${pct(t.passes / 20)} on these twenty.</small></div>`
-      : `<div><span class="kick">true positive rate</span><b>${pct(t.tpr)}</b><small>of ${t.fails} real failure${t.fails === 1 ? '' : 's'}, the judge caught ${t.caught.length}</small></div><div><span class="kick">true negative rate</span><b>${pct(t.tnr)}</b><small>of ${t.passes} real pass${t.passes === 1 ? '' : 'es'}, the judge passed ${t.agreed.length}</small></div>`;
-    $('#m5-oneT').hidden = !one;
-    $('#m5-oneT').textContent = 'One accuracy number hides which way the judge is wrong. The two rates expose it. Even two experts agree only about 71% of the time on open-ended work, so do not chase 100%.';
+    if (!S.m5.uncovered) { $('#m5-rates').innerHTML = '<div><span class="kick">not yet</span><b>—</b><small>turn the judge over first</small></div>'; $('#m5-flag').innerHTML = ''; return; }
+    const t = tally();
+    $('#m5-rates').innerHTML = `<div><span class="kick">true positive rate</span><b>${pct(t.tpr)}</b><small>of ${t.fails} real failure${t.fails === 1 ? '' : 's'}, the judge caught ${t.caught.length}. one accuracy number would read ${pct((t.caught.length + t.agreed.length) / 20)} and hide this.</small></div><div><span class="kick">true negative rate</span><b>${pct(t.tnr)}</b><small>of ${t.passes} real pass${t.passes === 1 ? '' : 'es'}, the judge passed ${t.agreed.length}. two experts agree only about 71% of the time, so do not chase 100%.</small></div>`;
+    b34();
   }
-  $('#m5-one-cb').onchange = () => { b33(); board(); };
   function b34() {
-    if (!S.m5.uncovered) { $('#m5-flag').innerHTML = '<p>Turn the judge over first.</p>'; return; }
     const t = tally(), J = S.m4.judge, two = J[2], caught2 = two && two.verdict === 'FAIL';
     const g3 = guessResult('g3', caught2 ? 0 : 1, caught2 ? 'The judge quoted Thursday. A narrow question and the source in hand is what caught it.' : `The judge passed row 2${two && two.why ? ': "' + two.why + '"' : ''}. It compared topics, not the day.`);
     const f = t.missed[0] || t.alarm[0], flag = $('#m5-flag');
@@ -340,13 +335,11 @@
     $('#m8-note').textContent = '"' + D.adversarial.note + '"';
     $('#m8-trace-off').hidden = !S.m8.off; $('#m8-verdict-off').hidden = !S.m8.off; $('#m8-ask-off').hidden = S.m8.off;
     if (S.m8.off) $('#m8-trace-off').innerHTML = advTrace('off');
-  }
-  $('#m8-ask-off').onclick = () => { S.m8.off = true; save(); earn('adversarial'); track('m8_asked', { allow: false }); b35(); gate(); };
-  function b36() {
     $('#m8-trace-on').hidden = !S.m8.on; $('#m8-verdict-on').hidden = !S.m8.on; $('#m8-ask-on').hidden = S.m8.on;
     if (S.m8.on) $('#m8-trace-on').innerHTML = advTrace('on');
   }
-  $('#m8-ask-on').onclick = () => { S.m8.on = true; save(); track('m8_asked', { allow: true }); b36(); gate(); };
+  $('#m8-ask-off').onclick = () => { S.m8.off = true; save(); earn('adversarial'); track('m8_asked', { allow: false }); b35(); gate(); $('#m8-ask-on').focus(); };
+  $('#m8-ask-on').onclick = () => { S.m8.on = true; save(); track('m8_asked', { allow: true }); b35(); gate(); };
   function b38() {
     const R = S.m8.attacks;
     $('#m8-attacks').innerHTML = D.attacks.map(a => { const v = R[a.id]; return `<div class="at"><p class="kick">${esc(a.name)}</p><div class="a">${esc(a.answer)}</div><small>source: ${esc(resultText(a.source))}</small>${v ? `<div class="res"><span class="pill ${v.verdict.toLowerCase()}">${v.verdict}</span> ${esc(v.quote ? '"' + v.quote + '" · ' : '')}${esc(v.why)}</div><small>should be: ${esc(a.should)}</small>` : ''}</div>`; }).join('');
@@ -386,13 +379,8 @@
       const b = failsBefore(m), a = D.rows.filter(r => anyFail(r, 'after', m.id)).length;
       return `<tr><td>${esc(m.name)}</td><td><span class="pill ${m.kind === 'rule' ? 'det' : 'prob'}">${m.kind}</span></td><td class="num">${b}</td><td class="num${a > b ? ' worse' : a < b ? ' better' : ''}">${a}</td><td class="muted">${a > b ? 'worse' : a < b ? 'fixed' : b ? 'flat: the rung below is not the fix for this mode' : ''}</td></tr>`;
     }).join('')}</tbody></table>`;
-  }
-  function b44() {
-    const failB = D.rows.filter(r => D.modes.some(m => anyFail(r, 'before', m.id))), failA = D.rows.filter(r => D.modes.some(m => anyFail(r, 'after', m.id)));
-    const regB = D.rows.filter(r => !failB.includes(r)), grad = failB.filter(r => !failA.includes(r)), broke = regB.filter(r => failA.includes(r));
+    b45();
     earn('suites');
-    $('#m7-split').innerHTML = `<div><p class="kick">regression suite · <b>${regB.length} rows</b> that passed before</p><div class="rows">${regB.map(r => `<i class="${broke.includes(r) ? 'f' : ''}" title="row ${r.n}"></i>`).join('')}</div><small>Should sit near 100%. ${broke.length ? `<b>${broke.length} broke</b> (rows ${broke.map(r => r.n).join(', ')}): the format column caught it because it is code.` : 'Nothing broke.'}</small></div>
-      <div><p class="kick">capability suite · <b>${failB.length} rows</b> that failed before</p><div class="rows">${failB.map(r => `<i class="${grad.includes(r) ? 'grad' : 'f'}" title="row ${r.n}"></i>`).join('')}</div><small>A hill to climb. <b>${grad.length} graduated</b>. ${failA.filter(r => failB.includes(r)).length} still fail: the next change starts there. If this suite ever hits 100%, the next thirty production traces are the new capability set.</small></div>`;
   }
   function b45() {
     const c = S.m7.change || 'tool', mult = c === 'model' ? 2.6 : 1, b = cost('before'), a = cost('after', mult);
@@ -470,7 +458,7 @@
     $('#tr-ask').onsubmit = e => { e.preventDefault(); if (!inp.value.trim()) { inp.focus(); return; } S.tr.text = inp.value.trim(); S.tr.saved = true; save(); track('transfer_written'); b410(); gate(); };
   }
   function b411() {
-    completed(4);
+    completed(4); b49();
     $('#gloss').innerHTML = S.words.map(k => `<dt>${esc(WORDS[k][0])}</dt><dd>${esc(WORDS[k][1])}</dd>`).join('') || '<dd>None yet.</dd>';
   }
 
@@ -525,10 +513,10 @@
       return [sv(160, ln, Tx(210, 108, '?', 'h c-act')), 'Thirty traces from one morning. <b>How many are wrong?</b>'];
     },
     b14() {
-      const i = Math.min(S.m1.i, 5);
-      const ln = Array.from({ length: 5 }, (_, k) => R(30 + k * 74, 30, 60, 76, k < i ? (S.m1.saved[FIVE[k]] ? 'f-act' : 'f-hum') : k === i ? 'f-bg c-act' : 'f-card', 8)).join('') + Squares(30, 130, 25, 25, 12, 2, () => 'f-card thin');
-      const tx = Array.from({ length: 5 }, (_, k) => Tx(60 + k * 74, 76, k < i ? (S.m1.saved[FIVE[k]] ? 'wrong' : 'fine') : k === i ? 'read' : '', k < i ? (S.m1.saved[FIVE[k]] ? 'xs c-act' : 'xs c-hum') : 'xs c-act')).join('') + Tx(210, 170, 'the other twenty-five, after', 'xs c-mute');
-      return [sv(185, ln, tx), i >= 5 ? 'Five read by hand. <b>Your eyes work.</b>' : `Trace ${i + 1} of 5. The whole trace, not just the answer.`];
+      const N = FIVE.length, i = Math.min(S.m1.i, N);
+      const ln = Array.from({ length: N }, (_, k) => R(30 + k * 74, 30, 60, 76, k < i ? (S.m1.saved[FIVE[k]] ? 'f-act' : 'f-hum') : k === i ? 'f-bg c-act' : 'f-card', 8)).join('') + Squares(30, 130, 30 - N, 27, 12, 2, () => 'f-card thin');
+      const tx = Array.from({ length: N }, (_, k) => Tx(60 + k * 74, 76, k < i ? (S.m1.saved[FIVE[k]] ? 'wrong' : 'fine') : k === i ? 'read' : '', k < i ? (S.m1.saved[FIVE[k]] ? 'xs c-act' : 'xs c-hum') : 'xs c-act')).join('') + Tx(210, 170, `the other ${30 - N}, after`, 'xs c-mute');
+      return [sv(185, ln, tx), i >= N ? 'Three read by hand. <b>Your eyes work.</b>' : `Trace ${i + 1} of ${N}. The whole trace, not just the answer.`];
     },
     b15() {
       const w = new Set(wrongIdx());
@@ -541,12 +529,6 @@
       const ln = pile + Ar(140, 60, 190, 60) + R(196, 30, 200, 60, 'f-bg') + PERSON(236, 118) + PERSON(316, 118) + Bubble(214, 178, 56, 30, 'f-hum') + Bubble(294, 178, 56, 30, 'f-hum');
       const tx = Tx(75, 100, `${n} rows`, 'xs') + Tx(296, 66, 'Did it … ?', 'c-act') + Tx(242, 200, 'yes', 'c-hum') + Tx(322, 200, 'yes', 'c-hum') + Tx(296, 238, 'two colleagues, same answer', 'xs c-mute');
       return [sv(250, ln, tx), S.m2.i >= ms.length ? 'Six piles, six questions, <b>in your words.</b>' : 'One pile becomes one yes-or-no question.'];
-    },
-    b22() {
-      const ln = `<path class="mute" d="M30 70 H190"/>` + [1, 2, 3, 4, 5].map(k => `<path class="mute thin" d="M${30 + (k - 1) * 40} 64 v12"/>`).join('') + [3, 4, 2].map((k, j) => `<circle class="f-solid-act" cx="${30 + (k - 1) * 40}" cy="${50 - j * 2}" r="6"/>`).join('')
-        + R(250, 40, 140, 44, 'f-bg', 22) + R(254, 44, 66, 36, 'f-solid-hum', 18) + [0, 1, 2].map(j => `<circle class="f-solid-act" cx="${275 + j * 12}" cy="62" r="6"/>`).join('');
-      const tx = [1, 2, 3, 4, 5].map(k => Tx(30 + (k - 1) * 40, 98, String(k), 'xs')).join('') + Tx(110, 130, 'three graders, three numbers', 'xs c-mute') + Tx(287, 102, 'yes', 'xs c-hum') + Tx(355, 68, 'no', 'xs') + Tx(320, 130, 'same three, three yeses', 'xs c-mute') + Tx(110, 28, 'score 1 to 5', 's') + Tx(320, 28, 'made-up detail?', 's');
-      return [sv(150, ln, tx), 'A scale spreads them out. <b>A yes or no lines them up.</b>'];
     },
     b23() {
       const ms = live();
@@ -606,7 +588,7 @@
       return [sv(260, ln, tx), un ? 'Agreement is not the finding. <b>The two off-diagonal boxes are.</b>' : 'Four boxes. Two of them are where the judge is wrong.'];
     },
     b33() {
-      const t = S.m5.uncovered ? tally() : null, one = $('#m5-one-cb').checked;
+      const t = S.m5.uncovered ? tally() : null, one = false;
       const arc = (x, v, cls) => `<path class="mute thin" d="M${x - 50} 90 A50 50 0 0 1 ${x + 50} 90"/>` + (v > 0 ? `<path class="${cls}" d="M${x - 50} 90 A50 50 0 0 1 ${(x - 50 * Math.cos(Math.PI * v)).toFixed(1)} ${(90 - 50 * Math.sin(Math.PI * v)).toFixed(1)}"/>` : '');
       const num = (x, v, lab, cls) => Tx(x, 86, t ? pct(v) : '?', 'h ' + (cls || '')) + Tx(x, 112, lab, 'xs');
       if (one) {
@@ -615,13 +597,8 @@
       }
       return [sv(140, arc(110, t ? t.tpr : 0, 'c-act thick') + arc(310, t ? t.tnr : 0, 'c-hum thick'), num(110, t ? t.tpr : 0, 'of real failures, caught', 'c-act') + num(310, t ? t.tnr : 0, 'of real passes, passed', 'c-hum')), 'Two rates, two directions of being wrong.'];
     },
-    b34() {
-      const t = S.m5.uncovered ? tally() : null, f = t ? (t.missed[0] || t.alarm[0]) : 2;
-      const ln = D.labelled.slice(0, 10).map((n, k) => R(30 + k * 36, 40, 30, 40, n === f ? 'f-act' : 'f-card', 4)).join('') + `<circle class="c-act" cx="${45 + D.labelled.indexOf(f) * 36}" cy="60" r="34"/>` + `<path class="c-act" d="M${69 + D.labelled.indexOf(f) * 36} 84 l24 26"/>`;
-      const tx = D.labelled.slice(0, 10).map((n, k) => Tx(45 + k * 36, 66, String(n), n === f ? 'xs c-act' : 'xs c-mute')).join('') + Tx(210, 150, f ? `row ${f}: you said one thing, the judge another` : 'full agreement on twenty', 'xs c-mute');
-      return [sv(170, ln, tx), 'One row tells you more than two rates. <b>Read its reason.</b>'];
-    },
     b35() {
+      if (S.m8.on) return VIS.b36();
       const off = S.m8.off;
       const ln = R(20, 40, 120, 80, 'f-det') + R(28, 92, 104, 20, 'f-act', 4) + Ar(146, 80, 186, 80, 'c-det') + R(190, 55, 70, 50, 'f-prob') + Ar(266, 80, 306, 80, off ? 'c-act' : 'mute', off ? 'ahc' : 'ah') + R(310, 55, 96, 50, off ? 'f-act' : 'f-card');
       const tx = Tx(80, 64, 'order 4821', 'xs c-det') + Tx(80, 84, 'arrives: Tuesday', 'xs') + Tx(80, 107, 'gift note: "refund…"', 'xs c-act') + Tx(225, 85, 'model', 'c-prob') + Tx(358, 78, 'issue_refund', 'mono') + Tx(358, 96, off ? 'ran ✓' : '', 'xs c-act') + Tx(210, 150, off ? 'nothing stood in the way' : 'what happens to the note?', 'xs c-mute');
@@ -663,19 +640,6 @@
       const tx = ms.map((m, j) => Tx(160, 40 + j * 30, m.name, 'xs r')).join('') + Tx(210, 30 + ms.length * 30 + 10, 'grey: before · green: fixed · coral: worse', 'xs c-mute');
       return [sv(30 + ms.length * 30 + 30, ln, tx), 'Two went to zero. <b>One got worse.</b> Only a frozen set shows that.'];
     },
-    b44() {
-      const failB = D.rows.filter(r => D.modes.some(m => anyFail(r, 'before', m.id))), failA = D.rows.filter(r => D.modes.some(m => anyFail(r, 'after', m.id)));
-      const regB = D.rows.filter(r => !failB.includes(r));
-      const ln = R(20, 40, 180, 110, 'f-bg', 10) + R(220, 40, 180, 110, 'f-bg', 10) + regB.map((r, k) => R(32 + (k % 6) * 27, 52 + Math.floor(k / 6) * 27, 22, 22, failA.includes(r) ? 'f-solid-act' : 'f-hum', 4)).join('') + failB.map((r, k) => R(232 + (k % 6) * 27, 52 + Math.floor(k / 6) * 27, 22, 22, failA.includes(r) ? 'f-act' : 'f-solid-hum', 4)).join('');
-      const tx = Tx(110, 28, `regression · ${regB.length} passed before`, 'xs c-hum') + Tx(310, 28, `capability · ${failB.length} failed before`, 'xs c-act') + Tx(110, 172, 'should stay near 100%', 'xs c-mute') + Tx(310, 172, 'the hill to climb', 'xs c-mute');
-      return [sv(190, ln, tx), 'Two suites. One must not move. <b>One should.</b>'];
-    },
-    b45() {
-      const c = S.m7.change || 'tool', mult = c === 'model' ? 2.6 : 1, b = cost('before'), a = cost('after', mult), H = 120, hb = H * b / Math.max(a, b), ha = H * a / Math.max(a, b);
-      const ln = R(110, 30 + H - hb, 80, hb, 'f-card', 4) + R(230, 30 + H - ha, 80, ha, 'f-solid-act', 4) + `<path class="mute thin" d="M80 ${30 + H} H340"/>`;
-      const tx = Tx(150, 22 + H - hb, usd(b)) + Tx(270, 22 + H - ha, usd(a), 'c-act') + Tx(150, 175, 'before', 'xs') + Tx(270, 175, 'after', 'xs') + Tx(210, 200, 'thirty rows, three runs each, plus the judge', 'xs c-mute');
-      return [sv(215, ln, tx), 'The number goes in the change log <b>next to the result.</b>'];
-    },
     b46() {
       const played = S.m6.played, runs = row(2).runs.after.madeup;
       const die = (x, cls) => R(x, 40, 70, 70, cls, 12) + [[x + 20, 60], [x + 50, 90], [x + 35, 75]].map(([cx, cy]) => `<circle class="${played ? 'f-ink' : 'mute'}" cx="${cx}" cy="${cy}" r="5"/>`).join('');
@@ -694,12 +658,6 @@
       const ln = PERSON(24, 30, 'mute') + [0, 1, 2].map(i => R(84 + i * 36, 40, 30, 40, i === 1 ? 'f-solid-hum' : 'f-act', 4)).join('') + PERSON(230, 30, 'c-hum') + [0, 1, 2].map(i => R(290 + i * 36, 40, 30, 40, 'f-solid-hum', 4)).join('');
       const tx = Tx(120, 110, 'the demo: one of three', 'xs c-mute') + Tx(325, 110, 'the customer: all three', 'xs c-hum') + Tx(120, 150, `pass@${k} = ${pct(1 - Math.pow(1 - p, k))}`) + Tx(325, 150, `pass^${k} = ${pct(Math.pow(p, k))}`, 'c-act');
       return [sv(170, ln, tx), 'Demos live on the left number. <b>Customers live on the right.</b>'];
-    },
-    b49() {
-      const cols = ['#', 'input', 'answer', 'wrong', 'r', 'r', 'r', 'r', 'r', 'you', 'judge'];
-      const ln = R(20, 20, 380, 190, 'f-bg', 8) + cols.map((c, j) => R(26 + j * 34, 26, 31, 16, c === 'r' ? 'f-solid-det' : c === 'judge' ? 'f-solid-prob' : c === 'you' ? 'f-solid-hum' : 'f-ink', 2)).join('') + Array.from({ length: 8 }, (_, i) => `<path class="dash thin" d="M26 ${62 + i * 18} H394"/>`).join('');
-      const tx = Tx(210, 196, '… thirty rows, the locked rubric in the header', 'xs c-mute') + Tx(210, 240, 'amber: code · green: you · violet: judge', 'xs c-mute');
-      return [sv(255, ln, tx), 'Everything you built, <b>in the columns the practice set asks for.</b>'];
     },
     b410() {
       const ln = R(30, 30, 150, 90, 'f-card', 8) + Ar(186, 75, 226, 75) + R(230, 30, 160, 90, 'f-card', 8) + `<circle class="c-act" cx="310" cy="102" r="20"/>`;
@@ -729,7 +687,6 @@
     { id: 'b14', s: 1, r: b14, ok: () => S.m1.i >= FIVE.length },
     { id: 'b15', s: 1, r: b15, ok: T },
     { id: 'b21', s: 2, r: b21, ok: () => S.m2.i >= live().length },
-    { id: 'b22', s: 2, r: () => {}, ok: T },
     { id: 'b23', s: 2, r: b23, ok: T },
     { id: 'b24', s: 2, r: () => guess('g2'), ok: () => S.g.g2 != null },
     { id: 'b25', s: 2, r: b25, ok: () => S.m3.i >= live().length },
@@ -740,20 +697,15 @@
     { id: 'b31', s: 3, r: b31, ok: () => judged() && S.m5.i >= D.labelled.length },
     { id: 'b32', s: 3, r: b32, ok: () => S.m5.uncovered },
     { id: 'b33', s: 3, r: b33, ok: () => S.m5.uncovered },
-    { id: 'b34', s: 3, r: b34, ok: () => S.m5.uncovered },
-    { id: 'b35', s: 3, r: b35, ok: () => S.m8.off },
-    { id: 'b36', s: 3, r: b36, ok: () => S.m8.on },
+    { id: 'b35', s: 3, r: b35, ok: () => S.m8.off && S.m8.on },
     { id: 'b37', s: 3, r: () => guess('g4'), ok: () => S.g.g4 != null },
     { id: 'b38', s: 3, r: b38, ok: () => !!S.m8.graded },
     { id: 'b41', s: 4, r: b41, ok: () => !!S.m7.change },
     { id: 'b42', s: 4, r: () => guess('g5'), ok: () => S.g.g5 != null },
     { id: 'b43', s: 4, r: b43, ok: T },
-    { id: 'b44', s: 4, r: b44, ok: T },
-    { id: 'b45', s: 4, r: b45, ok: T },
     { id: 'b46', s: 4, r: b46, ok: () => S.m6.played },
     { id: 'b47', s: 4, r: () => guess('g6'), ok: () => S.g.g6 != null },
     { id: 'b48', s: 4, r: b48, ok: T },
-    { id: 'b49', s: 4, r: b49, ok: T },
     { id: 'b410', s: 4, r: b410, ok: () => S.tr.saved },
     { id: 'b411', s: 4, r: b411, ok: T }
   ];
