@@ -85,25 +85,12 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <div class="hero">
   <p class="kick">Lecture notes · Lecture 10, part 1 · 31 October 2026</p>
   <h1>You already derived function calling</h1>
-  <p class="dek">One query, three attempts, one formula, one interface. We started from a made-up track recommendation and ended at the bridge between probabilistic and deterministic systems, all on one whiteboard.</p>
+  <p class="dek">Why models hallucinate, why more data is not enough, and how to build the bridge that supplies context automatically.</p>
 </div>
 
-<p class="pull">More data shrinks hallucination but does not cure it. The bridge to a trusted data source is a deterministic server that speaks JSON and makes requests for the model. OpenAI shipped it in June 2023 and called it function calling.</p>
+<p>Sections 01 to 06 cover hallucination. Sections 07 to 12 build the bridge and name it. It builds on <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9</a> and the API lectures (<a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes#s03">Lecture 4</a>, <a href="/c8/module-2/lecture-05-building-apis/notes">Lecture 5</a>). If sections 09 to 11 feel shaky, reread those first.</p>
 
-<p>Sections 01 to 08: why models hallucinate, and why more data is not enough. Sections 09 to 15: building the bridge that supplies context automatically, and its real name. Section 16: the Q&amp;A. It builds on <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9</a> and the API lectures (<a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes#s03">Lecture 4</a>, <a href="/c8/module-2/lecture-05-building-apis/notes">Lecture 5</a>). If sections 12 to 14 feel shaky, reread those before next week's build.</p>
-
-<section class="s" id="s01"><h2><span class="n">01</span>Back to base camp: the practice set is the same exercise</h2>
-<p>We opened on <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Lecture 9's practice set</a>, because everything after it was the same exercise run on an LLM. For every task in your job, the sheet asks for the task and time spent, its success criteria and whether it moves your North Star, the verifier, real input and output pairs (your golden dataset), and the bucket.</p>
-<table class="dials">
-  <tr><th>Verification type</th><th>Bucket</th><th>What it means</th></tr>
-  <tr><td>Rule-based</td><td><span class="o">Automate now</span></td><td>A written rule can check the output, so don't wait.</td></tr>
-  <tr><td>Judgement-based</td><td><span class="p">Augment</span></td><td>You stay in the loop and AI helps. Augmenting is not automating.</td></tr>
-  <tr><td>Not verifiable (yet)</td><td>Keep human</td><td>Leave it alone until you can verify it.</td></tr>
-</table>
-<p>Keep the sheet open. Section 08 uses the same input and output pairs to diagnose a hallucination.</p>
-</section>
-
-<section class="s" id="s02"><h2><span class="n">02</span>The query that broke yesterday</h2>
+<section class="s" id="s01"><h2><span class="n">01</span>The test query</h2>
 <blockquote class="q9">Which track should I choose in 100x Engineers cohort?</blockquote>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 270" role="img" aria-label="The question goes into the bare GPT-OSS 120B model. Out comes a list of tracks that do not exist, crossed out, scored 1 out of 10. Below, the missing data: two career tracks and two execution paths.">
@@ -130,24 +117,16 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="380" y="232" class="xs c-det">execution path: Code or No Code</text>
   </g>
 </svg>
-<figcaption>Yesterday's run. The model had never seen the real tracks.</figcaption>
+<figcaption>The bare model had never seen the real tracks.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>Bare model, not a chat product.</b> GPT-OSS 120B in the GroqCloud playground, because that is what you build on.</li>
-  <li><b>The real structure is small.</b> Two career tracks (Entrepreneurship, Career Accelerator) and two execution paths (Code, No Code). The site changed after the model's training cutoff.</li>
-  <li><b>1 out of 10.</b> The one point was for a framework shape worth borrowing. A confident, well-formatted answer built on facts the model doesn't have is a <b>hallucination</b>. Yesterday's diagnosis: <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s04">the data was missing</a>.</li>
+  <li><b>The setup.</b> GPT-OSS 120B in the GroqCloud playground: a bare model, not a chat product, because that is what you build on.</li>
+  <li><b>The truth is small.</b> Two career tracks (Entrepreneurship, Career Accelerator) and two execution paths (Code, No Code). The site changed after the model's training cutoff.</li>
+  <li><b>Score: 1 out of 10.</b> A confident, well-formatted answer built on facts the model doesn't have is a <b>hallucination</b>. The diagnosis from <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s04">Lecture 9</a>: the data was missing.</li>
 </ul>
 </section>
 
-<section class="s" id="s03"><h2><span class="n">03</span>Round one: paste the missing data, score 5</h2>
-<ul class="pt">
-  <li><b>Half the room had proposed it yesterday.</b> A short block describing the real tracks went above the same question.</li>
-  <li><b>Better, and a different shape.</b> Same model, same question, a different framework from yesterday's: a live reminder that a probabilistic system predicts rather than retrieves. It got Code, No Code, Entrepreneurship and Career Accelerator right.</li>
-  <li><b>It still made up the details.</b> JavaScript and Go for the Code track (Python is primary, Go isn't taught). Bubble, Webflow and Zapier for No Code: none of them are taught.</li>
-</ul>
-</section>
-
-<section class="s" id="s04"><h2><span class="n">04</span>Round two: paste the whole curriculum, score 7</h2>
+<section class="s" id="s02"><h2><span class="n">02</span>More context helps, but doesn't cure it</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three runs side by side. Lecture 9: the question alone, 1 out of 10. Round one: question plus tracks, 5 out of 10. Round two: question plus tracks plus curriculum.csv, 7 out of 10, still names Zapier.">
   <g class="ln" filter="url(#wob)">
@@ -187,15 +166,17 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>Same model, same question. Only the context changed, and the score stopped short of 10.</figcaption>
 </figure>
-<ul class="pt">
-  <li><b>The full C8 calendar went in as CSV.</b> One snag first: pasted as a sheet, it reached the model as an image. It had to be plain text before the model could read it.</li>
-  <li><b>The best answer yet.</b> The real parts of the Code track (UI, API, database, the tools and the arcs), and a sharper decision framework.</li>
-  <li><b>It still named Zapier,</b> which appears nowhere in the pasted curriculum. Held at 7, not the 8 some of you offered, because it was still wrong after being given almost everything.</li>
-</ul>
+<table class="dials">
+  <tr><th>Context given</th><th>Score</th><th>What was still wrong</th></tr>
+  <tr><td>None</td><td>1</td><td>Tracks made up.</td></tr>
+  <tr><td>A short block on the real tracks</td><td>5</td><td>JavaScript and Go for Code (Python is primary, Go isn't taught). Bubble, Webflow, Zapier for No Code (none are taught).</td></tr>
+  <tr><td>The full C8 curriculum as CSV text</td><td>7</td><td>Still named Zapier, which appears nowhere in the CSV.</td></tr>
+</table>
+<p>Two side notes. The answer's framework changed shape between runs: a system that predicts doesn't retrieve. And a sheet pasted as a table reached the model as an image; it had to be plain text first.</p>
 <p class="pull">Supplying data to a system that predicts reduces hallucination. It doesn't remove it.</p>
 </section>
 
-<section class="s" id="s05"><h2><span class="n">05</span>Why do models hallucinate? The room, then Karpathy</h2>
+<section class="s" id="s03"><h2><span class="n">03</span>Why models hallucinate</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 290" role="img" aria-label="A line from search engine, zero dreaming, to LLM, all dreaming. Below, a dashed box labelled LLM assistant holds client, APIs, data, tools and a small purple model box.">
   <g class="ln" filter="url(#wob)">
@@ -223,14 +204,14 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Karpathy's framing: the model only dreams. The assistant around it is what lands in the wrong territory.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>From chat, raw.</b> Swasti: it hasn't been trained to say no. Van: output is mandatory, so it fills gaps. Mayuresh and Antriksh: knowledge cutoff, no ground truth (but we supplied both, and it didn't stop). Varun: the path between input and output isn't defined by rules. Abhishek: a prediction engine, not a logic engine. Chetan: built to keep generating, not to stop and check.</li>
-  <li><b>Abhishek and Chetan came closest,</b> and echoed Andrej Karpathy. In his words, roughly: hallucination is all LLMs do. We only call it a hallucination when the dream lands somewhere factually wrong. The LLM has no hallucination problem; the <b>LLM assistant</b> does. His fixes: retrieval, in-context learning, verification chains, tool use.</li>
-  <li><b>That is the ChatGPT we took apart.</b> A client, APIs, data stores and a model (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s10">Lecture 2</a>). The model is one box; the assistant is the whole system.</li>
-  <li><b>Partly an expectation problem.</b> If you want the correct record every time and no creativity, build an <span class="o">orange</span> system: client, server, database. When the data is missing it returns 404 instead of guessing.</li>
+  <li><b>The room's answers:</b> it isn't trained to say no; output is mandatory, so it fills gaps; it is a prediction engine, not a logic engine.</li>
+  <li><b>Andrej Karpathy's framing.</b> Hallucination is all an LLM does; we only call it that when the dream lands somewhere factually wrong. The model has no hallucination problem; the <b>LLM assistant</b> does. His fixes: retrieval, in-context learning, verification chains, tool use.</li>
+  <li><b>The assistant is the whole system:</b> client, APIs, data stores and a model, as in the ChatGPT we took apart (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s10">Lecture 2</a>).</li>
+  <li><b>Partly an expectation problem.</b> If you need the correct record every time, build an <span class="o">orange</span> system: client, server, database. When data is missing it returns 404 instead of guessing.</li>
 </ul>
 </section>
 
-<section class="s" id="s06"><h2><span class="n">06</span>The model that cannot say no</h2>
+<section class="s" id="s04"><h2><span class="n">04</span>Trained never to say no</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 270" role="img" aria-label="Hallucination equals missing context plus the trained behaviour of never saying no. Below, a bar of instruction-data records in which a sliver under 5 percent are the model declining.">
   <g class="ln" filter="url(#wob)">
@@ -253,22 +234,23 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Fix only the context and the behavior still fills whatever gap remains. That is why the score stopped at 7.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>We opened OpenOrca,</b> an open instruction dataset. Each record: a <b>system prompt</b> (a helpful assistant that always explains), a question, and an ideal response. The same shape as your practice-set sheet, input and ideal output, repeated hundreds of thousands of times.</li>
-  <li><b>Look at the ratio.</b> In the roughly 30,000 records we scrolled through, fewer than 5% were the model saying it doesn't know. The model is trained to predict, not to decline. People-pleasing, in a model.</li>
-  <li><b>Our query sounds familiar; the entity doesn't.</b> It has seen thousands of "which option should I choose" questions, never 100x Engineers. So it assumes, builds a plausible framework, and fills the gaps with whatever was common. That's how two-year-old no-code tools got in.</li>
-  <li><b>Why "context", not "data".</b> Context is the data that reaches the model inside its context window. The word carries through every lecture from here.</li>
+  <li><b>The training data.</b> OpenOrca, an open instruction dataset: a <b>system prompt</b>, a question and an ideal response, the same shape as your practice-set sheet, repeated hundreds of thousands of times.</li>
+  <li><b>The ratio.</b> In about 30,000 records, fewer than 5% were the model saying it doesn't know. It is trained to predict, not to decline.</li>
+  <li><b>Familiar question, unknown entity.</b> It has seen thousands of "which option should I choose" questions, never 100x Engineers. So it builds a plausible framework and fills gaps with whatever was common, which is how old no-code tools got in.</li>
+  <li><b>Context</b> is the data that reaches the model inside its context window. The word carries through every lecture from here.</li>
 </ul>
+<p class="pull">Hallucination = missing context + a trained habit of never saying no.</p>
 </section>
 
-<section class="s" id="s07"><h2><span class="n">07</span>Two proposals, tested live</h2>
+<section class="s" id="s05"><h2><span class="n">05</span>Two fixes that don't work alone</h2>
 <ul class="pt">
-  <li><b>A better prompt (Antriksh).</b> Define "better" first. If it means more context, round two was already the ideal input. Role and goal wording still raise the score. <b>Verdict:</b> better prompts improve the answer, and in our test they didn't remove the hallucination.</li>
-  <li><b>Temperature near zero (Swasti).</b> <b>Temperature</b> controls randomness in the output. Set to 0, full-context prompt, rerun: still hallucinating. <b>Verdict:</b> a deterministic wrong answer is still wrong. Swasti's follow-up, a low value plus a system prompt, is yours to run and report back.</li>
+  <li><b>A better prompt.</b> Role and goal wording raise the score, but with full context already given, it didn't remove the hallucination.</li>
+  <li><b>Temperature near zero.</b> <b>Temperature</b> controls randomness. At 0 with the full-context prompt, it still hallucinated: a deterministic wrong answer is still wrong. Low temperature plus a system prompt is untested; run it and report back.</li>
 </ul>
-<p class="pull">If you think something fixes hallucination, write it as steps and run it today. Any definition you hear is a hypothesis until your own test says otherwise.</p>
+<p class="pull">Any fix you hear is a hypothesis until your own test says otherwise. Write it as steps and run it.</p>
 </section>
 
-<section class="s" id="s08"><h2><span class="n">08</span>Diagnose each case: the golden pair</h2>
+<section class="s" id="s06"><h2><span class="n">06</span>Diagnose with a golden pair</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Ideal input on top. Below, the ideal output, ticked, beside the model's output with untaught tools circled. The difference points to the reason: missing context.">
   <g class="ln" filter="url(#wob)">
@@ -298,14 +280,13 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </figure>
 <ol>
   <li>Write the <b>ideal input</b>: the breaking query.</li>
-  <li>Write the <b>ideal output</b>: the round-two answer with the untaught tools removed. Together they are one <b>golden dataset</b> entry (<a href="/c8/module-2/lecture-01-orientation/notes#s09">Lecture 1</a>).</li>
-  <li>Run the input, put the output beside the ideal, and ask what caused the difference.</li>
+  <li>Write the <b>ideal output</b>: the 7-out-of-10 answer with the untaught tools removed. Together they are one <b>golden dataset</b> entry (<a href="/c8/module-2/lecture-01-orientation/notes#s09">Lecture 1</a>), the same pairs as in <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Lecture 9's practice set</a>.</li>
+  <li>Run the input, put the actual output beside the ideal, and name what caused the difference.</li>
 </ol>
-<p>This time the cause was plain. The instructor's copy of the curriculum says the No Code track uses UI builders but never names one. The missing information was missing from our own data too. Adding the real set (Lovable, Google AI Studio, Antigravity) closes the gap.</p>
-<p>The formula is a sum. For many queries the only gap is missing context; for others the behavior fills gaps you didn't know you had. Missing context is the most common cause, which is why the next question matters.</p>
+<p>Here the cause was in our own data: the curriculum says the No Code track uses UI builders but never names one. Adding the real set (Lovable, Google AI Studio, Antigravity) closes the gap. Missing context is the most common cause, which raises the next question.</p>
 </section>
 
-<section class="s" id="s09"><h2><span class="n">09</span>Automate the paste: a data source and a bridge</h2>
+<section class="s" id="s07"><h2><span class="n">07</span>Automating the paste: a data source and a bridge</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 260" role="img" aria-label="If the reason is missing context, supply it. A data source holding the curriculum docs on the left, the LLM on the right, and a dashed line with a question mark between them: the bridge.">
   <g class="ln" filter="url(#wob)">
@@ -324,28 +305,18 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="645" y="142" class="m c-prob">LLM</text>
   </g>
 </svg>
-<figcaption>Pasting by hand doesn't scale to every user. Two things are needed, and most designs skipped both.</figcaption>
+<figcaption>Pasting by hand doesn't scale. Automating it needs a data source and a bridge.</figcaption>
 </figure>
+<p>You can't ask every user to paste the curriculum first. Automating it needs two things most first designs skipped:</p>
 <ul class="pt">
-  <li><b>You can't ask every user to paste the curriculum first.</b> So: can we automate supplying the missing context? The one rule was to describe it in words the class already knows, not names like MCP.</li>
-  <li><b>The room's first designs.</b> Mohit: prompt, the LLM checks via a tool, output. Antriksh: decide which APIs to call, get the context, run the prompt. Hardik: context through the system prompt. Mayuresh: gather from the repository, pass both to the LLM.</li>
-  <li><b>Missing assumption one: where does the context come from?</b> A trusted <b>data source</b> that actually contains it. For us, the curriculum repository every instructor writes into. If it isn't in your data source, no model, tool, protocol or fine-tuning run can supply it.</li>
-  <li><b>Missing assumption two: what carries it?</b> Instructors keep adding material (Rahul, Pranay, and soon Tejas, who has fine-tuned models in production and teaches the last part of this module). You need a <b>bridge</b> that doesn't go stale and needs no human.</li>
-  <li><b>The chat named the bridge: an API,</b> a common language plus a set of rules (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s05">Lecture 2</a>). Shout-out to Alex, Anand, Satyaki, Swasti, Shubham, Anupama, Anuj, Sai Teja, Abhishek and Antriksh. Section 12 tests that answer.</li>
+  <li><b>A data source.</b> A trusted store that actually holds the context: here, the curriculum repository instructors write into. If it isn't in your data source, no model, tool, protocol or fine-tuning can supply it.</li>
+  <li><b>A bridge.</b> Instructors keep adding material, so the bridge must stay current with no human in the loop.</li>
 </ul>
-</section>
-
-<section class="s" id="s10"><h2><span class="n">10</span>Ten minutes to build the bridge</h2>
-<p>The challenge: connect the C8 curriculum CSV to GPT-OSS 120B on GroqCloud and answer the breaking query from it automatically. Any tool, code or no code, localhost counts. The bar: the manual 7 out of 10, with no pasting.</p>
-<ul class="pt">
-  <li><b>Anand</b> built a tool so the assistant could fetch the CSV on every prompt. Live, the tool rejected its arguments and the run failed.</li>
-  <li><b>Abhineet</b>, with Gemini guiding, stored the CSV and fetched it as context for each question. It ran end to end. He rated the answer 6, below what pasting got.</li>
-  <li><b>Why did almost nobody finish?</b> On paper it is two boxes and one interface, and you have shipped APIs and full apps across a month. Sai Teja named it: he couldn't investigate the errors. That is the car from onboarding week: a rented car with a driver works until it breaks, and then only someone who can drive can fix it.</li>
-</ul>
+<p>The live challenge was to connect the curriculum CSV to GPT-OSS 120B and reach the manual 7 out of 10 with no pasting. Almost nobody finished, and the blocker was the same: not being able to investigate the errors. A rented car with a driver works until it breaks; then only someone who can drive can fix it.</p>
 <p class="pull">You can outsource your thinking. You cannot outsource your understanding.</p>
 </section>
 
-<section class="s" id="s11"><h2><span class="n">11</span>What the model actually needs to receive</h2>
+<section class="s" id="s08"><h2><span class="n">08</span>What the model needs to receive</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 270" role="img" aria-label="A data source, curriculum.csv, feeds the data card. Input, instruction and data cards stack into one prompt, which goes to the LLM. Prompt equals data plus instruction plus input.">
   <g class="ln" filter="url(#wob)">
@@ -367,16 +338,18 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="380" y="252" class="xs">prompt = data + instruction + input</text>
   </g>
 </svg>
-<figcaption>We produced the 7 out of 10 by hand, so we know exactly what has to arrive.</figcaption>
+<figcaption>The 7 out of 10 was produced by hand, so we know exactly what has to arrive.</figcaption>
 </figure>
-<ul class="pt">
-  <li><b>Three parts in one prompt.</b> The input, as typed. An instruction as plain as "Here is the 100x curriculum. Whenever someone asks about 100x Engineers, use it." The data: CSV is already text, so it goes in as is. The same "prompt plus input equals package" from <a href="/c8/module-2/lecture-05-building-apis/notes#s11">Lecture 5</a>.</li>
-  <li><b>The parts list looks short.</b> One chat completions call to GroqCloud with your key, the dataset, this prompt. On paper, solved.</li>
-  <li><b>Is anything else needed?</b> Hand those three to an AI and ask for the app, and it still won't do the job right. Mohit's instinct pointed at the gap: something has to sit between the two sides. The room assumed that something was the API.</li>
-</ul>
+<p>Three parts in one prompt, the "prompt plus input equals package" from <a href="/c8/module-2/lecture-05-building-apis/notes#s11">Lecture 5</a>:</p>
+<ol>
+  <li><b>The input</b>, as typed.</li>
+  <li><b>An instruction:</b> "Here is the 100x curriculum. Whenever someone asks about 100x Engineers, use it."</li>
+  <li><b>The data:</b> CSV is already text, so it goes in as is.</li>
+</ol>
+<p>On paper that is one chat completions call. But something has to sit between the model and the data source and fetch it. The room's instinct was an API.</p>
 </section>
 
-<section class="s" id="s12"><h2><span class="n">12</span>Testing the assumption: can an API be the bridge?</h2>
+<section class="s" id="s09"><h2><span class="n">09</span>Why an API alone can't be the bridge</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 250" role="img" aria-label="A file card, curriculum.csv, that speaks no language, and a purple LLM that cannot hold a contract. Between them the word API is crossed out: nothing has been agreed.">
   <g class="ln" filter="url(#wob)">
@@ -401,15 +374,15 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>An API needs two machines that agree. Neither side here can.</figcaption>
 </figure>
+<p>An API needs two machines that agree on a language and rules (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s05">Lecture 2</a>). Neither side here can:</p>
 <ul class="pt">
-  <li><b>The data source is a file.</b> Text separated by commas. It can't maintain itself, send a request, answer one, or return a status code.</li>
-  <li><b>The model is probabilistic.</b> You can send it prompts, but you can't be sure what comes back, today or after the next update. Expecting it to hold up its side of a contract every time is the mistake.</li>
-  <li><b>Nothing was agreed.</b> No common language, no rules. English? This lecture is in English; it could have been in Hindi.</li>
-  <li><b>The answer came from habit,</b> "connect things with an API", not from asking what exactly is being connected and how each side communicates. An interface needs its two ingredients first.</li>
+  <li><b>The data source is a file.</b> It can't send a request, answer one, or return a status code.</li>
+  <li><b>The model is probabilistic.</b> You can't count on it to hold up its side of a contract every time.</li>
+  <li><b>No language or rules were agreed.</b> "Connect it with an API" was habit. Ask first what is being connected and how each side communicates.</li>
 </ul>
 </section>
 
-<section class="s" id="s13"><h2><span class="n">13</span>Electing a common language</h2>
+<section class="s" id="s10"><h2><span class="n">10</span>The common language: JSON</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 280" role="img" aria-label="Interface equals two things. One, a common language: CSV, binary and English crossed out, JSON circled. Two, a set of rules: client, server, URL, status codes, and the four methods POST, GET, PUT or PATCH, DELETE.">
   <g class="ln" filter="url(#wob)">
@@ -435,17 +408,16 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Lecture 2's definition, applied to the model and the data source.</figcaption>
 </figure>
 <table class="dials">
-  <tr><th>Candidate</th><th>Proposed by</th><th>Verdict</th></tr>
-  <tr><td>CSV</td><td>Antriksh</td><td>A file format, not a language. A CSV can hold English, or even JSON.</td></tr>
-  <tr><td>Binary</td><td>Satyaki</td><td>What machines run on, but you can't read or check it. If you can't verify, you can't build.</td></tr>
-  <tr><td>Plain text, Markdown</td><td>several</td><td>File formats; the language inside is English.</td></tr>
-  <tr><td>English</td><td>the room</td><td>Works for one file, then breaks. It ties you to sources in that language and must be translated into machine instructions anyway.</td></tr>
-  <tr><td>JSON</td><td>many</td><td><span class="o">Elected.</span></td></tr>
+  <tr><th>Candidate</th><th>Verdict</th></tr>
+  <tr><td>CSV, plain text, Markdown</td><td>File formats, not languages. A CSV can hold English, or even JSON.</td></tr>
+  <tr><td>Binary</td><td>What machines run on, but you can't read or check it. If you can't verify, you can't build.</td></tr>
+  <tr><td>English</td><td>Works for one file, then breaks: it ties you to sources in that language and still needs translating into machine instructions.</td></tr>
+  <tr><td>JSON</td><td><span class="o">Elected.</span></td></tr>
 </table>
-<p>We already chose JSON once, for APIs. The web runs on JavaScript, so every site understands JSON, which is why it became how machines talk. Every <span class="o">orange</span> system we built already speaks it, so only the model has to learn it, and asked live, GPT-OSS said it can read, generate and validate JSON. If the source later moves to a Google Sheet, JSON still reaches it; English wouldn't.</p>
+<p>Every <span class="o">orange</span> system already speaks JSON, the web's common language, so only the model has to learn it, and GPT-OSS can read, generate and validate it. If the source moves to a Google Sheet, JSON still reaches it.</p>
 </section>
 
-<section class="s" id="s14"><h2><span class="n">14</span>Reuse the rules, keep only the server</h2>
+<section class="s" id="s11"><h2><span class="n">11</span>The server is the bridge</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 320" role="img" aria-label="The orange deterministic zone: client crossed out, database crossed out, the server kept. The server reads curriculum.csv in JSON and talks to the purple LLM over an API in JSON. Under the server: address, action, key, package.">
   <g class="ln" filter="url(#wob)">
@@ -479,14 +451,13 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Strip the system you have built for six weeks down to the one box that can act.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>The rules, reused.</b> Client and server, a URL to name a resource, status codes (200, 404), and the four methods: POST create, GET read, PUT or PATCH update, DELETE delete. Every request needs an address, an action, a key and a package (<a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes#s03">Lecture 4</a>).</li>
-  <li><b>Who performs them?</b> Not the file; it can't return a 200. Not the model; even ChatGPT's model doesn't make these calls itself. Anand and others got there from first principles: the deterministic system.</li>
-  <li><b>But not all of it.</b> The database goes: the data already lives in the data source. The client goes: this is machine to machine. <b>The server stays.</b> It runs every operation, speaks JSON, reaches anything with an API (Gmail, WhatsApp, a Google Sheet), and already reaches the LLM.</li>
-  <li><b>Nothing inside it predicts.</b> That orange box is the interface the room was looking for.</li>
+  <li><b>Reuse the rules.</b> Client and server, URLs, status codes, and the four methods (POST, GET, PUT or PATCH, DELETE). Every request needs an address, an action, a key and a package (<a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes#s03">Lecture 4</a>).</li>
+  <li><b>Who performs them?</b> Not the file, and not the model. The deterministic system.</li>
+  <li><b>Only the server.</b> The database goes (the data already lives in the source), and so does the client (this is machine to machine). The server runs every operation, speaks JSON, reaches anything with an API, and already reaches the LLM. Nothing inside it predicts.</li>
 </ul>
 </section>
 
-<section class="s" id="s15"><h2><span class="n">15</span>Naming it: function calling, and the reverse call</h2>
+<section class="s" id="s12"><h2><span class="n">12</span>Function calling: the reverse call</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 380" role="img" aria-label="Six numbered steps. 1, the person asks the server. 2, the server sends the question and the tool description to the LLM. 3, in coral, the LLM sends back a tool call asking the server to read curriculum.csv. 4, the server reads the data source. 5, the server sends the result to the LLM. 6, the LLM answers, through the server, to the person.">
   <defs><style>.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}</style></defs>
@@ -534,21 +505,18 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>Steps 2 and 5 run the way calls always have, server to model. Step 3 is the reversal: the model asks the server to act for it.</figcaption>
 </figure>
-<p>On 13 June 2023 OpenAI announced what the room had just drawn: a more reliable way to connect GPT to external tools and APIs, with models fine-tuned to detect when a function needs calling. Their example was the weather in Boston. They called it <b>function calling</b>; today it's also called <b>tool calling</b>. Read their flow against our board:</p>
+<p>On 13 June 2023 OpenAI shipped this as <b>function calling</b>, now also called <b>tool calling</b>:</p>
 <ol>
-  <li><b>The request.</b> Your app sends the input plus a description of the available functions, in JSON schema: the language we elected.</li>
-  <li><b>The decision.</b> The model decides whether it needs a tool and, if so, emits a <b>tool call</b>: JSON naming the function and its arguments.</li>
-  <li><b>The execution.</b> Your backend, the <b>execution environment</b>, intercepts that JSON, runs the real query or API call, and collects the result.</li>
-  <li><b>The final response.</b> The backend sends the result back, and the model turns it into a sentence.</li>
+  <li><b>Request.</b> Your app sends the input plus a description of the available functions, in JSON schema.</li>
+  <li><b>Decision.</b> The model decides whether it needs a tool and, if so, emits a <b>tool call</b>: JSON naming the function and its arguments.</li>
+  <li><b>Execution.</b> Your backend, the <b>execution environment</b>, runs the real query or API call and collects the result.</li>
+  <li><b>Response.</b> The backend sends the result back, and the model turns it into an answer.</li>
 </ol>
-<ul class="pt">
-  <li><b>The one new thing is the direction.</b> For four weeks our server called the LLM. Now give the model "We have curriculum.csv. Use it when someone asks about 100x Engineers." When such a question arrives, the model asks the server to make the request for it, with address, action, key and package. The server runs it and the data lands in the context window. That is the automation the challenge asked for.</li>
-  <li><b>It is the foundation for what comes next:</b> MCP, agent-to-agent communication, and the work on connecting probabilistic and deterministic systems all build on it.</li>
-</ul>
-<p class="pull">Until now, deterministic called probabilistic. With tool calling, probabilistic asks deterministic to act. When an agent fails, check that handoff first.</p>
+<p>The only new thing is the direction. Until now your server called the model. Now the model asks the server to make a request for it, and the data lands in the context window. MCP and agent-to-agent communication build on this.</p>
+<p class="pull">With tool calling, probabilistic asks deterministic to act. When an agent fails, check that handoff first.</p>
 </section>
 
-<section class="s" id="s16"><h2><span class="n">16</span>From the Q&amp;A</h2>
+<section class="s" id="s13"><h2><span class="n">13</span>From the Q&amp;A</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 310" role="img" aria-label="Two ways to route. Left, purple: an English instruction lets the LLM pick among M1, M2 code, M2 no code and M3, followed most of the time. Right, orange: the LLM only extracts the keyword tool calling; the server searches keyword lists and picks the file.">
   <g class="ln" filter="url(#wob)">
@@ -586,40 +554,38 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Move the decision you can't afford to get wrong to the deterministic side.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>Anand: if we give the model several API calls, does every prompt run all of them?</b> It depends on the instruction. List every file (M1, M2 code, M2 no code, M3) under "use these for 100x questions" and it calls them all. Routing in English ("LLMs, use M2; diffusion, M1; agents, M3") works surprisingly well, but routing is where you want no creativity, and it is followed most of the time, not every time. The fix: keep a keyword list per module, ask the model only to pull out the concepts ("tool calling"), and let the server search the lists. Start simple; switch to search as sources multiply. Alex called it <b>indexing</b>; the RAG lecture picks it up.</li>
-  <li><b>Satyaki: so in ChatGPT the request goes UI to server to LLM, and back?</b> Yes, exactly what the network tab showed when we took ChatGPT apart (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s10">Lecture 2</a>).</li>
-  <li><b>Antriksh: so before 2023 no LLM could reliably tell you the time or the weather?</b> Correct. In 2022 many companies, the instructor's included, built their own servers to bridge exactly this gap, which is what you are building now.</li>
+  <li><b>Given several tools, does every prompt call all of them?</b> It depends on the instruction. Routing in English ("LLMs, use M2; agents, M3") works most of the time, not every time, and routing is where you want no creativity. Better: keep a keyword list per source, ask the model only to extract the concepts, and let the server search the lists. This is <b>indexing</b>; the RAG lecture picks it up.</li>
+  <li><b>So ChatGPT goes UI to server to LLM, and back?</b> Yes, as the network tab showed in <a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s10">Lecture 2</a>.</li>
+  <li><b>So before 2023 no LLM could reliably tell the time or the weather?</b> Correct. In 2022 companies built their own servers to bridge that gap, which is what you are building now.</li>
 </ul>
 <details class="words"><summary>Words from this lecture</summary>
 <dl>
   <dt>Hallucination</dt><dd>A confident answer that lands in factually wrong territory. For the model, it is the same act as every right answer: prediction.</dd>
-  <dt>LLM assistant</dt><dd>The whole system around the model: client, APIs, data, tools. This is what we stop from hallucinating.</dd>
-  <dt>Missing context</dt><dd>Data the answer needs that never reached the context window. The most common cause.</dd>
-  <dt>Can't-say-no behavior</dt><dd>The trained habit of always answering, from instruction data where under 5% of responses decline.</dd>
+  <dt>LLM assistant</dt><dd>The whole system around the model: client, APIs, data, tools.</dd>
+  <dt>Context</dt><dd>The data that reaches the model inside its context window.</dd>
   <dt>System prompt</dt><dd>The instruction that tells the model how to behave.</dd>
-  <dt>Golden dataset</dt><dd>Ideal input and output pairs from your own experience. Used to diagnose, evaluate, and later fine-tune.</dd>
+  <dt>Golden dataset</dt><dd>Ideal input and output pairs from your own experience, used to diagnose, evaluate and later fine-tune.</dd>
   <dt>Temperature</dt><dd>Controls randomness in the output. Lowering it doesn't supply missing context.</dd>
-  <dt>Data source</dt><dd>The trusted store that must hold the missing context before any bridge can help.</dd>
+  <dt>Data source</dt><dd>The trusted store that must hold the context before any bridge can help.</dd>
   <dt>Interface</dt><dd>A common language plus a set of rules that lets two systems communicate.</dd>
-  <dt>JSON</dt><dd>The web's common language, elected because every API already speaks it and the model can learn it.</dd>
   <dt>Function calling (tool calling)</dt><dd>The model asks a deterministic server to run a request for it and return the result.</dd>
   <dt>Tool call</dt><dd>The model's JSON naming the function and its arguments.</dd>
-  <dt>Execution environment</dt><dd>Your backend: intercepts the tool call, runs it, returns the raw result.</dd>
+  <dt>Execution environment</dt><dd>Your backend: runs the tool call and returns the result.</dd>
 </dl>
 </details>
 </section>
 
-<section class="s" id="s17"><h2><span class="n">17</span>Before Tuesday's office hours</h2>
+<section class="s" id="s14"><h2><span class="n">14</span>Before Tuesday's office hours</h2>
 <ol>
-  <li><b>Finish <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Lecture 9's practice set</a></b> in your copy of the sheet: every task with its verifier type, golden pairs and bucket.</li>
-  <li><b>Break the model on your own query.</b> One question from your job, on GPT-OSS 120B in the <a href="https://console.groq.com/playground" target="_blank" rel="noopener">GroqCloud playground</a>, bare, then with context. Score each out of 10 against your golden pair and write down the root cause.</li>
-  <li><b>Run one fix experiment.</b> Low temperature plus a system prompt, a better instruction, or your own idea. Write it as steps, run it, post the result in Discord.</li>
-  <li><b>Build the reverse call.</b> Start from the code template (Code track) or Rahul's template (No Code track). Give the model the instruction and a tool that reads the curriculum CSV, and have your server run the call it asks for. UI or CLI both count. It passes when the breaking query gets at least the 7 out of 10 answer with no pasting.</li>
-  <li><b>Bring it to Tuesday's office hours.</b> Next week we build this live, both tracks.</li>
+  <li><b>Finish <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Lecture 9's practice set</a>:</b> every task with its verifier type, golden pairs and bucket.</li>
+  <li><b>Break the model on your own query</b> in the <a href="https://console.groq.com/playground" target="_blank" rel="noopener">GroqCloud playground</a>, bare, then with context. Score each against your golden pair and write down the root cause.</li>
+  <li><b>Run one fix experiment</b> as steps, and post the result.</li>
+  <li><b>Build the reverse call</b> from your track's template: a tool that reads the curriculum CSV, run by your server. It passes at 7 out of 10 or better with no pasting.</li>
+  <li><b>Bring it to Tuesday's office hours.</b> Next week we build this live.</li>
 </ol>
 </section>
 
-<div class="call"><p class="kick">Keep this</p><p>A model hallucinates when missing context meets a trained habit of never saying no. You can fix the context half with a bridge to a trusted data source. That bridge isn't an API alone: a file speaks no language and a model can't make requests. It is a deterministic server that speaks JSON and makes the request for the model. If you can derive that interface from first principles, you can derive every protocol built on it.</p></div>
+<div class="call"><p class="kick">Keep this</p><p>A model hallucinates when missing context meets a trained habit of never saying no. A bridge to a trusted data source fixes the context half. That bridge is a deterministic server that speaks JSON and makes the request for the model: function calling.</p></div>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
   <li><a href="https://openai.com/index/function-calling-and-other-api-updates/" target="_blank" rel="noopener">OpenAI, 13 June 2023: function calling</a></li>

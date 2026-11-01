@@ -122,10 +122,10 @@ var GUIDE_LINKS = {
   l10Hub: '/c8/module-2/lecture-10-tool-calling-and-mcp/',
   l10Notes: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes',
   l10Practice: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set',
-  l10Golden: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s08',
-  l10Formula: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06',
-  l10Proposals: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s07',
-  l10Reverse: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s15',
+  l10Golden: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06',
+  l10Formula: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s04',
+  l10Proposals: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s05',
+  l10Reverse: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12',
   l10Sheet: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s01',
   l10Break: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s02',
   l10Fix: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s03',
@@ -807,7 +807,7 @@ GUIDES.L10 = { all: {
     {id:'fix', name:'Run one fix experiment', short:'Step 3', sub:'Practice set, section 03',
      intro:'One change, written as steps, run against the same golden pair.',
      ticks:[
-       {id:'steps', t:'Wrote the fix as steps, with what you expect', link:'l10Proposals', linkLabel:'Two proposals'},
+       {id:'steps', t:'Wrote the fix as steps, with what you expect', link:'l10Proposals', linkLabel:'Two fixes'},
        {id:'run', t:'Ran it and scored it', link:'l10Fix', linkLabel:'Section 03'},
        {id:'post', t:'Posted the result in Discord'}
      ]},
@@ -826,7 +826,7 @@ GUIDES.L10 = { all: {
   next: 'Next week we build the reverse call live, for both tracks.',
   read: [
     ['Lecture 10 overview', 'l10Hub', 'The lecture, in order.'],
-    ['Notes', 'l10Notes', 'What was said, with the whiteboard: three rounds of context, why models hallucinate, the bridge, JSON, the server, and function calling.'],
+    ['Notes', 'l10Notes', 'The post-read, with the whiteboard: three rounds of context, why models hallucinate, the bridge, JSON, the server, and function calling.'],
     ['Practice set', 'l10Practice', 'Break it, then build the bridge: your own query scored, one fix, the reverse call.'],
     ['Lecture 2, section 05', 'l02Bridge', 'An interface is a common language plus rules.'],
     ['Lecture 9 practice set', 'l09Practice', 'Where your golden pairs come from.']
