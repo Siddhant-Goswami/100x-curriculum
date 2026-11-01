@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Practice Set: Verify Your Own Job | 100xEngineers</title>
-<meta name="description" content="Practice set after Lecture 9 of the 100xEngineers Cohort 8 Module 2: write your North Star, list last week's tasks in the template, write each task's success criteria and verifier, and mark where the data exists.">
+<meta name="description" content="Practice set after Lecture 9 of the 100xEngineers Cohort 8 Module 2: write your North Star, list last week's tasks in the template, write each task's success criteria and verifier, and mark where the data exists. After Lecture 10, test one task on the model, bare and with context.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -29,13 +29,13 @@ body.read .p{color:var(--prob-ink);font-weight:500}
   <main>
 <details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
-  <p class="kick">Practice set 1 · Lecture 9 · Both tracks</p>
+  <p class="kick">Practice set 1 · Lectures 9 and 10 · Both tracks</p>
   <h1>Verify your own job</h1>
   <p class="dek">One real working week. Every atomic task. A verifier, or the reason there isn't one.</p>
-  <div class="meta"><span>Follows Lecture 9, Fri 30 Oct 2026.</span></div>
+  <div class="meta"><span>Lecture 9, Fri 30 Oct, starts it. Lecture 10, Sat 31 Oct, adds one step.</span></div>
 </div>
 
-<div class="call"><p class="kick">The brief</p><p>Write your North Star. List every atomic task from last week. For each, write its success criteria, whether it moves your North Star, its verifier and verification type, and whether the data exists. <a href="https://docs.google.com/spreadsheets/d/1QbuRsvhH9LpZIRgYKoDd83rMmXqLPTooGeY_55FzwNY/copy" target="_blank" rel="noopener">Copy the template</a>: Aarav's week is the first tab, yours is the second.</p></div>
+<div class="call"><p class="kick">The brief</p><p>Write your North Star. List every atomic task from last week. For each, write its success criteria, whether it moves your North Star, its verifier and verification type, and whether the data exists. <a href="https://docs.google.com/spreadsheets/d/1QbuRsvhH9LpZIRgYKoDd83rMmXqLPTooGeY_55FzwNY/copy" target="_blank" rel="noopener">Copy the template</a>: Aarav's week is the first tab, yours is the second. After Lecture 10, test one task from it on the model. One sheet, one submission.</p></div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Start with your North Star</h2>
 <p>One sentence, six months out: <b>By [month + year], I am [role or identity] doing [specific thing] at [level, income or scale].</b> Someone outside the cohort should be able to check it on the date. <a href="/c8/module-2/what-to-build/idea-to-app-notes#s02">Week 0 notes, sections 02 and 03.</a></p>
@@ -61,26 +61,39 @@ body.read .p{color:var(--prob-ink);font-weight:500}
   <li><b>Your week, from your records.</b> An LLM listing your role's tasks gives you the average job, not yours.</li>
   <li><b>Bucket on the verifier and the data, not the verification type alone.</b> Automate when a rule catches mistakes and the data exists. Augment when a judge has to sign off. Human when it is unverifiable.</li>
   <li><b>If a script or formula can produce it, no LLM.</b></li>
-  <li><b>Company data stays on your machine.</b> No model work on these tasks until the sheet is in.</li>
+  <li><b>Company data stays on your machine.</b> In section 04, paste only what you are allowed to share, or a stand-in with the same shape.</li>
 </ul>
 </section>
 
-<section class="s" id="s04"><h2><span class="n">04</span>What to submit <span class="ready" data-ready="sub">0 of 2 ready</span></h2>
+<section class="s" id="s04"><h2><span class="n">04</span>After Lecture 10: test one task <span class="ready" data-ready="t">0 of 2 ready</span></h2>
+<p>Pick one row you bucketed Automate or Augment. Find out what the model gets wrong, and what context it was missing.</p>
+<div data-stage="t">
+<ul class="ck">
+<li><input type="checkbox" id="t1"><label for="t1"><span class="t">Write its golden pair first</span><span class="h">One real input from that task and the output you would accept, before you run anything. <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10 notes, section 06</a>.</span></label></li>
+<li><input type="checkbox" id="t2"><label for="t2"><span class="t">Run it bare, then with context, and score both</span><span class="h">GPT-OSS 120B in the <a href="https://console.groq.com/playground" target="_blank" rel="noopener">GroqCloud playground</a>: the input alone, then with the data the answer needs pasted above it. Score each out of 10 against your ideal output. Beside the row, write both scores and what was missing. <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s04">Missing context, or the habit of never saying no?</a></span></label></li>
+</ul>
+</div>
+<p>The lecture's run: 1 out of 10 bare, 5 with the real tracks pasted in. Still missing: the tools.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>What to submit <span class="ready" data-ready="sub">0 of 3 ready</span></h2>
 <div data-stage="sub">
 <ul class="ck">
 <li><input type="checkbox" id="d1"><label for="d1"><span class="t">Your copy of the sheet</span><span class="h">Every atomic task from last week, your North Star and your guess. Share it so anyone with the link can view.</span></label></li>
+<li><input type="checkbox" id="d3"><label for="d3"><span class="t">The tested row</span><span class="h">From section 04: two scores and what was missing, in the same sheet.</span></label></li>
 <li><input type="checkbox" id="d2"><label for="d2"><span class="t">One line: what surprised you</span><span class="h">Which task, and why.</span></label></li>
 </ul>
 </div>
 <p>Stuck on a row? Write your best guess and move on; bring it to office hours. For a second opinion on a bucket, paste your tasks into <a href="/c8/delegation-framework/">the delegation framework</a>.</p>
 </section>
 
-<section class="s" id="s05"><h2><span class="n">05</span>What happens next</h2>
-<p>The next practice set picks one task from this sheet and builds a model for it, so a sharp verifier and real data matter. "Help the team" gets you four weeks of rewriting this sheet. <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s10">Verifier first, data second: notes, section 10.</a></p>
+<section class="s" id="s06"><h2><span class="n">06</span>What happens next</h2>
+<p>Next we build the bridge that gets the missing context to the model with no pasting. That build starts from this sheet, so a sharp verifier and real data matter. "Help the team" gets you four weeks of rewriting this sheet. <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s10">Verifier first, data second: notes, section 10.</a></p>
 </section>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
   <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9 notes</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10 notes</a></li>
   <li><a href="/c8/delegation-framework/">The delegation framework</a></li>
   <li><a href="/#L9">Curriculum map</a></li>
 </ul></nav>

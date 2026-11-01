@@ -115,22 +115,17 @@ var GUIDE_LINKS = {
   l09Rule: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s09',
   l09Aarav: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s10',
   l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
-  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04',
+  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s05',
   jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
   delegation: '/c8/delegation-framework/',
   /* Lecture 10 · Tool calling and MCP (both tracks, pages in c8/module-2/lecture-10-tool-calling-and-mcp) */
   l10Hub: '/c8/module-2/lecture-10-tool-calling-and-mcp/',
   l10Notes: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes',
-  l10Practice: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set',
+  l10Practice: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04',  /* L10 adds one step to the L9 practice set */
   l10Golden: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06',
   l10Formula: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s04',
   l10Proposals: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s05',
   l10Reverse: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12',
-  l10Sheet: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s01',
-  l10Break: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s02',
-  l10Fix: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s03',
-  l10Build: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s04',
-  l10Bring: '/c8/module-2/lecture-10-tool-calling-and-mcp/practice-set#s05',
   groqPlay: 'https://console.groq.com/playground',
   l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
   l07Police: '/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s07',
@@ -747,8 +742,13 @@ GUIDES.L9 = { all: {
        {id:'verify', t:'Success criteria, North Star, verifier and data on every row', link:'l09Aarav', linkLabel:'Aarav\'s Monday'},
        {id:'judge', t:'Showed the sheet to my judge and fixed what they corrected'}
      ]},
-    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 04',
-     intro:'The sheet, shared, and one line on what surprised you.',
+    {id:'test', name:'After Lecture 10: test one task', short:'Test', sub:'Practice set, section 04',
+     intro:'One Automate or Augment row, bare and then with context, scored against its golden pair.',
+     ticks:[
+       {id:'tested', t:'Two scores and what was missing, beside the row', link:'l10Practice', linkLabel:'Section 04'}
+     ]},
+    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 05',
+     intro:'The sheet, shared, with the tested row, and one line on what surprised you.',
      ticks:[
        {id:'shared', t:'Shared my copy of the sheet', link:'l09Submit', linkLabel:'What to submit'},
        {id:'surprise', t:'One line on the verdict that surprised me'}
@@ -762,7 +762,7 @@ GUIDES.L9 = { all: {
   read: [
     ['Lecture 9 overview', 'l09Hub', 'The lecture, in order, and done equals.'],
     ['Notes', 'l09Notes', 'What was said, with the whiteboard: the hallucinated tracks, the line, the Verifier\'s Rule, Aarav\'s Monday.'],
-    ['Practice set', 'l09Practice', 'Verify your own job: your North Star, then every atomic task of last week with its verifier and data.'],
+    ['Practice set', 'l09Practice', 'Verify your own job: your North Star, every atomic task of last week with its verifier and data, then, after Lecture 10, one task tested on the model.'],
     ['The delegation framework', 'delegation', 'A second opinion on your buckets: automate, augment, human.']
   ],
   words: [
@@ -778,9 +778,9 @@ GUIDES.L9 = { all: {
 
 GUIDES.L10 = { all: {
   hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set']]},
-  name: 'Break it, then build the bridge',
-  sub: 'Lecture 10 · 31 October 2026 · both tracks',
-  due: false,  /* bring it to Tuesday's office hours, 3 Nov */
+  name: 'Test one task from your sheet',
+  sub: 'Lecture 10 · 31 October 2026 · both tracks · one step added to the Lecture 9 practice set',
+  due: false,  /* submitted with the L9 sheet; bring it to Tuesday's office hours, 3 Nov */
   keep: 'More data shrinks hallucination but does not cure it. The bridge to a data source is a deterministic server that speaks JSON and runs requests for the model: function calling.',
   ideas: [
     ['Data is not a cure.', 'Same query, more context: 1, then 5, then 7 out of 10. It still named Zapier.'],
@@ -791,45 +791,24 @@ GUIDES.L10 = { all: {
   ],
   rule: 'Write the golden pair before any run, and score every attempt against it.',
   stages: [
-    {id:'sheet', name:'Finish Lecture 9\'s practice set', short:'Step 1', sub:'Practice set, section 01',
-     intro:'Your sheet is where the golden pair comes from.',
+    {id:'test', name:'Test one task from your Lecture 9 sheet', short:'Test', sub:'Lecture 9 practice set, section 04',
+     intro:'One row you bucketed Automate or Augment, on GPT-OSS 120B in the Groq playground: bare, then with context. Same sheet, same submission.',
      ticks:[
-       {id:'sheet', t:'Every task has its verifier type, golden pairs and bucket', link:'l10Sheet', linkLabel:'Section 01'}
-     ]},
-    {id:'break', name:'Break the model on your own query', short:'Step 2', sub:'Practice set, section 02',
-     intro:'One question from your job, on GPT-OSS 120B in the Groq playground: bare, then with context.',
-     ticks:[
-       {id:'pair', t:'Wrote one golden pair before running anything', link:'l10Golden', linkLabel:'The golden pair'},
+       {id:'pair', t:'Wrote its golden pair before running anything', link:'l10Golden', linkLabel:'The golden pair'},
        {id:'bare', t:'Ran it bare and scored it out of 10', link:'groqPlay', linkLabel:'Groq playground'},
-       {id:'ctx', t:'Ran it with context and scored it again', link:'l10Break', linkLabel:'Section 02'},
-       {id:'cause', t:'Wrote the root cause: missing context, or the habit of never saying no', link:'l10Formula', linkLabel:'The formula'}
-     ]},
-    {id:'fix', name:'Run one fix experiment', short:'Step 3', sub:'Practice set, section 03',
-     intro:'One change, written as steps, run against the same golden pair.',
-     ticks:[
-       {id:'steps', t:'Wrote the fix as steps, with what you expect', link:'l10Proposals', linkLabel:'Two fixes'},
-       {id:'run', t:'Ran it and scored it', link:'l10Fix', linkLabel:'Section 03'},
-       {id:'post', t:'Posted the result in Discord'}
-     ]},
-    {id:'build', name:'Build the reverse call', short:'Step 4', sub:'Practice set, section 04',
-     intro:'The model asks your server to read the curriculum CSV; your server runs the read.',
-     ticks:[
-       {id:'tpl', t:'Started from your track\'s template', link:'l10Build', linkLabel:'Section 04'},
-       {id:'tool', t:'Gave the model the instruction and a tool that reads the CSV', link:'l10Reverse', linkLabel:'The reverse call'},
-       {id:'exec', t:'Your server runs the call the model asks for'},
-       {id:'score', t:'The breaking query scores 7 or more, with no pasting'}
+       {id:'ctx', t:'Ran it with context and scored it again', link:'l10Practice', linkLabel:'Section 04'},
+       {id:'cause', t:'Wrote what was missing beside the row', link:'l10Formula', linkLabel:'The formula'}
      ]}
   ],
   actions: [
-    {id:'oh', t:'Bring it to Tuesday\'s office hours, 3 Nov', how:'Your score table, your fix result, and your build running, or the error and why it happened.', link:'l10Bring', linkLabel:'What to bring'}
+    {id:'oh', t:'Bring it to Tuesday\'s office hours, 3 Nov', how:'Your sheet, with the tested row: two scores and what was missing.', link:'l09Submit', linkLabel:'What to submit'}
   ],
   next: 'Next week we build the reverse call live, for both tracks.',
   read: [
     ['Lecture 10 overview', 'l10Hub', 'The lecture, in order.'],
     ['Notes', 'l10Notes', 'The post-read, with the whiteboard: three rounds of context, why models hallucinate, the bridge, JSON, the server, and function calling.'],
-    ['Practice set', 'l10Practice', 'Break it, then build the bridge: your own query scored, one fix, the reverse call.'],
-    ['Lecture 2, section 05', 'l02Bridge', 'An interface is a common language plus rules.'],
-    ['Lecture 9 practice set', 'l09Practice', 'Where your golden pairs come from.']
+    ['Practice set', 'l10Practice', 'One step added to the Lecture 9 practice set: test one task bare and with context, and write what was missing.'],
+    ['Lecture 2, section 05', 'l02Bridge', 'An interface is a common language plus rules.']
   ],
   words: [
     ['Hallucination', 'A confident answer that lands in factually wrong territory.'],
