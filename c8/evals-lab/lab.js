@@ -97,6 +97,12 @@
   const judged = () => Object.keys(S.m4.judge).length === 20;
 
   /* ================= STEP 1 · LOOK ================= */
+  function b10() {
+    const st = D.store, qs = ['when will order 4821 arrive?', 'refund my order 4821', 'what is your return window?'];
+    $('#setup').innerHTML = `<div class="q"><p class="kick">customers ask</p><p>${qs.map(q => `"${esc(q)}"`).join('<br>')}</p></div>
+      <div class="t"><p class="kick">the agent can call</p><div class="tools">${st.tools.map(t => `<span class="${st.human.includes(t) ? 'hum' : ''}">${esc(t)}</span>`).join('')}</div><p>Amber reads. Coral changes money, and should need a human.</p></div>
+      <div class="g"><p class="kick">who checks the reply</p><p><b>A second model</b>, told to pass replies that are "accurate and helpful". It said PASS to the reply on the next screen.</p></div>`;
+  }
   function b11() {
     const box = $('#s0-trace'), nudge = $('#s0-nudge');
     box.innerHTML = traceHTML(row(2), { words: !S.s0.hit });
@@ -490,6 +496,16 @@
   const PERSON = (x, y, cls) => Person(x, y, .42, cls || 'c-hum');
 
   const VIS = {
+    b10() {
+      const st = D.store;
+      const ln = PERSON(20, 24, 'mute') + Bubble(70, 20, 120, 46, 'f-bg') + Ar(196, 44, 226, 44) + R(230, 20, 90, 50, 'f-prob') + Ar(324, 44, 354, 44, 'c-det') + `<use href="#db" class="c-det" transform="translate(362 24) scale(.55)"/>`
+        + Curve('M275 72 V86', 'c-det') + st.tools.map((t, i) => R(236, 90 + i * 24, 110, 20, st.human.includes(t) ? 'f-act thin' : 'f-det thin', 5)).join('')
+        + Squares(20, 118, 30, 10, 14, 3, () => 'f-card thin') + Curve('M105 172 V196', 'arw', 'ah') + JUDGE(70, 200);
+      const tx = Tx(130, 48, 'where is 4821?', 'xs') + Tx(275, 50, 'support agent', 'xs c-prob') + Tx(387, 84, 'the store', 'xs c-det')
+        + st.tools.map((t, i) => Tx(291, 104 + i * 24, t.replace('_', ' '), 'mono ' + (st.human.includes(t) ? 'c-act' : 'c-det'))).join('')
+        + Tx(105, 108, 'thirty replies this morning', 'xs c-mute') + Tx(105, 270, 'says PASS', 'xs c-hum') + JUDGEt(70, 200) + Tx(291, 230, 'amber reads · coral moves money', 'xs c-mute');
+      return [sv(285, ln, tx), 'An agent talks to customers and the store. <b>A model checks it. Nobody else does.</b>'];
+    },
     b11() {
       const hit = S.s0.hit;
       const ln = R(20, 30, 180, 56, 'f-det') + R(20, 110, 180, 56, 'f-prob') + Ar(205, 58, 262, 90, 'c-prob', 'ahv') + Ar(205, 138, 262, 106, 'c-prob', 'ahv') + JUDGE(266, 72) + Ar(340, 97, 372, 97, 'c-prob', 'ahv')
@@ -706,6 +722,7 @@
   /* ---------- the deck ---------- */
   const T = () => true;
   const BEATS = [
+    { id: 'b10', s: 1, r: b10, ok: T },
     { id: 'b11', s: 1, r: b11, ok: () => S.s0.hit },
     { id: 'b12', s: 1, r: b12, ok: () => S.s0.outcome },
     { id: 'b13', s: 1, r: () => guess('g1'), ok: () => S.g.g1 != null },

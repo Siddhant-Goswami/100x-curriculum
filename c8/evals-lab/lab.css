@@ -372,3 +372,15 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px;margin:0}
   .app{max-width:none;padding-left:0;padding-right:0}
   .board{display:block;position:sticky;top:78px;padding-top:28px}
 }
+
+/* ---------- the setup screen ---------- */
+.setup{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px}
+.setup>div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.setup .kick{margin:0}
+.setup p{font-size:14.5px;line-height:1.45;color:var(--ink2)}
+.setup p b{color:var(--ink);font-weight:500}
+.setup .tools{display:flex;flex-wrap:wrap;gap:4px}
+.setup .tools span{font:12px var(--mono);padding:3px 8px;border-radius:999px;background:var(--det-soft);color:var(--det-ink)}
+.setup .tools span.hum{background:var(--coral-soft);color:var(--coral-ink)}
+.setup>div.q{border-left:3px solid var(--ink3)}.setup>div.t{border-left:3px solid var(--det)}.setup>div.g{border-left:3px solid var(--prob)}
+@media (max-width:640px){.setup{grid-template-columns:1fr}}
