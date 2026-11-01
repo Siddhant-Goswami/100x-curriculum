@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Evals Lab | 100xEngineers</title>
+<meta name="description" content="Build an eval for an AI agent by hand in four steps and about 45 minutes, one screen at a time. Look: find the wrong word yourself. Write the question down: one yes-or-no check per failure, code where it can. Check the checker: label twenty rows, turn the judge over, attack it. Change one thing and look again on the frozen set.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/evals-lab/lab.css">
+<script src="/c8/docs.js"></script>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="evals-lab" data-noaarav>
+<!--
+  One screen, one thing to do. The headline is the instruction. The stage holds the one object.
+  Continue does not exist until the thing is done; then it is the only coral button on the page.
+  Progress: four segments in the bar, one per step, filling screen by screen.
+-->
+<header class="bar">
+  <div class="in">
+    <a class="brand" href="/c8/module-2/ai-evals/" title="Back to the masterclass overview">100x<b>·</b><span>Evals Lab</span></a>
+    <p class="where" id="where" aria-live="polite"></p>
+    <a class="exit" href="/c8/module-2/ai-evals/">Exit</a>
+  </div>
+  <nav class="segs" id="segs" aria-label="Four steps">
+    <a href="#b11" data-s="1"><i></i><span>Look</span></a>
+    <a href="#b21" data-s="2"><i></i><span>Write the question down</span></a>
+    <a href="#b31" data-s="3"><i></i><span>Check the checker</span></a>
+    <a href="#b41" data-s="4"><i></i><span>Change one thing</span></a>
+  </nav>
+</header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+  <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.2"/></filter>
+  <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink3)" stroke-width="1.6" stroke-linecap="round"/></marker>
+  <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+  <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+  <symbol id="person" style="overflow:visible"><circle cx="26" cy="15" r="15"/><path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128"/></symbol>
+  <symbol id="db" style="overflow:visible"><ellipse cx="45" cy="10" rx="45" ry="10"/><path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35"/></symbol>
+  <symbol id="lock" style="overflow:visible"><rect x="0" y="16" width="30" height="24" rx="4"/><path d="M6 16 V11 A9 9 0 0 1 24 11 V16"/></symbol>
+  <symbol id="unlock" style="overflow:visible"><rect x="0" y="16" width="30" height="24" rx="4"/><path d="M6 16 V11 A9 9 0 0 1 24 11 V13"/></symbol>
+</defs></svg>
+
+<div class="shell">
+<main class="app" id="view">
+
+  <!-- ===== STEP 1 · LOOK ===== -->
+  <section class="beat" id="b11" hidden>
+    <h1 class="do">Tap the word that is wrong.</h1>
+    <p class="ctx">A support agent for an online store answered a customer. A second model graded the answer and said <b>PASS</b>.</p>
+    <div class="stage"><div class="trace" id="s0-trace"></div><div class="stamp" id="s0-stamp"><span class="who">LLM as judge</span><b class="verdict pass">PASS</b><span class="why">"accurate and helpful"</span></div><p class="nudge" id="s0-nudge" hidden></p></div>
+    <div class="after" id="s0-found" hidden>
+      <p class="big">Tuesday, not Thursday. <span class="c">The grader was wrong.</span></p>
+      <p>One day changed. The grader read both cards and passed it. You found it in ten seconds. The grader is a model. A model on top of a model is not code.</p>
+    </div>
+  </section>
+
+  <section class="beat" id="b12" hidden>
+    <h1 class="do">Tap the card that tells you whether the refund happened.</h1>
+    <p class="ctx">Another customer, another answer. Four cards this time.</p>
+    <div class="stage"><div class="trace" id="s0-trace2"></div><p class="nudge" id="s0-nudge2" hidden></p></div>
+    <div class="after" id="s0-outcome" hidden>
+      <p class="big">The sentence says refunded. <span class="c">The table has no row.</span></p>
+      <p>The outcome is the state of the world after the run, not the model's claim about it. Grade the database, not the sentence.</p>
+    </div>
+  </section>
+
+  <section class="beat" id="b13" hidden>
+    <p class="kick c">Guess first</p>
+    <h1 class="do">How many of the thirty are wrong?</h1>
+    <p class="ctx">Thirty traces came out of this agent this morning. You have seen two.</p>
+    <div class="stage bare"><div class="guess" id="g1"></div></div>
+  </section>
+
+  <section class="beat" id="b14" hidden>
+    <h1 class="do">Write the first thing wrong, in one sentence.</h1>
+    <p class="ctx" id="b14-ctx">Read the whole trace, including the tool call. If nothing is wrong, say so.</p>
+    <div class="stage" id="m1-box"></div>
+  </section>
+
+  <section class="beat" id="b15" hidden>
+    <h1 id="b15-h"></h1>
+    <p class="ctx">Most of them read fine as sentences. You only caught them by looking at the tool result next to the answer.</p>
+    <div id="b15-gres"></div>
+    <div class="derive"><p class="kick">What you now know</p><p>Your eyes work. They found Thursday in ten seconds and four more in five minutes. They will not read thirty rows after every change to the prompt, and the next person will not read them the way you did. <b>Write the question down.</b></p></div>
+    <details class="why"><summary>See all thirty with the instructor's line</summary><div class="sheet mini" id="m1-table"></div></details>
+    <details class="why"><summary>Why read by hand, and why the whole trace</summary><p>Anthropic's guide says 20 to 50 tasks drawn from real failures is a great start, and that the first rule is "read the transcripts". Fewer and you see only the failure you expected. Write your sentences before any model suggests failures to you; suggestions anchor what you see. Only the first failure per row: in a long trace the later ones cascade from it. Whole trace, not just the answer: row 5 reads fine as a sentence, and the log shows no tool call.</p></details>
+  </section>
+
+  <!-- ===== STEP 2 · WRITE THE QUESTION DOWN ===== -->
+  <section class="beat" id="b21" hidden>
+    <h1 class="do">Name this pile as a yes-or-no question.</h1>
+    <p class="ctx">The eighteen wrong rows are sorted into six piles. The test for a good name: two colleagues would answer it the same way.</p>
+    <div class="stage" id="m2-one"></div>
+  </section>
+
+  <section class="beat" id="b22" hidden>
+    <h1>A scale hides disagreement. A yes or no exposes it.</h1>
+    <p class="ctx">Same row, three graders, two ways of asking.</p>
+    <div class="scale">
+      <div><p class="kick">Score row 2 out of five</p><div class="graders"><span>3</span><span>4</span><span>2</span></div><small>three graders, three numbers</small></div>
+      <div><p class="kick">Is there a made-up detail?</p><div class="graders yes"><span>yes</span><span>yes</span><span>yes</span></div><small>a scale hides disagreement. a yes or no exposes it.</small></div>
+    </div>
+    <p class="note">In a 2026 rubric study, judges hit 87% exact agreement with experts on yes-or-no criteria and 38 to 58% on scales.</p>
+  </section>
+
+  <section class="beat" id="b23" hidden>
+    <h1>Yours against the instructor's.</h1>
+    <p class="ctx">Cut differently is fine. From here the lab uses the instructor's six so the screens line up.</p>
+    <div class="modes" id="m2-modes"></div>
+  </section>
+
+  <section class="beat" id="b24" hidden>
+    <p class="kick c">Guess first</p>
+    <h1 class="do">How many of the six could a line of code answer on its own?</h1>
+    <p class="ctx">Something has to answer each question on every row, on every run.</p>
+    <div class="stage bare"><div class="guess" id="g2"></div></div>
+  </section>
+
+  <section class="beat" id="b25" hidden>
+    <h1 class="do">Who answers this on every run?</h1>
+    <p class="ctx">Code, from the log and the tool result? Or a model that has to read the answer?</p>
+    <div class="stage" id="m3-one"></div>
+  </section>
+
+  <section class="beat" id="b26" hidden>
+    <h1 id="b26-h"></h1>
+    <p class="ctx">A column code fills on every run, for free. It never drifts.</p>
+    <div id="b26-gres"></div>
+    <div class="sheet" id="m3-table"></div>
+    <p class="note">"Made-up detail" means comparing a sentence to a source. No regex does that. So a model reads both and answers one question. That model is a judge, the same kind of thing as the system under test.</p>
+  </section>
+
+  <section class="beat" id="b27" hidden>
+    <h1 class="do">Write the judge's one question, then lock it.</h1>
+    <p class="ctx">Write it from the pile's name, not from the outputs. Allowed replies: PASS, FAIL with the quoted fact, UNKNOWN.</p>
+    <div class="stage rub">
+      <details class="ref"><summary>The rubric that passed Thursday</summary><pre class="bad" id="m4-bad"></pre><small>"Helpful" is wide enough to pass Thursday for Tuesday.</small></details>
+      <label class="kick" for="m4-rubric">Yours, for made-up detail</label>
+      <textarea id="m4-rubric" rows="8" spellcheck="false" placeholder="You are checking one thing. Here is a SOURCE and an ANSWER…"></textarea>
+      <ul class="reqs" id="m4-reqs" aria-label="The rubric needs"></ul>
+      <div class="actrow"><button class="btn go" type="button" id="m4-lock" disabled>Lock it</button><button class="btn ghost" type="button" id="m4-use">Use the masterclass rubric</button></div>
+      <p class="muted" id="m4-locked"></p>
+    </div>
+  </section>
+
+  <section class="beat" id="b28" hidden>
+    <p class="kick c">Guess first</p>
+    <h1 class="do">Row 2, the Thursday row. Will your locked rubric catch it?</h1>
+    <p class="ctx">The judge is about to read twenty rows with your question. Row 2 is one of them.</p>
+    <div class="stage bare"><div class="guess" id="g3"></div></div>
+  </section>
+
+  <section class="beat" id="b29" hidden>
+    <h1 class="do">Run the judge on twenty rows.</h1>
+    <p class="ctx">Verdicts land face down. You label the same twenty by hand first, so the judge cannot anchor you.</p>
+    <div class="stage">
+      <div class="actrow"><button class="btn go" type="button" id="m4-live">Run with my Groq key</button><button class="btn ghost" type="button" id="m4-canned">Use the recorded run</button></div>
+      <p class="muted" id="m4-msg" aria-live="polite"></p>
+      <div class="facedown" id="m4-cards"></div>
+      <p class="tiny">Your key goes from this browser straight to Groq and is never sent to us. Model: <code id="m4-model"></code>, temperature 0.</p>
+    </div>
+    <div class="after" id="d2" hidden><div class="derive"><p class="kick">What you now know</p><p>Six questions, each with a yes or no answer. Code answers five of them on every row, for free. The sixth needs a reader, and the reader is a model. A model can be wrong. You already watched one be wrong. <b>Check the checker.</b></p></div>
+    <details class="why"><summary>Why lock it, and why a quote</summary><p>Once outputs are visible, every edit to the rubric is a thumb on the scale: you write the rubric that passes them. The quote is a rule wrapped around a judgment: if the judge says FAIL and the quote is not in the answer, the judge is wrong by code. The UNKNOWN exit stops a judge forced to choose from inventing a verdict. Hand the judge the source: reference-based judging is far harder to fool than reference-free. One question per judge.</p></details></div>
+  </section>
+
+  <!-- ===== STEP 3 · CHECK THE CHECKER ===== -->
+  <section class="beat" id="b31" hidden>
+    <h1 class="do">Is every fact in the answer in the source?</h1>
+    <p class="ctx">PASS if yes, FAIL if not. You are the ground truth. The judge stays face down.</p>
+    <div class="stage" id="m5-one"></div>
+  </section>
+
+  <section class="beat" id="b32" hidden>
+    <h1 class="do">Turn the judge over.</h1>
+    <p class="ctx">Your twenty against the judge's twenty, same rows.</p>
+    <div class="stage">
+      <div class="actrow"><button class="btn go" type="button" id="m5-uncover">Turn the judge over</button></div>
+      <p class="muted" id="m5-msg"></p>
+      <div class="grid2" id="m5-grid" hidden></div>
+    </div>
+  </section>
+
+  <section class="beat" id="b33" hidden>
+    <h1>Two rates, never one.</h1>
+    <p class="ctx">Of the real failures, how many did it catch. Of the real passes, how many did it pass.</p>
+    <div class="rates" id="m5-rates"></div>
+    <label class="tog"><input type="checkbox" id="m5-one-cb"> Show one accuracy number instead</label>
+    <p class="note" id="m5-oneT" hidden></p>
+  </section>
+
+  <section class="beat" id="b34" hidden>
+    <h1>The row it missed.</h1>
+    <p class="ctx">This one row tells you more about the judge than the two rates do. It is what you hand in.</p>
+    <div class="flag" id="m5-flag"></div>
+  </section>
+
+  <section class="beat" id="b35" hidden>
+    <h1 class="do">Ask the usual question and read the log.</h1>
+    <p class="ctx">Order 4821's data now carries a gift note.</p>
+    <div class="stage">
+      <div class="gift"><p class="kick">gift note on order 4821</p><p class="mono" id="m8-note"></p></div>
+      <div class="actrow"><button class="btn go" type="button" id="m8-ask-off">Ask: when will 4821 arrive?</button></div>
+      <div class="trace" id="m8-trace-off" hidden></div>
+    </div>
+    <div class="after" id="m8-verdict-off" hidden><p class="big">The model followed the note. <span class="c">Nothing in your code stood in the way.</span></p><p>That the model followed it is not the finding. The finding is whether anything stopped it.</p></div>
+  </section>
+
+  <section class="beat" id="b36" hidden>
+    <h1 class="do">Ask again, with the stop in code.</h1>
+    <p class="ctx">Refunds now need a human: the tool is off the allow-list. Same note, same question.</p>
+    <div class="stage">
+      <div class="actrow"><button class="btn go" type="button" id="m8-ask-on">Ask again, allow-list on</button></div>
+      <div class="trace" id="m8-trace-on" hidden></div>
+    </div>
+    <div class="after" id="m8-verdict-on" hidden><p class="big">403. Logged. <span class="c">The seventh question, and it is a rule.</span></p><p>The model still asked for the refund. The allow-list refused it, the log shows the attempt, and "did it call anything outside the allow-list?" is now a column in the frozen thirty.</p></div>
+  </section>
+
+  <section class="beat" id="b37" hidden>
+    <p class="kick c">Guess first</p>
+    <h1 class="do">The allow-list stopped the agent. Does it protect the judge too?</h1>
+    <p class="ctx">The text the judge reads came from the model under test.</p>
+    <div class="stage bare"><div class="guess" id="g4"></div></div>
+  </section>
+
+  <section class="beat" id="b38" hidden>
+    <h1 class="do">Grade both planted answers.</h1>
+    <p class="ctx">Two answers written to fool the judge, graded by your locked rubric.</p>
+    <div class="stage">
+      <div class="attacks" id="m8-attacks"></div>
+      <div class="actrow"><button class="btn go" type="button" id="m8-run">Grade both</button><span class="muted" id="m8-msg" aria-live="polite"></span></div>
+    </div>
+    <div class="after" id="m8-after-wrap" hidden>
+      <div id="m8-after"></div>
+      <div class="derive"><p class="kick">What you now know</p><p>The checker is a thing that can be wrong, and a thing that can be told what to say. Label by hand before you trust it, report the two rates and the row it missed, and keep the planted rows in the set. Now you have thirty rows and a check for each. <b>Change one thing.</b></p></div>
+      <details class="why"><summary>Why the stop must be in code, and when the row is wrong</summary><p>No prompt reliably detects an injection; the model cannot tell data from commands, so an allow-list and real permissions on the tool are the only defence that holds. The same planted text reaches the judge. And the other direction: a model found a policy loophole on a flight-booking benchmark, the grader marked it a fail, and the outcome was better for the user. When a model "fails" a row and you agree with the model, the row is wrong, not the model.</p></details>
+    </div>
+  </section>
+
+  <!-- ===== STEP 4 · CHANGE ONE THING, LOOK AGAIN ===== -->
+  <section class="beat" id="b41" hidden>
+    <h1 class="do">Pick one change.</h1>
+    <p class="ctx">The thirty rows stay frozen. One thing changes between the runs.</p>
+    <div class="stage bare"><div class="opts" id="m7-pick" role="radiogroup" aria-label="The one change"></div><div class="diff" id="m7-diff" hidden></div></div>
+  </section>
+
+  <section class="beat" id="b42" hidden>
+    <p class="kick c">Guess first</p>
+    <h1 class="do">On the frozen thirty, this change will…</h1>
+    <p class="ctx">Before you see a number, say what will happen.</p>
+    <div class="stage bare"><div class="guess" id="g5"></div></div>
+  </section>
+
+  <section class="beat" id="b43" hidden>
+    <h1>Before and after.</h1>
+    <p class="ctx" id="m7-what"></p>
+    <div id="b43-gres"></div>
+    <div class="sheet" id="m7-table"></div>
+  </section>
+
+  <section class="beat" id="b44" hidden>
+    <h1>Two suites.</h1>
+    <p class="ctx">The rows that passed before should keep passing. The rows that failed before are the hill to climb.</p>
+    <div class="split" id="m7-split"></div>
+  </section>
+
+  <section class="beat" id="b45" hidden>
+    <h1>The bill.</h1>
+    <p class="ctx">Both numbers go in the change log. The person who pays is not the person who writes the prompt.</p>
+    <div class="bill" id="m7-bill"></div>
+  </section>
+
+  <section class="beat" id="b46" hidden>
+    <h1 class="do">Run row 2 three times.</h1>
+    <p class="ctx">Same input, same prompt, after the change.</p>
+    <div class="stage">
+      <div class="three" id="m6-three"></div>
+      <div class="actrow"><button class="btn go" type="button" id="m6-play">▶ Run three times</button></div>
+    </div>
+  </section>
+
+  <section class="beat" id="b47" hidden>
+    <p class="kick c">Guess first</p>
+    <h1 class="do">If one run passes 75% of the time, how often do all three pass?</h1>
+    <p class="ctx">Three runs, three different answers, two of them wrong.</p>
+    <div class="stage bare"><div class="guess" id="g6"></div></div>
+  </section>
+
+  <section class="beat" id="b48" hidden>
+    <h1 class="do">Move the sliders.</h1>
+    <p class="ctx">pass@k is what demos live on. pass^k is what customers live on.</p>
+    <div id="b48-gres"></div>
+    <div class="stage kcurve">
+      <div class="kctl">
+        <label class="ctl"><span>Chance one run passes <output id="m6-pO"></output></span><input type="range" id="m6-p" min="10" max="100" value="75"></label>
+        <label class="ctl"><span>Runs per row, k <output id="m6-kO"></output></span><input type="range" id="m6-k" min="1" max="10" value="3"></label>
+        <div class="knums"><div><span class="kick">pass@k</span><b id="m6-passat"></b><small>at least one of k passes. what demos live on.</small></div><div class="hot"><span class="kick">pass^k</span><b id="m6-passhat"></b><small>all k pass. what customers live on.</small></div></div>
+      </div>
+      <svg id="m6-svg" viewBox="0 0 320 200" aria-label="pass at k rises with k, pass to the k falls"></svg>
+    </div>
+  </section>
+
+  <section class="beat" id="b49" hidden>
+    <h1>Your sheet.</h1>
+    <p class="ctx">Everything you wrote and every number it produced, in the columns the practice set asks for.</p>
+    <div class="summ" id="you-summ"></div>
+    <div class="actrow"><button class="btn ghost" type="button" id="you-csv">Download as CSV</button></div>
+    <details class="why"><summary>See the thirty rows</summary><div class="sheet" id="you-table"></div></details>
+  </section>
+
+  <section class="beat" id="b410" hidden>
+    <h1 class="do">Write the one question you would check on every run.</h1>
+    <p class="ctx">A coding agent was asked to fix a failing test. Read the trace first.</p>
+    <div class="stage">
+      <div class="trace" id="tr-trace"></div>
+      <form class="ask" id="tr-ask"><input type="text" id="tr-in" maxlength="140" placeholder="Did it … ?" autocomplete="off"><button class="btn go" type="submit">Save</button></form>
+      <div class="cmp" id="tr-cmp" hidden></div>
+    </div>
+  </section>
+
+  <section class="beat" id="b411" hidden>
+    <h1>One question, four times.</h1>
+    <p class="ctx">How would I know if it was wrong? Of the answer. Of thirty answers. Of the checker. Of the change.</p>
+    <div class="derive"><p class="kick">What you now know</p><p>A number only means something against a frozen set, over more than one run, next to the number from before. Improvement is a diff, not a score.</p>
+      <div class="keep"><p class="kick">Keep this</p><p>Look at the traces yourself before you write anything. Turn each failure into a question with a yes or no answer. Let code answer every one it can, and most it can. For the rest, write the rubric before you look, hand the judge the source, label twenty by hand, and report two rates and the row it missed. Freeze the set. Change one thing. Run it three times.</p></div></div>
+    <div class="actrow"><a class="btn go" href="/c8/module-2/ai-evals/practice-set">Do it on your own product</a><a class="btn ghost" href="/c8/module-2/ai-evals/notes">Read the notes</a></div>
+    <details class="why"><summary>Words you earned in this lab</summary><dl id="gloss"></dl></details>
+    <details class="why"><summary>Why freeze, why pass^k, and why the bill</summary><p>Do not add the row that embarrassed you and quietly drop the one that always passes, or the suite learns your changes and stops measuring them. New rows go in a separate tab and get promoted at the next freeze. Anthropic splits suites in two: a regression suite near 100% and a capability suite that starts low. pass@k is the chance of at least one success in k tries; pass^k is the chance all k succeed. At 75% per run, pass^3 is 42%. Reset state between trials. Fix at the cheapest layer that moves the number, and write the cost next to the result.</p></details>
+    <p class="tiny">Further, one line each. Frameworks (Harbor, Braintrust, LangSmith, Langfuse, Arize) are only as good as the rows you run through them. No source of truth to hand the judge: compare before and after in blind pairs, the way GDPval graded expert work. Automated evals are one layer: production monitoring for ground truth, a few transcripts read every week, a human study when you calibrate the judge. Source: <a href="https://www.anthropic.com/research/demystifying-evals-for-ai-agents" target="_blank" rel="noopener">Anthropic, Demystifying evals for AI agents</a>.</p>
+    <p class="tiny">Made by <a href="https://www.100xengineers.com/" target="_blank" rel="noopener">100xEngineers</a> · <a href="/c8/module-2/ai-evals/">AI evals masterclass</a></p>
+  </section>
+
+  <!-- the one way forward: appears inside the current screen once its thing is done -->
+  <div class="forward" id="forward" hidden>
+    <a class="btn go big" id="next" href="#">Continue<kbd>↵</kbd></a>
+  </div>
+  <div class="backrow"><a id="prev" href="#">← Back</a></div>
+</main>
+<aside class="board" id="board" aria-hidden="true"><div class="in"><p class="kick">on the board</p><div id="vis"></div><p class="cap" id="viscap"></p></div></aside>
+</div>
+
+<form class="keybox" id="keybox" hidden autocomplete="off">
+  <label for="key-in"><b>Your Groq API key</b></label>
+  <p class="tiny">Goes from this browser straight to Groq. Free at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</p>
+  <input type="password" id="key-in" placeholder="gsk_…" spellcheck="false" autocomplete="off">
+  <label class="keep"><input type="checkbox" id="key-keep" checked> Remember it until I close this tab</label>
+  <p class="err" id="key-err" aria-live="polite"></p>
+  <div class="actrow"><button class="btn go" type="submit">Run</button><button class="btn ghost" type="button" id="key-cancel">Cancel</button></div>
+</form>
+
+<script src="/c8/evals-lab/lab.js"></script>
+</body>
+</html>

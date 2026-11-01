@@ -1,0 +1,258 @@
+<title>Evals Lab Instructor Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: one reading column, a run-of-show table, four step cards that mirror the lab's own screens. Same three colours as the curriculum: amber rule, violet judge, coral for the thing to find. */
+:root{
+  --bg:#faf8f4;--card:#ffffff;--bg2:#f1ede6;--line:#e4ded4;--line2:#cfc7ba;
+  --ink:#1f1c18;--ink2:#4d4741;--ink3:#8a8277;
+  --coral:#e4583f;--coral-ink:#b43a26;--coral-soft:#fbe6e0;
+  --det:#d99a2b;--det-ink:#8a5a0a;--det-soft:#fbefd6;
+  --prob:#7c5cc4;--prob-ink:#573d99;--prob-soft:#ece6f8;
+  --hum:#3f9d6a;--hum-ink:#246b45;--hum-soft:#def2e6;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17150f;--card:#201d17;--bg2:#272319;--line:#363026;--line2:#4a4336;
+  --ink:#f1ece3;--ink2:#c8c0b2;--ink3:#8d8577;
+  --coral:#ef6d55;--coral-ink:#f4917e;--coral-soft:#3a221c;
+  --det:#e0a63d;--det-ink:#f0c270;--det-soft:#3a2d14;
+  --prob:#9b7fe0;--prob-ink:#bba6f0;--prob-soft:#2a2240;
+  --hum:#56b482;--hum-ink:#8ad3a9;--hum-soft:#1b3326;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17150f;--card:#201d17;--bg2:#272319;--line:#363026;--line2:#4a4336;
+  --ink:#f1ece3;--ink2:#c8c0b2;--ink3:#8d8577;
+  --coral:#ef6d55;--coral-ink:#f4917e;--coral-soft:#3a221c;
+  --det:#e0a63d;--det-ink:#f0c270;--det-soft:#3a2d14;
+  --prob:#9b7fe0;--prob-ink:#bba6f0;--prob-soft:#2a2240;
+  --hum:#56b482;--hum-ink:#8ad3a9;--hum-soft:#1b3326;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:820px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 64px;display:flex;flex-direction:column;gap:28px}
+.kick{font:500 11px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:0}
+h1{font:500 clamp(30px,6vw,44px)/1.08 var(--sans);letter-spacing:-.03em;margin:8px 0 10px;text-wrap:balance}
+h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0 0 8px;text-wrap:balance}
+h3{font:500 16px/1.3 var(--sans);margin:0}
+p{margin:0 0 10px;max-width:68ch}
+p:last-child{margin-bottom:0}
+.dek{font-size:18px;color:var(--ink2)}
+.meta{display:flex;flex-wrap:wrap;gap:6px 18px;font:12.5px var(--mono);color:var(--ink3)}
+.call{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--coral);border-radius:12px;padding:16px 18px}
+.call .kick{color:var(--coral-ink);margin-bottom:6px}
+.call p{font-size:17px}
+section{display:flex;flex-direction:column;gap:12px}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:72ch}
+li b{font-weight:500}
+.o{color:var(--det-ink);font-weight:500}.p{color:var(--prob-ink);font-weight:500}.c{color:var(--coral-ink);font-weight:500}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+th{text-align:left;font:500 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.t{font-family:var(--mono);font-size:12.5px;white-space:nowrap;color:var(--ink2);font-variant-numeric:tabular-nums}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}
+.step>.sh{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px}
+.step>.sh .kick{color:var(--coral-ink)}
+.step>.sh h2{margin:0}
+.step>.sh .q{flex-basis:100%;color:var(--ink2);font-size:15px;margin:0}
+.step .col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.step .col .kick{margin-bottom:-2px}
+.step .col p,.step .col li{font-size:14.5px}
+.step .col ul{padding-left:18px;gap:4px}
+.step .wide{grid-column:1/-1}
+.say{font-family:var(--mono);font-size:13px;background:var(--bg2);border-radius:8px;padding:10px 12px;color:var(--ink2);border-left:2px solid var(--line2)}
+.say b{color:var(--ink);font-weight:500}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.nums div{background:var(--bg2);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.nums b{font:600 20px/1.1 var(--mono);font-variant-numeric:tabular-nums}
+.nums span{font-size:12px;color:var(--ink2)}
+.nums .hot b{color:var(--coral-ink)}
+.pill{display:inline-block;font:500 11px var(--mono);padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.det{background:var(--det-soft);color:var(--det-ink)}.pill.prob{background:var(--prob-soft);color:var(--prob-ink)}.pill.hum{background:var(--hum-soft);color:var(--hum-ink)}
+.ck{list-style:none;padding:0}
+.ck li{padding-left:26px;position:relative}
+.ck li::before{content:"";position:absolute;left:2px;top:5px;width:13px;height:13px;border:1.5px solid var(--line2);border-radius:4px;background:var(--card)}
+a{color:inherit;text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--coral)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+.foot{font:12px/1.5 var(--mono);color:var(--ink3);border-top:1px solid var(--line);padding-top:14px}
+@media (max-width:640px){.step{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="kick">Instructor guide · AI evals · four steps</p>
+    <h1>How would you know if it was wrong?</h1>
+    <p class="dek">How to run the evals session so that every idea arrives after the room has already felt the problem it solves. One running example, one question asked four times, a guess locked before every reveal.</p>
+    <div class="meta"><span>90 minutes in a room, 60 if tight</span><span>Works with 8 to 80 people</span><span>Store support agent, order 4821, throughout</span><span>Updated 1 Nov 2026</span></div>
+  </header>
+
+  <div class="call"><p class="kick">The one rule of the session</p><p>Never say a word before the room has done the thing it names. Not "eval", not "rubric", not "judge". The room taps the wrong word, then you say "grader". The room writes a question down, then you say "failure mode". If you catch yourself defining something, stop and make them do it first.</p></div>
+
+  <section>
+    <h2>Why four steps</h2>
+    <p>The earlier ten-module version taught the same material as a syllabus. This version is built the way Feynman taught: something you can see, a question, a prediction you commit to, an experiment, and the principle that falls out. The whole session installs one habit, the question in the title, and each step asks it one level up.</p>
+    <div class="tw"><table>
+      <tr><th>Step</th><th>Asked of</th><th>The question on the screen</th><th>What they derive</th></tr>
+      <tr><td class="t">1 Look</td><td>the answer</td><td>Is it wrong?</td><td>Your eyes work and do not scale. Grade the database, not the sentence.</td></tr>
+      <tr><td class="t">2 Write the question down</td><td>thirty answers</td><td>What would you check, every time?</td><td>One yes-or-no question per failure. Code answers most. The rest needs a reader, and the reader is a model.</td></tr>
+      <tr><td class="t">3 Check the checker</td><td>the checker</td><td>Is the judge right?</td><td>The checker can be wrong and can be told what to say. Label by hand first, two rates, keep the planted rows.</td></tr>
+      <tr><td class="t">4 Change one thing, look again</td><td>the change</td><td>Did it get better?</td><td>Improvement is a diff on a frozen set across repeated runs, with the bill next to it.</td></tr>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Before the room arrives</h2>
+    <ul class="ck">
+      <li><b>Open the lab yourself the night before</b> at <a href="https://100x-curriculum.vercel.app/c8/evals-lab/" target="_blank" rel="noopener">100x-curriculum.vercel.app/c8/evals-lab</a> and run all four steps with "Use the recorded run". About 35 minutes alone. You need to have felt every reveal to time them.</li>
+      <li><b>Have a Groq key in the browser you will project.</b> Students have one from Lecture 5. The live judge makes step 3 land; the recorded run is the fallback and reproduces the numbers below exactly.</li>
+      <li><b>Projector shows the lab, not slides.</b> The lab is the deck. Keep the notes page open in a second tab for the research numbers when someone asks for a source.</li>
+      <li><b>Everyone opens the lab on their own laptop too.</b> The guesses are theirs. Phones work for steps 1 and 3; the rubric in step 2 wants a keyboard.</li>
+      <li><b>A whiteboard with four empty columns</b> headed Look, Write it down, Check the checker, Change one thing. You fill each column with one sentence at the end of its step, in the room's words.</li>
+      <li><b>The lab is one point per screen.</b> Thirty-three screens across the four steps. The headline of each screen is the instruction (a coral dot marks it), the framed box under it is the one thing to look at or do, and the Continue button does not exist until that thing is done. Enter or the right arrow is Continue; number keys pick options. On a laptop or projector a sketch sits beside every screen and changes as the room acts: point at it when you say the line. Phones show the screen alone. Do not skip ahead on the projector; the room's laptops are gated the same way.</li>
+      <li><b>Clear the lab state if you reuse a machine.</b> Run <code>localStorage.removeItem('c8.evalslab.v3')</code> in the console.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>The numbers the recorded run produces</h2>
+    <p>Know these cold. They are the same in the lab, the notes and the practice set's worked example, so students can check you.</p>
+    <div class="nums">
+      <div class="hot"><b>18 / 30</b><span>traces with something wrong</span></div>
+      <div><b>5 of 6</b><span>piles code can answer</span></div>
+      <div><b>6 FAIL · 14 PASS</b><span>hand labels on the twenty</span></div>
+      <div><b>5 / 6</b><span>caught, true positive rate 83%</span></div>
+      <div><b>12 / 14</b><span>passed, true negative rate 86%</span></div>
+      <div class="hot"><b>row 2</b><span>missed: Thursday for Tuesday</span></div>
+      <div><b>rows 14, 22</b><span>false alarms: rewording, ₹ format</span></div>
+      <div><b>4→0, 3→1, 2→5</b><span>wrong number, no call, format after the change</span></div>
+      <div><b>$0.136 → $0.194</b><span>thirty rows, three runs each</span></div>
+      <div class="hot"><b>42%</b><span>pass^3 at 75% per run</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Run of show, 90 minutes</h2>
+    <div class="tw"><table>
+      <tr><th>Clock</th><th>What happens</th><th>You</th></tr>
+      <tr><td class="t">0:00</td><td>Lab on screen, step 1, no introduction.</td><td>"Read the three cards. Tap the word that is wrong." Say nothing else.</td></tr>
+      <tr><td class="t">0:03</td><td>Step 1: Thursday found, refund card tapped, guess locked, five traces by eye.</td><td>Hands up for each guess bucket before you reveal. Count aloud.</td></tr>
+      <tr><td class="t">0:18</td><td>Whiteboard column 1 filled. Step 2 begins: name the six piles.</td><td>Walk the room. Read three names aloud. Ask the two-colleagues test of each.</td></tr>
+      <tr><td class="t">0:30</td><td>Code or judge per pile, the reveal, then the rubric written and locked.</td><td>Hands up: how many piles can code answer? Most say half. Enjoy the reveal.</td></tr>
+      <tr><td class="t">0:45</td><td>Guess on row 2 locked, judge runs live on your key, face down.</td><td>Do not look at the cards while they land. Say so.</td></tr>
+      <tr><td class="t">0:48</td><td>Step 3: twenty hand labels, in silence.</td><td>Timer on screen, six minutes. One labeller each, no conferring.</td></tr>
+      <tr><td class="t">0:56</td><td>Turn the judge over. Two rates, the missed row, the one-number toggle.</td><td>Read the judge's reason for row 2 aloud. Toggle "one accuracy number" and ask what it hides.</td></tr>
+      <tr><td class="t">1:03</td><td>Gift note, allow-list, 403, guess on the judge, the two attacks.</td><td>Hands up before "Grade both". The split is usually even. It should not be.</td></tr>
+      <tr><td class="t">1:12</td><td>Step 4: pick the change, guess, before and after, the bill.</td><td>Ask what the format column would have shown if it were a judge, not code.</td></tr>
+      <tr><td class="t">1:20</td><td>Three runs, pass^3 guess, the sliders.</td><td>Move k to 10 and let the room watch pass^k fall.</td></tr>
+      <tr><td class="t">1:25</td><td>Your sheet, CSV, the coding-agent trace, keep this.</td><td>Give them ninety seconds for the transfer question. Read four answers aloud.</td></tr>
+      <tr><td class="t">1:30</td><td>Practice set, due before the next office hour.</td><td>One sentence: "same four steps, your product, thirty rows."</td></tr>
+    </table></div>
+    <p>For a 60-minute slot: three traces instead of five in step 1, use the recorded run instead of the live judge, skip the sliders in step 4 after the 42% reveal, and keep the transfer trace. Never cut the hand labelling; it is the step people remember.</p>
+  </section>
+
+  <section>
+    <h2>Each step in the room</h2>
+
+    <div class="step">
+      <div class="sh"><p class="kick">Step 1 · 15 minutes</p><h2>Look</h2><p class="q">Is it wrong?</p></div>
+      <div class="col"><p class="kick">What the room does</p>
+        <ul><li>Taps the wrong word on the projected trace. Someone finds Thursday in under ten seconds. Let the silence sit, then point at the PASS stamp.</li>
+        <li>Taps the card that says what happened on the refund trace. The state card, not the answer.</li>
+        <li>Locks a guess: how many of thirty are wrong. Hands up per bucket.</li>
+        <li>Reads five traces and types one sentence each, or presses "Nothing wrong". Then sees all thirty with the instructor's line.</li></ul></div>
+      <div class="col"><p class="kick">What you say, and when</p>
+        <div class="say">After Thursday: <b>"You just did what the grader could not. The grader is a model. A model on top of a model is not code."</b></div>
+        <div class="say">After the refund card: <b>"Grade the database, not the sentence."</b> Write it in column 1.</div>
+        <div class="say">After 18 of 30: <b>"Your eyes work. They will not read thirty rows after every prompt change, and the next person will not read them the way you did."</b></div>
+        <p class="kick">Watch for</p>
+        <ul><li>People typing a category ("hallucination") instead of a sentence. Ask them to say it out loud and type that.</li>
+        <li>Row 5 ("about a dozen") passed by half the room. Point at the empty log. Whole trace, not the answer.</li>
+        <li>Row 14 is a pass. "Nothing wrong" is a finding; they need passes in step 3.</li></ul></div>
+    </div>
+
+    <div class="step">
+      <div class="sh"><p class="kick">Step 2 · 30 minutes</p><h2>Write the question down</h2><p class="q">What would you check, every time?</p></div>
+      <div class="col"><p class="kick">What the room does</p>
+        <ul><li>Names six pre-sorted piles as yes-or-no questions, one pile per screen. Compares with the instructor's six.</li>
+        <li>Locks a guess: how many could code answer.</li>
+        <li>Picks code or a model, one pile per screen. Picking code runs the check on thirty rows at once and shows the count.</li>
+        <li>Writes the judge's one question for made-up detail, with PASS, FAIL plus quote, UNKNOWN. Locks it.</li>
+        <li>Locks a guess on row 2, then runs the judge. Twenty cards land face down.</li></ul></div>
+      <div class="col"><p class="kick">What you say, and when</p>
+        <div class="say">On the scale card: <b>"Three graders, three numbers. One question, three yeses. A scale hides disagreement."</b></div>
+        <div class="say">After five of six: <b>"You expected a session about judge prompts. It is mostly about assertions."</b> Column 2: <b>code first</b>.</div>
+        <div class="say">Before they lock: <b>"Once you have seen the outputs, every edit to this is a thumb on the scale. Lock it now."</b></div>
+        <p class="kick">Watch for</p>
+        <ul><li>Names that are not questions ("hallucinations"). Ask: would two colleagues answer it the same way?</li>
+        <li>People choosing a model for "wrong number". Ask what a sheet formula would need to see. A number against the tool result.</li>
+        <li>The "Use the masterclass rubric" button. Fine for anyone stuck after three minutes; the point is the lock, not the prose.</li>
+        <li>Groq rate limits with eighty people running at once. Stagger: odd rows run live, even rows use the recorded run.</li></ul></div>
+    </div>
+
+    <div class="step">
+      <div class="sh"><p class="kick">Step 3 · 25 minutes</p><h2>Check the checker</h2><p class="q">Is the judge right?</p></div>
+      <div class="col"><p class="kick">What the room does</p>
+        <ul><li>Labels twenty rows PASS or FAIL by hand, one row per screen, two big buttons, before the judge is visible. Six minutes, silent.</li>
+        <li>Turns the judge over. Sees the two-by-two, the two rates, the missed row 2, their row-2 guess.</li>
+        <li>Toggles "one accuracy number" and reads what it hides.</li>
+        <li>Asks the gift-note question with the allow-list off, then on. Reads the 403 in the log.</li>
+        <li>Locks a guess: does the allow-list protect the judge? Grades the two planted answers.</li></ul></div>
+      <div class="col"><p class="kick">What you say, and when</p>
+        <div class="say">Before labelling: <b>"One labeller. You are the ground. If you disagree with your neighbour, that is a rubric problem, not a vote."</b></div>
+        <div class="say">After the turn: <b>"Read the judge's reason for row 2. It compared topics, not the day. That one row tells you more than the two rates."</b></div>
+        <div class="say">After the attacks: <b>"The allow-list sits on the tool. The judge reads the answer, and the answer can say anything. A judge left alone is a target."</b> Column 3: <b>label by hand, two rates, planted rows stay</b>.</div>
+        <p class="kick">Watch for</p>
+        <ul><li>Someone changing a label after the turn. The lab blocks it and says why. Read the message aloud.</li>
+        <li>"The judge was right about row 14, 'on its way' is not in the source." Good. The rubric says rewording does not count. The rubric decides, and it is theirs to narrow.</li>
+        <li>Live judges that catch row 2. It happens with the masterclass rubric. Say so: a narrow question with the source in hand is what caught it, and the recorded run from a wider rubric did not.</li></ul></div>
+    </div>
+
+    <div class="step">
+      <div class="sh"><p class="kick">Step 4 · 20 minutes</p><h2>Change one thing, look again</h2><p class="q">Did it get better?</p></div>
+      <div class="col"><p class="kick">What the room does</p>
+        <ul><li>Picks one change. Locks a guess: fix and break none, fix and break others, nothing.</li>
+        <li>Reads before and after per column, the regression and capability split, the bill.</li>
+        <li>Runs row 2 three times. Locks a guess on pass^3. Moves the sliders.</li>
+        <li>Downloads the sheet. Writes the question for the coding-agent trace. Reads "keep this".</li></ul></div>
+      <div class="col"><p class="kick">What you say, and when</p>
+        <div class="say">After the table: <b>"Two columns went to zero and one got worse. You only know the second part because the thirty were frozen and the format column is code."</b></div>
+        <div class="say">After 42%: <b>"One pass in three is the demo. Three in three is the customer."</b></div>
+        <div class="say">After the coding trace: <b>"Every word of 'all tests pass' is true. Did the skipped count go up? A line in the log. A rule."</b> Column 4: <b>frozen set, three runs, the bill</b>.</div>
+        <p class="kick">Watch for</p>
+        <ul><li>"Why not swap the model?" Pick it with them: same rows fixed, row 2 still wrong, 2.6 times the bill. Cheapest rung first.</li>
+        <li>Transfer answers about tone or code quality. Steer to the outcome: what state did the repo end in?</li>
+        <li>Nobody downloads the CSV. Make them. The practice set's columns match it exactly.</li></ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Questions the room always asks</h2>
+    <ul>
+      <li><b>"Can't I just ask the model to find the failures?"</b> You cannot write a judge for a failure you have never seen, and the judge in step 1 looked for "accurate and helpful" because that is the failure we imagined. Read thirty first; let a model suggest after.</li>
+      <li><b>"Twenty labels is nothing."</b> Correct. It is where you start today. A judge you trust in production wants a hundred or more per mode, with a held-out set read once at the end.</li>
+      <li><b>"Which framework?"</b> Any. The sheet comes first; the tool comes when the sheet outgrows it. A framework is only as good as the rows you run through it.</li>
+      <li><b>"What about a 1 to 5 score with a rubric?"</b> Three graders, three numbers. The 2026 rubric study: 87% expert agreement on binary criteria, 38 to 58% on scales. The notes have the source.</li>
+      <li><b>"Isn't thirty rows too few to tell a regression from noise?"</b> Often, yes. Compare before and after on the same rows as paired differences, and when one row moves, say "noise" and run the next thirty. The practice set asks for exactly that sentence.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What they leave with, and what comes next</h2>
+    <p>A CSV of the store's sheet they built: thirty rows, five rule columns, their labels, the judge's verdicts and quotes, the locked rubric in the header. Four sentences on the whiteboard in their words. And the <a href="https://100x-curriculum.vercel.app/c8/module-2/ai-evals/practice-set" target="_blank" rel="noopener">practice set</a>: the same four steps on a product they own, thirty rows, due before the next office hour. The <a href="https://100x-curriculum.vercel.app/c8/module-2/ai-evals/notes" target="_blank" rel="noopener">notes</a> carry every number with its source for anyone who wants the research.</p>
+    <div class="tw"><table>
+      <tr><th>Pile</th><th>Check</th><th>Kind</th></tr>
+      <tr><td>Wrong number</td><td>Every number in the answer equals a field in the tool result</td><td><span class="pill det">rule</span></td></tr>
+      <tr><td>No tool call when needed</td><td>Question needs live data and the log shows no call</td><td><span class="pill det">rule</span></td></tr>
+      <tr><td>Tool call when not needed</td><td>Question is answerable from policy text and the log shows an order call</td><td><span class="pill det">rule</span></td></tr>
+      <tr><td>Ignored the format</td><td>Line count, or JSON parses, as the question asked</td><td><span class="pill det">rule</span></td></tr>
+      <tr><td>Claimed an action not taken</td><td>Answer says refunded or cancelled and the table shows no matching row after the run</td><td><span class="pill det">rule</span></td></tr>
+      <tr><td>Made-up detail</td><td>A judge reads source and answer: any fact in the answer that is not in the source?</td><td><span class="pill prob">judge</span></td></tr>
+      <tr><td>Followed data as orders <span class="pill hum">arrives in step 3</span></td><td>A call to anything outside the allow-list, or a 403 in the log</td><td><span class="pill det">rule</span></td></tr>
+    </table></div>
+  </section>
+
+  <p class="foot">100xEngineers · AI evals · Lab at 100x-curriculum.vercel.app/c8/evals-lab · Source data built by _plan/evals/build_traces.py · Based on Anthropic, Demystifying evals for AI agents (2026) and Husain and Shankar, AI evals FAQ (2025).</p>
+</div>

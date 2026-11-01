@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AI Evals Masterclass | 100xEngineers</title>
+<meta name="description" content="A masterclass on AI evals for engineers and product managers, in four steps: look, write the question down, check the checker, change one thing and look again. Read thirty traces, one yes-or-no check per failure with code first, judge the judge before you trust it, freeze the set. Built on the 2024 to 2026 research on LLM judges, agent evals and eval statistics.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+.when{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
+.when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
+.when .kick{margin:0}
+.o{color:var(--det-ink);font-weight:500}.p{color:var(--prob-ink);font-weight:500}
+ol.steps li a{font-weight:500}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="evals-index" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/c8/module-2/ai-evals/">100x<b>·</b><span>AI Evals Masterclass</span></a>
+  <nav aria-label="AI evals pages"><a href="/c8/module-2/ai-evals/">Overview</a><a href="/c8/module-2/ai-evals/notes">Notes</a><a href="/c8/module-2/ai-evals/practice-set">Practice set</a><a href="/c8/evals-lab/">Lab</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<div class="hero">
+  <p class="kick">Masterclass · for engineers and product managers · 90 minutes</p>
+  <h1>AI evals</h1>
+  <p class="dek">How would you know if it was wrong?</p>
+  <div class="meta"><span>Bring a product you own or use daily</span><span>No framework, no new account</span><span>Every claim sourced, 2024 to 2026</span></div>
+</div>
+
+<div class="call"><p class="kick">The masterclass in one line</p><p>One question asked four times. Of the answer: look. Of thirty answers: write the question down, and let <span class="o">code</span> answer it where code can. Of the checker: when a <span class="p">model has to grade</span>, judge the judge before you trust it. Of the change: freeze the set, change one thing, look again.</p></div>
+
+<div class="when"><p class="kick">01</p><h2>Who this is for</h2></div>
+<p>Engineers shipping anything with a model in it, product managers who own its quality, and anyone who has been told "we need evals" and handed a vendor dashboard. You do not need to have built an eval before. You do need thirty real outputs from something you care about, or access to a product that can produce them in five minutes.</p>
+
+<div class="when"><p class="kick">02</p><h2>The four steps</h2></div>
+<p>Each step is a question, a guess you lock before the reveal, an experiment, and the one thing you now know. No word is introduced before you have done the thing it names.</p>
+<ol class="steps">
+  <li><a href="/c8/module-2/ai-evals/notes#s01">Look. Is it wrong?</a> Find the swapped day yourself. Then thirty rows, one sentence each, the whole trace not the answer. (notes 01 to 03)</li>
+  <li><a href="/c8/module-2/ai-evals/notes#s04">Write the question down. What would you check, every time?</a> One yes-or-no question per failure. Code answers most. The judge gets its question locked before you look. (notes 04 to 06)</li>
+  <li><a href="/c8/module-2/ai-evals/notes#s07">Check the checker. Is the judge right?</a> Twenty hand labels, the judge turned over, two rates, the row it missed. Then a planted note, for the agent and for the judge. (notes 07 and 08)</li>
+  <li><a href="/c8/module-2/ai-evals/notes#s09">Change one thing, look again. Did it get better?</a> The frozen set, three runs, before and after per column, and the bill. (notes 09 and 10)</li>
+</ol>
+
+<div class="when"><p class="kick">03</p><h2>You leave with</h2></div>
+<p>An eval sheet for your own product: thirty traces read, five to eight yes-or-no questions, a check next to each one marked <span class="o">rule</span> or <span class="p">judge</span>, a rubric locked before the judge ran, twenty hand labels, the judge's verdicts, its true positive and true negative rates, one flagged row where the grader was wrong, and a before-and-after from one change run three times.</p>
+
+<div class="when"><p class="kick">04</p><h2>Do it yourself first</h2></div>
+<p>The <a href="/c8/evals-lab/">Evals Lab</a> runs the four steps on the store's support agent, in the browser, in about 45 minutes. You tap the wrong word, write the questions, lock a rubric, run a real judge on your own key, label twenty rows, attack the judge, pick one change and read what moved. Every reveal comes after your guess. No account, no install. Take it before the session, or instead of it.</p>
+
+<div class="when"><p class="kick">05</p><h2>What you will not get</h2></div>
+<ul>
+  <li>A tour of eval platforms. The sheet comes first; the tool comes when the sheet outgrows it.</li>
+  <li>A leaderboard. Public benchmarks measure the vendor's product on the vendor's test. Notes section 10 covers why yours is the only one that counts.</li>
+  <li>A single judge prompt that works everywhere. Notes section 06 is why there is no such thing, and what to do instead.</li>
+</ul>
+
+<div class="when"><p class="kick">06</p><h2>When you need it</h2></div>
+<ul>
+  <li><a href="/c8/module-2/ai-evals/notes">Notes: what was said, with the whiteboard</a></li>
+  <li><a href="/c8/module-2/ai-evals/practice-set">Practice set: the four steps on your own product</a></li>
+  <li><a href="/c8/module-2/ai-evals/notes#s11">The research table: every number, with its source</a></li>
+</ul>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · AI evals masterclass</span><a href="/c8/module-2/ai-evals/notes">Notes</a><a href="/c8/module-2/ai-evals/practice-set">Practice set</a></div></footer>
+</body>
+</html>
