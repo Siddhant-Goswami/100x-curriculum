@@ -1,0 +1,458 @@
+{
+ "version": "2026-11-01.1",
+ "policy": [
+  "A duplicate or wrong charge is refunded in full if it is 60 days old or less.",
+  "An add-on the customer never confirmed is refunded in full if it is 60 days old or less.",
+  "A price rise that was announced is not refunded. An agent may give one courtesy credit of up to $15.",
+  "A confirmed outage is credited for the days without service: monthly price x days / 30.",
+  "An outage that is not on record gets a line test first. No credit until a fault is confirmed.",
+  "Anything over $100, and any charge older than 60 days, goes to Billing Tier 2. The agent issues nothing.",
+  "Never mention another customer or another account."
+ ],
+ "items": [
+  {
+   "id": "d14",
+   "message": "The connection drops every evening. I shouldn't pay full price for a service that doesn't work.",
+   "account": [
+    [
+     "Customer",
+     "Sofia"
+    ],
+    [
+     "Plan",
+     "Fibre 150, $39.99 a month"
+    ],
+    [
+     "Disputed",
+     "full monthly price; no outage on record"
+    ],
+    [
+     "Charge age",
+     "7 days"
+    ],
+    [
+     "Outage on record",
+     "none"
+    ]
+   ],
+   "reply": "I'm sorry about this, Sofia. I can see why it's frustrating. I can't see a recorded outage on your line yet, so the first step is a line test. I've added a credit of $20.00 for the trouble. It will show on your next bill.",
+   "breaks": "Credit with no outage on record. Policy: line test first, no credit until a fault is confirmed."
+  },
+  {
+   "id": "d13",
+   "message": "I've been charged $79.99 twice this month. Again. This is the second time I've had to chase you about billing.",
+   "account": [
+    [
+     "Customer",
+     "Priya"
+    ],
+    [
+     "Plan",
+     "Fibre 900, $79.99 a month"
+    ],
+    [
+     "Disputed",
+     "$79.99 monthly charge, taken twice on the same day"
+    ],
+    [
+     "Charge age",
+     "11 days"
+    ]
+   ],
+   "reply": "I am so, so sorry, Priya! You are absolutely right to be upset, and I completely understand how awful this must be for you. Thank you so much for your patience. I can see the $79.99 charge went through twice on the same day, so the second one is a billing error. I've issued a refund of $79.99 for the duplicate charge. You'll see it on your card within 3 to 5 working days.",
+   "breaks": null
+  },
+  {
+   "id": "d11",
+   "message": "You charged me $19.99 for 'Premium Support' I never wanted. How many other things have you slipped in?",
+   "account": [
+    [
+     "Customer",
+     "Ines"
+    ],
+    [
+     "Plan",
+     "Fibre 500, $59.99 a month"
+    ],
+    [
+     "Disputed",
+     "$19.99 \"Premium Support\" charge, 94 days ago"
+    ],
+    [
+     "Charge age",
+     "94 days"
+    ]
+   ],
+   "reply": "That charge is 94 days old, which is past the 60 days I can deal with myself. I've passed this to our Billing Tier 2 team, who review older charges; they'll reply within 2 working days.",
+   "breaks": null
+  },
+  {
+   "id": "d01",
+   "message": "I did NOT order Stream+. Take it off and give me my $9.99 back.",
+   "account": [
+    [
+     "Customer",
+     "Zara"
+    ],
+    [
+     "Plan",
+     "Fibre 300, $49.99 a month"
+    ],
+    [
+     "Disputed",
+     "$9.99 Stream+ add-on; added online, no confirmation click on record"
+    ],
+    [
+     "Charge age",
+     "35 days"
+    ]
+   ],
+   "reply": "I'm sorry about this, Zara. I can see why it's frustrating. Stream+ was added online without a confirmation, so it should not have been charged. I've removed Stream+ and refunded $29.97 for the trouble. You'll see it on your card within 3 to 5 working days.",
+   "breaks": "Refunded $29.97 for a $9.99 add-on. Policy: refund the add-on in full, nothing extra."
+  },
+  {
+   "id": "d07",
+   "message": "My bill went up $10.00 without any warning. I want the difference back.",
+   "account": [
+    [
+     "Customer",
+     "Meera"
+    ],
+    [
+     "Plan",
+     "Fibre 300, $49.99 a month"
+    ],
+    [
+     "Disputed",
+     "monthly price up $10.00 after the September price change letter"
+    ],
+    [
+     "Charge age",
+     "15 days"
+    ]
+   ],
+   "reply": "The increase is the annual price change we wrote to all customers about in September, so it isn't a billing error. I can't refund the increase, but I've added a one-time courtesy credit of $10.00.",
+   "breaks": null
+  }
+ ],
+ "sheets": [
+  [
+   5,
+   4,
+   2,
+   5,
+   3
+  ],
+  [
+   4,
+   5,
+   2,
+   5,
+   2
+  ],
+  [
+   5,
+   5,
+   3,
+   5,
+   2
+  ],
+  [
+   5,
+   4,
+   1,
+   5,
+   3
+  ],
+  [
+   5,
+   5,
+   2,
+   4,
+   2
+  ],
+  [
+   5,
+   5,
+   2,
+   5,
+   3
+  ],
+  [
+   5,
+   5,
+   2,
+   4,
+   3
+  ],
+  [
+   5,
+   4,
+   2,
+   5,
+   3
+  ],
+  [
+   5,
+   4,
+   3,
+   4,
+   1
+  ],
+  [
+   5,
+   3,
+   2,
+   4,
+   2
+  ],
+  [
+   2,
+   5,
+   5,
+   1,
+   5
+  ],
+  [
+   1,
+   5,
+   5,
+   1,
+   4
+  ],
+  [
+   1,
+   5,
+   5,
+   2,
+   5
+  ],
+  [
+   1,
+   5,
+   4,
+   1,
+   3
+  ],
+  [
+   2,
+   5,
+   4,
+   3,
+   5
+  ],
+  [
+   1,
+   5,
+   4,
+   2,
+   4
+  ],
+  [
+   1,
+   5,
+   3,
+   1,
+   4
+  ],
+  [
+   1,
+   5,
+   4,
+   2,
+   5
+  ],
+  [
+   1,
+   5,
+   5,
+   1,
+   4
+  ],
+  [
+   1,
+   5,
+   4,
+   2,
+   5
+  ],
+  [
+   5,
+   3,
+   5,
+   3,
+   4
+  ],
+  [
+   4,
+   3,
+   5,
+   4,
+   4
+  ],
+  [
+   4,
+   4,
+   4,
+   3,
+   5
+  ],
+  [
+   4,
+   3,
+   4,
+   3,
+   4
+  ],
+  [
+   5,
+   2,
+   4,
+   4,
+   5
+  ],
+  [
+   3,
+   2,
+   5,
+   3,
+   4
+  ],
+  [
+   4,
+   3,
+   4,
+   4,
+   5
+  ],
+  [
+   4,
+   3,
+   4,
+   3,
+   4
+  ],
+  [
+   4,
+   3,
+   3,
+   4,
+   4
+  ],
+  [
+   4,
+   3,
+   4,
+   3,
+   5
+  ],
+  [
+   5,
+   5,
+   3,
+   5,
+   5
+  ],
+  [
+   5,
+   4,
+   2,
+   5,
+   4
+  ],
+  [
+   4,
+   5,
+   3,
+   5,
+   4
+  ],
+  [
+   5,
+   5,
+   2,
+   5,
+   4
+  ],
+  [
+   5,
+   4,
+   3,
+   5,
+   4
+  ],
+  [
+   5,
+   5,
+   2,
+   4,
+   4
+  ],
+  [
+   5,
+   4,
+   4,
+   5,
+   3
+  ],
+  [
+   5,
+   4,
+   3,
+   5,
+   3
+  ],
+  [
+   5,
+   5,
+   2,
+   5,
+   3
+  ],
+  [
+   4,
+   5,
+   2,
+   5,
+   3
+  ]
+ ],
+ "defence": {
+  "low": {
+   "persona": "policy",
+   "score": 1,
+   "text": "I gave it a 1. It hands back more than the policy allows for this case. That's money we'd claw back later."
+  },
+  "high": {
+   "persona": "tone",
+   "score": 5,
+   "text": "I gave it a 5. The customer was annoyed and the reply actually acknowledged that."
+  }
+ },
+ "reasons": [
+  {
+   "text": "Promised a refund the policy does not allow",
+   "pile": "hard"
+  },
+  {
+   "text": "Mentioned another customer",
+   "pile": "hard"
+  },
+  {
+   "text": "Sounded cold",
+   "pile": "quality"
+  },
+  {
+   "text": "Never said what happens next",
+   "pile": "quality"
+  },
+  {
+   "text": "I would rather send what our best agent wrote",
+   "pile": "preference"
+  },
+  {
+   "text": "Our senior agent would have handled it better",
+   "pile": "preference"
+  }
+ ]
+}

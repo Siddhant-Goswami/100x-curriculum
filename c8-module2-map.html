@@ -1554,6 +1554,8 @@ function l01HTML(){ var u=gl('l01Hub'); return u ? '<a class="hub" href="'+esc(u
 function l02HTML(){ var u=gl('l02Hub'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the Lecture 2 pages</b><i>The overview and the notes with the whiteboard</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function wtbA1HTML(){ var u=gl('wtbA1'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Read the Assignment 1 brief</b><i>The five steps, the Input-Process-Output card, what to submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>See a worked example: Aarav, Discovery to MVP</b><i>The full coach run, condensed: discovery document and 21-day manual MVP plan</i></span><em aria-hidden="true">→</em></a>' : ''; }
+/* Lecture 9: the Tuesday 3 Nov office hour page, where one row of the practice-set sheet becomes an eval. */
+function ohL9HTML(){ var u=gl('l09OfficeHour'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Office hour, Tue 3 Nov: write the eval for one task</b><i>Take one row of your sheet and write how you will check it</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* The hackathon page sits on the hackathon bridge. */
 function hackHTML(){ var u=gl('hackathon'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the hackathon page</b><i>Pick a problem, the five moves, timeline, rules, submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* A lecture that has happened shows one line and four key points from its notes (RECAP in guides.js); the pages hold the rest. */
@@ -1570,7 +1572,7 @@ function trackSwHTML(s){
 }
 function trackBitsHTML(s){
   var r = s.kind==='lec' ? recapFor(s) : null;
-  var h = (s.id==='b1' ? wtbNotesHTML() : '') + (s.id==='L1' ? l01HTML() : '') + (s.id==='L2' ? l02HTML() : '') + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.kind==='bridge' ? '' : agendaHTML(s));
+  var h = (s.id==='b1' ? wtbNotesHTML() : '') + (s.id==='L1' ? l01HTML() : '') + (s.id==='L2' ? l02HTML() : '') + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.id==='L9' ? ohL9HTML() : '') + (s.kind==='bridge' ? '' : agendaHTML(s));
   if(r) return h + recapHTML(r) + trackSwHTML(s);
   h += canHTML(s) + loHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;

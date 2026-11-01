@@ -116,6 +116,7 @@ var GUIDE_LINKS = {
   l09Aarav: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s10',
   l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
   l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s05',
+  l09OfficeHour: '/c8/module-2/lecture-09-llms-from-first-principles/office-hour',  /* Tue 3 Nov office hour: write the eval for one row of the sheet */
   jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
   delegation: '/c8/delegation-framework/',
   /* Lecture 10 · Tool calling and MCP (both tracks, pages in c8/module-2/lecture-10-tool-calling-and-mcp) */
