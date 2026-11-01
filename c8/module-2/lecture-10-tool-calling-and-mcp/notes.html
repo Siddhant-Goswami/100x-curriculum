@@ -205,7 +205,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </figure>
 <ul class="pt">
   <li><b>The room's answers:</b> it isn't trained to say no; output is mandatory, so it fills gaps; it is a prediction engine, not a logic engine.</li>
-  <li><b>Andrej Karpathy's framing.</b> Hallucination is all an LLM does; we only call it that when the dream lands somewhere factually wrong. The model has no hallucination problem; the <b>LLM assistant</b> does. His fixes: retrieval, in-context learning, verification chains, tool use.</li>
+  <li><b>Andrej Karpathy's framing.</b> Hallucination is all an LLM does; we only call it that when the dream lands somewhere factually wrong. The model has no hallucination problem; the <b>LLM assistant</b> does. The fixes he lists: retrieval (RAG), checking several samples against each other, reflection, verification chains, tool use.</li>
   <li><b>The assistant is the whole system:</b> client, APIs, data stores and a model, as in the ChatGPT we took apart (<a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s10">Lecture 2</a>).</li>
   <li><b>Partly an expectation problem.</b> If you need the correct record every time, build an <span class="o">orange</span> system: client, server, database. When data is missing it returns 404 instead of guessing.</li>
 </ul>
@@ -234,8 +234,8 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Fix only the context and the behavior still fills whatever gap remains. That is why the score stopped at 7.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>The training data.</b> OpenOrca, an open instruction dataset: a <b>system prompt</b>, a question and an ideal response, the same shape as your practice-set sheet, repeated hundreds of thousands of times.</li>
-  <li><b>The ratio.</b> In about 30,000 records, fewer than 5% were the model saying it doesn't know. It is trained to predict, not to decline.</li>
+  <li><b>The training data.</b> OpenOrca, an open instruction dataset: a <b>system prompt</b>, a question and an ideal response, the same shape as your practice-set sheet, repeated across about 2.9 million records.</li>
+  <li><b>The ratio.</b> In the roughly 30,000 records we scrolled through, fewer than 5% were the model saying it doesn't know. It is trained to predict, not to decline.</li>
   <li><b>Familiar question, unknown entity.</b> It has seen thousands of "which option should I choose" questions, never 100x Engineers. So it builds a plausible framework and fills gaps with whatever was common, which is how old no-code tools got in.</li>
   <li><b>Context</b> is the data that reaches the model inside its context window. The word carries through every lecture from here.</li>
 </ul>
@@ -414,7 +414,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <tr><td>English</td><td>Works for one file, then breaks: it ties you to sources in that language and still needs translating into machine instructions.</td></tr>
   <tr><td>JSON</td><td><span class="o">Elected.</span></td></tr>
 </table>
-<p>Every <span class="o">orange</span> system already speaks JSON, the web's common language, so only the model has to learn it, and GPT-OSS can read, generate and validate it. If the source moves to a Google Sheet, JSON still reaches it.</p>
+<p>Every <span class="o">orange</span> system already speaks JSON, the web's common language, so only the model has to learn it, and GPT-OSS already reads and writes it. If the source moves to a Google Sheet, JSON still reaches it.</p>
 </section>
 
 <section class="s" id="s11"><h2><span class="n">11</span>The server is the bridge</h2>
