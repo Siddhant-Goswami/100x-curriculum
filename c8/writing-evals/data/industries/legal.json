@@ -1,0 +1,1108 @@
+{
+ "key": "legal",
+ "name": "Legal",
+ "task": "Draft the argument section of a motion to dismiss",
+ "job": "From the complaint, draft the argument an associate would file: the right standard, the strongest defect first, real authority only.",
+ "decision": "Can this model draft first passes that associates would rather edit than rewrite?",
+ "strata": [
+  "claim type (contract, negligence, fraud, limitations)",
+  "court (4 districts)"
+ ],
+ "deliverable": "An argument excerpt of up to 150 words",
+ "dims": [
+  {
+   "key": "issues",
+   "name": "Issue spotting",
+   "hint": "Does it find the defect that actually ends the case?"
+  },
+  {
+   "key": "standard",
+   "name": "Standard of review",
+   "hint": "Is the pleading standard the current one, stated correctly?"
+  },
+  {
+   "key": "order",
+   "name": "Argument order",
+   "hint": "Is the strongest argument first and the filler gone?"
+  }
+ ],
+ "preference": "An associate's first draft from the same complaint",
+ "trap": "Confident legal prose reads as correct law. Some drafts cite the standard the Supreme Court retired in 2007.",
+ "checkers": [
+  {
+   "id": "real_citations",
+   "name": "Cites only verified cases",
+   "reads": "output, vars.verified_citations",
+   "src": "const ok = context.vars.verified_citations;\nconst found = output.match(/\\b\\d{1,3} (?:U\\.S\\.|F\\.[234]d|F\\. Supp\\. [23]d) \\d{1,4}\\b/g) || [];\nreturn found.every(c => ok.includes(c));"
+  },
+  {
+   "id": "correct_court",
+   "name": "Caption names the right court",
+   "reads": "output, vars.court",
+   "src": "return output.includes(context.vars.court.toUpperCase()) || output.includes(context.vars.court);"
+  },
+  {
+   "id": "word_limit",
+   "name": "Within the word limit",
+   "reads": "output, vars.max_words",
+   "src": "return output.trim().split(/\\s+/).length <= Number(context.vars.max_words);"
+  }
+ ],
+ "reference_note": "Each item carries the court and the list of verified citations.",
+ "version": "2026-11-01.1",
+ "judge_model": "openai/gpt-oss-20b",
+ "items": [
+  {
+   "id": "leg01",
+   "input": "Leah Novak v. Pinecrest Fitness LLC, filed in the United States District Court for the Western District of Washington. Claim: breach of contract. Plaintiff alleges the parties had \"an agreement\" for freight services and that Defendant \"failed to perform.\" The complaint attaches no contract and names no term that was broken.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nLeah Novak, Plaintiff, v. Pinecrest Fitness LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. The complaint never identifies the contractual term Defendant is said to have breached.\n2. The complaint is long and repetitive. This is a further, lesser concern.\n\nDefendant further reserves every argument available to it under the Federal Rules, the common law, and principles of equity, and respectfully submits that the Court should weigh the totality of the circumstances, the interests of judicial economy, and the burden of continued litigation on all parties in reaching its decision.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg02",
+   "input": "Leah Novak v. Pinecrest Fitness LLC, filed in the United States District Court for the District of New Jersey. Claim: negligence. Plaintiff slipped in a parking lot next to Defendant's building. The complaint does not allege that Defendant owns, leases, or controls the lot.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the District of New Jersey. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE DISTRICT OF NEW JERSEY\nLeah Novak, Plaintiff, v. Pinecrest Fitness LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nA complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation. Whitcomb v. Larkspur Mutual, 498 F.3d 1127 (9th Cir. 2007).\n\n1. Plaintiff's injuries are described only in general terms. That alone warrants dismissal.\n2. The complaint alleges no facts showing Defendant owed Plaintiff a duty of care for a lot it does not own or control. This defect is fatal, and decisively so.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the District of New Jersey",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg03",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the Western District of Washington. Claim: fraud. Plaintiff alleges Defendant \"made false statements\" to induce a software purchase. No speaker, date, or content of any statement is pleaded.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nA complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation. Harmon v. Delacroix Holdings, 612 F.3d 281 (7th Cir. 2011).\n\n1. Plaintiff could have bought the software elsewhere. That alone warrants dismissal.\n2. Plaintiff's claims are, in any event, unpersuasive and should not proceed.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg04",
+   "input": "Leah Novak v. Pinecrest Fitness LLC, filed in the United States District Court for the Eastern District of Pennsylvania. Claim: personal injury. Plaintiff alleges an injury on 3 March 2022 and filed on 9 April 2025. The governing limitations period is two years.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Eastern District of Pennsylvania. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS\nLeah Novak, Plaintiff, v. Pinecrest Fitness LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. Plaintiff waited a long time to complain. That alone warrants dismissal.\n2. The claim is time-barred on the face of the complaint: filed more than two years after the injury. A limitations defense supports dismissal where it appears on the face of the complaint. Jones v. Bock, 549 U.S. 199, 215 (2007). This defect is fatal, and decisively so.\n\nDefendant further reserves every argument available to it under the Federal Rules, the common law, and principles of equity, and respectfully submits that the Court should weigh the totality of the circumstances, the interests of judicial economy, and the burden of continued litigation on all parties in reaching its decision.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Eastern District of Pennsylvania",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg05",
+   "input": "Okafor Holdings v. Lantern Software Ltd., filed in the United States District Court for the Northern District of Illinois. Claim: breach of contract. Plaintiff alleges the parties had \"an agreement\" for freight services and that Defendant \"failed to perform.\" The complaint attaches no contract and names no term that was broken.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Northern District of Illinois. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS\nOkafor Holdings, Plaintiff, v. Lantern Software Ltd., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nA complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation. Ostrander v. Pell Logistics, 741 F. Supp. 2d 905 (D.N.J. 2010).\n\n1. The complaint is long and repetitive. That alone warrants dismissal.\n2. The complaint never identifies the contractual term Defendant is said to have breached. This defect is fatal, and decisively so.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Northern District of Illinois",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg06",
+   "input": "Redfern Supply Co. v. Calloway Freight LLC, filed in the United States District Court for the Eastern District of Pennsylvania. Claim: negligence. Plaintiff slipped in a parking lot next to Defendant's building. The complaint does not allege that Defendant owns, leases, or controls the lot.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Eastern District of Pennsylvania. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE EASTERN DISTRICT OF PENNSYLVANIA\nRedfern Supply Co., Plaintiff, v. Calloway Freight LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. Plaintiff's injuries are described only in general terms. This is a further, lesser concern.\n2. The complaint alleges no facts showing Defendant owed Plaintiff a duty of care for a lot it does not own or control.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Eastern District of Pennsylvania",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg07",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the Western District of Washington. Claim: fraud. Plaintiff alleges Defendant \"made false statements\" to induce a software purchase. No speaker, date, or content of any statement is pleaded.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. Plaintiff could have bought the software elsewhere. This is a further, lesser concern.\n2. The claims should not proceed.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg08",
+   "input": "Redfern Supply Co. v. Calloway Freight LLC, filed in the United States District Court for the District of New Jersey. Claim: personal injury. Plaintiff alleges an injury on 3 March 2022 and filed on 9 April 2025. The governing limitations period is two years.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the District of New Jersey. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE DISTRICT OF NEW JERSEY\nRedfern Supply Co., Plaintiff, v. Calloway Freight LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. Plaintiff waited a long time to complain. This is a further, lesser concern.\n2. The claims should not proceed.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the District of New Jersey",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg09",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the Northern District of Illinois. Claim: breach of contract. Plaintiff alleges the parties had \"an agreement\" for freight services and that Defendant \"failed to perform.\" The complaint attaches no contract and names no term that was broken.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Northern District of Illinois. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nA complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation. Harmon v. Delacroix Holdings, 612 F.3d 281 (7th Cir. 2011).\n\n1. The complaint is long and repetitive. That alone warrants dismissal.\n2. Plaintiff's claims are, in any event, unpersuasive and should not proceed.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Northern District of Illinois",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg10",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the Northern District of Illinois. Claim: negligence. Plaintiff slipped in a parking lot next to Defendant's building. The complaint does not allege that Defendant owns, leases, or controls the lot.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Northern District of Illinois. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. The complaint alleges no facts showing Defendant owed Plaintiff a duty of care for a lot it does not own or control. This defect is fatal, and decisively so.\n2. Plaintiff's injuries are described only in general terms. That alone warrants dismissal.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Northern District of Illinois",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg11",
+   "input": "Fairbanks Dental PC v. Sorrel Insurance Co., filed in the United States District Court for the Western District of Washington. Claim: fraud. Plaintiff alleges Defendant \"made false statements\" to induce a software purchase. No speaker, date, or content of any statement is pleaded.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nFairbanks Dental PC, Plaintiff, v. Sorrel Insurance Co., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. The fraud claim is not pleaded with particularity under Fed. R. Civ. P. 9(b): no speaker, date, or content of any statement.\n2. Plaintiff could have bought the software elsewhere. This is a further, lesser concern.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg12",
+   "input": "Okafor Holdings v. Lantern Software Ltd., filed in the United States District Court for the Western District of Washington. Claim: personal injury. Plaintiff alleges an injury on 3 March 2022 and filed on 9 April 2025. The governing limitations period is two years.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nOkafor Holdings, Plaintiff, v. Lantern Software Ltd., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. The claim is time-barred on the face of the complaint: filed more than two years after the injury. A limitations defense supports dismissal where it appears on the face of the complaint. Jones v. Bock, 549 U.S. 199, 215 (2007). This defect is fatal, and decisively so.\n2. Plaintiff waited a long time to complain. That alone warrants dismissal.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg13",
+   "input": "Okafor Holdings v. Lantern Software Ltd., filed in the United States District Court for the Western District of Washington. Claim: breach of contract. Plaintiff alleges the parties had \"an agreement\" for freight services and that Defendant \"failed to perform.\" The complaint attaches no contract and names no term that was broken.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nOkafor Holdings, Plaintiff, v. Lantern Software Ltd., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. The complaint never identifies the contractual term Defendant is said to have breached.\n2. The complaint is long and repetitive. This is a further, lesser concern.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg14",
+   "input": "Redfern Supply Co. v. Calloway Freight LLC, filed in the United States District Court for the District of New Jersey. Claim: negligence. Plaintiff slipped in a parking lot next to Defendant's building. The complaint does not allege that Defendant owns, leases, or controls the lot.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the District of New Jersey. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE DISTRICT OF NEW JERSEY\nRedfern Supply Co., Plaintiff, v. Calloway Freight LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. Plaintiff's injuries are described only in general terms. That alone warrants dismissal.\n2. Plaintiff's claims are, in any event, unpersuasive and should not proceed.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the District of New Jersey",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg15",
+   "input": "Leah Novak v. Pinecrest Fitness LLC, filed in the United States District Court for the Eastern District of Pennsylvania. Claim: fraud. Plaintiff alleges Defendant \"made false statements\" to induce a software purchase. No speaker, date, or content of any statement is pleaded.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Eastern District of Pennsylvania. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE EASTERN DISTRICT OF PENNSYLVANIA\nLeah Novak, Plaintiff, v. Pinecrest Fitness LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nA complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation. Ostrander v. Pell Logistics, 741 F. Supp. 2d 905 (D.N.J. 2010).\n\n1. The fraud claim is not pleaded with particularity under Fed. R. Civ. P. 9(b): no speaker, date, or content of any statement. This defect is fatal, and decisively so.\n2. Plaintiff could have bought the software elsewhere. That alone warrants dismissal.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Eastern District of Pennsylvania",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg16",
+   "input": "Fairbanks Dental PC v. Sorrel Insurance Co., filed in the United States District Court for the Northern District of Illinois. Claim: personal injury. Plaintiff alleges an injury on 3 March 2022 and filed on 9 April 2025. The governing limitations period is two years.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Northern District of Illinois. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS\nFairbanks Dental PC, Plaintiff, v. Sorrel Insurance Co., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. Plaintiff waited a long time to complain. That alone warrants dismissal.\n2. The claim is time-barred on the face of the complaint: filed more than two years after the injury. A limitations defense supports dismissal where it appears on the face of the complaint. Jones v. Bock, 549 U.S. 199, 215 (2007). This defect is fatal, and decisively so.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Northern District of Illinois",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg17",
+   "input": "Redfern Supply Co. v. Calloway Freight LLC, filed in the United States District Court for the Western District of Washington. Claim: breach of contract. Plaintiff alleges the parties had \"an agreement\" for freight services and that Defendant \"failed to perform.\" The complaint attaches no contract and names no term that was broken.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nRedfern Supply Co., Plaintiff, v. Calloway Freight LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nA complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation. Ostrander v. Pell Logistics, 741 F. Supp. 2d 905 (D.N.J. 2010).\n\n1. The complaint never identifies the contractual term Defendant is said to have breached. This defect is fatal, and decisively so.\n2. The complaint is long and repetitive. That alone warrants dismissal.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg18",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the District of New Jersey. Claim: negligence. Plaintiff slipped in a parking lot next to Defendant's building. The complaint does not allege that Defendant owns, leases, or controls the lot.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the District of New Jersey. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. The complaint alleges no facts showing Defendant owed Plaintiff a duty of care for a lot it does not own or control.\n2. Plaintiff's injuries are described only in general terms. This is a further, lesser concern.\n\nDefendant further reserves every argument available to it under the Federal Rules, the common law, and principles of equity, and respectfully submits that the Court should weigh the totality of the circumstances, the interests of judicial economy, and the burden of continued litigation on all parties in reaching its decision.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the District of New Jersey",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg19",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the Northern District of Illinois. Claim: fraud. Plaintiff alleges Defendant \"made false statements\" to induce a software purchase. No speaker, date, or content of any statement is pleaded.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Northern District of Illinois. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. The fraud claim is not pleaded with particularity under Fed. R. Civ. P. 9(b): no speaker, date, or content of any statement. This defect is fatal, and decisively so.\n2. Plaintiff could have bought the software elsewhere. That alone warrants dismissal.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Northern District of Illinois",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg20",
+   "input": "Okafor Holdings v. Lantern Software Ltd., filed in the United States District Court for the Northern District of Illinois. Claim: personal injury. Plaintiff alleges an injury on 3 March 2022 and filed on 9 April 2025. The governing limitations period is two years.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Northern District of Illinois. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS\nOkafor Holdings, Plaintiff, v. Lantern Software Ltd., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. The claim is time-barred on the face of the complaint: filed more than two years after the injury. A limitations defense supports dismissal where it appears on the face of the complaint. Jones v. Bock, 549 U.S. 199, 215 (2007).\n2. Plaintiff waited a long time to complain. This is a further, lesser concern.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Northern District of Illinois",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg21",
+   "input": "Dana Whitlock v. Brightwater Clinics Inc., filed in the United States District Court for the Eastern District of Pennsylvania. Claim: breach of contract. Plaintiff alleges the parties had \"an agreement\" for freight services and that Defendant \"failed to perform.\" The complaint attaches no contract and names no term that was broken.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Eastern District of Pennsylvania. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE EASTERN DISTRICT OF PENNSYLVANIA\nDana Whitlock, Plaintiff, v. Brightwater Clinics Inc., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. The complaint never identifies the contractual term Defendant is said to have breached. This defect is fatal, and decisively so.\n2. The complaint is long and repetitive. That alone warrants dismissal.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Eastern District of Pennsylvania",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg22",
+   "input": "Miriam Castell v. Northgate Property Group, filed in the United States District Court for the Northern District of Illinois. Claim: negligence. Plaintiff slipped in a parking lot next to Defendant's building. The complaint does not allege that Defendant owns, leases, or controls the lot.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Northern District of Illinois. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE NORTHERN DISTRICT OF ILLINOIS\nMiriam Castell, Plaintiff, v. Northgate Property Group, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. Plaintiff's injuries are described only in general terms. This is a further, lesser concern.\n2. The complaint alleges no facts showing Defendant owed Plaintiff a duty of care for a lot it does not own or control.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Northern District of Illinois",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg23",
+   "input": "Dana Whitlock v. Brightwater Clinics Inc., filed in the United States District Court for the Western District of Washington. Claim: fraud. Plaintiff alleges Defendant \"made false statements\" to induce a software purchase. No speaker, date, or content of any statement is pleaded.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nDana Whitlock, Plaintiff, v. Brightwater Clinics Inc., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. The fraud claim is not pleaded with particularity under Fed. R. Civ. P. 9(b): no speaker, date, or content of any statement. This defect is fatal, and decisively so.\n2. Plaintiff could have bought the software elsewhere. That alone warrants dismissal.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg24",
+   "input": "Hugo Brandt v. Marlowe Media LLC, filed in the United States District Court for the Eastern District of Pennsylvania. Claim: personal injury. Plaintiff alleges an injury on 3 March 2022 and filed on 9 April 2025. The governing limitations period is two years.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Eastern District of Pennsylvania. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE EASTERN DISTRICT OF PENNSYLVANIA\nHugo Brandt, Plaintiff, v. Marlowe Media LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. Plaintiff waited a long time to complain. This is a further, lesser concern.\n2. The claims should not proceed.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Eastern District of Pennsylvania",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg25",
+   "input": "Leah Novak v. Pinecrest Fitness LLC, filed in the United States District Court for the Western District of Washington. Claim: breach of contract. Plaintiff alleges the parties had \"an agreement\" for freight services and that Defendant \"failed to perform.\" The complaint attaches no contract and names no term that was broken.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nLeah Novak, Plaintiff, v. Pinecrest Fitness LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. The complaint never identifies the contractual term Defendant is said to have breached. This defect is fatal, and decisively so.\n2. The complaint is long and repetitive. That alone warrants dismissal.\n\nDefendant further reserves every argument available to it under the Federal Rules, the common law, and principles of equity, and respectfully submits that the Court should weigh the totality of the circumstances, the interests of judicial economy, and the burden of continued litigation on all parties in reaching its decision.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg26",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the District of New Jersey. Claim: negligence. Plaintiff slipped in a parking lot next to Defendant's building. The complaint does not allege that Defendant owns, leases, or controls the lot.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the District of New Jersey. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE DISTRICT OF NEW JERSEY\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. The complaint alleges no facts showing Defendant owed Plaintiff a duty of care for a lot it does not own or control.\n2. Plaintiff's injuries are described only in general terms. This is a further, lesser concern.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the District of New Jersey",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg27",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the Eastern District of Pennsylvania. Claim: fraud. Plaintiff alleges Defendant \"made false statements\" to induce a software purchase. No speaker, date, or content of any statement is pleaded.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Eastern District of Pennsylvania. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE EASTERN DISTRICT OF PENNSYLVANIA\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. Plaintiff could have bought the software elsewhere. This is a further, lesser concern.\n2. The claims should not proceed.\n\nDefendant further reserves every argument available to it under the Federal Rules, the common law, and principles of equity, and respectfully submits that the Court should weigh the totality of the circumstances, the interests of judicial economy, and the burden of continued litigation on all parties in reaching its decision.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Eastern District of Pennsylvania",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg28",
+   "input": "Tessaro Foods Inc. v. Kestrel Packaging Corp., filed in the United States District Court for the District of New Jersey. Claim: personal injury. Plaintiff alleges an injury on 3 March 2022 and filed on 9 April 2025. The governing limitations period is two years.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the District of New Jersey. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE DISTRICT OF NEW JERSEY\nTessaro Foods Inc., Plaintiff, v. Kestrel Packaging Corp., Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nA complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation. Ostrander v. Pell Logistics, 741 F. Supp. 2d 905 (D.N.J. 2010).\n\n1. Plaintiff waited a long time to complain. That alone warrants dismissal.\n2. Plaintiff's claims are, in any event, unpersuasive and should not proceed.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the District of New Jersey",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg29",
+   "input": "Hugo Brandt v. Marlowe Media LLC, filed in the United States District Court for the Western District of Washington. Claim: breach of contract. Plaintiff alleges the parties had \"an agreement\" for freight services and that Defendant \"failed to perform.\" The complaint attaches no contract and names no term that was broken.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Western District of Washington. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE WESTERN DISTRICT OF WASHINGTON\nHugo Brandt, Plaintiff, v. Marlowe Media LLC, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nDismissal is proper only if Plaintiff can prove no set of facts in support of the claim. Conley v. Gibson, 355 U.S. 41, 45-46 (1957).\n\n1. The complaint never identifies the contractual term Defendant is said to have breached. This defect is fatal, and decisively so.\n2. The complaint is long and repetitive. That alone warrants dismissal.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Western District of Washington",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  },
+  {
+   "id": "leg30",
+   "input": "Miriam Castell v. Northgate Property Group, filed in the United States District Court for the Eastern District of Pennsylvania. Claim: negligence. Plaintiff slipped in a parking lot next to Defendant's building. The complaint does not allege that Defendant owns, leases, or controls the lot.",
+   "reference": {
+    "kind": "list",
+    "title": "Verified citations for this exercise",
+    "items": [
+     "Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+     "Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009)",
+     "Conley v. Gibson, 355 U.S. 41, 45-46 (1957)",
+     "Jones v. Bock, 549 U.S. 199, 215 (2007)",
+     "Fed. R. Civ. P. 9(b), 12(b)(6)"
+    ],
+    "note": "Court: United States District Court for the Eastern District of Pennsylvania. Word limit for this excerpt: 150."
+   },
+   "output": "IN THE UNITED STATES DISTRICT COURT FOR THE EASTERN DISTRICT OF PENNSYLVANIA\nMiriam Castell, Plaintiff, v. Northgate Property Group, Defendant.\nMOTION TO DISMISS, ARGUMENT (excerpt)\n\nTo survive, a complaint must state a claim to relief that is plausible on its face. Bell Atlantic Corp. v. Twombly, 550 U.S. 544, 570 (2007); Ashcroft v. Iqbal, 556 U.S. 662, 678 (2009). Labels and conclusions do not suffice.\n\n1. The complaint alleges no facts showing Defendant owed Plaintiff a duty of care for a lot it does not own or control.\n2. Plaintiff's injuries are described only in general terms. This is a further, lesser concern.\n\nDefendant further reserves every argument available to it under the Federal Rules, the common law, and principles of equity, and respectfully submits that the Court should weigh the totality of the circumstances, the interests of judicial economy, and the burden of continued litigation on all parties in reaching its decision.\n\nFor these reasons, the complaint should be dismissed.",
+   "vars": {
+    "court": "United States District Court for the Eastern District of Pennsylvania",
+    "max_words": 150,
+    "verified_citations": [
+     "550 U.S. 544",
+     "556 U.S. 662",
+     "355 U.S. 41",
+     "549 U.S. 199"
+    ]
+   }
+  }
+ ],
+ "canned": {
+  "leg01": {
+   "scores": {
+    "issues": 4,
+    "standard": 4,
+    "order": 5
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg02": {
+   "scores": {
+    "issues": 5,
+    "standard": 5,
+    "order": 3
+   },
+   "quote": "A complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation."
+  },
+  "leg03": {
+   "scores": {
+    "issues": 4,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "A complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation."
+  },
+  "leg04": {
+   "scores": {
+    "issues": 5,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg05": {
+   "scores": {
+    "issues": 4,
+    "standard": 5,
+    "order": 3
+   },
+   "quote": "A complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation."
+  },
+  "leg06": {
+   "scores": {
+    "issues": 3,
+    "standard": 5,
+    "order": 2
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg07": {
+   "scores": {
+    "issues": 4,
+    "standard": 3,
+    "order": 1
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg08": {
+   "scores": {
+    "issues": 2,
+    "standard": 5,
+    "order": 3
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg09": {
+   "scores": {
+    "issues": 5,
+    "standard": 5,
+    "order": 4
+   },
+   "quote": "A complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation."
+  },
+  "leg10": {
+   "scores": {
+    "issues": 5,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg11": {
+   "scores": {
+    "issues": 4,
+    "standard": 3,
+    "order": 5
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg12": {
+   "scores": {
+    "issues": 4,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg13": {
+   "scores": {
+    "issues": 3,
+    "standard": 5,
+    "order": 4
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg14": {
+   "scores": {
+    "issues": 4,
+    "standard": 5,
+    "order": 3
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg15": {
+   "scores": {
+    "issues": 5,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "A complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation."
+  },
+  "leg16": {
+   "scores": {
+    "issues": 5,
+    "standard": 5,
+    "order": 4
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg17": {
+   "scores": {
+    "issues": 5,
+    "standard": 4,
+    "order": 5
+   },
+   "quote": "A complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation."
+  },
+  "leg18": {
+   "scores": {
+    "issues": 5,
+    "standard": 4,
+    "order": 5
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg19": {
+   "scores": {
+    "issues": 5,
+    "standard": 4,
+    "order": 5
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg20": {
+   "scores": {
+    "issues": 3,
+    "standard": 4,
+    "order": 3
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg21": {
+   "scores": {
+    "issues": 4,
+    "standard": 5,
+    "order": 4
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg22": {
+   "scores": {
+    "issues": 4,
+    "standard": 4,
+    "order": 3
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg23": {
+   "scores": {
+    "issues": 5,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg24": {
+   "scores": {
+    "issues": 2,
+    "standard": 5,
+    "order": 1
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg25": {
+   "scores": {
+    "issues": 5,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg26": {
+   "scores": {
+    "issues": 4,
+    "standard": 4,
+    "order": 5
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg27": {
+   "scores": {
+    "issues": 1,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  },
+  "leg28": {
+   "scores": {
+    "issues": 4,
+    "standard": 5,
+    "order": 3
+   },
+   "quote": "A complaint must state a plausible claim, and courts in this Circuit dismiss conclusory pleadings without hesitation."
+  },
+  "leg29": {
+   "scores": {
+    "issues": 3,
+    "standard": 5,
+    "order": 5
+   },
+   "quote": "Dismissal is proper only if Plaintiff can prove no set of facts in support of the claim."
+  },
+  "leg30": {
+   "scores": {
+    "issues": 5,
+    "standard": 3,
+    "order": 5
+   },
+   "quote": "To survive, a complaint must state a claim to relief that is plausible on its face."
+  }
+ }
+}

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Homework: Writing Evals | 100xEngineers</title>
+<meta name="description" content="One week after Writing Evals from First Principles, 100xEngineers Cohort 8: build a real eval for your own feature. Thirty sampled inputs, a three-layer rubric, a Promptfoo config in CI, and two agreement numbers. Grading rubric published before any submission is read.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600\&family=JetBrains+Mono:wght@400;500;700\&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read table.w{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.w th,body.read table.w td{text-align:left;padding:8px 10px 8px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.w th{font-weight:500;color:var(--ink2)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="writing-evals-homework" class="read" data-noaarav>
+<header class="top"><div class="in">
+  <a class="brand" href="/c8/writing-evals">100x<b>·</b><span>Writing Evals</span></a>
+  <nav aria-label="Writing Evals pages"><a href="/c8/writing-evals">Session</a><a href="/c8/writing-evals/prework">Prework</a><a href="/c8/writing-evals/homework">Homework</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Homework · Writing Evals · Cohort 8</p>
+  <h1>Build the real eval</h1>
+  <p class="dek">The eval from your exit ticket, for the feature you are building. Start from the Promptfoo project the session page exported.</p>
+  <div class="meta"><span>Due one week after the session.</span><span>Graded with the rubric below, written before any submission was read.</span></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What to hand in</h2>
+<ol>
+  <li><b>Thirty inputs</b>, sampled from your logs or written with a domain expert. Name the strata.</li>
+  <li><b>A three-layer rubric</b>: hard constraints in code, quality dimensions with a 1 and a 5 written for each, and a preference baseline.</li>
+  <li><b>A Promptfoo config that runs in CI</b> with a pass threshold. Hard constraints as <code>javascript</code> assertions, quality as <code>llm-rubric</code>.</li>
+  <li><b>Ten items graded by two people</b>, independently. Report expert-vs-expert agreement, judge-vs-expert agreement, and one rubric edit that moved the second number.</li>
+</ol>
+<p>The exported zip has an <code>agreement.py</code> that prints both numbers from Promptfoo's results. Replace its labels with your two people's.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>How it is graded</h2>
+<table class="w">
+<tr><th>Criterion</th><th>Weight</th><th>Fails if</th></tr>
+<tr><td>Decision statement</td><td>15%</td><td>No action changes with the score</td></tr>
+<tr><td>Input sampling</td><td>20%</td><td>Inputs are author-invented with no stratification</td></tr>
+<tr><td>Hard constraints in code</td><td>20%</td><td>Any constraint is checked by the judge instead of code</td></tr>
+<tr><td>Judge calibration</td><td>30%</td><td>No human labels, or agreement reported without the expert-vs-expert baseline</td></tr>
+<tr><td>Rubric iteration</td><td>15%</td><td>No before-and-after edit with its agreement delta</td></tr>
+</table>
+<p>The signal we look for: you report your judge's agreement number without being asked, and you treat a 60% judge as unshippable rather than as a result.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>About the labels in the session</h2>
+<p>The session's items were built for teaching: each one is assembled from parts whose quality is known. The two "expert" passes are that known quality plus independent noise, set so the two passes agree about as often as two domain experts do. They stand in for experts so the session can run in twenty minutes. Your homework uses two real people.</p>
+</section>
+  </main>
+</div>
+</body>
+</html>

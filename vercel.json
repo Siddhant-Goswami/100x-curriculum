@@ -34,5 +34,25 @@
       "destination": "/c8/module-2/lecture-09-llms-from-first-principles/notes",
       "permanent": false
     }
+  ],
+  "headers": [
+    {
+      "source": "/c8/writing-evals/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/c8/writing-evals",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
   ]
 }

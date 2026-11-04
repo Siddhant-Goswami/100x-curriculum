@@ -1,0 +1,1978 @@
+{
+ "key": "mfg",
+ "name": "Manufacturing",
+ "task": "Compare supplier quotes for a purchasing agent",
+ "job": "From three quotes and the spec, work out landed cost, flag what fails the spec or the date, and recommend one supplier with the reason.",
+ "decision": "Pick between two prompt strategies for the procurement assistant.",
+ "strata": [
+  "part and material (4)",
+  "quantity and need-by date"
+ ],
+ "deliverable": "A landed-cost table and a recommendation (in production, a spreadsheet)",
+ "dims": [
+  {
+   "key": "landed",
+   "name": "Landed-cost reasoning",
+   "hint": "Are tariff, MOQ and freight in the totals, and do they drive the pick?"
+  },
+  {
+   "key": "risks",
+   "name": "Risk flags",
+   "hint": "Are the spec, lead-time and MOQ risks named?"
+  },
+  {
+   "key": "clarity",
+   "name": "Clarity of recommendation",
+   "hint": "One supplier, one reason, no hedging?"
+  }
+ ],
+ "preference": "A purchasing agent's spreadsheet for the same quotes",
+ "trap": "Every table looks equally neat. A total missing its tariff looks exactly like a right one until code recomputes it.",
+ "checkers": [
+  {
+   "id": "totals_correct",
+   "name": "Every landed total recomputes",
+   "reads": "output, vars.totals (recomputed from the quotes)",
+   "src": "const T = context.vars.totals;\nfor (const name in T) {\n  const line = output.split('\\n').find(l => l.startsWith('- ' + name + ':'));\n  const m = line && line.match(/\\$([\\d,]+(?:\\.\\d+)?)/);\n  if (!m || Math.abs(parseFloat(m[1].replace(/,/g, '')) - T[name]) > 1) return false;\n}\nreturn true;"
+  },
+  {
+   "id": "spec_flagged",
+   "name": "Flags the quote that misses the spec",
+   "reads": "output, vars.noncompliant",
+   "src": "const n = context.vars.noncompliant;\nreturn output.split('\\n').some(l => l.includes(n) && /spec|non-compliant|does not meet/i.test(l));"
+  },
+  {
+   "id": "compliant_pick",
+   "name": "Does not recommend the non-compliant quote",
+   "reads": "output, vars.noncompliant",
+   "src": "const m = output.match(/^Recommendation: ([^.;,]+)/m);\nreturn !!m && !m[1].includes(context.vars.noncompliant);"
+  }
+ ],
+ "reference_note": "Each item carries three quotes and the formula for landed cost.",
+ "version": "2026-11-01.1",
+ "judge_model": "openai/gpt-oss-20b",
+ "items": [
+  {
+   "id": "man01",
+   "input": "Buy 1,000 units of the motor mount, spec A356-T6 cast aluminium, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Brightline Metals",
+      "$8.22 each",
+      "MOQ 1,000",
+      "10% tariff",
+      "$320 freight",
+      "7 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Juniper Manufacturing",
+      "$12.67 each",
+      "MOQ 1,000",
+      "0% tariff",
+      "$280 freight",
+      "9 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Fenwick Machining",
+      "$12.71 each",
+      "MOQ 1,300",
+      "4% tariff",
+      "$450 freight",
+      "4 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,000 units of the motor mount:\n- Brightline Metals: $9,362 landed (1,000 x $8.22, 10% tariff, $320 freight; 7 weeks)\n- Juniper Manufacturing: $12,950 landed (1,000 x $12.67, 0% tariff, $280 freight; 9 weeks)\n- Fenwick Machining: $16,973 landed (1,300 x $12.71, 4% tariff, $450 freight; 4 weeks)\nRecommendation: Brightline Metals. It is the lowest landed cost.\nRisks: Brightline Metals quotes A380 die-cast aluminium, which does not meet the spec (A356-T6 cast aluminium). Brightline Metals' 7-week lead time misses the week 6 need-by date. Juniper Manufacturing's 9-week lead time misses the week 6 need-by date. Fenwick Machining's minimum order of 1,300 means 300 extra units in stock.",
+   "vars": {
+    "totals": {
+     "Brightline Metals": 9362,
+     "Juniper Manufacturing": 12950,
+     "Fenwick Machining": 17634
+    },
+    "noncompliant": "Brightline Metals"
+   }
+  },
+  {
+   "id": "man02",
+   "input": "Buy 1,200 units of the aluminium housing, spec 6061-T6 aluminium, anodised, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Juniper Manufacturing",
+      "$10.26 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$280 freight",
+      "11 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Galloway Works",
+      "$12.23 each",
+      "MOQ 1,200",
+      "6% tariff",
+      "$280 freight",
+      "5 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Corvo Precision",
+      "$8.04 each",
+      "MOQ 1,200",
+      "10% tariff",
+      "$600 freight",
+      "11 weeks",
+      "6063 aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the aluminium housing:\n- Juniper Manufacturing: $16,286 landed (1,500 x $10.26, 4% tariff, $280 freight; 11 weeks)\n- Galloway Works: $15,837 landed (1,200 x $12.23, 6% tariff, $280 freight; 5 weeks)\n- Corvo Precision: $11,213 landed (1,200 x $8.04, 10% tariff, $600 freight; 11 weeks)\nRecommendation: Corvo Precision. It is the lowest landed cost.\nRisks: Corvo Precision quotes 6063 aluminium, which does not meet the spec (6061-T6 aluminium, anodised). Juniper Manufacturing's 11-week lead time misses the week 6 need-by date. Juniper Manufacturing's minimum order of 1,500 means 300 extra units in stock. Corvo Precision's 11-week lead time misses the week 6 need-by date.",
+   "vars": {
+    "totals": {
+     "Juniper Manufacturing": 16286,
+     "Galloway Works": 15837,
+     "Corvo Precision": 11213
+    },
+    "noncompliant": "Corvo Precision"
+   }
+  },
+  {
+   "id": "man03",
+   "input": "Buy 1,000 units of the valve body, spec CF8M stainless casting, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Galloway Works",
+      "$11.10 each",
+      "MOQ 1,300",
+      "4% tariff",
+      "$280 freight",
+      "5 weeks",
+      "CF8 stainless casting"
+     ],
+     [
+      "Halden Alloys",
+      "$9.56 each",
+      "MOQ 500",
+      "0% tariff",
+      "$320 freight",
+      "7 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Delmar Tooling",
+      "$14.93 each",
+      "MOQ 1,300",
+      "0% tariff",
+      "$280 freight",
+      "5 weeks",
+      "CF8M stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,000 units of the valve body:\n- Galloway Works: $15,287 landed (1,300 x $11.10, 4% tariff, $280 freight; 5 weeks)\n- Halden Alloys: $9,880 landed (1,000 x $9.56, 0% tariff, $320 freight; 7 weeks)\n- Delmar Tooling: $19,689 landed (1,300 x $14.93, 0% tariff, $280 freight; 5 weeks)\nRecommendation: Delmar Tooling. It is the cheapest quote that meets the spec and arrives before week 6.\nRisks: Galloway Works quotes CF8 stainless casting, which does not meet the spec (CF8M stainless casting). Galloway Works' minimum order of 1,300 means 300 extra units in stock. Halden Alloys' 7-week lead time misses the week 6 need-by date. Delmar Tooling's minimum order of 1,300 means 300 extra units in stock.",
+   "vars": {
+    "totals": {
+     "Galloway Works": 15287,
+     "Halden Alloys": 9880,
+     "Delmar Tooling": 19689
+    },
+    "noncompliant": "Galloway Works"
+   }
+  },
+  {
+   "id": "man04",
+   "input": "Buy 1,200 units of the motor mount, spec A356-T6 cast aluminium, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Juniper Manufacturing",
+      "$14.01 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$600 freight",
+      "5 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Brightline Metals",
+      "$12.32 each",
+      "MOQ 1,200",
+      "6% tariff",
+      "$320 freight",
+      "7 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Halden Alloys",
+      "$13.06 each",
+      "MOQ 500",
+      "6% tariff",
+      "$600 freight",
+      "4 weeks",
+      "A380 die-cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the motor mount:\n- Juniper Manufacturing: $22,456 landed (1,500 x $14.01, 4% tariff, $600 freight; 5 weeks)\n- Brightline Metals: $15,991 landed (1,200 x $12.32, 6% tariff, $320 freight; 7 weeks)\n- Halden Alloys: $17,212 landed (1,200 x $13.06, 6% tariff, $600 freight; 4 weeks)\nRecommendation: Any of these could work depending on priorities; Juniper Manufacturing looks reasonable on price.\nRisks: Halden Alloys quotes A380 die-cast aluminium, which does not meet the spec (A356-T6 cast aluminium). Juniper Manufacturing's minimum order of 1,500 means 300 extra units in stock. Brightline Metals' 7-week lead time misses the week 6 need-by date.",
+   "vars": {
+    "totals": {
+     "Juniper Manufacturing": 22456,
+     "Brightline Metals": 15991,
+     "Halden Alloys": 17212
+    },
+    "noncompliant": "Halden Alloys"
+   }
+  },
+  {
+   "id": "man05",
+   "input": "Buy 800 units of the motor mount, spec A356-T6 cast aluminium, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Delmar Tooling",
+      "$13.92 each",
+      "MOQ 1,100",
+      "0% tariff",
+      "$450 freight",
+      "6 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Juniper Manufacturing",
+      "$8.42 each",
+      "MOQ 800",
+      "0% tariff",
+      "$320 freight",
+      "9 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Apex Castings",
+      "$12.47 each",
+      "MOQ 500",
+      "4% tariff",
+      "$450 freight",
+      "5 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 800 units of the motor mount:\n- Delmar Tooling: $15,762 landed (1,100 x $13.92, 0% tariff, $450 freight; 6 weeks)\n- Juniper Manufacturing: $7,056 landed (800 x $8.42, 0% tariff, $320 freight; 9 weeks)\n- Apex Castings: $10,825 landed (800 x $12.47, 4% tariff, $450 freight; 5 weeks)\nRecommendation: Juniper Manufacturing. It is the lowest landed cost.\nRisks: Delmar Tooling's minimum order of 1,100 means 300 extra units in stock. Juniper Manufacturing's 9-week lead time misses the week 6 need-by date.",
+   "vars": {
+    "totals": {
+     "Delmar Tooling": 15762,
+     "Juniper Manufacturing": 7056,
+     "Apex Castings": 10825
+    },
+    "noncompliant": "Delmar Tooling"
+   }
+  },
+  {
+   "id": "man06",
+   "input": "Buy 1,200 units of the valve body, spec CF8M stainless casting, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Eastgate Fabrication",
+      "$15.43 each",
+      "MOQ 1,500",
+      "0% tariff",
+      "$600 freight",
+      "5 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Galloway Works",
+      "$11.10 each",
+      "MOQ 1,200",
+      "0% tariff",
+      "$320 freight",
+      "5 weeks",
+      "CF8 stainless casting"
+     ],
+     [
+      "Halden Alloys",
+      "$13.84 each",
+      "MOQ 1,200",
+      "10% tariff",
+      "$280 freight",
+      "11 weeks",
+      "CF8M stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the valve body:\n- Eastgate Fabrication: $23,745 landed (1,500 x $15.43, 0% tariff, $600 freight; 5 weeks)\n- Galloway Works: $13,640 landed (1,200 x $11.10, 0% tariff, $320 freight; 5 weeks)\n- Halden Alloys: $18,549 landed (1,200 x $13.84, 10% tariff, $280 freight; 11 weeks)\nRecommendation: Eastgate Fabrication. It is the cheapest quote that meets the spec and arrives before week 8.\nRisks: Galloway Works quotes CF8 stainless casting, which does not meet the spec (CF8M stainless casting). Eastgate Fabrication's minimum order of 1,500 means 300 extra units in stock. Halden Alloys' 11-week lead time misses the week 8 need-by date.",
+   "vars": {
+    "totals": {
+     "Eastgate Fabrication": 23745,
+     "Galloway Works": 13640,
+     "Halden Alloys": 18549
+    },
+    "noncompliant": "Galloway Works"
+   }
+  },
+  {
+   "id": "man07",
+   "input": "Buy 1,200 units of the aluminium housing, spec 6061-T6 aluminium, anodised, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Ironbridge Parts",
+      "$12.77 each",
+      "MOQ 1,500",
+      "0% tariff",
+      "$320 freight",
+      "6 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Juniper Manufacturing",
+      "$14.65 each",
+      "MOQ 500",
+      "0% tariff",
+      "$600 freight",
+      "4 weeks",
+      "6063 aluminium"
+     ],
+     [
+      "Galloway Works",
+      "$8.20 each",
+      "MOQ 500",
+      "4% tariff",
+      "$600 freight",
+      "9 weeks",
+      "6061-T6 aluminium, anodised"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the aluminium housing:\n- Ironbridge Parts: $20,624 landed (1,500 x $12.77, 0% tariff, $320 freight; 6 weeks)\n- Juniper Manufacturing: $18,180 landed (1,200 x $14.65, 0% tariff, $600 freight; 4 weeks)\n- Galloway Works: $10,834 landed (1,200 x $8.20, 4% tariff, $600 freight; 9 weeks)\nRecommendation: Galloway Works. It is the lowest landed cost.\nRisks: Juniper Manufacturing quotes 6063 aluminium, which does not meet the spec (6061-T6 aluminium, anodised).",
+   "vars": {
+    "totals": {
+     "Ironbridge Parts": 19475,
+     "Juniper Manufacturing": 18180,
+     "Galloway Works": 10834
+    },
+    "noncompliant": "Juniper Manufacturing"
+   }
+  },
+  {
+   "id": "man08",
+   "input": "Buy 1,500 units of the steel bracket, spec 304 stainless steel, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Eastgate Fabrication",
+      "$8.00 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$280 freight",
+      "4 weeks",
+      "201 stainless steel"
+     ],
+     [
+      "Galloway Works",
+      "$12.38 each",
+      "MOQ 500",
+      "0% tariff",
+      "$450 freight",
+      "9 weeks",
+      "304 stainless steel"
+     ],
+     [
+      "Fenwick Machining",
+      "$14.04 each",
+      "MOQ 500",
+      "10% tariff",
+      "$450 freight",
+      "7 weeks",
+      "304 stainless steel"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,500 units of the steel bracket:\n- Eastgate Fabrication: $12,760 landed (1,500 x $8.00, 4% tariff, $280 freight; 4 weeks)\n- Galloway Works: $19,020 landed (1,500 x $12.38, 0% tariff, $450 freight; 9 weeks)\n- Fenwick Machining: $23,616 landed (1,500 x $14.04, 10% tariff, $450 freight; 7 weeks)\nRecommendation: Any of these could work depending on priorities; Fenwick Machining looks reasonable on price.\nRisks: Eastgate Fabrication quotes 201 stainless steel, which does not meet the spec (304 stainless steel). Galloway Works' 9-week lead time misses the week 8 need-by date.",
+   "vars": {
+    "totals": {
+     "Eastgate Fabrication": 12760,
+     "Galloway Works": 19020,
+     "Fenwick Machining": 23616
+    },
+    "noncompliant": "Eastgate Fabrication"
+   }
+  },
+  {
+   "id": "man09",
+   "input": "Buy 1,200 units of the motor mount, spec A356-T6 cast aluminium, needed by week 10. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Brightline Metals",
+      "$15.52 each",
+      "MOQ 1,200",
+      "6% tariff",
+      "$450 freight",
+      "11 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Halden Alloys",
+      "$11.59 each",
+      "MOQ 1,200",
+      "6% tariff",
+      "$280 freight",
+      "11 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Ironbridge Parts",
+      "$13.45 each",
+      "MOQ 500",
+      "6% tariff",
+      "$280 freight",
+      "9 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the motor mount:\n- Brightline Metals: $20,191 landed (1,200 x $15.52, 6% tariff, $450 freight; 11 weeks)\n- Halden Alloys: $15,022 landed (1,200 x $11.59, 6% tariff, $280 freight; 11 weeks)\n- Ironbridge Parts: $17,388 landed (1,200 x $13.45, 6% tariff, $280 freight; 9 weeks)\nRecommendation: Ironbridge Parts. It is the cheapest quote that meets the spec and arrives before week 10.\nRisks: Halden Alloys quotes A380 die-cast aluminium, which does not meet the spec (A356-T6 cast aluminium).",
+   "vars": {
+    "totals": {
+     "Brightline Metals": 20191,
+     "Halden Alloys": 15022,
+     "Ironbridge Parts": 17388
+    },
+    "noncompliant": "Halden Alloys"
+   }
+  },
+  {
+   "id": "man10",
+   "input": "Buy 1,500 units of the motor mount, spec A356-T6 cast aluminium, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Galloway Works",
+      "$11.73 each",
+      "MOQ 1,500",
+      "6% tariff",
+      "$320 freight",
+      "11 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Ironbridge Parts",
+      "$12.45 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$450 freight",
+      "4 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Eastgate Fabrication",
+      "$14.15 each",
+      "MOQ 1,500",
+      "10% tariff",
+      "$600 freight",
+      "11 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,500 units of the motor mount:\n- Galloway Works: $18,971 landed (1,500 x $11.73, 6% tariff, $320 freight; 11 weeks)\n- Ironbridge Parts: $19,872 landed (1,500 x $12.45, 4% tariff, $450 freight; 4 weeks)\n- Eastgate Fabrication: $23,948 landed (1,500 x $14.15, 10% tariff, $600 freight; 11 weeks)\nRecommendation: Galloway Works. It is the lowest landed cost.\nRisks: Galloway Works quotes A380 die-cast aluminium, which does not meet the spec (A356-T6 cast aluminium).",
+   "vars": {
+    "totals": {
+     "Galloway Works": 18971,
+     "Ironbridge Parts": 19872,
+     "Eastgate Fabrication": 23948
+    },
+    "noncompliant": "Galloway Works"
+   }
+  },
+  {
+   "id": "man11",
+   "input": "Buy 1,200 units of the steel bracket, spec 304 stainless steel, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Fenwick Machining",
+      "$14.11 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$320 freight",
+      "6 weeks",
+      "304 stainless steel"
+     ],
+     [
+      "Juniper Manufacturing",
+      "$12.81 each",
+      "MOQ 500",
+      "4% tariff",
+      "$600 freight",
+      "11 weeks",
+      "304 stainless steel"
+     ],
+     [
+      "Halden Alloys",
+      "$14.33 each",
+      "MOQ 1,200",
+      "10% tariff",
+      "$280 freight",
+      "9 weeks",
+      "201 stainless steel"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the steel bracket:\n- Fenwick Machining: $22,332 landed (1,500 x $14.11, 4% tariff, $320 freight; 6 weeks)\n- Juniper Manufacturing: $16,587 landed (1,200 x $12.81, 4% tariff, $600 freight; 11 weeks)\n- Halden Alloys: $17,476 landed (1,200 x $14.33, 10% tariff, $280 freight; 9 weeks)\nRecommendation: Fenwick Machining. It is the cheapest quote that meets the spec and arrives before week 6.",
+   "vars": {
+    "totals": {
+     "Fenwick Machining": 22332,
+     "Juniper Manufacturing": 16587,
+     "Halden Alloys": 19196
+    },
+    "noncompliant": "Halden Alloys"
+   }
+  },
+  {
+   "id": "man12",
+   "input": "Buy 800 units of the aluminium housing, spec 6061-T6 aluminium, anodised, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Fenwick Machining",
+      "$14.08 each",
+      "MOQ 1,100",
+      "0% tariff",
+      "$320 freight",
+      "6 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Corvo Precision",
+      "$11.62 each",
+      "MOQ 800",
+      "0% tariff",
+      "$320 freight",
+      "11 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Eastgate Fabrication",
+      "$9.54 each",
+      "MOQ 1,100",
+      "0% tariff",
+      "$450 freight",
+      "7 weeks",
+      "6063 aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 800 units of the aluminium housing:\n- Fenwick Machining: $15,808 landed (1,100 x $14.08, 0% tariff, $320 freight; 6 weeks)\n- Corvo Precision: $9,616 landed (800 x $11.62, 0% tariff, $320 freight; 11 weeks)\n- Eastgate Fabrication: $10,944 landed (1,100 x $9.54, 0% tariff, $450 freight; 7 weeks)\nRecommendation: Any of these could work depending on priorities; Corvo Precision looks reasonable on price.\nRisks: Eastgate Fabrication quotes 6063 aluminium, which does not meet the spec (6061-T6 aluminium, anodised).",
+   "vars": {
+    "totals": {
+     "Fenwick Machining": 15808,
+     "Corvo Precision": 9616,
+     "Eastgate Fabrication": 10944
+    },
+    "noncompliant": "Eastgate Fabrication"
+   }
+  },
+  {
+   "id": "man13",
+   "input": "Buy 1,500 units of the steel bracket, spec 304 stainless steel, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Apex Castings",
+      "$14.93 each",
+      "MOQ 1,800",
+      "4% tariff",
+      "$280 freight",
+      "9 weeks",
+      "304 stainless steel"
+     ],
+     [
+      "Corvo Precision",
+      "$10.70 each",
+      "MOQ 1,500",
+      "6% tariff",
+      "$600 freight",
+      "4 weeks",
+      "201 stainless steel"
+     ],
+     [
+      "Halden Alloys",
+      "$8.90 each",
+      "MOQ 1,800",
+      "10% tariff",
+      "$450 freight",
+      "6 weeks",
+      "304 stainless steel"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,500 units of the steel bracket:\n- Apex Castings: $28,229 landed (1,800 x $14.93, 4% tariff, $280 freight; 9 weeks)\n- Corvo Precision: $17,613 landed (1,500 x $10.70, 6% tariff, $600 freight; 4 weeks)\n- Halden Alloys: $18,072 landed (1,800 x $8.90, 10% tariff, $450 freight; 6 weeks)\nRecommendation: Apex Castings. It is the lowest landed cost.\nRisks: Corvo Precision quotes 201 stainless steel, which does not meet the spec (304 stainless steel).",
+   "vars": {
+    "totals": {
+     "Apex Castings": 28229,
+     "Corvo Precision": 17613,
+     "Halden Alloys": 18072
+    },
+    "noncompliant": "Corvo Precision"
+   }
+  },
+  {
+   "id": "man14",
+   "input": "Buy 1,500 units of the valve body, spec CF8M stainless casting, needed by week 10. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Juniper Manufacturing",
+      "$13.84 each",
+      "MOQ 1,500",
+      "10% tariff",
+      "$280 freight",
+      "7 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Apex Castings",
+      "$10.23 each",
+      "MOQ 1,800",
+      "6% tariff",
+      "$320 freight",
+      "11 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Halden Alloys",
+      "$12.95 each",
+      "MOQ 1,500",
+      "0% tariff",
+      "$450 freight",
+      "7 weeks",
+      "CF8 stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,500 units of the valve body:\n- Juniper Manufacturing: $23,116 landed (1,500 x $13.84, 10% tariff, $280 freight; 7 weeks)\n- Apex Castings: $19,839 landed (1,800 x $10.23, 6% tariff, $320 freight; 11 weeks)\n- Halden Alloys: $19,875 landed (1,500 x $12.95, 0% tariff, $450 freight; 7 weeks)\nRecommendation: Juniper Manufacturing. It is the cheapest quote that meets the spec and arrives before week 10.\nRisks: Halden Alloys quotes CF8 stainless casting, which does not meet the spec (CF8M stainless casting). Apex Castings' 11-week lead time misses the week 10 need-by date. Apex Castings' minimum order of 1,800 means 300 extra units in stock.",
+   "vars": {
+    "totals": {
+     "Juniper Manufacturing": 23116,
+     "Apex Castings": 19839,
+     "Halden Alloys": 19875
+    },
+    "noncompliant": "Halden Alloys"
+   }
+  },
+  {
+   "id": "man15",
+   "input": "Buy 1,200 units of the aluminium housing, spec 6061-T6 aluminium, anodised, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Fenwick Machining",
+      "$15.82 each",
+      "MOQ 1,200",
+      "4% tariff",
+      "$600 freight",
+      "9 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Galloway Works",
+      "$9.58 each",
+      "MOQ 500",
+      "6% tariff",
+      "$450 freight",
+      "5 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Ironbridge Parts",
+      "$9.55 each",
+      "MOQ 1,200",
+      "6% tariff",
+      "$320 freight",
+      "11 weeks",
+      "6063 aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the aluminium housing:\n- Fenwick Machining: $20,343 landed (1,200 x $15.82, 4% tariff, $600 freight; 9 weeks)\n- Galloway Works: $12,636 landed (1,200 x $9.58, 6% tariff, $450 freight; 5 weeks)\n- Ironbridge Parts: $12,468 landed (1,200 x $9.55, 6% tariff, $320 freight; 11 weeks)\nRecommendation: Any of these could work depending on priorities; Fenwick Machining looks reasonable on price.\nRisks: Ironbridge Parts quotes 6063 aluminium, which does not meet the spec (6061-T6 aluminium, anodised). Fenwick Machining's 9-week lead time misses the week 8 need-by date. Ironbridge Parts' 11-week lead time misses the week 8 need-by date.",
+   "vars": {
+    "totals": {
+     "Fenwick Machining": 20343,
+     "Galloway Works": 12636,
+     "Ironbridge Parts": 12468
+    },
+    "noncompliant": "Ironbridge Parts"
+   }
+  },
+  {
+   "id": "man16",
+   "input": "Buy 1,000 units of the valve body, spec CF8M stainless casting, needed by week 10. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Brightline Metals",
+      "$14.26 each",
+      "MOQ 500",
+      "4% tariff",
+      "$280 freight",
+      "7 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Ironbridge Parts",
+      "$9.16 each",
+      "MOQ 1,300",
+      "4% tariff",
+      "$280 freight",
+      "11 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Delmar Tooling",
+      "$8.30 each",
+      "MOQ 500",
+      "4% tariff",
+      "$280 freight",
+      "5 weeks",
+      "CF8 stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,000 units of the valve body:\n- Brightline Metals: $15,110 landed (1,000 x $14.26, 4% tariff, $280 freight; 7 weeks)\n- Ironbridge Parts: $12,664 landed (1,300 x $9.16, 4% tariff, $280 freight; 11 weeks)\n- Delmar Tooling: $8,912 landed (1,000 x $8.30, 4% tariff, $280 freight; 5 weeks)\nRecommendation: Any of these could work depending on priorities; Brightline Metals looks reasonable on price.\nRisks: Delmar Tooling quotes CF8 stainless casting, which does not meet the spec (CF8M stainless casting).",
+   "vars": {
+    "totals": {
+     "Brightline Metals": 15110,
+     "Ironbridge Parts": 12664,
+     "Delmar Tooling": 8912
+    },
+    "noncompliant": "Delmar Tooling"
+   }
+  },
+  {
+   "id": "man17",
+   "input": "Buy 800 units of the motor mount, spec A356-T6 cast aluminium, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Apex Castings",
+      "$10.41 each",
+      "MOQ 500",
+      "10% tariff",
+      "$450 freight",
+      "5 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Brightline Metals",
+      "$14.31 each",
+      "MOQ 500",
+      "10% tariff",
+      "$320 freight",
+      "4 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Juniper Manufacturing",
+      "$9.08 each",
+      "MOQ 500",
+      "6% tariff",
+      "$450 freight",
+      "9 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 800 units of the motor mount:\n- Apex Castings: $9,611 landed (800 x $10.41, 10% tariff, $450 freight; 5 weeks)\n- Brightline Metals: $12,913 landed (800 x $14.31, 10% tariff, $320 freight; 4 weeks)\n- Juniper Manufacturing: $7,714 landed (800 x $9.08, 6% tariff, $450 freight; 9 weeks)\nRecommendation: Any of these could work depending on priorities; Juniper Manufacturing looks reasonable on price.\nRisks: Apex Castings quotes A380 die-cast aluminium, which does not meet the spec (A356-T6 cast aluminium). Juniper Manufacturing's 9-week lead time misses the week 6 need-by date.",
+   "vars": {
+    "totals": {
+     "Apex Castings": 9611,
+     "Brightline Metals": 12913,
+     "Juniper Manufacturing": 8150
+    },
+    "noncompliant": "Apex Castings"
+   }
+  },
+  {
+   "id": "man18",
+   "input": "Buy 1,000 units of the motor mount, spec A356-T6 cast aluminium, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Corvo Precision",
+      "$13.71 each",
+      "MOQ 1,300",
+      "6% tariff",
+      "$280 freight",
+      "11 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Halden Alloys",
+      "$9.88 each",
+      "MOQ 500",
+      "10% tariff",
+      "$600 freight",
+      "6 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Eastgate Fabrication",
+      "$8.93 each",
+      "MOQ 1,300",
+      "0% tariff",
+      "$600 freight",
+      "4 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,000 units of the motor mount:\n- Corvo Precision: $19,172 landed (1,300 x $13.71, 6% tariff, $280 freight; 11 weeks)\n- Halden Alloys: $11,468 landed (1,000 x $9.88, 10% tariff, $600 freight; 6 weeks)\n- Eastgate Fabrication: $12,209 landed (1,300 x $8.93, 0% tariff, $600 freight; 4 weeks)\nRecommendation: Any of these could work depending on priorities; Corvo Precision looks reasonable on price.\nRisks: Halden Alloys quotes A380 die-cast aluminium, which does not meet the spec (A356-T6 cast aluminium). Corvo Precision's 11-week lead time misses the week 6 need-by date. Corvo Precision's minimum order of 1,300 means 300 extra units in stock. Eastgate Fabrication's minimum order of 1,300 means 300 extra units in stock.",
+   "vars": {
+    "totals": {
+     "Corvo Precision": 19172,
+     "Halden Alloys": 11468,
+     "Eastgate Fabrication": 12209
+    },
+    "noncompliant": "Halden Alloys"
+   }
+  },
+  {
+   "id": "man19",
+   "input": "Buy 1,200 units of the motor mount, spec A356-T6 cast aluminium, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Halden Alloys",
+      "$10.91 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$320 freight",
+      "5 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Brightline Metals",
+      "$8.80 each",
+      "MOQ 500",
+      "10% tariff",
+      "$280 freight",
+      "7 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Corvo Precision",
+      "$15.83 each",
+      "MOQ 500",
+      "4% tariff",
+      "$320 freight",
+      "6 weeks",
+      "A380 die-cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the motor mount:\n- Halden Alloys: $17,340 landed (1,500 x $10.91, 4% tariff, $320 freight; 5 weeks)\n- Brightline Metals: $11,896 landed (1,200 x $8.80, 10% tariff, $280 freight; 7 weeks)\n- Corvo Precision: $20,076 landed (1,200 x $15.83, 4% tariff, $320 freight; 6 weeks)\nRecommendation: Halden Alloys. It is the cheapest quote that meets the spec and arrives before week 6.",
+   "vars": {
+    "totals": {
+     "Halden Alloys": 17340,
+     "Brightline Metals": 11896,
+     "Corvo Precision": 20076
+    },
+    "noncompliant": "Corvo Precision"
+   }
+  },
+  {
+   "id": "man20",
+   "input": "Buy 1,500 units of the motor mount, spec A356-T6 cast aluminium, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Apex Castings",
+      "$13.66 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$320 freight",
+      "5 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Halden Alloys",
+      "$11.87 each",
+      "MOQ 500",
+      "10% tariff",
+      "$450 freight",
+      "4 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Brightline Metals",
+      "$11.74 each",
+      "MOQ 1,800",
+      "0% tariff",
+      "$450 freight",
+      "9 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,500 units of the motor mount:\n- Apex Castings: $21,630 landed (1,500 x $13.66, 4% tariff, $320 freight; 5 weeks)\n- Halden Alloys: $20,036 landed (1,500 x $11.87, 10% tariff, $450 freight; 4 weeks)\n- Brightline Metals: $21,582 landed (1,800 x $11.74, 0% tariff, $450 freight; 9 weeks)\nRecommendation: Halden Alloys. It is the lowest landed cost.\nRisks: Brightline Metals' 9-week lead time misses the week 8 need-by date. Brightline Metals' minimum order of 1,800 means 300 extra units in stock.",
+   "vars": {
+    "totals": {
+     "Apex Castings": 21630,
+     "Halden Alloys": 20036,
+     "Brightline Metals": 21582
+    },
+    "noncompliant": "Halden Alloys"
+   }
+  },
+  {
+   "id": "man21",
+   "input": "Buy 1,500 units of the valve body, spec CF8M stainless casting, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Corvo Precision",
+      "$11.56 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$600 freight",
+      "11 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Apex Castings",
+      "$14.44 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$450 freight",
+      "4 weeks",
+      "CF8 stainless casting"
+     ],
+     [
+      "Delmar Tooling",
+      "$14.64 each",
+      "MOQ 1,500",
+      "10% tariff",
+      "$450 freight",
+      "7 weeks",
+      "CF8M stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,500 units of the valve body:\n- Corvo Precision: $18,634 landed (1,500 x $11.56, 4% tariff, $600 freight; 11 weeks)\n- Apex Castings: $22,976 landed (1,500 x $14.44, 4% tariff, $450 freight; 4 weeks)\n- Delmar Tooling: $24,606 landed (1,500 x $14.64, 10% tariff, $450 freight; 7 weeks)\nRecommendation: Delmar Tooling. It is the cheapest quote that meets the spec and arrives before week 8.\nRisks: Apex Castings quotes CF8 stainless casting, which does not meet the spec (CF8M stainless casting). Corvo Precision's 11-week lead time misses the week 8 need-by date.",
+   "vars": {
+    "totals": {
+     "Corvo Precision": 18634,
+     "Apex Castings": 22976,
+     "Delmar Tooling": 24606
+    },
+    "noncompliant": "Apex Castings"
+   }
+  },
+  {
+   "id": "man22",
+   "input": "Buy 1,000 units of the motor mount, spec A356-T6 cast aluminium, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Halden Alloys",
+      "$8.26 each",
+      "MOQ 1,300",
+      "0% tariff",
+      "$450 freight",
+      "4 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Eastgate Fabrication",
+      "$13.95 each",
+      "MOQ 1,000",
+      "4% tariff",
+      "$600 freight",
+      "11 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Apex Castings",
+      "$13.97 each",
+      "MOQ 1,300",
+      "6% tariff",
+      "$450 freight",
+      "4 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,000 units of the motor mount:\n- Halden Alloys: $11,188 landed (1,300 x $8.26, 0% tariff, $450 freight; 4 weeks)\n- Eastgate Fabrication: $15,108 landed (1,000 x $13.95, 4% tariff, $600 freight; 11 weeks)\n- Apex Castings: $19,701 landed (1,300 x $13.97, 6% tariff, $450 freight; 4 weeks)\nRecommendation: Halden Alloys. It is the lowest landed cost.\nRisks: Halden Alloys quotes A380 die-cast aluminium, which does not meet the spec (A356-T6 cast aluminium).",
+   "vars": {
+    "totals": {
+     "Halden Alloys": 11188,
+     "Eastgate Fabrication": 15108,
+     "Apex Castings": 19701
+    },
+    "noncompliant": "Halden Alloys"
+   }
+  },
+  {
+   "id": "man23",
+   "input": "Buy 800 units of the motor mount, spec A356-T6 cast aluminium, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Delmar Tooling",
+      "$12.82 each",
+      "MOQ 800",
+      "6% tariff",
+      "$320 freight",
+      "6 weeks",
+      "A380 die-cast aluminium"
+     ],
+     [
+      "Corvo Precision",
+      "$12.12 each",
+      "MOQ 800",
+      "6% tariff",
+      "$600 freight",
+      "11 weeks",
+      "A356-T6 cast aluminium"
+     ],
+     [
+      "Fenwick Machining",
+      "$13.72 each",
+      "MOQ 800",
+      "10% tariff",
+      "$280 freight",
+      "5 weeks",
+      "A356-T6 cast aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 800 units of the motor mount:\n- Delmar Tooling: $11,191 landed (800 x $12.82, 6% tariff, $320 freight; 6 weeks)\n- Corvo Precision: $10,878 landed (800 x $12.12, 6% tariff, $600 freight; 11 weeks)\n- Fenwick Machining: $12,354 landed (800 x $13.72, 10% tariff, $280 freight; 5 weeks)\nRecommendation: Fenwick Machining. It is the cheapest quote that meets the spec and arrives before week 6.",
+   "vars": {
+    "totals": {
+     "Delmar Tooling": 11191,
+     "Corvo Precision": 10878,
+     "Fenwick Machining": 12354
+    },
+    "noncompliant": "Delmar Tooling"
+   }
+  },
+  {
+   "id": "man24",
+   "input": "Buy 1,200 units of the aluminium housing, spec 6061-T6 aluminium, anodised, needed by week 10. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Apex Castings",
+      "$15.98 each",
+      "MOQ 500",
+      "0% tariff",
+      "$320 freight",
+      "9 weeks",
+      "6063 aluminium"
+     ],
+     [
+      "Delmar Tooling",
+      "$13.62 each",
+      "MOQ 500",
+      "10% tariff",
+      "$600 freight",
+      "11 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Eastgate Fabrication",
+      "$12.84 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$280 freight",
+      "9 weeks",
+      "6061-T6 aluminium, anodised"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,200 units of the aluminium housing:\n- Apex Castings: $20,647 landed (1,200 x $15.98, 0% tariff, $320 freight; 9 weeks)\n- Delmar Tooling: $18,578 landed (1,200 x $13.62, 10% tariff, $600 freight; 11 weeks)\n- Eastgate Fabrication: $20,310 landed (1,500 x $12.84, 4% tariff, $280 freight; 9 weeks)\nRecommendation: Eastgate Fabrication. It is the cheapest quote that meets the spec and arrives before week 10.\nRisks: Apex Castings quotes 6063 aluminium, which does not meet the spec (6061-T6 aluminium, anodised). Delmar Tooling's 11-week lead time misses the week 10 need-by date. Eastgate Fabrication's minimum order of 1,500 means 300 extra units in stock.",
+   "vars": {
+    "totals": {
+     "Apex Castings": 19496,
+     "Delmar Tooling": 18578,
+     "Eastgate Fabrication": 20310
+    },
+    "noncompliant": "Apex Castings"
+   }
+  },
+  {
+   "id": "man25",
+   "input": "Buy 1,000 units of the valve body, spec CF8M stainless casting, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Galloway Works",
+      "$9.03 each",
+      "MOQ 1,000",
+      "4% tariff",
+      "$320 freight",
+      "7 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Apex Castings",
+      "$10.59 each",
+      "MOQ 500",
+      "0% tariff",
+      "$600 freight",
+      "4 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Fenwick Machining",
+      "$15.79 each",
+      "MOQ 1,300",
+      "10% tariff",
+      "$450 freight",
+      "11 weeks",
+      "CF8 stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,000 units of the valve body:\n- Galloway Works: $9,711 landed (1,000 x $9.03, 4% tariff, $320 freight; 7 weeks)\n- Apex Castings: $11,190 landed (1,000 x $10.59, 0% tariff, $600 freight; 4 weeks)\n- Fenwick Machining: $20,977 landed (1,300 x $15.79, 10% tariff, $450 freight; 11 weeks)\nRecommendation: Apex Castings. It is the cheapest quote that meets the spec and arrives before week 6.\nRisks: Fenwick Machining quotes CF8 stainless casting, which does not meet the spec (CF8M stainless casting).",
+   "vars": {
+    "totals": {
+     "Galloway Works": 9711,
+     "Apex Castings": 11190,
+     "Fenwick Machining": 23030
+    },
+    "noncompliant": "Fenwick Machining"
+   }
+  },
+  {
+   "id": "man26",
+   "input": "Buy 800 units of the aluminium housing, spec 6061-T6 aluminium, anodised, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Juniper Manufacturing",
+      "$15.17 each",
+      "MOQ 500",
+      "4% tariff",
+      "$280 freight",
+      "6 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Corvo Precision",
+      "$11.32 each",
+      "MOQ 500",
+      "4% tariff",
+      "$600 freight",
+      "11 weeks",
+      "6061-T6 aluminium, anodised"
+     ],
+     [
+      "Eastgate Fabrication",
+      "$9.29 each",
+      "MOQ 500",
+      "0% tariff",
+      "$320 freight",
+      "6 weeks",
+      "6063 aluminium"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 800 units of the aluminium housing:\n- Juniper Manufacturing: $12,901 landed (800 x $15.17, 4% tariff, $280 freight; 6 weeks)\n- Corvo Precision: $10,018 landed (800 x $11.32, 4% tariff, $600 freight; 11 weeks)\n- Eastgate Fabrication: $7,752 landed (800 x $9.29, 0% tariff, $320 freight; 6 weeks)\nRecommendation: Juniper Manufacturing. It is the cheapest quote that meets the spec and arrives before week 6.\nRisks: Corvo Precision's 11-week lead time misses the week 6 need-by date.",
+   "vars": {
+    "totals": {
+     "Juniper Manufacturing": 12901,
+     "Corvo Precision": 10018,
+     "Eastgate Fabrication": 7752
+    },
+    "noncompliant": "Eastgate Fabrication"
+   }
+  },
+  {
+   "id": "man27",
+   "input": "Buy 800 units of the valve body, spec CF8M stainless casting, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Halden Alloys",
+      "$11.25 each",
+      "MOQ 1,100",
+      "0% tariff",
+      "$450 freight",
+      "5 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Delmar Tooling",
+      "$11.01 each",
+      "MOQ 1,100",
+      "6% tariff",
+      "$450 freight",
+      "11 weeks",
+      "CF8 stainless casting"
+     ],
+     [
+      "Galloway Works",
+      "$12.36 each",
+      "MOQ 800",
+      "6% tariff",
+      "$280 freight",
+      "11 weeks",
+      "CF8M stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 800 units of the valve body:\n- Halden Alloys: $12,825 landed (1,100 x $11.25, 0% tariff, $450 freight; 5 weeks)\n- Delmar Tooling: $13,288 landed (1,100 x $11.01, 6% tariff, $450 freight; 11 weeks)\n- Galloway Works: $10,761 landed (800 x $12.36, 6% tariff, $280 freight; 11 weeks)\nRecommendation: Galloway Works. It is the lowest landed cost.",
+   "vars": {
+    "totals": {
+     "Halden Alloys": 12825,
+     "Delmar Tooling": 13288,
+     "Galloway Works": 10761
+    },
+    "noncompliant": "Delmar Tooling"
+   }
+  },
+  {
+   "id": "man28",
+   "input": "Buy 1,500 units of the steel bracket, spec 304 stainless steel, needed by week 6. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Apex Castings",
+      "$12.45 each",
+      "MOQ 500",
+      "4% tariff",
+      "$320 freight",
+      "5 weeks",
+      "304 stainless steel"
+     ],
+     [
+      "Juniper Manufacturing",
+      "$13.05 each",
+      "MOQ 1,500",
+      "10% tariff",
+      "$600 freight",
+      "7 weeks",
+      "201 stainless steel"
+     ],
+     [
+      "Fenwick Machining",
+      "$9.09 each",
+      "MOQ 1,500",
+      "4% tariff",
+      "$600 freight",
+      "7 weeks",
+      "304 stainless steel"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,500 units of the steel bracket:\n- Apex Castings: $19,742 landed (1,500 x $12.45, 4% tariff, $320 freight; 5 weeks)\n- Juniper Manufacturing: $22,132 landed (1,500 x $13.05, 10% tariff, $600 freight; 7 weeks)\n- Fenwick Machining: $14,780 landed (1,500 x $9.09, 4% tariff, $600 freight; 7 weeks)\nRecommendation: Apex Castings. It is the cheapest quote that meets the spec and arrives before week 6.\nRisks: Juniper Manufacturing quotes 201 stainless steel, which does not meet the spec (304 stainless steel).",
+   "vars": {
+    "totals": {
+     "Apex Castings": 19742,
+     "Juniper Manufacturing": 22132,
+     "Fenwick Machining": 14780
+    },
+    "noncompliant": "Juniper Manufacturing"
+   }
+  },
+  {
+   "id": "man29",
+   "input": "Buy 800 units of the valve body, spec CF8M stainless casting, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Galloway Works",
+      "$12.79 each",
+      "MOQ 500",
+      "10% tariff",
+      "$600 freight",
+      "6 weeks",
+      "CF8 stainless casting"
+     ],
+     [
+      "Fenwick Machining",
+      "$13.88 each",
+      "MOQ 1,100",
+      "0% tariff",
+      "$450 freight",
+      "11 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Corvo Precision",
+      "$15.79 each",
+      "MOQ 500",
+      "6% tariff",
+      "$320 freight",
+      "4 weeks",
+      "CF8M stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 800 units of the valve body:\n- Galloway Works: $11,855 landed (800 x $12.79, 10% tariff, $600 freight; 6 weeks)\n- Fenwick Machining: $15,718 landed (1,100 x $13.88, 0% tariff, $450 freight; 11 weeks)\n- Corvo Precision: $13,710 landed (800 x $15.79, 6% tariff, $320 freight; 4 weeks)\nRecommendation: Corvo Precision. It is the cheapest quote that meets the spec and arrives before week 8.\nRisks: Galloway Works quotes CF8 stainless casting, which does not meet the spec (CF8M stainless casting). Fenwick Machining's 11-week lead time misses the week 8 need-by date. Fenwick Machining's minimum order of 1,100 means 300 extra units in stock.",
+   "vars": {
+    "totals": {
+     "Galloway Works": 11855,
+     "Fenwick Machining": 15718,
+     "Corvo Precision": 13710
+    },
+    "noncompliant": "Galloway Works"
+   }
+  },
+  {
+   "id": "man30",
+   "input": "Buy 1,500 units of the valve body, spec CF8M stainless casting, needed by week 8. Three quotes attached.",
+   "reference": {
+    "kind": "grid",
+    "title": "Quotes",
+    "head": [
+     "Supplier",
+     "Unit",
+     "MOQ",
+     "Tariff",
+     "Freight",
+     "Lead",
+     "Material"
+    ],
+    "rows": [
+     [
+      "Ironbridge Parts",
+      "$13.45 each",
+      "MOQ 1,800",
+      "10% tariff",
+      "$280 freight",
+      "6 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Juniper Manufacturing",
+      "$9.84 each",
+      "MOQ 1,500",
+      "6% tariff",
+      "$320 freight",
+      "11 weeks",
+      "CF8M stainless casting"
+     ],
+     [
+      "Eastgate Fabrication",
+      "$12.67 each",
+      "MOQ 500",
+      "6% tariff",
+      "$600 freight",
+      "9 weeks",
+      "CF8 stainless casting"
+     ]
+    ],
+    "note": "Landed cost = max(quantity, MOQ) x unit price x (1 + tariff) + freight."
+   },
+   "output": "Landed cost for 1,500 units of the valve body:\n- Ironbridge Parts: $26,911 landed (1,800 x $13.45, 10% tariff, $280 freight; 6 weeks)\n- Juniper Manufacturing: $15,966 landed (1,500 x $9.84, 6% tariff, $320 freight; 11 weeks)\n- Eastgate Fabrication: $20,745 landed (1,500 x $12.67, 6% tariff, $600 freight; 9 weeks)\nRecommendation: Ironbridge Parts. It is the cheapest quote that meets the spec and arrives before week 8.\nRisks: Eastgate Fabrication quotes CF8 stainless casting, which does not meet the spec (CF8M stainless casting).",
+   "vars": {
+    "totals": {
+     "Ironbridge Parts": 26911,
+     "Juniper Manufacturing": 15966,
+     "Eastgate Fabrication": 20745
+    },
+    "noncompliant": "Eastgate Fabrication"
+   }
+  }
+ ],
+ "canned": {
+  "man01": {
+   "scores": {
+    "landed": 3,
+    "risks": 5,
+    "clarity": 5
+   },
+   "quote": "Landed cost for 1,000 units of the motor mount: - Brightline Metals: $9,362 landed (1,000 x $8.22, 10% tariff, $320 frei"
+  },
+  "man02": {
+   "scores": {
+    "landed": 4,
+    "risks": 5,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,200 units of the aluminium housing: - Juniper Manufacturing: $16,286 landed (1,500 x $10.26, 4% tariff"
+  },
+  "man03": {
+   "scores": {
+    "landed": 2,
+    "risks": 3,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,000 units of the valve body: - Galloway Works: $15,287 landed (1,300 x $11.10, 4% tariff, $280 freight"
+  },
+  "man04": {
+   "scores": {
+    "landed": 3,
+    "risks": 5,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,200 units of the motor mount: - Juniper Manufacturing: $22,456 landed (1,500 x $14.01, 4% tariff, $600"
+  },
+  "man05": {
+   "scores": {
+    "landed": 3,
+    "risks": 3,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 800 units of the motor mount: - Delmar Tooling: $15,762 landed (1,100 x $13.92, 0% tariff, $450 freight;"
+  },
+  "man06": {
+   "scores": {
+    "landed": 5,
+    "risks": 4,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,200 units of the valve body: - Eastgate Fabrication: $23,745 landed (1,500 x $15.43, 0% tariff, $600 f"
+  },
+  "man07": {
+   "scores": {
+    "landed": 3,
+    "risks": 5,
+    "clarity": 5
+   },
+   "quote": "Landed cost for 1,200 units of the aluminium housing: - Ironbridge Parts: $20,624 landed (1,500 x $12.77, 0% tariff, $32"
+  },
+  "man08": {
+   "scores": {
+    "landed": 4,
+    "risks": 5,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,500 units of the steel bracket: - Eastgate Fabrication: $12,760 landed (1,500 x $8.00, 4% tariff, $280"
+  },
+  "man09": {
+   "scores": {
+    "landed": 5,
+    "risks": 3,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,200 units of the motor mount: - Brightline Metals: $20,191 landed (1,200 x $15.52, 6% tariff, $450 fre"
+  },
+  "man10": {
+   "scores": {
+    "landed": 4,
+    "risks": 5,
+    "clarity": 5
+   },
+   "quote": "Landed cost for 1,500 units of the motor mount: - Galloway Works: $18,971 landed (1,500 x $11.73, 6% tariff, $320 freigh"
+  },
+  "man11": {
+   "scores": {
+    "landed": 4,
+    "risks": 2,
+    "clarity": 5
+   },
+   "quote": "Landed cost for 1,200 units of the steel bracket: - Fenwick Machining: $22,332 landed (1,500 x $14.11, 4% tariff, $320 f"
+  },
+  "man12": {
+   "scores": {
+    "landed": 3,
+    "risks": 5,
+    "clarity": 3
+   },
+   "quote": "Landed cost for 800 units of the aluminium housing: - Fenwick Machining: $15,808 landed (1,100 x $14.08, 0% tariff, $320"
+  },
+  "man13": {
+   "scores": {
+    "landed": 3,
+    "risks": 3,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,500 units of the steel bracket: - Apex Castings: $28,229 landed (1,800 x $14.93, 4% tariff, $280 freig"
+  },
+  "man14": {
+   "scores": {
+    "landed": 3,
+    "risks": 5,
+    "clarity": 3
+   },
+   "quote": "Landed cost for 1,500 units of the valve body: - Juniper Manufacturing: $23,116 landed (1,500 x $13.84, 10% tariff, $280"
+  },
+  "man15": {
+   "scores": {
+    "landed": 5,
+    "risks": 5,
+    "clarity": 3
+   },
+   "quote": "Landed cost for 1,200 units of the aluminium housing: - Fenwick Machining: $20,343 landed (1,200 x $15.82, 4% tariff, $6"
+  },
+  "man16": {
+   "scores": {
+    "landed": 3,
+    "risks": 3,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,000 units of the valve body: - Brightline Metals: $15,110 landed (1,000 x $14.26, 4% tariff, $280 frei"
+  },
+  "man17": {
+   "scores": {
+    "landed": 4,
+    "risks": 4,
+    "clarity": 2
+   },
+   "quote": "Landed cost for 800 units of the motor mount: - Apex Castings: $9,611 landed (800 x $10.41, 10% tariff, $450 freight; 5 "
+  },
+  "man18": {
+   "scores": {
+    "landed": 5,
+    "risks": 4,
+    "clarity": 2
+   },
+   "quote": "Landed cost for 1,000 units of the motor mount: - Corvo Precision: $19,172 landed (1,300 x $13.71, 6% tariff, $280 freig"
+  },
+  "man19": {
+   "scores": {
+    "landed": 2,
+    "risks": 3,
+    "clarity": 3
+   },
+   "quote": "Landed cost for 1,200 units of the motor mount: - Halden Alloys: $17,340 landed (1,500 x $10.91, 4% tariff, $320 freight"
+  },
+  "man20": {
+   "scores": {
+    "landed": 5,
+    "risks": 5,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,500 units of the motor mount: - Apex Castings: $21,630 landed (1,500 x $13.66, 4% tariff, $320 freight"
+  },
+  "man21": {
+   "scores": {
+    "landed": 5,
+    "risks": 3,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,500 units of the valve body: - Corvo Precision: $18,634 landed (1,500 x $11.56, 4% tariff, $600 freigh"
+  },
+  "man22": {
+   "scores": {
+    "landed": 4,
+    "risks": 5,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,000 units of the motor mount: - Halden Alloys: $11,188 landed (1,300 x $8.26, 0% tariff, $450 freight;"
+  },
+  "man23": {
+   "scores": {
+    "landed": 3,
+    "risks": 3,
+    "clarity": 3
+   },
+   "quote": "Landed cost for 800 units of the motor mount: - Delmar Tooling: $11,191 landed (800 x $12.82, 6% tariff, $320 freight; 6"
+  },
+  "man24": {
+   "scores": {
+    "landed": 3,
+    "risks": 5,
+    "clarity": 5
+   },
+   "quote": "Landed cost for 1,200 units of the aluminium housing: - Apex Castings: $20,647 landed (1,200 x $15.98, 0% tariff, $320 f"
+  },
+  "man25": {
+   "scores": {
+    "landed": 3,
+    "risks": 4,
+    "clarity": 5
+   },
+   "quote": "Landed cost for 1,000 units of the valve body: - Galloway Works: $9,711 landed (1,000 x $9.03, 4% tariff, $320 freight; "
+  },
+  "man26": {
+   "scores": {
+    "landed": 4,
+    "risks": 5,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 800 units of the aluminium housing: - Juniper Manufacturing: $12,901 landed (800 x $15.17, 4% tariff, $2"
+  },
+  "man27": {
+   "scores": {
+    "landed": 5,
+    "risks": 2,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 800 units of the valve body: - Halden Alloys: $12,825 landed (1,100 x $11.25, 0% tariff, $450 freight; 5"
+  },
+  "man28": {
+   "scores": {
+    "landed": 5,
+    "risks": 3,
+    "clarity": 5
+   },
+   "quote": "Landed cost for 1,500 units of the steel bracket: - Apex Castings: $19,742 landed (1,500 x $12.45, 4% tariff, $320 freig"
+  },
+  "man29": {
+   "scores": {
+    "landed": 4,
+    "risks": 5,
+    "clarity": 5
+   },
+   "quote": "Landed cost for 800 units of the valve body: - Galloway Works: $11,855 landed (800 x $12.79, 10% tariff, $600 freight; 6"
+  },
+  "man30": {
+   "scores": {
+    "landed": 5,
+    "risks": 4,
+    "clarity": 4
+   },
+   "quote": "Landed cost for 1,500 units of the valve body: - Ironbridge Parts: $26,911 landed (1,800 x $13.45, 10% tariff, $280 frei"
+  }
+ }
+}

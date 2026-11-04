@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing Evals Projector | 100xEngineers</title>
+<meta name="description" content="Instructor projector view for Writing Evals from First Principles: the room's answers, blind-grading spread, judge agreement and exit tickets.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/writing-evals/evals.css">
+<style>
+body.proj .wbar .in{height:auto;min-height:52px;flex-wrap:wrap;padding-top:6px;padding-bottom:6px}
+body.proj main.screen{max-width:1280px;padding-bottom:60px}
+body.proj .screen h1{font-size:clamp(30px,3.6vw,48px);max-width:34ch}
+body.proj .room li{font-size:20px;padding:9px 18px}
+body.proj .spread{max-width:980px;font-size:15px;grid-template-columns:54px repeat(5,minmax(0,1fr)) 90px}
+body.proj .spread .c{height:34px}
+.pbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pbar button{border:1px solid var(--line2);background:var(--card);border-radius:8px;padding:6px 12px;font:500 13px var(--mono)}
+.pbar button[aria-current]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.code{font:600 15px var(--mono);color:var(--coral-ink)}
+.join{font:500 22px var(--sans);margin:0 0 18px}
+.join b{font-family:var(--mono);color:var(--coral-ink)}
+.tbl-groups{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:20px}
+.tbl-groups div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.tbl-groups b{display:block;font:500 22px var(--sans)}
+.tbl-groups span{font:12px var(--mono);color:var(--ink3)}
+table.agree{border-collapse:collapse;font-size:20px;margin-top:16px}
+table.agree th,table.agree td{padding:10px 22px 10px 0;text-align:left;border-bottom:1px solid var(--line)}
+table.agree th{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.keys{font:12px var(--mono);color:var(--ink3);margin-top:30px}
+</style>
+<script src="/c8/docs.js"></script>
+<script src="/c8/kit.js"></script>
+</head>
+<body class="we proj" data-page="writing-evals-room" data-noaarav>
+<header class="wbar">
+  <div class="in">
+    <a class="brand" href="/c8/writing-evals">100x<b>·</b><span>Writing Evals · Projector</span></a>
+    <span class="code" id="code"></span>
+    <nav class="pbar" id="pbar" style="margin-left:auto" aria-label="Panels"></nav>
+    <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+  </div>
+</header>
+<main class="screen" id="screen"></main>
+<script src="/c8/writing-evals/room.js"></script>
+</body>
+</html>

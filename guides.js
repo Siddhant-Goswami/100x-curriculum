@@ -16,6 +16,7 @@ var GUIDE_LINKS = {
   practiceSet: '/c8/module-2/lecture-03-building-ui/practice-set',
   aarav: 'https://docs.google.com/document/d/1hmt3C81bok7wzrSx2nn1xEvJleeBbumnyQugXcklETg/edit?tab=t.1k1ewmgjta8l',
   wtbExample: '/c8/module-2/what-to-build/aarav-example',  /* What to build: Aarav's Discovery to MVP, worked example */
+  wtbHub: '/c8/module-2/what-to-build/',
   wtbNotes: '/c8/module-2/what-to-build/idea-to-app-notes',  /* Week 0 Idea to App workshop, post-read notes */
   l01Hub: '/c8/module-2/lecture-01-orientation/',
   l01Notes: '/c8/module-2/lecture-01-orientation/notes',  /* Lecture 1 Orientation and State of AI 2026, post-read notes */

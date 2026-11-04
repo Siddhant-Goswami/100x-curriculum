@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Token Tax Audit: Report, 25 Oct 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#141414;--mute:#5d5d5d;--line:#e3e3e3;--bg:#fff;--soft:#F7F7F7;--coral:#FE6242;--green:#1f8a5b}
+@page{size:A4;margin:16mm 15mm 16mm}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 10.5pt/1.5 'Space Grotesk',system-ui,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+h1{font-size:26pt;line-height:1.05;margin:0 0 6px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:14pt;margin:0 0 10px;font-weight:700;padding-top:4px}
+h3{font-size:11pt;margin:14px 0 6px;font-weight:700}
+p{margin:0 0 8px}
+.mono,.lbl{font-family:'JetBrains Mono',monospace}
+.lbl{font-size:7.5pt;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.lede{font-size:11.5pt;color:#333;max-width:150mm}
+section{margin-top:22px;break-inside:auto}
+.pb{break-before:page}
+.top{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:16px}
+.top .lbl b{color:var(--coral)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 0 4px}
+.kpi{background:var(--soft);border-radius:6px;padding:10px 12px}
+.kpi .v{font-size:22pt;font-weight:700;line-height:1.1}
+.kpi .v.c{color:var(--coral)}
+.kpi .d{font-size:8.5pt;color:var(--mute);line-height:1.3;margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:9.5pt;margin:6px 0 4px}
+th{text-align:left;font:500 7.5pt 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--ink);padding:5px 6px}
+td{padding:5px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr{break-inside:avoid}
+table{break-inside:avoid}
+.bars{margin:6px 0}
+.bar{display:grid;grid-template-columns:44mm 1fr 22mm;align-items:center;gap:8px;font-size:9.5pt;padding:2.5px 0}
+.bar .t{height:11px;background:var(--soft);border-radius:2px;overflow:hidden}
+.bar .t i{display:block;height:100%;background:var(--ink)}
+.bar.hi .t i{background:var(--coral)}
+.bar .n{text-align:right;font-variant-numeric:tabular-nums;font-family:'JetBrains Mono',monospace;font-size:8.5pt}
+.tl{border-left:2px solid var(--line);margin:4px 0 0 4px;padding-left:14px}
+.tl div{position:relative;margin-bottom:9px;break-inside:avoid}
+.tl div:before{content:"";position:absolute;left:-19px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--ink)}
+.tl div.hot:before{background:var(--coral)}
+.tl .when{font:500 8pt 'JetBrains Mono',monospace;color:var(--mute)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;break-inside:avoid}
+h2,h3{break-after:avoid}
+.ins{border-top:1px solid var(--line);padding:10px 0 8px;display:grid;grid-template-columns:8mm 1fr;gap:6px;break-inside:avoid}
+.ins .k{font:700 12pt 'Space Grotesk';color:var(--coral)}
+.ins h3{margin:0 0 3px}
+.ins .do{font-size:9.5pt;background:var(--soft);border-radius:4px;padding:6px 9px;margin-top:5px}
+.ins .do b{font-family:'JetBrains Mono',monospace;font-size:7.5pt;letter-spacing:.06em;text-transform:uppercase;margin-right:6px}
+.note{font-size:8.5pt;color:var(--mute)}
+ul{margin:4px 0 8px;padding-left:16px}
+li{margin-bottom:3px}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div>
+    <div class="lbl">100x Engineers <b>/</b> Webinar funnel report</div>
+    <h1>Token Tax Audit</h1>
+    <div class="lbl">Data to 25 Oct 2026, 10:00 IST <b>/</b> Webinar: Sun 25 Oct, 3 PM IST</div>
+  </div>
+  <div class="lbl" style="text-align:right">Sources<br>PostHog (from 22 Oct)<br>Results sheet (from 20 Oct)</div>
+</div>
+
+<p class="lede">The audit is a 7-question quiz that finds a person's biggest Claude "token tax", then asks them to save a seat for the webinar "Tokenmaxxing on Claude". In five days it produced 217 completed audits and 80 people tapped the seat link. Two pushes did almost all of it: an untagged link on the afternoon of 23 Oct, and the WhatsApp posts on the evening of 24 Oct, which were tagged and converted best. The homepage embed adds views but very few starts.</p>
+
+<div class="kpis">
+  <div class="kpi"><div class="lbl">Audits completed</div><div class="v">217</div><div class="d">Result rows in the sheet, test rows removed (24 Oct: 137)</div></div>
+  <div class="kpi"><div class="lbl">Start to result</div><div class="v">79%</div><div class="d">168 of 212 people who started reached their result</div></div>
+  <div class="kpi"><div class="lbl">Tapped "Save my seat"</div><div class="v c">80</div><div class="d">48% of the 168 people who saw a result (24 Oct: 40, 43%)</div></div>
+  <div class="kpi"><div class="lbl">Use cases sent</div><div class="v">8</div><div class="d">Real submissions to the "custom plan" form (24 Oct: 1)</div></div>
+</div>
+
+<section>
+  <h2>What happened so far</h2>
+  <div class="tl">
+    <div><span class="when">20 Oct</span><br>Page built for Instagram-ad traffic: one question per screen, a story-style progress bar, and a pinned CTA. That evening the result screen became animated, with each leak drawn and flipped to its fix. A leak list, "The deal" card and an optional use-case form were added after the result. The CTA was pointed at the class registration link.</div>
+    <div><span class="when">21 Oct</span><br>Restyled to match 100xengineers.com: Space Grotesk, coral #FE6242, light theme only.</div>
+    <div><span class="when">22 Oct</span><br>Analytics went live. PostHog now records every screen reached, alongside the answers posted to the Google Sheet.</div>
+    <div><span class="when">23 Oct, morning</span><br>Embedded on the 100xengineers.com homepage below the hero (tagged utm_source=website). Q1 got a "Not Claude yet" option.</div>
+    <div class="hot"><span class="when">23 Oct, 4 PM to 7 PM IST</span><br><b>Spike one.</b> 95 people started the quiz in three hours, 67 of them between 4 and 5 PM. They came on an untagged direct link, two thirds on mobile. This window holds 45% of all starts.</div>
+    <div><span class="when">23 Oct, evening</span><br>Tracking can now tell the homepage embed from a direct link, and logs when the box is actually seen on screen. The use-case form now says what's missing and offers one-tap starter answers.</div>
+    <div><span class="when">24 Oct, daytime</span><br>Quiet: 8 starts by 3 PM, mostly from the homepage.</div>
+    <div class="hot"><span class="when">24 Oct, 7 PM to 1 AM IST</span><br><b>Spike two, tagged this time.</b> WhatsApp links with utm_source=WTS and WTSChannel brought 66 starts, 32 of them in the 8 PM hour, almost all on mobile. This window holds 31% of all starts, and 6 of the 8 real use cases.</div>
+    <div><span class="when">25 Oct</span><br>13 starts by 10 AM, 9 of them from WhatsApp links still being opened. The webinar is at 3 PM today.</div>
+  </div>
+</section>
+
+<section>
+  <h2>Analytics</h2>
+
+  <h3>Funnel: unique people at each step (PostHog, 22 to 25 Oct, 10 AM)</h3>
+  <div class="bars">
+    <div class="bar"><span>Started (Q1, where)</span><span class="t"><i style="width:100%"></i></span><span class="n">212 &middot; 100%</span></div>
+    <div class="bar"><span>Q2, plan</span><span class="t"><i style="width:89%"></i></span><span class="n">189 &middot; 89%</span></div>
+    <div class="bar"><span>Q3, feeds</span><span class="t"><i style="width:87%"></i></span><span class="n">185 &middot; 87%</span></div>
+    <div class="bar"><span>Q4, connectors</span><span class="t"><i style="width:83%"></i></span><span class="n">177 &middot; 83%</span></div>
+    <div class="bar"><span>Q5 to Q7</span><span class="t"><i style="width:81%"></i></span><span class="n">172 &middot; 81%</span></div>
+    <div class="bar"><span>Scan screen</span><span class="t"><i style="width:80%"></i></span><span class="n">169 &middot; 80%</span></div>
+    <div class="bar hi"><span>Result screen</span><span class="t"><i style="width:79%"></i></span><span class="n">168 &middot; 79%</span></div>
+    <div class="bar hi"><span>Tapped "Save my seat"</span><span class="t"><i style="width:38%"></i></span><span class="n">80 &middot; 38%</span></div>
+    <div class="bar"><span>Tapped "Put me up"</span><span class="t"><i style="width:11%"></i></span><span class="n">24 &middot; 11%</span></div>
+    <div class="bar"><span>Sent a use case</span><span class="t"><i style="width:4%"></i></span><span class="n">8 &middot; 4%</span></div>
+  </div>
+  <p class="note">The only real drop is still between Q1 and Q2, where 11% leave. After Q2 almost nobody quits. "Save my seat" is a click on the registration link. We can't see whether those people finished registering. Of the 24 who tapped "Put me up for the 10", 8 sent the form and 6 were stopped by a missing field.</p>
+
+  <h3>Where people came from</h3>
+  <table>
+    <tr><th>Source</th><th class="n">Loaded</th><th class="n">Started</th><th class="n">Result</th><th class="n">Seat taps</th><th class="n">Start rate</th><th class="n">Seat / result</th></tr>
+    <tr><td>Direct link, no UTM (mostly the 23 Oct spike)</td><td class="n">146</td><td class="n">120</td><td class="n">94</td><td class="n">39</td><td class="n">82%</td><td class="n">41%</td></tr>
+    <tr><td>&nbsp;&nbsp;of which mobile</td><td class="n">100</td><td class="n">80</td><td class="n">59</td><td class="n">25</td><td class="n">80%</td><td class="n">42%</td></tr>
+    <tr><td>&nbsp;&nbsp;of which desktop</td><td class="n">46</td><td class="n">40</td><td class="n">35</td><td class="n">14</td><td class="n">87%</td><td class="n">40%</td></tr>
+    <tr><td>WhatsApp, utm_source=WTS</td><td class="n">66</td><td class="n">51</td><td class="n">41</td><td class="n">23</td><td class="n">77%</td><td class="n">56%</td></tr>
+    <tr><td>WhatsApp, utm_source=WTSChannel</td><td class="n">26</td><td class="n">22</td><td class="n">19</td><td class="n">12</td><td class="n">85%</td><td class="n">63%</td></tr>
+    <tr><td>Homepage embed (utm_source=website)</td><td class="n">591</td><td class="n">19</td><td class="n">14</td><td class="n">6</td><td class="n">3%</td><td class="n">43%</td></tr>
+  </table>
+  <p class="note">The homepage iframe loads for nearly every homepage visitor, so "loaded" overstates it. A better measure: since 23 Oct, 169 people actually had the box on screen and 11 of them started (7%, 24 Oct: 6%). WhatsApp traffic was 90% mobile.</p>
+
+  <h3>By day (IST)</h3>
+  <table>
+    <tr><th>Day</th><th class="n">Loaded</th><th class="n">Started</th><th class="n">Result</th><th class="n">Seat taps</th><th class="n">Sheet rows</th></tr>
+    <tr><td>20 to 21 Oct (before PostHog)</td><td class="n">n/a</td><td class="n">n/a</td><td class="n">n/a</td><td class="n">n/a</td><td class="n">17</td></tr>
+    <tr><td>22 Oct</td><td class="n">70</td><td class="n">2</td><td class="n">1</td><td class="n">0</td><td class="n">7</td></tr>
+    <tr><td>23 Oct</td><td class="n">362</td><td class="n">112</td><td class="n">87</td><td class="n">39</td><td class="n">104</td></tr>
+    <tr><td>24 Oct</td><td class="n">369</td><td class="n">85</td><td class="n">68</td><td class="n">40</td><td class="n">77</td></tr>
+    <tr><td>25 Oct (to 10:00)</td><td class="n">45</td><td class="n">13</td><td class="n">12</td><td class="n">2</td><td class="n">12</td></tr>
+  </table>
+  <p class="note">The sheet has more results than PostHog because it starts on 20 Oct and logs one row per distinct set of answers. Some 20 to 22 Oct rows are probably team tests.</p>
+</section>
+
+<section>
+  <h2>Who took the audit (217 results)</h2>
+  <div class="two">
+    <div>
+      <h3>Plan</h3>
+      <div class="bars">
+        <div class="bar"><span>Free</span><span class="t"><i style="width:41%"></i></span><span class="n">88 &middot; 41%</span></div>
+        <div class="bar"><span>Pro</span><span class="t"><i style="width:39%"></i></span><span class="n">84 &middot; 39%</span></div>
+        <div class="bar"><span>Max</span><span class="t"><i style="width:14%"></i></span><span class="n">30 &middot; 14%</span></div>
+        <div class="bar"><span>Team</span><span class="t"><i style="width:7%"></i></span><span class="n">15 &middot; 7%</span></div>
+      </div>
+      <h3>Hits a usage limit</h3>
+      <div class="bars">
+        <div class="bar hi"><span>Every week</span><span class="t"><i style="width:75%"></i></span><span class="n">163 &middot; 75%</span></div>
+        <div class="bar"><span>Every month</span><span class="t"><i style="width:14%"></i></span><span class="n">30 &middot; 14%</span></div>
+        <div class="bar"><span>Never</span><span class="t"><i style="width:9%"></i></span><span class="n">20 &middot; 9%</span></div>
+      </div>
+      <h3>Where they use Claude</h3>
+      <div class="bars">
+        <div class="bar"><span>Claude app</span><span class="t"><i style="width:53%"></i></span><span class="n">115 &middot; 53%</span></div>
+        <div class="bar"><span>Claude Code</span><span class="t"><i style="width:28%"></i></span><span class="n">61 &middot; 28%</span></div>
+        <div class="bar"><span>Both</span><span class="t"><i style="width:15%"></i></span><span class="n">32 &middot; 15%</span></div>
+        <div class="bar"><span>Not Claude yet</span><span class="t"><i style="width:3%"></i></span><span class="n">6 &middot; 3%</span></div>
+        <div class="bar"><span>API</span><span class="t"><i style="width:1%"></i></span><span class="n">3 &middot; 1%</span></div>
+      </div>
+    </div>
+    <div>
+      <h3>Default model</h3>
+      <div class="bars">
+        <div class="bar"><span>Opus</span><span class="t"><i style="width:41%"></i></span><span class="n">88 &middot; 41%</span></div>
+        <div class="bar"><span>Sonnet</span><span class="t"><i style="width:38%"></i></span><span class="n">82 &middot; 38%</span></div>
+        <div class="bar"><span>Don't know (default)</span><span class="t"><i style="width:13%"></i></span><span class="n">29 &middot; 13%</span></div>
+        <div class="bar"><span>Haiku / Fable</span><span class="t"><i style="width:8%"></i></span><span class="n">18 &middot; 8%</span></div>
+      </div>
+      <h3>What they feed Claude</h3>
+      <div class="bars">
+        <div class="bar"><span>PDFs and docs</span><span class="t"><i style="width:78%"></i></span><span class="n">170 &middot; 78%</span></div>
+        <div class="bar"><span>Screenshots</span><span class="t"><i style="width:72%"></i></span><span class="n">156 &middot; 72%</span></div>
+        <div class="bar"><span>Web pages</span><span class="t"><i style="width:65%"></i></span><span class="n">140 &middot; 65%</span></div>
+        <div class="bar"><span>Logs</span><span class="t"><i style="width:42%"></i></span><span class="n">91 &middot; 42%</span></div>
+        <div class="bar"><span>Sheets or JSON</span><span class="t"><i style="width:38%"></i></span><span class="n">83 &middot; 38%</span></div>
+      </div>
+      <h3>Connectors / MCP servers</h3>
+      <div class="bars">
+        <div class="bar"><span>None</span><span class="t"><i style="width:37%"></i></span><span class="n">81 &middot; 37%</span></div>
+        <div class="bar"><span>1 or 2</span><span class="t"><i style="width:24%"></i></span><span class="n">52 &middot; 24%</span></div>
+        <div class="bar"><span>3 to 5</span><span class="t"><i style="width:16%"></i></span><span class="n">34 &middot; 16%</span></div>
+        <div class="bar"><span>5+ / unsure</span><span class="t"><i style="width:23%"></i></span><span class="n">50 &middot; 23%</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">The quiz tracks now lean App: 121 App and 96 Code (24 Oct: an even split). 33% switch models "often" and another 50% "sometimes". The 82 people who arrived after 24 Oct 13:15, mostly from WhatsApp, were more Free (46%), more Claude app only (61%) and more likely to not know their model (18%).</p>
+</section>
+
+<section>
+  <h2>The leaks people have</h2>
+  <div class="two">
+    <div>
+      <h3>Shown as "your biggest leak"</h3>
+      <div class="bars">
+        <div class="bar hi"><span>Raw-format</span><span class="t"><i style="width:77%"></i></span><span class="n">168 &middot; 77%</span></div>
+        <div class="bar"><span>Screenshot</span><span class="t"><i style="width:10%"></i></span><span class="n">21 &middot; 10%</span></div>
+        <div class="bar"><span>Noisy output</span><span class="t"><i style="width:10%"></i></span><span class="n">21 &middot; 10%</span></div>
+        <div class="bar"><span>Cache break</span><span class="t"><i style="width:1%"></i></span><span class="n">3 &middot; 1%</span></div>
+        <div class="bar"><span>Startup</span><span class="t"><i style="width:1%"></i></span><span class="n">2 &middot; 1%</span></div>
+        <div class="bar"><span>One-model</span><span class="t"><i style="width:1%"></i></span><span class="n">2 &middot; 1%</span></div>
+        <div class="bar"><span>Middleman</span><span class="t"><i style="width:0%"></i></span><span class="n">0</span></div>
+      </div>
+    </div>
+    <div>
+      <h3>Scored above zero (has the tax at all)</h3>
+      <div class="bars">
+        <div class="bar"><span>Raw-format</span><span class="t"><i style="width:87%"></i></span><span class="n">87%</span></div>
+        <div class="bar hi"><span>Cache break</span><span class="t"><i style="width:82%"></i></span><span class="n">82%</span></div>
+        <div class="bar"><span>Screenshot</span><span class="t"><i style="width:72%"></i></span><span class="n">72%</span></div>
+        <div class="bar"><span>Noisy output</span><span class="t"><i style="width:65%"></i></span><span class="n">65%</span></div>
+        <div class="bar"><span>One-model</span><span class="t"><i style="width:56%"></i></span><span class="n">56%</span></div>
+        <div class="bar"><span>Middleman</span><span class="t"><i style="width:44%"></i></span><span class="n">44%</span></div>
+        <div class="bar"><span>Startup</span><span class="t"><i style="width:39%"></i></span><span class="n">39%</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="note">Cache break is still the clearest gap: 82% of people have it, but it is the top leak for only 1%. Raw-format wins for 77% overall and for 84% of the newest arrivals.</p>
+</section>
+
+<section class="pb">
+  <h2>Insights for us</h2>
+  <p class="note">Marked <b>Changed</b> where the 24 Oct version said something different. Nothing flipped between 01:00 and 10:00 on 25 Oct, only the numbers moved.</p>
+
+  <div class="ins"><span class="k">1</span><div>
+    <h3>Tagged WhatsApp links worked, and they converted best. <span class="lbl" style="color:var(--coral)">Changed</span></h3>
+    <p>On 24 Oct the links went out with UTMs (WTS and WTSChannel), as the last report asked. They brought 66 starts in one evening and 73 by this morning, a third of all starts. 56% to 63% of the people who reached a result tapped "Save my seat", against 41% to 43% for the untagged 23 Oct link and the homepage. The 23 Oct source is still unknown.</p>
+    <div class="do"><b>Do</b>Use WhatsApp first for the next webinar push, and keep one UTM per group or channel. Still find what went out around 4 PM on 23 Oct, since it was the biggest single source.</div>
+  </div></div>
+
+  <div class="ins"><span class="k">2</span><div>
+    <h3>The homepage embed is still a weak entry point.</h3>
+    <p>591 homepage loads gave 19 starts. Counting only people who had the box on screen, 7% started (11 of 169). Homepage visitors aren't there for a quiz, and a small iframe has to win them over in one glance.</p>
+    <div class="do"><b>Do</b>Swap the iframe for a slim banner ("Find your Claude token leak in 60 seconds") that opens the full page, or drop it after the webinar if it stays under 10%.</div>
+  </div></div>
+
+  <div class="ins"><span class="k">3</span><div>
+    <h3>The quiz itself is not the problem. The result converts, and better than before. <span class="lbl" style="color:var(--coral)">Changed</span></h3>
+    <p>79% of starters reach the result, and 48% of them tap "Save my seat" (24 Oct: 76% and 43%). Most people who leave do so after Q1, before they're invested.</p>
+    <div class="do"><b>Do</b>Keep the flow as it is. Compare the registrations on class.100xengineers.com with the 80 taps to see how many people we lose on the registration page.</div>
+  </div></div>
+
+  <div class="ins"><span class="k">4</span><div>
+    <h3>The "custom token-spend plan" offer has started to land, but we are still short of 10. <span class="lbl" style="color:var(--coral)">Changed</span></h3>
+    <p>8 real use cases came in (24 Oct: 1), 7 of them since the WhatsApp posts. 24 people tapped "Put me up for the 10", so the intent is there: 6 were stopped by a missing field, and the rest left the form. 4 of the 8 used the one-tap starters word for word, so the starters are helping. The use cases: summarising long PDFs and docs (3), research across web pages (2), debugging from logs and test output, reading screenshots, parsing docs and sheets to write software specs, coding and debugging, and management presentations.</p>
+    <div class="do"><b>Do</b>Pick from the 8 now, and fill the last 2 in the webinar ("drop your use case in chat"). PDFs and docs is the clear theme for the custom plans.</div>
+  </div></div>
+
+  <div class="ins"><span class="k">5</span><div>
+    <h3>Nearly everyone gets the same answer, more so with the new traffic.</h3>
+    <p>77% are told Raw-format is their biggest leak, and 84% of the newest arrivals. That is true to the data (78% feed PDFs, 72% screenshots), but the result can feel generic, and people comparing results in a WhatsApp group will notice. It also hides Cache break, which 82% have.</p>
+    <div class="do"><b>Do</b>After the webinar, re-weight the scoring or show the top two leaks. Today, the people in the room will mostly have the Raw-format result.</div>
+  </div></div>
+
+  <div class="ins"><span class="k">6</span><div>
+    <h3>What the audience tells us for today's session. <span class="lbl" style="color:var(--coral)">Changed</span></h3>
+    <ul>
+      <li><b>Limits are the pain.</b> 75% hit a usage limit every week. Frame each fix as "more messages before the limit", not as tokens saved.</li>
+      <li><b>Free is now the biggest single plan.</b> 41% Free, 39% Pro. 59% still pay, and 41% default to Opus, so "right model for the job" still lands, but show what a Free user can do too.</li>
+      <li><b>Lean App, then Code.</b> 56% are on the App track (24 Oct: half and half). Open each demo in the Claude app, then show the Claude Code version.</li>
+      <li><b>Lead with:</b> PDFs and raw files, screenshots, then cache breaks from switching models (82% switch at least sometimes).</li>
+      <li><b>Keep connectors/MCP short.</b> 37% use none, and only 39% have the Startup tax.</li>
+    </ul>
+  </div></div>
+
+  <div class="ins"><span class="k">7</span><div>
+    <h3>Housekeeping.</h3>
+    <p>The sheet still has 4 test rows and 2 team use-case rows. Delete them before anyone reports from it. The sheet still has no source/UTM columns, so the Apps Script has not been redeployed yet. Until it is, only PostHog can say where a row came from.</p>
+  </div></div>
+</section>
+
+<p class="note" style="margin-top:18px;border-top:1px solid var(--line);padding-top:8px">Method: PostHog counts unique people (one per browser) on site = token-tax-audit. The sheet figures exclude rows marked TEST, the probe row and the team's own use-case rows. All numbers are one-off queries, not saved insights.</p>
+
+</body>
+</html>

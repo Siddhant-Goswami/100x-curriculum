@@ -1,0 +1,14 @@
+{
+  "type": "function",
+  "function": {
+    "name": "get_diagnoses",
+    "description": "Returns every plan Aarav's app has stored for one workflow, newest first, from the app's own database. Each item has the plan text and when it was created. Use for questions about how many plans exist or what the latest plan says, for example \"how many plans has the app stored for workflow 1?\". Not for creating a new plan, and not for questions about workflows the app has never seen.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "workflow_id": { "type": "integer", "description": "The id of the workflow whose plans you want. Aarav's workflow is 1.", "minimum": 1 }
+      },
+      "required": ["workflow_id"]
+    }
+  }
+}

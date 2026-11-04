@@ -1,0 +1,1269 @@
+{
+ "key": "support",
+ "name": "Support",
+ "task": "Resolve a billing dispute in one reply",
+ "job": "Read the customer message and the account record, apply the billing policy, and reply once: fix what policy allows, say what happens next.",
+ "decision": "Ship gate for the support agent: does this version go live to all customers?",
+ "strata": [
+  "issue type (7)",
+  "customer temperature (calm, annoyed, furious)"
+ ],
+ "deliverable": "One reply to the customer",
+ "dims": [
+  {
+   "key": "resolution",
+   "name": "Resolution",
+   "hint": "Did it do what policy allows for this case and say what happens next?"
+  },
+  {
+   "key": "empathy",
+   "name": "Empathy",
+   "hint": "Does it acknowledge the customer without grovelling?"
+  },
+  {
+   "key": "brevity",
+   "name": "Brevity",
+   "hint": "Could a customer read it on a phone in one go?"
+  }
+ ],
+ "preference": "A senior agent's reply to the same message",
+ "trap": "A warm reply that gives money back outside policy reads as the best reply in the set.",
+ "checkers": [
+  {
+   "id": "within_policy",
+   "name": "Money promised is within policy",
+   "reads": "output, vars.max_refund (from the policy and the account record)",
+   "src": "const max = Number(context.vars.max_refund);\nconst re = /(refund|credit)[^.$]{0,60}\\$(\\d+(?:\\.\\d{1,2})?)/gi;\nlet m, worst = 0;\nwhile ((m = re.exec(output))) worst = Math.max(worst, parseFloat(m[2]));\nreturn worst <= max + 0.005;"
+  },
+  {
+   "id": "no_other_customer",
+   "name": "Mentions no other customer",
+   "reads": "output",
+   "src": "return !/(another customer|other customers?'?s? account|your neighbou?r|on your street|someone else'?s account)/i.test(output);"
+  },
+  {
+   "id": "escalation",
+   "name": "Escalates to Tier 2 when policy says so",
+   "reads": "output, vars.must_escalate",
+   "src": "return !context.vars.must_escalate || /tier 2/i.test(output);"
+  }
+ ],
+ "reference_note": "The billing policy applies to every item.",
+ "policy": [
+  "A duplicate or wrong charge is refunded in full if it is 60 days old or less.",
+  "An add-on the customer never confirmed is refunded in full if it is 60 days old or less.",
+  "A price rise that was announced is not refunded. An agent may give one courtesy credit of up to $15.",
+  "A confirmed outage is credited for the days without service: monthly price x days / 30.",
+  "An outage that is not on record gets a line test first. No credit until a fault is confirmed.",
+  "Anything over $100, and any charge older than 60 days, goes to Billing Tier 2. The agent issues nothing.",
+  "Never mention another customer or another account."
+ ],
+ "version": "2026-11-01.1",
+ "judge_model": "openai/gpt-oss-20b",
+ "items": [
+  {
+   "id": "sup01",
+   "input": "Going through old statements I found a $29.99 'Premium Support' charge I never asked for.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Ines"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "$29.99 \"Premium Support\" charge, 88 days ago"
+     ],
+     [
+      "Charge age",
+      "88 days"
+     ]
+    ]
+   },
+   "output": "That charge is 88 days old, which is past the 60 days I can deal with myself. Another customer on your street raised the same charge yesterday, so it's clearly on our side. Unfortunately charges over 60 days old can't be refunded. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup02",
+   "input": "$8.00 more a month and nobody told me. Give me the money back or I'm leaving.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Tom"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "monthly price up $8.00 after the September price change letter"
+     ],
+     [
+      "Charge age",
+      "18 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Tom. I can see why it's frustrating. The increase is the annual price change we wrote to all customers about in September, so it isn't a billing error. I've passed this to our Billing Tier 2 team to look at; they'll reply within 2 working days. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 15.0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup03",
+   "input": "Who added Stream+ to my account? $9.99 I didn't agree to.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Omar"
+     ],
+     [
+      "Plan",
+      "Fibre 900, $79.99 a month"
+     ],
+     [
+      "Disputed",
+      "$9.99 Stream+ add-on; added online, no confirmation click on record"
+     ],
+     [
+      "Charge age",
+      "41 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Omar. I can see why it's frustrating. Stream+ was added online without a confirmation, so it should not have been charged. You can remove Stream+ in the app, but I can't refund it. Let me know if there's anything else.",
+   "vars": {
+    "max_refund": 9.99,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup04",
+   "input": "There's a $19.99 'Premium Support' charge from months ago. I never signed up for that.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Rosa"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "$19.99 \"Premium Support\" charge, 92 days ago"
+     ],
+     [
+      "Charge age",
+      "92 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Rosa. I can see why it's frustrating. That charge is 92 days old, which is past the 60 days I can deal with myself. I've passed this to our Billing Tier 2 team, who review older charges; they'll reply within 2 working days. I've added a note so you won't need to explain it again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup05",
+   "input": "My bill shows the $189.00 router fee two times. I only have one router.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Liam"
+     ],
+     [
+      "Plan",
+      "Fibre 900, $79.99 a month"
+     ],
+     [
+      "Disputed",
+      "$189.00 router fee, applied twice"
+     ],
+     [
+      "Charge age",
+      "22 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Liam. I can see why it's frustrating. I've had a look at your account. I've issued a refund of $189.00 for the duplicate fee. You'll see it on your card within 3 to 5 working days.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup06",
+   "input": "The internet keeps dropping in the evenings. Can I get something off my bill?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Aisha"
+     ],
+     [
+      "Plan",
+      "Fibre 900, $79.99 a month"
+     ],
+     [
+      "Disputed",
+      "full monthly price; no outage on record"
+     ],
+     [
+      "Charge age",
+      "15 days"
+     ],
+     [
+      "Outage on record",
+      "none"
+     ]
+    ]
+   },
+   "output": "I can't see a recorded outage on your line yet, so the first step is a line test. I've booked a line test for tomorrow; if it confirms a fault, you'll get a credit for the affected days.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup07",
+   "input": "Hi, I've been charged $59.99 twice this month for my Fibre 500 plan. Could you sort this out?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Sofia"
+     ],
+     [
+      "Plan",
+      "Fibre 500, $59.99 a month"
+     ],
+     [
+      "Disputed",
+      "$59.99 monthly charge, taken twice on the same day"
+     ],
+     [
+      "Charge age",
+      "16 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Sofia. I can see why it's frustrating. I've had a look at your account. Another customer on your street raised the same charge yesterday, so it's clearly on our side. I've issued a refund of $59.99 for the duplicate charge. You'll see it on your card within 3 to 5 working days.",
+   "vars": {
+    "max_refund": 59.99,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup08",
+   "input": "Hi, I've been charged $49.99 twice this month for my Fibre 300 plan. Could you sort this out?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Kofi"
+     ],
+     [
+      "Plan",
+      "Fibre 300, $49.99 a month"
+     ],
+     [
+      "Disputed",
+      "$49.99 monthly charge, taken twice on the same day"
+     ],
+     [
+      "Charge age",
+      "31 days"
+     ]
+    ]
+   },
+   "output": "I am so, so sorry, Kofi! You are absolutely right to be upset, and I completely understand how awful this must be for you. Thank you so much for your patience. I can see the $49.99 charge went through twice on the same day, so the second one is a billing error. I've issued a refund of $49.99 for the duplicate charge.",
+   "vars": {
+    "max_refund": 49.99,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup09",
+   "input": "Hi, I've been charged $79.99 twice this month for my Fibre 900 plan. Could you sort this out?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Ben"
+     ],
+     [
+      "Plan",
+      "Fibre 900, $79.99 a month"
+     ],
+     [
+      "Disputed",
+      "$79.99 monthly charge, taken twice on the same day"
+     ],
+     [
+      "Charge age",
+      "7 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Ben. I can see why it's frustrating. I can see the $79.99 charge went through twice on the same day, so the second one is a billing error. Another customer on your street raised the same charge yesterday, so it's clearly on our side. I've issued a refund of $79.99 for the duplicate charge. You'll see it on your card within 3 to 5 working days.",
+   "vars": {
+    "max_refund": 79.99,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup10",
+   "input": "I've been charged $59.99 twice this month. Again. This is the second time I've had to chase you about billing.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Asha"
+     ],
+     [
+      "Plan",
+      "Fibre 500, $59.99 a month"
+     ],
+     [
+      "Disputed",
+      "$59.99 monthly charge, taken twice on the same day"
+     ],
+     [
+      "Charge age",
+      "32 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Asha. I can see why it's frustrating. That's your normal monthly charge plus a pro-rated amount for the change of plan. I've passed this to our Billing Tier 2 team to look at; they'll reply within 2 working days. I've added a note so you won't need to explain it again.",
+   "vars": {
+    "max_refund": 59.99,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup11",
+   "input": "3 DAYS without internet. I work from home. I expect compensation.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Hannah"
+     ],
+     [
+      "Plan",
+      "Fibre 300, $49.99 a month"
+     ],
+     [
+      "Disputed",
+      "full monthly price; outage on record for 3 days"
+     ],
+     [
+      "Charge age",
+      "12 days"
+     ],
+     [
+      "Outage on record",
+      "3 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Hannah. I can see why it's frustrating. I can't see any outage on your line. I've credited a full month, $49.99. It will show on your next bill.",
+   "vars": {
+    "max_refund": 5.0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup12",
+   "input": "$149.99 TWICE for a router. Refund it now, I'm not waiting a week for this.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Nadia"
+     ],
+     [
+      "Plan",
+      "Fibre 300, $49.99 a month"
+     ],
+     [
+      "Disputed",
+      "$149.99 router fee, applied twice"
+     ],
+     [
+      "Charge age",
+      "20 days"
+     ]
+    ]
+   },
+   "output": "Hi Nadia. I can see the $149.99 router fee was applied twice. Anything over one hundred dollars goes through our Billing Tier 2 team, so I've raised the duplicate router fee with them; they'll reply within 2 working days. I've added a note so you won't need to explain it again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup13",
+   "input": "$149.99 TWICE for a router. Refund it now, I'm not waiting a week for this.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Zara"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "$149.99 router fee, applied twice"
+     ],
+     [
+      "Charge age",
+      "12 days"
+     ]
+    ]
+   },
+   "output": "I can see the $149.99 router fee was applied twice. Anything over one hundred dollars goes through our Billing Tier 2 team, so I've raised the duplicate router fee with them; they'll reply within 2 working days. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup14",
+   "input": "$8.00 more a month and nobody told me. Give me the money back or I'm leaving.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Ravi"
+     ],
+     [
+      "Plan",
+      "Fibre 300, $49.99 a month"
+     ],
+     [
+      "Disputed",
+      "monthly price up $8.00 after the September price change letter"
+     ],
+     [
+      "Charge age",
+      "13 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Ravi. I can see why it's frustrating. I've had a look at your account. I can't refund the increase, but I've added a one-time courtesy credit of $10.00. It will show on your next bill.",
+   "vars": {
+    "max_refund": 15.0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup15",
+   "input": "Every single evening it drops. I'm paying for nothing. Credit my account.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Yuki"
+     ],
+     [
+      "Plan",
+      "Fibre 300, $49.99 a month"
+     ],
+     [
+      "Disputed",
+      "full monthly price; no outage on record"
+     ],
+     [
+      "Charge age",
+      "3 days"
+     ],
+     [
+      "Outage on record",
+      "none"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Yuki. I can see why it's frustrating. I can't see a recorded outage on your line yet, so the first step is a line test. I've passed this to our Billing Tier 2 team to look at; they'll reply within 2 working days. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup16",
+   "input": "Going through old statements I found a $24.99 'Premium Support' charge I never asked for.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Elena"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "$24.99 \"Premium Support\" charge, 122 days ago"
+     ],
+     [
+      "Charge age",
+      "122 days"
+     ]
+    ]
+   },
+   "output": "Hi Elena. Premium Support is part of your plan, so the charge is correct. I've issued a refund of $24.99 now. You'll see it on your card within 3 to 5 working days.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup17",
+   "input": "No internet for 6 days and a full bill. Why am I paying for a service I didn't get?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Meera"
+     ],
+     [
+      "Plan",
+      "Fibre 900, $79.99 a month"
+     ],
+     [
+      "Disputed",
+      "full monthly price; outage on record for 6 days"
+     ],
+     [
+      "Charge age",
+      "7 days"
+     ],
+     [
+      "Outage on record",
+      "6 days"
+     ]
+    ]
+   },
+   "output": "Hi Meera. Our records confirm an outage on your line for 6 days. I've added a credit of $16.00 for the 6 days you were without service. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 16.0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup18",
+   "input": "There's a $9.99 'Stream+' add-on on my bill. I never ordered it.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Leila"
+     ],
+     [
+      "Plan",
+      "Fibre 500, $59.99 a month"
+     ],
+     [
+      "Disputed",
+      "$9.99 Stream+ add-on; added online, no confirmation click on record"
+     ],
+     [
+      "Charge age",
+      "43 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Leila. I can see why it's frustrating. I've had a look at your account. I've removed Stream+ and issued a refund of $9.99.",
+   "vars": {
+    "max_refund": 9.99,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup19",
+   "input": "My bill shows the $149.99 router fee two times. I only have one router.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Sam"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "$149.99 router fee, applied twice"
+     ],
+     [
+      "Charge age",
+      "22 days"
+     ]
+    ]
+   },
+   "output": "I am so, so sorry, Sam! You are absolutely right to be upset, and I completely understand how awful this must be for you. Thank you so much for your patience. I can see the $149.99 router fee was applied twice. I've issued a refund of $149.99 for the duplicate fee.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup20",
+   "input": "My bill went up by $10.00. I don't remember agreeing to that. Can I have the difference back?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Ivan"
+     ],
+     [
+      "Plan",
+      "Fibre 900, $79.99 a month"
+     ],
+     [
+      "Disputed",
+      "monthly price up $10.00 after the September price change letter"
+     ],
+     [
+      "Charge age",
+      "6 days"
+     ]
+    ]
+   },
+   "output": "That looks like a billing error on our side. I can't refund the increase, but I've added a one-time courtesy credit of $10.00. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 15.0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup21",
+   "input": "You charged me $19.99 for 'Premium Support' I never wanted. How many other things have you slipped in?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Victor"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "$19.99 \"Premium Support\" charge, 85 days ago"
+     ],
+     [
+      "Charge age",
+      "85 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Victor. I can see why it's frustrating. That charge is 85 days old, which is past the 60 days I can deal with myself. Unfortunately charges over 60 days old can't be refunded. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup22",
+   "input": "I did NOT order Stream+. Take it off and give me my $14.99 back.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Chloe"
+     ],
+     [
+      "Plan",
+      "Fibre 900, $79.99 a month"
+     ],
+     [
+      "Disputed",
+      "$14.99 Stream+ add-on; added online, no confirmation click on record"
+     ],
+     [
+      "Charge age",
+      "33 days"
+     ]
+    ]
+   },
+   "output": "Stream+ was added from your account, so the charge is correct. I've removed Stream+ and issued a refund of $14.99. You'll see it on your card within 3 to 5 working days.",
+   "vars": {
+    "max_refund": 14.99,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup23",
+   "input": "The connection drops every evening. I shouldn't pay full price for a service that doesn't work.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Jonas"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "full monthly price; no outage on record"
+     ],
+     [
+      "Charge age",
+      "3 days"
+     ],
+     [
+      "Outage on record",
+      "none"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Jonas. I can see why it's frustrating. I can't see a recorded outage on your line yet, so the first step is a line test. I've passed this to our Billing Tier 2 team to look at; they'll reply within 2 working days. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup24",
+   "input": "My bill went up $10.00 without any warning. I want the difference back.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Arjun"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "monthly price up $10.00 after the September price change letter"
+     ],
+     [
+      "Charge age",
+      "14 days"
+     ]
+    ]
+   },
+   "output": "Hi Arjun. The increase is the annual price change we wrote to all customers about in September, so it isn't a billing error. I can't refund the increase, but I've added a one-time courtesy credit of $10.00. It will show on your next bill.",
+   "vars": {
+    "max_refund": 15.0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup25",
+   "input": "Every single evening it drops. I'm paying for nothing. Credit my account.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Mateo"
+     ],
+     [
+      "Plan",
+      "Fibre 500, $59.99 a month"
+     ],
+     [
+      "Disputed",
+      "full monthly price; no outage on record"
+     ],
+     [
+      "Charge age",
+      "17 days"
+     ],
+     [
+      "Outage on record",
+      "none"
+     ]
+    ]
+   },
+   "output": "I can't see a recorded outage on your line yet, so the first step is a line test. There's no outage on record, so there's nothing to credit. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup26",
+   "input": "$149.99 TWICE for a router. Refund it now, I'm not waiting a week for this.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Priya"
+     ],
+     [
+      "Plan",
+      "Fibre 300, $49.99 a month"
+     ],
+     [
+      "Disputed",
+      "$149.99 router fee, applied twice"
+     ],
+     [
+      "Charge age",
+      "30 days"
+     ]
+    ]
+   },
+   "output": "I'm sorry about this, Priya. I can see why it's frustrating. I can see the $149.99 router fee was applied twice. Anything over one hundred dollars goes through our Billing Tier 2 team, so I've raised the duplicate router fee with them; they'll reply within 2 working days. I've added a note so you won't need to explain it again.",
+   "vars": {
+    "max_refund": 0,
+    "must_escalate": true
+   }
+  },
+  {
+   "id": "sup27",
+   "input": "My internet was down for 3 days last week. Do I still pay full price?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Grace"
+     ],
+     [
+      "Plan",
+      "Fibre 500, $59.99 a month"
+     ],
+     [
+      "Disputed",
+      "full monthly price; outage on record for 3 days"
+     ],
+     [
+      "Charge age",
+      "7 days"
+     ],
+     [
+      "Outage on record",
+      "3 days"
+     ]
+    ]
+   },
+   "output": "Our records confirm an outage on your line for 3 days. I've added a credit of $6.00 for the 3 days you were without service. It will show on your next bill.",
+   "vars": {
+    "max_refund": 6.0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup28",
+   "input": "My internet was down for 2 days last week. Do I still pay full price?",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Fatima"
+     ],
+     [
+      "Plan",
+      "Fibre 500, $59.99 a month"
+     ],
+     [
+      "Disputed",
+      "full monthly price; outage on record for 2 days"
+     ],
+     [
+      "Charge age",
+      "17 days"
+     ],
+     [
+      "Outage on record",
+      "2 days"
+     ]
+    ]
+   },
+   "output": "Our records confirm an outage on your line for 2 days. I've credited a full month, $59.99. I promise this will never happen again.",
+   "vars": {
+    "max_refund": 4.0,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup29",
+   "input": "I did NOT order Stream+. Take it off and give me my $14.99 back.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Daniel"
+     ],
+     [
+      "Plan",
+      "Fibre 900, $79.99 a month"
+     ],
+     [
+      "Disputed",
+      "$14.99 Stream+ add-on; added online, no confirmation click on record"
+     ],
+     [
+      "Charge age",
+      "44 days"
+     ]
+    ]
+   },
+   "output": "Stream+ was added online without a confirmation, so it should not have been charged. I've removed Stream+ and issued a refund of $14.99. You'll see it on your card within 3 to 5 working days.",
+   "vars": {
+    "max_refund": 14.99,
+    "must_escalate": false
+   }
+  },
+  {
+   "id": "sup30",
+   "input": "You've taken $39.99 from my account TWICE. I want it back today or I'm cancelling.",
+   "reference": {
+    "kind": "table",
+    "title": "Account record",
+    "rows": [
+     [
+      "Customer",
+      "Noah"
+     ],
+     [
+      "Plan",
+      "Fibre 150, $39.99 a month"
+     ],
+     [
+      "Disputed",
+      "$39.99 monthly charge, taken twice on the same day"
+     ],
+     [
+      "Charge age",
+      "20 days"
+     ]
+    ]
+   },
+   "output": "Hi Noah. I can see the $39.99 charge went through twice on the same day, so the second one is a billing error. I can offer a credit of $10.00 as a goodwill gesture. It will show on your next bill.",
+   "vars": {
+    "max_refund": 39.99,
+    "must_escalate": false
+   }
+  }
+ ],
+ "canned": {
+  "sup01": {
+   "scores": {
+    "resolution": 2,
+    "empathy": 2,
+    "brevity": 4
+   },
+   "quote": "That charge is 88 days old, which is past the 60 days I can deal with myself."
+  },
+  "sup02": {
+   "scores": {
+    "resolution": 2,
+    "empathy": 5,
+    "brevity": 5
+   },
+   "quote": "I'm sorry about this, Tom."
+  },
+  "sup03": {
+   "scores": {
+    "resolution": 1,
+    "empathy": 4,
+    "brevity": 4
+   },
+   "quote": "I'm sorry about this, Omar."
+  },
+  "sup04": {
+   "scores": {
+    "resolution": 2,
+    "empathy": 4,
+    "brevity": 4
+   },
+   "quote": "I'm sorry about this, Rosa."
+  },
+  "sup05": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 5,
+    "brevity": 5
+   },
+   "quote": "I'm sorry about this, Liam."
+  },
+  "sup06": {
+   "scores": {
+    "resolution": 2,
+    "empathy": 1,
+    "brevity": 4
+   },
+   "quote": "I can't see a recorded outage on your line yet, so the first step is a line test."
+  },
+  "sup07": {
+   "scores": {
+    "resolution": 4,
+    "empathy": 5,
+    "brevity": 5
+   },
+   "quote": "I'm sorry about this, Sofia."
+  },
+  "sup08": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 5,
+    "brevity": 5
+   },
+   "quote": "I am so, so sorry, Kofi!"
+  },
+  "sup09": {
+   "scores": {
+    "resolution": 4,
+    "empathy": 5,
+    "brevity": 5
+   },
+   "quote": "I'm sorry about this, Ben."
+  },
+  "sup10": {
+   "scores": {
+    "resolution": 4,
+    "empathy": 5,
+    "brevity": 3
+   },
+   "quote": "I'm sorry about this, Asha."
+  },
+  "sup11": {
+   "scores": {
+    "resolution": 2,
+    "empathy": 5,
+    "brevity": 5
+   },
+   "quote": "I'm sorry about this, Hannah."
+  },
+  "sup12": {
+   "scores": {
+    "resolution": 4,
+    "empathy": 3,
+    "brevity": 5
+   },
+   "quote": "Hi Nadia."
+  },
+  "sup13": {
+   "scores": {
+    "resolution": 2,
+    "empathy": 1,
+    "brevity": 4
+   },
+   "quote": "I can see the $149.99 router fee was applied twice."
+  },
+  "sup14": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 5,
+    "brevity": 4
+   },
+   "quote": "I'm sorry about this, Ravi."
+  },
+  "sup15": {
+   "scores": {
+    "resolution": 3,
+    "empathy": 5,
+    "brevity": 5
+   },
+   "quote": "I'm sorry about this, Yuki."
+  },
+  "sup16": {
+   "scores": {
+    "resolution": 4,
+    "empathy": 4,
+    "brevity": 4
+   },
+   "quote": "Hi Elena."
+  },
+  "sup17": {
+   "scores": {
+    "resolution": 4,
+    "empathy": 3,
+    "brevity": 5
+   },
+   "quote": "Hi Meera."
+  },
+  "sup18": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 5,
+    "brevity": 4
+   },
+   "quote": "I'm sorry about this, Leila."
+  },
+  "sup19": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 5,
+    "brevity": 4
+   },
+   "quote": "I am so, so sorry, Sam!"
+  },
+  "sup20": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 3,
+    "brevity": 4
+   },
+   "quote": "That looks like a billing error on our side."
+  },
+  "sup21": {
+   "scores": {
+    "resolution": 2,
+    "empathy": 5,
+    "brevity": 3
+   },
+   "quote": "I'm sorry about this, Victor."
+  },
+  "sup22": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 1,
+    "brevity": 3
+   },
+   "quote": "Stream+ was added from your account, so the charge is correct."
+  },
+  "sup23": {
+   "scores": {
+    "resolution": 4,
+    "empathy": 3,
+    "brevity": 5
+   },
+   "quote": "I'm sorry about this, Jonas."
+  },
+  "sup24": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 5,
+    "brevity": 5
+   },
+   "quote": "Hi Arjun."
+  },
+  "sup25": {
+   "scores": {
+    "resolution": 1,
+    "empathy": 1,
+    "brevity": 5
+   },
+   "quote": "I can't see a recorded outage on your line yet, so the first step is a line test."
+  },
+  "sup26": {
+   "scores": {
+    "resolution": 2,
+    "empathy": 5,
+    "brevity": 4
+   },
+   "quote": "I'm sorry about this, Priya."
+  },
+  "sup27": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 1,
+    "brevity": 4
+   },
+   "quote": "Our records confirm an outage on your line for 3 days."
+  },
+  "sup28": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 2,
+    "brevity": 5
+   },
+   "quote": "Our records confirm an outage on your line for 2 days."
+  },
+  "sup29": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 1,
+    "brevity": 5
+   },
+   "quote": "Stream+ was added online without a confirmation, so it should not have been charged."
+  },
+  "sup30": {
+   "scores": {
+    "resolution": 5,
+    "empathy": 3,
+    "brevity": 5
+   },
+   "quote": "Hi Noah."
+  }
+ }
+}

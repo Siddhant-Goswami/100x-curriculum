@@ -1,0 +1,15 @@
+{
+  "type": "function",
+  "function": {
+    "name": "getData",
+    "description": "gets data",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "q": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

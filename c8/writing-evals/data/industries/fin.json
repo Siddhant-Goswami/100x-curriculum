@@ -1,0 +1,1055 @@
+{
+ "key": "fin",
+ "name": "Finance",
+ "task": "Write a short memo on a quarterly earnings release",
+ "job": "From the release, write what an analyst would send the desk: a thesis, the one or two things that actually changed, and how sure we can be.",
+ "decision": "External capability reporting: a number the company will publish, so it has to survive scrutiny.",
+ "strata": [
+  "what drove the quarter (one-off, pricing, inventory, concentration)",
+  "growth rate"
+ ],
+ "deliverable": "A memo with Thesis, What changed, Risks",
+ "dims": [
+  {
+   "key": "thesis",
+   "name": "Thesis clarity",
+   "hint": "Is there one claim a portfolio manager could act on?"
+  },
+  {
+   "key": "changed",
+   "name": "What actually changed",
+   "hint": "Does it find the driver, not just repeat the headline?"
+  },
+  {
+   "key": "uncertainty",
+   "name": "Handling of uncertainty",
+   "hint": "Does it say what could make the thesis wrong, and keep guidance as guidance?"
+  }
+ ],
+ "preference": "An analyst's memo on the same release",
+ "trap": "Memos with more numbers read as more rigorous. Earnings releases are heavily indexed, so a public set is likely already in training data.",
+ "checkers": [
+  {
+   "id": "traceable_numbers",
+   "name": "Every number traces to the release",
+   "reads": "output, vars.allowed_numbers (the release plus growth rates computed from it)",
+   "src": "const ok = context.vars.allowed_numbers;\nconst found = output.match(/(?<![A-Za-z\\d.])\\d[\\d,]*(?:\\.\\d+)?/g) || [];\nreturn found.every(s => { const x = parseFloat(s.replace(/,/g, '')); return ok.some(a => Math.abs(a - x) < 0.051); });"
+  },
+  {
+   "id": "no_forward_fact",
+   "name": "No forecast stated as fact",
+   "reads": "output",
+   "src": "return !output.split(/(?<=[.!?])\\s+/).some(s => /\\bwill (grow|rise|reach|exceed|beat|double|deliver|hit)\\b/i.test(s) && !/(guid|expect|forecast|management)/i.test(s));"
+  },
+  {
+   "id": "sections",
+   "name": "Has Thesis, What changed and Risks",
+   "reads": "output",
+   "src": "return ['Thesis:', 'What changed:', 'Risks:'].every(h => output.includes(h));"
+  }
+ ],
+ "reference_note": "Fictional companies and figures.",
+ "version": "2026-11-01.1",
+ "judge_model": "openai/gpt-oss-20b",
+ "items": [
+  {
+   "id": "fin01",
+   "input": "Tessellate Networks, Q2 results. Revenue $255.7m (prior year $238.5m). Gross margin 48.3% (prior year 45.7%). Diluted EPS $0.8 (prior year $0.59). EPS includes a one-off gain of $26.7m from selling a division. Guidance for next quarter: revenue $258m to $268m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Tessellate Networks, Q2 results. Revenue $255.7m (prior year $238.5m). Gross margin 48.3% (prior year 45.7%). Diluted EPS $0.8 (prior year $0.59). EPS includes a one-off gain of $26.7m from selling a division. Guidance for next quarter: revenue $258m to $268m."
+   },
+   "output": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated.\n\nWhat changed: Most of the EPS rise comes from the $26.7m one-off gain, not from operations. Revenue rose 7.2% to $255.7m and diluted EPS rose to $0.8 from $0.59. Market share rose to 23% on the back of new product launches. Management guides to $258m to $268m next quarter.\n\nRisks: Without the $26.7m gain, earnings growth is far smaller than the headline suggests. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.59,
+     0.8,
+     2.6,
+     7.2,
+     26.7,
+     45.7,
+     48.3,
+     238.5,
+     255.7,
+     258,
+     268
+    ]
+   }
+  },
+  {
+   "id": "fin02",
+   "input": "Tessellate Networks, Q3 results. Revenue $812.9m (prior year $758.3m). Gross margin 40.1% (prior year 36.9%). Diluted EPS $0.9 (prior year $0.59). Management attributes the gross margin change of +3.2 points to price increases. Guidance for next quarter: revenue $821m to $854m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Tessellate Networks, Q3 results. Revenue $812.9m (prior year $758.3m). Gross margin 40.1% (prior year 36.9%). Diluted EPS $0.9 (prior year $0.59). Management attributes the gross margin change of +3.2 points to price increases. Guidance for next quarter: revenue $821m to $854m."
+   },
+   "output": "Thesis: Pricing power is real this quarter; the question is whether volume holds.\n\nWhat changed: Gross margin moved +3.2 points to 40.1% on price increases, which is the real change this quarter. Revenue rose 7.2% to $812.9m and diluted EPS rose to $0.9 from $0.59. Management guides to $821m to $854m next quarter.\n\nRisks: Price increases can cost volume next quarter; the release gives no unit numbers. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.59,
+     0.9,
+     3.2,
+     7.2,
+     36.9,
+     40.1,
+     758.3,
+     812.9,
+     821,
+     854
+    ]
+   }
+  },
+  {
+   "id": "fin03",
+   "input": "Vantor Media, Q3 results. Revenue $965.3m (prior year $851.2m). Gross margin 36.7% (prior year 38.5%). Diluted EPS $0.85 (prior year $0.79). Inventory is up 28% from a year ago. Guidance for next quarter: revenue $975m to $1014m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Vantor Media, Q3 results. Revenue $965.3m (prior year $851.2m). Gross margin 36.7% (prior year 38.5%). Diluted EPS $0.85 (prior year $0.79). Inventory is up 28% from a year ago. Guidance for next quarter: revenue $975m to $1014m."
+   },
+   "output": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting.\n\nWhat changed: Inventory grew 28% against revenue growth of 13.4%, so stock is building faster than sales. Revenue rose 13.4% to $965.3m and diluted EPS rose to $0.85 from $0.79. Management guides to $975m to $1014m next quarter.\n\nRisks: If demand softens, the inventory build turns into discounting and margin pressure. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     -1.8,
+     0.79,
+     0.85,
+     1.8,
+     13.4,
+     28,
+     36.7,
+     38.5,
+     851.2,
+     965.3,
+     975,
+     1014
+    ]
+   }
+  },
+  {
+   "id": "fin04",
+   "input": "Halvorsen Robotics, Q3 results. Revenue $612.1m (prior year $571.0m). Gross margin 44.4% (prior year 46.2%). Diluted EPS $1.69 (prior year $1.11). The largest customer was 18% of revenue, up from 12%. Guidance for next quarter: revenue $618m to $643m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Halvorsen Robotics, Q3 results. Revenue $612.1m (prior year $571.0m). Gross margin 44.4% (prior year 46.2%). Diluted EPS $1.69 (prior year $1.11). The largest customer was 18% of revenue, up from 12%. Guidance for next quarter: revenue $618m to $643m."
+   },
+   "output": "Thesis: Growth is real but concentrated in one customer, which makes it fragile.\n\nWhat changed: Revenue rose 7.2% to $612.1m and diluted EPS rose to $1.69 from $1.11. Management guides to $618m to $643m next quarter.\n\nRisks: Losing or repricing the customer at 18% of revenue would remove most of the growth. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     -1.8,
+     1.11,
+     1.69,
+     1.8,
+     7.2,
+     12,
+     18,
+     44.4,
+     46.2,
+     571.0,
+     612.1,
+     618,
+     643
+    ]
+   }
+  },
+  {
+   "id": "fin05",
+   "input": "Ostara Semiconductors, Q2 results. Revenue $384.3m (prior year $325.4m). Gross margin 38.1% (prior year 37.7%). Diluted EPS $0.79 (prior year $0.65). EPS includes a one-off gain of $35.6m from selling a division. Guidance for next quarter: revenue $388m to $404m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Ostara Semiconductors, Q2 results. Revenue $384.3m (prior year $325.4m). Gross margin 38.1% (prior year 37.7%). Diluted EPS $0.79 (prior year $0.65). EPS includes a one-off gain of $35.6m from selling a division. Guidance for next quarter: revenue $388m to $404m."
+   },
+   "output": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated.\n\nWhat changed: Most of the EPS rise comes from the $35.6m one-off gain, not from operations. Revenue rose 18.1% to $384.3m and diluted EPS rose to $0.79 from $0.65. Management guides to $388m to $404m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     0.4,
+     0.65,
+     0.79,
+     18.1,
+     35.6,
+     37.7,
+     38.1,
+     325.4,
+     384.3,
+     388,
+     404
+    ]
+   }
+  },
+  {
+   "id": "fin06",
+   "input": "Quillfeather Software, Q3 results. Revenue $556.0m (prior year $532.1m). Gross margin 46.0% (prior year 42.8%). Diluted EPS $0.94 (prior year $0.7). Management attributes the gross margin change of +3.2 points to price increases. Guidance for next quarter: revenue $562m to $584m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Quillfeather Software, Q3 results. Revenue $556.0m (prior year $532.1m). Gross margin 46.0% (prior year 42.8%). Diluted EPS $0.94 (prior year $0.7). Management attributes the gross margin change of +3.2 points to price increases. Guidance for next quarter: revenue $562m to $584m."
+   },
+   "output": "Thesis: Pricing power is real this quarter; the question is whether volume holds.\n\nWhat changed: Gross margin moved +3.2 points to 46.0% on price increases, which is the real change this quarter. Revenue rose 4.5% to $556.0m and diluted EPS rose to $0.94 from $0.7. Management guides to $562m to $584m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     0.7,
+     0.94,
+     3.2,
+     4.5,
+     42.8,
+     46.0,
+     532.1,
+     556.0,
+     562,
+     584
+    ]
+   }
+  },
+  {
+   "id": "fin07",
+   "input": "Brackwater Energy, Q2 results. Revenue $916.5m (prior year $776.0m). Gross margin 42.9% (prior year 39.7%). Diluted EPS $0.46 (prior year $0.43). Inventory is up 34% from a year ago. Guidance for next quarter: revenue $926m to $962m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Brackwater Energy, Q2 results. Revenue $916.5m (prior year $776.0m). Gross margin 42.9% (prior year 39.7%). Diluted EPS $0.46 (prior year $0.43). Inventory is up 34% from a year ago. Guidance for next quarter: revenue $926m to $962m."
+   },
+   "output": "Thesis: The quarter had positives and negatives, and the company remains one to watch.\n\nWhat changed: Inventory grew 34% against revenue growth of 18.1%, so stock is building faster than sales. Revenue rose 18.1% to $916.5m and diluted EPS rose to $0.46 from $0.43. Market share rose to 23% on the back of new product launches. Management guides to $926m to $962m next quarter.\n\nRisks: If demand softens, the inventory build turns into discounting and margin pressure. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.43,
+     0.46,
+     3.2,
+     18.1,
+     34,
+     39.7,
+     42.9,
+     776.0,
+     916.5,
+     926,
+     962
+    ]
+   }
+  },
+  {
+   "id": "fin08",
+   "input": "Pelham Apparel, Q3 results. Revenue $796.9m (prior year $674.8m). Gross margin 34.7% (prior year 32.1%). Diluted EPS $1.52 (prior year $1.0). The largest customer was 22% of revenue, up from 12%. Guidance for next quarter: revenue $805m to $837m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Pelham Apparel, Q3 results. Revenue $796.9m (prior year $674.8m). Gross margin 34.7% (prior year 32.1%). Diluted EPS $1.52 (prior year $1.0). The largest customer was 22% of revenue, up from 12%. Guidance for next quarter: revenue $805m to $837m."
+   },
+   "output": "Thesis: Growth is real but concentrated in one customer, which makes it fragile.\n\nWhat changed: Revenue rose 18.1% to $796.9m and diluted EPS rose to $1.52 from $1.0. Management guides to $805m to $837m next quarter.",
+   "vars": {
+    "allowed_numbers": [
+     1.0,
+     1.52,
+     2.6,
+     12,
+     18.1,
+     22,
+     32.1,
+     34.7,
+     674.8,
+     796.9,
+     805,
+     837
+    ]
+   }
+  },
+  {
+   "id": "fin09",
+   "input": "Brackwater Energy, Q2 results. Revenue $862.4m (prior year $760.5m). Gross margin 34.8% (prior year 32.2%). Diluted EPS $0.96 (prior year $0.89). EPS includes a one-off gain of $18.6m from selling a division. Guidance for next quarter: revenue $871m to $906m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Brackwater Energy, Q2 results. Revenue $862.4m (prior year $760.5m). Gross margin 34.8% (prior year 32.2%). Diluted EPS $0.96 (prior year $0.89). EPS includes a one-off gain of $18.6m from selling a division. Guidance for next quarter: revenue $871m to $906m."
+   },
+   "output": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated.\n\nWhat changed: Most of the EPS rise comes from the $18.6m one-off gain, not from operations. Revenue rose 13.4% to $862.4m and diluted EPS rose to $0.96 from $0.89. Management guides to $871m to $906m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     0.89,
+     0.96,
+     2.6,
+     13.4,
+     18.6,
+     32.2,
+     34.8,
+     760.5,
+     862.4,
+     871,
+     906
+    ]
+   }
+  },
+  {
+   "id": "fin10",
+   "input": "Vantor Media, Q3 results. Revenue $568.9m (prior year $544.4m). Gross margin 42.1% (prior year 41.7%). Diluted EPS $0.72 (prior year $0.67). Management attributes the gross margin change of +0.4 points to price increases. Guidance for next quarter: revenue $575m to $597m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Vantor Media, Q3 results. Revenue $568.9m (prior year $544.4m). Gross margin 42.1% (prior year 41.7%). Diluted EPS $0.72 (prior year $0.67). Management attributes the gross margin change of +0.4 points to price increases. Guidance for next quarter: revenue $575m to $597m."
+   },
+   "output": "Thesis: Pricing power is real this quarter; the question is whether volume holds.\n\nWhat changed: Gross margin moved +0.4 points to 42.1% on price increases, which is the real change this quarter. Revenue rose 4.5% to $568.9m and diluted EPS rose to $0.72 from $0.67. Management guides to $575m to $597m next quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.4,
+     0.67,
+     0.72,
+     4.5,
+     41.7,
+     42.1,
+     544.4,
+     568.9,
+     575,
+     597
+    ]
+   }
+  },
+  {
+   "id": "fin11",
+   "input": "Vantor Media, Q3 results. Revenue $465.7m (prior year $434.4m). Gross margin 40.0% (prior year 37.4%). Diluted EPS $1.02 (prior year $0.67). Inventory is up 41% from a year ago. Guidance for next quarter: revenue $470m to $489m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Vantor Media, Q3 results. Revenue $465.7m (prior year $434.4m). Gross margin 40.0% (prior year 37.4%). Diluted EPS $1.02 (prior year $0.67). Inventory is up 41% from a year ago. Guidance for next quarter: revenue $470m to $489m."
+   },
+   "output": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting.\n\nWhat changed: Revenue rose 7.2% to $465.7m and diluted EPS rose to $1.02 from $0.67. Revenue will reach $489m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     0.67,
+     1.02,
+     2.6,
+     7.2,
+     37.4,
+     40.0,
+     41,
+     434.4,
+     465.7,
+     470,
+     489
+    ]
+   }
+  },
+  {
+   "id": "fin12",
+   "input": "Marrowind Foods, Q3 results. Revenue $843.6m (prior year $786.9m). Gross margin 43.9% (prior year 41.3%). Diluted EPS $0.85 (prior year $0.7). The largest customer was 27% of revenue, up from 12%. Guidance for next quarter: revenue $852m to $886m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Marrowind Foods, Q3 results. Revenue $843.6m (prior year $786.9m). Gross margin 43.9% (prior year 41.3%). Diluted EPS $0.85 (prior year $0.7). The largest customer was 27% of revenue, up from 12%. Guidance for next quarter: revenue $852m to $886m."
+   },
+   "output": "Thesis: Growth is real but concentrated in one customer, which makes it fragile.\n\nWhat changed: The largest customer now accounts for 27% of revenue, up from 12%, so growth depends on one account. Revenue rose 7.2% to $843.6m and diluted EPS rose to $0.85 from $0.7. Revenue will reach $886m next quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.7,
+     0.85,
+     2.6,
+     7.2,
+     12,
+     27,
+     41.3,
+     43.9,
+     786.9,
+     843.6,
+     852,
+     886
+    ]
+   }
+  },
+  {
+   "id": "fin13",
+   "input": "Vantor Media, Q2 results. Revenue $866.6m (prior year $781.4m). Gross margin 42.6% (prior year 39.4%). Diluted EPS $0.57 (prior year $0.42). EPS includes a one-off gain of $18.2m from selling a division. Guidance for next quarter: revenue $875m to $910m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Vantor Media, Q2 results. Revenue $866.6m (prior year $781.4m). Gross margin 42.6% (prior year 39.4%). Diluted EPS $0.57 (prior year $0.42). EPS includes a one-off gain of $18.2m from selling a division. Guidance for next quarter: revenue $875m to $910m."
+   },
+   "output": "Thesis: The quarter had positives and negatives, and the company remains one to watch.\n\nWhat changed: Revenue rose 10.9% to $866.6m and diluted EPS rose to $0.57 from $0.42. Management guides to $875m to $910m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     0.42,
+     0.57,
+     3.2,
+     10.9,
+     18.2,
+     39.4,
+     42.6,
+     781.4,
+     866.6,
+     875,
+     910
+    ]
+   }
+  },
+  {
+   "id": "fin14",
+   "input": "Vantor Media, Q2 results. Revenue $298.9m (prior year $269.5m). Gross margin 33.5% (prior year 35.3%). Diluted EPS $1.58 (prior year $1.04). Management attributes the gross margin change of -1.8 points to price increases. Guidance for next quarter: revenue $302m to $314m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Vantor Media, Q2 results. Revenue $298.9m (prior year $269.5m). Gross margin 33.5% (prior year 35.3%). Diluted EPS $1.58 (prior year $1.04). Management attributes the gross margin change of -1.8 points to price increases. Guidance for next quarter: revenue $302m to $314m."
+   },
+   "output": "Thesis: Pricing power is real this quarter; the question is whether volume holds.\n\nWhat changed: Gross margin moved -1.8 points to 33.5% on price increases, which is the real change this quarter. Revenue rose 10.9% to $298.9m and diluted EPS rose to $1.58 from $1.04. Market share rose to 23% on the back of new product launches. Management guides to $302m to $314m next quarter.",
+   "vars": {
+    "allowed_numbers": [
+     -1.8,
+     1.04,
+     1.58,
+     1.8,
+     10.9,
+     33.5,
+     35.3,
+     269.5,
+     298.9,
+     302,
+     314
+    ]
+   }
+  },
+  {
+   "id": "fin15",
+   "input": "Halvorsen Robotics, Q3 results. Revenue $558.6m (prior year $492.6m). Gross margin 44.2% (prior year 43.8%). Diluted EPS $0.85 (prior year $0.7). Inventory is up 41% from a year ago. Guidance for next quarter: revenue $564m to $587m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Halvorsen Robotics, Q3 results. Revenue $558.6m (prior year $492.6m). Gross margin 44.2% (prior year 43.8%). Diluted EPS $0.85 (prior year $0.7). Inventory is up 41% from a year ago. Guidance for next quarter: revenue $564m to $587m."
+   },
+   "output": "Thesis: The quarter had positives and negatives, and the company remains one to watch.\n\nWhat changed: Inventory grew 41% against revenue growth of 13.4%, so stock is building faster than sales. Revenue rose 13.4% to $558.6m and diluted EPS rose to $0.85 from $0.7. Management guides to $564m to $587m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     0.4,
+     0.7,
+     0.85,
+     13.4,
+     41,
+     43.8,
+     44.2,
+     492.6,
+     558.6,
+     564,
+     587
+    ]
+   }
+  },
+  {
+   "id": "fin16",
+   "input": "Marrowind Foods, Q3 results. Revenue $274.9m (prior year $247.9m). Gross margin 47.2% (prior year 46.8%). Diluted EPS $1.0 (prior year $0.93). The largest customer was 22% of revenue, up from 12%. Guidance for next quarter: revenue $278m to $289m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Marrowind Foods, Q3 results. Revenue $274.9m (prior year $247.9m). Gross margin 47.2% (prior year 46.8%). Diluted EPS $1.0 (prior year $0.93). The largest customer was 22% of revenue, up from 12%. Guidance for next quarter: revenue $278m to $289m."
+   },
+   "output": "Thesis: Growth is real but concentrated in one customer, which makes it fragile.\n\nWhat changed: The largest customer now accounts for 22% of revenue, up from 12%, so growth depends on one account. Revenue rose 10.9% to $274.9m and diluted EPS rose to $1.0 from $0.93. Management guides to $278m to $289m next quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.4,
+     0.93,
+     1.0,
+     10.9,
+     12,
+     22,
+     46.8,
+     47.2,
+     247.9,
+     274.9,
+     278,
+     289
+    ]
+   }
+  },
+  {
+   "id": "fin17",
+   "input": "Halvorsen Robotics, Q3 results. Revenue $567.3m (prior year $511.5m). Gross margin 42.4% (prior year 39.2%). Diluted EPS $1.19 (prior year $0.88). EPS includes a one-off gain of $24.8m from selling a division. Guidance for next quarter: revenue $573m to $596m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Halvorsen Robotics, Q3 results. Revenue $567.3m (prior year $511.5m). Gross margin 42.4% (prior year 39.2%). Diluted EPS $1.19 (prior year $0.88). EPS includes a one-off gain of $24.8m from selling a division. Guidance for next quarter: revenue $573m to $596m."
+   },
+   "output": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated.\n\nWhat changed: Most of the EPS rise comes from the $24.8m one-off gain, not from operations. Revenue rose 10.9% to $567.3m and diluted EPS rose to $1.19 from $0.88. Management guides to $573m to $596m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     0.88,
+     1.19,
+     3.2,
+     10.9,
+     24.8,
+     39.2,
+     42.4,
+     511.5,
+     567.3,
+     573,
+     596
+    ]
+   }
+  },
+  {
+   "id": "fin18",
+   "input": "Sundial Health, Q3 results. Revenue $929.3m (prior year $838.0m). Gross margin 50.8% (prior year 47.6%). Diluted EPS $0.99 (prior year $0.82). Management attributes the gross margin change of +3.2 points to price increases. Guidance for next quarter: revenue $939m to $976m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Sundial Health, Q3 results. Revenue $929.3m (prior year $838.0m). Gross margin 50.8% (prior year 47.6%). Diluted EPS $0.99 (prior year $0.82). Management attributes the gross margin change of +3.2 points to price increases. Guidance for next quarter: revenue $939m to $976m."
+   },
+   "output": "Thesis: Pricing power is real this quarter; the question is whether volume holds.\n\nWhat changed: Gross margin moved +3.2 points to 50.8% on price increases, which is the real change this quarter. Revenue rose 10.9% to $929.3m and diluted EPS rose to $0.99 from $0.82. Revenue will reach $976m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     0.82,
+     0.99,
+     3.2,
+     10.9,
+     47.6,
+     50.8,
+     838.0,
+     929.3,
+     939,
+     976
+    ]
+   }
+  },
+  {
+   "id": "fin19",
+   "input": "Corrigan Logistics, Q3 results. Revenue $483.5m (prior year $426.4m). Gross margin 38.7% (prior year 36.1%). Diluted EPS $1.21 (prior year $1.12). Inventory is up 34% from a year ago. Guidance for next quarter: revenue $488m to $508m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Corrigan Logistics, Q3 results. Revenue $483.5m (prior year $426.4m). Gross margin 38.7% (prior year 36.1%). Diluted EPS $1.21 (prior year $1.12). Inventory is up 34% from a year ago. Guidance for next quarter: revenue $488m to $508m."
+   },
+   "output": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting.\n\nWhat changed: Inventory grew 34% against revenue growth of 13.4%, so stock is building faster than sales. Revenue rose 13.4% to $483.5m and diluted EPS rose to $1.21 from $1.12. Management guides to $488m to $508m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     1.12,
+     1.21,
+     2.6,
+     13.4,
+     34,
+     36.1,
+     38.7,
+     426.4,
+     483.5,
+     488,
+     508
+    ]
+   }
+  },
+  {
+   "id": "fin20",
+   "input": "Brackwater Energy, Q2 results. Revenue $607.5m (prior year $514.4m). Gross margin 36.2% (prior year 35.8%). Diluted EPS $0.85 (prior year $0.79). The largest customer was 27% of revenue, up from 12%. Guidance for next quarter: revenue $614m to $638m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Brackwater Energy, Q2 results. Revenue $607.5m (prior year $514.4m). Gross margin 36.2% (prior year 35.8%). Diluted EPS $0.85 (prior year $0.79). The largest customer was 27% of revenue, up from 12%. Guidance for next quarter: revenue $614m to $638m."
+   },
+   "output": "Thesis: The quarter had positives and negatives, and the company remains one to watch.\n\nWhat changed: Revenue rose 18.1% to $607.5m and diluted EPS rose to $0.85 from $0.79. Management guides to $614m to $638m next quarter.\n\nRisks: Losing or repricing the customer at 27% of revenue would remove most of the growth. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.4,
+     0.79,
+     0.85,
+     12,
+     18.1,
+     27,
+     35.8,
+     36.2,
+     514.4,
+     607.5,
+     614,
+     638
+    ]
+   }
+  },
+  {
+   "id": "fin21",
+   "input": "Corrigan Logistics, Q3 results. Revenue $742.1m (prior year $654.4m). Gross margin 47.1% (prior year 43.9%). Diluted EPS $1.38 (prior year $1.02). EPS includes a one-off gain of $35.1m from selling a division. Guidance for next quarter: revenue $750m to $779m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Corrigan Logistics, Q3 results. Revenue $742.1m (prior year $654.4m). Gross margin 47.1% (prior year 43.9%). Diluted EPS $1.38 (prior year $1.02). EPS includes a one-off gain of $35.1m from selling a division. Guidance for next quarter: revenue $750m to $779m."
+   },
+   "output": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated.\n\nWhat changed: Most of the EPS rise comes from the $35.1m one-off gain, not from operations. Revenue rose 13.4% to $742.1m and diluted EPS rose to $1.38 from $1.02. Management guides to $750m to $779m next quarter.\n\nRisks: Without the $35.1m gain, earnings growth is far smaller than the headline suggests. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     1.02,
+     1.38,
+     3.2,
+     13.4,
+     35.1,
+     43.9,
+     47.1,
+     654.4,
+     742.1,
+     750,
+     779
+    ]
+   }
+  },
+  {
+   "id": "fin22",
+   "input": "Marrowind Foods, Q3 results. Revenue $383.7m (prior year $357.9m). Gross margin 39.3% (prior year 41.1%). Diluted EPS $0.73 (prior year $0.54). Management attributes the gross margin change of -1.8 points to price increases. Guidance for next quarter: revenue $388m to $403m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Marrowind Foods, Q3 results. Revenue $383.7m (prior year $357.9m). Gross margin 39.3% (prior year 41.1%). Diluted EPS $0.73 (prior year $0.54). Management attributes the gross margin change of -1.8 points to price increases. Guidance for next quarter: revenue $388m to $403m."
+   },
+   "output": "Thesis: Pricing power is real this quarter; the question is whether volume holds.\n\nWhat changed: Gross margin moved -1.8 points to 39.3% on price increases, which is the real change this quarter. Revenue rose 7.2% to $383.7m and diluted EPS rose to $0.73 from $0.54. Revenue will reach $403m next quarter.\n\nRisks: Price increases can cost volume next quarter; the release gives no unit numbers. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     -1.8,
+     0.54,
+     0.73,
+     1.8,
+     7.2,
+     39.3,
+     41.1,
+     357.9,
+     383.7,
+     388,
+     403
+    ]
+   }
+  },
+  {
+   "id": "fin23",
+   "input": "Marrowind Foods, Q2 results. Revenue $895.0m (prior year $789.2m). Gross margin 47.4% (prior year 47.0%). Diluted EPS $1.33 (prior year $1.1). Inventory is up 41% from a year ago. Guidance for next quarter: revenue $904m to $940m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Marrowind Foods, Q2 results. Revenue $895.0m (prior year $789.2m). Gross margin 47.4% (prior year 47.0%). Diluted EPS $1.33 (prior year $1.1). Inventory is up 41% from a year ago. Guidance for next quarter: revenue $904m to $940m."
+   },
+   "output": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting.\n\nWhat changed: Inventory grew 41% against revenue growth of 13.4%, so stock is building faster than sales. Revenue rose 13.4% to $895.0m and diluted EPS rose to $1.33 from $1.1. Management guides to $904m to $940m next quarter.\n\nRisks: If demand softens, the inventory build turns into discounting and margin pressure. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.4,
+     1.1,
+     1.33,
+     13.4,
+     41,
+     47.0,
+     47.4,
+     789.2,
+     895.0,
+     904,
+     940
+    ]
+   }
+  },
+  {
+   "id": "fin24",
+   "input": "Vantor Media, Q2 results. Revenue $802.5m (prior year $767.9m). Gross margin 34.4% (prior year 36.2%). Diluted EPS $0.78 (prior year $0.58). The largest customer was 22% of revenue, up from 12%. Guidance for next quarter: revenue $811m to $843m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Vantor Media, Q2 results. Revenue $802.5m (prior year $767.9m). Gross margin 34.4% (prior year 36.2%). Diluted EPS $0.78 (prior year $0.58). The largest customer was 22% of revenue, up from 12%. Guidance for next quarter: revenue $811m to $843m."
+   },
+   "output": "Thesis: The quarter had positives and negatives, and the company remains one to watch.\n\nWhat changed: Revenue rose 4.5% to $802.5m and diluted EPS rose to $0.78 from $0.58. Management guides to $811m to $843m next quarter.\n\nRisks: Markets are uncertain and results may vary.",
+   "vars": {
+    "allowed_numbers": [
+     -1.8,
+     0.58,
+     0.78,
+     1.8,
+     4.5,
+     12,
+     22,
+     34.4,
+     36.2,
+     767.9,
+     802.5,
+     811,
+     843
+    ]
+   }
+  },
+  {
+   "id": "fin25",
+   "input": "Sundial Health, Q3 results. Revenue $584.9m (prior year $495.3m). Gross margin 50.1% (prior year 46.9%). Diluted EPS $1.52 (prior year $1.0). EPS includes a one-off gain of $37.2m from selling a division. Guidance for next quarter: revenue $591m to $614m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Sundial Health, Q3 results. Revenue $584.9m (prior year $495.3m). Gross margin 50.1% (prior year 46.9%). Diluted EPS $1.52 (prior year $1.0). EPS includes a one-off gain of $37.2m from selling a division. Guidance for next quarter: revenue $591m to $614m."
+   },
+   "output": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated.\n\nWhat changed: Revenue rose 18.1% to $584.9m and diluted EPS rose to $1.52 from $1.0. Management guides to $591m to $614m next quarter.\n\nRisks: Without the $37.2m gain, earnings growth is far smaller than the headline suggests. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     1.0,
+     1.52,
+     3.2,
+     18.1,
+     37.2,
+     46.9,
+     50.1,
+     495.3,
+     584.9,
+     591,
+     614
+    ]
+   }
+  },
+  {
+   "id": "fin26",
+   "input": "Marrowind Foods, Q3 results. Revenue $309.5m (prior year $296.2m). Gross margin 40.2% (prior year 42.0%). Diluted EPS $1.37 (prior year $0.9). Management attributes the gross margin change of -1.8 points to price increases. Guidance for next quarter: revenue $313m to $325m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Marrowind Foods, Q3 results. Revenue $309.5m (prior year $296.2m). Gross margin 40.2% (prior year 42.0%). Diluted EPS $1.37 (prior year $0.9). Management attributes the gross margin change of -1.8 points to price increases. Guidance for next quarter: revenue $313m to $325m."
+   },
+   "output": "Thesis: The quarter had positives and negatives, and the company remains one to watch.\n\nWhat changed: Revenue rose 4.5% to $309.5m and diluted EPS rose to $1.37 from $0.9. Management guides to $313m to $325m next quarter.\n\nRisks: Price increases can cost volume next quarter; the release gives no unit numbers. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     -1.8,
+     0.9,
+     1.37,
+     1.8,
+     4.5,
+     40.2,
+     42.0,
+     296.2,
+     309.5,
+     313,
+     325
+    ]
+   }
+  },
+  {
+   "id": "fin27",
+   "input": "Quillfeather Software, Q2 results. Revenue $281.0m (prior year $237.9m). Gross margin 45.4% (prior year 47.2%). Diluted EPS $0.81 (prior year $0.75). Inventory is up 28% from a year ago. Guidance for next quarter: revenue $284m to $295m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Quillfeather Software, Q2 results. Revenue $281.0m (prior year $237.9m). Gross margin 45.4% (prior year 47.2%). Diluted EPS $0.81 (prior year $0.75). Inventory is up 28% from a year ago. Guidance for next quarter: revenue $284m to $295m."
+   },
+   "output": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting.\n\nWhat changed: Inventory grew 28% against revenue growth of 18.1%, so stock is building faster than sales. Revenue rose 18.1% to $281.0m and diluted EPS rose to $0.81 from $0.75. Management guides to $284m to $295m next quarter.\n\nRisks: If demand softens, the inventory build turns into discounting and margin pressure. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     -1.8,
+     0.75,
+     0.81,
+     1.8,
+     18.1,
+     28,
+     45.4,
+     47.2,
+     237.9,
+     281.0,
+     284,
+     295
+    ]
+   }
+  },
+  {
+   "id": "fin28",
+   "input": "Marrowind Foods, Q2 results. Revenue $629.1m (prior year $554.8m). Gross margin 48.3% (prior year 47.9%). Diluted EPS $1.81 (prior year $1.19). The largest customer was 22% of revenue, up from 12%. Guidance for next quarter: revenue $635m to $661m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Marrowind Foods, Q2 results. Revenue $629.1m (prior year $554.8m). Gross margin 48.3% (prior year 47.9%). Diluted EPS $1.81 (prior year $1.19). The largest customer was 22% of revenue, up from 12%. Guidance for next quarter: revenue $635m to $661m."
+   },
+   "output": "Thesis: Growth is real but concentrated in one customer, which makes it fragile.\n\nWhat changed: Revenue rose 13.4% to $629.1m and diluted EPS rose to $1.81 from $1.19. Management guides to $635m to $661m next quarter.\n\nRisks: Losing or repricing the customer at 22% of revenue would remove most of the growth. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.4,
+     1.19,
+     1.81,
+     12,
+     13.4,
+     22,
+     47.9,
+     48.3,
+     554.8,
+     629.1,
+     635,
+     661
+    ]
+   }
+  },
+  {
+   "id": "fin29",
+   "input": "Corrigan Logistics, Q3 results. Revenue $964.6m (prior year $869.8m). Gross margin 42.3% (prior year 44.1%). Diluted EPS $1.33 (prior year $1.1). EPS includes a one-off gain of $27.9m from selling a division. Guidance for next quarter: revenue $974m to $1013m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Corrigan Logistics, Q3 results. Revenue $964.6m (prior year $869.8m). Gross margin 42.3% (prior year 44.1%). Diluted EPS $1.33 (prior year $1.1). EPS includes a one-off gain of $27.9m from selling a division. Guidance for next quarter: revenue $974m to $1013m."
+   },
+   "output": "Thesis: The quarter had positives and negatives, and the company remains one to watch.\n\nWhat changed: Most of the EPS rise comes from the $27.9m one-off gain, not from operations. Revenue rose 10.9% to $964.6m and diluted EPS rose to $1.33 from $1.1. Management guides to $974m to $1013m next quarter.\n\nRisks: Without the $27.9m gain, earnings growth is far smaller than the headline suggests. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     -1.8,
+     1.1,
+     1.33,
+     1.8,
+     10.9,
+     27.9,
+     42.3,
+     44.1,
+     869.8,
+     964.6,
+     974,
+     1013
+    ]
+   }
+  },
+  {
+   "id": "fin30",
+   "input": "Brackwater Energy, Q2 results. Revenue $722.7m (prior year $637.3m). Gross margin 48.2% (prior year 47.8%). Diluted EPS $1.0 (prior year $0.93). Management attributes the gross margin change of +0.4 points to price increases. Guidance for next quarter: revenue $730m to $759m.",
+   "reference": {
+    "kind": "note",
+    "title": "Earnings release",
+    "text": "Brackwater Energy, Q2 results. Revenue $722.7m (prior year $637.3m). Gross margin 48.2% (prior year 47.8%). Diluted EPS $1.0 (prior year $0.93). Management attributes the gross margin change of +0.4 points to price increases. Guidance for next quarter: revenue $730m to $759m."
+   },
+   "output": "Thesis: Pricing power is real this quarter; the question is whether volume holds.\n\nWhat changed: Gross margin moved +0.4 points to 48.2% on price increases, which is the real change this quarter. Revenue rose 13.4% to $722.7m and diluted EPS rose to $1.0 from $0.93. Management guides to $730m to $759m next quarter.\n\nRisks: Price increases can cost volume next quarter; the release gives no unit numbers. Guidance is a range, and the low end implies slower growth than this quarter.",
+   "vars": {
+    "allowed_numbers": [
+     0.4,
+     0.93,
+     1.0,
+     13.4,
+     47.8,
+     48.2,
+     637.3,
+     722.7,
+     730,
+     759
+    ]
+   }
+  }
+ ],
+ "canned": {
+  "fin01": {
+   "scores": {
+    "thesis": 3,
+    "changed": 4,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated."
+  },
+  "fin02": {
+   "scores": {
+    "thesis": 4,
+    "changed": 4,
+    "uncertainty": 5
+   },
+   "quote": "Thesis: Pricing power is real this quarter; the question is whether volume holds."
+  },
+  "fin03": {
+   "scores": {
+    "thesis": 4,
+    "changed": 4,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting."
+  },
+  "fin04": {
+   "scores": {
+    "thesis": 3,
+    "changed": 5,
+    "uncertainty": 5
+   },
+   "quote": "Thesis: Growth is real but concentrated in one customer, which makes it fragile."
+  },
+  "fin05": {
+   "scores": {
+    "thesis": 3,
+    "changed": 5,
+    "uncertainty": 5
+   },
+   "quote": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated."
+  },
+  "fin06": {
+   "scores": {
+    "thesis": 5,
+    "changed": 5,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Pricing power is real this quarter; the question is whether volume holds."
+  },
+  "fin07": {
+   "scores": {
+    "thesis": 4,
+    "changed": 5,
+    "uncertainty": 5
+   },
+   "quote": "Thesis: The quarter had positives and negatives, and the company remains one to watch."
+  },
+  "fin08": {
+   "scores": {
+    "thesis": 3,
+    "changed": 5,
+    "uncertainty": 2
+   },
+   "quote": "Thesis: Growth is real but concentrated in one customer, which makes it fragile."
+  },
+  "fin09": {
+   "scores": {
+    "thesis": 4,
+    "changed": 4,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated."
+  },
+  "fin10": {
+   "scores": {
+    "thesis": 3,
+    "changed": 5,
+    "uncertainty": 2
+   },
+   "quote": "Thesis: Pricing power is real this quarter; the question is whether volume holds."
+  },
+  "fin11": {
+   "scores": {
+    "thesis": 5,
+    "changed": 5,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting."
+  },
+  "fin12": {
+   "scores": {
+    "thesis": 5,
+    "changed": 3,
+    "uncertainty": 2
+   },
+   "quote": "Thesis: Growth is real but concentrated in one customer, which makes it fragile."
+  },
+  "fin13": {
+   "scores": {
+    "thesis": 5,
+    "changed": 4,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: The quarter had positives and negatives, and the company remains one to watch."
+  },
+  "fin14": {
+   "scores": {
+    "thesis": 4,
+    "changed": 4,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Pricing power is real this quarter; the question is whether volume holds."
+  },
+  "fin15": {
+   "scores": {
+    "thesis": 5,
+    "changed": 4,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: The quarter had positives and negatives, and the company remains one to watch."
+  },
+  "fin16": {
+   "scores": {
+    "thesis": 4,
+    "changed": 5,
+    "uncertainty": 2
+   },
+   "quote": "Thesis: Growth is real but concentrated in one customer, which makes it fragile."
+  },
+  "fin17": {
+   "scores": {
+    "thesis": 5,
+    "changed": 5,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated."
+  },
+  "fin18": {
+   "scores": {
+    "thesis": 5,
+    "changed": 3,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Pricing power is real this quarter; the question is whether volume holds."
+  },
+  "fin19": {
+   "scores": {
+    "thesis": 5,
+    "changed": 2,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting."
+  },
+  "fin20": {
+   "scores": {
+    "thesis": 5,
+    "changed": 3,
+    "uncertainty": 3
+   },
+   "quote": "Thesis: The quarter had positives and negatives, and the company remains one to watch."
+  },
+  "fin21": {
+   "scores": {
+    "thesis": 2,
+    "changed": 5,
+    "uncertainty": 5
+   },
+   "quote": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated."
+  },
+  "fin22": {
+   "scores": {
+    "thesis": 5,
+    "changed": 4,
+    "uncertainty": 2
+   },
+   "quote": "Thesis: Pricing power is real this quarter; the question is whether volume holds."
+  },
+  "fin23": {
+   "scores": {
+    "thesis": 5,
+    "changed": 5,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting."
+  },
+  "fin24": {
+   "scores": {
+    "thesis": 5,
+    "changed": 5,
+    "uncertainty": 5
+   },
+   "quote": "Thesis: The quarter had positives and negatives, and the company remains one to watch."
+  },
+  "fin25": {
+   "scores": {
+    "thesis": 4,
+    "changed": 5,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Underlying demand is steady, but the EPS beat is mostly a one-off and should not be extrapolated."
+  },
+  "fin26": {
+   "scores": {
+    "thesis": 2,
+    "changed": 3,
+    "uncertainty": 3
+   },
+   "quote": "Thesis: The quarter had positives and negatives, and the company remains one to watch."
+  },
+  "fin27": {
+   "scores": {
+    "thesis": 5,
+    "changed": 4,
+    "uncertainty": 5
+   },
+   "quote": "Thesis: Sales are fine, but stock is building faster than sales, which usually precedes discounting."
+  },
+  "fin28": {
+   "scores": {
+    "thesis": 4,
+    "changed": 3,
+    "uncertainty": 3
+   },
+   "quote": "Thesis: Growth is real but concentrated in one customer, which makes it fragile."
+  },
+  "fin29": {
+   "scores": {
+    "thesis": 4,
+    "changed": 4,
+    "uncertainty": 5
+   },
+   "quote": "Thesis: The quarter had positives and negatives, and the company remains one to watch."
+  },
+  "fin30": {
+   "scores": {
+    "thesis": 4,
+    "changed": 4,
+    "uncertainty": 4
+   },
+   "quote": "Thesis: Pricing power is real this quarter; the question is whether volume holds."
+  }
+ }
+}

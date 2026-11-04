@@ -1,0 +1,1758 @@
+{
+ "key": "health",
+ "name": "Healthcare",
+ "task": "Write a nursing care plan from an admission note",
+ "job": "From the admission note, write the plan a charge nurse would sign: the life-threatening problem first, goals you can measure, interventions a colleague can carry out.",
+ "decision": "Regression gate for a clinical documentation product: does a new version ship to wards?",
+ "strata": [
+  "diagnosis (pneumonia, heart failure, COPD, DKA)",
+  "allergy or interacting medicine (3)"
+ ],
+ "deliverable": "A numbered care plan",
+ "dims": [
+  {
+   "key": "priority",
+   "name": "Prioritisation",
+   "hint": "Is airway, breathing, circulation first, and comfort after?"
+  },
+  {
+   "key": "goals",
+   "name": "Measurable goals",
+   "hint": "Could a nurse tell at a set time whether each goal was met?"
+  },
+  {
+   "key": "specificity",
+   "name": "Intervention specificity",
+   "hint": "Could a colleague carry out each intervention without asking?"
+  }
+ ],
+ "preference": "A charge nurse's plan for the same patient",
+ "trap": "A long, thorough plan reads as a good plan. Experts care about the order; a naive judge counts the items.",
+ "checkers": [
+  {
+   "id": "no_contraindicated",
+   "name": "No contraindicated medicine",
+   "reads": "output, vars.avoid (from the allergy list and the interaction table)",
+   "src": "const t = output.toLowerCase();\nreturn !context.vars.avoid.some(w => t.includes(w));"
+  },
+  {
+   "id": "vitals_match",
+   "name": "Every vital sign quoted matches the note",
+   "reads": "output, vars.vitals",
+   "src": "const v = context.vars.vitals;\nconst pats = [[/SpO2 (\\d+)%/g, 'spo2'], [/\\bHR (\\d+)/g, 'hr'], [/\\bRR (\\d+)/g, 'rr'], [/\\bBP (\\d+\\/\\d+)/g, 'bp'], [/\\bT (\\d+(?:\\.\\d)?) ?°C/g, 'temp']];\nfor (const [re, k] of pats) { let m; while ((m = re.exec(output))) if (String(m[1]) !== String(v[k])) return false; }\nreturn true;"
+  },
+  {
+   "id": "evidence_each",
+   "name": "Every diagnosis cites evidence",
+   "reads": "output",
+   "src": "const dx = (output.match(/^\\d+\\. /gm) || []).length;\nconst ev = (output.match(/^\\s*Evidence: /gm) || []).length;\nreturn dx > 0 && dx === ev;"
+  }
+ ],
+ "reference_note": "Fictional patients. Interventions are written \"as ordered\"; nothing here is clinical advice.",
+ "version": "2026-11-01.1",
+ "judge_model": "openai/gpt-oss-20b",
+ "items": [
+  {
+   "id": "hea01",
+   "input": "58F, admitted with community-acquired pneumonia. Vitals: HR 104, BP 128/78, RR 24, SpO2 89% on room air, T 38.6 °C. Labs: WBC 15.2; chest X-ray right lower lobe consolidation. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "104"
+     ],
+     [
+      "BP",
+      "128/78"
+     ],
+     [
+      "RR",
+      "24"
+     ],
+     [
+      "SpO2",
+      "89%"
+     ],
+     [
+      "T",
+      "38.6 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Acute pain\n   Evidence: pleuritic chest pain 6/10\n   Goal: Patient will be comfortable\n   Interventions: Provide pain relief; reassure patient\n2. Impaired gas exchange\n   Evidence: SpO2 89% on room air, RR 24\n   Goal: Breathing will improve\n   Interventions: Monitor breathing; provide oxygen if needed\n3. Hyperthermia\n   Evidence: T 38.6 °C, WBC 15.2\n   Goal: Fever will go down\n   Interventions: Monitor temperature; keep patient comfortable",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 104,
+     "bp": "128/78",
+     "rr": 24,
+     "spo2": 89,
+     "temp": 38.6
+    }
+   }
+  },
+  {
+   "id": "hea02",
+   "input": "71F, admitted with acute decompensated heart failure. Vitals: HR 112, BP 152/94, RR 26, SpO2 90% on room air, T 36.9 °C. Labs: BNP 1,240; weight up 3 kg in 5 days; bibasal crackles. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "112"
+     ],
+     [
+      "BP",
+      "152/94"
+     ],
+     [
+      "RR",
+      "26"
+     ],
+     [
+      "SpO2",
+      "90%"
+     ],
+     [
+      "T",
+      "36.9 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 96%, RR 26, bibasal crackles\n   Goal: Breathing will be easier\n   Interventions: Monitor breathing; keep head of bed up\n2. Excess fluid volume\n   Evidence: weight up 3 kg, BNP 1,240\n   Goal: Fluid levels will improve\n   Interventions: Monitor fluids; encourage less drinking\n3. Activity intolerance\n   Evidence: HR 112 on walking to the bathroom\n   Goal: Patient will be more active\n   Interventions: Encourage rest and activity as tolerated",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 112,
+     "bp": "152/94",
+     "rr": 26,
+     "spo2": 90,
+     "temp": 36.9
+    }
+   }
+  },
+  {
+   "id": "hea03",
+   "input": "58F, admitted with COPD exacerbation. Vitals: HR 98, BP 138/82, RR 28, SpO2 86% on room air, T 37.4 °C. Labs: ABG pH 7.33, PaCO2 52; sputum increased and purulent. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "98"
+     ],
+     [
+      "BP",
+      "138/82"
+     ],
+     [
+      "RR",
+      "28"
+     ],
+     [
+      "SpO2",
+      "86%"
+     ],
+     [
+      "T",
+      "37.4 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Anxiety\n   Evidence: patient says \"I can't get my breath\"\n   Goal: Patient uses pursed-lip breathing unprompted by day 2\n   Interventions: Reassure patient\n2. Ineffective airway clearance\n   Evidence: SpO2 92%, RR 28, purulent sputum\n   Goal: SpO2 88 to 92% and clear speech in full sentences within 4 hours\n   Interventions: Help patient cough; give oxygen\n3. Impaired gas exchange\n   Evidence: PaCO2 52, pH 7.33\n   Goal: Repeat ABG shows pH at or above 7.35 within 12 hours\n   Interventions: Monitor blood gases",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 98,
+     "bp": "138/82",
+     "rr": 28,
+     "spo2": 86,
+     "temp": 37.4
+    }
+   }
+  },
+  {
+   "id": "hea04",
+   "input": "71F, admitted with diabetic ketoacidosis. Vitals: HR 118, BP 98/60, RR 30, SpO2 97% on room air, T 37.1 °C. Labs: glucose 28 mmol/L; pH 7.18; ketones 5.2 mmol/L; potassium 5.6. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "118"
+     ],
+     [
+      "BP",
+      "98/60"
+     ],
+     [
+      "RR",
+      "30"
+     ],
+     [
+      "SpO2",
+      "97%"
+     ],
+     [
+      "T",
+      "37.1 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Deficient knowledge\n   Evidence: second admission for DKA this year\n   Goal: Patient states sick-day rules back correctly before discharge\n   Interventions: Teach sick-day rules with teach-back; refer to the diabetes nurse specialist before discharge\n2. Deficient fluid volume\n   Evidence: BP 98/60, HR 118, dry mucous membranes\n   Goal: Systolic BP at or above 100 and urine output at least 0.5 mL/kg/h within 4 hours\n   Interventions: Give IV fluids at the ordered rate; record urine output hourly; recheck BP every 15 minutes for the first hour\n3. Risk for unstable blood glucose\n   Evidence: glucose 28 mmol/L, ketones 5.2\n   Goal: Glucose falls by 3 mmol/L an hour and ketones below 0.6 within 24 hours\n   Interventions: Fixed-rate insulin infusion as ordered; capillary glucose and ketones hourly; potassium every 2 hours with replacement as ordered",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 118,
+     "bp": "98/60",
+     "rr": 30,
+     "spo2": 97,
+     "temp": 37.1
+    }
+   }
+  },
+  {
+   "id": "hea05",
+   "input": "76M, admitted with community-acquired pneumonia. Vitals: HR 104, BP 128/78, RR 24, SpO2 89% on room air, T 38.6 °C. Labs: WBC 15.2; chest X-ray right lower lobe consolidation. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "104"
+     ],
+     [
+      "BP",
+      "128/78"
+     ],
+     [
+      "RR",
+      "24"
+     ],
+     [
+      "SpO2",
+      "89%"
+     ],
+     [
+      "T",
+      "38.6 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 89% on room air, RR 24\n   Goal: SpO2 at or above 92% within 4 hours\n   Interventions: Give oxygen by nasal cannula, titrated to SpO2 92 to 96%; sit the patient upright; incentive spirometry 10 times an hour while awake\n2. Hyperthermia\n   Evidence: T 38.6 °C, WBC 15.2\n   Goal: Temperature below 38.0 °C within 24 hours\n   Interventions: Give paracetamol as ordered for temperature above 38.5 °C; blood cultures before the first antibiotic dose; recheck temperature in 1 hour\n3. Acute pain\n   Evidence: pleuritic chest pain 6/10\n   Goal: Pain at or below 3/10 within 2 hours of each dose\n   Interventions: Give the ordered non-opioid analgesic; splint the chest with a pillow when coughing; reassess pain score 1 hour after each dose",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 104,
+     "bp": "128/78",
+     "rr": 24,
+     "spo2": 89,
+     "temp": 38.6
+    }
+   }
+  },
+  {
+   "id": "hea06",
+   "input": "71F, admitted with acute decompensated heart failure. Vitals: HR 112, BP 152/94, RR 26, SpO2 90% on room air, T 36.9 °C. Labs: BNP 1,240; weight up 3 kg in 5 days; bibasal crackles. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "112"
+     ],
+     [
+      "BP",
+      "152/94"
+     ],
+     [
+      "RR",
+      "26"
+     ],
+     [
+      "SpO2",
+      "90%"
+     ],
+     [
+      "T",
+      "36.9 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 90%, RR 26, bibasal crackles\n   Goal: Breathing will be easier\n   Interventions: High-Fowler position; oxygen titrated to SpO2 94 to 98%; give the ordered IV diuretic and record urine output hourly\n2. Excess fluid volume\n   Evidence: weight up 3 kg, BNP 1,240\n   Goal: Fluid levels will improve\n   Interventions: Daily weight at 06:00 on the same scale; fluid restriction 1.5 L as ordered; check potassium before each diuretic dose\n3. Activity intolerance\n   Evidence: HR 112 on walking to the bathroom\n   Goal: Patient will be more active\n   Interventions: Cluster care to allow rest; walk with assistance three times a day; stop if SpO2 falls below 90%",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 112,
+     "bp": "152/94",
+     "rr": 26,
+     "spo2": 90,
+     "temp": 36.9
+    }
+   }
+  },
+  {
+   "id": "hea07",
+   "input": "69M, admitted with COPD exacerbation. Vitals: HR 98, BP 138/82, RR 28, SpO2 86% on room air, T 37.4 °C. Labs: ABG pH 7.33, PaCO2 52; sputum increased and purulent. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "98"
+     ],
+     [
+      "BP",
+      "138/82"
+     ],
+     [
+      "RR",
+      "28"
+     ],
+     [
+      "SpO2",
+      "86%"
+     ],
+     [
+      "T",
+      "37.4 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Ineffective airway clearance\n   Evidence: SpO2 86%, RR 28, purulent sputum\n   Goal: Airway will be clear\n   Interventions: Help patient cough; give oxygen\n2. Impaired gas exchange\n   Evidence: PaCO2 52, pH 7.33\n   Goal: Gas exchange will improve\n   Interventions: Monitor blood gases\n3. Anxiety\n   Evidence: patient says \"I can't get my breath\"\n   Goal: Patient will feel calmer\n   Interventions: Reassure patient",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 98,
+     "bp": "138/82",
+     "rr": 28,
+     "spo2": 86,
+     "temp": 37.4
+    }
+   }
+  },
+  {
+   "id": "hea08",
+   "input": "71F, admitted with diabetic ketoacidosis. Vitals: HR 118, BP 98/60, RR 30, SpO2 97% on room air, T 37.1 °C. Labs: glucose 28 mmol/L; pH 7.18; ketones 5.2 mmol/L; potassium 5.6. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "118"
+     ],
+     [
+      "BP",
+      "98/60"
+     ],
+     [
+      "RR",
+      "30"
+     ],
+     [
+      "SpO2",
+      "97%"
+     ],
+     [
+      "T",
+      "37.1 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Deficient fluid volume\n   Evidence: BP 98/60, HR 118, dry mucous membranes\n   Goal: Systolic BP at or above 100 and urine output at least 0.5 mL/kg/h within 4 hours\n   Interventions: Give IV fluids at the ordered rate; record urine output hourly; recheck BP every 15 minutes for the first hour\n2. Risk for unstable blood glucose\n   Evidence: glucose 28 mmol/L, ketones 5.2\n   Goal: Glucose falls by 3 mmol/L an hour and ketones below 0.6 within 24 hours\n   Interventions: Fixed-rate insulin infusion as ordered; capillary glucose and ketones hourly; potassium every 2 hours with replacement as ordered\n3. Deficient knowledge\n   Evidence: second admission for DKA this year\n   Goal: Patient states sick-day rules back correctly before discharge\n   Interventions: Teach sick-day rules with teach-back; refer to the diabetes nurse specialist before discharge",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 118,
+     "bp": "98/60",
+     "rr": 30,
+     "spo2": 97,
+     "temp": 37.1
+    }
+   }
+  },
+  {
+   "id": "hea09",
+   "input": "63M, admitted with community-acquired pneumonia. Vitals: HR 104, BP 128/78, RR 24, SpO2 89% on room air, T 38.6 °C. Labs: WBC 15.2; chest X-ray right lower lobe consolidation. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "104"
+     ],
+     [
+      "BP",
+      "128/78"
+     ],
+     [
+      "RR",
+      "24"
+     ],
+     [
+      "SpO2",
+      "89%"
+     ],
+     [
+      "T",
+      "38.6 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 89% on room air, RR 24\n   Goal: SpO2 at or above 92% within 4 hours\n   Interventions: Give oxygen by nasal cannula, titrated to SpO2 92 to 96%; sit the patient upright; incentive spirometry 10 times an hour while awake\n2. Hyperthermia\n   Evidence: T 38.6 °C, WBC 15.2\n   Goal: Temperature below 38.0 °C within 24 hours\n   Interventions: Give paracetamol as ordered for temperature above 38.5 °C; blood cultures before the first antibiotic dose; recheck temperature in 1 hour\n3. Acute pain\n   Evidence: pleuritic chest pain 6/10\n   Goal: Pain at or below 3/10 within 2 hours of each dose\n   Interventions: Give the ordered non-opioid analgesic; splint the chest with a pillow when coughing; reassess pain score 1 hour after each dose",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 104,
+     "bp": "128/78",
+     "rr": 24,
+     "spo2": 89,
+     "temp": 38.6
+    }
+   }
+  },
+  {
+   "id": "hea10",
+   "input": "34F, admitted with acute decompensated heart failure. Vitals: HR 112, BP 152/94, RR 26, SpO2 90% on room air, T 36.9 °C. Labs: BNP 1,240; weight up 3 kg in 5 days; bibasal crackles. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "112"
+     ],
+     [
+      "BP",
+      "152/94"
+     ],
+     [
+      "RR",
+      "26"
+     ],
+     [
+      "SpO2",
+      "90%"
+     ],
+     [
+      "T",
+      "36.9 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 90%, RR 26, bibasal crackles\n   Goal: SpO2 at or above 94% and RR below 22 within 6 hours\n   Interventions: High-Fowler position; oxygen titrated to SpO2 94 to 98%; give the ordered IV diuretic and record urine output hourly\n2. Excess fluid volume\n   Evidence: weight up 3 kg, BNP 1,240\n   Goal: Weight down 1 kg in 24 hours; intake and output recorded every shift\n   Interventions: Daily weight at 06:00 on the same scale; fluid restriction 1.5 L as ordered; check potassium before each diuretic dose\n3. Activity intolerance\n   Evidence: HR 112 on walking to the bathroom\n   Goal: Walks to the bathroom with HR below 110 by day 2\n   Interventions: Cluster care to allow rest; walk with assistance three times a day; stop if SpO2 falls below 90%",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 112,
+     "bp": "152/94",
+     "rr": 26,
+     "spo2": 90,
+     "temp": 36.9
+    }
+   }
+  },
+  {
+   "id": "hea11",
+   "input": "71F, admitted with COPD exacerbation. Vitals: HR 98, BP 138/82, RR 28, SpO2 86% on room air, T 37.4 °C. Labs: ABG pH 7.33, PaCO2 52; sputum increased and purulent. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "98"
+     ],
+     [
+      "BP",
+      "138/82"
+     ],
+     [
+      "RR",
+      "28"
+     ],
+     [
+      "SpO2",
+      "86%"
+     ],
+     [
+      "T",
+      "37.4 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Ineffective airway clearance\n   Evidence: SpO2 86%, RR 28, purulent sputum\n   Goal: SpO2 88 to 92% and clear speech in full sentences within 4 hours\n   Interventions: Controlled oxygen titrated to SpO2 88 to 92%; nebulised bronchodilators as ordered; pursed-lip breathing and huff cough every 2 hours\n2. Impaired gas exchange\n   Evidence: PaCO2 52, pH 7.33\n   Goal: Repeat ABG shows pH at or above 7.35 within 12 hours\n   Interventions: Repeat ABG 1 hour after any oxygen change; watch for drowsiness as a sign of rising CO2; escalate to the medical team if pH falls\n3. Anxiety\n   Evidence: patient says \"I can't get my breath\"\n   Goal: Patient uses pursed-lip breathing unprompted by day 2\n   Interventions: Stay with the patient during episodes of breathlessness; coach pursed-lip breathing; use a fan to the face",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 98,
+     "bp": "138/82",
+     "rr": 28,
+     "spo2": 86,
+     "temp": 37.4
+    }
+   }
+  },
+  {
+   "id": "hea12",
+   "input": "63M, admitted with diabetic ketoacidosis. Vitals: HR 118, BP 98/60, RR 30, SpO2 97% on room air, T 37.1 °C. Labs: glucose 28 mmol/L; pH 7.18; ketones 5.2 mmol/L; potassium 5.6. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "118"
+     ],
+     [
+      "BP",
+      "98/60"
+     ],
+     [
+      "RR",
+      "30"
+     ],
+     [
+      "SpO2",
+      "97%"
+     ],
+     [
+      "T",
+      "37.1 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Deficient knowledge\n   Evidence: second admission for DKA this year\n   Goal: Patient states sick-day rules back correctly before discharge\n   Interventions: Give patient information leaflet\n2. Deficient fluid volume\n   Evidence: BP 98/60, HR 118, dry mucous membranes\n   Goal: Systolic BP at or above 100 and urine output at least 0.5 mL/kg/h within 4 hours\n   Interventions: Encourage fluids; monitor hydration\n3. Risk for unstable blood glucose\n   Evidence: glucose 28 mmol/L, ketones 5.2\n   Goal: Glucose falls by 3 mmol/L an hour and ketones below 0.6 within 24 hours\n   Interventions: Check blood sugar regularly",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 118,
+     "bp": "98/60",
+     "rr": 30,
+     "spo2": 97,
+     "temp": 37.1
+    }
+   }
+  },
+  {
+   "id": "hea13",
+   "input": "63M, admitted with community-acquired pneumonia. Vitals: HR 104, BP 128/78, RR 24, SpO2 89% on room air, T 38.6 °C. Labs: WBC 15.2; chest X-ray right lower lobe consolidation. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "104"
+     ],
+     [
+      "BP",
+      "128/78"
+     ],
+     [
+      "RR",
+      "24"
+     ],
+     [
+      "SpO2",
+      "89%"
+     ],
+     [
+      "T",
+      "38.6 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 89% on room air, RR 24\n   Goal: Breathing will improve\n   Interventions: Give oxygen by nasal cannula, titrated to SpO2 92 to 96%; sit the patient upright; incentive spirometry 10 times an hour while awake\n2. Hyperthermia\n   Evidence: T 38.6 °C, WBC 15.2\n   Goal: Fever will go down\n   Interventions: Give paracetamol as ordered for temperature above 38.5 °C; blood cultures before the first antibiotic dose; recheck temperature in 1 hour\n3. Acute pain\n   Evidence: pleuritic chest pain 6/10\n   Goal: Patient will be comfortable\n   Interventions: Give the ordered non-opioid analgesic; splint the chest with a pillow when coughing; reassess pain score 1 hour after each dose",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 104,
+     "bp": "128/78",
+     "rr": 24,
+     "spo2": 89,
+     "temp": 38.6
+    }
+   }
+  },
+  {
+   "id": "hea14",
+   "input": "76M, admitted with acute decompensated heart failure. Vitals: HR 112, BP 152/94, RR 26, SpO2 90% on room air, T 36.9 °C. Labs: BNP 1,240; weight up 3 kg in 5 days; bibasal crackles. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "112"
+     ],
+     [
+      "BP",
+      "152/94"
+     ],
+     [
+      "RR",
+      "26"
+     ],
+     [
+      "SpO2",
+      "90%"
+     ],
+     [
+      "T",
+      "36.9 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 90%, RR 26, bibasal crackles\n   Goal: SpO2 at or above 94% and RR below 22 within 6 hours\n   Interventions: Monitor breathing; keep head of bed up\n2. Excess fluid volume\n   Evidence: weight up 3 kg, BNP 1,240\n   Goal: Weight down 1 kg in 24 hours; intake and output recorded every shift\n   Interventions: Monitor fluids; encourage less drinking\n3. Activity intolerance\n   Evidence: HR 112 on walking to the bathroom\n   Goal: Walks to the bathroom with HR below 110 by day 2\n   Interventions: Encourage rest and activity as tolerated; Start amoxicillin as ordered at the first dose time\n4. Disturbed sleep pattern\n   Goal: Patient will sleep well\n   Interventions: Dim lights at night\n5. Deficient diversional activity\n   Goal: Patient will not be bored\n   Interventions: Offer television or reading material\n6. Risk for falls\n   Goal: Patient will not fall\n   Interventions: Keep bed low; call bell in reach",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 112,
+     "bp": "152/94",
+     "rr": 26,
+     "spo2": 90,
+     "temp": 36.9
+    }
+   }
+  },
+  {
+   "id": "hea15",
+   "input": "34F, admitted with COPD exacerbation. Vitals: HR 98, BP 138/82, RR 28, SpO2 86% on room air, T 37.4 °C. Labs: ABG pH 7.33, PaCO2 52; sputum increased and purulent. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "98"
+     ],
+     [
+      "BP",
+      "138/82"
+     ],
+     [
+      "RR",
+      "28"
+     ],
+     [
+      "SpO2",
+      "86%"
+     ],
+     [
+      "T",
+      "37.4 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Anxiety\n   Evidence: patient says \"I can't get my breath\"\n   Goal: Patient will feel calmer\n   Interventions: Reassure patient\n2. Ineffective airway clearance\n   Evidence: SpO2 86%, RR 28, purulent sputum\n   Goal: Airway will be clear\n   Interventions: Help patient cough; give oxygen\n3. Impaired gas exchange\n   Evidence: PaCO2 52, pH 7.33\n   Goal: Gas exchange will improve\n   Interventions: Monitor blood gases\n4. Deficient diversional activity\n   Goal: Patient will not be bored\n   Interventions: Offer television or reading material\n5. Disturbed sleep pattern\n   Goal: Patient will sleep well\n   Interventions: Dim lights at night\n6. Risk for falls\n   Goal: Patient will not fall\n   Interventions: Keep bed low; call bell in reach",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 98,
+     "bp": "138/82",
+     "rr": 28,
+     "spo2": 86,
+     "temp": 37.4
+    }
+   }
+  },
+  {
+   "id": "hea16",
+   "input": "47M, admitted with diabetic ketoacidosis. Vitals: HR 118, BP 98/60, RR 30, SpO2 97% on room air, T 37.1 °C. Labs: glucose 28 mmol/L; pH 7.18; ketones 5.2 mmol/L; potassium 5.6. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "118"
+     ],
+     [
+      "BP",
+      "98/60"
+     ],
+     [
+      "RR",
+      "30"
+     ],
+     [
+      "SpO2",
+      "97%"
+     ],
+     [
+      "T",
+      "37.1 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Deficient fluid volume\n   Evidence: BP 98/60, HR 118, dry mucous membranes\n   Goal: Systolic BP at or above 100 and urine output at least 0.5 mL/kg/h within 4 hours\n   Interventions: Give IV fluids at the ordered rate; record urine output hourly; recheck BP every 15 minutes for the first hour\n2. Risk for unstable blood glucose\n   Evidence: glucose 28 mmol/L, ketones 5.2\n   Goal: Glucose falls by 3 mmol/L an hour and ketones below 0.6 within 24 hours\n   Interventions: Fixed-rate insulin infusion as ordered; capillary glucose and ketones hourly; potassium every 2 hours with replacement as ordered\n3. Deficient knowledge\n   Evidence: second admission for DKA this year\n   Goal: Patient states sick-day rules back correctly before discharge\n   Interventions: Teach sick-day rules with teach-back; refer to the diabetes nurse specialist before discharge",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 118,
+     "bp": "98/60",
+     "rr": 30,
+     "spo2": 97,
+     "temp": 37.1
+    }
+   }
+  },
+  {
+   "id": "hea17",
+   "input": "58F, admitted with community-acquired pneumonia. Vitals: HR 104, BP 128/78, RR 24, SpO2 89% on room air, T 38.6 °C. Labs: WBC 15.2; chest X-ray right lower lobe consolidation. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "104"
+     ],
+     [
+      "BP",
+      "128/78"
+     ],
+     [
+      "RR",
+      "24"
+     ],
+     [
+      "SpO2",
+      "89%"
+     ],
+     [
+      "T",
+      "38.6 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 95% on room air, RR 24\n   Goal: Breathing will improve\n   Interventions: Give oxygen by nasal cannula, titrated to SpO2 92 to 96%; sit the patient upright; incentive spirometry 10 times an hour while awake\n2. Hyperthermia\n   Evidence: T 38.6 °C, WBC 15.2\n   Goal: Fever will go down\n   Interventions: Give paracetamol as ordered for temperature above 38.5 °C; blood cultures before the first antibiotic dose; recheck temperature in 1 hour\n3. Acute pain\n   Evidence: pleuritic chest pain 6/10\n   Goal: Patient will be comfortable\n   Interventions: Give the ordered non-opioid analgesic; splint the chest with a pillow when coughing; reassess pain score 1 hour after each dose",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 104,
+     "bp": "128/78",
+     "rr": 24,
+     "spo2": 89,
+     "temp": 38.6
+    }
+   }
+  },
+  {
+   "id": "hea18",
+   "input": "34F, admitted with acute decompensated heart failure. Vitals: HR 112, BP 152/94, RR 26, SpO2 90% on room air, T 36.9 °C. Labs: BNP 1,240; weight up 3 kg in 5 days; bibasal crackles. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "112"
+     ],
+     [
+      "BP",
+      "152/94"
+     ],
+     [
+      "RR",
+      "26"
+     ],
+     [
+      "SpO2",
+      "90%"
+     ],
+     [
+      "T",
+      "36.9 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 90%, RR 26, bibasal crackles\n   Goal: Breathing will be easier\n   Interventions: Monitor breathing; keep head of bed up\n2. Excess fluid volume\n   Evidence: weight up 3 kg, BNP 1,240\n   Goal: Fluid levels will improve\n   Interventions: Monitor fluids; encourage less drinking\n3. Activity intolerance\n   Evidence: HR 112 on walking to the bathroom\n   Goal: Patient will be more active\n   Interventions: Encourage rest and activity as tolerated\n4. Deficient diversional activity\n   Goal: Patient will not be bored\n   Interventions: Offer television or reading material\n5. Risk for impaired skin integrity\n   Goal: Skin will stay intact\n   Interventions: Reposition regularly\n6. Risk for falls\n   Goal: Patient will not fall\n   Interventions: Keep bed low; call bell in reach",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 112,
+     "bp": "152/94",
+     "rr": 26,
+     "spo2": 90,
+     "temp": 36.9
+    }
+   }
+  },
+  {
+   "id": "hea19",
+   "input": "63M, admitted with COPD exacerbation. Vitals: HR 98, BP 138/82, RR 28, SpO2 86% on room air, T 37.4 °C. Labs: ABG pH 7.33, PaCO2 52; sputum increased and purulent. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "98"
+     ],
+     [
+      "BP",
+      "138/82"
+     ],
+     [
+      "RR",
+      "28"
+     ],
+     [
+      "SpO2",
+      "86%"
+     ],
+     [
+      "T",
+      "37.4 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Ineffective airway clearance\n   Evidence: SpO2 86%, RR 28, purulent sputum\n   Goal: SpO2 88 to 92% and clear speech in full sentences within 4 hours\n   Interventions: Controlled oxygen titrated to SpO2 88 to 92%; nebulised bronchodilators as ordered; pursed-lip breathing and huff cough every 2 hours\n2. Impaired gas exchange\n   Evidence: PaCO2 52, pH 7.33\n   Goal: Repeat ABG shows pH at or above 7.35 within 12 hours\n   Interventions: Repeat ABG 1 hour after any oxygen change; watch for drowsiness as a sign of rising CO2; escalate to the medical team if pH falls\n3. Anxiety\n   Evidence: patient says \"I can't get my breath\"\n   Goal: Patient uses pursed-lip breathing unprompted by day 2\n   Interventions: Stay with the patient during episodes of breathlessness; coach pursed-lip breathing; use a fan to the face",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 98,
+     "bp": "138/82",
+     "rr": 28,
+     "spo2": 86,
+     "temp": 37.4
+    }
+   }
+  },
+  {
+   "id": "hea20",
+   "input": "34F, admitted with diabetic ketoacidosis. Vitals: HR 118, BP 98/60, RR 30, SpO2 97% on room air, T 37.1 °C. Labs: glucose 28 mmol/L; pH 7.18; ketones 5.2 mmol/L; potassium 5.6. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "118"
+     ],
+     [
+      "BP",
+      "98/60"
+     ],
+     [
+      "RR",
+      "30"
+     ],
+     [
+      "SpO2",
+      "97%"
+     ],
+     [
+      "T",
+      "37.1 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Deficient fluid volume\n   Evidence: BP 98/60, HR 118, dry mucous membranes\n   Goal: Systolic BP at or above 100 and urine output at least 0.5 mL/kg/h within 4 hours\n   Interventions: Encourage fluids; monitor hydration\n2. Risk for unstable blood glucose\n   Evidence: glucose 28 mmol/L, ketones 5.2\n   Goal: Glucose falls by 3 mmol/L an hour and ketones below 0.6 within 24 hours\n   Interventions: Check blood sugar regularly\n3. Deficient knowledge\n   Evidence: second admission for DKA this year\n   Goal: Patient states sick-day rules back correctly before discharge\n   Interventions: Give patient information leaflet",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 118,
+     "bp": "98/60",
+     "rr": 30,
+     "spo2": 97,
+     "temp": 37.1
+    }
+   }
+  },
+  {
+   "id": "hea21",
+   "input": "71F, admitted with community-acquired pneumonia. Vitals: HR 104, BP 128/78, RR 24, SpO2 89% on room air, T 38.6 °C. Labs: WBC 15.2; chest X-ray right lower lobe consolidation. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "104"
+     ],
+     [
+      "BP",
+      "128/78"
+     ],
+     [
+      "RR",
+      "24"
+     ],
+     [
+      "SpO2",
+      "89%"
+     ],
+     [
+      "T",
+      "38.6 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Acute pain\n   Evidence: pleuritic chest pain 6/10\n   Goal: Pain at or below 3/10 within 2 hours of each dose\n   Interventions: Give the ordered non-opioid analgesic; splint the chest with a pillow when coughing; reassess pain score 1 hour after each dose\n2. Impaired gas exchange\n   Evidence: SpO2 95% on room air, RR 24\n   Goal: SpO2 at or above 92% within 4 hours\n   Interventions: Give oxygen by nasal cannula, titrated to SpO2 92 to 96%; sit the patient upright; incentive spirometry 10 times an hour while awake\n3. Hyperthermia\n   Evidence: T 38.6 °C, WBC 15.2\n   Goal: Temperature below 38.0 °C within 24 hours\n   Interventions: Give paracetamol as ordered for temperature above 38.5 °C; blood cultures before the first antibiotic dose; recheck temperature in 1 hour; Give ibuprofen 400 mg for fever or pain",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 104,
+     "bp": "128/78",
+     "rr": 24,
+     "spo2": 89,
+     "temp": 38.6
+    }
+   }
+  },
+  {
+   "id": "hea22",
+   "input": "58F, admitted with acute decompensated heart failure. Vitals: HR 112, BP 152/94, RR 26, SpO2 90% on room air, T 36.9 °C. Labs: BNP 1,240; weight up 3 kg in 5 days; bibasal crackles. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "112"
+     ],
+     [
+      "BP",
+      "152/94"
+     ],
+     [
+      "RR",
+      "26"
+     ],
+     [
+      "SpO2",
+      "90%"
+     ],
+     [
+      "T",
+      "36.9 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Activity intolerance\n   Evidence: HR 112 on walking to the bathroom\n   Goal: Walks to the bathroom with HR below 110 by day 2\n   Interventions: Encourage rest and activity as tolerated\n2. Impaired gas exchange\n   Evidence: SpO2 96%, RR 26, bibasal crackles\n   Goal: SpO2 at or above 94% and RR below 22 within 6 hours\n   Interventions: Monitor breathing; keep head of bed up\n3. Excess fluid volume\n   Evidence: weight up 3 kg, BNP 1,240\n   Goal: Weight down 1 kg in 24 hours; intake and output recorded every shift\n   Interventions: Monitor fluids; encourage less drinking",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 112,
+     "bp": "152/94",
+     "rr": 26,
+     "spo2": 90,
+     "temp": 36.9
+    }
+   }
+  },
+  {
+   "id": "hea23",
+   "input": "82F, admitted with COPD exacerbation. Vitals: HR 98, BP 138/82, RR 28, SpO2 86% on room air, T 37.4 °C. Labs: ABG pH 7.33, PaCO2 52; sputum increased and purulent. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "98"
+     ],
+     [
+      "BP",
+      "138/82"
+     ],
+     [
+      "RR",
+      "28"
+     ],
+     [
+      "SpO2",
+      "86%"
+     ],
+     [
+      "T",
+      "37.4 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Anxiety\n   Evidence: patient says \"I can't get my breath\"\n   Goal: Patient uses pursed-lip breathing unprompted by day 2\n   Interventions: Stay with the patient during episodes of breathlessness; coach pursed-lip breathing; use a fan to the face\n2. Ineffective airway clearance\n   Evidence: SpO2 86%, RR 28, purulent sputum\n   Goal: SpO2 88 to 92% and clear speech in full sentences within 4 hours\n   Interventions: Controlled oxygen titrated to SpO2 88 to 92%; nebulised bronchodilators as ordered; pursed-lip breathing and huff cough every 2 hours\n3. Impaired gas exchange\n   Evidence: PaCO2 52, pH 7.33\n   Goal: Repeat ABG shows pH at or above 7.35 within 12 hours\n   Interventions: Repeat ABG 1 hour after any oxygen change; watch for drowsiness as a sign of rising CO2; escalate to the medical team if pH falls",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 98,
+     "bp": "138/82",
+     "rr": 28,
+     "spo2": 86,
+     "temp": 37.4
+    }
+   }
+  },
+  {
+   "id": "hea24",
+   "input": "82F, admitted with diabetic ketoacidosis. Vitals: HR 118, BP 98/60, RR 30, SpO2 97% on room air, T 37.1 °C. Labs: glucose 28 mmol/L; pH 7.18; ketones 5.2 mmol/L; potassium 5.6. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "118"
+     ],
+     [
+      "BP",
+      "98/60"
+     ],
+     [
+      "RR",
+      "30"
+     ],
+     [
+      "SpO2",
+      "97%"
+     ],
+     [
+      "T",
+      "37.1 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Deficient knowledge\n   Evidence: second admission for DKA this year\n   Goal: Patient states sick-day rules back correctly before discharge\n   Interventions: Teach sick-day rules with teach-back; refer to the diabetes nurse specialist before discharge\n2. Deficient fluid volume\n   Evidence: BP 98/60, HR 118, dry mucous membranes\n   Goal: Systolic BP at or above 100 and urine output at least 0.5 mL/kg/h within 4 hours\n   Interventions: Give IV fluids at the ordered rate; record urine output hourly; recheck BP every 15 minutes for the first hour\n3. Risk for unstable blood glucose\n   Evidence: glucose 28 mmol/L, ketones 5.2\n   Goal: Glucose falls by 3 mmol/L an hour and ketones below 0.6 within 24 hours\n   Interventions: Fixed-rate insulin infusion as ordered; capillary glucose and ketones hourly; potassium every 2 hours with replacement as ordered; Give ibuprofen 400 mg for fever or pain",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 118,
+     "bp": "98/60",
+     "rr": 30,
+     "spo2": 97,
+     "temp": 37.1
+    }
+   }
+  },
+  {
+   "id": "hea25",
+   "input": "58F, admitted with community-acquired pneumonia. Vitals: HR 104, BP 128/78, RR 24, SpO2 89% on room air, T 38.6 °C. Labs: WBC 15.2; chest X-ray right lower lobe consolidation. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "104"
+     ],
+     [
+      "BP",
+      "128/78"
+     ],
+     [
+      "RR",
+      "24"
+     ],
+     [
+      "SpO2",
+      "89%"
+     ],
+     [
+      "T",
+      "38.6 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Acute pain\n   Evidence: pleuritic chest pain 6/10\n   Goal: Patient will be comfortable\n   Interventions: Give the ordered non-opioid analgesic; splint the chest with a pillow when coughing; reassess pain score 1 hour after each dose\n2. Impaired gas exchange\n   Evidence: SpO2 89% on room air, RR 24\n   Goal: Breathing will improve\n   Interventions: Give oxygen by nasal cannula, titrated to SpO2 92 to 96%; sit the patient upright; incentive spirometry 10 times an hour while awake\n3. Hyperthermia\n   Evidence: T 38.6 °C, WBC 15.2\n   Goal: Fever will go down\n   Interventions: Give paracetamol as ordered for temperature above 38.5 °C; blood cultures before the first antibiotic dose; recheck temperature in 1 hour",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 104,
+     "bp": "128/78",
+     "rr": 24,
+     "spo2": 89,
+     "temp": 38.6
+    }
+   }
+  },
+  {
+   "id": "hea26",
+   "input": "76M, admitted with acute decompensated heart failure. Vitals: HR 112, BP 152/94, RR 26, SpO2 90% on room air, T 36.9 °C. Labs: BNP 1,240; weight up 3 kg in 5 days; bibasal crackles. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "112"
+     ],
+     [
+      "BP",
+      "152/94"
+     ],
+     [
+      "RR",
+      "26"
+     ],
+     [
+      "SpO2",
+      "90%"
+     ],
+     [
+      "T",
+      "36.9 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 90%, RR 26, bibasal crackles\n   Goal: SpO2 at or above 94% and RR below 22 within 6 hours\n   Interventions: Monitor breathing; keep head of bed up\n2. Excess fluid volume\n   Evidence: weight up 3 kg, BNP 1,240\n   Goal: Weight down 1 kg in 24 hours; intake and output recorded every shift\n   Interventions: Monitor fluids; encourage less drinking\n3. Activity intolerance\n   Evidence: HR 112 on walking to the bathroom\n   Goal: Walks to the bathroom with HR below 110 by day 2\n   Interventions: Encourage rest and activity as tolerated",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 112,
+     "bp": "152/94",
+     "rr": 26,
+     "spo2": 90,
+     "temp": 36.9
+    }
+   }
+  },
+  {
+   "id": "hea27",
+   "input": "69M, admitted with COPD exacerbation. Vitals: HR 98, BP 138/82, RR 28, SpO2 86% on room air, T 37.4 °C. Labs: ABG pH 7.33, PaCO2 52; sputum increased and purulent. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "98"
+     ],
+     [
+      "BP",
+      "138/82"
+     ],
+     [
+      "RR",
+      "28"
+     ],
+     [
+      "SpO2",
+      "86%"
+     ],
+     [
+      "T",
+      "37.4 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Anxiety\n   Evidence: patient says \"I can't get my breath\"\n   Goal: Patient uses pursed-lip breathing unprompted by day 2\n   Interventions: Stay with the patient during episodes of breathlessness; coach pursed-lip breathing; use a fan to the face\n2. Ineffective airway clearance\n   Evidence: SpO2 86%, RR 28, purulent sputum\n   Goal: SpO2 88 to 92% and clear speech in full sentences within 4 hours\n   Interventions: Controlled oxygen titrated to SpO2 88 to 92%; nebulised bronchodilators as ordered; pursed-lip breathing and huff cough every 2 hours\n3. Impaired gas exchange\n   Evidence: PaCO2 52, pH 7.33\n   Goal: Repeat ABG shows pH at or above 7.35 within 12 hours\n   Interventions: Repeat ABG 1 hour after any oxygen change; watch for drowsiness as a sign of rising CO2; escalate to the medical team if pH falls",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 98,
+     "bp": "138/82",
+     "rr": 28,
+     "spo2": 86,
+     "temp": 37.4
+    }
+   }
+  },
+  {
+   "id": "hea28",
+   "input": "58F, admitted with diabetic ketoacidosis. Vitals: HR 118, BP 98/60, RR 30, SpO2 97% on room air, T 37.1 °C. Labs: glucose 28 mmol/L; pH 7.18; ketones 5.2 mmol/L; potassium 5.6. Allergy: morphine (rash, wheeze).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "118"
+     ],
+     [
+      "BP",
+      "98/60"
+     ],
+     [
+      "RR",
+      "30"
+     ],
+     [
+      "SpO2",
+      "97%"
+     ],
+     [
+      "T",
+      "37.1 °C"
+     ],
+     [
+      "Do not give",
+      "morphine"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Deficient knowledge\n   Evidence: second admission for DKA this year\n   Goal: Patient states sick-day rules back correctly before discharge\n   Interventions: Give patient information leaflet\n2. Deficient fluid volume\n   Evidence: BP 98/60, HR 118, dry mucous membranes\n   Goal: Systolic BP at or above 100 and urine output at least 0.5 mL/kg/h within 4 hours\n   Interventions: Encourage fluids; monitor hydration\n3. Risk for unstable blood glucose\n   Evidence: glucose 28 mmol/L, ketones 5.2\n   Goal: Glucose falls by 3 mmol/L an hour and ketones below 0.6 within 24 hours\n   Interventions: Check blood sugar regularly; Give morphine 2 mg IV every 4 hours as needed for pain\n4. Risk for impaired skin integrity\n   Goal: Skin will stay intact\n   Interventions: Reposition regularly\n5. Deficient diversional activity\n   Goal: Patient will not be bored\n   Interventions: Offer television or reading material\n6. Disturbed sleep pattern\n   Goal: Patient will sleep well\n   Interventions: Dim lights at night",
+   "vars": {
+    "avoid": [
+     "morphine"
+    ],
+    "vitals": {
+     "hr": 118,
+     "bp": "98/60",
+     "rr": 30,
+     "spo2": 97,
+     "temp": 37.1
+    }
+   }
+  },
+  {
+   "id": "hea29",
+   "input": "58F, admitted with community-acquired pneumonia. Vitals: HR 104, BP 128/78, RR 24, SpO2 89% on room air, T 38.6 °C. Labs: WBC 15.2; chest X-ray right lower lobe consolidation. Allergy: penicillin (anaphylaxis).",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "104"
+     ],
+     [
+      "BP",
+      "128/78"
+     ],
+     [
+      "RR",
+      "24"
+     ],
+     [
+      "SpO2",
+      "89%"
+     ],
+     [
+      "T",
+      "38.6 °C"
+     ],
+     [
+      "Do not give",
+      "penicillin, amoxicillin, ampicillin, co-amoxiclav"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Acute pain\n   Evidence: pleuritic chest pain 6/10\n   Goal: Patient will be comfortable\n   Interventions: Give the ordered non-opioid analgesic; splint the chest with a pillow when coughing; reassess pain score 1 hour after each dose\n2. Impaired gas exchange\n   Evidence: SpO2 89% on room air, RR 24\n   Goal: Breathing will improve\n   Interventions: Give oxygen by nasal cannula, titrated to SpO2 92 to 96%; sit the patient upright; incentive spirometry 10 times an hour while awake\n3. Hyperthermia\n   Evidence: T 38.6 °C, WBC 15.2\n   Goal: Fever will go down\n   Interventions: Give paracetamol as ordered for temperature above 38.5 °C; blood cultures before the first antibiotic dose; recheck temperature in 1 hour",
+   "vars": {
+    "avoid": [
+     "penicillin",
+     "amoxicillin",
+     "ampicillin",
+     "co-amoxiclav"
+    ],
+    "vitals": {
+     "hr": 104,
+     "bp": "128/78",
+     "rr": 24,
+     "spo2": 89,
+     "temp": 38.6
+    }
+   }
+  },
+  {
+   "id": "hea30",
+   "input": "82F, admitted with acute decompensated heart failure. Vitals: HR 112, BP 152/94, RR 26, SpO2 90% on room air, T 36.9 °C. Labs: BNP 1,240; weight up 3 kg in 5 days; bibasal crackles. Regular medication: warfarin 5 mg daily.",
+   "reference": {
+    "kind": "table",
+    "title": "Admission record",
+    "rows": [
+     [
+      "HR",
+      "112"
+     ],
+     [
+      "BP",
+      "152/94"
+     ],
+     [
+      "RR",
+      "26"
+     ],
+     [
+      "SpO2",
+      "90%"
+     ],
+     [
+      "T",
+      "36.9 °C"
+     ],
+     [
+      "Do not give",
+      "ibuprofen, aspirin, naproxen"
+     ]
+    ]
+   },
+   "output": "Nursing care plan\n\n1. Impaired gas exchange\n   Evidence: SpO2 90%, RR 26, bibasal crackles\n   Goal: SpO2 at or above 94% and RR below 22 within 6 hours\n   Interventions: Monitor breathing; keep head of bed up\n2. Excess fluid volume\n   Evidence: weight up 3 kg, BNP 1,240\n   Goal: Weight down 1 kg in 24 hours; intake and output recorded every shift\n   Interventions: Monitor fluids; encourage less drinking\n3. Activity intolerance\n   Evidence: HR 112 on walking to the bathroom\n   Goal: Walks to the bathroom with HR below 110 by day 2\n   Interventions: Encourage rest and activity as tolerated",
+   "vars": {
+    "avoid": [
+     "ibuprofen",
+     "aspirin",
+     "naproxen"
+    ],
+    "vitals": {
+     "hr": 112,
+     "bp": "152/94",
+     "rr": 26,
+     "spo2": 90,
+     "temp": 36.9
+    }
+   }
+  }
+ ],
+ "canned": {
+  "hea01": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 2
+   },
+   "quote": "1."
+  },
+  "hea02": {
+   "scores": {
+    "priority": 2,
+    "goals": 5,
+    "specificity": 3
+   },
+   "quote": "1."
+  },
+  "hea03": {
+   "scores": {
+    "priority": 4,
+    "goals": 4,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea04": {
+   "scores": {
+    "priority": 4,
+    "goals": 5,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea05": {
+   "scores": {
+    "priority": 3,
+    "goals": 5,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea06": {
+   "scores": {
+    "priority": 2,
+    "goals": 2,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea07": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 2
+   },
+   "quote": "1."
+  },
+  "hea08": {
+   "scores": {
+    "priority": 2,
+    "goals": 5,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea09": {
+   "scores": {
+    "priority": 3,
+    "goals": 5,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea10": {
+   "scores": {
+    "priority": 2,
+    "goals": 5,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea11": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea12": {
+   "scores": {
+    "priority": 3,
+    "goals": 5,
+    "specificity": 3
+   },
+   "quote": "1."
+  },
+  "hea13": {
+   "scores": {
+    "priority": 4,
+    "goals": 3,
+    "specificity": 5
+   },
+   "quote": "1."
+  },
+  "hea14": {
+   "scores": {
+    "priority": 5,
+    "goals": 5,
+    "specificity": 5
+   },
+   "quote": "1."
+  },
+  "hea15": {
+   "scores": {
+    "priority": 4,
+    "goals": 5,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea16": {
+   "scores": {
+    "priority": 4,
+    "goals": 4,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea17": {
+   "scores": {
+    "priority": 2,
+    "goals": 3,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea18": {
+   "scores": {
+    "priority": 5,
+    "goals": 3,
+    "specificity": 5
+   },
+   "quote": "1."
+  },
+  "hea19": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea20": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 3
+   },
+   "quote": "1."
+  },
+  "hea21": {
+   "scores": {
+    "priority": 3,
+    "goals": 5,
+    "specificity": 5
+   },
+   "quote": "1."
+  },
+  "hea22": {
+   "scores": {
+    "priority": 2,
+    "goals": 4,
+    "specificity": 2
+   },
+   "quote": "1."
+  },
+  "hea23": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 3
+   },
+   "quote": "1."
+  },
+  "hea24": {
+   "scores": {
+    "priority": 2,
+    "goals": 5,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea25": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea26": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea27": {
+   "scores": {
+    "priority": 3,
+    "goals": 4,
+    "specificity": 5
+   },
+   "quote": "1."
+  },
+  "hea28": {
+   "scores": {
+    "priority": 5,
+    "goals": 5,
+    "specificity": 5
+   },
+   "quote": "1."
+  },
+  "hea29": {
+   "scores": {
+    "priority": 3,
+    "goals": 3,
+    "specificity": 4
+   },
+   "quote": "1."
+  },
+  "hea30": {
+   "scores": {
+    "priority": 3,
+    "goals": 5,
+    "specificity": 3
+   },
+   "quote": "1."
+  }
+ }
+}

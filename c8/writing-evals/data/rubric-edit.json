@@ -1,0 +1,40 @@
+{
+ "industry": "support",
+ "before": {
+  "resolution": {
+   "1": "Bad resolution",
+   "5": "Great resolution"
+  },
+  "empathy": {
+   "1": "Not empathetic",
+   "5": "Very empathetic"
+  },
+  "brevity": {
+   "1": "Too long",
+   "5": "Concise"
+  }
+ },
+ "after": {
+  "resolution": {
+   "1": "Does something the policy forbids for this case, or leaves the customer with no next step.",
+   "5": "Does exactly what the policy allows for this case (no more), and says when the customer will see it."
+  },
+  "empathy": {
+   "1": "Ignores the customer's state, or grovels: more than one apology or \"absolutely right\".",
+   "5": "One sentence that names what went wrong for them, then gets on with it."
+  },
+  "brevity": {
+   "1": "Over 100 words, or the action is buried after the second sentence.",
+   "5": "Under 50 words with the action in the first two sentences."
+  }
+ },
+ "note": "The edit changes wording only: same judge model, same items, same output format. \"Policy allows for this case (no more)\" is what stops the judge rewarding warm out-of-policy refunds.",
+ "version": "2026-11-01.1",
+ "judge_model": "openai/gpt-oss-20b",
+ "agreement": {
+  "before": 67,
+  "after": 83,
+  "experts": 86
+ },
+ "provenance": "Numbers are the recorded first-draft and anchored judge runs on the support set from build_data.py. Rerun both rubrics on the live page with a key and replace them with what you see."
+}

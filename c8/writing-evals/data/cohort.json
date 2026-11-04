@@ -1,0 +1,1334 @@
+{
+ "version": "2026-11-01.1",
+ "provenance": "Recorded room for solo mode. Forty score sheets from four grading habits (tone first, policy first, brevity first, customer outcome first) with noise. Replace with the first live room's export, names removed.",
+ "moves": [
+  "Write 50 test questions and check the answers",
+  "Set up an LLM judge to score every reply",
+  "Measure accuracy on a test set",
+  "Survey users for satisfaction",
+  "Pull a week of chat logs and read them",
+  "Compare it against a competitor's bot",
+  "Write test cases for the main flows",
+  "Track thumbs up and thumbs down"
+ ],
+ "phrases": {
+  "inputs": [
+   "realistic",
+   "like production",
+   "edge cases",
+   "real customer messages",
+   "enough of them",
+   "the hard cases",
+   "from our logs",
+   "different kinds of users"
+  ],
+  "good": [
+   "a rubric",
+   "a gold answer",
+   "a human checks it",
+   "what the customer wanted",
+   "follows the policy",
+   "the expert answer",
+   "user rating",
+   "matches the reference"
+  ],
+  "grader": [
+   "an LLM judge",
+   "GPT-4 as a judge",
+   "a human reviewer",
+   "the PM",
+   "unit tests",
+   "another model",
+   "us",
+   "regex for some of it"
+  ],
+  "why_before": [
+   "so we don't move the goalposts",
+   "confirmation bias",
+   "otherwise we grade to what we saw",
+   "so it's fair"
+  ]
+ },
+ "sheets": [
+  {
+   "persona": "tone",
+   "scores": [
+    5,
+    5,
+    4,
+    5,
+    3,
+    5,
+    3,
+    5,
+    5,
+    5,
+    2,
+    2,
+    4,
+    5,
+    3,
+    4,
+    2,
+    2,
+    5,
+    2
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    5,
+    5,
+    4,
+    5,
+    3,
+    5,
+    2,
+    4,
+    5,
+    5,
+    2,
+    3,
+    5,
+    4,
+    5,
+    3,
+    3,
+    1,
+    5,
+    3
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    5,
+    4,
+    4,
+    5,
+    4,
+    5,
+    2,
+    5,
+    4,
+    4,
+    3,
+    2,
+    5,
+    5,
+    4,
+    3,
+    2,
+    1,
+    5,
+    2
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    5,
+    5,
+    4,
+    4,
+    4,
+    5,
+    3,
+    4,
+    5,
+    5,
+    1,
+    3,
+    4,
+    5,
+    4,
+    3,
+    3,
+    3,
+    5,
+    3
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    4,
+    5,
+    5,
+    4,
+    2,
+    5,
+    2,
+    5,
+    4,
+    4,
+    2,
+    2,
+    5,
+    5,
+    4,
+    2,
+    2,
+    1,
+    5,
+    1
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    5,
+    5,
+    4,
+    5,
+    3,
+    5,
+    3,
+    5,
+    5,
+    5,
+    2,
+    3,
+    5,
+    5,
+    4,
+    4,
+    2,
+    1,
+    5,
+    2
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    4,
+    5,
+    4,
+    5,
+    3,
+    5,
+    3,
+    5,
+    5,
+    4,
+    2,
+    2,
+    5,
+    5,
+    5,
+    3,
+    2,
+    2,
+    5,
+    3
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    5,
+    4,
+    5,
+    5,
+    3,
+    4,
+    3,
+    5,
+    5,
+    5,
+    2,
+    3,
+    4,
+    5,
+    4,
+    3,
+    2,
+    2,
+    5,
+    3
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    4,
+    5,
+    5,
+    5,
+    3,
+    4,
+    1,
+    5,
+    4,
+    5,
+    3,
+    3,
+    4,
+    5,
+    4,
+    3,
+    1,
+    2,
+    5,
+    4
+   ]
+  },
+  {
+   "persona": "tone",
+   "scores": [
+    4,
+    5,
+    5,
+    4,
+    2,
+    4,
+    2,
+    5,
+    5,
+    5,
+    2,
+    3,
+    3,
+    5,
+    4,
+    3,
+    2,
+    1,
+    4,
+    3
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    1,
+    2,
+    4,
+    5,
+    4,
+    3,
+    5,
+    3,
+    5,
+    1,
+    5,
+    4,
+    5,
+    2,
+    3,
+    2,
+    4,
+    3,
+    2,
+    4
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    1,
+    2,
+    5,
+    5,
+    5,
+    2,
+    4,
+    3,
+    4,
+    2,
+    5,
+    4,
+    5,
+    1,
+    5,
+    2,
+    4,
+    3,
+    1,
+    4
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    2,
+    2,
+    4,
+    5,
+    3,
+    1,
+    5,
+    3,
+    4,
+    2,
+    5,
+    3,
+    5,
+    1,
+    5,
+    1,
+    3,
+    3,
+    1,
+    4
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    1,
+    1,
+    5,
+    5,
+    3,
+    2,
+    3,
+    4,
+    5,
+    2,
+    4,
+    5,
+    5,
+    1,
+    5,
+    2,
+    4,
+    4,
+    2,
+    5
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    3,
+    2,
+    5,
+    5,
+    4,
+    2,
+    5,
+    3,
+    4,
+    2,
+    4,
+    5,
+    5,
+    2,
+    5,
+    1,
+    5,
+    3,
+    2,
+    4
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    2,
+    1,
+    5,
+    4,
+    3,
+    2,
+    4,
+    2,
+    4,
+    1,
+    4,
+    4,
+    5,
+    1,
+    5,
+    2,
+    4,
+    3,
+    2,
+    4
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    1,
+    2,
+    5,
+    5,
+    3,
+    2,
+    4,
+    3,
+    5,
+    1,
+    3,
+    5,
+    5,
+    1,
+    4,
+    2,
+    4,
+    3,
+    2,
+    4
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    2,
+    1,
+    5,
+    5,
+    4,
+    1,
+    5,
+    3,
+    5,
+    1,
+    4,
+    4,
+    5,
+    1,
+    5,
+    2,
+    5,
+    3,
+    2,
+    4
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    1,
+    3,
+    5,
+    5,
+    3,
+    2,
+    4,
+    3,
+    5,
+    3,
+    5,
+    4,
+    5,
+    1,
+    5,
+    3,
+    3,
+    2,
+    1,
+    5
+   ]
+  },
+  {
+   "persona": "policy",
+   "scores": [
+    2,
+    1,
+    5,
+    5,
+    4,
+    2,
+    5,
+    2,
+    5,
+    2,
+    4,
+    4,
+    5,
+    1,
+    4,
+    2,
+    5,
+    4,
+    1,
+    5
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    3,
+    3,
+    5,
+    4,
+    3,
+    4,
+    4,
+    4,
+    2,
+    3,
+    5,
+    4,
+    3,
+    5,
+    5,
+    4,
+    5,
+    4,
+    3,
+    4
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    4,
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    2,
+    4,
+    4,
+    5,
+    4,
+    3,
+    4,
+    4,
+    3,
+    4,
+    2,
+    5,
+    5
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    3,
+    3,
+    5,
+    5,
+    4,
+    3,
+    5,
+    5,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    4,
+    3,
+    3,
+    5
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    3,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4,
+    3,
+    3,
+    5,
+    4,
+    5,
+    3,
+    4,
+    5,
+    4,
+    4,
+    3,
+    5,
+    5
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    4,
+    4,
+    4,
+    5,
+    4,
+    3,
+    5,
+    5,
+    4,
+    2,
+    4,
+    4,
+    2,
+    5,
+    3,
+    4,
+    4,
+    4,
+    4,
+    4
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    3,
+    3,
+    4,
+    4,
+    5,
+    2,
+    4,
+    4,
+    3,
+    4,
+    5,
+    4,
+    2,
+    3,
+    4,
+    3,
+    4,
+    3,
+    4,
+    5
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    4,
+    3,
+    3,
+    4,
+    3,
+    4,
+    5,
+    4,
+    4,
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    4,
+    5,
+    4,
+    5,
+    4
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    3,
+    3,
+    4,
+    5,
+    4,
+    3,
+    4,
+    4,
+    3,
+    4,
+    4,
+    5,
+    3,
+    4,
+    5,
+    3,
+    4,
+    3,
+    4,
+    3
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    4,
+    4,
+    3,
+    5,
+    3,
+    4,
+    4,
+    5,
+    3,
+    4,
+    3,
+    3,
+    3,
+    4,
+    4,
+    4,
+    5,
+    4,
+    4,
+    5
+   ]
+  },
+  {
+   "persona": "brevity",
+   "scores": [
+    3,
+    5,
+    4,
+    4,
+    4,
+    4,
+    5,
+    4,
+    3,
+    5,
+    4,
+    4,
+    3,
+    4,
+    5,
+    4,
+    5,
+    2,
+    4,
+    4
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    5,
+    3,
+    4,
+    3,
+    5,
+    5,
+    5,
+    4,
+    5,
+    3,
+    3,
+    5,
+    5,
+    3,
+    3,
+    4,
+    2,
+    5,
+    5
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    4,
+    4,
+    5,
+    3,
+    4,
+    4,
+    5,
+    5,
+    5,
+    2,
+    3,
+    4,
+    5,
+    2,
+    2,
+    2,
+    2,
+    5,
+    4
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    5,
+    5,
+    4,
+    3,
+    5,
+    4,
+    4,
+    5,
+    5,
+    3,
+    4,
+    5,
+    4,
+    4,
+    3,
+    4,
+    2,
+    5,
+    4
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    5,
+    5,
+    5,
+    2,
+    5,
+    4,
+    4,
+    5,
+    4,
+    2,
+    5,
+    5,
+    5,
+    4,
+    3,
+    1,
+    2,
+    5,
+    5
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    4,
+    5,
+    5,
+    3,
+    5,
+    4,
+    4,
+    5,
+    5,
+    3,
+    4,
+    4,
+    5,
+    3,
+    2,
+    3,
+    2,
+    5,
+    4
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    4,
+    5,
+    5,
+    5,
+    2,
+    5,
+    4,
+    5,
+    5,
+    5,
+    2,
+    4,
+    5,
+    5,
+    3,
+    2,
+    3,
+    2,
+    4,
+    3
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    5,
+    4,
+    5,
+    2,
+    4,
+    3,
+    5,
+    5,
+    5,
+    4,
+    3,
+    4,
+    5,
+    4,
+    3,
+    3,
+    2,
+    5,
+    4
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    5,
+    4,
+    4,
+    3,
+    5,
+    3,
+    4,
+    4,
+    4,
+    3,
+    4,
+    4,
+    5,
+    3,
+    3,
+    3,
+    2,
+    4,
+    4
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    5,
+    4,
+    5,
+    3,
+    5,
+    3,
+    4,
+    5,
+    5,
+    2,
+    4,
+    5,
+    5,
+    3,
+    3,
+    3,
+    1,
+    5,
+    3
+   ]
+  },
+  {
+   "persona": "customer",
+   "scores": [
+    5,
+    4,
+    3,
+    5,
+    2,
+    5,
+    3,
+    4,
+    5,
+    5,
+    2,
+    5,
+    5,
+    4,
+    3,
+    3,
+    3,
+    2,
+    5,
+    3
+   ]
+  }
+ ],
+ "defences": {
+  "d01": {
+   "low": {
+    "persona": "policy",
+    "score": 2,
+    "text": "I gave it a 2. It hands back more than the policy allows for this case. That's money we'd claw back later."
+   },
+   "high": {
+    "persona": "customer",
+    "score": 5,
+    "text": "I gave it a 5. The customer gets money back, so the problem is solved from their side."
+   }
+  },
+  "d02": {
+   "low": {
+    "persona": "policy",
+    "score": 2,
+    "text": "I gave it a 2. It hands back more than the policy allows for this case. That's money we'd claw back later."
+   },
+   "high": {
+    "persona": "tone",
+    "score": 5,
+    "text": "I gave it a 5. The customer was calm and the reply actually acknowledged that."
+   }
+  },
+  "d03": {
+   "low": {
+    "persona": "brevity",
+    "score": 4,
+    "text": "I gave it a 4. It's 63 words; nobody reads that on a phone."
+   },
+   "high": {
+    "persona": "policy",
+    "score": 5,
+    "text": "I gave it a 5. It does exactly what the policy says for this case and nothing it shouldn't."
+   }
+  },
+  "d04": {
+   "low": {
+    "persona": "brevity",
+    "score": 4,
+    "text": "I gave it a 4. It's 53 words; nobody reads that on a phone."
+   },
+   "high": {
+    "persona": "policy",
+    "score": 5,
+    "text": "I gave it a 5. It does exactly what the policy says for this case and nothing it shouldn't."
+   }
+  },
+  "d05": {
+   "low": {
+    "persona": "customer",
+    "score": 3,
+    "text": "I gave it a 3. The customer leaves without what they asked for."
+   },
+   "high": {
+    "persona": "brevity",
+    "score": 4,
+    "text": "I gave it a 4. It's 34 words; a customer reads that in one go."
+   }
+  },
+  "d06": {
+   "low": {
+    "persona": "policy",
+    "score": 2,
+    "text": "I gave it a 2. It hands back more than the policy allows for this case. That's money we'd claw back later."
+   },
+   "high": {
+    "persona": "customer",
+    "score": 5,
+    "text": "I gave it a 5. The customer gets money back, so the problem is solved from their side."
+   }
+  },
+  "d07": {
+   "low": {
+    "persona": "tone",
+    "score": 2,
+    "text": "I gave it a 2. It reads like a machine. A annoyed customer gets no acknowledgement at all."
+   },
+   "high": {
+    "persona": "policy",
+    "score": 4,
+    "text": "I gave it a 4. It does exactly what the policy says for this case and nothing it shouldn't."
+   }
+  },
+  "d08": {
+   "low": {
+    "persona": "policy",
+    "score": 3,
+    "text": "I gave it a 3. It mentions another customer. That's a data incident, however nice the rest is."
+   },
+   "high": {
+    "persona": "tone",
+    "score": 5,
+    "text": "I gave it a 5. The customer was furious and the reply actually acknowledged that."
+   }
+  },
+  "d09": {
+   "low": {
+    "persona": "brevity",
+    "score": 3,
+    "text": "I gave it a 3. It's 66 words; nobody reads that on a phone."
+   },
+   "high": {
+    "persona": "customer",
+    "score": 5,
+    "text": "I gave it a 5. The customer gets money back, so the problem is solved from their side."
+   }
+  },
+  "d10": {
+   "low": {
+    "persona": "policy",
+    "score": 2,
+    "text": "I gave it a 2. It hands back more than the policy allows for this case. That's money we'd claw back later."
+   },
+   "high": {
+    "persona": "customer",
+    "score": 5,
+    "text": "I gave it a 5. The customer gets money back, so the problem is solved from their side."
+   }
+  },
+  "d11": {
+   "low": {
+    "persona": "tone",
+    "score": 2,
+    "text": "I gave it a 2. It reads like a machine. A furious customer gets no acknowledgement at all."
+   },
+   "high": {
+    "persona": "policy",
+    "score": 4,
+    "text": "I gave it a 4. It does exactly what the policy says for this case and nothing it shouldn't."
+   }
+  },
+  "d12": {
+   "low": {
+    "persona": "tone",
+    "score": 3,
+    "text": "I gave it a 3. It reads like a machine. A calm customer gets no acknowledgement at all."
+   },
+   "high": {
+    "persona": "policy",
+    "score": 4,
+    "text": "I gave it a 4. It does exactly what the policy says for this case and nothing it shouldn't."
+   }
+  },
+  "d13": {
+   "low": {
+    "persona": "brevity",
+    "score": 3,
+    "text": "I gave it a 3. It's 74 words; nobody reads that on a phone."
+   },
+   "high": {
+    "persona": "policy",
+    "score": 5,
+    "text": "I gave it a 5. It does exactly what the policy says for this case and nothing it shouldn't."
+   }
+  },
+  "d14": {
+   "low": {
+    "persona": "policy",
+    "score": 1,
+    "text": "I gave it a 1. It hands back more than the policy allows for this case. That's money we'd claw back later."
+   },
+   "high": {
+    "persona": "tone",
+    "score": 5,
+    "text": "I gave it a 5. The customer was annoyed and the reply actually acknowledged that."
+   }
+  },
+  "d15": {
+   "low": {
+    "persona": "customer",
+    "score": 3,
+    "text": "I gave it a 3. The customer leaves without what they asked for."
+   },
+   "high": {
+    "persona": "policy",
+    "score": 5,
+    "text": "I gave it a 5. It does exactly what the policy says for this case and nothing it shouldn't."
+   }
+  },
+  "d16": {
+   "low": {
+    "persona": "policy",
+    "score": 2,
+    "text": "I gave it a 2. Policy says this goes to Tier 2, and it doesn't."
+   },
+   "high": {
+    "persona": "brevity",
+    "score": 4,
+    "text": "I gave it a 4. It's 35 words; a customer reads that in one go."
+   }
+  },
+  "d17": {
+   "low": {
+    "persona": "tone",
+    "score": 2,
+    "text": "I gave it a 2. It reads like a machine. A annoyed customer gets no acknowledgement at all."
+   },
+   "high": {
+    "persona": "brevity",
+    "score": 4,
+    "text": "I gave it a 4. It's 37 words; a customer reads that in one go."
+   }
+  },
+  "d18": {
+   "low": {
+    "persona": "tone",
+    "score": 2,
+    "text": "I gave it a 2. It reads like a machine. A furious customer gets no acknowledgement at all."
+   },
+   "high": {
+    "persona": "brevity",
+    "score": 3,
+    "text": "I gave it a 3. It's 23 words; a customer reads that in one go."
+   }
+  },
+  "d19": {
+   "low": {
+    "persona": "policy",
+    "score": 2,
+    "text": "I gave it a 2. It hands back more than the policy allows for this case. That's money we'd claw back later."
+   },
+   "high": {
+    "persona": "tone",
+    "score": 5,
+    "text": "I gave it a 5. The customer was annoyed and the reply actually acknowledged that."
+   }
+  },
+  "d20": {
+   "low": {
+    "persona": "tone",
+    "score": 3,
+    "text": "I gave it a 3. It reads like a machine. A annoyed customer gets no acknowledgement at all."
+   },
+   "high": {
+    "persona": "brevity",
+    "score": 4,
+    "text": "I gave it a 4. It's 31 words; a customer reads that in one go."
+   }
+  }
+ },
+ "reasons": [
+  {
+   "text": "Promised a refund the policy does not allow",
+   "pile": "hard"
+  },
+  {
+   "text": "Mentioned another customer",
+   "pile": "hard"
+  },
+  {
+   "text": "Did not send a $149.99 fee to Tier 2",
+   "pile": "hard"
+  },
+  {
+   "text": "Sounded cold",
+   "pile": "quality"
+  },
+  {
+   "text": "Too long; I stopped reading",
+   "pile": "quality"
+  },
+  {
+   "text": "Never said what happens next",
+   "pile": "quality"
+  },
+  {
+   "text": "Apologised so much it felt fake",
+   "pile": "quality"
+  },
+  {
+   "text": "I would rather send what our best agent wrote",
+   "pile": "preference"
+  },
+  {
+   "text": "Our senior agent would have handled it better",
+   "pile": "preference"
+  }
+ ]
+}
