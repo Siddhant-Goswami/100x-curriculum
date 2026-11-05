@@ -754,7 +754,7 @@ GUIDES.L9 = { all: {
     {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 05',
      intro:'The sheet, shared, with the tested row, and one line on what surprised you. Practice set 2 adds the eval.',
      ticks:[
-       {id:'shared', t:'Shared my copy of the sheet', link:'l09Submit', linkLabel:'What to submit'},
+       {id:'shared', t:'Shared my sheet on the Discord', link:'l09Submit', linkLabel:'Share it'},
        {id:'surprise', t:'One line on the verdict that surprised me'}
      ]}
   ],

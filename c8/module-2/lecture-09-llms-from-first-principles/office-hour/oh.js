@@ -292,7 +292,7 @@
       if (needHard()) st.appendChild(box('Hard lines are checked by', S.grader, 'hard', 'A script, a formula, or a checklist you tick'));
       if (needQual()) st.appendChild(box('Quality is scored by', S.grader, 'qual', 'Your judge: manager, client, or you with this rubric'));
       if (needQual()) {
-        st.appendChild(h('<div class="reveal"><p><b>Measure the grader before you trust it.</b> Score ten past outputs yourself with your rubric. Ask your judge to score the same ten. Count how often you are within one point. Aim for 8 of 10.</p><p class="note">Do it this week. Type the scores here when you have them, or leave it blank for now.</p></div>'));
+        st.appendChild(h('<div class="reveal"><p><b>Measure the grader before you trust it.</b> Score ten past outputs yourself with your rubric. Ask your judge to score the same ten. Count how often you are within one point. Aim for 8 of 10.</p><p class="note">Optional for now. Type the scores here when you have them, or leave it blank.</p></div>'));
         var A = S.agree, g = h('<div class="agree"></div>'), res = h('<p class="note"></p>');
         function calc() {
           var n = 0, ok = 0;
@@ -333,17 +333,20 @@
   scr({ id: 'keep', seg: 2, kick: 'Keep this', h: 'Your eval.',
     render: function (st) {
       track('oh_done', { type: S.row.type, hard: S.hard.filter(filled).length, dims: S.dims.filter(dimDone).length });
+      var li = function (x) { return '<li><b>' + x[0] + '</b> ' + x[1] + (x[2] ? ' <a href="' + x[2] + '">' + x[3] + '</a>' : '') + '</li>'; };
       var k = h('<div class="keep"><pre class="copy" data-nolabel></pre>' +
         '<div class="row noprint"><button class="btn go" id="k-copy">Copy as text</button><button class="btn" id="k-print">Print</button><span class="msg" id="k-msg"></span></div>' +
-        '<section><h3>Next</h3><ol class="outcomes" style="margin:0">' + [
-          ['Paste this eval into your sheet, then share it on the Discord.', 'Copy as text, then paste it into a new tab named Eval, in the same sheet as Practice set 1.', '/c8/module-2/practice-set-2-write-the-eval/', 'Practice set 2'],
+        '<section><h3>To finish Practice set 2, before Lecture 11 on Thu 12 Nov</h3><ol class="outcomes" style="margin:0">' + [
+          ['Paste this eval into your sheet, then share it on the Discord.', 'Copy as text, then paste it into a new tab named Eval, in the same sheet as Practice set 1. We go through them in the office hour.', '/c8/module-2/practice-set-2-write-the-eval/', 'Practice set 2'],
           ['Re-score your tested row with this rubric.', 'In Practice set 1, section 04, you scored it out of 10 by feel, like the five replies at the start. Check the hard lines first, then score each quality from 1 to 5.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06'],
+        ].map(li).join('') + '</ol></section>' +
+        '<section><h3>Optional, when you have time</h3><ol class="outcomes" style="margin:0">' + [
           ['Grow your one golden pair into ten.', 'Real inputs with the output you would accept, the hard ones included. That is your population.', '/c8/module-2/lecture-03-building-ui/notes#s05', 'Lecture 3, section 05'],
           ['Run the stranger test on your rubric.', 'Hand it to someone outside your field with three outputs. If they cannot score without asking you, sharpen your 1 and 5. Don\'t ask an LLM to write it.', '/c8/module-2/lecture-01-orientation/notes#s09', 'Lecture 1, section 09'],
           ['Check your grader against your judge.', 'Both score the same ten. Aim for within one point on 8 of 10.', null, null],
           ['Put the hard lines on the deterministic side.', 'A formula or a few lines of code, not a sentence in a prompt. The check you can\'t afford to get wrong shouldn\'t be a prediction.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s13', 'Lecture 10, section 13'],
           ['Keep the eval for the build.', 'Next we build the bridge that brings the missing context to the model. Your eval is how you will know it worked: verifier, threshold, improve, re-score, stop.', '/c8/module-2/lecture-01-orientation/notes#s08', 'Lecture 1, section 08']
-        ].map(function (x) { return '<li><b>' + x[0] + '</b> ' + x[1] + (x[2] ? ' <a href="' + x[2] + '">' + x[3] + '</a>' : '') + '</li>'; }).join('') + '</ol></section>' +
+        ].map(li).join('') + '</ol></section>' +
         '<section class="noprint"><button class="btn sm quiet" id="k-reset">Start over on this device</button></section></div>');
       $('pre', k).textContent = asText();
       st.appendChild(k);

@@ -1003,7 +1003,7 @@ function status(s){
   }
   if(s.kind==='step'){
     if(days(TODAY,s.date)>0) return {cls:'st-up',txt:'After Lecture 10 · '+fmt(s.date)};
-    if(days(TODAY,d(2026,11,12))>=0) return {cls:'st-active',txt:'Due Thu 12 Nov',hot:true};
+    if(days(TODAY,d(2026,11,12))>=0) return {cls:'st-active',txt:'Due before L11, Thu 12 Nov',hot:true};
     return {cls:'st-held',txt:'After Lecture 10 · practice set'};
   }
   if(s.id==='A2') return P3_UNLOCKED ? {cls:'st-next',txt:'Open now · unlocks Module 3',hot:true} : {cls:'st-up',txt:'After Lecture 18'};
@@ -1566,7 +1566,7 @@ function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" hr
 /* Practice set 2 stop, between Lecture 10 and Lecture 11: the brief, the exercise, and the 3 Nov office hour recap. */
 function p2HTML(){
   var h='', u=gl('ps2'), x=gl('l09OfficeHour'), o=gl('l10OfficeHour');
-  if(u) h+='<a class="hub" href="'+esc(u)+'"><span><b>Open Practice set 2: Write the eval</b><i>Why it matters, three steps, by Thu 12 Nov</i></span><em aria-hidden="true">→</em></a>';
+  if(u) h+='<a class="hub" href="'+esc(u)+'"><span><b>Open Practice set 2: Write the eval</b><i>Why it matters, three steps, before Lecture 11 on Thu 12 Nov</i></span><em aria-hidden="true">→</em></a>';
   if(o) h+='<a class="hub" href="'+esc(o)+'"><span><b>Office hour, 3 Nov: your sheet is the data</b><i>Why labs pay experts for judgment on real tasks</i></span><em aria-hidden="true">→</em></a>';
   if(x) h+='<div class="hubs"><a href="'+esc(x)+'">Start the exercise</a>'+(gl('l09Practice')?'<a href="'+esc(gl('l09Practice'))+'">Practice set 1</a>':'')+'</div>';
   return h;
