@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Agent Delegation Framework | 100xEngineers</title>
-<meta name="description" content="Decide which parts of your job to hand to an AI agent: list the tasks that repeat, write down how you would check each one, and see which stay human, which an agent can draft and which it can do alone.">
+<title>AI Delegation Framework | 100xEngineers</title>
+<meta name="description" content="Decide which parts of your job to hand to AI: list the tasks that repeat, write down how you would check each one, and see which stay human, which AI can draft and which it can do alone.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -174,8 +174,8 @@ details.words summary{cursor:pointer}
 <details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
     <p class="kick">Which parts of your job should AI do?</p>
-    <h1>Agent Delegation Framework</h1>
-    <p class="dek">An AI agent is software that carries out a task for you, step by step: it searches, reads, fills in a sheet, drafts a report. This page helps you decide which of your tasks to hand to one, which to keep, and how to check the agent's work. Bring your own job; it takes about fifteen minutes.</p>
+    <h1>AI Delegation Framework</h1>
+    <p class="dek">AI can now do whole tasks for you, step by step: search, read, fill in a sheet, draft a report. This page helps you decide which of your tasks to hand to AI, which to keep, and how to check its work. Bring your own job; it takes about fifteen minutes.</p>
     <ol class="vsteps">
       <li><a href="#job">List your tasks</a></li>
       <li><a href="#verify">Can you check it?</a></li>
@@ -186,10 +186,10 @@ details.words summary{cursor:pointer}
 
 <section class="s" id="idea">
   <h2>The idea</h2>
-  <p>Every job is a bundle of tasks. Whether an agent should take one comes down to a single question: <b>can you check that it was done well?</b> The answer puts each task in one of three places.</p>
+  <p>Every job is a bundle of tasks. Whether AI should take one comes down to a single question: <b>can you check that it was done well?</b> The answer puts each task in one of three places.</p>
   <ul>
-    <li><span class="chipd det"></span><b>Automated.</b> A simple rule can check it, such as "the totals match the source sheet". Once the agent proves itself, it does the task alone.</li>
-    <li><span class="chipd prob"></span><b>Augmented.</b> No rule checks it, but you can write down what a good result looks like. The agent drafts and you approve.</li>
+    <li><span class="chipd det"></span><b>Automated.</b> A simple rule can check it, such as "the totals match the source sheet". Once AI proves itself, it does the task alone.</li>
+    <li><span class="chipd prob"></span><b>Augmented.</b> No rule checks it, but you can write down what a good result looks like. AI drafts and you approve.</li>
     <li><span class="chipd hum"></span><b>Stays human.</b> Nothing can check it reliably: a hard conversation, work done by hand, a decision you sign. You keep it.</li>
   </ul>
   <p>The written check is called a <b>verifier</b>. The steps below walk you through writing one for each of your own tasks.</p>
@@ -197,11 +197,11 @@ details.words summary{cursor:pointer}
 
 <section class="s" id="funnel">
   <h2>Where you are today</h2>
-  <p>People use AI at three depths. Over a billion have tried a chatbot. About twenty million hand it long, complex work. A few thousand build systems of agents that run on their own. Pick the one that sounds like you. The aim of this page is to take you one level deeper.</p>
+  <p>People use AI at three depths. Over a billion have tried a chatbot. About twenty million hand it long, complex work. A few thousand build AI systems that run on their own. Pick the one that sounds like you. The aim of this page is to take you one level deeper.</p>
   <div class="layers" id="layers" role="radiogroup" aria-label="Your layer of the funnel">
     <button type="button" role="radio" aria-checked="false" data-l="0" class="ly c"><span class="ly-n">1 to 2 billion</span><b>AI curious</b><span>Search, emails and summaries. One prompt, one answer.</span></button>
     <button type="button" role="radio" aria-checked="false" data-l="1" class="ly l"><span class="ly-n">About 20 million</span><b>AI literate</b><span>Hands it long-running work: research that runs for twenty minutes, or twenty hours.</span></button>
-    <button type="button" role="radio" aria-checked="false" data-l="2" class="ly n"><span class="ly-n">About 5,000</span><b>AI native</b><span>Builds systems: many agents, their own data, sometimes their own models.</span></button>
+    <button type="button" role="radio" aria-checked="false" data-l="2" class="ly n"><span class="ly-n">About 5,000</span><b>AI native</b><span>Builds systems: AI that runs on its own, their own data, sometimes their own models.</span></button>
   </div>
   <p class="you" id="layerYou" hidden></p>
 </section>
@@ -239,7 +239,7 @@ details.words summary{cursor:pointer}
     <p class="vex-h">A verifier, for example: competitor research for a headphone brand</p>
     <ul><li>Every rival covered</li><li>Live sources cited</li><li>What changed is flagged</li><li>Ends with a plan for today</li></ul>
   </div>
-  <p>That checklist is what lets an agent work without you watching. The rule: <b>if you can't check a task, don't automate it</b>. AI does best wherever its results can be checked.</p>
+  <p>That checklist is what lets AI work without you watching. The rule: <b>if you can't check a task, don't automate it</b>. AI does best wherever its results can be checked.</p>
   <div data-need-week>
     <h3>Write the verifier for each task</h3>
     <p>For an <span class="chipd det"></span>amber task, write the rule a program could run. For a <span class="chipd prob"></span>violet one, write up to three criteria that two reviewers would apply the same way. Press Test and Jev checks that each verifier is specific enough to use. A violet task stays with you until its criteria pass.</p>
@@ -277,7 +277,7 @@ details.words summary{cursor:pointer}
 
 <section class="s" id="measure">
   <h2>Step 4: test, then learn from failures</h2>
-  <p>Pick an agent tool and give it one task. Two questions narrow the choice: are you comfortable with code, and is your data allowed to leave your machine? If not, choose a no-code tool, or one that runs locally.</p>
+  <p>Pick an AI tool and give it one task. Two questions narrow the choice: are you comfortable with code, and is your data allowed to leave your machine? If not, choose a no-code tool, or one that runs locally.</p>
   <p>Run it ten times and score every run against your verifier. Say five pass. The five failures are not waste. Each is an input, a bad output and, once you correct it, a good output. That is training data.</p>
   <div class="panel runs" id="runs">
     <div class="runs-top"><label for="runT">Task</label><select id="runT"></select></div>
@@ -307,7 +307,7 @@ details.words summary{cursor:pointer}
   <ol class="fx">
     <li><b>Checkable work gets cheap.</b> Jason Wei's <a href="https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law" target="_blank" rel="noopener">Verifier's law</a>: "All tasks that are possible to solve and easy to verify will be solved by AI." Pay moves to what can't be checked: judgment, accountability, a name on the decision.</li>
     <li><b>The bottom rung goes first.</b> Research briefs, meeting packs and first drafts are how juniors used to learn judgment. Fewer people climb unless firms train them on purpose.</li>
-    <li><b>Leverage compounds.</b> The hours that come back go into human work, which earns more, which buys better agents. The gap widens every year, not once.</li>
+    <li><b>Leverage compounds.</b> The hours that come back go into human work, which earns more, which buys better AI. The gap widens every year, not once.</li>
     <li><b>Trust becomes the scarce input.</b> Whoever answers when a run goes wrong is the one clients pay, so being trusted to sign is worth more, not less.</li>
   </ol>
 </section>
@@ -317,7 +317,7 @@ details.words summary{cursor:pointer}
   <div class="panel tw3" id="tw3">
     <label><input type="checkbox" data-w3="0"><span><b>Pick one task</b><small id="w3a">One that repeats and matters.</small></span></label>
     <label><input type="checkbox" data-w3="1"><span><b>Write its verifier</b><small id="w3b">The checklist a good result has to pass.</small></span></label>
-    <label><input type="checkbox" data-w3="2"><span><b>Hand it to an agent</b><small>Ten test runs, scored against the verifier.</small></span></label>
+    <label><input type="checkbox" data-w3="2"><span><b>Hand it to AI</b><small>Ten test runs, scored against the verifier.</small></span></label>
   </div>
   <p class="pull" id="w3end">Even if it only takes ten percent off your plate, you have gone one level deeper with AI.</p>
 </section>
@@ -330,7 +330,7 @@ details.words summary{cursor:pointer}
   <h2>Sources</h2>
   <details class="words"><summary>How the sort works, and where the data comes from</summary>
   <dl>
-    <div><dt>Sorting</dt><dd>Each task goes to <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">TypeSafe's Jev 1.13</a> (pinned to jev-1.13.0) with seven narrow questions: the three-bucket question asked twice with the options in opposite orders, then whether a fixed rule could check it, whether criteria could be written, whether it happens live, by hand or under a signature, whether an agent could reach the inputs, and whether a mistake could be undone. The page's code combines the answers; when they disagree or sit near the middle, it asks you instead of guessing. Each verifier you write goes back to Jev to test whether it is a rule, clear criteria, and about the task. On 300 labelled tasks from software engineers, founders, management consultants and IT services staff, the sort matches the label 96% of the time (macro-F1 0.96), keeps 92% of the tasks that should stay with you, and asks you a question on 3%; verifiers you write are judged right 97% of the time (19 Oct 2026). Jev reads literally and can be wrong: override any colour when you know better.</dd></div>
+    <div><dt>Sorting</dt><dd>Each task goes to <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">TypeSafe's Jev 1.13</a> (pinned to jev-1.13.0) with seven narrow questions: the three-bucket question asked twice with the options in opposite orders, then whether a fixed rule could check it, whether criteria could be written, whether it happens live, by hand or under a signature, whether AI could reach the inputs, and whether a mistake could be undone. The page's code combines the answers; when they disagree or sit near the middle, it asks you instead of guessing. Each verifier you write goes back to Jev to test whether it is a rule, clear criteria, and about the task. On 300 labelled tasks from software engineers, founders, management consultants and IT services staff, the sort matches the label 96% of the time (macro-F1 0.96), keeps 92% of the tasks that should stay with you, and asks you a question on 3%; verifiers you write are judged right 97% of the time (19 Oct 2026). Jev reads literally and can be wrong: override any colour when you know better.</dd></div>
     <div><dt>Suggestions</dt><dd>Task suggestions come from O*NET (below) and a bank of about 1,500 tasks written for this page for Indian and global roles.</dd></div>
     <div><dt>O*NET</dt><dd>Jobs, tasks, importance and frequency ratings from the <a href="https://www.onetcenter.org/database.html" target="_blank" rel="noopener">O*NET 31.0 Database</a> by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> license. O*NET® is a trademark of USDOL/ETA. The suggested minutes, and the default answers used when Jev can't be reached, are this page's own estimates from those ratings and the task wording; USDOL/ETA has not approved or endorsed them.</dd></div>
     <div><dt>Economic Index</dt><dd><a href="https://www.anthropic.com/research/anthropic-economic-index-january-2026-report" target="_blank" rel="noopener">Economic primitives, Jan 2026</a> · <a href="https://www.anthropic.com/research/economic-index-march-2026-report" target="_blank" rel="noopener">Learning curves, Mar 2026</a> · <a href="https://www.anthropic.com/research/economic-index-june-2026-report" target="_blank" rel="noopener">Cadences, Jun 2026</a> · <a href="https://huggingface.co/datasets/Anthropic/EconomicIndex" target="_blank" rel="noopener">open dataset</a></dd></div>
@@ -340,7 +340,7 @@ details.words summary{cursor:pointer}
 </section>
 </main>
 </div>
-<footer><div class="wrap"><span>100xEngineers · Agent Delegation Framework</span><span>Sorted by TypeSafe Jev 1.13 · Task suggestions: O*NET 31.0, CC BY 4.0</span></div></footer>
+<footer><div class="wrap"><span>100xEngineers · AI Delegation Framework</span><span>Sorted by TypeSafe Jev 1.13 · Task suggestions: O*NET 31.0, CC BY 4.0</span></div></footer>
 
 <script>
 (function(){
@@ -352,8 +352,8 @@ details.words summary{cursor:pointer}
   /* ---------- the three buckets, combined in code: the same decide() as api/verify.mjs ---------- */
   var OFTEN=[['daily','Daily',5],['few_week','A few times a week',3],['weekly','Weekly',1],['monthly','Monthly',.25],['quarterly','Quarterly',.08]], PER={};
   OFTEN.forEach(function(o){PER[o[0]]=o[2]});
-  var REASON={rule:'a rule can check it',criteria:'you can write the criteria',hum:'the quality can’t be written as criteria',live:'happens live, by hand or under your signature',reach:'the agent can’t reach the inputs',norule:'no fixed rule checks it, so it needs judgement',nocriteria:'the criteria aren’t clear enough to write down'};
-  var ASKQ={live:'Does it happen live with people, by hand, or need your signature?',reach:'Could an agent on a computer get every input it needs?',rule:'Could a program verify a finished one with a fixed pass/fail rule?',criteria:'Could you write down what makes it good, so two reviewers would agree?',split:'Is this one specific task you repeat?'};
+  var REASON={rule:'a rule can check it',criteria:'you can write the criteria',hum:'the quality can’t be written as criteria',live:'happens live, by hand or under your signature',reach:'AI can’t reach the inputs',norule:'no fixed rule checks it, so it needs judgement',nocriteria:'the criteria aren’t clear enough to write down'};
+  var ASKQ={live:'Does it happen live with people, by hand, or need your signature?',reach:'Could AI on a computer get every input it needs?',rule:'Could a program verify a finished one with a fixed pass/fail rule?',criteria:'Could you write down what makes it good, so two reviewers would agree?',split:'Is this one specific task you repeat?'};
   function argmax(p){return Object.keys(p).reduce(function(a,b){return p[b]>p[a]?b:a})}
   /* a 0 or 1 is a person's answer and outranks Jev; thresholds match T in api/verify.mjs */
   function decide(s){
@@ -385,7 +385,7 @@ details.words summary{cursor:pointer}
   function list(a,cap){a=a.map(function(x,i){return '<b>'+esc(cap&&!i?x:lc(x))+'</b>'});return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1]}
   function plural(n,one,many){return n+' '+(n===1?one:many)}
   function newWork(){var moved=week.filter(function(t){return kind(t)!=='stay'}).length;if(!moved)return[];
-    return[{s:'Check the AI’s work',t:'Check the AI’s work: score ten test runs per task against its verifier.',m:Math.max(30,moved*5),k:'new'},{s:'Re-test the agent',t:'Re-test when the agent changes its model, connectors or pricing.',m:15,k:'new'}]}
+    return[{s:'Check the AI’s work',t:'Check the AI’s work: score ten test runs per task against its verifier.',m:Math.max(30,moved*5),k:'new'},{s:'Re-test the AI',t:'Re-test when the AI tool changes its model, connections or pricing.',m:15,k:'new'}]}
 
   /* ---------- the map: three territories in the curriculum's colours ---------- */
   var LAY={
@@ -500,16 +500,16 @@ details.words summary{cursor:pointer}
        (stay.length?'<p>'+(stay.length===N?'All '+N+' stay':stay.length+' of '+N+' stay')+'. '+esc(rtxt.join(' · ')).replace(/^(\w)/,function(c){return c.toUpperCase()})+'.</p>':'<p>None stay on these answers. Check that against your own week.</p>')+
        '<p class="fn"><span class="chipd hum"></span>Green: human. A violet task without a written verifier stays green until you <a href="#verify">write one</a>.</p>'],
       ['Augmented','Everything else starts augmented',
-       moved.length?'<p>'+plural(moved.length,'task moves','tasks move')+', '+list(moved.slice(0,2).map(function(t){return t.s}))+' among them. The agent does the work and stops before the step that commits. It drafts, you send. It finds, you book. It ranks, you act.</p><p class="fn"><span class="chipd prob"></span>Violet tasks stay here: a judge applies your criteria to every output and you spot-check. Augmented is where every task begins, however good the agent looks in a demo.</p>'
-       :'<p>Nothing moves yet. '+(vio.length?'Write the verifier for your violet tasks and they will.':'That is an answer too: an agent buys you little in this week, until you split a task into a part a rule or criteria can check.')+'</p>'],
+       moved.length?'<p>'+plural(moved.length,'task moves','tasks move')+', '+list(moved.slice(0,2).map(function(t){return t.s}))+' among them. AI does the work and stops before the step that commits. It drafts, you send. It finds, you book. It ranks, you act.</p><p class="fn"><span class="chipd prob"></span>Violet tasks stay here: a judge applies your criteria to every output and you spot-check. Augmented is where every task begins, however good AI looks in a demo.</p>'
+       :'<p>Nothing moves yet. '+(vio.length?'Write the verifier for your violet tasks and they will.':'That is an answer too: AI buys you little in this week, until you split a task into a part a rule or criteria can check.')+'</p>'],
       ['Automated','A few earn the right to run alone',
-       '<p>Three things must hold. A rule checks it, so a program can say pass or fail. A mistake is cheap: easy to undo, and it touches no client, money or anyone else’s numbers. And the agent has proved it: at least 8 of 10 test runs passed on your own tasks.</p>'+
+       '<p>Three things must hold. A rule checks it, so a program can say pass or fail. A mistake is cheap: easy to undo, and it touches no client, money or anyone else’s numbers. And AI has proved it: at least 8 of 10 test runs passed on your own tasks.</p>'+
        (auto.length?'<p>'+list(auto.map(function(t){return t.s}),1)+' '+(auto.length===1?'qualifies':'qualify')+'.</p>':amb.length?'<p>None qualifies yet: '+(amb.some(function(t){return !t.ver})?'write and test the verifier for your amber tasks, and ':'')+'check that a mistake is cheap to undo. Until then they stay augmented, and that is fine.</p>':'<p>None of your tasks has a rule that verifies it, so none runs alone.</p>')+
-       '<p class="fn"><span class="chipd det"></span>Amber: a rule checks it. Re-test every 60 days, or sooner if the agent tool changes its model, connections or pricing. A smarter agent moves no pin; an easier undo does.</p>'],
+       '<p class="fn"><span class="chipd det"></span>Amber: a rule checks it. Re-test every 60 days, or sooner if the AI tool changes its model, connections or pricing. A smarter AI moves no pin; an easier undo does.</p>'],
       ['New task','A new task appears: checking the AI’s work',
-       nw.length?'<p>Someone scores the test runs against each verifier, and someone re-tests when the agent changes. That is new work, and it is yours: about '+fmt(sum(nw,function(t){return t.m}))+' a week.</p><p class="fn"><span class="chipd new"></span>Coral: the new task.</p>':'<p>Nothing moved, so there is nothing to score. If you change an answer below, this card changes too.</p>'],
+       nw.length?'<p>Someone scores the test runs against each verifier, and someone re-tests when the AI tool changes. That is new work, and it is yours: about '+fmt(sum(nw,function(t){return t.m}))+' a week.</p><p class="fn"><span class="chipd new"></span>Coral: the new task.</p>':'<p>Nothing moved, so there is nothing to score. If you change an answer below, this card changes too.</p>'],
       ['Result','The result: your week changes',
-       (saved>0?'<p>About '+hrs(saved)+' a week come back, most of it from '+list(top)+'. The '+plural(stay.length,'task','tasks')+' that stay '+(stay.length===1?'is':'are')+' as big as before.</p><p>That is the point. The hours go to the work only you can sign.</p><p>Next: <a href="#measure">measure the runs</a>.</p>':'<p>Little comes back this week: the checking costs about what the agent saves. The win here is smaller than a demo suggests, and that is worth knowing before you pay for one.</p>')+
+       (saved>0?'<p>About '+hrs(saved)+' a week come back, most of it from '+list(top)+'. The '+plural(stay.length,'task','tasks')+' that stay '+(stay.length===1?'is':'are')+' as big as before.</p><p>That is the point. The hours go to the work only you can sign.</p><p>Next: <a href="#measure">measure the runs</a>.</p>':'<p>Little comes back this week: the checking costs about what AI saves. The win here is smaller than a demo suggests, and that is worth knowing before you pay for one.</p>')+
        '<p class="fn">Keep the log running for a month after you hand anything over. A test cannot show multi-week reliability. Not your week? <a href="#tasks">Change any task</a>.</p>']
     ];
     $('#steps').innerHTML=C.map(function(c,i){return '<div class="sc-step" data-step="'+i+'"><div class="sc-card"><span class="k">'+(i+1)+' of 7 · '+c[0]+'</span><h2>'+c[1]+'</h2>'+c[2]+'</div></div>'}).join('');
@@ -640,7 +640,7 @@ details.words summary{cursor:pointer}
         '<td><button type="button" class="yn" data-u="'+tasks.indexOf(t)+'" aria-pressed="'+u+'"'+(t.b!=='det'?' disabled':'')+' aria-label="Is a mistake cheap to undo? '+esc(t.s)+'">'+(u?'Yes':'No')+'</button></td>'+
         '<td>'+LEVEL[kind(t)]+'</td></tr>'}).join('');
     var tot=sum(week,function(t){return t.m});
-    $('#wkSum').textContent=hrs(tot)+' a week across '+plural(week.length,'task','tasks')+' · '+week.filter(function(t){return kind(t)!=='stay'}).length+' can move to an agent';
+    $('#wkSum').textContent=hrs(tot)+' a week across '+plural(week.length,'task','tasks')+' · '+week.filter(function(t){return kind(t)!=='stay'}).length+' can move to AI';
     $('#wkReset').hidden=!week.some(function(t){return t.jb&&(t.b!==t.jb||t.u!=null)});
   }
   $('#wk').addEventListener('change',function(e){var s=e.target.closest('select[data-w]');if(!s)return;var t=tasks[+s.dataset.w];
@@ -662,16 +662,16 @@ details.words summary{cursor:pointer}
   function personal(){
     var tot=sum(week,function(t){return t.m})||1, share=function(k){return Math.round(100*sum(week.filter(function(t){return kind(t)===k}),function(t){return t.m})/tot)};
     var a=share('auto'), p=share('acc'), h=100-a-p;
-    $('#kYou').innerHTML='Your week ('+esc(job.t)+'): <b>'+h+'%</b> stays human, <b>'+p+'%</b> augmented, <b>'+a+'%</b> automated, by hours. For comparison, the average job in O*NET, the US government’s database of job descriptions, comes out '+Math.round(AVG.auto*100)+'% automated from its task list. '+(a>=15?'More of yours could run alone than most: shape the tools for it before someone else does.':'Little of yours runs alone. You stay on the rising branch if the hours that come back go into human work, and you direct the agents yourself.');
+    $('#kYou').innerHTML='Your week ('+esc(job.t)+'): <b>'+h+'%</b> stays human, <b>'+p+'%</b> augmented, <b>'+a+'%</b> automated, by hours. For comparison, the average job in O*NET, the US government’s database of job descriptions, comes out '+Math.round(AVG.auto*100)+'% automated from its task list. '+(a>=15?'More of yours could run alone than most: shape the tools for it before someone else does.':'Little of yours runs alone. You stay on the rising branch if the hours that come back go into human work, and you direct the AI yourself.');
     var spark=/\b(e-?mail|correspond|calendar|schedul|appointment|meeting|telephone|calls?|messages|whatsapp|travel|expense|inbox|status|updates?|monitor|track|remind)/i, manus=/\b(research|report|presentation|slides|deck|compile|gather|literature|market|analy[sz]|document|draft|write|proposal|study|search|review|summar)/i;
     var mv=week.filter(function(t){return kind(t)!=='stay'}).sort(function(x,y){return y.m-x.m});
     var S=mv.filter(function(t){return spark.test(t.t)}), M=mv.filter(function(t){return !spark.test(t.t)&&manus.test(t.t)}), O=mv.filter(function(t){return S.indexOf(t)<0&&M.indexOf(t)<0});
     var bits=[];if(S.length)bits.push('Gemini Spark for '+list(S.slice(0,3).map(function(t){return t.s})));if(M.length)bits.push('Manus for '+list(M.slice(0,3).map(function(t){return t.s})));if(O.length)bits.push('test both on '+list(O.slice(0,2).map(function(t){return t.s})));
-    $('#agentYou').innerHTML=mv.length?bits.map(function(b){return b.charAt(0).toUpperCase()+b.slice(1)}).join('. ')+'. On Monday, pick one, connect only the tools those tasks read, and start the first ten test runs on '+list([mv[0].s])+'. Re-check this list by 17 Dec 2026.':'None of your tasks can move yet, so no agent earns a subscription. Write the check for a violet task, or split your biggest task into the part on a screen and the part that is not, and sort that part again.';
+    $('#agentYou').innerHTML=mv.length?bits.map(function(b){return b.charAt(0).toUpperCase()+b.slice(1)}).join('. ')+'. On Monday, pick one, connect only the tools those tasks read, and start the first ten test runs on '+list([mv[0].s])+'. Re-check this list by 17 Dec 2026.':'None of your tasks can move yet, so no AI tool earns a subscription. Write the check for a violet task, or split your biggest task into the part on a screen and the part that is not, and sort that part again.';
   }
 
   /* ---------- where are you: the funnel layer, kept on this device ---------- */
-  var LAYERS=['AI curious','AI literate','AI native'], NEXT=['Next level: AI literate. Hand an agent one long task, with a verifier to check it.','Next level: AI native. Build a system: agents on a schedule, scored runs, your own data.','You are already at the deepest level. Step 4 is yours: turn every failed run into training data.'];
+  var LAYERS=['AI curious','AI literate','AI native'], NEXT=['Next level: AI literate. Hand AI one long task, with a verifier to check it.','Next level: AI native. Build a system: AI on a schedule, scored runs, your own data.','You are already at the deepest level. Step 4 is yours: turn every failed run into training data.'];
   var layer=store.get('c8.delegate.layer',null);
   function layers(){[].forEach.call(document.querySelectorAll('#layers .ly'),function(b){b.setAttribute('aria-checked',String(+b.dataset.l===layer))});
     var y=$('#layerYou');y.hidden=layer==null;if(layer!=null)y.innerHTML='You: <b>'+LAYERS[layer]+'</b>. '+NEXT[layer];thisWeek()}
@@ -699,8 +699,8 @@ details.words summary{cursor:pointer}
     var st=function(ok,txt){return '<span class="then st'+(ok?' ok':'')+'">'+(ok?'✓ ':'')+txt+'</span>'};
     var L=[['#job','Pick a task that repeats and matters.',st(n,n?plural(n,'task','tasks')+' listed':'Not yet')],
       ['#verify','Write its verifier: a rule a program could run, or criteria two reviewers would agree on. No verifier, it stays human.',st(ver,ver?plural(ver,'verifier','verifiers')+' passed':'Not yet')],
-      ['#measure','Choose an agent. Are you comfortable with code? Is your data allowed to leave your machine?',st(false,'Your call')],
-      ['#bundle','Hand it over. It starts augmented: the agent drafts, you send. It runs alone only with a rule, a cheap undo and 8 of 10 passing runs.',st(mv,mv?plural(mv,'task','tasks')+' can move':'Not yet')],
+      ['#measure','Choose an AI tool. Are you comfortable with code? Is your data allowed to leave your machine?',st(false,'Your call')],
+      ['#bundle','Hand it over. It starts augmented: AI drafts, you send. It runs alone only with a rule, a cheap undo and 8 of 10 passing runs.',st(mv,mv?plural(mv,'task','tasks')+' can move':'Not yet')],
       ['#measure','Measure: ten runs, each scored against the verifier.',st(scored.length,scored.length?plural(scored.length,'task','tasks')+' scored':'Not yet')],
       ['#measure','Turn every failure into data, then go round again.',st(fails,fails?plural(fails,'example','examples')+' to fix':'Not yet')]];
     $('#loopL').innerHTML=L.map(function(x,i){return '<li><span class="n">'+(i+1)+'</span><span><a href="'+x[0]+'">'+x[1]+'</a></span>'+x[2]+'</li>'}).join('');
