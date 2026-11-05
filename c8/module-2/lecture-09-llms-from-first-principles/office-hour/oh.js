@@ -443,7 +443,6 @@
     }
     burst(0, H * .9, 90, -Math.PI / 3, .9, Math.max(14, H / 45));
     burst(W, H * .9, 90, -Math.PI * 2 / 3, .9, Math.max(14, H / 45));
-    setTimeout(function () { burst(W / 2, -10, 70, Math.PI / 2, 2.4, 6); }, 350);
     var t0 = performance.now();
     (function tick(t) {
       cx.clearRect(0, 0, W, H);
@@ -592,7 +591,7 @@
       var row = function (cls, t, sub, body) { return '<div class="er ' + cls + '"><h4>' + t + (sub ? ' <small>' + sub + '</small>' : '') + '</h4>' + body + '</div>'; };
       var dots = '';
       for (var k = 0; k < 10; k++) { var a = +A.a[k], b = +A.b[k]; dots += '<i class="' + (a && b ? (Math.abs(a - b) <= 1 ? 'ok' : 'no') : '') + '">' + (a && b ? (Math.abs(a - b) <= 1 ? '✓' : '✗') : '') + '</i>'; }
-      var card = h('<section class="ec-wrap"><div class="ec-head noprint"><h2>Your eval</h2><div class="row"><button class="btn go" id="k-dl">Download as spreadsheet</button><button class="btn" id="k-copy">Copy as text</button><button class="btn quiet" id="k-print">Print</button><span class="msg" id="k-msg" aria-live="polite"></span></div></div>' +
+      var card = h('<section class="ec-wrap"><div class="ec-head noprint"><h2>Your eval</h2><div class="row"><button class="btn go" id="k-dl">Download as spreadsheet</button><button class="btn" id="k-copy">Copy as text</button><span class="msg" id="k-msg" aria-live="polite"></span></div></div>' +
         '<article class="ec"><header><span class="tag">Eval</span><h3>' + esc(S.row.task || '') + '</h3><p>' + [S.row.type, S.row.data ? 'data ' + S.row.data : '', S.row.verifier ? 'verifier: ' + S.row.verifier : ''].filter(Boolean).map(esc).join(' · ') + '</p></header>' +
         row('', 'Decision', '', '<p>' + esc(S.dec.decision || '') + '</p>') +
         row('', 'Population', '', '<p>' + esc(S.dec.population || '') + '</p>') +
@@ -606,7 +605,6 @@
         var m = $('#k-msg', card), b = this;
         (navigator.clipboard ? navigator.clipboard.writeText(asText()) : Promise.reject()).then(function () { m.textContent = 'Copied. Paste it into your sheet.'; b.textContent = 'Copied ✓'; }, function () { m.textContent = 'Select the eval above and copy it.'; });
       };
-      $('#k-print', card).onclick = function () { window.print(); };
       $('#k-dl', card).onclick = function () { downloadBook(this, $('#k-msg', card)); };
 
       /* 4 what is left */
