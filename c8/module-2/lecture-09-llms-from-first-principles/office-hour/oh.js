@@ -336,7 +336,7 @@
       var k = h('<div class="keep"><pre class="copy" data-nolabel></pre>' +
         '<div class="row noprint"><button class="btn go" id="k-copy">Copy as text</button><button class="btn" id="k-print">Print</button><span class="msg" id="k-msg"></span></div>' +
         '<section><h3>Next</h3><ol class="outcomes" style="margin:0">' + [
-          ['Paste this eval into your sheet.', 'Copy as text, then paste it into a new tab named Eval, in the same sheet as Practice set 1.', '/c8/module-2/practice-set-2-write-the-eval/#s05', 'Practice set 2, what to submit'],
+          ['Paste this eval into your sheet, then share it on the Discord.', 'Copy as text, then paste it into a new tab named Eval, in the same sheet as Practice set 1.', '/c8/module-2/practice-set-2-write-the-eval/', 'Practice set 2'],
           ['Re-score your tested row with this rubric.', 'In Practice set 1, section 04, you scored it out of 10 by feel, like the five replies at the start. Check the hard lines first, then score each quality from 1 to 5.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06'],
           ['Grow your one golden pair into ten.', 'Real inputs with the output you would accept, the hard ones included. That is your population.', '/c8/module-2/lecture-03-building-ui/notes#s05', 'Lecture 3, section 05'],
           ['Run the stranger test on your rubric.', 'Hand it to someone outside your field with three outputs. If they cannot score without asking you, sharpen your 1 and 5. Don\'t ask an LLM to write it.', '/c8/module-2/lecture-01-orientation/notes#s09', 'Lecture 1, section 09'],
