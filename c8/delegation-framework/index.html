@@ -62,6 +62,8 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
 .sortrow{margin:18px 0 6px}
 .sortrow .muted,.ckmsg{font-size:14px}
 .priv{font-size:13.5px;margin:0 0 1em}
+.signin{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;border:1.5px solid var(--fl);border-radius:10px;background:var(--card);padding:14px 16px;margin:0 0 14px}
+.signin p{flex:1 1 100%;margin:0;font-size:14.5px}.signin .gbtn{min-height:40px}.signin .gerr{font-size:13.5px}.signin .gerr:empty{display:none}
 .ckrow{display:grid;grid-template-columns:22px 1fr;gap:6px 8px;padding:14px 0;border-bottom:1px solid var(--line)}
 .ckrow>*:not(.n){grid-column:2}
 .ckrow b{font-weight:500}
@@ -247,7 +249,7 @@ details.words summary{cursor:pointer}
     <div class="btnrow"><button type="button" class="btn ghost" id="addRow">+ Add a task</button><button type="button" class="btn ghost" id="onet" hidden>Add the standard tasks for this job</button></div>
     <div class="sugg" id="suggW" hidden><p class="h">Suggestions for your job. Tap one to add it, then edit it to match your week.</p><div class="quick add" id="sugg"></div></div>
     <div class="btnrow sortrow"><button type="button" class="btn" id="sort">Can I verify these?</button><span class="muted" id="sortMsg" aria-live="polite"></span></div>
-    <p class="muted priv">Your tasks are sorted by Jev, an AI model from TypeSafe that reads each one and asks whether it can be checked. This page doesn't store them, and TypeSafe doesn't train on them.</p>
+    <p class="muted priv">Your tasks are sorted by Jev, an AI model from TypeSafe that reads each one and asks whether it can be checked. This page doesn't store them, and TypeSafe doesn't train on them. Checking with Jev asks you to sign in with Google once.</p>
   </div>
 </section>
 
@@ -572,20 +574,41 @@ details.words summary{cursor:pointer}
 
   /* ---------- sort: one call for the week; on any failure the learner answers instead ---------- */
   function post(q,body){return fetch(API+q,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(d){if(!r.ok&&!d.fallback)d.error=d.error||'Sorting failed.';return d})}).catch(function(){return{fallback:true}})}
-  $('#sort').addEventListener('click',function(){
+  /* ---------- sign-in: asked only when a button would call Jev (it costs money); then the click goes through ---------- */
+  function loadGsi(cb){if(window.google&&google.accounts)return cb();var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=cb;s.onerror=function(){cb(1)};document.head.appendChild(s)}
+  function signin(row,retry,byHandAll){
+    var box=row.nextElementSibling;if(!box||!box.classList.contains('signin')){box=document.createElement('div');box.className='signin';row.after(box)}
+    var hand=function(){box.remove();byHandAll()};
+    box.innerHTML='<p><b>Sign in to check with Jev</b><br>Jev is a paid model, so each learner gets a fair share a day. We keep no name or email.</p><div class="gbtn"></div><button type="button" class="btn ghost">Answer the questions myself</button><p class="muted gerr" aria-live="polite"></p>';
+    box.querySelector('.btn').onclick=hand;
+    var err=function(m){box.querySelector('.gerr').textContent=m};
+    fetch(API+'?step=me').then(function(r){return r.json()}).then(function(me){
+      if(!me.client_id)return hand(); /* sign-in not set up: same as Jev being down */
+      loadGsi(function(bad){if(bad)return err('Google sign-in didn’t load. Answer the questions yourself, or reload and try again.');
+        try{google.accounts.id.initialize({client_id:me.client_id,callback:function(res){
+            post('?step=login',{credential:res.credential}).then(function(d){if(d.ok){box.remove();window.posthog&&posthog.capture('delegation_login');retry()}else err(d.error||'Sign-in failed. Try again.')})}});
+          google.accounts.id.renderButton(box.querySelector('.gbtn'),{theme:'outline',size:'large',text:'continue_with',shape:'pill'})}
+        catch(e){err('Google sign-in didn’t load. Answer the questions yourself, or reload and try again.')}})
+    },hand);
+  }
+  function limitMsg(d){return d.limited==='site'?'Jev has reached today’s limit for this page, so answer the short questions yourself.':'You’ve used today’s Jev checks, so answer the short questions yourself. More tomorrow.'}
+  function leftMsg(d){return d.left!=null&&d.left<=15?' '+plural(d.left,'Jev check','Jev checks')+' left today.':''}
+  $('#sort').addEventListener('click',sortWeek);
+  function sortWeek(){
     var todo=tasks.filter(function(t){return t.t.trim()&&!t.b});if(!todo.length)todo=tasks.filter(function(t){return t.t.trim()});if(!todo.length)return;
     var btn=$('#sort');btn.disabled=true;$('#sortMsg').textContent='Checking '+plural(todo.length,'task','tasks')+'…';
     post('',{job:job.t,tasks:todo.map(function(t){return{task:t.t,how_often:t.f}})}).then(function(d){
+      if(d.signin){btn.disabled=false;$('#sortMsg').textContent='';signin(btn.parentNode,sortWeek,function(){todo.forEach(byHand);$('#sortMsg').textContent='Answer the short questions under each task yourself.';changed()});return}
       if(d.error&&!d.fallback){$('#sortMsg').textContent=d.error;btn.disabled=false;return}
-      if(d.fallback){todo.forEach(byHand);$('#sortMsg').textContent='Jev couldn’t be reached, so answer the short questions under each task yourself.'}
-      else{d.tasks.forEach(function(r,i){var t=todo[i],was=t.b;t.b=t.jb=r.bucket;t.reason=r.reason;t.ask=r.ask;t.ans={};t.sig=r.sig;t.undo=r.undo;t.u=null;t.src='jev';if(was!==t.b)t.ver=false});
+      if(d.fallback){todo.forEach(byHand);$('#sortMsg').textContent=d.limited?limitMsg(d):'Jev couldn’t be reached, so answer the short questions under each task yourself.'}
+      else{var over=0;d.tasks.forEach(function(r,i){var t=todo[i],was=t.b;if(r.fallback){over++;byHand(t);return}t.b=t.jb=r.bucket;t.reason=r.reason;t.ask=r.ask;t.ans={};t.sig=r.sig;t.undo=r.undo;t.u=null;t.src='jev';if(was!==t.b)t.ver=false});
         var un=todo.filter(function(t){return t.ask.length}).length;
-        $('#sortMsg').textContent='Sorted by Jev ('+d.model+'). Now write the verifiers in step 2.'+(un?' '+plural(un,'task needs','tasks need')+' your answer.':'')}
+        $('#sortMsg').textContent='Sorted by Jev ('+d.model+'). Now write the verifiers in step 2.'+(un?' '+plural(un,'task needs','tasks need')+' your answer.':'')+(over?' '+plural(over,'task','tasks')+' went past today’s Jev limit.':'')+leftMsg(d)}
       window.posthog&&posthog.capture('delegation_sort',{value:d.fallback?'fallback':['det','prob','hum'].map(function(k){return k+':'+todo.filter(function(t){return t.b===k}).length}).join(' ')});
       changed();
       if(week.length&&!un0())setTimeout(function(){$('#verify').scrollIntoView({behavior:'smooth'})},80);
     });
-  });
+  }
   function un0(){return tasks.some(function(t){return t.ask&&t.ask.some(function(k){return !(t.ans&&t.ans[k]!=null)})})}
   /* offline: four questions per task, defaulting to O*NET's screen when the task came from there */
   function byHand(t){var o=t.on;t.sig={p:{det:.34,prob:.33,hum:.33},live:.5,reach:.5,rule:0,criteria:0};t.ans={};
@@ -609,22 +632,26 @@ details.words summary{cursor:pointer}
     if(t.ver){t.ver=false;t.note='Changed: test it again.'}saveSoon()});
   $('#ck').addEventListener('change',function(e){if(e.target.dataset.c!=null)changed()});
   $('#ck').addEventListener('click',function(e){var b=e.target.closest('[data-anyway]');if(!b)return;var t=tasks[+b.dataset.anyway];t.ver=true;t.vo=1;t.note='Your call: used without a passing test.';changed()});
-  $('#testCk').addEventListener('click',function(){
+  $('#testCk').addEventListener('click',testChecks);
+  function testChecks(){
     var todo=week.filter(function(t){return t.b!=='hum'&&!t.ver&&chkText(t)});
     if(!todo.length){$('#ckMsg').textContent=week.some(function(t){return t.b!=='hum'&&!chkText(t)})?'Write a verifier first.':'Every verifier has passed.';return}
     var btn=$('#testCk');btn.disabled=true;$('#ckMsg').textContent='Testing '+plural(todo.length,'verifier','verifiers')+'…';
-    post('?step=check',{items:todo.map(function(t){return{task:t.t,check:chkText(t),bucket:t.b}})}).then(function(d){
+    post('?step=check',{items:todo.map(function(t){return{task:t.t,check:chkText(t),bucket:t.b}})}).then(function done(d){
       btn.disabled=false;
+      if(d.signin){$('#ckMsg').textContent='';signin(btn.parentNode,testChecks,function(){done({fallback:true,hand:1})});return}
       if(d.error&&!d.fallback){$('#ckMsg').textContent=d.error;return}
+      var why=d.hand?'You chose not to sign in, so this is taken on your word.':d.limited?'Past today’s Jev limit, so this is taken on your word.':'Jev couldn’t be reached, so this is taken on your word.';
       todo.forEach(function(t,i){var r=d.fallback?null:d.items[i];t.tries=(t.tries||0)+1;
-        if(!r){t.ver=true;t.vo=1;t.note='Jev couldn’t be reached, so this is taken on your word.';return}
+        if(r&&r.fallback){r=null;why='Past today’s Jev limit, so this is taken on your word.'}
+        if(!r){t.ver=true;t.vo=1;t.note=why;return}
         if(r.bucket!==t.b){t.chk=r.bucket==='det'?chkText(t):(t.chk||'').trim();t.b=r.bucket}
         t.ver=r.verified;t.note=r.note});
-      var ok=todo.filter(function(t){return t.ver}).length;$('#ckMsg').textContent=ok+' of '+todo.length+' passed.';
+      var ok=todo.filter(function(t){return t.ver}).length;$('#ckMsg').textContent=ok+' of '+todo.length+' passed.'+leftMsg(d);
       window.posthog&&posthog.capture('delegation_verify',{value:d.fallback?'fallback':ok+'/'+todo.length});
       changed();
     });
-  });
+  }
 
   /* ---------- worksheet: override any colour, say whether undo is cheap ---------- */
   var LEVEL={stay:'<span class="pill hum">Stays human</span>',acc:'<span class="pill prob">Augment</span>',auto:'<span class="pill det">Automate</span>'};

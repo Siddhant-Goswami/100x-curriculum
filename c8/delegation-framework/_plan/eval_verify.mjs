@@ -53,7 +53,7 @@ let last = 0;
 async function remote(q, body) {
   const wait = last + 40000 - Date.now(); if (wait > 0) await new Promise(r => setTimeout(r, wait));
   last = Date.now();
-  const d = await (await fetch(via + '/api/verify' + q, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })).json();
+  const d = await (await fetch(via + '/api/verify' + q, { method: 'POST', headers: { 'content-type': 'application/json', 'x-eval-key': process.env.EVAL_KEY || '' }, body: JSON.stringify(body) })).json(); /* EVAL_KEY: same value as the Vercel env var */
   if (d.fallback || d.error) throw new Error('endpoint: ' + JSON.stringify(d));
   return d;
 }
