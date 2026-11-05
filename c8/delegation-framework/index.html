@@ -108,18 +108,12 @@ main .btn.ghost:hover{border-color:var(--flh)}
 .ckrow{padding:16px 0}
 details.words summary{cursor:pointer}
 
-/* the video beside the opening */
-.hero-v{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:28px;align-items:start}
-.vid{margin:44px 0 0}
-.vbox{position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;background:#F3F2EC;border:1px solid var(--line2);box-shadow:var(--float)}
-.vbox video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#F3F2EC;display:block}
-.vid figcaption{font-size:13px;color:var(--ink3);margin-top:8px;text-align:center}
+/* the steps under the opening */
 .vsteps{list-style:none;counter-reset:v;padding:0!important;margin:18px 0 0;display:grid;gap:2px}
 .vsteps li{counter-increment:v;margin:0}
 .vsteps a{display:flex;gap:10px;align-items:center;padding:7px 10px;border-radius:9px;color:var(--ink);text-decoration:none;font-size:15px}
 .vsteps a::before{content:counter(v);width:22px;height:22px;border-radius:50%;border:1.5px solid var(--fl);font:500 11px var(--mono);display:grid;place-items:center;color:var(--ink2);flex:none}
 .vsteps a:hover{background:var(--card)}
-@media (max-width:760px){.hero-v{grid-template-columns:1fr}.vid{margin:4px auto 0;width:min(100%,300px)}.vsteps{display:none}}
 
 /* where are you: three layers of the funnel */
 .layers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 14px}
@@ -178,11 +172,10 @@ details.words summary{cursor:pointer}
 <div class="wrap">
 <main>
 <details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
-<div class="hero hero-v">
-  <div>
+<div class="hero">
     <p class="kick">A framework for your own job</p>
     <h1>Agent Delegation Framework</h1>
-    <p class="dek">One question: how do you move one layer down the AI funnel? The answer is not a new tool. It is a new way to look at your own work. Watch the short video, then run the same steps on your own job.</p>
+    <p class="dek">One question: how do you move one layer down the AI funnel? The answer is not a new tool. It is a new way to look at your own work. Run these steps on your own job.</p>
     <ol class="vsteps">
       <li><a href="#funnel">Where are you?</a></li>
       <li><a href="#job">List your tasks</a></li>
@@ -191,10 +184,6 @@ details.words summary{cursor:pointer}
       <li><a href="#measure">Measure, learn from failures</a></li>
       <li><a href="#k">Why now: the fork</a></li>
     </ol>
-  </div>
-  <figure class="vid">
-    <div class="vbox"><video src="/c8/delegation-framework/media/recap.mp4" poster="/c8/delegation-framework/media/recap.jpg" controls playsinline preload="metadata" aria-label="Video on the delegation framework, 3½ minutes"></video></div>
-  </figure>
 </div>
 
 <section class="s" id="funnel">
@@ -332,7 +321,6 @@ details.words summary{cursor:pointer}
   <h2>Sources</h2>
   <details class="words"><summary>How the sort works, and where the data comes from</summary>
   <dl>
-    <div><dt>Video</dt><dd>A 3½-minute walkthrough of the framework, <a href="https://drive.google.com/file/d/1D3_nKgI0JKPXVOvP2AbcH2iYOxfCRcfV/view" target="_blank" rel="noopener">on Drive</a>. The funnel numbers, the nurse, the headphone verifier and the Coinbase example are from the video.</dd></div>
     <div><dt>Sorting</dt><dd>Each task goes to <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">TypeSafe's Jev 1.13</a> (pinned to jev-1.13.0) with seven narrow questions: the three-bucket question asked twice with the options in opposite orders, then whether a fixed rule could check it, whether criteria could be written, whether it happens live, by hand or under a signature, whether an agent could reach the inputs, and whether a mistake could be undone. The page's code combines the answers; when they disagree or sit near the middle, it asks you instead of guessing. Each verifier you write goes back to Jev to test whether it is a rule, clear criteria, and about the task. On 300 labelled tasks from software engineers, founders, management consultants and IT services staff, the sort matches the label 96% of the time (macro-F1 0.96), keeps 92% of the tasks that should stay with you, and asks you a question on 3%; verifiers you write are judged right 97% of the time (19 Oct 2026). Jev reads literally and can be wrong: override any colour when you know better.</dd></div>
     <div><dt>Suggestions</dt><dd>Task suggestions come from O*NET (below) and a bank of about 1,500 tasks written for this page for Indian and global roles.</dd></div>
     <div><dt>O*NET</dt><dd>Jobs, tasks, importance and frequency ratings from the <a href="https://www.onetcenter.org/database.html" target="_blank" rel="noopener">O*NET 31.0 Database</a> by the U.S. Department of Labor, Employment and Training Administration (USDOL/ETA), used under the <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a> license. O*NET® is a trademark of USDOL/ETA. The suggested minutes, and the default answers used when Jev can't be reached, are this page's own estimates from those ratings and the task wording; USDOL/ETA has not approved or endorsed them.</dd></div>
