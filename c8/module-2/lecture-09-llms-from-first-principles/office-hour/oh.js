@@ -547,8 +547,9 @@
     return '<svg class="badge" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" class="b-bg"/><circle cx="32" cy="32" r="30" class="b-ring"/><path d="M20 33l8 8 16-17" class="b-ck"/></svg>';
   }
 
-  /* The eval as one sheet in GDPval's shape: one row per task, the rubric in cells, the prompt beside it, and a few counts that turn into a
-     pass rate and a verdict. Learners add a row for each new task, so the sheet grows into their own eval dataset. Row 2 is GDPval bd72994f. */
+  /* The eval as one sheet in GDPval's shape, laid out for the do, check, log routine: one row per task, the checker's verdict for
+     runs 1 to 10 right after the task, the counts and the verdict worked out, then the eval itself and both prompts. A new task is a
+     new row. Row 2 is GDPval bd72994f as an example; row 3 is the learner's task. */
   var XLSX_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
   function loadXLSX() {
     return window.XLSX ? Promise.resolve(window.XLSX) : new Promise(function (ok, no) {
@@ -556,38 +557,51 @@
     });
   }
   function buildBook(X) {
-    var hard = S.hard.filter(filled).map(function (x) { return x.trim(); }), dims = S.dims.filter(dimDone), A = S.agree, ROWS = 100;
+    var hard = S.hard.filter(filled).map(function (x) { return x.trim(); }), dims = S.dims.filter(dimDone), A = S.agree, ROWS = 100, RUNS = 10;
     var F = function (f, z) { var c = { t: 'n', v: 0, f: f }; if (z) c.z = z; return c; }, FS = function (f) { return { t: 's', v: '', f: f }; };
-    var hardTxt = function (hs) { return hs.map(function (x, k) { return 'H' + (k + 1) + '. Pass when ' + x.replace(/^pass when /i, ''); }).join('\n'); };
+    var col = function (n) { var t = ''; n++; while (n) { var m = (n - 1) % 26; t = String.fromCharCode(65 + m) + t; n = Math.floor((n - 1) / 26); } return t; };
+    var hardTxt = function (hs) { return hs.map(function (x, k) { return 'H' + (k + 1) + '. Pass when ' + clean(x); }).join('\n'); };
     var qualTxt = function (ds) { return ds.map(function (d, k) { return 'Q' + (k + 1) + '. ' + d.name + ': 1 = ' + d.one + '; 5 = ' + d.five; }).join('\n'); };
-    var head = ['task_id', 'Role', 'Task', 'Decision', 'Population', 'Definition of good', 'Hard lines (Pass or Fail)', 'Quality (1 to 5)', 'Who checks',
-      'Task prompt (new chat)', 'Outputs scored', 'Passed', 'Pass rate', 'Graded by you and the LLM', 'Within one point', 'LLM agreement', 'Verdict', 'Checker prompt (fresh chat)'];
-    var rows = [head];
-    var ex = ['GDPval bd72994f (example)', 'Senior client advisor, luxury clothing boutique',
-      'Pick one brand\'s 2025 resort collection, put 4 to 6 looks on slides, and write an email or text template staff can reuse to invite clients to book an appointment.',
-      'If 8 of 10 AI-drafted invites pass, the manager gives new staff the AI draft to start from. If not, the senior advisor keeps writing them.',
-      'Ten real briefs: different brands, seasons and clients, including a client who only takes texts.',
-      'An invite a new advisor could send today, with looks that sell the collection.',
-      hardTxt(['it greets with a [First Name] placeholder', 'it asks the client to book, schedule or reserve', 'it gives a way to book: reply with a time, or a number to call',
+    /* A task_id, B Task, C..L Run 1..10, M Checked, N Passed, O Pass rate, P Waiting on you, Q Verdict, then the eval and prompts */
+    var R0 = 2, R1 = R0 + RUNS - 1, runs = col(R0) + '{r}:' + col(R1) + '{r}';
+    var head = ['task_id', 'Task'];
+    for (var k = 1; k <= RUNS; k++) head.push(k === 1 ? 'Run 1 (Pass, Fail or Needs you)' : 'Run ' + k);
+    head = head.concat(['Checked', 'Passed', 'Pass rate', 'Waiting on you', 'Verdict', 'Role', 'Decision', 'Population', 'Definition of good',
+      'Hard lines (Pass or Fail)', 'Quality (1 to 5)', 'Who checks', 'You and the LLM scored', 'Within one point', 'LLM agreement',
+      'Task prompt (new chat)', 'Checker prompt (fresh chat)']);
+    var C = { checked: col(R1 + 1), passed: col(R1 + 2), rate: col(R1 + 3), wait: col(R1 + 4), n: col(R1 + 13), ok: col(R1 + 14) };
+    var ex = { id: 'GDPval bd72994f (example)', task: 'Pick one brand\'s 2025 resort collection, put 4 to 6 looks on slides, and write an email or text template staff can reuse to invite clients to book an appointment.',
+      role: 'Senior client advisor, luxury clothing boutique',
+      decision: 'If 8 of 10 AI-drafted invites pass, the manager gives new staff the AI draft to start from. If not, the senior advisor keeps writing them.',
+      population: 'Ten real briefs: different brands, seasons and clients, including a client who only takes texts.',
+      good: 'An invite a new advisor could send today, with looks that sell the collection.',
+      hard: hardTxt(['it greets with a [First Name] placeholder', 'it asks the client to book, schedule or reserve', 'it gives a way to book: reply with a time, or a number to call',
         'it ends with the advisor\'s name and a contact', 'an email has a subject line', 'a text says how to opt out']),
-      qualTxt([{ name: 'The looks', one: 'items that don\'t belong together, or the same outfit three times', five: 'every look is one outfit that hangs together, each clearly different' }]),
-      'Hard lines: a checklist. Quality: two senior advisors, then an LLM judge. Source: ' + GDPVAL_TASK, '', '', '', '', '', ''];
-    var mine = ['T-001', '', S.row.task || '', S.dec.decision || '', S.dec.population || '', S.row.criteria || '',
-      hardTxt(hard), qualTxt(dims.map(function (d) { return { name: d.name.trim(), one: d.one.trim(), five: d.five.trim() }; })),
-      [S.grader.hard ? 'Hard lines: ' + S.grader.hard : '', S.grader.qual ? 'Quality: ' + S.grader.qual : ''].filter(Boolean).join('\n'),
-      asPrompt(), '', '', '', A.n || '', A.n ? A.ok : '', ''];
+      qual: qualTxt([{ name: 'The looks', one: 'items that don\'t belong together, or the same outfit three times', five: 'every look is one outfit that hangs together, each clearly different' }]),
+      who: 'Hard lines: a checklist. Quality: two senior advisors, then an LLM judge. Source: ' + GDPVAL_TASK, n: '', ok: '', pr: '', ck: '' };
+    var mine = { id: 'T-001', task: S.row.task || '', role: '', decision: S.dec.decision || '', population: S.dec.population || '', good: S.row.criteria || '',
+      hard: hardTxt(hard), qual: qualTxt(dims.map(function (d) { return { name: d.name.trim(), one: d.one.trim(), five: d.five.trim() }; })),
+      who: [S.grader.hard ? 'Hard lines: ' + S.grader.hard : '', S.grader.qual ? 'Quality: ' + S.grader.qual : ''].filter(Boolean).join('\n'),
+      n: A.n || '', ok: A.n ? A.ok : '', pr: asPrompt(), ck: asJudge() };
+    var rows = [head];
     for (var r = 2; r <= ROWS + 1; r++) {
-      var row = r === 2 ? ex.slice() : r === 3 ? mine.slice() : ['', '', '', '', '', '', '', '', '', '', '', '', '', '', ''];
-      row.length = 12;
-      row.splice(12, 0, F('IF(N(K' + r + ')=0,"",L' + r + '/K' + r + ')', '0%'));
-      row[13] = r === 3 ? mine[13] : ''; row[14] = r === 3 ? mine[14] : '';
-      row.push(F('IF(N(N' + r + ')=0,"",O' + r + '/N' + r + ')', '0%'));
-      row.push(FS('IF(A' + r + '="","",IF(N(K' + r + ')<10,"Score 10 outputs first",IF(M' + r + '>=0.8,"Hand it to AI, keep spot-checking","Not yet: sharpen the prompt or keep doing it")))'));
-      row.push(r === 3 ? asJudge() : '');
+      var t = r === 2 ? ex : r === 3 ? mine : null, rg = runs.replace(/\{r\}/g, r);
+      var row = [t ? t.id : '', t ? t.task : ''];
+      for (var j = 0; j < RUNS; j++) row.push('');
+      var chk = C.checked + r, pas = C.passed + r, rate = C.rate + r;
+      row.push(F('IF(A' + r + '="","",COUNTIF(' + rg + ',"Pass")+COUNTIF(' + rg + ',"Fail"))'));
+      row.push(F('IF(A' + r + '="","",COUNTIF(' + rg + ',"Pass"))'));
+      row.push(F('IF(N(' + chk + ')=0,"",' + pas + '/' + chk + ')', '0%'));
+      row.push(F('IF(A' + r + '="","",COUNTIF(' + rg + ',"Needs you"))'));
+      row.push(r === 2 ? 'Example: copy the shape, log your runs in the rows below' : FS('IF(A' + r + '="","",IF(N(' + chk + ')<' + RUNS + ',"Check "&(' + RUNS + '-N(' + chk + '))&" more",IF(' + rate + '>=0.8,"Hand it to AI, keep spot-checking","Not yet: sharpen the prompt or keep doing it")))'));
+      row = row.concat(t ? [t.role, t.decision, t.population, t.good, t.hard, t.qual, t.who, t.n, t.ok] : ['', '', '', '', '', '', '', '', '']);
+      row.push(F('IF(N(' + C.n + r + ')=0,"",' + C.ok + r + '/' + C.n + r + ')', '0%'));
+      row = row.concat(t ? [t.pr, t.ck] : ['', '']);
       rows.push(row);
     }
     var ws = X.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [12, 22, 40, 40, 34, 34, 48, 48, 30, 60, 9, 8, 9, 12, 10, 10, 26, 60].map(function (w) { return { wch: w }; });
+    var w = [12, 40]; for (var q = 0; q < RUNS; q++) w.push(q ? 9 : 14);
+    ws['!cols'] = w.concat([9, 8, 9, 10, 30, 22, 40, 34, 34, 48, 48, 30, 10, 10, 10, 60, 60]).map(function (x) { return { wch: x }; });
     var wb = X.utils.book_new(); X.utils.book_append_sheet(wb, ws, 'Evals');
     return wb;
   }
@@ -612,7 +626,7 @@
         '<p class="kick">Practice set 2 · Done</p><h1 tabindex="-1">You wrote your first eval.</h1>' +
         '<p class="sub">Most people use AI and hope. You can now <b>measure</b> it: a decision, a definition of good, and a grader you can trust.</p>' +
         '<div class="ec-cta"><button class="btn go big" id="k-dl" type="button">Download as spreadsheet</button><button class="btn quiet" id="k-copy" type="button">Copy as text</button><span class="msg" id="k-msg" aria-live="polite"></span></div>' +
-        '<p class="note">One row per task, like GDPval. Add your next task as a new row and it grows into your own eval dataset.</p></div></section>');
+        '<p class="note">One row per task, like GDPval. Log each run in it, and add your next task as a new row.</p></div></section>');
       st.appendChild(hero);
       $('.win-art', hero).onclick = confetti;
 
@@ -652,7 +666,7 @@
         '<ol class="steps3">' +
         '<li><b>Do it.</b> Paste this prompt in a new chat, with today\'s input at the end.<div class="row"><button class="btn sm" type="button" data-copy="do">Copy task prompt</button><span class="msg" aria-live="polite"></span></div></li>' +
         '<li><b>Check it in a fresh chat.</b> An LLM goes easy on its own work. Paste this with the input and the output.<div class="row"><button class="btn sm" type="button" data-copy="check">Copy checker prompt</button><span class="msg" aria-live="polite"></span></div></li>' +
-        '<li><b>Log it.</b> In your sheet, add one to Outputs scored, and one to Passed if the verdict is Pass. Anything marked Can\'t tell is yours to check.</li></ol>' +
+        '<li><b>Log it.</b> Type the verdict in the next Run cell of your sheet. For Needs you, check the Can\'t tell items yourself, then change it to Pass or Fail.</li></ol>' +
         '<details class="ex"><summary>See both prompts</summary><p class="note">Task prompt</p><pre class="copy" data-nolabel data-p="do"></pre><p class="note">Checker prompt</p><pre class="copy" data-nolabel data-p="check"></pre></details>' +
         '<p class="note">Use Claude for this task often? <button class="linkbtn" type="button" id="u-skill">Download it as a Claude Skill</button><span class="msg" aria-live="polite"></span></p></section>');
       var P = { do: asPrompt, check: asJudge };
@@ -673,7 +687,7 @@
 
       /* 4 what is left */
       side.appendChild(h('<section class="next noprint"><h2>Before Lecture 11 <small>Thu 12 Nov</small></h2><ol class="outcomes">' +
-        '<li><b>Re-score your tested row with it.</b> You scored it out of 10 by feel. Run it through the checker prompt and log it as your first row. ' + link('/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06') + '</li>' +
+        '<li><b>Re-score your tested row with it.</b> You scored it out of 10 by feel. Run it through the checker prompt and log it as Run 1. ' + link('/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06') + '</li>' +
         '<li><b>Share the sheet on the Discord.</b> We go through them in the office hour.</li></ol></section>'));
 
       main.appendChild(h('<details class="opt noprint"><summary>Optional, when you have time</summary><ol class="outcomes">' + [
