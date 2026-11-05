@@ -269,7 +269,7 @@ details.words summary{cursor:pointer}
 
 <section class="s" id="bundle">
   <h2>Step 3: sort your tasks</h2>
-  <p>Each task lands where its check puts it. A rule checks it: <b>automated</b>. Criteria you wrote check it: <b>augmented</b>. Nothing checks it reliably: it <b>stays human</b>. Whatever AI takes on adds a <b>new task</b> for you: checking its work.</p>
+  <p>Each task lands where its check puts it. A rule checks it: <b>automate</b>. Criteria you wrote check it: <b>augment</b>. Nothing checks it reliably: it <b>stays human</b>. Whatever AI takes on adds a <b>new task</b> for you: checking its work.</p>
   <p data-need-week>Scroll through yours, then change any answer you disagree with.</p>
 </section>
 
@@ -279,8 +279,8 @@ details.words summary{cursor:pointer}
     <div class="sc-viz" id="viz" data-nolabel></div>
     <div class="sc-legend" id="legend">
       <span style="--l:var(--hum);--ls:var(--hum-soft)">Stays human</span>
-      <span style="--l:var(--prob);--ls:var(--prob-soft)">Augmented</span>
-      <span style="--l:var(--det);--ls:var(--det-soft)">Automated</span>
+      <span style="--l:var(--prob);--ls:var(--prob-soft)">Augment</span>
+      <span style="--l:var(--det);--ls:var(--det-soft)">Automate</span>
       <span style="--l:var(--coral);--ls:var(--coral-soft)">New task</span>
     </div>
   </div>
@@ -389,7 +389,7 @@ details.words summary{cursor:pointer}
     wide:{vb:[960,600],T:{det:[165,340,128,160],prob:[478,330,172,195],hum:[790,340,140,170]},R:30,r0:13,fs:12.5,lh:15,max:4,ch:17},
     tall:{vb:[600,720],T:{det:[155,215,138,125],prob:[300,530,272,150],hum:[448,215,142,125]},R:40,r0:17,fs:20,lh:22,max:3,ch:15}
   };
-  var TER={det:{name:'Automated',sub:'A rule checks it',q:'Runs alone after 8 of 10 pass'},prob:{name:'Augmented',sub:'It drafts, you commit',q:'You or a judge check each one'},hum:{name:'Stays human',sub:'Nothing reliable verifies it',q:'Live, by hand, signed or slow'}};
+  var TER={det:{name:'Automate',sub:'A rule checks it',q:'Runs alone after 8 of 10 pass'},prob:{name:'Augment',sub:'It drafts, you commit',q:'You or a judge check each one'},hum:{name:'Stays human',sub:'Nothing reliable verifies it',q:'Live, by hand, signed or slow'}};
   var svg, pinEls=[], terrEls={};
   function wrap(s,n){var w=s.split(' '),out=[''];w.forEach(function(x){var l=out[out.length-1];if((l+' '+x).trim().length>n&&l){if(out.length===2){out[1]+='…';out.push(null)}else out.push(x)}else if(out.length<3)out[out.length-1]=(l+' '+x).trim()});return out.filter(function(x){return x!==null}).slice(0,2)}
 
@@ -469,7 +469,7 @@ details.words summary{cursor:pointer}
   /* tooltip on hover, focus or tap */
   var tip=null;
   function showTip(e){hideTip();var t=e._t,k=t.k==='new'?'new':kind(t),stage=$('#stage'),b=e.getBoundingClientRect(),sb=stage.getBoundingClientRect();
-    var v=step<2?'':k==='new'?'New task: checking the AI':k==='stay'?'Stays human: '+why(t):step<3?'':k==='auto'&&step>=4?'Automated':'Augmented';
+    var v=step<2?'':k==='new'?'New task: checking the AI':k==='stay'?'Stays human: '+why(t):step<3?'':k==='auto'&&step>=4?'Automate':'Augment';
     tip=document.createElement('div');tip.className='pin-tip';
     tip.innerHTML='<b>'+esc(t.t)+'</b><small>'+fmt(t.m)+' a week'+(step>=6&&k!=='stay'&&k!=='new'?' → '+fmt(after(t)):'')+(v?' · '+esc(v):'')+'</small>';
     tip.style.left=Math.min(sb.width-140,Math.max(140,b.left-sb.left+b.width/2))+'px';tip.style.top=(b.top-sb.top)+'px';stage.appendChild(tip)}
@@ -489,19 +489,19 @@ details.words summary{cursor:pointer}
     var amb=week.filter(function(t){return t.b==='det'}), vio=week.filter(function(t){return t.b==='prob'});
     var C=[
       ['Your week','Think of a week as '+(/^(a|an|the)\s/i.test(job.t)?'':'a ')+title,
-       '<p>Every job is a bundle of tasks. These are the '+plural(N,'task','tasks')+' you listed, from '+list([sorted[0].s])+(N>1?' to '+list([sorted[N-1].s]):'')+'.</p><p>Each one will stay human, get augmented or get automated.</p><p class="fn">Tap any pin for the full task. Change any answer <a href="#yours">below</a>.</p>'],
+       '<p>Every job is a bundle of tasks. These are the '+plural(N,'task','tasks')+' you listed, from '+list([sorted[0].s])+(N>1?' to '+list([sorted[N-1].s]):'')+'.</p><p>Each one stays human, or you augment or automate it.</p><p class="fn">Tap any pin for the full task. Change any answer <a href="#yours">below</a>.</p>'],
       ['Size','Size each task by a real week',
        '<p>Log each task as it ends: how often, how many minutes. Estimate nothing. You can only save time you measured.</p><p>Each pin is now sized by hours a week. '+list([sorted[0].s],1)+' is the biggest at '+fmt(sorted[0].m)+(N>1?'; '+list([sorted[N-1].s])+' is the smallest':'')+'.</p><p class="fn">Below once a week, setup usually costs more than it saves.</p>'],
       ['Stays human','Can’t verify it? It stays human',
        '<p>Sort each task by its verifier. A rule a program could run: amber. Criteria you can write down, so two reviewers agree: violet. Nothing reliable, because it happens live, by hand, under your signature or shows up much later: green.</p>'+
        (stay.length?'<p>'+(stay.length===N?'All '+N+' stay':stay.length+' of '+N+' stay')+'. '+esc(rtxt.join(' · ')).replace(/^(\w)/,function(c){return c.toUpperCase()})+'.</p>':'<p>None stay on these answers. Check that against your own week.</p>')+
        '<p class="fn"><span class="chipd hum"></span>Green: human. A violet task without a written verifier stays green until you <a href="#verify">write one</a>.</p>'],
-      ['Augmented','Everything else starts augmented',
-       moved.length?'<p>'+plural(moved.length,'task moves','tasks move')+', '+list(moved.slice(0,2).map(function(t){return t.s}))+' among them. AI does the work and stops before the step that commits. It drafts, you send. It finds, you book. It ranks, you act.</p><p class="fn"><span class="chipd prob"></span>Violet tasks stay here: a judge applies your criteria to every output and you spot-check. Augmented is where every task begins, however good AI looks in a demo.</p>'
+      ['Augment','Augment everything else first',
+       moved.length?'<p>'+plural(moved.length,'task moves','tasks move')+', '+list(moved.slice(0,2).map(function(t){return t.s}))+' among them. AI does the work and stops before the step that commits. It drafts, you send. It finds, you book. It ranks, you act.</p><p class="fn"><span class="chipd prob"></span>Violet tasks stay here: a judge applies your criteria to every output and you spot-check. Every task starts here, however good AI looks in a demo.</p>'
        :'<p>Nothing moves yet. '+(vio.length?'Write the verifier for your violet tasks and they will.':'That is an answer too: AI buys you little in this week, until you split a task into a part a rule or criteria can check.')+'</p>'],
-      ['Automated','A few earn the right to run alone',
+      ['Automate','A few earn the right to run alone',
        '<p>Three things must hold. A rule checks it, so a program can say pass or fail. A mistake is cheap: easy to undo, and it touches no client, money or anyone else’s numbers. And AI has proved it: at least 8 of 10 test runs passed on your own tasks.</p>'+
-       (auto.length?'<p>'+list(auto.map(function(t){return t.s}),1)+' '+(auto.length===1?'qualifies':'qualify')+'.</p>':amb.length?'<p>None qualifies yet: '+(amb.some(function(t){return !t.ver})?'write and test the verifier for your amber tasks, and ':'')+'check that a mistake is cheap to undo. Until then they stay augmented, and that is fine.</p>':'<p>None of your tasks has a rule that verifies it, so none runs alone.</p>')+
+       (auto.length?'<p>'+list(auto.map(function(t){return t.s}),1)+' '+(auto.length===1?'qualifies':'qualify')+'.</p>':amb.length?'<p>None qualifies yet: '+(amb.some(function(t){return !t.ver})?'write and test the verifier for your amber tasks, and ':'')+'check that a mistake is cheap to undo. Until then, augment them, and that is fine.</p>':'<p>None of your tasks has a rule that verifies it, so none runs alone.</p>')+
        '<p class="fn"><span class="chipd det"></span>Amber: a rule checks it. Re-test every 60 days, or sooner if the AI tool changes its model, connections or pricing. A smarter AI moves no pin; an easier undo does.</p>'],
       ['New task','A new task appears: checking the AI’s work',
        nw.length?'<p>Someone scores the test runs against each verifier, and someone re-tests when the AI tool changes. That is new work, and it is yours: about '+fmt(sum(nw,function(t){return t.m}))+' a week.</p><p class="fn"><span class="chipd new"></span>Coral: the new task.</p>':'<p>Nothing moved, so there is nothing to score. If you change an answer below, this card changes too.</p>'],
@@ -627,10 +627,10 @@ details.words summary{cursor:pointer}
   });
 
   /* ---------- worksheet: override any colour, say whether undo is cheap ---------- */
-  var LEVEL={stay:'<span class="pill hum">Stays human</span>',acc:'<span class="pill prob">Augmented</span>',auto:'<span class="pill det">Automated</span>'};
+  var LEVEL={stay:'<span class="pill hum">Stays human</span>',acc:'<span class="pill prob">Augment</span>',auto:'<span class="pill det">Automate</span>'};
   function sheet(){
     var bo=function(v){return [['det','Amber · a rule'],['prob','Violet · criteria'],['hum','Green · you']].map(function(o){return '<option value="'+o[0]+'"'+(o[0]===v?' selected':'')+'>'+o[1]+'</option>'}).join('')};
-    $('#wk').innerHTML='<tr><th>Task</th><th>Min/wk</th><th>Verified by</th><th>Verifier</th><th title="Is a mistake cheap to undo?">Undo cheap</th><th>Becomes</th></tr>'+
+    $('#wk').innerHTML='<tr><th>Task</th><th>Min/wk</th><th>Verified by</th><th>Verifier</th><th title="Is a mistake cheap to undo?">Undo cheap</th><th>Decision</th></tr>'+
       week.map(function(t,i){var u=undoCheap(t),ck=t.b==='hum'?'–':t.ver?(t.vo?'yours':'✓ '+(t.b==='det'?'rule':'criteria')):'<a href="#verify">write it</a>';
         return '<tr><td><b><span class="n">'+(i+1)+'</span>'+esc(t.s)+'</b><small title="'+esc(t.t)+'">'+esc(t.reason||'')+'</small></td><td>'+fmt(t.m)+'</td>'+
         '<td><select data-w="'+tasks.indexOf(t)+'" aria-label="Colour for '+esc(t.s)+'">'+bo(t.b)+'</select></td><td>'+ck+'</td>'+
@@ -666,7 +666,7 @@ details.words summary{cursor:pointer}
     sel.disabled=!mv.length;
     var t=runTask(), r=(t.runs||'0000000000').split('').map(Number), pass=r.filter(function(v){return v===1}).length, fail=r.filter(function(v){return v===2}).length;
     $('#rbox').innerHTML=r.map(function(v,i){return '<button type="button" data-r="'+i+'" data-v="'+v+'" aria-label="Run '+(i+1)+': '+['not run','pass','fail'][v]+'">'+['',  '✓','✕'][v]+'</button>'}).join('');
-    $('#rsum').innerHTML=!pass&&!fail?'No runs scored yet.':'<b>'+pass+' of 10</b> pass the verifier. '+(fail?'The '+plural(fail,'failure is','failures are')+' '+plural(fail,'example','examples')+' to learn from once you fix '+(fail===1?'it':'them')+'. ':'')+(t.b==='det'?(pass>=8?'At 8 of 10 with a cheap undo, it may run alone.':'It runs alone at 8 of 10, if a mistake is cheap to undo.'):t===DEMO?'':'It stays augmented: you or a judge check each run.');
+    $('#rsum').innerHTML=!pass&&!fail?'No runs scored yet.':'<b>'+pass+' of 10</b> pass the verifier. '+(fail?'The '+plural(fail,'failure is','failures are')+' '+plural(fail,'example','examples')+' to learn from once you fix '+(fail===1?'it':'them')+'. ':'')+(t.b==='det'?(pass>=8?'At 8 of 10 with a cheap undo, it may run alone.':'It runs alone at 8 of 10, if a mistake is cheap to undo.'):t===DEMO?'':'Augment it: you or a judge check each run.');
     loop();
   }
   $('#runT').addEventListener('change',function(e){runI=+e.target.value;runs()});
@@ -680,7 +680,7 @@ details.words summary{cursor:pointer}
     var L=[['#job','Pick a task that repeats and matters.',st(n,n?plural(n,'task','tasks')+' listed':'Not yet')],
       ['#verify','Write its verifier: a rule a program could run, or criteria two reviewers would agree on. No verifier, it stays human.',st(ver,ver?plural(ver,'verifier','verifiers')+' passed':'Not yet')],
       ['#measure','Choose an AI tool. If your data can’t leave your machine, pick one that runs locally.',st(false,'Your call')],
-      ['#bundle','Hand it over. It starts augmented: AI drafts, you send. It runs alone only with a rule, a cheap undo and 8 of 10 passing runs.',st(mv,mv?plural(mv,'task','tasks')+' can move':'Not yet')],
+      ['#bundle','Hand it over. Augment first: AI drafts, you send. It runs alone only with a rule, a cheap undo and 8 of 10 passing runs.',st(mv,mv?plural(mv,'task','tasks')+' can move':'Not yet')],
       ['#measure','Measure: ten runs, each scored against the verifier.',st(scored.length,scored.length?plural(scored.length,'task','tasks')+' scored':'Not yet')],
       ['#measure','Fix every failure, sharpen the verifier, then go round again.',st(fails,fails?plural(fails,'example','examples')+' to fix':'Not yet')]];
     $('#loopL').innerHTML=L.map(function(x,i){return '<li><span class="n">'+(i+1)+'</span><span><a href="'+x[0]+'">'+x[1]+'</a></span>'+x[2]+'</li>'}).join('');
