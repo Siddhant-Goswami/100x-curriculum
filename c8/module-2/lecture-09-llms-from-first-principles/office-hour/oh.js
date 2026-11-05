@@ -426,37 +426,163 @@
     return L.join('\n');
   }
 
-  scr({ id: 'keep', seg: 2, kick: 'Keep this', h: 'Your eval.',
+  /* ---------- the last screen: celebrate, show the eval, show the path ---------- */
+  function confetti() {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var old = $('#confetti'); if (old) old.remove();
+    var cv = document.createElement('canvas'); cv.id = 'confetti'; document.body.appendChild(cv);
+    var cx = cv.getContext('2d'), dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr; cx.scale(dpr, dpr);
+    var cs = getComputedStyle(document.documentElement), col = ['--coral', '--det', '--prob', '--hum', '--coral'].map(function (v) { return cs.getPropertyValue(v).trim() || '#F2603C'; });
+    var P = [];
+    function burst(x, y, n, ang, spread, speed) {
+      for (var k = 0; k < n; k++) {
+        var a = ang + (Math.random() - .5) * spread, v = speed * (.55 + Math.random() * .6);
+        P.push({ x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, w: 6 + Math.random() * 6, h: 4 + Math.random() * 8, r: Math.random() * 6.3, vr: (Math.random() - .5) * .3, c: col[k % col.length], round: Math.random() < .3, life: 0 });
+      }
+    }
+    burst(0, H * .9, 90, -Math.PI / 3, .9, Math.max(14, H / 45));
+    burst(W, H * .9, 90, -Math.PI * 2 / 3, .9, Math.max(14, H / 45));
+    setTimeout(function () { burst(W / 2, -10, 70, Math.PI / 2, 2.4, 6); }, 350);
+    var t0 = performance.now();
+    (function tick(t) {
+      cx.clearRect(0, 0, W, H);
+      P.forEach(function (p) {
+        p.life++; p.vy += .32; p.vx *= .985; p.vy *= .985; p.x += p.vx + Math.sin(p.life / 9) * .6; p.y += p.vy; p.r += p.vr;
+        cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.fillStyle = p.c;
+        if (p.round) { cx.beginPath(); cx.arc(0, 0, p.w / 2.4, 0, 6.3); cx.fill(); } else { cx.scale(1, Math.cos(p.life / 6)); cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); }
+        cx.restore();
+      });
+      P = P.filter(function (p) { return p.y < H + 40; });
+      if (P.length && t - t0 < 7000) requestAnimationFrame(tick); else cv.remove();
+    })(t0);
+  }
+  function countUp(el, to) {
+    if (!(to > 0) || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) { el.textContent = to; return; }
+    var t0 = performance.now(), d = 900;
+    (function f(t) { var q = Math.min(1, (t - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - q, 3))); if (q < 1) requestAnimationFrame(f); })(t0);
+  }
+  function seal() {
+    var pts = []; for (var k = 0; k < 40; k++) { var a = k * Math.PI / 20, r = k % 2 ? 33 : 37; pts.push((Math.cos(a) * r).toFixed(1) + ',' + (Math.sin(a) * r).toFixed(1)); }
+    var spark = function (x, y, s, d) { return '<path class="spk" style="animation-delay:' + d + 's" transform="translate(' + x + ' ' + y + ') scale(' + s + ')" d="M0 -10 Q1.5 -1.5 10 0 Q1.5 1.5 0 10 Q-1.5 1.5 -10 0 Q-1.5 -1.5 0 -10Z"/>'; };
+    var tick = function (y) { return '<rect x="62" y="' + y + '" width="13" height="13" rx="3" fill="var(--det)"/><path d="M65 ' + (y + 6.5) + 'l2.5 2.5 4.5-5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="82" y="' + (y + 4) + '" width="' + (y % 2 ? 62 : 74) + '" height="5" rx="2.5" fill="var(--line2)"/>'; };
+    return '<svg class="trophy" viewBox="0 0 260 210" aria-hidden="true">' +
+      '<g class="doc"><rect x="44" y="18" width="134" height="172" rx="12" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/>' +
+      '<rect x="62" y="36" width="44" height="6" rx="3" fill="var(--coral)"/><rect x="62" y="48" width="92" height="8" rx="4" fill="var(--ink)"/>' +
+      tick(70) + tick(91) +
+      '<g transform="translate(62 116)">' + [0, 1, 2, 3, 4].map(function (k) { return '<circle cx="' + (6 + k * 18) + '" cy="6" r="6" fill="' + (k < 4 ? 'var(--prob)' : 'none') + '" stroke="var(--prob)" stroke-width="2"/>'; }).join('') + '</g>' +
+      '<g transform="translate(62 140)"><circle cx="7" cy="7" r="7" fill="var(--hum)"/><circle cx="21" cy="7" r="7" fill="var(--hum-soft)" stroke="var(--hum)" stroke-width="2"/><rect x="36" y="4" width="54" height="5" rx="2.5" fill="var(--line2)"/></g>' +
+      '<rect x="62" y="166" width="60" height="5" rx="2.5" fill="var(--line2)"/></g>' +
+      '<g class="seal" transform="translate(190 150)"><g class="sealin"><polygon points="' + pts.join(' ') + '" fill="var(--coral)"/><circle r="27" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="3 3"/>' +
+      '<path d="M-12 1l8 8 16-17" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></g>' +
+      '<g fill="var(--det)">' + spark(24, 46, .9, .9) + spark(214, 34, 1.2, 1.1) + spark(234, 92, .6, 1.4) + '</g><g fill="var(--prob)">' + spark(20, 132, .6, 1.25) + spark(150, 8, .55, 1.6) + '</g>' +
+      '</svg>';
+  }
+
+  scr({ id: 'keep', seg: 2, bare: true, kick: 'Done', h: 'You wrote your first eval.',
     render: function (st) {
       track('oh_done', { type: S.row.type, hard: S.hard.filter(filled).length, dims: S.dims.filter(dimDone).length });
-      var li = function (x) { return '<li><b>' + x[0] + '</b> ' + x[1] + (x[2] ? ' <a href="' + x[2] + '">' + x[3] + '</a>' : '') + '</li>'; };
-      var k = h('<div class="keep"><pre class="copy" data-nolabel></pre>' +
-        '<div class="row noprint"><button class="btn go" id="k-copy">Copy as text</button><button class="btn" id="k-print">Print</button><span class="msg" id="k-msg"></span></div>' +
-        '<section><h3>To finish Practice set 2, before Lecture 11 on Thu 12 Nov</h3><ol class="outcomes" style="margin:0">' + [
-          ['Paste this eval into your sheet, then share it on the Discord.', 'Copy as text, then paste it into a new tab named Eval, in the same sheet as Practice set 1. We go through them in the office hour.', '/c8/module-2/practice-set-2-write-the-eval/', 'Practice set 2'],
-          ['Re-score your tested row with this rubric.', 'In Practice set 1, section 04, you scored it out of 10 by feel, like the five replies at the start. Check the hard lines first, then score each quality from 1 to 5.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06'],
-        ].map(li).join('') + '</ol></section>' +
-        '<section><h3>Optional, when you have time</h3><ol class="outcomes" style="margin:0">' + [
-          ['Grow your one golden pair into ten.', 'Real inputs with the output you would accept, the hard ones included. That is your population.', '/c8/module-2/lecture-03-building-ui/notes#s05', 'Lecture 3, section 05'],
-          ['Run the stranger test on your rubric.', 'Hand it to someone outside your field with three outputs. If they cannot score without asking you, sharpen your 1 and 5. Don\'t ask an LLM to write it.', '/c8/module-2/lecture-01-orientation/notes#s09', 'Lecture 1, section 09'],
-          ['Check your grader.', 'You and an LLM score the same ten. 8 of 10 within one point: trust it.', null, null],
-          ['Put the hard lines on the deterministic side.', 'A formula or a few lines of code, not a sentence in a prompt. The check you can\'t afford to get wrong shouldn\'t be a prediction.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s13', 'Lecture 10, section 13'],
-          ['Keep the eval for the build.', 'Next we build the bridge that brings the missing context to the model. Your eval is how you will know it worked: verifier, threshold, improve, re-score, stop.', '/c8/module-2/lecture-01-orientation/notes#s08', 'Lecture 1, section 08']
-        ].map(li).join('') + '</ol></section>' +
-        '<section class="noprint"><button class="btn sm quiet" id="k-reset">Start over on this device</button></section></div>');
-      $('pre', k).textContent = asText();
-      st.appendChild(k);
-      $('#k-copy', k).onclick = function () {
-        var t = asText(), m = $('#k-msg', k);
-        (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { m.textContent = 'Copied.'; }, function () { m.textContent = 'Select the text above and copy it.'; });
+      var hard = S.hard.filter(filled), dims = S.dims.filter(dimDone), A = S.agree, ran = A.n >= 1;
+      var link = function (href, t) { return '<a href="' + href + '">' + t + '</a>'; };
+
+      /* 1 the moment */
+      var hero = h('<section class="win noprint"><div class="win-art" title="Again">' + seal() + '</div><div class="win-txt">' +
+        '<p class="kick">Practice set 2 · Done</p><h1 tabindex="-1">You wrote your first eval.</h1>' +
+        '<p class="sub">Most people use AI and hope. You can now <b>measure</b> it: a decision, a definition of good, and a grader you can trust.</p></div></section>');
+      st.appendChild(hero);
+      $('.win-art', hero).onclick = function () { $('.win-art', hero).classList.remove('again'); void hero.offsetWidth; $('.win-art', hero).classList.add('again'); confetti(); };
+
+      var stats = h('<div class="stats noprint">' +
+        '<div class="st det"><b data-n="' + hard.length + '">0</b><span>hard line' + (hard.length === 1 ? '' : 's') + '</span></div>' +
+        '<div class="st prob"><b data-n="' + dims.length + '">0</b><span>qualit' + (dims.length === 1 ? 'y' : 'ies') + ' with a 1 and a 5</span></div>' +
+        '<div class="st hum">' + (ran ? '<b><i data-n="' + A.ok + '">0</i><small>/' + A.n + '</small></b><span>scores agreed with the LLM</span>' : '<b><i data-n="4">0</i><small>/4</small></b><span>parts of an eval, written</span>') + '</div>' +
+        '<div class="st"><b data-n="12">0</b><span>steps, start to finish</span></div></div>');
+      st.appendChild(stats);
+      $$('[data-n]', stats).forEach(function (el, k) { setTimeout(function () { countUp(el, +el.dataset.n); }, 500 + k * 120); });
+
+      /* 2 this is real work */
+      var parts = ['Decision', 'Population', 'Definition of good', 'Grader'];
+      var chipsOf = function (on) { return '<ul class="pt">' + parts.map(function (p, k) { return '<li class="' + (on[k] ? 'on' : '') + '">' + p + '</li>'; }).join('') + '</ul>'; };
+      st.appendChild(h('<section class="pro noprint"><h2>Same shape as the evals AI labs pay experts for.</h2>' +
+        '<p class="lede">OpenAI\'s <a href="' + GDPVAL_TASK + '" target="_blank" rel="noopener">GDPval</a> is 1,320 real work tasks from 44 jobs. Each one was written and graded by a professional with about 14 years in the role. Companies now hire doctors, lawyers and analysts to write exactly this.</p>' +
+        '<div class="vs"><div class="vc"><p class="vk">GDPval · task bd72994f</p><p class="vt">Client invite for a luxury boutique</p><p class="vm">19 yes-or-no lines · 29 points</p>' + chipsOf([1, 1, 1, 1]) + '</div>' +
+        '<div class="eq" aria-hidden="true">=</div>' +
+        '<div class="vc me"><p class="vk">Yours</p><p class="vt">' + esc(S.row.task || 'Your task') + '</p><p class="vm">' + hard.length + ' hard · ' + dims.length + ' quality</p>' +
+        chipsOf([filled(S.dec.decision), filled(S.dec.population), hard.length || dims.length, filled(S.grader.hard) || filled(S.grader.qual)]) + '</div></div></section>'));
+
+      /* 3 the eval itself */
+      var row = function (cls, t, sub, body) { return '<div class="er ' + cls + '"><h4>' + t + (sub ? ' <small>' + sub + '</small>' : '') + '</h4>' + body + '</div>'; };
+      var dots = '';
+      for (var k = 0; k < 10; k++) { var a = +A.a[k], b = +A.b[k]; dots += '<i class="' + (a && b ? (Math.abs(a - b) <= 1 ? 'ok' : 'no') : '') + '">' + (a && b ? (Math.abs(a - b) <= 1 ? '✓' : '✗') : '') + '</i>'; }
+      var card = h('<section class="ec-wrap"><div class="ec-head noprint"><h2>Your eval</h2><div class="row"><button class="btn go" id="k-copy">Copy as text</button><button class="btn" id="k-print">Print</button><span class="msg" id="k-msg" aria-live="polite"></span></div></div>' +
+        '<article class="ec"><header><span class="tag">Eval</span><h3>' + esc(S.row.task || '') + '</h3><p>' + [S.row.type, S.row.data ? 'data ' + S.row.data : '', S.row.verifier ? 'verifier: ' + S.row.verifier : ''].filter(Boolean).map(esc).join(' · ') + '</p></header>' +
+        row('', 'Decision', '', '<p>' + esc(S.dec.decision || '') + '</p>') +
+        row('', 'Population', '', '<p>' + esc(S.dec.population || '') + '</p>') +
+        (filled(S.row.criteria) ? row('', 'Definition of good', '', '<p>' + esc(S.row.criteria) + '</p>') : '') +
+        (hard.length ? row('det', 'Hard lines', 'pass or fail · ' + esc(S.grader.hard || ''), '<ul class="tk">' + hard.map(function (x) { return '<li>' + esc(x.trim()) + '</li>'; }).join('') + '</ul>') : '') +
+        (dims.length ? row('prob', 'Quality', '1 to 5 · ' + esc(S.grader.qual || ''), dims.map(function (d) { return '<div class="sc5"><b>' + esc(d.name.trim()) + '</b><div class="ends"><span><em>1</em>' + esc(d.one.trim()) + '</span><i></i><span><em>5</em>' + esc(d.five.trim()) + '</span></div></div>'; }).join('')) : '') +
+        row('hum', 'Grader check', ran ? A.ok + ' of ' + A.n + ' within one point' : 'not run yet', ran ? '<div class="dots">' + dots + '</div>' + (A.n >= 10 ? '<p class="small">' + (A.ok >= 8 ? 'Trust the LLM on the rest.' : 'Under 8: sharpen your 1 and 5, then score again.') + '</p>' : '') : '<p class="small">You and an LLM score the same ten. 8 of 10 within one point: trust it.</p>') +
+        '</article></section>');
+      st.appendChild(card);
+      $('#k-copy', card).onclick = function () {
+        var m = $('#k-msg', card), b = this;
+        (navigator.clipboard ? navigator.clipboard.writeText(asText()) : Promise.reject()).then(function () { m.textContent = 'Copied. Paste it into your sheet.'; b.textContent = 'Copied ✓'; }, function () { m.textContent = 'Select the eval above and copy it.'; });
       };
-      $('#k-print', k).onclick = function () { window.print(); };
+      $('#k-print', card).onclick = function () { window.print(); };
+
+      /* 4 what is left */
+      st.appendChild(h('<section class="next noprint"><h2>Two things left <small>before Lecture 11, Thu 12 Nov</small></h2><div class="todo">' +
+        '<div class="td"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11h6M9 15h4"/></svg></span><div><b>Paste it in your sheet, then share it on the Discord.</b><p>A new tab named Eval, in your Practice set 1 sheet. We go through them in the office hour. ' + link('/c8/module-2/practice-set-2-write-the-eval/', 'Practice set 2') + '</p></div></div>' +
+        '<div class="td"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16V9M12 16V5M17 16v-4"/></svg></span><div><b>Re-score your tested row with it.</b><p>You scored it out of 10 by feel. Now: hard lines first, then each quality 1 to 5. ' + link('/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06') + '</p></div></div>' +
+        '</div></section>'));
+
+      /* 5 the path, on request */
+      var path = h('<details class="path noprint"><summary><span>See how you got here</span><small>12 steps</small></summary><ol class="tl"></ol></details>');
+      st.appendChild(path);
+      data().then(function (D) {
+        var policyRight = D.items.filter(function (x) { return !!x.breaks === !!S.pick[x.id]; }).length;
+        var sortRight = D.reasons.filter(function (r, k) { return S.sort[k] === r.pile; }).length;
+        var pills = D.items.map(function (x) { return '<span class="pill">' + (S.g[x.id] || '–') + '</span>'; }).join('');
+        var cut = function (s, n) { s = String(s || '').trim(); return esc(s.length > n ? s.slice(0, n - 1) + '…' : s); };
+        var steps = [
+          [0, 'Scored five replies by feel', pills],
+          [0, 'Saw two people give reply 1 a 5 and a 1', 'Scoring by feel doesn\'t agree.'],
+          [0, 'Spotted the policy breaks', policyRight + ' of 5 calls right'],
+          [1, 'Met the four parts of an eval', 'Decision, population, definition of good, grader.'],
+          [1, 'Sorted six reasons into three layers', sortRight + ' of 6 in the right pile'],
+          [1, 'Read a real GDPval task as an eval', 'Senior client advisor, luxury retail.'],
+          [2, 'Brought your tested row', cut(S.row.task, 90)],
+          [2, 'Wrote the decision', cut(S.dec.decision, 110)],
+          [2, hard.length ? 'Wrote ' + hard.length + ' hard line' + (hard.length === 1 ? '' : 's') : 'Chose no hard lines', hard.length ? cut(hard[0], 90) : 'No rule fits this task.'],
+          [2, dims.length ? 'Wrote a 1 and a 5 for ' + dims.length + ' qualit' + (dims.length === 1 ? 'y' : 'ies') : 'Let the rules cover it', dims.map(function (d) { return '<span class="pill p">' + esc(d.name.trim()) + '</span>'; }).join('')],
+          [2, 'Picked who checks each layer', [S.grader.hard, S.grader.qual].filter(filled).map(esc).join(' · ')],
+          [2, 'Checked the grader', ran ? A.ok + ' of ' + A.n + ' within one point' : 'Next: score ten with your judge.']
+        ];
+        var ol = $('ol.tl', path), last = -1;
+        steps.forEach(function (s, k) {
+          if (s[0] !== last) { last = s[0]; ol.appendChild(h('<li class="grp"><span>' + (s[0] + 1) + ' · ' + SEGS[s[0]] + '</span></li>')); }
+          ol.appendChild(h('<li class="sp" style="--d:' + k * 45 + 'ms"><i aria-hidden="true">✓</i><div><b>' + s[1] + '</b><p>' + s[2] + '</p></div></li>'));
+        });
+        ol.appendChild(h('<li class="sp end" style="--d:' + steps.length * 45 + 'ms"><i aria-hidden="true">★</i><div><b>Wrote your first eval</b><p>' + link('#keep', 'Back to the top') + '</p></div></li>'));
+        $('.end a', ol).onclick = function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+      });
+
+      st.appendChild(h('<details class="opt noprint"><summary>Optional, when you have time</summary><ol class="outcomes">' + [
+        ['Grow your one golden pair into ten.', 'Real inputs with the output you would accept, hard ones included.', '/c8/module-2/lecture-03-building-ui/notes#s05', 'Lecture 3, section 05'],
+        ['Run the stranger test.', 'Give your rubric and three outputs to someone outside your field. If they have to ask you, sharpen your 1 and 5.', '/c8/module-2/lecture-01-orientation/notes#s09', 'Lecture 1, section 09'],
+        ['Put the hard lines in code.', 'A formula or a few lines of code, not a sentence in a prompt.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s13', 'Lecture 10, section 13'],
+        ['Keep it for the build.', 'Next we bring the missing context to the model. This eval tells you it worked.', '/c8/module-2/lecture-01-orientation/notes#s08', 'Lecture 1, section 08']
+      ].map(function (x) { return '<li><b>' + x[0] + '</b> ' + x[1] + ' ' + link(x[2], x[3]) + '</li>'; }).join('') + '</ol></details>'));
+
+      var rs = h('<p class="noprint kreset"><button class="btn sm quiet" id="k-reset">Start over on this device</button></p>');
+      st.appendChild(rs);
       var arm = false;
-      $('#k-reset', k).onclick = function () {
+      $('#k-reset', rs).onclick = function () {
         if (!arm) { arm = true; this.textContent = 'Tap again to erase everything you wrote here'; return; }
         try { localStorage.removeItem(KEY); } catch (e) {} location.href = location.pathname;
       };
-    }, ready: function () { return false; } });
+      setTimeout(confetti, 450);
+    }, ready: function () { return true; } });
 
   /* ---------- shell ---------- */
   function segFill() {
@@ -475,7 +601,8 @@
     keyHandler = null;
     i = Math.max(0, Math.min(SCREENS.length - 1, i)); S.i = i; if (i > S.max) S.max = i; save();
     var sc = SCREENS[i], main = $('#screen');
-    main.innerHTML = '<p class="kick">' + esc(sc.kick || '') + '</p><h1' + (sc.wide ? ' class="wide"' : '') + ' tabindex="-1">' + esc(sc.h) + '</h1>' + (sc.sub ? '<p class="sub">' + esc(sc.sub) + '</p>' : '') + '<div class="stage"></div>';
+    main.innerHTML = sc.bare ? '<div class="stage"></div>' : '<p class="kick">' + esc(sc.kick || '') + '</p><h1' + (sc.wide ? ' class="wide"' : '') + ' tabindex="-1">' + esc(sc.h) + '</h1>' + (sc.sub ? '<p class="sub">' + esc(sc.sub) + '</p>' : '') + '<div class="stage"></div>';
+    main.classList.toggle('bare', !!sc.bare);
     sc.render($('.stage', main));
     $('#back').hidden = i === 0;
     $('#where').textContent = sc.seg >= 0 ? (sc.seg + 1) + ' · ' + SEGS[sc.seg] : '';
