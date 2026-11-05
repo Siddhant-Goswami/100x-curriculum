@@ -426,6 +426,23 @@
     return L.join('\n');
   }
 
+  function slug() { return (String(S.row.task || 'my-task').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40).replace(/^-+|-+$/g, '') || 'my-task'); }
+  function rubricLines() {
+    var L = [], hard = S.hard.filter(filled), dims = S.dims.filter(dimDone);
+    if (filled(S.row.criteria)) L.push('What good looks like: ' + S.row.criteria.trim(), '');
+    if (hard.length) { L.push('Must pass, every time:'); hard.forEach(function (x) { L.push('- ' + x.trim()); }); L.push(''); }
+    if (dims.length) { L.push('Aim for a 5 on each:'); dims.forEach(function (d) { L.push('- ' + d.name.trim() + '. A 1 is: ' + d.one.trim() + '. A 5 is: ' + d.five.trim() + '.'); }); L.push(''); }
+    L.push('Before you reply, check your draft against every line above. Fix anything that fails. Then give me the output, followed by one line per check: pass, or the score and why.');
+    return L.join('\n');
+  }
+  function asPrompt() {
+    return 'You will do this task for me: ' + (S.row.task || '').trim() + '\n\n' + rubricLines() + '\n\nHere is today\'s input:\n[paste it here]';
+  }
+  function asSkill() {
+    var t = (S.row.task || 'my task').trim().replace(/\s+/g, ' ');
+    return '---\nname: ' + slug() + '\ndescription: Use when asked to ' + t.charAt(0).toLowerCase() + t.slice(1).replace(/\.$/, '') + '. Follows a written eval so the output meets a known bar.\n---\n\n# ' + t + '\n\n' + rubricLines() + '\n';
+  }
+
   /* ---------- the last screen: celebrate, show the eval, show the path ---------- */
   function confetti() {
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -465,7 +482,8 @@
     return '<svg class="badge" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" class="b-bg"/><circle cx="32" cy="32" r="30" class="b-ring"/><path d="M20 33l8 8 16-17" class="b-ck"/></svg>';
   }
 
-  /* The eval as a workbook, laid out like a GDPval task: the task card, the rubric, ten rows to score, the grader check, and the GDPval example. */
+  /* The eval as a workbook in GDPval's shape: one row per task (Tasks), one row per rubric line (Rubric), one row per scored output (Scores),
+     all joined by task_id, so learners keep adding tasks and the sheet grows into a dataset. Their task is T-001; GDPval bd72994f is on Example. */
   var XLSX_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
   function loadXLSX() {
     return window.XLSX ? Promise.resolve(window.XLSX) : new Promise(function (ok, no) {
@@ -479,71 +497,77 @@
   }
   function buildBook(X) {
     var hard = S.hard.filter(filled).map(function (x) { return x.trim(); }), dims = S.dims.filter(dimDone), A = S.agree;
-    var col = function (n) { var s = ''; n++; while (n) { var m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
-    var F = function (f) { return { t: 'n', v: 0, f: f }; }, FS = function (f) { return { t: 's', v: '', f: f }; };
-    var wb = X.utils.book_new();
+    var F = function (f, z) { var c = { t: 'n', v: 0, f: f }; if (z) c.z = z; return c; }, FS = function (f) { return { t: 's', v: '', f: f }; };
+    var wb = X.utils.book_new(), ID = 'T-001', TASK_ROWS = 50, SCORE_ROWS = 300;
     function sheet(name, rows, widths) { var ws = X.utils.aoa_to_sheet(rows); ws['!cols'] = widths.map(function (w) { return { wch: w }; }); X.utils.book_append_sheet(wb, ws, name); return ws; }
+    var rubricText = function (hs, ds) {
+      return hs.map(function (x, k) { return '[H' + (k + 1) + '] Pass when ' + x; }).concat(ds.map(function (d, k) { return '[Q' + (k + 1) + '] ' + d.name + ': 1 = ' + d.one + '; 5 = ' + d.five; })).join('\n');
+    };
+    var myDims = dims.map(function (d) { return { name: d.name.trim(), one: d.one.trim(), five: d.five.trim() }; });
 
-    function card(t) {
-      return [
-        ['EVAL', ''], ['Task', t.task], ['Role', t.role], ['Decision', t.decision], ['Population', t.population], ['Definition of good', t.criteria],
-        ['Hard lines checked by', t.gh], ['Quality scored by', t.gq], ['Pass bar', 'A row passes when every hard line is Pass and the quality average is at least the number below.'], ['Quality average needed', 4],
-        [''], ['Tabs', 'Rubric: every line you score. Scores: ten real inputs, scored. Grader check: you and an LLM on the same ten.'], [''], ['LLM judge prompt', t.prompt || '']
-      ];
+    /* Read me */
+    sheet('Read me', [
+      ['Your eval dataset'],
+      [''],
+      ['Tasks', 'One row per task. Your first one is ' + ID + '. Add the next task you hand to AI as a new row: T-002, T-003 and so on.'],
+      ['Rubric', 'One row per line you check, with its task_id. Hard lines are Pass or Fail. Quality gets a written 1 and 5.'],
+      ['Scores', 'One row per output you score, with its task_id. Type Yes or No for hard lines, 1 to 5 for quality. Passes? and the LLM check fill in.'],
+      ['', 'The last three Tasks columns fill in from Scores: how many you scored, the pass rate, and how often the LLM agreed with you.'],
+      ['Example', 'A real GDPval task in the same columns, to copy from.'],
+      [''],
+      ['Why this shape', 'GDPval (OpenAI) is built the same way: 1,320 real tasks, each one row with a prompt and a rubric written by someone who does the job. Keep adding rows and this becomes yours.'],
+      ['Source', GDPVAL_TASK]
+    ], [16, 110]);
+
+    /* Tasks */
+    var TH = ['task_id', 'Role', 'Task (the prompt)', 'Decision', 'Population', 'Definition of good', 'Rubric', 'Hard lines checked by', 'Quality scored by', 'Quality bar (1 to 5)', 'LLM judge prompt', 'Outputs scored', 'Pass rate', 'LLM agrees'];
+    var tasks = [TH];
+    for (var r = 2; r <= TASK_ROWS + 1; r++) {
+      var a = 'A' + r, first = r === 2;
+      var base = first ? [ID, '', S.row.task || '', S.dec.decision || '', S.dec.population || '', S.row.criteria || '', rubricText(hard, myDims), S.grader.hard || '', S.grader.qual || '', 4, dims.length ? judgePrompt(dims) : '']
+        : ['', '', '', '', '', '', '', '', '', '', ''];
+      var n = 'COUNTIFS(Scores!A:A,' + a + ',Scores!G:G,"Pass")+COUNTIFS(Scores!A:A,' + a + ',Scores!G:G,"Fail")';
+      var agY = 'COUNTIFS(Scores!A:A,' + a + ',Scores!I:I,"Yes")', agN = 'COUNTIFS(Scores!A:A,' + a + ',Scores!I:I,"No")';
+      base.push(F('IF(' + a + '="","",' + n + ')'),
+        F('IF(' + a + '="","",IF(' + n + '=0,"",COUNTIFS(Scores!A:A,' + a + ',Scores!G:G,"Pass")/(' + n + ')))', '0%'),
+        F('IF(' + a + '="","",IF(' + agY + '+' + agN + '=0,"",' + agY + '/(' + agY + '+' + agN + ')))', '0%'));
+      tasks.push(base);
     }
-    sheet('Your eval', card({ task: S.row.task || '', role: '', decision: S.dec.decision || '', population: S.dec.population || '', criteria: S.row.criteria || '',
-      gh: S.grader.hard || '', gq: S.grader.qual || '', prompt: dims.length ? judgePrompt(dims) : '' }), [24, 100]);
+    sheet('Tasks', tasks, [9, 22, 44, 40, 36, 36, 60, 22, 22, 10, 50, 10, 10, 10]);
 
-    var rub = [['#', 'Layer', 'Criterion', 'Scored as', 'Points']], n = 0;
-    hard.forEach(function (x) { rub.push([++n, 'Hard line', 'Pass when ' + x, 'Pass or Fail', 1]); });
-    dims.forEach(function (d) { rub.push([++n, 'Quality', d.name.trim() + ': 1 = ' + d.one.trim() + '; 5 = ' + d.five.trim(), '1 to 5', 5]); });
-    rub.push(['', '', 'Add more lines here. Hard lines veto; quality gets a written 1 and 5.', '', '']);
-    rub.push(['', '', 'Total points', '', F('SUM(E2:E' + (n + 1) + ')')]);
-    sheet('Rubric', rub, [4, 12, 80, 14, 8]);
+    /* Rubric */
+    var rub = [['task_id', '#', 'Layer', 'Criterion', '1 looks like', '5 looks like', 'Scored as']];
+    hard.forEach(function (x, k) { rub.push([ID, 'H' + (k + 1), 'Hard line', 'Pass when ' + x, '', '', 'Pass or Fail']); });
+    myDims.forEach(function (d, k) { rub.push([ID, 'Q' + (k + 1), 'Quality', d.name, d.one, d.five, '1 to 5']); });
+    sheet('Rubric', rub, [9, 5, 11, 50, 40, 40, 12]);
 
-    var hd = ['#', 'Input (a real past one)', 'Output to score'];
-    hard.forEach(function (x, k) { hd.push('H' + (k + 1) + ': ' + x); });
-    dims.forEach(function (d) { hd.push(d.name.trim() + ' (1 to 5)'); });
-    var h0 = 3, q0 = h0 + hard.length, end = q0 + dims.length;
-    hd.push('Hard lines all pass?', 'Quality average', 'Passes?');
-    var sc = [hd];
-    for (var r = 2; r <= 11; r++) {
-      var row = [r - 1, '', ''];
-      for (var c = h0; c < end; c++) row.push('');
-      var hr = hard.length ? col(h0) + r + ':' + col(q0 - 1) + r : null, qr = dims.length ? col(q0) + r + ':' + col(end - 1) + r : null;
-      row.push(hr ? FS('IF(COUNTA(' + hr + ')=0,"",IF(COUNTIF(' + hr + ',"Fail")>0,"No","Yes"))') : FS(qr ? 'IF(COUNT(' + qr + ')=0,"","Yes")' : '""'));
-      row.push(qr ? F('IF(COUNT(' + qr + ')=0,"",ROUND(AVERAGE(' + qr + '),1))') : '');
-      var hc = col(end) + r, qc = col(end + 1) + r;
-      row.push(FS('IF(' + hc + '="","",IF(AND(' + hc + '="Yes",' + (qr ? 'OR(' + qc + '="",' + qc + '>=\'Your eval\'!B10)' : 'TRUE') + '),"Pass","Fail"))'));
-      sc.push(row);
+    /* Scores: their ten grader-check scores come pre-filled */
+    var sc = [['task_id', 'Sample', 'Input (a real past one)', 'Output', 'Hard lines all pass? (Yes/No)', 'Quality, you (1 to 5)', 'Passes?', 'Quality, LLM (1 to 5)', 'Within one point?']];
+    for (var i = 2; i <= SCORE_ROWS + 1; i++) {
+      var k = i - 2, mine = k < 10;
+      var bar = 'IFERROR(VLOOKUP(A' + i + ',Tasks!A:J,10,FALSE),4)';
+      sc.push([mine ? ID : '', mine ? k + 1 : '', '', '', '', mine ? (+A.a[k] || '') : '',
+        FS('IF(E' + i + '="","",IF(AND(E' + i + '="Yes",OR(F' + i + '="",F' + i + '>=' + bar + ')),"Pass","Fail"))'),
+        mine ? (+A.b[k] || '') : '',
+        FS('IF(OR(F' + i + '="",H' + i + '=""),"",IF(ABS(F' + i + '-H' + i + ')<=1,"Yes","No"))')]);
     }
-    sc.push([]);
-    var pc = col(end + 2);
-    sc.push(['', 'Passed', FS('COUNTIF(' + pc + '2:' + pc + '11,"Pass")&" of "&COUNTA(B2:B11)')]);
-    sc.push(['', 'How to fill', 'Hard lines: type Pass or Fail. Quality: type 1 to 5. The last three columns fill in.']);
-    var w = [4, 40, 40]; for (var c2 = h0; c2 < end; c2++) w.push(18); w.push(16, 14, 10);
-    sheet('Scores', sc, w);
+    sheet('Scores', sc, [9, 7, 40, 40, 16, 12, 9, 12, 12]);
 
-    var gc = [['Output', 'You (1 to 5)', 'LLM (1 to 5)', 'Within one point?']];
-    for (var k = 0; k < 10; k++) {
-      var a = +A.a[k] || '', b = +A.b[k] || '', rr = k + 2;
-      gc.push([k + 1, a, b, FS('IF(OR(B' + rr + '="",C' + rr + '=""),"",IF(ABS(B' + rr + '-C' + rr + ')<=1,"Yes","No"))')]);
-    }
-    gc.push([], ['', 'Agreed', FS('COUNTIF(D2:D11,"Yes")&" of "&COUNT(B2:B11)')], ['', 'Rule', '8 of 10 within one point: trust the LLM on the rest. Under 8: sharpen your 1 and 5.']);
-    sheet('Grader check', gc, [8, 14, 14, 18]);
-
-    var ex = card({ task: 'Pick one brand\'s 2025 resort collection, put 4 to 6 looks on slides, and write an email or text template staff can reuse to invite clients to book an appointment.',
-      role: 'Senior client advisor, luxury clothing boutique (GDPval task bd72994f)',
-      decision: 'If 8 of 10 AI-drafted invites pass, the manager gives new staff the AI draft to start from. If not, the senior advisor keeps writing them.',
-      population: 'Ten real briefs: different brands, seasons and clients, including a client who only takes texts.',
-      criteria: 'An invite a new advisor could send today, with looks that sell the collection.',
-      gh: 'A checklist I tick', gq: 'Two senior advisors, then an LLM judge with this rubric' });
-    ex.push([''], ['Rubric', ''], ['Hard line', 'Pass when it greets with a [First Name] placeholder'], ['Hard line', 'Pass when it asks the client to book, schedule or reserve'],
-      ['Hard line', 'Pass when it gives a way to book: reply with a time, or a number to call'], ['Hard line', 'Pass when it ends with the advisor\'s name and a contact'],
-      ['Hard line', 'Pass when an email has a subject line'], ['Hard line', 'Pass when a text says how to opt out'],
-      ['Quality', 'The looks: 1 = items that don\'t belong together, or the same outfit three times; 5 = every look is one outfit that hangs together, each clearly different'],
-      [''], ['Source', GDPVAL_TASK + ' . GDPval\'s real rubric is 19 yes-or-no lines worth 29 points; it is summarised here. The decision, population and grader check are ours.']);
-    sheet('Example: GDPval', ex, [24, 100]);
+    /* Example: GDPval bd72994f in the same columns */
+    var exH = ['Pass when it greets with a [First Name] placeholder', 'Pass when it asks the client to book, schedule or reserve', 'Pass when it gives a way to book: reply with a time, or a number to call',
+      'Pass when it ends with the advisor\'s name and a contact', 'Pass when an email has a subject line', 'Pass when a text says how to opt out'].map(function (x) { return x.replace(/^Pass when /, ''); });
+    var exQ = [{ name: 'The looks', one: 'items that don\'t belong together, or the same outfit three times', five: 'every look is one outfit that hangs together, each clearly different' }];
+    var ex = [TH.slice(0, 10), ['bd72994f', 'Senior client advisor, luxury clothing boutique',
+      'Pick one brand\'s 2025 resort collection, put 4 to 6 looks on slides, and write an email or text template staff can reuse to invite clients to book an appointment.',
+      'If 8 of 10 AI-drafted invites pass, the manager gives new staff the AI draft to start from. If not, the senior advisor keeps writing them.',
+      'Ten real briefs: different brands, seasons and clients, including a client who only takes texts.',
+      'An invite a new advisor could send today, with looks that sell the collection.', rubricText(exH, exQ),
+      'A checklist I tick', 'Two senior advisors, then an LLM judge with this rubric', 4],
+      [], rub[0]];
+    exH.forEach(function (x, k) { ex.push(['bd72994f', 'H' + (k + 1), 'Hard line', 'Pass when ' + x, '', '', 'Pass or Fail']); });
+    exQ.forEach(function (d, k) { ex.push(['bd72994f', 'Q' + (k + 1), 'Quality', d.name, d.one, d.five, '1 to 5']); });
+    ex.push([], ['Source', GDPVAL_TASK + ' . GDPval\'s real rubric is 19 yes-or-no lines worth 29 points; it is summarised here. The decision, population and grader are ours.']);
+    sheet('Example', ex, [10, 22, 44, 40, 36, 36, 60, 22, 22, 10]);
     return wb;
   }
   function downloadBook(btn, msg) {
@@ -577,74 +601,52 @@
       st.appendChild(stats);
       $$('[data-n]', stats).forEach(function (el, k) { setTimeout(function () { countUp(el, +el.dataset.n); }, 500 + k * 120); });
 
-      /* 2 this is real work */
-      var parts = ['Decision', 'Population', 'Definition of good', 'Grader'];
-      var chipsOf = function (on) { return '<ul class="pt">' + parts.map(function (p, k) { return '<li class="' + (on[k] ? 'on' : '') + '">' + p + '</li>'; }).join('') + '</ul>'; };
-      st.appendChild(h('<section class="pro noprint"><h2>Same shape as the evals AI labs pay experts for.</h2>' +
-        '<p class="lede">OpenAI\'s <a href="' + GDPVAL_TASK + '" target="_blank" rel="noopener">GDPval</a> is 1,320 real work tasks from 44 jobs. Each one was written and graded by a professional with about 14 years in the role. Companies now hire doctors, lawyers and analysts to write exactly this.</p>' +
-        '<div class="vs"><div class="vc"><p class="vk">GDPval · task bd72994f</p><p class="vt">Client invite for a luxury boutique</p><p class="vm">19 yes-or-no lines · 29 points</p>' + chipsOf([1, 1, 1, 1]) + '</div>' +
-        '<div class="eq" aria-hidden="true">=</div>' +
-        '<div class="vc me"><p class="vk">Yours</p><p class="vt">' + esc(S.row.task || 'Your task') + '</p><p class="vm">' + hard.length + ' hard · ' + dims.length + ' quality</p>' +
-        chipsOf([filled(S.dec.decision), filled(S.dec.population), hard.length || dims.length, filled(S.grader.hard) || filled(S.grader.qual)]) + '</div></div></section>'));
-
-      /* 3 the eval itself */
-      var row = function (cls, t, sub, body) { return '<div class="er ' + cls + '"><h4>' + t + (sub ? ' <small>' + sub + '</small>' : '') + '</h4>' + body + '</div>'; };
+      /* 2 the eval itself, then the one thing to do with it */
+      var row = function (t, sub, body) { return '<div class="er"><h4>' + t + (sub ? ' <small>' + sub + '</small>' : '') + '</h4>' + body + '</div>'; };
       var dots = '';
       for (var k = 0; k < 10; k++) { var a = +A.a[k], b = +A.b[k]; dots += '<i class="' + (a && b ? (Math.abs(a - b) <= 1 ? 'ok' : 'no') : '') + '">' + (a && b ? (Math.abs(a - b) <= 1 ? '✓' : '✗') : '') + '</i>'; }
-      var card = h('<section class="ec-wrap"><div class="ec-head noprint"><h2>Your eval</h2><div class="row"><button class="btn go" id="k-dl">Download as spreadsheet</button><button class="btn" id="k-copy">Copy as text</button><span class="msg" id="k-msg" aria-live="polite"></span></div></div>' +
-        '<article class="ec"><header><span class="tag">Eval</span><h3>' + esc(S.row.task || '') + '</h3><p>' + [S.row.type, S.row.data ? 'data ' + S.row.data : '', S.row.verifier ? 'verifier: ' + S.row.verifier : ''].filter(Boolean).map(esc).join(' · ') + '</p></header>' +
-        row('', 'Decision', '', '<p>' + esc(S.dec.decision || '') + '</p>') +
-        row('', 'Population', '', '<p>' + esc(S.dec.population || '') + '</p>') +
-        (filled(S.row.criteria) ? row('', 'Definition of good', '', '<p>' + esc(S.row.criteria) + '</p>') : '') +
-        (hard.length ? row('det', 'Hard lines', 'pass or fail · ' + esc(S.grader.hard || ''), '<ul class="tk">' + hard.map(function (x) { return '<li>' + esc(x.trim()) + '</li>'; }).join('') + '</ul>') : '') +
-        (dims.length ? row('prob', 'Quality', '1 to 5 · ' + esc(S.grader.qual || ''), dims.map(function (d) { return '<div class="sc5"><b>' + esc(d.name.trim()) + '</b><div class="ends"><span><em>1</em>' + esc(d.one.trim()) + '</span><i></i><span><em>5</em>' + esc(d.five.trim()) + '</span></div></div>'; }).join('')) : '') +
-        row('hum', 'Grader check', ran ? A.ok + ' of ' + A.n + ' within one point' : 'not run yet', ran ? '<div class="dots">' + dots + '</div>' + (A.n >= 10 ? '<p class="small">' + (A.ok >= 8 ? 'Trust the LLM on the rest.' : 'Under 8: sharpen your 1 and 5, then score again.') + '</p>' : '') : '<p class="small">You and an LLM score the same ten. 8 of 10 within one point: trust it.</p>') +
-        '</article></section>');
+      var card = h('<section class="ec-wrap"><h2>Your eval</h2>' +
+        '<article class="ec"><header><h3>' + esc(S.row.task || '') + '</h3><p>' + [S.row.type, S.row.data ? 'data ' + S.row.data : '', S.row.verifier ? 'verifier: ' + S.row.verifier : ''].filter(Boolean).map(esc).join(' · ') + '</p></header>' +
+        row('Decision', '', '<p>' + esc(S.dec.decision || '') + '</p>') +
+        row('Population', '', '<p>' + esc(S.dec.population || '') + '</p>') +
+        (filled(S.row.criteria) ? row('Definition of good', '', '<p>' + esc(S.row.criteria) + '</p>') : '') +
+        (hard.length ? row('Hard lines', 'pass or fail · ' + esc(S.grader.hard || ''), '<ul class="tk">' + hard.map(function (x) { return '<li>' + esc(x.trim()) + '</li>'; }).join('') + '</ul>') : '') +
+        (dims.length ? row('Quality', '1 to 5 · ' + esc(S.grader.qual || ''), dims.map(function (d) { return '<div class="sc5"><b>' + esc(d.name.trim()) + '</b><p><em>1</em>' + esc(d.one.trim()) + '</p><p><em>5</em>' + esc(d.five.trim()) + '</p></div>'; }).join('')) : '') +
+        row('Grader check', ran ? A.ok + ' of ' + A.n + ' within one point' : 'not run yet', ran ? '<div class="dots">' + dots + '</div>' + (A.n >= 10 ? '<p class="small">' + (A.ok >= 8 ? 'Trust the LLM on the rest.' : 'Under 8: sharpen your 1 and 5, then score again.') + '</p>' : '') : '<p class="small">You and an LLM score the same ten. 8 of 10 within one point: trust it.</p>') +
+        '</article>' +
+        '<div class="ec-cta noprint"><button class="btn go big" id="k-dl" type="button">Download as spreadsheet</button><button class="btn quiet" id="k-copy" type="button">Copy as text</button><span class="msg" id="k-msg" aria-live="polite"></span></div>' +
+        '<p class="note noprint">One row per task, like GDPval. Add your next task as a new row and it grows into your own eval dataset.</p></section>');
       st.appendChild(card);
       $('#k-copy', card).onclick = function () {
         var m = $('#k-msg', card), b = this;
-        (navigator.clipboard ? navigator.clipboard.writeText(asText()) : Promise.reject()).then(function () { m.textContent = 'Copied. Paste it into your sheet.'; b.textContent = 'Copied ✓'; }, function () { m.textContent = 'Select the eval above and copy it.'; });
+        (navigator.clipboard ? navigator.clipboard.writeText(asText()) : Promise.reject()).then(function () { m.textContent = 'Copied.'; b.textContent = 'Copied ✓'; }, function () { m.textContent = 'Select the eval above and copy it.'; });
       };
       $('#k-dl', card).onclick = function () { downloadBook(this, $('#k-msg', card)); };
 
+      /* 3 use it: the eval becomes the brief, so the next run starts from "good" */
+      var use = h('<section class="use noprint"><h2>Use it next time</h2>' +
+        '<p class="lede">Your eval says what good looks like. Hand that to the LLM up front and it aims for it, then checks its own work before you see it.</p>' +
+        '<div class="uopt"><div><b>Reusable prompt</b><p>Paste it at the top of a new chat, then add today\'s input. Share it with anyone who does this task.</p><div class="row"><button class="btn sm" type="button" id="u-copy">Copy prompt</button><span class="msg" aria-live="polite"></span></div></div>' +
+        '<div><b>Claude Skill</b><p>A SKILL.md file. Claude loads it whenever this task comes up, no pasting.</p><div class="row"><button class="btn sm" type="button" id="u-skill">Download SKILL.md</button><span class="msg" aria-live="polite"></span></div></div></div>' +
+        '<details class="ex"><summary>See the prompt</summary><pre class="copy" data-nolabel></pre></details>' +
+        '<p class="try"><b>Try it:</b> next time you do this task, run it with the prompt. Score the output with your eval. Did it pass?</p></section>');
+      $('pre', use).textContent = asPrompt();
+      st.appendChild(use);
+      $('#u-copy', use).onclick = function () {
+        var m = this.nextElementSibling, b = this;
+        (navigator.clipboard ? navigator.clipboard.writeText(asPrompt()) : Promise.reject()).then(function () { b.textContent = 'Copied ✓'; m.textContent = ''; track('oh_prompt_copy'); }, function () { m.textContent = 'Open "See the prompt" and copy it.'; });
+      };
+      $('#u-skill', use).onclick = function () {
+        var blob = new Blob([asSkill()], { type: 'text/markdown' }), u = URL.createObjectURL(blob), l = document.createElement('a');
+        l.href = u; l.download = 'SKILL.md'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 1000);
+        this.textContent = 'Downloaded ✓'; this.nextElementSibling.textContent = 'Put it in a folder named ' + slug() + ', then add it in Claude (Settings, Capabilities, Skills) or ~/.claude/skills/.';
+        track('oh_skill_download');
+      };
+
       /* 4 what is left */
-      st.appendChild(h('<section class="next noprint"><h2>Two things left <small>before Lecture 11, Thu 12 Nov</small></h2><div class="todo">' +
-        '<div class="td dl"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span><div><b>Download your eval sheet.</b><p>Set up like GDPval: your rubric, ten rows to score, the grader check, and the GDPval task as an example. Fill it, then share it on the Discord.</p><div class="row" style="margin-top:10px"><button class="btn go sm" type="button">Download .xlsx</button><span class="msg" aria-live="polite" style="margin:0"></span></div></div></div>' +
-        '<div class="td"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16M7 16V9M12 16V5M17 16v-4"/></svg></span><div><b>Re-score your tested row with it.</b><p>You scored it out of 10 by feel. Score it again in the Scores tab: hard lines first, then each quality 1 to 5. ' + link('/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06') + '</p></div></div>' +
-        '</div></section>'));
-
-      var dl2 = $('.td.dl', st); $('button', dl2).onclick = function () { downloadBook(this, $('.msg', dl2)); };
-
-      /* 5 the path, on request */
-      var path = h('<details class="path noprint"><summary><span>See how you got here</span><small>12 steps</small></summary><ol class="tl"></ol></details>');
-      st.appendChild(path);
-      data().then(function (D) {
-        var policyRight = D.items.filter(function (x) { return !!x.breaks === !!S.pick[x.id]; }).length;
-        var sortRight = D.reasons.filter(function (r, k) { return S.sort[k] === r.pile; }).length;
-        var pills = D.items.map(function (x) { return '<span class="pill">' + (S.g[x.id] || '–') + '</span>'; }).join('');
-        var cut = function (s, n) { s = String(s || '').trim(); return esc(s.length > n ? s.slice(0, n - 1) + '…' : s); };
-        var steps = [
-          [0, 'Scored five replies by feel', pills],
-          [0, 'Saw two people give reply 1 a 5 and a 1', 'Scoring by feel doesn\'t agree.'],
-          [0, 'Spotted the policy breaks', policyRight + ' of 5 calls right'],
-          [1, 'Met the four parts of an eval', 'Decision, population, definition of good, grader.'],
-          [1, 'Sorted six reasons into three layers', sortRight + ' of 6 in the right pile'],
-          [1, 'Read a real GDPval task as an eval', 'Senior client advisor, luxury retail.'],
-          [2, 'Brought your tested row', cut(S.row.task, 90)],
-          [2, 'Wrote the decision', cut(S.dec.decision, 110)],
-          [2, hard.length ? 'Wrote ' + hard.length + ' hard line' + (hard.length === 1 ? '' : 's') : 'Chose no hard lines', hard.length ? cut(hard[0], 90) : 'No rule fits this task.'],
-          [2, dims.length ? 'Wrote a 1 and a 5 for ' + dims.length + ' qualit' + (dims.length === 1 ? 'y' : 'ies') : 'Let the rules cover it', dims.map(function (d) { return '<span class="pill p">' + esc(d.name.trim()) + '</span>'; }).join('')],
-          [2, 'Picked who checks each layer', [S.grader.hard, S.grader.qual].filter(filled).map(esc).join(' · ')],
-          [2, 'Checked the grader', ran ? A.ok + ' of ' + A.n + ' within one point' : 'Next: score ten with your judge.']
-        ];
-        var ol = $('ol.tl', path), last = -1;
-        steps.forEach(function (s, k) {
-          if (s[0] !== last) { last = s[0]; ol.appendChild(h('<li class="grp"><span>' + (s[0] + 1) + ' · ' + SEGS[s[0]] + '</span></li>')); }
-          ol.appendChild(h('<li class="sp" style="--d:' + k * 45 + 'ms"><i aria-hidden="true">✓</i><div><b>' + s[1] + '</b><p>' + s[2] + '</p></div></li>'));
-        });
-        ol.appendChild(h('<li class="sp end" style="--d:' + steps.length * 45 + 'ms"><i aria-hidden="true">★</i><div><b>Wrote your first eval</b><p>' + link('#keep', 'Back to the top') + '</p></div></li>'));
-        $('.end a', ol).onclick = function (e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); };
-      });
+      st.appendChild(h('<section class="next noprint"><h2>Before Lecture 11 <small>Thu 12 Nov</small></h2><ol class="outcomes">' +
+        '<li><b>Re-score your tested row with it.</b> You scored it out of 10 by feel. Score it again in the Scores tab: hard lines first, then each quality 1 to 5. ' + link('/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06') + '</li>' +
+        '<li><b>Share the sheet on the Discord.</b> We go through them in the office hour.</li></ol></section>'));
 
       st.appendChild(h('<details class="opt noprint"><summary>Optional, when you have time</summary><ol class="outcomes">' + [
         ['Grow your one golden pair into ten.', 'Real inputs with the output you would accept, hard ones included.', '/c8/module-2/lecture-03-building-ui/notes#s05', 'Lecture 3, section 05'],
