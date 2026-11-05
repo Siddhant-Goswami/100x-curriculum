@@ -152,26 +152,70 @@
     }, ready: function () { return true; } });
 
   scr({ id: 'layers', seg: 1, kick: 'Three layers', h: 'Sort these reasons for a score into three piles.',
-    sub: 'Tap a reason, then tap a pile.',
+    sub: 'Drag each reason into a pile.',
     render: function (st) {
       data().then(function (D) {
         var R = D.reasons, sel = null;
         var chips = h('<div class="chips"></div>'), piles = h('<div class="piles"></div>'), after = h('<div></div>');
         st.appendChild(chips); st.appendChild(piles); st.appendChild(after);
+        /* Drag a chip (mouse or touch) onto a pile; drop it back on the tray to unsort. Tap still works as a fallback. */
+        function drag(el, k) {
+          el.addEventListener('pointerdown', function (e) {
+            if (S.sortChecked || (e.pointerType === 'mouse' && e.button !== 0)) return;
+            var x0 = e.clientX, y0 = e.clientY, ghost = null, over = null, raf = 0, vy = 0, r0 = el.getBoundingClientRect();
+            el._dragged = false;
+            function target(x, y) {
+              if (ghost) ghost.style.display = 'none';
+              var t = document.elementFromPoint(x, y);
+              if (ghost) ghost.style.display = '';
+              return t && (t.closest('.pile') || t.closest('.chips'));
+            }
+            function scroll() { if (vy) { window.scrollBy(0, vy); raf = requestAnimationFrame(scroll); } else raf = 0; }
+            function move(ev) {
+              var dx = ev.clientX - x0, dy = ev.clientY - y0;
+              if (!ghost) {
+                if (Math.abs(dx) + Math.abs(dy) < 6) return;
+                el._dragged = true; sel = null;
+                ghost = el.cloneNode(true); ghost.className = 'chip ghost';
+                ghost.style.width = r0.width + 'px'; document.body.appendChild(ghost);
+                el.classList.add('lifted'); document.body.classList.add('dragging');
+              }
+              ev.preventDefault();
+              ghost.style.transform = 'translate(' + (r0.left + dx) + 'px,' + (r0.top + dy) + 'px) rotate(-2deg)';
+              var t = target(ev.clientX, ev.clientY);
+              if (t !== over) { if (over) over.classList.remove('over'); over = t; if (over) over.classList.add('over'); }
+              vy = ev.clientY < 70 ? -12 : ev.clientY > innerHeight - 90 ? 12 : 0;
+              if (vy && !raf) raf = requestAnimationFrame(scroll);
+            }
+            function up(ev) {
+              removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+              vy = 0; if (!ghost) return;
+              ghost.remove(); document.body.classList.remove('dragging'); el.classList.remove('lifted');
+              if (over) over.classList.remove('over');
+              var t = ev.type === 'pointerup' ? target(ev.clientX, ev.clientY) : null;
+              if (t && t.dataset.pile) S.sort[k] = t.dataset.pile;
+              else if (t && t.classList.contains('chips')) delete S.sort[k];
+              save(); draw();
+              setTimeout(function () { el._dragged = false; }, 0);
+            }
+            addEventListener('pointermove', move, { passive: false }); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+          });
+        }
         function draw() {
           chips.innerHTML = ''; piles.innerHTML = ''; after.innerHTML = '';
           R.forEach(function (r, k) {
             if (S.sort[k] != null) return;
             var b = h('<button type="button" class="chip" aria-pressed="' + (sel === k) + '">' + esc(r.text) + '</button>');
-            b.onclick = function () { sel = sel === k ? null : k; draw(); }; chips.appendChild(b);
+            b.onclick = function () { if (b._dragged) return; sel = sel === k ? null : k; draw(); }; drag(b, k); chips.appendChild(b);
           });
           if (!chips.children.length) chips.appendChild(h('<p class="note" style="margin:0">All sorted.</p>'));
           PILES.forEach(function (P) {
-            var p = h('<div class="pile ' + P.cls + (sel != null ? ' armed' : '') + '" role="button" tabindex="0"><h3>' + P.name + '</h3><p class="who">' + P.who + '</p></div>');
+            var p = h('<div class="pile ' + P.cls + (sel != null ? ' armed' : '') + '" data-pile="' + P.key + '" role="button" tabindex="0"><h3>' + P.name + '</h3><p class="who">' + P.who + '</p></div>');
             R.forEach(function (r, k) {
               if (S.sort[k] !== P.key) return;
               var c = h('<button type="button" class="chip' + (S.sortChecked && r.pile !== P.key ? ' miss' : '') + '">' + esc(r.text) + '</button>');
-              c.onclick = function (e) { e.stopPropagation(); if (S.sortChecked) return; delete S.sort[k]; save(); draw(); };
+              c.onclick = function (e) { e.stopPropagation(); if (S.sortChecked || c._dragged) return; delete S.sort[k]; save(); draw(); };
+              if (!S.sortChecked) drag(c, k);
               p.appendChild(c);
             });
             var drop = function () { if (sel == null || S.sortChecked) return; S.sort[sel] = P.key; sel = null; save(); draw(); };

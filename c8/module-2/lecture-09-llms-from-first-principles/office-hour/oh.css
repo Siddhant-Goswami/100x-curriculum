@@ -145,6 +145,12 @@ label.lab{display:block;font:500 13px var(--sans);color:var(--ink2);margin:0 0 6
 .pile.hum{border-style:solid;border-color:var(--hum);background:var(--hum-soft)}
 .pile.hum h3{color:var(--hum-ink)}
 .pile .chip{font-size:14px;padding:6px 11px}
+.chips .chip,.pile .chip{touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.chip.lifted{opacity:.35}
+.chip.ghost{position:fixed;left:0;top:0;z-index:100;pointer-events:none;cursor:grabbing;border-color:var(--coral);box-shadow:0 8px 24px rgba(0,0,0,.18)}
+body.dragging,body.dragging *{cursor:grabbing!important;user-select:none;-webkit-user-select:none}
+.pile.over{border-color:var(--coral);box-shadow:0 0 0 3px var(--coral-soft)}
+.chips.over{outline:1.5px dashed var(--coral);outline-offset:4px;border-radius:var(--r)}
 
 /* ---------- tables ---------- */
 .tbl-wrap{overflow-x:auto;max-width:100%;border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
