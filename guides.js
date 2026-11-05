@@ -117,7 +117,8 @@ var GUIDE_LINKS = {
   l09Aarav: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s10',
   l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
   l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s06',
-  l09OfficeHour: '/c8/module-2/lecture-09-llms-from-first-principles/office-hour',  /* practice set step 05, self-paced: write the eval for one row of the sheet */
+  l09OfficeHour: '/c8/module-2/lecture-09-llms-from-first-principles/office-hour',  /* the Write the eval exercise, used by Practice set 2 */
+  ps2: '/c8/module-2/practice-set-2-write-the-eval/',  /* Practice set 2 brief: write the eval for the row tested in PS1 s04 */
   jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
   delegation: '/c8/delegation-framework/',
   /* Lecture 10 · Tool calling and MCP (both tracks, pages in c8/module-2/lecture-10-tool-calling-and-mcp) */
@@ -750,14 +751,8 @@ GUIDES.L9 = { all: {
      ticks:[
        {id:'tested', t:'Two scores and what was missing, beside the row', link:'l10Practice', linkLabel:'Section 04'}
      ]},
-    {id:'eval', name:'Write the eval for that task', short:'Eval', sub:'Practice set, section 05',
-     intro:'On your own, about 30 minutes: decision, population, hard lines, quality with a 1 and a 5, and the grader.',
-     ticks:[
-       {id:'wrote', t:'Wrote the eval for the tested row', link:'l09OfficeHour', linkLabel:'Write the eval'},
-       {id:'pasted', t:'Pasted it into a new tab of the sheet'}
-     ]},
-    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 06',
-     intro:'The sheet, shared, with the tested row and its eval, and one line on what surprised you.',
+    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 05',
+     intro:'The sheet, shared, with the tested row, and one line on what surprised you. Practice set 2 adds the eval.',
      ticks:[
        {id:'shared', t:'Shared my copy of the sheet', link:'l09Submit', linkLabel:'What to submit'},
        {id:'surprise', t:'One line on the verdict that surprised me'}
@@ -786,7 +781,7 @@ GUIDES.L9 = { all: {
 }};
 
 GUIDES.L10 = { all: {
-  hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set'],['l10OfficeHour','Office hour recap'],['l09OfficeHour','Write the eval']]},
+  hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set 1, step 04'],['l10OfficeHour','Office hour recap'],['ps2','Practice set 2']]},
   name: 'Test one task from your sheet',
   sub: 'Lecture 10 · 31 October 2026 · both tracks · one step added to the Lecture 9 practice set',
   due: false,  /* submitted with the L9 sheet */
@@ -810,7 +805,7 @@ GUIDES.L10 = { all: {
      ]}
   ],
   actions: [
-    {id:'eval', t:'Then write the eval for that row, on your own', how:'Practice set step 05: turn your score by feel into a check anyone could run. Same sheet, same submission.', link:'l09OfficeHour', linkLabel:'Write the eval'}
+    {id:'eval', t:'Then Practice set 2: write the eval for that row', how:'Turn your score by feel into a check anyone could run. A new tab in the same sheet.', link:'ps2', linkLabel:'Practice set 2'}
   ],
   next: 'Next week we build the reverse call live, for both tracks.',
   read: [

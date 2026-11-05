@@ -1,4 +1,4 @@
-/* L9 practice set, step 05: Write the eval for one task. A self-paced, three-part cut of c8/writing-evals for Practice set 1.
+/* Practice set 2: Write the eval for one task. A self-paced, three-part cut of c8/writing-evals. Brief: c8/module-2/practice-set-2-write-the-eval.
    One screen, one thing to do. The headline is the instruction; Continue appears once the thing is done.
    Solo only, no keys, no clock. State lives in localStorage (c8store, key l09oh.v1).
    data.json is cut from the Writing Evals data by _plan/l09-office-hour/build_data.py. */
@@ -56,8 +56,8 @@
   var keyHandler = null;
 
   /* ---------- start ---------- */
-  scr({ id: 'start', seg: -1, kick: 'Practice set 1 · Step 05 · On your own', h: 'Write the eval for one task on your sheet.', wide: true,
-    sub: 'About thirty minutes, three parts. Do it once you have tested one task on the model (section 04), with your Verify your own job sheet open.',
+  scr({ id: 'start', seg: -1, kick: 'Practice set 2 · On your own', h: 'Write the eval for one task on your sheet.', wide: true,
+    sub: 'About thirty minutes, three parts. Do it once you have tested one task on the model (Practice set 1, section 04), with that sheet open.',
     render: function (st) {
       st.appendChild(h('<ol class="outcomes"><li>See why one reply can earn a 1 and a 5 when nobody writes down what good means.</li><li>Match the four parts of an eval to the columns you already filled.</li><li>Write the eval for the row you tested, and paste it into your sheet.</li></ol>'));
       var b = h('<button class="btn go">Start</button>'); st.appendChild(b);
@@ -213,7 +213,7 @@
 
   /* ---------- 3 write yours ---------- */
   scr({ id: 'row', seg: 2, kick: 'Your sheet', h: 'Copy the row you tested.',
-    sub: 'The task you ran bare and with context in section 04. Copy its columns from your sheet.',
+    sub: 'The task you ran bare and with context in Practice set 1, section 04. Copy its columns from your sheet.',
     render: function (st) {
       var R = S.row, msg = h('<p class="note"></p>');
       function tell() {
@@ -336,8 +336,8 @@
       var k = h('<div class="keep"><pre class="copy" data-nolabel></pre>' +
         '<div class="row noprint"><button class="btn go" id="k-copy">Copy as text</button><button class="btn" id="k-print">Print</button><span class="msg" id="k-msg"></span></div>' +
         '<section><h3>Next</h3><ol class="outcomes" style="margin:0">' + [
-          ['Paste this eval into your sheet and submit.', 'Copy as text, then paste it into a new tab of the same sheet. Same submission.', BASE + 'practice-set#s06', 'Practice set, section 06'],
-          ['Re-score your tested row with this rubric.', 'In section 04 you scored it out of 10 by feel, like the five replies at the start. Check the hard lines first, then score each quality from 1 to 5.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06'],
+          ['Paste this eval into your sheet.', 'Copy as text, then paste it into a new tab named Eval, in the same sheet as Practice set 1.', '/c8/module-2/practice-set-2-write-the-eval/#s05', 'Practice set 2, what to submit'],
+          ['Re-score your tested row with this rubric.', 'In Practice set 1, section 04, you scored it out of 10 by feel, like the five replies at the start. Check the hard lines first, then score each quality from 1 to 5.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06'],
           ['Grow your one golden pair into ten.', 'Real inputs with the output you would accept, the hard ones included. That is your population.', '/c8/module-2/lecture-03-building-ui/notes#s05', 'Lecture 3, section 05'],
           ['Run the stranger test on your rubric.', 'Hand it to someone outside your field with three outputs. If they cannot score without asking you, sharpen your 1 and 5. Don\'t ask an LLM to write it.', '/c8/module-2/lecture-01-orientation/notes#s09', 'Lecture 1, section 09'],
           ['Check your grader against your judge.', 'Both score the same ten. Aim for within one point on 8 of 10.', null, null],
