@@ -1,0 +1,137 @@
+[
+  {
+    "id": "S1",
+    "label": "Complete and clean (Judgment, 2 hard lines, 2 qualities, grader checked)",
+    "state": {
+      "row": { "task": "Write the weekly client status email for the Acme rollout", "type": "Judgment", "data": "10 to 100", "criteria": "Covers progress, risks and next steps in under 200 words", "verifier": "My manager reads it and would send it unchanged" },
+      "dec": { "decision": "If 8 of 10 drafts pass, I send the AI draft after a quick read. If not, I keep writing them myself.", "population": "The last ten status emails from my Sent folder, including the two the client pushed back on" },
+      "hard": ["it is under 200 words", "it names at least one risk"],
+      "dims": [ { "name": "Clarity", "one": "The client has to reply to ask what happened", "five": "The client knows exactly where things stand in one read" },
+                { "name": "Tone", "one": "Defensive or vague about delays", "five": "Calm, direct, owns the delay" } ],
+      "grader": { "hard": "A formula in my sheet", "qual": "An LLM judge with this rubric" },
+      "agree": { "a": [4,3,5,4,2,4,3,5,4,3], "b": [4,4,3,4,2,5,3,5,2,3], "n": 10, "ok": 8 }
+    },
+    "inputs": [
+      { "name": "typical", "text": "Week of 2 Nov. Acme rollout, phase 2 (warehouse module).\n- Done: SSO live for all 3 sites; inventory sync moved from nightly to hourly.\n- Slipped: barcode scanner integration, vendor firmware late, now 13 Nov (was 6 Nov).\n- Open: Acme's IT still hasn't given us VPN access for the Pune site.\n- Next week: UAT with Acme ops team Tue/Wed; training deck draft by Fri.\nClient contact: Meera Iyer, Head of Ops." },
+      { "name": "tricky", "text": "status this week: honestly not much moved. we were blocked on the data migration because Acme sent the wrong export twice (csv had 40k dup rows). Ravi fixed the dedupe script Thu. go-live 20 Nov at risk, maybe 27th. Meera is already annoyed from last week's call. next: rerun migration Mon, if clean then UAT." }
+    ]
+  },
+  {
+    "id": "S2",
+    "label": "Rule task, no quality layer (hard lines only)",
+    "state": {
+      "row": { "task": "Turn a supplier invoice PDF text into one CSV row for our accounts sheet", "type": "Rule", "data": "Over 100", "criteria": "The CSV row matches the invoice exactly so accounts can import it without fixing anything", "verifier": "Every field matches the invoice" },
+      "dec": { "decision": "If 9 of 10 rows import with no fixes, the junior accountant stops typing invoices by hand.", "population": "Ten invoices from last month, including the two scanned ones and the one in USD" },
+      "hard": ["Every field matches the invoice", "the columns are in this order: invoice_no, date (YYYY-MM-DD), supplier, GSTIN, subtotal, GST, total, currency", "subtotal plus GST equals total"],
+      "dims": [{}],
+      "noQual": true,
+      "grader": { "hard": "A formula in my sheet" },
+      "agree": { "a": [], "b": [] }
+    },
+    "inputs": [
+      { "name": "typical", "text": "TAX INVOICE\nShree Packaging Pvt Ltd   GSTIN: 27AAKCS1234F1Z5\nInvoice No: SP/24-25/0912     Date: 03/10/2024\nBill to: Kiran Foods LLP\n1. Corrugated boxes 5-ply x 2000 @ 18.50 = 37,000.00\n2. Tape rolls x 100 @ 45.00 = 4,500.00\nSubtotal: 41,500.00\nCGST 9%: 3,735.00  SGST 9%: 3,735.00\nTotal: 48,970.00\nAmount in words: Forty Eight Thousand Nine Hundred Seventy Only" },
+      { "name": "tricky", "text": "INVOICE #4471\nNorthwind Ingredients Inc. (no GSTIN, export)\nDate: Oct 7, 2024\nVanilla extract 20L ............ USD 1,240.00\nFreight ........................ USD 85.00\nTotal due ...................... USD 1,352.00\nPayment terms: Net 30" }
+    ]
+  },
+  {
+    "id": "S3",
+    "label": "Judgment task, no hard lines (quality only)",
+    "state": {
+      "row": { "task": "Turn my conference talk notes into a LinkedIn post", "type": "Judgment", "data": "10 to 100", "criteria": "A post people in my field would stop scrolling for and comment on", "verifier": "I would post it as is" },
+      "dec": { "decision": "If 8 of 10 drafts are ones I'd post as is, I'll draft every talk recap with AI.", "population": "My last ten talk and meetup notes" },
+      "hard": [""],
+      "noHard": true,
+      "dims": [ { "name": "Hook", "one": "Opens with 'I'm excited to share' or a generic line", "five": "The first line makes a specific claim my peers would argue with" },
+                { "name": "Sounds like me", "one": "Corporate, emojis, hashtags everywhere", "five": "Plain first person, short sentences, one idea" } ],
+      "grader": { "qual": "Me" },
+      "agree": { "a": [4,2,5], "b": [5,4,5], "n": 3, "ok": 2 }
+    },
+    "inputs": [
+      { "name": "typical", "text": "Talk: 'Your eval is your product spec' at PyCon India, Bengaluru.\nPoints: most teams ship LLM features with zero evals; vibes-based QA breaks at 1k users; we cut support-bot escalations 31% after writing 40 golden examples; the hard part was agreeing what 'good' means, not the tooling; start with 10 real examples from logs not synthetic ones.\nAudience Q: 'do you need a framework?' my answer: no, a spreadsheet." },
+      { "name": "tricky", "text": "meetup notes, very rough: talked about agents. ppl asked about cost. said something about caching. good crowd ~60. someone from razorpay asked about evals." }
+    ]
+  },
+  {
+    "id": "S4",
+    "label": "Messy real answers (from the screenshot: Q4 cost-cut deck)",
+    "state": {
+      "row": { "task": "Build the Q4 cost-cut deck for leadership", "type": "Judgment", "data": "Under 10", "criteria": "Manager approves it for the CFO with no rework", "verifier": "Manager approves it for the CFO with no rework same day (every number traces to the Q3 pull)" },
+      "dec": { "decision": "If 8 of 10 pass, I would be able to free up my 240 minutes every week and spend that time on somewhere else.", "population": "The last 10 requests from my Slack and a few of them from the meeting transcript" },
+      "hard": ["Yeah, pass when every number matches the source export and also when the managers approve it for the CFO with no rework."],
+      "dims": [ { "name": "The final deck", "one": "A deck which does not have correct numbers and has ambiguity around the strategy for how this can help us do the cost cutting", "five": "A deck which has everything, all the correct numbers, and a clear strategy the CFO can approve" } ],
+      "grader": { "hard": "As of now, it's going to be a mix of rules, LLM, and human.", "qual": "Manager" },
+      "agree": { "a": [3,4,2], "b": [4,4,4], "n": 3, "ok": 2 }
+    },
+    "inputs": [
+      { "name": "typical", "text": "Slack from Anjali (VP Ops): need the Q4 cost-cut deck for Thursday CFO review. Focus on cloud + vendor spend.\nQ3 pull (INR lakh): AWS 142.0, GCP 18.5, Datadog 11.2, Zendesk 6.8, Freelancers 24.0, Office 30.0. Total 232.5.\nTarget: cut 15% of total run-rate in Q4.\nNotes from Tuesday call: reserved instances could save ~22% on AWS compute (compute is ~60% of AWS). Datadog has 3 unused integrations. Freelancer contracts renew Dec 1." },
+      { "name": "tricky", "text": "Slack from Anjali: can you redo the cost deck, CFO wants 20% now not 15. use the same numbers as last time. also add a slide on hiring freeze impact." }
+    ]
+  },
+  {
+    "id": "S5",
+    "label": "Vague answers (passes the form, says little)",
+    "state": {
+      "row": { "task": "Reply to customer support tickets", "type": "Judgment", "data": "Over 100", "criteria": "Good replies", "verifier": "Customer is happy" },
+      "dec": { "decision": "Use AI if it is good.", "population": "Some tickets" },
+      "hard": ["it is correct"],
+      "dims": [ { "name": "Quality", "one": "bad", "five": "good" } ],
+      "grader": { "hard": "LLM", "qual": "LLM" },
+      "agree": { "a": [], "b": [] }
+    },
+    "inputs": [
+      { "name": "typical", "text": "Ticket #88213 from Rohit S.: I was charged twice for my Pro plan this month (Rs 999 x2 on 1 Nov). Please refund one. Order IDs PRO-55120 and PRO-55121." },
+      { "name": "tricky", "text": "Ticket #88240 from anon: your app is garbage, deleted all my notes after the update. I want my data back NOW or I'm posting this everywhere." }
+    ]
+  },
+  {
+    "id": "S6",
+    "label": "Overloaded (6 hard lines, 4 qualities)",
+    "state": {
+      "row": { "task": "Summarise a pull request for the weekly engineering digest", "type": "Judgment", "data": "Over 100", "criteria": "A reader who skipped the PR knows what changed, why, and what to watch", "verifier": "The PR author agrees it is accurate" },
+      "dec": { "decision": "If 8 of 10 summaries pass, the digest bot posts them without a human edit.", "population": "Ten merged PRs from last month: two refactors, a migration, a revert, six features" },
+      "hard": ["it is under 120 words", "it names the PR number", "it says what changed in one sentence first", "it mentions any migration or config change", "it has no code blocks", "it links the PR"],
+      "dims": [ { "name": "Accuracy", "one": "Claims something the diff does not do", "five": "Every claim matches the diff and description" },
+                { "name": "Why", "one": "No reason given", "five": "States the user or system problem it fixes" },
+                { "name": "Risk", "one": "Ignores what could break", "five": "Names the one thing to watch after deploy" },
+                { "name": "Readability", "one": "Jargon a PM can't follow", "five": "A PM understands it on first read" } ],
+      "grader": { "hard": "A script", "qual": "An LLM judge with this rubric" },
+      "agree": { "a": [4,5,3,4,4,2,5,4,3,4], "b": [4,4,3,5,4,3,5,4,4,4], "n": 10, "ok": 10 }
+    },
+    "inputs": [
+      { "name": "typical", "text": "PR #2291 https://github.com/acme/api/pull/2291 'Move session store from Redis to Postgres'\nDescription: Redis evictions were logging users out under load (incident INC-114). Sessions now live in a new `sessions` table (migration 0087). Adds SESSION_TTL_HOURS env var (default 72). Old Redis keys are read as fallback for 7 days.\nDiff: +412 -96 across auth/session.py, migrations/0087_sessions.py, settings.py, tests/test_session.py" },
+      { "name": "tricky", "text": "PR #2304 'Revert \"Enable new pricing page\"'\nDescription: reverting #2297, conversion dropped 12% in the first 3 hours. No DB changes.\nDiff: +40 -388 web/pricing/*" }
+    ]
+  },
+  {
+    "id": "S7",
+    "label": "Checks the model can't see (outcome-based lines)",
+    "state": {
+      "row": { "task": "Shortlist resumes for our SDE-2 backend opening", "type": "Judgment", "data": "Over 100", "criteria": "The shortlisted people clear our interview loop", "verifier": "Hiring manager agrees with the shortlist" },
+      "dec": { "decision": "If 8 of 10 shortlists match the hiring manager's, recruiters use the AI shortlist as the first pass.", "population": "Resumes from the last two SDE-2 openings with the HM's final picks" },
+      "hard": ["the candidate clears the interview loop", "the candidate has 3 to 6 years of backend experience"],
+      "dims": [ { "name": "Fit", "one": "Picks on keywords only", "five": "Reasons about the actual systems they built" } ],
+      "grader": { "hard": "Hiring manager", "qual": "Me" },
+      "agree": { "a": [], "b": [] }
+    },
+    "inputs": [
+      { "name": "typical", "text": "Role: SDE-2 backend (Go/Postgres, payments).\nCandidate A: 4 yrs, Go at Paytm, built UPI reconciliation service handling 2M txn/day, Postgres partitioning.\nCandidate B: 7 yrs, Java Spring at TCS, maintained internal HR portal.\nCandidate C: 2.5 yrs, Node at a startup, wrote payment webhook handlers for Razorpay, on-call lead.\nPick who to shortlist." },
+      { "name": "tricky", "text": "Role: SDE-2 backend.\nCandidate D: resume is one line: 'Full stack dev, 5 yrs, worked on many projects, quick learner.'\nCandidate E: 3 yrs Kotlin backend at Swiggy, order-assignment service, Kafka; career gap of 1 yr (caregiving)." }
+    ]
+  },
+  {
+    "id": "S8",
+    "label": "Hinglish, short, one line each",
+    "state": {
+      "row": { "task": "Reply to new leads on WhatsApp for my bakery", "type": "Judgment", "data": "10 to 100", "criteria": "Lead replies back and books a cake", "verifier": "I'd send it without changing" },
+      "dec": { "decision": "If 8 of 10 are sendable, my staff uses AI replies.", "population": "Last 10 WhatsApp enquiries" },
+      "hard": ["price bataye agar pucha ho", "under 60 words"],
+      "dims": [ { "name": "Warmth", "one": "robotic", "five": "like I talk to regulars" } ],
+      "grader": { "hard": "Me", "qual": "Me" },
+      "agree": { "a": [4,4,5,3,4,4,2,5,4,4], "b": [4,5,5,3,3,4,4,5,4,4], "n": 10, "ok": 9 }
+    },
+    "inputs": [
+      { "name": "typical", "text": "Hi, 1kg chocolate truffle cake kitne ka hai? Saturday ko chahiye, Andheri delivery ho jayegi?\n(Our prices: truffle 1kg Rs 1,450; delivery Andheri Rs 120; order 24h before.)" },
+      { "name": "tricky", "text": "eggless hai kya? birthday hai kal\n(Our info: all cakes can be eggless +Rs 100; same-day orders only before 11am; price list on request.)" }
+    ]
+  }
+]

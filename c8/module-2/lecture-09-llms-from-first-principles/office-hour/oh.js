@@ -427,38 +427,81 @@
   }
 
   function slug() { return (String(S.row.task || 'my-task').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40).replace(/^-+|-+$/g, '') || 'my-task'); }
-  /* The eval as a working prompt, in the shape of the OGILVY_COPY_REVIEWER prompt (100x-LLM repo): a role, numbered steps,
-     the criteria, a fixed output with a scorecard, then the input last. The model does the task and grades itself against the eval. */
+  /* The eval as two prompts, in the shape of the OGILVY_COPY_REVIEWER prompt (100x-LLM repo): a role, numbered steps, the checks,
+     a fixed output, the input last. Tested in _plan/l09-office-hour/prompt-suite (8 learner states x 2 models):
+     - Pass, Fail or Can't tell: checks that need a person, a later event or missing input stop getting fake passes.
+     - Facts only from the input; obvious gaps assumed and listed, [ASK: ...] when a wrong guess costs: invented facts were in 27 of 32 v1 runs.
+     - Never change a fact to pass a check; count for limits; quote evidence.
+     - The checker runs in a fresh chat, checks hard lines too, and sees the input. */
   var BAR = 4;
-  function promptBody(inputLine) {
-    var task = String(S.row.task || 'the task').trim().replace(/\.$/, ''), hard = S.hard.filter(filled), dims = S.dims.filter(dimDone), L = [];
-    L.push('You are an expert at this task: ' + task + '. You work to a written eval, and you check your own work against it before anyone sees it.', '');
-    L.push('Task:');
-    var st = ['Read the input at the end.', 'Draft the output.' + (filled(S.row.criteria) ? ' Aim for this: ' + S.row.criteria.trim().replace(/\.$/, '') + '.' : '')];
-    if (hard.length) st.push('Check the draft against every hard line. One Fail means it is not done.');
-    if (dims.length) st.push('Score the draft 1 to 5 on each quality, using only the 1 and 5 written below.');
-    st.push('Fix every Fail' + (dims.length ? ' and every score under ' + BAR : '') + ', then check again.', 'Return the final output, then the scorecard.');
-    st.forEach(function (x, k) { L.push((k + 1) + '. ' + x); });
-    L.push('', '---', '');
+  function clean(x) {
+    x = String(x || '').trim().replace(/\s+/g, ' ');
+    for (var i = 0; i < 3; i++) x = x.replace(/^(yeah|yes|ok|okay|so|um|like|well|basically|i think)[,.!\s]+/i, '').replace(/^(it )?(passes|pass) when\s*/i, '').replace(/^when\s+/i, '');
+    x = x.replace(/[.\s]+$/, '');
+    return /^[A-Z][a-z]/.test(x) ? x.charAt(0).toLowerCase() + x.slice(1) : x;
+  }
+  function checksBlock(hard, dims) {
+    var L = [];
     if (hard.length) {
-      L.push('### Hard lines (Pass or Fail, every one must pass)', '');
-      hard.forEach(function (x, k) { L.push((k + 1) + '. **H' + (k + 1) + '**: Pass when ' + x.trim().replace(/^pass when /i, '')); });
+      L.push('### Must pass (Pass, Fail or Can\'t tell)', '');
+      hard.forEach(function (x, k) { L.push((k + 1) + '. **H' + (k + 1) + '**: Pass when ' + clean(x) + '.'); });
       L.push('');
     }
     if (dims.length) {
-      L.push('### Quality (1 to 5, aim for 5)', '');
-      dims.forEach(function (d, k) { L.push((k + 1) + '. **' + d.name.trim() + '**: 1 is "' + d.one.trim() + '". 5 is "' + d.five.trim() + '".'); });
+      L.push('### Quality (1 to 5, or Can\'t tell)', '');
+      dims.forEach(function (d, k) { L.push((k + 1) + '. **Q' + (k + 1) + ' ' + d.name.trim() + '**: 1 is "' + d.one.trim() + '". 5 is "' + d.five.trim() + '".'); });
       L.push('');
     }
-    L.push('---', '', '### Output', '', '**Final output:**', '[the output]', '', '**Scorecard:**', '', '| Check | Result | Why |', '|-------|--------|-----|');
-    hard.forEach(function (x, k) { L.push('| H' + (k + 1) + ' | Pass or Fail | ... |'); });
-    dims.forEach(function (d) { L.push('| ' + d.name.trim() + ' | X/5 | ... |'); });
-    L.push('', '**Meets the bar:** Yes or No (' + [hard.length ? 'every hard line passes' : '', dims.length ? 'every quality ' + BAR + ' or more' : ''].filter(Boolean).join(', ') + ')');
-    if (dims.length) L.push('', '**To make it a 5:** one line for each quality under 5.');
-    L.push('', '---', '', inputLine);
+    return L;
+  }
+  function scoreTable(hard, dims, evid) {
+    var L = ['| # | Check | Result | ' + evid + ' |', '|---|-------|--------|' + '-'.repeat(evid.length + 2) + '|'];
+    hard.forEach(function (x, k) { L.push('| H' + (k + 1) + ' | ' + clean(x) + ' | Pass, Fail or Can\'t tell | ... |'); });
+    dims.forEach(function (d, k) { L.push('| Q' + (k + 1) + ' | ' + d.name.trim() + ' | 1 to 5 or Can\'t tell | ... |'); });
+    return L;
+  }
+  var CANT = 'Use Can\'t tell when a check needs something you cannot see: a person\'s opinion, something that happens later, or information that is not in the input. Never guess a Pass.';
+  function promptBody(inputLine) {
+    var task = String(S.row.task || 'the task').trim().replace(/\.$/, ''), hard = S.hard.filter(filled), dims = S.dims.filter(dimDone), L = [];
+    L.push('You are an expert at this task: ' + task + '. You work to a written checklist, you never make things up, and you check your own work before anyone sees it.', '');
+    L.push('Task:');
+    [ 'Read the input at the end. Use only the facts in it. If a gap has one obvious answer, use it and list it under Assumed. If a wrong guess would cost the reader, write [ASK: what you need] in the draft instead.',
+      'Draft the output.',
+      'Check the draft against every check below. The checks are about your output, not about the people or things in the input. ' + CANT,
+      'If a check fails and you can fix it from the input, redraft and check again. Never add or change a fact to make a check pass.',
+      'Return the output, then the scorecard.'
+    ].forEach(function (x, k) { L.push((k + 1) + '. ' + x); });
+    if (filled(S.row.criteria)) L.push('', 'Good looks like this (a person judges it later, not you): ' + S.row.criteria.trim().replace(/\.$/, '') + '.');
+    L.push('', '---', '');
+    L = L.concat(checksBlock(hard, dims));
+    L.push('Rules for checking: quote the words from your draft that each result is based on. For any length limit, count and write the number.', '', '---', '', '### Output', '',
+      '**Output:** the finished work only, ready to copy.', '', '**Scorecard:**', '');
+    L = L.concat(scoreTable(hard, dims, 'Evidence'));
+    L.push('', '**Assumed:** anything in the output that is not in the input, and why you assumed it. Write None if there is nothing.',
+      '', '**Needs you:** each Can\'t tell and [ASK], and what you should look at.',
+      '', '**Ready for your review:** Yes, or No if a must-pass check failed.',
+      '', '---', '', inputLine);
     return L.join('\n');
   }
-  function asPrompt() { return promptBody('### Input: [paste today\'s input here]'); }
+  function asPrompt() { return promptBody('### Input: [paste today\'s input here, with any facts this task always needs: prices, policies, numbers, a past example]'); }
+  function judgeBody(inputLine, outputLine) {
+    var task = String(S.row.task || 'the task').trim().replace(/\.$/, ''), hard = S.hard.filter(filled), dims = S.dims.filter(dimDone), L = [];
+    L.push('You are a strict checker for this task: ' + task + '. You did not write the output below. Your job is to find what is wrong with it, not to improve it.', '');
+    L.push('Task:');
+    [ 'Read the input and the output at the end.',
+      'Check the output against every check below, literally. The checks are about the output, not about the people or things in the input. ' + CANT,
+      'List anything the output invents: a name, number, date, promise or action that the input does not support. Correct sums, format changes and plain rewordings are not invented. A reasonable guess that is clearly marked as one is not invented either.',
+      'Give the verdict.'
+    ].forEach(function (x, k) { L.push((k + 1) + '. ' + x); });
+    L.push('', '---', '');
+    L = L.concat(checksBlock(hard, dims));
+    L.push('Rules: quote the exact words each result is based on. For any length limit, count and write the number. A 4 or 5 needs a quote that shows it.', '', '---', '', '### Reply in this format', '');
+    L = L.concat(scoreTable(hard, dims, 'Quote'));
+    L.push('', '**Invented:** list, or None.', '', '**Verdict:** Pass if every hard line passes' + (dims.length ? ' and every quality is ' + BAR + ' or more' : '') + ' and nothing is invented. Fail if any of those break. Needs you if the only open items are Can\'t tell.',
+      '', '---', '', inputLine, '', outputLine);
+    return L.join('\n');
+  }
+  function asJudge() { return judgeBody('### Input: [paste the input here]', '### Output: [paste the output here]'); }
   function asSkill() {
     var t = String(S.row.task || 'my task').trim().replace(/\s+/g, ' ').replace(/\.$/, '');
     return '---\nname: ' + slug() + '\ndescription: Use when asked to ' + t.charAt(0).toLowerCase() + t.slice(1) + '. Does the task to a written eval and returns a scorecard with the output.\n---\n\n' +
@@ -518,7 +561,7 @@
     var hardTxt = function (hs) { return hs.map(function (x, k) { return 'H' + (k + 1) + '. Pass when ' + x.replace(/^pass when /i, ''); }).join('\n'); };
     var qualTxt = function (ds) { return ds.map(function (d, k) { return 'Q' + (k + 1) + '. ' + d.name + ': 1 = ' + d.one + '; 5 = ' + d.five; }).join('\n'); };
     var head = ['task_id', 'Role', 'Task', 'Decision', 'Population', 'Definition of good', 'Hard lines (Pass or Fail)', 'Quality (1 to 5)', 'Who checks',
-      'Prompt (does the task, grades itself)', 'Outputs scored', 'Passed', 'Pass rate', 'Graded by you and the LLM', 'Within one point', 'LLM agreement', 'Verdict'];
+      'Task prompt (new chat)', 'Outputs scored', 'Passed', 'Pass rate', 'Graded by you and the LLM', 'Within one point', 'LLM agreement', 'Verdict', 'Checker prompt (fresh chat)'];
     var rows = [head];
     var ex = ['GDPval bd72994f (example)', 'Senior client advisor, luxury clothing boutique',
       'Pick one brand\'s 2025 resort collection, put 4 to 6 looks on slides, and write an email or text template staff can reuse to invite clients to book an appointment.',
@@ -540,10 +583,11 @@
       row[13] = r === 3 ? mine[13] : ''; row[14] = r === 3 ? mine[14] : '';
       row.push(F('IF(N(N' + r + ')=0,"",O' + r + '/N' + r + ')', '0%'));
       row.push(FS('IF(A' + r + '="","",IF(N(K' + r + ')<10,"Score 10 outputs first",IF(M' + r + '>=0.8,"Hand it to AI, keep spot-checking","Not yet: sharpen the prompt or keep doing it")))'));
+      row.push(r === 3 ? asJudge() : '');
       rows.push(row);
     }
     var ws = X.utils.aoa_to_sheet(rows);
-    ws['!cols'] = [12, 22, 40, 40, 34, 34, 48, 48, 30, 60, 9, 8, 9, 12, 10, 10, 26].map(function (w) { return { wch: w }; });
+    ws['!cols'] = [12, 22, 40, 40, 34, 34, 48, 48, 30, 60, 9, 8, 9, 12, 10, 10, 26, 60].map(function (w) { return { wch: w }; });
     var wb = X.utils.book_new(); X.utils.book_append_sheet(wb, ws, 'Evals');
     return wb;
   }
@@ -602,29 +646,34 @@
       };
       $('#k-dl', hero).onclick = function () { downloadBook(this, $('#k-msg', hero)); };
 
-      /* 3 use it: the eval becomes the brief, so the next run starts from "good" */
+      /* 3 use it: do, check in a fresh chat, log. Self-grades in the same chat ran soft in testing, so the check is a separate prompt. */
       var use = h('<section class="use noprint"><h2>Use it next time</h2>' +
-        '<p class="lede">Your eval says what good looks like. Hand that to the LLM up front and it aims for it, then checks its own work before you see it.</p>' +
-        '<div class="uopt"><div><b>Reusable prompt</b><p>Paste it at the top of a new chat, then add today\'s input. Share it with anyone who does this task.</p><div class="row"><button class="btn sm" type="button" id="u-copy">Copy prompt</button><span class="msg" aria-live="polite"></span></div></div>' +
-        '<div><b>Claude Skill</b><p>A SKILL.md file. Claude loads it whenever this task comes up, no pasting.</p><div class="row"><button class="btn sm" type="button" id="u-skill">Download SKILL.md</button><span class="msg" aria-live="polite"></span></div></div></div>' +
-        '<details class="ex"><summary>See the prompt</summary><pre class="copy" data-nolabel></pre></details>' +
-        '<p class="try"><b>Try it:</b> next time you do this task, run it with the prompt. Score the output with your eval. Did it pass?</p></section>');
-      $('pre', use).textContent = asPrompt();
+        '<p class="lede">Every time you hand this task to AI, run these three steps. Ten runs in, your sheet says whether to hand it over.</p>' +
+        '<ol class="steps3">' +
+        '<li><b>Do it.</b> Paste this prompt in a new chat, with today\'s input at the end.<div class="row"><button class="btn sm" type="button" data-copy="do">Copy task prompt</button><span class="msg" aria-live="polite"></span></div></li>' +
+        '<li><b>Check it in a fresh chat.</b> An LLM goes easy on its own work. Paste this with the input and the output.<div class="row"><button class="btn sm" type="button" data-copy="check">Copy checker prompt</button><span class="msg" aria-live="polite"></span></div></li>' +
+        '<li><b>Log it.</b> In your sheet, add one to Outputs scored, and one to Passed if the verdict is Pass. Anything marked Can\'t tell is yours to check.</li></ol>' +
+        '<details class="ex"><summary>See both prompts</summary><p class="note">Task prompt</p><pre class="copy" data-nolabel data-p="do"></pre><p class="note">Checker prompt</p><pre class="copy" data-nolabel data-p="check"></pre></details>' +
+        '<p class="note">Use Claude for this task often? <button class="linkbtn" type="button" id="u-skill">Download it as a Claude Skill</button><span class="msg" aria-live="polite"></span></p></section>');
+      var P = { do: asPrompt, check: asJudge };
+      $('pre[data-p="do"]', use).textContent = asPrompt(); $('pre[data-p="check"]', use).textContent = asJudge();
       side.appendChild(use);
-      $('#u-copy', use).onclick = function () {
-        var m = this.nextElementSibling, b = this;
-        (navigator.clipboard ? navigator.clipboard.writeText(asPrompt()) : Promise.reject()).then(function () { b.textContent = 'Copied ✓'; m.textContent = ''; track('oh_prompt_copy'); }, function () { m.textContent = 'Open "See the prompt" and copy it.'; });
-      };
+      $$('[data-copy]', use).forEach(function (bt) {
+        bt.onclick = function () {
+          var m = bt.nextElementSibling, k = bt.dataset.copy, label = bt.textContent;
+          (navigator.clipboard ? navigator.clipboard.writeText(P[k]()) : Promise.reject()).then(function () { bt.textContent = 'Copied ✓'; m.textContent = ''; track('oh_prompt_copy', { which: k }); setTimeout(function () { bt.textContent = label; }, 2000); }, function () { m.textContent = 'Open "See both prompts" and copy it.'; });
+        };
+      });
       $('#u-skill', use).onclick = function () {
         var blob = new Blob([asSkill()], { type: 'text/markdown' }), u = URL.createObjectURL(blob), l = document.createElement('a');
         l.href = u; l.download = 'SKILL.md'; document.body.appendChild(l); l.click(); l.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 1000);
-        this.textContent = 'Downloaded ✓'; this.nextElementSibling.textContent = 'Put it in a folder named ' + slug() + ', then add it in Claude (Settings, Capabilities, Skills) or ~/.claude/skills/.';
+        this.textContent = 'Downloaded ✓'; this.nextElementSibling.textContent = ' Put it in a folder named ' + slug() + ', then add it in Claude (Settings, Capabilities, Skills) or ~/.claude/skills/.';
         track('oh_skill_download');
       };
 
       /* 4 what is left */
       side.appendChild(h('<section class="next noprint"><h2>Before Lecture 11 <small>Thu 12 Nov</small></h2><ol class="outcomes">' +
-        '<li><b>Re-score your tested row with it.</b> You scored it out of 10 by feel. Score it again in the Scores tab: hard lines first, then each quality 1 to 5. ' + link('/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06') + '</li>' +
+        '<li><b>Re-score your tested row with it.</b> You scored it out of 10 by feel. Run it through the checker prompt and log it as your first row. ' + link('/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06') + '</li>' +
         '<li><b>Share the sheet on the Discord.</b> We go through them in the office hour.</li></ol></section>'));
 
       main.appendChild(h('<details class="opt noprint"><summary>Optional, when you have time</summary><ol class="outcomes">' + [

@@ -1,0 +1,70 @@
+{
+  "S1": {
+    "invents": true,
+    "items": [
+      "Admission that 'We should have flagged that dependency to you sooner' (not in input)",
+      "Promise to 'confirm by Monday whether 13 Nov holds' (no such commitment in input)",
+      "Claim that 'Until we do, we can't work on the Pune setup' (input says only that VPN access is still missing, not that work is blocked)",
+      "Requested deadline 'by Monday 9 Nov' for VPN access (date not in input)"
+    ]
+  },
+  "S2": {
+    "invents": false,
+    "items": []
+  },
+  "S3": {
+    "invents": true,
+    "items": [
+      "'last week': the input gives no date or timing for the PyCon India talk"
+    ]
+  },
+  "S4": {
+    "invents": true,
+    "items": [
+      "Freelancer 'Option A: renew at half scope, saving 12.0 lakh per quarter': the input gives no half-scope option or 12.0 lakh saving",
+      "Freelancer 'Option B: renew as-is' and the recommendation of Option A: these options and the recommendation are not in the input",
+      "'scope list from team leads by Nov 20': this date and commitment are not in the input",
+      "Slide 6 total of 30.7 lakh (88% of target) and the 4.2 lakh gap: the arithmetic is correct, but both rely on the invented 12.0 lakh freelancer saving",
+      "'AWS reserved instances (ready to approve)': the input says nothing about readiness for approval",
+      "'pull the line items from the Datadog invoice this week': this action and timeline are not in the input",
+      "'remaining 4.2 lakh gap comes back with sized numbers next week': this promise and timeline are not in the input",
+      "'GCP and Zendesk usage review' as a way to close the gap: not mentioned in the input"
+    ]
+  },
+  "S5": {
+    "invents": true,
+    "items": [
+      "Claims to have verified the charges ('I can see two Pro plan charges'); the input only has the customer's report",
+      "Claims a completed action: 'I've raised a refund'",
+      "Picks PRO-55121 as the duplicate to refund; the input doesn't say which one is the duplicate",
+      "Promises the Pro plan 'stays active under PRO-55120'",
+      "Promises an email when the refund is processed",
+      "States the refund will go back to the original payment method",
+      "Promises to follow up if the refund doesn't arrive"
+    ]
+  },
+  "S6": {
+    "invents": true,
+    "items": [
+      "\"so nobody is signed out by the switch\": the input only says old Redis keys are read as a fallback for 7 days. It does not promise that no user will be logged out by the migration."
+    ]
+  },
+  "S7": {
+    "invents": true,
+    "items": [
+      "A '3-year bar' (minimum experience requirement) for the role; the input gives no experience threshold",
+      "A '6-year range' (maximum experience) for the role; the input gives no such range",
+      "States as fact that Candidate A has worked on idempotency, matching ledger entries against bank files, and handling late or duplicate settlements; the input only says they built a UPI reconciliation service",
+      "Claims Candidate A has experience with query planning, retention, and migrations on hot tables; the input only mentions Postgres partitioning",
+      "Characterizes Candidate B's HR portal as low-throughput CRUD with no high-scale data work; the input only says they maintained an internal HR portal",
+      "Claims Candidate C's Razorpay webhook work involved retries, signature checks, and out-of-order events; the input only says they wrote payment webhook handlers"
+    ]
+  },
+  "S8": {
+    "invents": true,
+    "items": [
+      "Unconditionally promises Saturday delivery ('Haan bilkul, Saturday ke liye ho jayega'). The input only gives the 24h-before order rule, not confirmed availability for Saturday.",
+      "Implies a name/message-on-cake service ('Cake pe koi naam ya message likhna hai?'), which the input does not mention."
+    ]
+  }
+}

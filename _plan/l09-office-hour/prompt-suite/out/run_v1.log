@@ -1,0 +1,20 @@
+[v1] E1 do: 32 runs
+[v1] E2 grade
+[v1] E3 seeds + judge
+[v1] E4 meta
+# Prompt suite results (v1)
+
+| Rank | Scenario | Meta /10 | Output use /5 | Scorecard honest /5 | Inflated checks | Checks the model can't see | Invented facts | Silent guesses | Judge accuracy |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 | S2 Rule task, no quality layer (hard lines only) | 6.0 | 4.2 | 4.2 | 2/12 | 0/12 | 6 | 0 | – |
+| 2 | S6 Overloaded (6 hard lines, 4 qualities) | 6.0 | 4.2 | 3.5 | 7/40 | 5/40 | 9 | 0 | 100% |
+| 3 | S1 Complete and clean (Judgment, 2 hard lines, 2 qualities, grader checked) | 5.0 | 3.8 | 3.0 | 5/16 | 6/16 | 23 | 1 | 67% |
+| 4 | S8 Hinglish, short, one line each | 5.0 | 4.0 | 3.0 | 3/12 | 4/12 | 5 | 2 | 67% |
+| 5 | S3 Judgment task, no hard lines (quality only) | 4.0 | 3.5 | 2.8 | 11/19 | 8/19 | 22 | 0 | 67% |
+| 6 | S4 Messy real answers (from the screenshot: Q4 cost-cut deck) | 3.0 | 3.2 | 4.2 | 1/8 | 4/8 | 8 | 0 | 67% |
+| 7 | S7 Checks the model can't see (outcome-based lines) | 3.0 | 4.0 | 3.8 | 2/12 | 4/12 | 5 | 0 | 67% |
+| 8 | S5 Vague answers (passes the form, says little) | 2.0 | 3.5 | 3.0 | 5/8 | 8/8 | 14 | 1 | 67% |
+
+Overall: output usefulness 3.81/5, scorecard honesty 3.44/5, format followed 32/32, judge accuracy 30/42 (no judge for 6)
+
+- haiku: usefulness 3.81, honesty 3.19

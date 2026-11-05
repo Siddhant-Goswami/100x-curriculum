@@ -348,12 +348,6 @@ ul.tk li{padding:3px 0;font-size:15px}
 .use{margin:0 0 32px}
 .use .lede{color:var(--ink2);font-size:15px;margin:0 0 14px}
 .kside .outcomes li{font-size:14.5px}
-.uopt{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 14px}
-@media (min-width:640px) and (max-width:900px){.uopt{grid-template-columns:1fr 1fr}}
-.uopt>div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
-.uopt b{display:block;font-weight:600;font-size:15.5px;margin:0 0 4px}
-.uopt p{margin:0 0 12px;font-size:14px;color:var(--ink2)}
-.uopt .msg{margin:0;font-size:12px}
 .use .try{font-size:15px;margin:0;color:var(--ink2)}
 .use .try b{color:var(--ink)}
 .next{max-width:960px;margin:0 0 28px}
@@ -368,3 +362,13 @@ details.opt .outcomes{padding:0 18px 8px;margin:0}
 .pill.p{background:var(--prob-soft);color:var(--prob-ink);font-family:var(--sans);font-weight:500}
 .kreset{margin:20px 0 0}
 @media print{.ec{box-shadow:none;border-color:#999}}
+ol.steps3{list-style:none;counter-reset:s;margin:0 0 14px;padding:0}
+ol.steps3>li{counter-increment:s;position:relative;padding:12px 0 12px 34px;border-top:1px solid var(--line);font-size:14.5px;color:var(--ink2)}
+ol.steps3>li:first-child{border-top:0;padding-top:4px}
+ol.steps3>li::before{content:counter(s);position:absolute;left:0;top:12px;width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--bg);font:600 12px/22px var(--sans);text-align:center}
+ol.steps3>li:first-child::before{top:4px}
+ol.steps3 b{color:var(--ink)}
+ol.steps3 .row{margin-top:8px}
+ol.steps3 .msg{margin:0;font-size:12px}
+.linkbtn{all:unset;cursor:pointer;color:var(--coral-ink);text-decoration:underline;text-underline-offset:2px}
+.linkbtn:focus-visible{outline:2px solid var(--coral);outline-offset:2px}

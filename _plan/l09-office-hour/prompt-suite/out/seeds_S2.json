@@ -1,0 +1,5 @@
+{
+  "good": "SP/24-25/0912,2024-10-03,Shree Packaging Pvt Ltd,27AAKCS1234F1Z5,41500.00,7470.00,48970.00,INR",
+  "hard_fail": "SP/24-25/0912,2024-03-10,Shree Packaging Pvt Ltd,27AAKCS1234F1Z5,41500.00,7470.00,48970.00,INR",
+  "weak_quality": "Here is the CSV row for the invoice:\n\ninvoice_no,date,supplier,GSTIN,subtotal,GST,total,currency\nSP/24-25/0912,2024-10-03,Shree Packaging Pvt Ltd,27AAKCS1234F1Z5,\"41,500.00\",\"7,470.00\",\"48,970.00\",INR\n\nNote: GST combines CGST 9% (3,735.00) and SGST 9% (3,735.00). Let me know if you need the line items as well."
+}
