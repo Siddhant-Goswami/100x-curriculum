@@ -1,4 +1,4 @@
-/* L9 office hour: Write the eval for one task. A 30-minute, three-part cut of c8/writing-evals for Practice set 1.
+/* L9 practice set, step 05: Write the eval for one task. A self-paced, three-part cut of c8/writing-evals for Practice set 1.
    One screen, one thing to do. The headline is the instruction; Continue appears once the thing is done.
    Solo only, no keys, no clock. State lives in localStorage (c8store, key l09oh.v1).
    data.json is cut from the Writing Evals data by _plan/l09-office-hour/build_data.py. */
@@ -56,16 +56,16 @@
   var keyHandler = null;
 
   /* ---------- start ---------- */
-  scr({ id: 'start', seg: -1, kick: 'Office hour · Tue 3 Nov · Practice set 1', h: 'Write the eval for one task on your sheet.', wide: true,
-    sub: 'Thirty minutes, three parts. Have your Verify your own job sheet open.',
+  scr({ id: 'start', seg: -1, kick: 'Practice set 1 · Step 05 · On your own', h: 'Write the eval for one task on your sheet.', wide: true,
+    sub: 'About thirty minutes, three parts. Do it once you have tested one task on the model (section 04), with your Verify your own job sheet open.',
     render: function (st) {
-      st.appendChild(h('<ol class="outcomes"><li>See why forty people score the same reply five different ways.</li><li>Match the four parts of an eval to the columns you already filled.</li><li>Write the eval for one row of your sheet, and take it with you.</li></ol>'));
+      st.appendChild(h('<ol class="outcomes"><li>See why one reply can earn a 1 and a 5 when nobody writes down what good means.</li><li>Match the four parts of an eval to the columns you already filled.</li><li>Write the eval for the row you tested, and paste it into your sheet.</li></ol>'));
       var b = h('<button class="btn go">Start</button>'); st.appendChild(b);
       b.onclick = function () { S.started = true; save(); go(1); };
     }, ready: function () { return !!S.started; } });
 
   /* ---------- 1 why rubrics ---------- */
-  scr({ id: 'grade', seg: 0, kick: 'Alone', h: 'Score these five replies from 1 to 5. No rubric. Use your judgement.',
+  scr({ id: 'grade', seg: 0, kick: 'By feel', h: 'Score these five replies from 1 to 5. No rubric. Use your judgement.',
     sub: 'A support agent answering customers who dispute a bill. The account record is beside each reply.',
     render: function (st) {
       var wrap = h('<div style="margin-top:16px"></div>'); st.appendChild(wrap);
@@ -97,22 +97,13 @@
       });
     }, ready: function () { return Object.keys(S.g).length === 5; }, hint: 'Score all five.' });
 
-  scr({ id: 'spread', seg: 0, kick: 'The room', h: 'Forty people scored the same five replies.',
+  scr({ id: 'spread', seg: 0, kick: 'Two scores', h: 'Two people scored reply 1. One gave it a 5, the other a 1.',
     render: function (st) {
       data().then(function (D) {
-        var sheets = D.sheets.concat([D.items.map(function (x) { return S.g[x.id]; })]);
-        var stats = D.items.map(function (x, j) { var c = [0, 0, 0, 0, 0, 0], col = sheets.map(function (s) { return s[j]; }).filter(Boolean); col.forEach(function (v) { c[v]++; }); return { c: c, min: Math.min.apply(null, col), max: Math.max.apply(null, col) }; });
-        var maxc = Math.max.apply(null, stats.map(function (s) { return Math.max.apply(null, s.c); }));
-        var g = '<div class="spread" role="table" aria-label="Scores per reply"><span class="h">reply</span>' + [1, 2, 3, 4, 5].map(function (v) { return '<span class="h">' + v + '</span>'; }).join('') + '<span class="h" style="text-align:right">range</span>';
-        stats.forEach(function (s, j) {
-          var me = S.g[D.items[j].id];
-          g += '<span class="id">' + (j + 1) + '</span>';
-          for (var v = 1; v <= 5; v++) { var sz = s.c[v] ? Math.round(6 + 18 * Math.sqrt(s.c[v] / maxc)) : 0; g += '<span class="c' + (me === v ? ' me' + (sz ? '' : ' empty') : '') + '" title="' + s.c[v] + ' gave ' + v + '">' + (sz || me === v ? '<i style="width:' + (sz || 8) + 'px;height:' + (sz || 8) + 'px"></i>' : '') + '</span>'; }
-          g += '<span class="rng">' + s.min + ' to ' + s.max + '</span>';
-        });
-        st.appendChild(h('<div>' + g + '</div><p class="note">' + sheets.length + ' score sheets, yours ringed in coral. Bigger dot, more people.</p></div>'));
-        var lo = D.defence.low, hi = D.defence.high;
-        st.appendChild(reveal('<p>Reply 1, two people:</p><p>"' + esc(hi.text) + '"</p><p>"' + esc(lo.text) + '"</p><p><b>Nobody was careless. Each person scored against a different idea of good, and none of them wrote it down.</b></p>'));
+        var lo = D.defence.low, hi = D.defence.high, me = S.g[D.items[0].id];
+        st.appendChild(h('<div class="case"><div class="card"><p class="kick">Scored ' + hi.score + '</p><p>"' + esc(hi.text) + '"</p></div><div class="card"><p class="kick">Scored ' + lo.score + '</p><p>"' + esc(lo.text) + '"</p></div></div>'));
+        st.appendChild(h('<p class="note">You gave it a ' + me + '.</p>'));
+        st.appendChild(reveal('<p><b>Neither of them was careless. Each scored against a different idea of good, and neither wrote it down.</b> You scored all five the same way: by feel.</p>'));
       });
     }, ready: function () { return true; } });
 
@@ -136,8 +127,8 @@
             var c = h('<button class="btn go">Check</button>'); out.appendChild(c);
             c.onclick = function () { S.policyChecked = true; save(); track('oh_policy', { right: D.items.every(function (x) { return !!x.breaks === !!S.pick[x.id]; }) }); draw(); refresh(); };
           } else {
-            var r1 = D.items[0], fives = D.sheets.filter(function (s) { return s[0] >= 4; }).length;
-            out.appendChild(reveal('<p>Replies 1 and 4 break it. ' + fives + ' of 40 people gave reply 1 a 4 or 5' + (S.g[r1.id] >= 4 ? ', and so did you' : '') + ': it sounds kind. Reply 5 sounds cold and follows every rule.</p><p><b>A reply that breaks a rule fails, however warm it is.</b> That is a hard line. A script can check it, and nothing else in the reply makes up for it.</p>'));
+            var r1 = D.items[0];
+            out.appendChild(reveal('<p>Replies 1 and 4 break it. ' + (S.g[r1.id] >= 4 ? 'You gave reply 1 a ' + S.g[r1.id] + ': it sounds kind.' : 'Reply 1 sounds kind, which is what makes it easy to pass.') + ' Reply 5 sounds cold and follows every rule.</p><p><b>A reply that breaks a rule fails, however warm it is.</b> That is a hard line. A script can check it, and nothing else in the reply makes up for it.</p>'));
           }
         }
         draw();
@@ -145,7 +136,7 @@
     }, ready: function () { return !!S.policyChecked; }, hint: 'Tap the ones you think break it, then Check.' });
 
   /* ---------- 2 the four parts ---------- */
-  scr({ id: 'four', seg: 1, kick: 'The instrument', h: 'An eval has four parts. Your sheet already has three of them.', wide: true,
+  scr({ id: 'four', seg: 1, kick: 'The instrument', h: 'An eval has four parts. Your sheet already covers most of them.', wide: true,
     render: function (st) {
       var L = function (n, sec, t) { return '<a href="/c8/module-2/' + n + '/notes#s' + sec + '">' + t + '</a>'; };
       var L1 = 'lecture-01-orientation', L3 = 'lecture-03-building-ui', L9 = 'lecture-09-llms-from-first-principles', L10 = 'lecture-10-tool-calling-and-mcp';
@@ -160,7 +151,7 @@
       st.appendChild(reveal('<p>The one your sheet does not have yet: <b>how often the grader is wrong.</b> You measure that last.</p>'));
     }, ready: function () { return true; } });
 
-  scr({ id: 'layers', seg: 1, kick: 'Three layers', h: 'Sort what people said about the replies into three piles.',
+  scr({ id: 'layers', seg: 1, kick: 'Three layers', h: 'Sort these reasons for a score into three piles.',
     sub: 'Tap a reason, then tap a pile.',
     render: function (st) {
       data().then(function (D) {
@@ -193,7 +184,7 @@
           }
           if (S.sortChecked) {
             var miss = R.filter(function (r, k) { return S.sort[k] !== r.pile; }).length;
-            after.appendChild(reveal('<p>' + (miss ? miss + ' landed in another pile; they are marked.' : 'All six in the right pile.') + '</p><p><b>Hard lines</b> veto: any fail is a fail. <b>Quality</b> gets a 1 and a 5 written out, so two people score it the same way. <b>Preference</b> stays out of the eval: it is most of why the room disagreed.</p>'));
+            after.appendChild(reveal('<p>' + (miss ? miss + ' landed in another pile; they are marked.' : 'All six in the right pile.') + '</p><p><b>Hard lines</b> veto: any fail is a fail. <b>Quality</b> gets a 1 and a 5 written out, so two people score it the same way. <b>Preference</b> stays out of the eval: it is most of why two scorers disagree.</p>'));
           }
         }
         draw();
@@ -221,12 +212,12 @@
     }, ready: function () { return true; } });
 
   /* ---------- 3 write yours ---------- */
-  scr({ id: 'row', seg: 2, kick: 'Your sheet', h: 'Copy one row from your sheet.',
-    sub: 'Pick a row with a verifier and some past data. If several qualify, take the one that moves your North Star most.',
+  scr({ id: 'row', seg: 2, kick: 'Your sheet', h: 'Copy the row you tested.',
+    sub: 'The task you ran bare and with context in section 04. Copy its columns from your sheet.',
     render: function (st) {
       var R = S.row, msg = h('<p class="note"></p>');
       function tell() {
-        msg.textContent = R.type === 'Unverifiable' ? 'Pick another row. With no verifier, there is nothing to write an eval against.' :
+        msg.textContent = R.type === 'Unverifiable' ? 'With no verifier, there is nothing to write an eval against. Use a row you bucketed Automate or Augment.' :
           R.data === 'None' ? 'No past examples yet. You will write down where ten will come from on the next screen.' : '';
         msg.style.color = R.type === 'Unverifiable' ? 'var(--coral-ink)' : '';
       }
@@ -344,9 +335,9 @@
       track('oh_done', { type: S.row.type, hard: S.hard.filter(filled).length, dims: S.dims.filter(dimDone).length });
       var k = h('<div class="keep"><pre class="copy" data-nolabel></pre>' +
         '<div class="row noprint"><button class="btn go" id="k-copy">Copy as text</button><button class="btn" id="k-print">Print</button><span class="msg" id="k-msg"></span></div>' +
-        '<section><h3>After the practice set</h3><ol class="outcomes" style="margin:0">' + [
-          ['Submit the sheet, with the tested row.', 'Same sheet, same submission.', BASE + 'practice-set#s05', 'Practice set, section 05'],
-          ['Re-score your tested row with this rubric.', 'In section 04 you scored it out of 10 by feel, like the five replies today. Check the hard lines first, then score each quality from 1 to 5.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06'],
+        '<section><h3>Next</h3><ol class="outcomes" style="margin:0">' + [
+          ['Paste this eval into your sheet and submit.', 'Copy as text, then paste it into a new tab of the same sheet. Same submission.', BASE + 'practice-set#s06', 'Practice set, section 06'],
+          ['Re-score your tested row with this rubric.', 'In section 04 you scored it out of 10 by feel, like the five replies at the start. Check the hard lines first, then score each quality from 1 to 5.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06', 'Lecture 10, section 06'],
           ['Grow your one golden pair into ten.', 'Real inputs with the output you would accept, the hard ones included. That is your population.', '/c8/module-2/lecture-03-building-ui/notes#s05', 'Lecture 3, section 05'],
           ['Run the stranger test on your rubric.', 'Hand it to someone outside your field with three outputs. If they cannot score without asking you, sharpen your 1 and 5. Don\'t ask an LLM to write it.', '/c8/module-2/lecture-01-orientation/notes#s09', 'Lecture 1, section 09'],
           ['Check your grader against your judge.', 'Both score the same ten. Aim for within one point on 8 of 10.', null, null],

@@ -116,8 +116,8 @@ var GUIDE_LINKS = {
   l09Rule: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s09',
   l09Aarav: '/c8/module-2/lecture-09-llms-from-first-principles/notes#s10',
   l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
-  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s05',
-  l09OfficeHour: '/c8/module-2/lecture-09-llms-from-first-principles/office-hour',  /* Tue 3 Nov office hour: write the eval for one row of the sheet */
+  l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s06',
+  l09OfficeHour: '/c8/module-2/lecture-09-llms-from-first-principles/office-hour',  /* practice set step 05, self-paced: write the eval for one row of the sheet */
   jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
   delegation: '/c8/delegation-framework/',
   /* Lecture 10 · Tool calling and MCP (both tracks, pages in c8/module-2/lecture-10-tool-calling-and-mcp) */
@@ -749,8 +749,14 @@ GUIDES.L9 = { all: {
      ticks:[
        {id:'tested', t:'Two scores and what was missing, beside the row', link:'l10Practice', linkLabel:'Section 04'}
      ]},
-    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 05',
-     intro:'The sheet, shared, with the tested row, and one line on what surprised you.',
+    {id:'eval', name:'Write the eval for that task', short:'Eval', sub:'Practice set, section 05',
+     intro:'On your own, about 30 minutes: decision, population, hard lines, quality with a 1 and a 5, and the grader.',
+     ticks:[
+       {id:'wrote', t:'Wrote the eval for the tested row', link:'l09OfficeHour', linkLabel:'Write the eval'},
+       {id:'pasted', t:'Pasted it into a new tab of the sheet'}
+     ]},
+    {id:'sub', name:'What to submit', short:'Submit', sub:'Practice set, section 06',
+     intro:'The sheet, shared, with the tested row and its eval, and one line on what surprised you.',
      ticks:[
        {id:'shared', t:'Shared my copy of the sheet', link:'l09Submit', linkLabel:'What to submit'},
        {id:'surprise', t:'One line on the verdict that surprised me'}
@@ -782,7 +788,7 @@ GUIDES.L10 = { all: {
   hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set']]},
   name: 'Test one task from your sheet',
   sub: 'Lecture 10 · 31 October 2026 · both tracks · one step added to the Lecture 9 practice set',
-  due: false,  /* submitted with the L9 sheet; bring it to Tuesday's office hours, 3 Nov */
+  due: false,  /* submitted with the L9 sheet */
   keep: 'More data shrinks hallucination but does not cure it. The bridge to a data source is a deterministic server that speaks JSON and runs requests for the model: function calling.',
   ideas: [
     ['Data is not a cure.', 'Same query, more context: 1, then 5, then 7 out of 10. It still named Zapier.'],
@@ -803,7 +809,7 @@ GUIDES.L10 = { all: {
      ]}
   ],
   actions: [
-    {id:'oh', t:'Bring it to Tuesday\'s office hours, 3 Nov', how:'Your sheet, with the tested row: two scores and what was missing.', link:'l09Submit', linkLabel:'What to submit'}
+    {id:'eval', t:'Then write the eval for that row, on your own', how:'Practice set step 05: turn your score by feel into a check anyone could run. Same sheet, same submission.', link:'l09OfficeHour', linkLabel:'Write the eval'}
   ],
   next: 'Next week we build the reverse call live, for both tracks.',
   read: [

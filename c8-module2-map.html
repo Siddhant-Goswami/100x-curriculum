@@ -1553,8 +1553,8 @@ var NOTES_LINKS = {b1:['wtbHub','Open the workshop pages','The overview and the 
 function notesHTML(s){ var n=NOTES_LINKS[s.id], u=n&&gl(n[0]); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>'+esc(n[1])+'</b><i>'+esc(n[2])+'</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function wtbA1HTML(){ var u=gl('wtbA1'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Read the Assignment 1 brief</b><i>The five steps, the Input-Process-Output card, what to submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>See a worked example: Aarav, Discovery to MVP</b><i>The full coach run, condensed: discovery document and 21-day manual MVP plan</i></span><em aria-hidden="true">→</em></a>' : ''; }
-/* Lecture 9: the Tuesday 3 Nov office hour page, where one row of the practice-set sheet becomes an eval. */
-function ohL9HTML(){ var u=gl('l09OfficeHour'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Office hour, Tue 3 Nov: write the eval for one task</b><i>Take one row of your sheet and write how you will check it</i></span><em aria-hidden="true">→</em></a>' : ''; }
+/* Lecture 9: practice set step 05, self-paced, where one row of the sheet becomes an eval. */
+function ohL9HTML(){ var u=gl('l09OfficeHour'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Practice set, step 05: write the eval for one task</b><i>On your own, about 30 minutes. Turn your tested row into a check anyone can run</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* The hackathon page sits on the hackathon bridge. */
 function hackHTML(){ var u=gl('hackathon'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the hackathon page</b><i>Pick a problem, the five moves, timeline, rules, submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* A lecture that has happened shows one line and four key points from its notes (RECAP in guides.js); the pages hold the rest. */
