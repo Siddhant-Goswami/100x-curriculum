@@ -283,3 +283,9 @@ pre.copy{white-space:pre-wrap;font:13px/1.5 var(--mono);background:var(--bg2);bo
 @media print{.noprint,.wbar,.foot{display:none!important}}
 .field .btn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .stage>.field:first-child,.stage>.layer:first-child{margin-top:16px}
+/* grader step */
+.picks{margin:0 0 8px;gap:8px}
+ul.mine{margin:0 0 14px;padding-left:18px;font-size:14.5px;color:var(--ink2)}
+ul.mine li{margin:0 0 4px}
+.agree.ex .v{text-align:center;padding:6px 2px;border:1px dashed var(--line2);border-radius:6px;color:var(--ink2)}
+.agree .mk{text-align:center}

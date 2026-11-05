@@ -330,33 +330,85 @@
   function needQual() { return S.dims.some(dimDone); }
   function needHard() { return S.hard.some(filled); }
 
-  scr({ id: 'grader', seg: 2, kick: 'The grader', h: 'Who grades each layer, and how will you know they are right?',
+  /* a text box with one-tap answers above it; tapping fills the box, typing edits it */
+  function pickBox(label, obj, key, opts, ph) {
+    var el = box(label, obj, key, ph), inp = $('input', el), row = h('<div class="row picks"></div>');
+    function sync() { $$('button', row).forEach(function (x) { x.setAttribute('aria-pressed', x.textContent === obj[key]); }); }
+    opts.forEach(function (o) {
+      var b = h('<button type="button" class="btn sm">' + esc(o) + '</button>');
+      b.onclick = function () { obj[key] = o; inp.value = o; save(); sync(); refresh(); };
+      row.appendChild(b);
+    });
+    inp.addEventListener('input', sync);
+    el.insertBefore(row, inp); sync();
+    return el;
+  }
+  var L10 = function (sec, t) { return '<a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s' + sec + '">' + t + '</a>'; };
+  var L9N = function (sec, t) { return '<a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s' + sec + '">' + t + '</a>'; };
+
+  scr({ id: 'grader', seg: 2, kick: 'The grader', h: 'Who checks each layer?',
+    sub: 'Tap one, or type your own.',
     render: function (st) {
-      if (needQual() && !filled(S.grader.qual) && S.row.type === 'Judgment') { S.grader.qual = (S.row.verifier || '').split('·')[0].trim(); save(); }
-      if (needHard()) st.appendChild(box('Hard lines are checked by', S.grader, 'hard', 'A script, a formula, or a checklist you tick'));
-      if (needQual()) st.appendChild(box('Quality is scored by', S.grader, 'qual', 'Your judge: manager, client, or you with this rubric'));
-      if (needQual()) {
-        st.appendChild(h('<div class="reveal"><p><b>Measure the grader before you trust it.</b> Score ten past outputs yourself with your rubric. Ask your judge to score the same ten. Count how often you are within one point. Aim for 8 of 10.</p><p class="note">Optional for now. Type the scores here when you have them, or leave it blank.</p></div>'));
-        var A = S.agree, g = h('<div class="agree"></div>'), res = h('<p class="note"></p>');
-        function calc() {
-          var n = 0, ok = 0;
-          for (var k = 0; k < 10; k++) { var a = +A.a[k], b = +A.b[k]; if (a >= 1 && a <= 5 && b >= 1 && b <= 5) { n++; if (Math.abs(a - b) <= 1) ok++; } }
-          A.n = n; A.ok = ok; save();
-          res.textContent = n ? ok + ' of ' + n + ' within one point · ' + Math.round(100 * ok / n) + '%' + (n >= 10 ? (ok >= 8 ? '. Good enough to trust.' : '. Below 8 of 10: sharpen your 1 and 5, then score again.') : '') : '';
-          $$('.mk', g).forEach(function (m, k) { var a = +A.a[k], b = +A.b[k]; m.textContent = a && b ? (Math.abs(a - b) <= 1 ? '✓' : '✗') : ''; m.className = 'mk ' + (a && b ? (Math.abs(a - b) <= 1 ? 'ok' : 'no') : ''); });
-        }
-        [['a', 'You'], ['b', 'Your judge']].forEach(function (r) {
-          g.appendChild(h('<span>' + r[1] + '</span>'));
-          for (var k = 0; k < 10; k++) (function (k) {
-            var i = h('<input type="text" inputmode="numeric" maxlength="1" aria-label="' + r[1] + ', output ' + (k + 1) + '">'); i.value = A[r[0]][k] || '';
-            i.oninput = function () { i.value = i.value.replace(/[^1-5]/g, ''); A[r[0]][k] = i.value; calc(); };
-            g.appendChild(i);
-          })(k);
-        });
-        g.appendChild(h('<span></span>')); for (var k = 0; k < 10; k++) g.appendChild(h('<span class="mk"></span>'));
-        st.appendChild(g); st.appendChild(res); calc();
+      if (filled(S.row.verifier)) st.appendChild(h('<p class="note" style="margin-top:16px">Your sheet says: <i>' + esc(S.row.verifier) + '</i></p>'));
+      st.appendChild(h('<details class="ex" open><summary>Example: the bill replies from part 1</summary>' +
+        '<div class="layer det" style="margin-top:10px"><h3>Hard lines: a few lines of code</h3><p style="margin:0">Refund is never more than the disputed amount.</p></div>' +
+        '<div class="layer prob"><h3>Quality: the team lead</h3><p style="margin:0">Says what happens next, scored 1 to 5.</p></div></details>'));
+      if (needHard()) {
+        var H = h('<div class="layer det"><h3>Hard lines</h3><p class="who">pass or fail · the same answer every time</p><ul class="mine">' +
+          S.hard.filter(filled).map(function (x) { return '<li>Pass when ' + esc(x.trim()) + '</li>'; }).join('') + '</ul></div>');
+        H.appendChild(pickBox('Checked by', S.grader, 'hard', ['A formula in my sheet', 'A few lines of code', 'A checklist I tick'], 'Or type your own'));
+        H.appendChild(h('<p class="note" style="margin:0">Not an LLM. A rule needs the same answer every time. ' + L10('13', 'Lecture 10') + '</p>'));
+        st.appendChild(H);
       }
-    }, ready: function () { return (!needHard() || filled(S.grader.hard)) && (!needQual() || filled(S.grader.qual)); }, hint: 'Name who grades each layer.' });
+      if (needQual()) {
+        var Q = h('<div class="layer prob"><h3>Quality</h3><p class="who">scored 1 to 5 · needs judgment</p><ul class="mine">' +
+          S.dims.filter(dimDone).map(function (d) { return '<li><b>' + esc(d.name.trim()) + '</b>: 1 = ' + esc(d.one.trim()) + '; 5 = ' + esc(d.five.trim()) + '</li>'; }).join('') + '</ul></div>');
+        Q.appendChild(pickBox('Scored by', S.grader, 'qual', ['Me, with this rubric', 'My manager or lead', 'The client', 'An LLM judge with this rubric'], 'Or type your own, e.g. Priya, our senior designer'));
+        Q.appendChild(h('<p class="note" style="margin:0">Whose idea of good counts? ' + L9N('07', 'Lecture 9') + '</p>'));
+        st.appendChild(Q);
+      }
+    }, ready: function () { return (!needHard() || filled(S.grader.hard)) && (!needQual() || filled(S.grader.qual)); }, hint: 'Tap or type who checks each layer.' });
+
+  scr({ id: 'check', seg: 2, kick: 'Check the grader', h: 'You score ten outputs. An LLM scores the same ten. Compare.',
+    sub: 'Optional. Skip it if you don\'t have ten outputs yet.',
+    render: function (st) {
+      if (!needQual()) {
+        st.appendChild(reveal('<p><b>All hard lines: nothing to compare.</b> Test your check once on an output you know fails.</p>'));
+        return;
+      }
+      var ex = h('<div class="agree ex" aria-label="Example"></div>'), EA = [4, 2, 5, 3, 4, 1, 3, 5, 2, 4], EB = [4, 3, 3, 3, 5, 1, 4, 5, 4, 4];
+      [['You', EA], ['LLM', EB]].forEach(function (r) { ex.appendChild(h('<span>' + r[0] + '</span>')); r[1].forEach(function (v) { ex.appendChild(h('<span class="v">' + v + '</span>')); }); });
+      ex.appendChild(h('<span></span>')); EA.forEach(function (v, k) { var ok = Math.abs(v - EB[k]) <= 1; ex.appendChild(h('<span class="mk ' + (ok ? 'ok' : 'no') + '">' + (ok ? '✓' : '✗') + '</span>')); });
+      st.appendChild(h('<p class="lab" style="margin:20px 0 6px">Example: 8 of 10 within one point. Trust the LLM.</p>')); st.appendChild(ex);
+      st.appendChild(h('<p class="lab" style="margin:24px 0 6px">Yours</p>'));
+      var A = S.agree, g = h('<div class="agree"></div>'), res = h('<p class="note"></p>');
+      function calc() {
+        var n = 0, ok = 0;
+        for (var k = 0; k < 10; k++) { var a = +A.a[k], b = +A.b[k]; if (a >= 1 && a <= 5 && b >= 1 && b <= 5) { n++; if (Math.abs(a - b) <= 1) ok++; } }
+        A.n = n; A.ok = ok; save();
+        res.textContent = n ? ok + ' of ' + n + ' within one point' + (n >= 10 ? (ok >= 8 ? '. Trust the LLM.' : '. Under 8: rewrite your 1 and 5, then try again.') : '') : '';
+        $$('.mk', g).forEach(function (m, k) { var a = +A.a[k], b = +A.b[k]; m.textContent = a && b ? (Math.abs(a - b) <= 1 ? '✓' : '✗') : ''; m.className = 'mk ' + (a && b ? (Math.abs(a - b) <= 1 ? 'ok' : 'no') : ''); });
+      }
+      [['a', 'You'], ['b', 'LLM']].forEach(function (r) {
+        g.appendChild(h('<span>' + r[1] + '</span>'));
+        for (var k = 0; k < 10; k++) (function (k) {
+          var i = h('<input type="text" inputmode="numeric" maxlength="1" aria-label="' + r[1] + ', output ' + (k + 1) + '">'); i.value = A[r[0]][k] || '';
+          i.oninput = function () { i.value = i.value.replace(/[^1-5]/g, ''); A[r[0]][k] = i.value; calc(); };
+          g.appendChild(i);
+        })(k);
+      });
+      g.appendChild(h('<span></span>')); for (var k = 0; k < 10; k++) g.appendChild(h('<span class="mk"></span>'));
+      st.appendChild(g); st.appendChild(res); calc();
+      {
+        var dims = S.dims.filter(dimDone), P = 'You are scoring one output for this task: ' + (S.row.task || '') + '.\n\nScore each line from 1 to 5, using only these ends:\n' +
+          dims.map(function (d) { return '- ' + d.name.trim() + ': 1 = ' + d.one.trim() + '; 5 = ' + d.five.trim(); }).join('\n') +
+          '\n\nReply with one line per item: name, score, one reason.\n\nOutput to score:\n[paste one output here]';
+        var d = h('<details class="ex" style="margin-top:20px"><summary>Prompt for the LLM</summary><pre class="copy" data-nolabel></pre><div class="row"><button class="btn sm" type="button">Copy prompt</button><span class="note" style="margin:0"></span></div><p class="note">One output per new chat.</p></details>');
+        $('pre', d).textContent = P;
+        $('button', d).onclick = function () { var m = $('span.note', d); (navigator.clipboard ? navigator.clipboard.writeText(P) : Promise.reject()).then(function () { m.textContent = 'Copied.'; }, function () { m.textContent = 'Select the text above and copy it.'; }); };
+        st.appendChild(d);
+      }
+    }, ready: function () { return true; } });
 
   function asText() {
     var R = S.row, L = [];
@@ -387,7 +439,7 @@
         '<section><h3>Optional, when you have time</h3><ol class="outcomes" style="margin:0">' + [
           ['Grow your one golden pair into ten.', 'Real inputs with the output you would accept, the hard ones included. That is your population.', '/c8/module-2/lecture-03-building-ui/notes#s05', 'Lecture 3, section 05'],
           ['Run the stranger test on your rubric.', 'Hand it to someone outside your field with three outputs. If they cannot score without asking you, sharpen your 1 and 5. Don\'t ask an LLM to write it.', '/c8/module-2/lecture-01-orientation/notes#s09', 'Lecture 1, section 09'],
-          ['Check your grader against your judge.', 'Both score the same ten. Aim for within one point on 8 of 10.', null, null],
+          ['Check your grader.', 'You and an LLM score the same ten. 8 of 10 within one point: trust it.', null, null],
           ['Put the hard lines on the deterministic side.', 'A formula or a few lines of code, not a sentence in a prompt. The check you can\'t afford to get wrong shouldn\'t be a prediction.', '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s13', 'Lecture 10, section 13'],
           ['Keep the eval for the build.', 'Next we build the bridge that brings the missing context to the model. Your eval is how you will know it worked: verifier, threshold, improve, re-score, stop.', '/c8/module-2/lecture-01-orientation/notes#s08', 'Lecture 1, section 08']
         ].map(li).join('') + '</ol></section>' +
