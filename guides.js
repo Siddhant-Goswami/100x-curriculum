@@ -785,7 +785,7 @@ GUIDES.L9 = { all: {
 }};
 
 GUIDES.L10 = { all: {
-  hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set']]},
+  hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set'],['l09OfficeHour','Write the eval']]},
   name: 'Test one task from your sheet',
   sub: 'Lecture 10 · 31 October 2026 · both tracks · one step added to the Lecture 9 practice set',
   due: false,  /* submitted with the L9 sheet */
