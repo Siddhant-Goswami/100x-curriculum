@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Office Hour: Your Sheet Is the Data | 100xEngineers</title>
+<meta name="description" content="Recap of the Tuesday 3 Nov 2026 office hour, after Lectures 9 and 10. Why AI labs now need experts' judgment more than more internet text, why that work has the same shape as your Lecture 9 sheet, which rows matter, and why the next step is writing the eval.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read table.map{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.map th,body.read table.map td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.map th{font-weight:500;color:var(--ink2)}
+body.read .o{color:var(--det-ink);font-weight:500}
+body.read .p{color:var(--prob-ink);font-weight:500}
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l10-office-hour" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L10">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 10 pages"><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/">Overview</a><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Notes</a><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04">Practice set</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Office hour · Tue 3 Nov 2026 · After Lectures 9 and 10 · Both tracks</p>
+  <h1>Your sheet is the data</h1>
+  <p class="dek">Why the Lecture 9 sheet is the same work AI labs now pay experts to do, and why the next step is writing the eval.</p>
+</div>
+
+<p>Missed the office hour? This is what mattered from it, in ten minutes. It assumes you have started the <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">practice set</a>: your atomic tasks, each with success criteria, a verifier and a verification type, and one row tested on the model.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What a lab needs</h2>
+<p>Every AI lab spends on three things. Two are out of reach for most of us. One is not.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Three boxes. Compute: GPUs, the biggest spend, out of reach. Algorithms: research, years of work. Data: the one you can act on now, highlighted.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="40" width="210" height="130" rx="10"/>
+    <rect class="f-card" x="275" y="40" width="210" height="130" rx="10"/>
+    <rect class="f-act" x="520" y="40" width="210" height="130" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="135" y="84" class="m c-ink">compute</text>
+    <text x="135" y="116" class="xs">GPUs, data centres</text>
+    <text x="135" y="142" class="xs c-mute">the biggest spend</text>
+    <text x="380" y="84" class="m c-ink">algorithms</text>
+    <text x="380" y="116" class="xs">research</text>
+    <text x="380" y="142" class="xs c-mute">years, often a PhD</text>
+    <text x="625" y="84" class="m c-act">data</text>
+    <text x="625" y="116" class="xs">what experts know</text>
+    <text x="625" y="142" class="xs c-mute">yours, today</text>
+    <text x="135" y="210" class="xs c-mute">out of reach</text>
+    <text x="380" y="210" class="xs c-mute">a long road</text>
+    <text x="625" y="210" class="xs c-act">where you can play</text>
+  </g>
+</svg>
+<figcaption>The three pillars of an AI lab, from the office-hour whiteboard.</figcaption>
+</figure>
+<p>The labs say the open internet is largely used up (Ilya Sutskever, December 2024: "we've achieved peak data"), and the walled-off parts are being licensed (Reddit's deal with OpenAI is one). What is still scarce is <b>expert judgment on real tasks</b>: what a good answer is, and where the model's answer goes wrong.</p>
+<p>That work has moved. A few years ago an expert wrote one prompt and one ideal answer. Models can now produce those themselves by searching. Where they still fail is <b>long tasks</b>: a lawyer working with a model for days, where it drifts five times along the way. Someone who knows the domain has to say where, and why.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>It is the sheet you are filling</h2>
+<p>Expert-work listings on data platforms such as Mercor read like this, for a lawyer: write a problem from a matter you worked on, with the facts and the reference answer; grade a model's draft against it; flag where the model states the law correctly and would still lose. The engineering listing is the same shape: grade model-written code, and flag where it passes review and would fail in production.</p>
+<p>Put that next to what you have already done:</p>
+<table class="map">
+  <thead><tr><th>The listing asks for</th><th>You did it as</th><th>Where you met it</th></tr></thead>
+  <tbody>
+    <tr><td>A real problem from your work</td><td>An atomic task row</td><td><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02">Practice set, 02</a></td></tr>
+    <tr><td>What a correct answer must do</td><td>Success criteria</td><td><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02">Practice set, 02</a></td></tr>
+    <tr><td>The reference answer</td><td>The golden pair, written before the run</td><td><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10, 06</a></td></tr>
+    <tr><td>Grade the model's attempt</td><td>Your bare and with-context scores</td><td><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04">Practice set, 04</a></td></tr>
+    <tr><td>Say what it got wrong and why</td><td>What was missing, beside the row</td><td><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s04">Lecture 10, 04</a></td></tr>
+  </tbody>
+</table>
+<p>In Lecture 10 we did exactly this on one question, "Which track should I choose?": ideal input, ideal output, the model's output, and the difference naming the cause. Repeat that for one task, 100 or 200 times, and it becomes a <b>golden dataset</b> for that task.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Which rows matter</h2>
+<ul>
+  <li><span class="o">Rule</span> rows: same input, same output. Automate them with a script or a formula. No model needed, and no lab needs your help with them.</li>
+  <li><span class="p">Judgment</span> rows: this is where the value is. A rule cannot say whether the output is good; an expert can.</li>
+  <li><b>Unverifiable</b> rows: leave them for now. They come back when we build agents.</li>
+</ul>
+<p>So from your sheet, pick one or two Judgment rows that move your North Star. Those are the ones worth turning into data.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Two ways to scale what you know</h2>
+<p>Either way, step one is the same: know the one narrow task, and how you would check it.</p>
+<ol>
+  <li><b>Build your own.</b> Fine-tune a small open model on one narrow, verifiable task. Coinbase reported doing this for fraud prevention and beating frontier models on that task at lower cost. Note the scope: one task, not "replace Claude". It takes money, data and patience, and few people finish. We fine-tune a first model later in the course.</li>
+  <li><b>Partner first.</b> Turn one or two Judgment tasks into a dataset and work with a lab or a data vendor. You learn the whole cycle, and get paid for it, before you build anything of your own.</li>
+</ol>
+<p>Whichever you choose, nobody can do either without the sheet: the task, its success criteria, its verifier, and real examples.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>From the Q&amp;A</h2>
+<ul>
+  <li><b>"My work is research. How do I verify that?"</b> "Research" is not one task; it is closer to a North Star. Break it into atomic tasks (estimating the market size, for example) and write a verifier for each. The method is the one from <a href="/c8/module-2/what-to-build/assignment-1">Assignment 1</a>: observe, hypothesise, test.</li>
+  <li><b>"I'm not a domain expert."</b> Ask why you were hired and not let go: the work that only you do well in your role. That is the expertise. Write those tasks down.</li>
+  <li><b>"Won't the labs stop needing experts?"</b> No. The world keeps changing, and a model with no fresh data goes stale the way a genius from 50 years ago would be lost today. The bar for good work keeps rising too.</li>
+  <li><b>"Should I start collecting data now?"</b> First talk to whoever would use it, and ask what shape they need. Data nobody asked for is effort with no buyer.</li>
+</ul>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Next: write the eval</h2>
+<p>Look at the score you gave your tested row in step 04. It was out of 10, and it was by feel. Give the same output to someone else and they might give it a 4 where you gave it a 7.</p>
+<p>A lab cannot use a score like that, and neither can you. The grader in that listing is paid to apply a check that two people would apply the same way. Writing that check is the next step: the decision, the hard lines, what a 1 and a 5 look like, and who grades.</p>
+<p><a class="btn" href="/c8/module-2/lecture-09-llms-from-first-principles/office-hour">Write the eval for your tested row</a></p>
+<p>On your own, about 30 minutes. It goes in a new tab of the same sheet, same submission.</p>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>What a model still lacks is an expert's judgment on real tasks, written down: the task, what success means, how to check it, and real examples. That is your Lecture 9 sheet. The eval is what makes your judgment usable by anyone else.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/office-hour">Write the eval</a></li>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set: Verify your own job</a></li>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9 notes</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10 notes</a></li>
+  <li><a href="/#L10">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Office hour, 3 Nov 2026</span><a href="/#L10">Curriculum map</a><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/">All Lecture 10 pages</a></div></footer>
+</body>
+</html>

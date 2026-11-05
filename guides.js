@@ -128,6 +128,7 @@ var GUIDE_LINKS = {
   l10Formula: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s04',
   l10Proposals: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s05',
   l10Reverse: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12',
+  l10OfficeHour: '/c8/module-2/lecture-10-tool-calling-and-mcp/office-hour',  /* recap of the Tue 3 Nov office hour, bridges the sheet to Write the eval */
   groqPlay: 'https://console.groq.com/playground',
   l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
   l07Police: '/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s07',
@@ -785,7 +786,7 @@ GUIDES.L9 = { all: {
 }};
 
 GUIDES.L10 = { all: {
-  hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set'],['l09OfficeHour','Write the eval']]},
+  hub: {link:'l10Hub', title:'Open the Lecture 10 pages', sub:'The overview, the notes with the whiteboard, and the practice set', more:[['l10Notes','Notes'],['l10Practice','Practice set'],['l10OfficeHour','Office hour recap'],['l09OfficeHour','Write the eval']]},
   name: 'Test one task from your sheet',
   sub: 'Lecture 10 · 31 October 2026 · both tracks · one step added to the Lecture 9 practice set',
   due: false,  /* submitted with the L9 sheet */
