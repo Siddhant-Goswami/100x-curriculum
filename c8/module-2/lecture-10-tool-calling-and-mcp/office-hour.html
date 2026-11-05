@@ -56,10 +56,10 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 
 <p>Missed the office hour? This is what mattered from it, in ten minutes. It assumes you have started the <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">practice set</a>: your atomic tasks, each with success criteria, a verifier and a verification type, and one row tested on the model.</p>
 
-<section class="s" id="s01"><h2><span class="n">01</span>What a lab needs</h2>
-<p>Every AI lab spends on three things. Two are out of reach for most of us. One is not.</p>
+<section class="s" id="s01"><h2><span class="n">01</span>What every lab needs from you</h2>
+<p>Every AI lab runs on three things: compute, algorithms and data. The labs buy compute and hire researchers for algorithms. The data that matters now, what experts know about real work, can only come from the people who do that work. That is you, and the sheet you are filling is where it starts.</p>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Three boxes. Compute: GPUs, the biggest spend, out of reach. Algorithms: research, years of work. Data: the one you can act on now, highlighted.">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Three boxes. Compute: GPUs and data centres, which the labs buy. Algorithms: research, done by the labs' researchers. Data: what experts know, which comes from you, highlighted.">
   <g class="ln" filter="url(#wob)">
     <rect class="f-card" x="30" y="40" width="210" height="130" rx="10"/>
     <rect class="f-card" x="275" y="40" width="210" height="130" rx="10"/>
@@ -68,16 +68,14 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <g class="tx">
     <text x="135" y="84" class="m c-ink">compute</text>
     <text x="135" y="116" class="xs">GPUs, data centres</text>
-    <text x="135" y="142" class="xs c-mute">the biggest spend</text>
+    <text x="135" y="142" class="xs c-mute">the labs buy it</text>
     <text x="380" y="84" class="m c-ink">algorithms</text>
     <text x="380" y="116" class="xs">research</text>
-    <text x="380" y="142" class="xs c-mute">years, often a PhD</text>
+    <text x="380" y="142" class="xs c-mute">the labs' researchers</text>
     <text x="625" y="84" class="m c-act">data</text>
     <text x="625" y="116" class="xs">what experts know</text>
-    <text x="625" y="142" class="xs c-mute">yours, today</text>
-    <text x="135" y="210" class="xs c-mute">out of reach</text>
-    <text x="380" y="210" class="xs c-mute">a long road</text>
-    <text x="625" y="210" class="xs c-act">where you can play</text>
+    <text x="625" y="142" class="xs c-mute">comes from you</text>
+    <text x="625" y="210" class="xs c-act">start with your sheet</text>
   </g>
 </svg>
 <figcaption>The three pillars of an AI lab, from the office-hour whiteboard.</figcaption>
@@ -114,7 +112,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <section class="s" id="s04"><h2><span class="n">04</span>Two ways to scale what you know</h2>
 <p>Either way, step one is the same: know the one narrow task, and how you would check it.</p>
 <ol>
-  <li><b>Build your own.</b> Fine-tune a small open model on one narrow, verifiable task. <a href="https://x.com/brian_armstrong/status/2109412046244913643" target="_blank" rel="noopener">Coinbase reported doing this</a> for fraud prevention and beating frontier models on that task at lower cost. Note the scope: one task, not "replace Claude". It takes money, data and patience, and few people finish. We fine-tune a first model later in the course.</li>
+  <li><b>Build your own.</b> Fine-tune a small open model on one narrow, verifiable task. <a href="https://x.com/brian_armstrong/status/2109412046244913643" target="_blank" rel="noopener">Coinbase reported doing this</a> for fraud prevention and beating frontier models on that task at lower cost. Note the scope: one task, not "replace Claude". It is the bigger build, and you will fine-tune your first model later in this course.</li>
   <li><b>Partner first.</b> Turn one or two Judgment tasks into a dataset and work with a lab or a data vendor. You learn the whole cycle, and get paid for it, before you build anything of your own.</li>
 </ol>
 <p>Whichever you choose, nobody can do either without the sheet: the task, its success criteria, its verifier, and real examples.</p>
