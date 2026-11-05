@@ -8,7 +8,7 @@ const { privateKey, publicKey } = generateKeyPairSync('rsa', { modulusLength: 20
 const jwk = Object.assign(publicKey.export({ format: 'jwk' }), { kid: 'k1', alg: 'RS256' });
 function token(o) {
   const b = x => Buffer.from(JSON.stringify(x)).toString('base64url');
-  const h = b({ alg: 'RS256', kid: 'k1' }), p = b(Object.assign({ aud: 'cid', iss: 'https://accounts.google.com', exp: Date.now() / 1000 + 600, email_verified: true, sub: '123' }, o));
+  const h = b({ alg: 'RS256', kid: 'k1' }), p = b(Object.assign({ aud: 'cid', iss: 'https://accounts.google.com', exp: Date.now() / 1000 + 600, email_verified: true, sub: '123', email: 'learner@gmail.com' }, o));
   return h + '.' + p + '.' + createSign('RSA-SHA256').update(h + '.' + p).sign(privateKey).toString('base64url');
 }
 function resp(cmd) { return new Promise((ok, no) => { const s = net.connect(6399); let buf = '';
@@ -48,7 +48,9 @@ r = await call('?step=login', { credential: token({ email_verified: false }) });
 r = await call('?step=login', { credential: token({}).slice(0, -4) + 'AAAA' }); ok(r.status === 401, 'bad signature rejected');
 r = await call('?step=login', { credential: token({}) }); const ck = r.setCookie.split(';')[0]; ok(r.status === 200 && /HttpOnly/.test(r.setCookie), 'login sets cookie');
 ok(redisCmds === 0, 'sign-in and rejections cost 0 Redis commands');
-r = await call('?step=me', null, { method: 'GET', cookie: ck }); ok(r.body.signed_in, 'me: signed in');
+r = await call('?step=me', null, { method: 'GET', cookie: ck }); ok(r.body.signed_in && r.body.email === 'learner@gmail.com', 'me: signed in, shows email');
+const parts = ck.split('.'); parts[2] = Buffer.from('boss@gmail.com').toString('base64url');
+r = await call('?step=me', null, { method: 'GET', cookie: parts.join('.') }); ok(!r.body.signed_in, 'swapped email in cookie -> signed out');
 r = await call('', tasks(1), { cookie: ck.replace(/.$/, 'x') }); ok(r.status === 401, 'forged cookie -> 401');
 
 const t5 = tasks(5); let before = jevCalls, rc = redisCmds;

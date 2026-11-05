@@ -172,11 +172,13 @@ export async function verifyGoogle(token) {
     return body;
   } catch (e) { return null; }
 }
-/* df_s = uid.expiry.hmac; uid is a hash of Google's user id, so no name or email is kept anywhere */
+/* df_s = uid.expiry.email.hmac. uid is a hash of Google's user id; the email rides only in the learner's own cookie
+   so the page can say who is signed in. Nothing about the person is stored on our side. */
 async function session(request) {
-  const m = (request.headers.get('cookie') || '').match(/(?:^|;\s*)df_s=([a-f0-9]+)\.(\d+)\.([\w-]+)/);
+  const m = (request.headers.get('cookie') || '').match(/(?:^|;\s*)df_s=([a-f0-9]+)\.(\d+)\.([\w-]*)\.([\w-]+)/);
   if (!m || !SECRET || +m[2] * 1000 < Date.now()) return null;
-  return (await hmac(m[1] + '.' + m[2])) === m[3] ? m[1] : null;
+  if ((await hmac(m[1] + '.' + m[2] + '.' + m[3])) !== m[4]) return null;
+  return { uid: m[1], email: Buffer.from(m[3], 'base64url').toString() };
 }
 const cookie = (v, age) => 'df_s=' + v + '; Path=/api/verify; Max-Age=' + age + '; HttpOnly; Secure; SameSite=Lax';
 
@@ -270,7 +272,7 @@ export async function handle(request) {
   if (!sameSite(request)) return reply(403, { error: 'Not from this site.' });
   if (request.method === 'OPTIONS') return new Response(null, { status: 204 });
   const step = new URL(request.url).searchParams.get('step');
-  if (request.method === 'GET' && step === 'me') return reply(200, { signed_in: !!(await session(request)), client_id: GOOGLE_ID || null });
+  if (request.method === 'GET' && step === 'me') { const me = await session(request); return reply(200, { signed_in: !!me, email: me ? me.email : null, client_id: GOOGLE_ID || null }); }
   if (request.method !== 'POST') return reply(405, { error: 'POST only.' });
   const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() || 'anon';
   const wait = rateHit(ip);
@@ -285,11 +287,12 @@ export async function handle(request) {
     const g = await verifyGoogle(body.credential);
     if (!g) return reply(401, { error: 'That sign-in did not work. Try again.' });
     const uid = (await sha('google:' + g.sub)).slice(0, 24), exp = Math.floor(Date.now() / 1000) + SESSION_S;
+    const v = uid + '.' + exp + '.' + Buffer.from(String(g.email || '')).toString('base64url');
     console.log(JSON.stringify({ step: 'login' }));
-    return reply(200, { ok: true }, { 'set-cookie': cookie(uid + '.' + exp + '.' + (await hmac(uid + '.' + exp)), SESSION_S) });
+    return reply(200, { ok: true, email: g.email || '' }, { 'set-cookie': cookie(v + '.' + (await hmac(v)), SESSION_S) });
   }
 
-  let uid = await session(request);
+  let uid = ((await session(request)) || {}).uid;
   if (!uid && EVAL_KEY && request.headers.get('x-eval-key') === EVAL_KEY) uid = 'eval';
   if (!uid) return reply(401, { signin: true, error: 'Sign in to sort with Jev.' });
   const key = process.env.TYPESAFE_API_KEY, off = !key || process.env.JEV_OFF === '1' || !R_URL || !R_TOKEN;

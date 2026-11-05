@@ -61,9 +61,12 @@ body.read section.s .you{background:var(--bg2);border-radius:10px;padding:14px 1
 .sugg .quick button{text-align:left}
 .sortrow{margin:18px 0 6px}
 .sortrow .muted,.ckmsg{font-size:14px}
-.priv{font-size:13.5px;margin:0 0 1em}
+.who{font-size:13.5px;margin:0 0 1em}.who b{font-weight:600;color:var(--ink)}
+.who .lnk{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;cursor:pointer}
+.who .fn,.signin .fn{text-decoration:none;font-weight:600;padding:0 2px}
+.fnote{font-size:14.5px;color:var(--ink2)}.fnote:target{background:var(--card);outline:1.5px solid var(--fl);border-radius:8px;padding:8px 10px}
 .signin{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;border:1.5px solid var(--fl);border-radius:10px;background:var(--card);padding:14px 16px;margin:0 0 14px}
-.signin p{flex:1 1 100%;margin:0;font-size:14.5px}.signin .gbtn{min-height:40px}.signin .gerr{font-size:13.5px}.signin .gerr:empty{display:none}
+.signin p{flex:1 1 100%;margin:0;font-size:15px}.signin .gbtn{min-height:40px}.signin .gerr{font-size:13.5px}.signin .gerr:empty{display:none}
 .ckrow{display:grid;grid-template-columns:22px 1fr;gap:6px 8px;padding:14px 0;border-bottom:1px solid var(--line)}
 .ckrow>*:not(.n){grid-column:2}
 .ckrow b{font-weight:500}
@@ -249,7 +252,7 @@ details.words summary{cursor:pointer}
     <div class="btnrow"><button type="button" class="btn ghost" id="addRow">+ Add a task</button><button type="button" class="btn ghost" id="onet" hidden>Add the standard tasks for this job</button></div>
     <div class="sugg" id="suggW" hidden><p class="h">Suggestions for your job. Tap one to add it, then edit it to match your week.</p><div class="quick add" id="sugg"></div></div>
     <div class="btnrow sortrow"><button type="button" class="btn" id="sort">Can I verify these?</button><span class="muted" id="sortMsg" aria-live="polite"></span></div>
-    <p class="muted priv">Your tasks are sorted by Jev, an AI model from TypeSafe that reads each one and asks whether it can be checked. This page doesn't store them, and TypeSafe doesn't train on them. Checking with Jev asks you to sign in with Google once.</p>
+    <p class="muted who" data-who></p>
   </div>
 </section>
 
@@ -266,6 +269,7 @@ details.words summary{cursor:pointer}
     <p>For an <span class="chipd det"></span>amber task, write the rule a program could run. For a <span class="chipd prob"></span>violet one, write up to three criteria that two reviewers would apply the same way. Press Test and Jev checks that each verifier is specific enough to use. A violet task stays with you until its criteria pass.</p>
     <div class="panel" id="ck" data-nolabel></div>
     <div class="btnrow sortrow"><button type="button" class="btn" id="testCk">Test my verifiers</button><span class="muted ckmsg" id="ckMsg" aria-live="polite"></span></div>
+    <p class="muted who" data-who></p>
   </div>
 </section>
 
@@ -327,6 +331,7 @@ details.words summary{cursor:pointer}
 
 <section class="s" id="sources">
   <h2>Sources</h2>
+  <p class="fnote" id="about-jev"><b>*</b> Jev is an AI model from TypeSafe. It reads each task and asks whether it can be checked, and TypeSafe doesn't train on your tasks. Jev is paid, so checking needs a Google login, and each person gets 60 checks a day. Your email stays in your browser's sign-in cookie. We keep only a one-way code of your account, and Jev's answers for 30 days so the same task isn't paid for twice. <a href="/privacy">Privacy</a></p>
   <details class="words"><summary>How the sort works, and where the data comes from</summary>
   <dl>
     <div><dt>Sorting</dt><dd>Each task goes to <a href="https://docs.typesafe.ai" target="_blank" rel="noopener">TypeSafe's Jev 1.13</a> (pinned to jev-1.13.0) with seven narrow questions: the three-bucket question asked twice with the options in opposite orders, then whether a fixed rule could check it, whether criteria could be written, whether it happens live, by hand or under a signature, whether AI could reach the inputs, and whether a mistake could be undone. The page's code combines the answers; when they disagree or sit near the middle, it asks you instead of guessing. Each verifier you write goes back to Jev to test whether it is a rule, clear criteria, and about the task. On 300 labelled tasks from software engineers, founders, management consultants and IT services staff, the sort matches the label 96% of the time (macro-F1 0.96), keeps 92% of the tasks that should stay with you, and asks you a question on 3%; verifiers you write are judged right 97% of the time (19 Oct 2026). Jev reads literally and can be wrong: override any colour when you know better.</dd></div>
@@ -533,7 +538,7 @@ details.words summary{cursor:pointer}
         '<button type="button" class="x" data-x="'+i+'" aria-label="Remove task '+(i+1)+'">×</button>'+(t.t.trim()&&PER[t.f]<1?'<p class="hint">Repeats rarely: setup may cost more than it saves.</p>':'')+res+asks+'</div>'}).join('');
     $('#addRow').disabled=tasks.length>=MAX;
     var todo=tasks.filter(function(t){return t.t.trim()&&!t.b}).length, n=tasks.filter(function(t){return t.t.trim()}).length;
-    $('#sort').textContent=todo&&todo<n?'Check '+plural(todo,'new task','new tasks'):n&&!todo?'Check again':'Can I verify these?';
+    $('#sort').textContent=sortLabel();
     $('#sort').disabled=!n;
     suggest();
   }
@@ -581,17 +586,36 @@ details.words summary{cursor:pointer}
     if(gsiQ)return gsiQ.push(cb);gsiQ=[cb];var done=function(bad){var q=gsiQ;gsiQ=null;q.forEach(function(f){f(bad)})};
     var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onerror=function(){done(1)};
     s.onload=function(){var n=0,t=setInterval(function(){if(ready()||++n>80){clearInterval(t);done(!ready())}},100)};document.head.appendChild(s)}
-  function signin(row,retry,byHandAll){
+  /* who is signed in: GET ?step=me reads our cookie and costs no Jev or Redis calls */
+  var ME=null,meP=null;
+  function getMe(){return meP||(meP=fetch(API+'?step=me').then(function(r){return r.json()}).then(function(d){ME=d;authUI();return d}).catch(function(){ME={signed_in:false};authUI();return ME}))}
+  function authUI(){
+    var inn=ME&&ME.signed_in;
+    document.querySelectorAll('[data-who]').forEach(function(p){
+      p.innerHTML=!ME?'':inn?'Signed in as <b>'+esc(ME.email||'your Google account')+'</b> · <button type="button" class="lnk" data-out>Sign out</button> · Jev does the checking<a class="fn" href="#about-jev" aria-label="About Jev">*</a>'
+        :'Jev, a paid AI model, does the checking, so you log in with Google once.<a class="fn" href="#about-jev" aria-label="About Jev">*</a>'});
+    $('#testCk').textContent=ME&&!inn?'Log in to test the verifiers':'Test my verifiers';
+    $('#sort').textContent=sortLabel();
+  }
+  function sortLabel(){
+    var todo=tasks.filter(function(t){return t.t.trim()&&!t.b}).length, n=tasks.filter(function(t){return t.t.trim()}).length;
+    return ME&&!ME.signed_in?'Log in to check the tasks':todo&&todo<n?'Check '+plural(todo,'new task','new tasks'):n&&!todo?'Check again':'Can I verify these?'}
+  document.addEventListener('click',function(e){if(!e.target.closest('[data-out]'))return;
+    post('?step=logout',{}).then(function(){ME={signed_in:false,client_id:ME&&ME.client_id};meP=Promise.resolve(ME);
+      if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();authUI()})});
+  getMe();
+  function signin(row,retry,byHandAll,what){
+    if(ME&&ME.signed_in){ME.signed_in=false;authUI()} /* the cookie ran out */
     var box=row.nextElementSibling;if(!box||!box.classList.contains('signin')){box=document.createElement('div');box.className='signin';row.after(box)}
     var hand=function(){box.remove();byHandAll()};
-    box.innerHTML='<p><b>Sign in to check with Jev</b><br>Jev is a paid model, so each learner gets a fair share a day. We keep no name or email.</p><div class="gbtn"></div><button type="button" class="btn ghost">Answer the questions myself</button><p class="muted gerr" aria-live="polite"></p>';
+    box.innerHTML='<p><b>Log in with Google to '+what+'.</b><a class="fn" href="#about-jev" aria-label="About Jev">*</a></p><div class="gbtn"></div><button type="button" class="btn ghost">Answer the questions myself</button><p class="muted gerr" aria-live="polite"></p>';
     box.querySelector('.btn').onclick=hand;
     var err=function(m){box.querySelector('.gerr').textContent=m};
-    fetch(API+'?step=me').then(function(r){return r.json()}).then(function(me){
+    getMe().then(function(me){
       if(!me.client_id)return hand(); /* sign-in not set up: same as Jev being down */
       loadGsi(function(bad){if(bad)return err('Google sign-in didn’t load. Answer the questions yourself, or reload and try again.');
         try{google.accounts.id.initialize({client_id:me.client_id,callback:function(res){
-            post('?step=login',{credential:res.credential}).then(function(d){if(d.ok){box.remove();window.posthog&&posthog.capture('delegation_login');retry()}else err(d.error||'Sign-in failed. Try again.')})}});
+            post('?step=login',{credential:res.credential}).then(function(d){if(d.ok){ME={signed_in:true,email:d.email,client_id:me.client_id};meP=Promise.resolve(ME);authUI();box.remove();window.posthog&&posthog.capture('delegation_login');retry()}else err(d.error||'Sign-in failed. Try again.')})}});
           google.accounts.id.renderButton(box.querySelector('.gbtn'),{theme:'outline',size:'large',text:'continue_with',shape:'pill'})}
         catch(e){console.warn('gsi',e);err('Google sign-in didn’t load. Answer the questions yourself, or reload and try again.')}})
     },hand);
@@ -603,7 +627,7 @@ details.words summary{cursor:pointer}
     var todo=tasks.filter(function(t){return t.t.trim()&&!t.b});if(!todo.length)todo=tasks.filter(function(t){return t.t.trim()});if(!todo.length)return;
     var btn=$('#sort');btn.disabled=true;$('#sortMsg').textContent='Checking '+plural(todo.length,'task','tasks')+'…';
     post('',{job:job.t,tasks:todo.map(function(t){return{task:t.t,how_often:t.f}})}).then(function(d){
-      if(d.signin){btn.disabled=false;$('#sortMsg').textContent='';signin(btn.parentNode,sortWeek,function(){todo.forEach(byHand);$('#sortMsg').textContent='Answer the short questions under each task yourself.';changed()});return}
+      if(d.signin){btn.disabled=false;$('#sortMsg').textContent='';signin(btn.parentNode,sortWeek,function(){todo.forEach(byHand);$('#sortMsg').textContent='Answer the short questions under each task yourself.';changed()},'check your tasks');return}
       if(d.error&&!d.fallback){$('#sortMsg').textContent=d.error;btn.disabled=false;return}
       if(d.fallback){todo.forEach(byHand);$('#sortMsg').textContent=d.limited?limitMsg(d):'Jev couldn’t be reached, so answer the short questions under each task yourself.'}
       else{var over=0;d.tasks.forEach(function(r,i){var t=todo[i],was=t.b;if(r.fallback){over++;byHand(t);return}t.b=t.jb=r.bucket;t.reason=r.reason;t.ask=r.ask;t.ans={};t.sig=r.sig;t.undo=r.undo;t.u=null;t.src='jev';if(was!==t.b)t.ver=false});
@@ -644,7 +668,7 @@ details.words summary{cursor:pointer}
     var btn=$('#testCk');btn.disabled=true;$('#ckMsg').textContent='Testing '+plural(todo.length,'verifier','verifiers')+'…';
     post('?step=check',{items:todo.map(function(t){return{task:t.t,check:chkText(t),bucket:t.b}})}).then(function done(d){
       btn.disabled=false;
-      if(d.signin){$('#ckMsg').textContent='';signin(btn.parentNode,testChecks,function(){done({fallback:true,hand:1})});return}
+      if(d.signin){$('#ckMsg').textContent='';signin(btn.parentNode,testChecks,function(){done({fallback:true,hand:1})},'test your verifiers');return}
       if(d.error&&!d.fallback){$('#ckMsg').textContent=d.error;return}
       var why=d.hand?'You chose not to sign in, so this is taken on your word.':d.limited?'Past today’s Jev limit, so this is taken on your word.':'Jev couldn’t be reached, so this is taken on your word.';
       todo.forEach(function(t,i){var r=d.fallback?null:d.items[i];t.tries=(t.tries||0)+1;
