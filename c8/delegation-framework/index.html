@@ -108,22 +108,16 @@ main .btn.ghost:hover{border-color:var(--flh)}
 .ckrow{padding:16px 0}
 details.words summary{cursor:pointer}
 
+/* hero sketch: job, one question, three outcomes */
+.hfig{margin:22px 0 6px}
+.hfig .wb{max-width:760px;margin:0}
+
 /* the steps under the opening */
 .vsteps{list-style:none;counter-reset:v;padding:0!important;margin:18px 0 0;display:grid;gap:2px}
 .vsteps li{counter-increment:v;margin:0}
 .vsteps a{display:flex;gap:10px;align-items:center;padding:7px 10px;border-radius:9px;color:var(--ink);text-decoration:none;font-size:15px}
 .vsteps a::before{content:counter(v);width:22px;height:22px;border-radius:50%;border:1.5px solid var(--fl);font:500 11px var(--mono);display:grid;place-items:center;color:var(--ink2);flex:none}
 .vsteps a:hover{background:var(--card)}
-
-/* where are you: three layers of the funnel */
-.layers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 14px}
-.ly{text-align:left;display:flex;flex-direction:column;gap:4px;background:var(--card);border:1.5px solid var(--fl);border-radius:12px;padding:14px;cursor:pointer;font:15px/1.4 var(--sans);color:var(--ink2);box-shadow:var(--float);transition:border-color .12s,background .12s}
-.ly b{font:600 17px var(--sans);color:var(--ink)}
-.ly .ly-n{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
-.ly:hover{border-color:var(--flh)}
-.ly.c{--a:var(--det)}.ly.l{--a:var(--coral)}.ly.n{--a:var(--prob)}
-.ly[aria-checked="true"]{border-color:var(--a);background:color-mix(in srgb,var(--a) 9%,var(--card));box-shadow:0 0 0 2px color-mix(in srgb,var(--a) 30%,transparent)}
-@media (max-width:640px){.layers{grid-template-columns:1fr}}
 
 /* step 2's example verifier */
 .vex{border-left:3px solid var(--det);padding:2px 0 2px 16px;margin:0 0 1em}
@@ -176,6 +170,45 @@ details.words summary{cursor:pointer}
     <p class="kick">Which parts of your job should AI do?</p>
     <h1>AI Delegation Framework</h1>
     <p class="dek">AI can now do whole tasks for you, step by step: search, read, fill in a sheet, draft a report. This page helps you decide which of your tasks to hand to AI, which to keep, and how to check its work. Bring your own job; it takes about fifteen minutes.</p>
+    <figure class="hfig">
+      <svg class="wb" viewBox="0 0 800 400" role="img" aria-label="Your job, drawn as a bundle of tasks: weekly report, client calls, competitor scan, sign-offs. Each task goes through one question, can you check it? It comes out in one of three places. Automated, amber: a rule checks it, so AI does it alone. Augmented, violet: criteria you wrote check it, so AI drafts and you approve. Stays human, green: nothing checks it reliably, so you keep it.">
+        <g class="ln" filter="url(#wob)">
+          <rect class="f-none" x="20" y="72" width="200" height="248" rx="14"/>
+          <rect class="f-none" x="40" y="92" width="160" height="40" rx="8"/>
+          <rect class="f-none" x="40" y="144" width="160" height="40" rx="8"/>
+          <rect class="f-none" x="40" y="196" width="160" height="40" rx="8"/>
+          <rect class="f-none" x="40" y="248" width="160" height="40" rx="8"/>
+          <path class="arw" d="M228 196 L262 196" marker-end="url(#ah)"/>
+          <path class="f-none" d="M360 104 L452 196 L360 288 L268 196 Z"/>
+          <path class="arw" style="stroke:var(--det)" d="M456 190 C486 190 480 74 506 74" marker-end="url(#aha)"/>
+          <path class="arw" style="stroke:var(--prob)" d="M458 196 L506 200" marker-end="url(#ahv)"/>
+          <path class="arw" style="stroke:var(--hum)" d="M456 202 C486 202 480 326 506 326" marker-end="url(#ahg)"/>
+          <rect class="f-det" x="512" y="24" width="272" height="100" rx="12"/>
+          <rect class="f-prob" x="512" y="150" width="272" height="100" rx="12"/>
+          <rect class="f-hum" x="512" y="276" width="272" height="100" rx="12"/>
+        </g>
+        <g class="tx">
+          <text x="120" y="56" class="h">your job</text>
+          <text x="120" y="119" class="s">weekly report</text>
+          <text x="120" y="171" class="s">client calls</text>
+          <text x="120" y="223" class="s">competitor scan</text>
+          <text x="120" y="275" class="s">sign-offs</text>
+          <text x="120" y="352" class="s">a bundle of tasks</text>
+          <text x="360" y="188" class="h">can you</text>
+          <text x="360" y="220" class="h">check it?</text>
+          <text x="360" y="320" class="s c-act">write the check down</text>
+          <text x="532" y="60" class="h l c-det">automated</text>
+          <text x="532" y="88" class="s l" style="fill:var(--ink)">AI does it alone</text>
+          <text x="532" y="112" class="s l" style="font-size:20px">a rule checks it</text>
+          <text x="532" y="186" class="h l c-prob">augmented</text>
+          <text x="532" y="214" class="s l" style="fill:var(--ink)">AI drafts, you approve</text>
+          <text x="532" y="238" class="s l" style="font-size:20px">your criteria check it</text>
+          <text x="532" y="312" class="h l c-hum">stays human</text>
+          <text x="532" y="340" class="s l" style="fill:var(--ink)">you keep it</text>
+          <text x="532" y="364" class="s l" style="font-size:20px">nothing checks it reliably</text>
+        </g>
+      </svg>
+    </figure>
     <ol class="vsteps">
       <li><a href="#job">List your tasks</a></li>
       <li><a href="#verify">Can you check it?</a></li>
@@ -193,17 +226,6 @@ details.words summary{cursor:pointer}
     <li><span class="chipd hum"></span><b>Stays human.</b> Nothing can check it reliably: a hard conversation, work done by hand, a decision you sign. You keep it.</li>
   </ul>
   <p>The written check is called a <b>verifier</b>. The steps below walk you through writing one for each of your own tasks.</p>
-</section>
-
-<section class="s" id="funnel">
-  <h2>Where you are today</h2>
-  <p>People use AI at three depths. Over a billion have tried a chatbot. About twenty million hand it long, complex work. A few thousand build AI systems that run on their own. Pick the one that sounds like you. The aim of this page is to take you one level deeper.</p>
-  <div class="layers" id="layers" role="radiogroup" aria-label="Your layer of the funnel">
-    <button type="button" role="radio" aria-checked="false" data-l="0" class="ly c"><span class="ly-n">1 to 2 billion</span><b>AI curious</b><span>Search, emails and summaries. One prompt, one answer.</span></button>
-    <button type="button" role="radio" aria-checked="false" data-l="1" class="ly l"><span class="ly-n">About 20 million</span><b>AI literate</b><span>Hands it long-running work: research that runs for twenty minutes, or twenty hours.</span></button>
-    <button type="button" role="radio" aria-checked="false" data-l="2" class="ly n"><span class="ly-n">About 5,000</span><b>AI native</b><span>Builds systems: AI that runs on its own, their own data, sometimes their own models.</span></button>
-  </div>
-  <p class="you" id="layerYou" hidden></p>
 </section>
 
 <section class="s" id="job">
@@ -319,7 +341,7 @@ details.words summary{cursor:pointer}
     <label><input type="checkbox" data-w3="1"><span><b>Write its verifier</b><small id="w3b">The checklist a good result has to pass.</small></span></label>
     <label><input type="checkbox" data-w3="2"><span><b>Hand it to AI</b><small>Ten test runs, scored against the verifier.</small></span></label>
   </div>
-  <p class="pull" id="w3end">Even if it only takes ten percent off your plate, you have gone one level deeper with AI.</p>
+  <p class="pull" id="w3end">Even if it only takes ten percent off your plate, that time comes back every week.</p>
 </section>
 
 <section id="agents" hidden>
@@ -670,12 +692,6 @@ details.words summary{cursor:pointer}
     $('#agentYou').innerHTML=mv.length?bits.map(function(b){return b.charAt(0).toUpperCase()+b.slice(1)}).join('. ')+'. On Monday, pick one, connect only the tools those tasks read, and start the first ten test runs on '+list([mv[0].s])+'. Re-check this list by 17 Dec 2026.':'None of your tasks can move yet, so no AI tool earns a subscription. Write the check for a violet task, or split your biggest task into the part on a screen and the part that is not, and sort that part again.';
   }
 
-  /* ---------- where are you: the funnel layer, kept on this device ---------- */
-  var LAYERS=['AI curious','AI literate','AI native'], NEXT=['Next level: AI literate. Hand AI one long task, with a verifier to check it.','Next level: AI native. Build a system: AI on a schedule, scored runs, your own data.','You are already at the deepest level. Step 4 is yours: turn every failed run into training data.'];
-  var layer=store.get('c8.delegate.layer',null);
-  function layers(){[].forEach.call(document.querySelectorAll('#layers .ly'),function(b){b.setAttribute('aria-checked',String(+b.dataset.l===layer))});
-    var y=$('#layerYou');y.hidden=layer==null;if(layer!=null)y.innerHTML='You: <b>'+LAYERS[layer]+'</b>. '+NEXT[layer];thisWeek()}
-  $('#layers').addEventListener('click',function(e){var b=e.target.closest('.ly');if(!b)return;layer=+b.dataset.l;store.set('c8.delegate.layer',layer);layers()});
 
   /* ---------- steps 4 and 5: ten runs per task, scored against the verifier ---------- */
   var DEMO={t:'Competitor research for a headphone brand',s:'Competitor research',runs:'1201211220'}, runI=-1;
@@ -714,7 +730,7 @@ details.words summary{cursor:pointer}
     $('#w3a').innerHTML=mv.length?'Start with the one that gives back the most: <b>'+esc(mv[0].s)+'</b>.':'One that repeats and matters.';
     var ck=mv.length&&chkText(mv[0]);$('#w3b').innerHTML=ck?'Yours: '+esc(ck):'The checklist a good result has to pass.';
     var tot=sum(week,function(t){return t.m}), back=tot?Math.round(100*(tot-sum(week,after))/tot):0;
-    $('#w3end').textContent=(back>=5?'Your sort says about '+back+'% of your week could come back. ':'')+'Even if it only takes ten percent off your plate, you have gone one level deeper with AI'+(layer!=null&&layer<2?', from '+LAYERS[layer]+' to '+LAYERS[layer+1]:'')+'.';
+    $('#w3end').textContent=(back>=5?'Your sort says about '+back+'% of your week could come back. ':'')+'Even if it only takes ten percent off your plate, that time comes back every week.';
   }
   $('#tw3').addEventListener('change',function(e){var c=e.target.closest('[data-w3]');if(!c)return;w3[+c.dataset.w3]=c.checked?1:0;store.set('c8.delegate.w3',w3)});
 
@@ -789,7 +805,7 @@ details.words summary{cursor:pointer}
   (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(function(){tall=mq.matches;if(job&&week.length){hideTip();build()}});
   new IntersectionObserver(function(es){es.forEach(function(e){document.body.classList.toggle('sc-in',e.isIntersecting)})}).observe($('#story'));
 
-  layers();runs();
+  thisWeek();runs();
   K.wbDefs();
   (function(){var k=$('#kfig'),ln='',fx=320,fy=200,i,c=function(x,y,r,cls,op){return '<circle class="'+cls+'" cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r.toFixed(1)+'"'+(op<1?' opacity="'+op.toFixed(2)+'"':'')+'/>'};
     for(i=0;i<6;i++)ln+=c(40+i*50,fy,11,'f-none',1);
