@@ -320,7 +320,7 @@ details.words summary{cursor:pointer}
     <label><input type="checkbox" data-w3="1"><span><b>Write its verifier</b><small id="w3b">The checklist a good result has to pass.</small></span></label>
     <label><input type="checkbox" data-w3="2"><span><b>Hand it to AI</b><small>Ten test runs, scored against the verifier.</small></span></label>
   </div>
-  <p class="pull" id="w3end">Even if it only takes ten percent off your plate, that time comes back every week.</p>
+  <p class="pull" id="w3end">Hand over what you can check. Keep what you can’t.</p>
 </section>
 
 <section class="s" id="sources">
@@ -694,7 +694,7 @@ details.words summary{cursor:pointer}
     $('#w3a').innerHTML=mv.length?'Start with the one that gives back the most: <b>'+esc(mv[0].s)+'</b>.':'One that repeats and matters.';
     var ck=mv.length&&chkText(mv[0]);$('#w3b').innerHTML=ck?'Yours: '+esc(ck):'The checklist a good result has to pass.';
     var tot=sum(week,function(t){return t.m}), back=tot?Math.round(100*(tot-sum(week,after))/tot):0;
-    $('#w3end').textContent=(back>=5?'Your sort says about '+back+'% of your week could come back. ':'')+'Even if it only takes ten percent off your plate, that time comes back every week.';
+    $('#w3end').textContent=(back>=5?'Your sort says about '+back+'% of your week could come back. ':'')+'Hand over what you can check. Keep what you can’t.';
   }
   $('#tw3').addEventListener('change',function(e){var c=e.target.closest('[data-w3]');if(!c)return;w3[+c.dataset.w3]=c.checked?1:0;store.set('c8.delegate.w3',w3)});
 
