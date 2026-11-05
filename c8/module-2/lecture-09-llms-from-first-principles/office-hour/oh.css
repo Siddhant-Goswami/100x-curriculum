@@ -293,21 +293,18 @@ ul.mine li{margin:0 0 4px}
 /* ---------- the last screen: celebrate, the eval, the path ---------- */
 #confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:200}
 main.screen.bare{padding-top:20px}
-.win{display:grid;grid-template-columns:260px minmax(0,1fr);gap:8px 28px;align-items:center;max-width:960px;margin:0 0 20px}
-@media (max-width:700px){.win{grid-template-columns:1fr;text-align:center;justify-items:center}.win-art{max-width:190px}.win .sub{margin-left:auto;margin-right:auto}}
+.win{max-width:960px;margin:8px 0 24px}
 .win h1{font:600 clamp(32px,5vw,52px)/1.05 var(--sans);letter-spacing:-.03em;margin:0 0 12px;max-width:16ch}
 .win .sub{margin:0;font-size:18px}
 .win .sub b{color:var(--coral-ink);font-weight:600}
-.win-art{cursor:pointer;width:100%;max-width:260px}
-.trophy{display:block;width:100%;height:auto;overflow:visible}
-.trophy .doc{animation:docIn .7s var(--e-out) both}
-.trophy .sealin{transform-box:fill-box;transform-origin:center;animation:stamp .55s cubic-bezier(.34,1.56,.64,1) .55s both}
-.win-art.again .sealin{animation:stamp .55s cubic-bezier(.34,1.56,.64,1) both}
-.trophy .spk{transform-box:fill-box;transform-origin:center;animation:twinkle 2.6s ease-in-out infinite both}
-@keyframes docIn{from{opacity:0;transform:translateY(16px) rotate(-3deg)}to{opacity:1;transform:none}}
-@keyframes stamp{0%{opacity:0;transform:scale(2.3) rotate(-30deg)}60%{opacity:1}100%{opacity:1;transform:scale(1) rotate(-12deg)}}
-@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.6)}50%{opacity:1;transform:scale(1.1)}}
-@media (prefers-reduced-motion:reduce){.trophy *{animation:none!important}.trophy .sealin{transform:rotate(-12deg)}}
+.win-art{all:unset;cursor:pointer;display:block;width:56px;height:56px;margin:0 0 18px;border-radius:50%}
+.win-art:focus-visible{outline:2px solid var(--coral);outline-offset:3px}
+.badge{display:block;width:100%;height:100%;overflow:visible}
+.badge .b-bg{fill:var(--coral-soft)}
+.badge .b-ring{fill:none;stroke:var(--coral);stroke-width:2;stroke-dasharray:189;stroke-dashoffset:189;transform:rotate(-90deg);transform-origin:center;animation:ring .8s var(--e-out) .2s forwards}
+.badge .b-ck{fill:none;stroke:var(--coral-ink);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:ring .45s var(--e-out) .75s forwards}
+@keyframes ring{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){.badge .b-ring,.badge .b-ck{animation:none;stroke-dashoffset:0}}
 
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:960px;margin:0 0 40px}
 @media (max-width:700px){.stats{grid-template-columns:1fr 1fr}}
