@@ -1566,7 +1566,7 @@ function wtbExampleHTML(){ var u=gl('wtbExample'); return u ? '<a class="hub" hr
 /* Practice set 2 stop, between Lecture 10 and Lecture 11: the brief, the exercise, and the 3 Nov office hour recap. */
 function p2HTML(){
   var h='', u=gl('ps2'), x=gl('l09OfficeHour'), o=gl('l10OfficeHour');
-  if(u) h+='<a class="hub" href="'+esc(u)+'"><span><b>Open Practice set 2: Write the eval</b><i>The week so far, why it matters, what to do and submit</i></span><em aria-hidden="true">→</em></a>';
+  if(u) h+='<a class="hub" href="'+esc(u)+'"><span><b>Open Practice set 2: Write the eval</b><i>Why it matters, three steps, by Thu 12 Nov</i></span><em aria-hidden="true">→</em></a>';
   if(o) h+='<a class="hub" href="'+esc(o)+'"><span><b>Office hour, 3 Nov: your sheet is the data</b><i>Why labs pay experts for judgment on real tasks</i></span><em aria-hidden="true">→</em></a>';
   if(x) h+='<div class="hubs"><a href="'+esc(x)+'">Start the exercise</a>'+(gl('l09Practice')?'<a href="'+esc(gl('l09Practice'))+'">Practice set 1</a>':'')+'</div>';
   return h;
