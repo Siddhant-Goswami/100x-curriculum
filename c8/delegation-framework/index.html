@@ -575,7 +575,12 @@ details.words summary{cursor:pointer}
   /* ---------- sort: one call for the week; on any failure the learner answers instead ---------- */
   function post(q,body){return fetch(API+q,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json().then(function(d){if(!r.ok&&!d.fallback)d.error=d.error||'Sorting failed.';return d})}).catch(function(){return{fallback:true}})}
   /* ---------- sign-in: asked only when a button would call Jev (it costs money); then the click goes through ---------- */
-  function loadGsi(cb){if(window.google&&google.accounts)return cb();var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onload=cb;s.onerror=function(){cb(1)};document.head.appendChild(s)}
+  /* Google's library can finish onload before google.accounts.id exists, so wait for it (up to 8 s) */
+  var gsiQ=null;
+  function loadGsi(cb){var ready=function(){return window.google&&google.accounts&&google.accounts.id};if(ready())return cb();
+    if(gsiQ)return gsiQ.push(cb);gsiQ=[cb];var done=function(bad){var q=gsiQ;gsiQ=null;q.forEach(function(f){f(bad)})};
+    var s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;s.onerror=function(){done(1)};
+    s.onload=function(){var n=0,t=setInterval(function(){if(ready()||++n>80){clearInterval(t);done(!ready())}},100)};document.head.appendChild(s)}
   function signin(row,retry,byHandAll){
     var box=row.nextElementSibling;if(!box||!box.classList.contains('signin')){box=document.createElement('div');box.className='signin';row.after(box)}
     var hand=function(){box.remove();byHandAll()};
@@ -588,7 +593,7 @@ details.words summary{cursor:pointer}
         try{google.accounts.id.initialize({client_id:me.client_id,callback:function(res){
             post('?step=login',{credential:res.credential}).then(function(d){if(d.ok){box.remove();window.posthog&&posthog.capture('delegation_login');retry()}else err(d.error||'Sign-in failed. Try again.')})}});
           google.accounts.id.renderButton(box.querySelector('.gbtn'),{theme:'outline',size:'large',text:'continue_with',shape:'pill'})}
-        catch(e){err('Google sign-in didn’t load. Answer the questions yourself, or reload and try again.')}})
+        catch(e){console.warn('gsi',e);err('Google sign-in didn’t load. Answer the questions yourself, or reload and try again.')}})
     },hand);
   }
   function limitMsg(d){return d.limited==='site'?'Jev has reached today’s limit for this page, so answer the short questions yourself.':'You’ve used today’s Jev checks, so answer the short questions yourself. More tomorrow.'}
