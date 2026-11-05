@@ -293,9 +293,12 @@ ul.mine li{margin:0 0 4px}
 /* ---------- the last screen: celebrate, the eval, use it ---------- */
 #confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:200}
 main.screen.bare{padding-top:20px}
-.win{max-width:960px;margin:8px 0 24px}
-.win h1{font:600 clamp(32px,5vw,52px)/1.05 var(--sans);letter-spacing:-.03em;margin:0 0 12px;max-width:16ch}
-.win .sub{margin:0;font-size:18px}
+.win{margin:8px 0 28px}
+.win h1{font:600 clamp(30px,4.6vw,52px)/1.08 var(--sans);letter-spacing:-.03em;margin:0 0 12px;max-width:none}
+@media (min-width:720px){.win h1{white-space:nowrap}}
+.win .sub{margin:0;font-size:18px;max-width:60ch}
+.win .ec-cta{margin-top:22px}
+.win .note{margin-top:8px}
 .win .sub b{color:var(--coral-ink);font-weight:600}
 .win-art{all:unset;cursor:pointer;display:block;width:56px;height:56px;margin:0 0 18px;border-radius:50%}
 .win-art:focus-visible{outline:2px solid var(--coral);outline-offset:3px}
@@ -306,7 +309,7 @@ main.screen.bare{padding-top:20px}
 @keyframes ring{to{stroke-dashoffset:0}}
 @media (prefers-reduced-motion:reduce){.badge .b-ring,.badge .b-ck{animation:none;stroke-dashoffset:0}}
 
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:760px;margin:0 0 40px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 40px}
 @media (max-width:700px){.stats{grid-template-columns:1fr 1fr}}
 .st{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;animation:rise .5s var(--e-out) both}
 .st:nth-child(2){animation-delay:.08s}.st:nth-child(3){animation-delay:.16s}.st:nth-child(4){animation-delay:.24s}
@@ -316,7 +319,9 @@ main.screen.bare{padding-top:20px}
 
 .screen.bare h2{font:600 22px/1.25 var(--sans);letter-spacing:-.015em;margin:0 0 8px}
 .screen.bare h2 small{font:500 12px var(--mono);color:var(--ink3);letter-spacing:0;margin-left:8px;white-space:nowrap}
-.ec-wrap{max-width:760px;margin:0 0 48px}
+.kgrid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:32px;align-items:start}
+@media (max-width:900px){.kgrid{grid-template-columns:1fr}}
+.ec-wrap{margin:0 0 24px}
 .ec-wrap h2{margin:0 0 12px}
 .ec{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
 .ec header{padding:18px 22px 14px;border-bottom:1px solid var(--line)}
@@ -340,10 +345,11 @@ ul.tk li{padding:3px 0;font-size:15px}
 .ec-cta{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:16px 0 0}
 .ec-cta .msg{margin:0}
 .btn.big{padding:13px 22px;font-size:16px;font-weight:600}
-.use{max-width:760px;margin:0 0 48px}
-.use .lede{color:var(--ink2);font-size:16px;margin:0 0 16px}
-.uopt{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 14px}
-@media (max-width:640px){.uopt{grid-template-columns:1fr}}
+.use{margin:0 0 32px}
+.use .lede{color:var(--ink2);font-size:15px;margin:0 0 14px}
+.kside .outcomes li{font-size:14.5px}
+.uopt{display:grid;grid-template-columns:1fr;gap:10px;margin:0 0 14px}
+@media (min-width:640px) and (max-width:900px){.uopt{grid-template-columns:1fr 1fr}}
 .uopt>div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
 .uopt b{display:block;font-weight:600;font-size:15.5px;margin:0 0 4px}
 .uopt p{margin:0 0 12px;font-size:14px;color:var(--ink2)}
@@ -351,7 +357,7 @@ ul.tk li{padding:3px 0;font-size:15px}
 .use .try{font-size:15px;margin:0;color:var(--ink2)}
 .use .try b{color:var(--ink)}
 .next{max-width:960px;margin:0 0 28px}
-details.opt{max-width:760px;margin:0 0 12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+details.opt{margin:0 0 12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
 details.opt summary{cursor:pointer;list-style:none;padding:14px 18px;display:flex;align-items:center;gap:10px;font:600 15.5px var(--sans)}
 details.opt summary::-webkit-details-marker{display:none}
 details.opt summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--ink3);border-bottom:2px solid var(--ink3);transform:rotate(45deg);transition:transform .25s var(--e-out)}
