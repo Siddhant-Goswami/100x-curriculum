@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Design for Non-Designers: the reading list | 100xEngineers</title>
+<meta name="description" content="You do not need to become a designer. You need to see what a designer sees, say it in words, and let the machine make it. A sequence, with the few resources worth your time at each step.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/kit.css">
+<script src="/c8/docs.js"></script>
+<script src="/c8/kit.js"></script>
+<style>
+html,body{overflow-x:clip}
+:root{--fl:color-mix(in srgb,var(--ink) 24%,var(--card));--flh:color-mix(in srgb,var(--ink) 55%,var(--card))}
+.panel{background:var(--card);border:1px solid var(--line2);border-radius:12px;padding:4px 18px;margin:0 0 16px}
+
+/* hero sketch */
+.hfig{margin:22px 0 6px}
+.hfig .wb{max-width:760px;margin:0}
+
+/* the steps under the opening */
+.vsteps{list-style:none;counter-reset:v;padding:0!important;margin:24px 0 0 -10px;display:grid;gap:0}
+.vsteps li{counter-increment:v;margin:0}
+.vsteps a{display:flex;gap:10px;align-items:center;padding:7px 10px;border-radius:9px;color:var(--ink);text-decoration:none;font-size:15px}
+.vsteps a::before{content:counter(v);width:22px;height:22px;border-radius:50%;border:1.5px solid var(--fl);font:500 11px var(--mono);display:grid;place-items:center;color:var(--ink2);flex:none}
+.vsteps a:hover{background:var(--card)}
+
+/* one-line beats, as in the article */
+body.read section.s p.beat{font-weight:500;margin:1.2em 0}
+
+/* the five rules */
+.five{list-style:none;padding:0!important;margin:0 0 1em;border-top:1px solid var(--line)}
+.five li{display:grid;grid-template-columns:26px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);font-size:16px;line-height:1.45;margin:0}
+.five .n{font:500 13px var(--mono);color:var(--ink3);padding-top:3px}
+.five b{font-weight:600}
+.five small{display:block;color:var(--ink2);font-size:15px}
+
+/* resources, built on the page's own five rules:
+   one thing first (a "Start here" pick), space instead of boxes and lines,
+   one left edge shared with the text, two sizes, one colour (links are coral and underlined, as everywhere on the site) */
+body.read section.s .res{list-style:none;padding:0!important;margin:32px 0 0;display:grid;gap:16px}
+.res li{margin:0!important;display:block}
+.res li>a:first-child{font-weight:600}
+.res li>a:first-child[target="_blank"]::after{content:"\2197";display:inline-block;margin-left:3px;font-weight:400;font-size:.85em;text-decoration:none}
+.res .dom{font:13px var(--mono);color:var(--ink3);margin-left:8px;white-space:nowrap}
+.res li>span:not(.dom){display:block;font-size:15px;line-height:1.5;color:var(--ink2);margin-top:2px}
+.res li.pick{margin-bottom:8px!important}
+.res li.pick::before{content:"Start here";display:block;font:500 13px var(--sans);color:var(--ink3);margin-bottom:2px}
+.res li.pick>a:first-child{font-size:1.125rem}
+.res li.pick>span:not(.dom){font-size:1rem;color:var(--ink)}
+
+/* the brief, step 3 */
+.brief{border-left:3px solid var(--prob);padding:2px 0 2px 16px;margin:0 0 1.2em}
+.brief .h{font-size:14px;color:var(--ink2);margin:0 0 6px!important}
+.brief pre{margin:0;white-space:pre-wrap;font:14px/1.55 var(--mono);color:var(--ink)}
+
+/* the whole loop */
+.rules{list-style:none;margin:0 0 1em;padding:0!important;border-top:1px solid var(--line)}
+.rules li{display:grid;grid-template-columns:24px 1fr minmax(150px,210px);gap:12px;padding:12px 0;border-bottom:1px solid var(--line);font-size:16px;line-height:1.45;margin:0}
+.rules li:last-child{border-bottom:0}
+.rules .n{color:var(--ink3);font-variant-numeric:tabular-nums}
+.rules .then{color:var(--ink2);font-size:15px}
+.rules li a{color:inherit;text-decoration:none}.rules li a:hover{text-decoration:underline}
+@media (max-width:560px){.rules li{grid-template-columns:20px 1fr}.rules .then{grid-column:2}}
+
+/* this week */
+.tw3{display:grid;padding:6px 18px}
+.tw3 label{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.tw3 label:last-child{border-bottom:0}
+.tw3 input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--hum);flex:none;cursor:pointer}
+.tw3 span>b{display:block;font-weight:600}
+.tw3 small{display:block;font-size:14px;color:var(--ink2)}
+.tw3 input:checked+span>b{text-decoration:line-through;text-decoration-color:var(--ink3)}
+details.words summary{cursor:pointer}
+</style>
+</head>
+<body data-page="design-for-non-designers" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b><span>Design for Non-Designers · reading list</span></a>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<div class="wrap">
+<main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+    <h1>Design for Non-Designers</h1>
+    <p class="dek">You do not need to become a designer. You need to see what a designer sees, say it in words, and let the machine make it. Here is the sequence, and the few things worth your time at each step.</p>
+    <figure class="hfig">
+      <svg class="wb" viewBox="0 0 800 400" role="img" aria-label="The sequence drawn as a loop. See: look at good screens every day. Name: the five rules you can now point at. Write: a design brief in words, design.md. Make: the machine renders the screen. Look again: compare it with your taste, fix the brief, not the pixels, and go round again.">
+        <g class="ln" filter="url(#wob)">
+          <rect class="f-hum" x="24" y="150" width="170" height="100" rx="14"/>
+          <path class="arw" d="M200 200 L240 200" marker-end="url(#ah)"/>
+          <rect class="f-none" x="246" y="150" width="170" height="100" rx="14"/>
+          <path class="arw" d="M422 200 L462 200" marker-end="url(#ah)"/>
+          <rect class="f-prob" x="468" y="150" width="170" height="100" rx="14"/>
+          <path class="arw" d="M644 200 L684 200" marker-end="url(#ah)"/>
+          <rect class="f-det" x="690" y="130" width="96" height="140" rx="10"/>
+          <rect class="f-none" x="704" y="150" width="68" height="14" rx="3"/>
+          <rect class="f-none" x="704" y="176" width="48" height="8" rx="3"/>
+          <rect class="f-none" x="704" y="192" width="58" height="8" rx="3"/>
+          <rect class="f-none" x="704" y="226" width="40" height="18" rx="5"/>
+          <path class="arw" style="stroke:var(--coral)" d="M738 276 C738 350 110 350 110 258" marker-end="url(#ahc)"/>
+        </g>
+        <g class="tx">
+          <text x="109" y="192" class="h c-hum">See</text>
+          <text x="109" y="224" class="s">ten minutes a day</text>
+          <text x="331" y="192" class="h">Name</text>
+          <text x="331" y="224" class="s">the five rules</text>
+          <text x="553" y="192" class="h c-prob">Write</text>
+          <text x="553" y="224" class="s">design.md</text>
+          <text x="738" y="110" class="h c-det">Make</text>
+          <text x="738" y="300" class="s">the machine renders it</text>
+          <text x="424" y="372" class="s c-act">look again, fix the brief, not the pixels</text>
+          <text x="109" y="110" class="s">what is first? what is quiet?</text>
+        </g>
+      </svg>
+    </figure>
+    <ol class="vsteps">
+      <li><a href="#see">Build your taste</a></li>
+      <li><a href="#rules">Learn the five rules</a></li>
+      <li><a href="#brief">Write the brief, not the pixels</a></li>
+      <li><a href="#motion">Add motion last</a></li>
+      <li><a href="#again">Put it in front of someone</a></li>
+    </ol>
+</div>
+
+<section class="s" id="idea">
+  <h2>The definition</h2>
+  <p>Design is not decoration, or the colour you pick at the end. It is deciding what a person sees first, second and third, so they act without thinking. Every screen you have liked did three things. One thing first. Room around it. Everything else quiet.</p>
+  <p>You already have taste. You know in a second whether an app feels cheap or right. What you lack is the words for why, and the habit of looking. Both can be built.</p>
+</section>
+
+<section class="s" id="see">
+  <h2>Step 1: build your taste</h2>
+  <p>Taste is everything you have looked at closely, plus the words for why it worked. So before any tool, you look.</p>
+  <p>Ten minutes a day. Pick one screen from the libraries below and say out loud: what is first? What is quiet? Why does this one feel calm and that one loud? Noticing without naming is just scrolling.</p>
+  <p>Save the ones that stop you, not the famous ones. That folder is your taste, the one thing the machine cannot generate. The screens you cannot stop looking at point at what you should build.</p>
+  <ul class="res">
+    <li class="pick"><a href="https://mobbin.com/" target="_blank" rel="noopener">Mobbin</a><span>Real app screens and flows, searchable by pattern.</span></li>
+    <li><a href="https://refero.design/" target="_blank" rel="noopener">Refero</a><span>Web and app references by component. Has an <a href="https://refero.design/mcp" target="_blank" rel="noopener">MCP</a>, so your coding agent can look too.</span></li>
+    <li><a href="https://godly.website/" target="_blank" rel="noopener">Godly</a><span>Landing pages at the top of the craft. Look here when you want to see the ceiling.</span></li>
+    <li><a href="https://minimal.gallery/" target="_blank" rel="noopener">Minimal.gallery</a><span>Sites that do a lot with very little. The best teacher of "keep the rest quiet".</span></li>
+    <li><a href="https://www.degreeless.design/#content" target="_blank" rel="noopener">Degreeless.design</a><span>Learn by playing. Small games that sharpen your taste for spacing, type and colour.</span></li>
+  </ul>
+</section>
+
+<section class="s" id="rules">
+  <h2>Step 2: learn the five rules</h2>
+  <p>Two weeks of looking and the same few things keep showing up. Nearly everything that looks designed is these five.</p>
+  <ol class="five">
+    <li><span class="n">1</span><div><b>One thing first.</b><small>Every screen has one job. Make it the biggest, darkest, or only coloured thing.</small></div></li>
+    <li><span class="n">2</span><div><b>Space is not empty.</b><small>Room around a thing says it matters. Use more than you think, in steps of 8px.</small></div></li>
+    <li><span class="n">3</span><div><b>Line things up.</b><small>Pick one left edge. Most "something feels off" is two edges three pixels apart.</small></div></li>
+    <li><span class="n">4</span><div><b>One typeface, two sizes.</b><small>Big for the one thing, small for the rest. Use weight for emphasis. Inter, if you have no opinion yet.</small></div></li>
+    <li><span class="n">5</span><div><b>One colour, plus grey.</b><small>Colour is a pointing finger. Colour everything and you point at nothing.</small></div></li>
+  </ol>
+  <p>You learn these in an afternoon. Seeing them break takes months. That is why step 1 never stops.</p>
+  <ul class="res">
+    <li class="pick"><a href="./">Learn design by designing this page</a><span>A bare page you design yourself, one question at a time, until it looks like these notes.</span></li>
+    <li><a href="https://lawsofux.com/" target="_blank" rel="noopener">Laws of UX</a><span>Why the rules work: Hick, Fitts, proximity, the rest. One law a day is plenty.</span></li>
+    <li><a href="https://uxplanet.org/16-ui-design-tips-ba2e7524d203" target="_blank" rel="noopener">16 UI tips</a><span>Before-and-after pairs. Read it once you can already see the before.</span></li>
+    <li><a href="https://www.amazon.in/dp/0760378045" target="_blank" rel="noopener">Universal Principles of UX</a><span>The one book. Keep it near the desk; read a spread when you are stuck.</span></li>
+  </ul>
+</section>
+
+<section class="s" id="brief">
+  <h2>Step 3: write the brief, not the pixels</h2>
+  <p>Most roadmaps end with "practise in a design tool for two years". Skip that. The machine has the hands now. Your job is the brief.</p>
+  <p>A brief is a short file, <code>design.md</code>, that says what good looks like: one colour, one typeface in two sizes, the spacing unit, the tone, what goes first. Hand it to Claude Code, Stitch or v0 and ask for a screen. Compare what comes back with your taste. Where it is wrong, fix the brief, not the pixels. Ask again.</p>
+  <div class="brief">
+    <p class="h">A brief, for example: a small invoicing tool for freelancers</p>
+    <pre>Feel: calm, like a well-kept notebook. Nothing shouts.
+Colour: one accent, #1D4ED8, used only for the single primary action. Everything else is grey on white.
+Type: Inter. 32px for the one heading on a screen, 16px for everything else. Weight 600 for emphasis, never colour.
+Space: 8px unit. 24px between groups, 48px between sections. When in doubt, more.
+Layout: one column up to 720px. Left edge is the only edge.
+Every screen: one job, stated in the heading. The primary action is the only coloured thing.
+Never: gradients, shadows deeper than 2px, more than one font, icons without labels.</pre>
+  </div>
+  <p>That file is your taste, written down, and it compounds. Every screen teaches you one more line. After fifty, it is a design system, and you never opened the pen tool.</p>
+  <ul class="res">
+    <li class="pick"><a href="https://stitch.withgoogle.com/docs/design-md/overview" target="_blank" rel="noopener">Stitch: design.md</a><span>Google's format for exactly this file, and the tool that renders from it. <a href="https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-design-md/" target="_blank" rel="noopener">Why they made it</a> · <a href="https://www.youtube.com/watch?v=tnP_Q5mS1I8" target="_blank" rel="noopener">walkthrough</a>.</span></li>
+    <li><a href="https://getdesign.md/" target="_blank" rel="noopener">getdesign.md</a><span>Point it at a site you like and it writes the design.md for you. Then edit it until it is yours.</span></li>
+    <li><a href="https://github.com/elayadesign/ai-design-skills" target="_blank" rel="noopener">AI design skills</a><span>Claude skills for landing pages and design-to-motion. Install, then read them: each one is a brief written by a designer.</span></li>
+    <li><a href="https://x.com/_catwu/status/1993791353051074687" target="_blank" rel="noopener">Claude as designer</a><span>How to set up Claude Code with a design skill so the brief travels with every prompt.</span></li>
+    <li><a href="https://x.com/joshpuckett/status/2067587483957887011" target="_blank" rel="noopener">Interface design, by Josh Puckett</a><span>A working designer on what still has to be a human decision. Read after your first ten screens.</span></li>
+  </ul>
+</section>
+
+<section class="s" id="motion">
+  <h2>Step 4: add motion last</h2>
+  <p>Motion is the last five percent and the first thing people notice. A badly laid out screen that moves is still badly laid out. Animate only once the still frame passes the five rules.</p>
+  <p>Then treat it like colour. One thing moves, to show where to look. Everything else holds still.</p>
+  <ul class="res">
+    <li class="pick"><a href="https://prompt-motion.com/" target="_blank" rel="noopener">Prompt Motion</a><span>Describe the motion in words, get it rendered. The brief idea again, for movement.</span></li>
+    <li><a href="https://hellodani.co/garden" target="_blank" rel="noopener">Dani's garden</a><span>What a personal site looks like when motion is used with restraint.</span></li>
+  </ul>
+</section>
+
+<section class="s" id="again">
+  <h2>Step 5: put it in front of someone</h2>
+  <p>A screen is finished when a stranger uses it without asking you how. Show one person. Say nothing. Watch where their eyes go first. If it is not the thing you put first, back to the brief.</p>
+  <p>Show, watch, change, repeat: that is what designers call process. The courses below give it more steps and better names. Read them once, then run the loop.</p>
+  <ul class="res">
+    <li class="pick"><a href="https://dschool.stanford.edu/resources/getting-started-with-design-thinking" target="_blank" rel="noopener">Stanford d.school: getting started</a><span>A 90-minute exercise you can run with one other person tonight.</span></li>
+    <li><a href="https://x.com/uiuxadrian/status/1677362861985734667" target="_blank" rel="noopener">The design process, in one thread</a><span>Discover, define, design, test. The shortest honest version.</span></li>
+    <li><a href="https://www.youtube.com/@HighResolution" target="_blank" rel="noopener">High Resolution</a><span>Interviews with the people who designed the products you use. How it works in production, not in theory.</span></li>
+    <li><a href="https://jasonspielman.com/notebooklm" target="_blank" rel="noopener">Designing NotebookLM</a><span>Jason Spielman's case study of one product, start to finish.</span></li>
+  </ul>
+</section>
+
+<section class="s" id="taste">
+  <h2>On taste</h2>
+  <p>Nobody is born with taste. Every designer you admire spent years looking before they could see. You can do it faster, because a machine will make a hundred versions while you look.</p>
+  <p>What the machine cannot do is prefer. Choosing is your call, built from everything you have looked at and liked. The less you copy, the harder you are to replace. Your weird is your moat.</p>
+  <ul class="res">
+    <li class="pick"><a href="https://paulgraham.com/think.html" target="_blank" rel="noopener">How to think for yourself</a><span>Paul Graham on why some people see what others do not. Applies to screens exactly.</span></li>
+    <li><a href="https://paulgraham.com/conformism.html" target="_blank" rel="noopener">The four quadrants of conformism</a><span>Why most interfaces look the same, and what it costs to make one that does not.</span></li>
+    <li><a href="https://the-brandidentity.com/" target="_blank" rel="noopener">The Brand Identity</a><span>Whole identities, not single screens. Look here when you want to see a point of view held across everything.</span></li>
+  </ul>
+</section>
+
+<section class="s" id="loop">
+  <h2>The whole loop</h2>
+  <p>Repeat it. Each step only works once the one before it holds.</p>
+  <ol class="rules">
+    <li><span class="n">1</span><a href="#see">Look at one screen a day and say what is first</a><span class="then">builds your taste</span></li>
+    <li><span class="n">2</span><a href="#rules">Name the rule it follows, or breaks</a><span class="then">gives you the words</span></li>
+    <li><span class="n">3</span><a href="#brief">Write design.md and ask the machine</a><span class="then">renders your taste</span></li>
+    <li><span class="n">4</span><a href="#motion">Move one thing, after the still frame works</a><span class="then">points the eye</span></li>
+    <li><span class="n">5</span><a href="#again">Show one person, watch, fix the brief</a><span class="then">back to step 1</span></li>
+  </ol>
+</section>
+
+<section class="s" id="week">
+  <h2>This week</h2>
+  <div class="panel tw3">
+    <label><input type="checkbox"><span><b>Seven screens, named</b><small>One a day from Mobbin or Godly. Say what is first, what is quiet. Save the ones that stop you.</small></span></label>
+    <label><input type="checkbox"><span><b>Learn design by designing this page</b><small>Do <a href="./">the tutorial</a> once. Then open your own product and apply rule 1 to its home screen.</small></span></label>
+    <label><input type="checkbox"><span><b>One design.md</b><small>Twelve lines, like the example above. Generate one screen from it. Fix the brief, not the pixels. Repeat three times.</small></span></label>
+  </div>
+  <p class="pull">See it. Name it. Write it down. Let the machine make it. Look again.</p>
+</section>
+
+</main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Design for Non-Designers</span><span>Links go to their makers; nothing here is sponsored</span></div></footer>
+<script>
+C8Kit.wbDefs();
+document.querySelectorAll('.res > li > a:first-child[target="_blank"]').forEach(function(a){
+  try{var d=document.createElement('span');d.className='dom';d.textContent=new URL(a.href).hostname.replace(/^www\./,'');a.after(d)}catch(e){}
+});
+</script>
+</body>
+</html>

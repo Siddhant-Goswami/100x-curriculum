@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learn design by designing this page | 100xEngineers</title>
+<meta name="description" content="Learn design by designing this page. Start with words and no design, derive each rule from the problem in front of you, and end with the brief you hand to a machine.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- The C8 stylesheets are on the page from the start but switched off. The last click switches them on. -->
+<link rel="stylesheet" href="/c8/docs.css" media="not all" class="sys-css">
+<link rel="stylesheet" href="/c8/kit.css" media="not all" class="sys-css">
+<script src="/c8/docs.js"></script>
+<script src="/c8/kit.js"></script>
+<style>
+/* The page starts with no styling. Each answer switches on one block below (html.s2 ... html.s10).
+   The last answer removes them all and turns on the C8 stylesheets instead (html.sys). */
+
+[hidden]{display:none!important}
+.go.done a{pointer-events:none;cursor:default;display:inline!important;background:none!important;color:inherit!important;padding:0!important;min-height:0!important;border-radius:0!important;font-weight:600;text-decoration:none!important;transform:none!important}
+html:not(.sys) .top,html:not(.sys) .rail,html:not(.sys) .mtoc,html:not(.sys) .hfig{display:none!important}
+#restart{position:fixed;top:8px;right:8px;z-index:9}
+@media (max-width:600px){#restart{top:auto;bottom:12px;right:12px}}
+
+/* 2. width */
+html.s2 body{max-width:40em;margin:0 auto;padding:24px 20px 80px;box-sizing:border-box}
+
+/* 3. typeface */
+html.s3 body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+html.s3 button{font:inherit}
+
+/* 4. size and line height */
+html.s4 body{font-size:18px;line-height:1.6}
+@media (max-width:600px){html.s4 body{font-size:17px}}
+
+/* 5. space */
+html.s5 p,html.s5 blockquote,html.s5 pre{margin:0 0 24px}
+html.s5 h1{margin:0 0 24px}
+html.s5 h2{margin:64px 0 16px}
+
+/* 6. hierarchy */
+html.s6 h1{font-size:2.25em;line-height:1.1;letter-spacing:-.02em;font-weight:700}
+html.s6 h2{font-size:1.2em;line-height:1.3;font-weight:600}
+
+/* 7. colour */
+html.s7 body{background:#F7F6F2;color:#1B1B1B}
+html.s7 a{color:#B8431F;text-decoration-thickness:1px;text-underline-offset:3px}
+html.s7 a:hover{color:#F2603C}
+html.s7 .dek{color:#5A5A5A}
+
+/* 8. alignment */
+html.s8 blockquote{margin-left:0;margin-right:0;padding:2px 0 2px 16px;border-left:3px solid #D4D1C9}
+html.s8 pre{margin-left:0}
+
+/* 9. the one action */
+html.s9 .go a,html.s9 .do a{display:inline-block;background:#B8431F;color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;min-height:44px;box-sizing:border-box;line-height:20px;border-radius:8px}
+html.s9 .go a:hover,html.s9 .do a:hover{background:#9E3717;color:#fff}
+html.s9 button{background:transparent;color:#5A5A5A;border:1px solid #D4D1C9;border-radius:8px;padding:8px 14px;cursor:pointer}
+html.s9 button:hover{color:#1B1B1B;border-color:#8A8A8A}
+html.s9 #restart{background:#F7F6F2;top:12px;right:12px}
+@media (max-width:600px){html.s9 #restart{top:auto;bottom:12px}}
+
+/* 10. motion */
+@media (prefers-reduced-motion:no-preference){
+  html.s10 a,html.s10 button{transition:background .2s ease-out,color .2s ease-out,border-color .2s ease-out,transform .2s ease-out}
+  html.s10 .go a:hover,html.s10 .do a:hover{transform:translateY(-1px)}
+  html.s10 .go a:active,html.s10 .do a:active{transform:translateY(0) scale(.98)}
+  html.s10 section.in,html.sys section.in,html.s10 .after.in,html.sys .after.in{animation:rise .4s ease-out both}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+}
+html.s10 section{scroll-margin-top:16px}
+
+/* 11. the system: the C8 stylesheets are on; only the pieces this page adds need styling */
+html.sys{scroll-behavior:smooth}
+html.sys .rule{margin:0 0 1em;padding:2px 0 2px 16px;border-left:3px solid var(--line2);font-size:inherit}
+html.sys .rule b{font-weight:600}
+html.sys .go,html.sys .do{margin:18px 0 8px}
+html.sys .go a,html.sys .do a{display:inline-flex;align-items:center;background:var(--coral);color:#fff;border-radius:9px;padding:10px 16px;font:500 15px var(--sans);text-decoration:none;transition:transform .12s}
+html.sys .go a:active,html.sys .do a:active{transform:scale(.98)}
+html.sys button{font:500 14px var(--sans);color:var(--ink2);background:transparent;border:1px solid var(--line);border-radius:9px;padding:8px 14px;cursor:pointer}
+html.sys button:hover{color:var(--ink);border-color:var(--line2)}
+html.sys #restart{top:60px;right:16px;background:var(--bg)}
+@media (max-width:600px){html.sys #restart{top:auto;bottom:12px;right:12px}}
+html.sys .end{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 1.5em}
+html.sys pre{font:14px/1.6 var(--mono);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px;white-space:pre-wrap;overflow:auto;margin:0 0 1em}
+html.sys .hfig{margin:20px 0 4px}
+html.sys .hfig .wb{max-width:760px;margin:0}
+html.sys .src{list-style:none;padding:0!important;margin:0 0 1em;display:grid;gap:10px}
+html.sys .src li{margin:0}
+html.sys .src li>a:first-child{font-weight:600}
+html.sys .src span{display:block;font-size:15px;color:var(--ink2)}
+</style>
+</head>
+<body data-page="design-for-non-designers" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b><span>Learn design by designing this page</span></a>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<button id="restart" type="button" hidden>Restart</button>
+
+<div class="wrap">
+<main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <h1>Learn design by designing this page</h1>
+</div>
+
+<section class="s" data-i="0">
+  <p>This page has no design yet. Just words.</p>
+  <p>Each step asks a question. Guess the answer, then click. The page changes, and the changes add up.</p>
+  <p class="go"><a href="#content">What is the first thing to work on?</a></p>
+</section>
+
+<section class="s" id="content" data-i="1" hidden>
+  <h2>Content</h2>
+  <p>Not the look. The words. Design serves what it is applied to, and with nothing to show there is nothing to design.</p>
+  <p>So you write first, and the browser shows it like this: Times New Roman, lines to the edge, blue links. That is on purpose. Nothing gets added to this page until you can see why it is needed.</p>
+  <p class="brief" hidden><small>In the brief: <span>Content first. Every screen starts as the words it has to carry.</span></small></p>
+  <p>Now read the paragraph above on a laptop.</p>
+  <p class="go"><a href="#width">What makes it hard?</a></p>
+</section>
+
+<section class="s" id="width" data-i="2" hidden>
+  <h2>Width</h2>
+  <p>The line is too long. Your eye reaches the end, travels back, and loses its place.</p>
+  <blockquote class="rule"><b>The rule.</b> One column, about 70 characters wide. Longer and reading becomes work.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Width: one column, about 70 characters, centred.</span></small></p>
+  <p class="do"><a href="#">Give the words a column.</a></p>
+  <div class="after" hidden>
+    <p>Same words, shorter lines. Your eye comes back to the right place. But the letters still look like a court order.</p>
+    <p class="go"><a href="#type">Why does it still look like 1996?</a></p>
+  </div>
+</section>
+
+<section class="s" id="type" data-i="3" hidden>
+  <h2>Typeface</h2>
+  <p>Look closely at the letters. Each stroke ends in a small foot, and the strokes swing from thick to thin. Times was drawn for ink on paper. On a screen the thin strokes break up.</p>
+  <blockquote class="rule"><b>The rule.</b> One typeface, made for screens. You do not need to choose well. You need to choose once. Inter, if you have no opinion yet.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Type: Inter, for everything.</span></small></p>
+  <p class="do"><a href="#">Switch to a screen typeface.</a></p>
+  <div class="after" hidden>
+    <p>Look again. No feet, even strokes, letters a little wider. Same words, and they read like now. Still tight, though.</p>
+    <p class="go"><a href="#size">What is tight?</a></p>
+  </div>
+</section>
+
+<section class="s" id="size" data-i="4" hidden>
+  <h2>Size and line height</h2>
+  <p>The text is sized for a 2002 monitor, and each line sits on the one below.</p>
+  <blockquote class="rule"><b>The rule.</b> Body text 16 pixels or more. Lines one and a half times their height apart. The gap is where your eye lands on the way back.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Size: 18px body, line height 1.6.</span></small></p>
+  <p class="do"><a href="#">Make the text bigger and give the lines room.</a></p>
+  <div class="after" hidden>
+    <p>Bigger letters, a gap under every line. The words breathe. The paragraphs do not.</p>
+    <p class="go"><a href="#space">What tells you one thought has ended?</a></p>
+  </div>
+</section>
+
+<section class="s" id="space" data-i="5" hidden>
+  <h2>Space</h2>
+  <p>Nothing does, yet. Space should. Things close together read as one group. Things apart read as different.</p>
+  <blockquote class="rule"><b>The rule.</b> One unit, 8 pixels, and multiples of it. A little inside a group, a lot between groups.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Space: 8px unit. 24px between paragraphs, 64px before a heading.</span></small></p>
+  <p class="do"><a href="#">Put space between the ideas.</a></p>
+  <div class="after" hidden>
+    <p>Each paragraph is its own block now, and each heading has room above it. Look at the headings: bigger, because the browser guessed.</p>
+    <p class="go"><a href="#hierarchy">What is first on this page?</a></p>
+  </div>
+</section>
+
+<section class="s" id="hierarchy" data-i="6" hidden>
+  <h2>Hierarchy</h2>
+  <p>Nothing is. Title, section names, bold words: all of them shout a little, so none of them leads.</p>
+  <blockquote class="rule"><b>The rule.</b> One thing first, biggest by a lot. Then two sizes only: the one thing, and everything else. Weight, not size, for what comes next.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Hierarchy: one title at 40px, weight 700. Section headings 22px, weight 600. Nothing else changes size.</span></small></p>
+  <p class="do"><a href="#">Make one thing first.</a></p>
+  <div class="after" hidden>
+    <p>Scroll up. The title leads, the headings follow, everything else is quiet. But the page is still pure black on pure white.</p>
+    <p class="go"><a href="#colour">Why does it tire the eye?</a></p>
+  </div>
+</section>
+
+<section class="s" id="colour" data-i="7" hidden>
+  <h2>Colour</h2>
+  <p>Pure black on pure white is the hardest contrast there is. After a page it vibrates. And the browser's blue points at nothing, because it was chosen for nothing.</p>
+  <blockquote class="rule"><b>The rule.</b> Near-black on near-white, warmed a little. Then one colour, plus grey. Colour is a pointing finger. Colour everything and you point at nothing.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Colour: ink #1B1B1B on #F7F6F2, secondary text #5A5A5A. One accent, #B8431F, for links and the one action only.</span></small></p>
+  <p class="do"><a href="#">Soften the contrast and pick one colour.</a></p>
+  <div class="after" hidden>
+    <p>Warm off-white, softer black, one colour on the links. Now look at the rules on this page.</p>
+    <p class="go"><a href="#alignment">What is off about them?</a></p>
+  </div>
+</section>
+
+<section class="s" id="alignment" data-i="8" hidden>
+  <h2>Alignment</h2>
+  <p>Each one is pushed in by forty pixels. Two left edges, and the eye knows before you do.</p>
+  <blockquote class="rule"><b>The rule.</b> One left edge. Mark a quote with a line, not an indent. Most of "something feels off" is two edges a few pixels apart.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Layout: one left edge. Quotes get a thin left line, not an indent.</span></small></p>
+  <p class="do"><a href="#">Line everything up.</a></p>
+  <div class="after" hidden>
+    <p>One left edge now, and a thin line marks each rule. Every step on this page has had one action.</p>
+    <p class="go"><a href="#action">Can you find it?</a></p>
+  </div>
+</section>
+
+<section class="s" id="action" data-i="9" hidden>
+  <h2>The one action</h2>
+  <p>Barely. It is dressed like every other link, so the most important thing on the screen looks like everything else.</p>
+  <blockquote class="rule"><b>The rule.</b> One screen, one action, and it should look like one: filled with the accent, big enough for a thumb, alone on its line. Links stay underlined text.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Action: one filled button per screen in the accent, 44px tall. Links stay underlined text. Other buttons outlined, grey.</span></small></p>
+  <p class="do"><a href="#">Make the action look like one.</a></p>
+  <div class="after" hidden>
+    <p>There it is, below. One filled button, easy to hit, hard to miss. Press it and the page snaps. Rest on it and nothing happens.</p>
+    <p class="go"><a href="#motion">What is missing?</a></p>
+  </div>
+</section>
+
+<section class="s" id="motion" data-i="10" hidden>
+  <h2>Motion</h2>
+  <p>A reply. Motion says something responded, and where to look next. Everywhere, it is noise. Last and small, it is the difference between a page and a product.</p>
+  <blockquote class="rule"><b>The rule.</b> Motion last, only in reply to the person. 150 to 250 milliseconds, slowing as it lands. Nothing moves on its own.</blockquote>
+  <p class="brief" hidden><small>In the brief: <span>Motion: 200ms ease-out on hover, press and reveal. Nothing moves unprompted. Respect reduced-motion.</span></small></p>
+  <p class="do"><a href="#">Let it move a little.</a></p>
+  <div class="after" hidden>
+    <p>Rest on the button below. It lifts, and gives when you press it. Ten decisions made. One more question: every other C8 notes page looks like this one.</p>
+    <p class="go"><a href="#system">Why?</a></p>
+  </div>
+</section>
+
+<section class="s" id="system" data-i="11" hidden>
+  <h2>The system</h2>
+  <p>Because the decisions were written down once, in one stylesheet, and every C8 page loads it. This page has not loaded it yet.</p>
+  <blockquote class="rule"><b>The rule.</b> Decide once, write it down, reuse it everywhere. That file is a design system. Everything else is detail.</blockquote>
+  <p class="do"><a href="#">Load the C8 stylesheet.</a></p>
+  <div class="after" hidden>
+  <p>Same words. This page is now part of the notes you have been reading: header, contents, dark mode, all from one file.</p>
+  <p>You never dragged a box or picked a pixel. Every change was a sentence. Here they are together: <code>design.md</code>, the file you hand to the machine. Give it to Claude Code, v0 or Stitch with "make me a sign-up page". Where it comes back wrong, fix the sentence, not the pixels.</p>
+  <pre id="out"></pre>
+  <p class="end"><button id="copy" type="button">Copy design.md</button> <button id="again" type="button">Start again</button></p>
+  <p>That is the whole loop. Look at good screens until you can name what they do. Write it down. Let the machine make it. Look again.</p>
+<figure class="hfig loop">
+      <svg class="wb" viewBox="0 0 800 400" role="img" aria-label="The sequence drawn as a loop. See: look at good screens every day. Name: the five rules you can now point at. Write: a design brief in words, design.md. Make: the machine renders the screen. Look again: compare it with your taste, fix the brief, not the pixels, and go round again.">
+        <g class="ln" filter="url(#wob)">
+          <rect class="f-hum" x="24" y="150" width="170" height="100" rx="14"/>
+          <path class="arw" d="M200 200 L240 200" marker-end="url(#ah)"/>
+          <rect class="f-none" x="246" y="150" width="170" height="100" rx="14"/>
+          <path class="arw" d="M422 200 L462 200" marker-end="url(#ah)"/>
+          <rect class="f-prob" x="468" y="150" width="170" height="100" rx="14"/>
+          <path class="arw" d="M644 200 L684 200" marker-end="url(#ah)"/>
+          <rect class="f-det" x="690" y="130" width="96" height="140" rx="10"/>
+          <rect class="f-none" x="704" y="150" width="68" height="14" rx="3"/>
+          <rect class="f-none" x="704" y="176" width="48" height="8" rx="3"/>
+          <rect class="f-none" x="704" y="192" width="58" height="8" rx="3"/>
+          <rect class="f-none" x="704" y="226" width="40" height="18" rx="5"/>
+          <path class="arw" style="stroke:var(--coral)" d="M738 276 C738 350 110 350 110 258" marker-end="url(#ahc)"/>
+        </g>
+        <g class="tx">
+          <text x="109" y="192" class="h c-hum">See</text>
+          <text x="109" y="224" class="s">ten minutes a day</text>
+          <text x="331" y="192" class="h">Name</text>
+          <text x="331" y="224" class="s">the five rules</text>
+          <text x="553" y="192" class="h c-prob">Write</text>
+          <text x="553" y="224" class="s">design.md</text>
+          <text x="738" y="110" class="h c-det">Make</text>
+          <text x="738" y="300" class="s">the machine renders it</text>
+          <text x="424" y="372" class="s c-act">look again, fix the brief, not the pixels</text>
+          <text x="109" y="110" class="s">what is first? what is quiet?</text>
+        </g>
+      </svg>
+    </figure>
+  <p>Where this came from, and where to go next.</p>
+  <ul class="src">
+    <li><a href="https://anthonyhobday.com/sideprojects/saferules/" target="_blank" rel="noopener">Visual design rules you can safely follow</a><span>Anthony Hobday. Twenty-eight rules that never hurt. Most of the rules above are his.</span></li>
+    <li><a href="https://lawsofux.com/" target="_blank" rel="noopener">Laws of UX</a><span>Why the rules work. The ones behind this page: <a href="https://lawsofux.com/law-of-proximity/" target="_blank" rel="noopener">proximity</a>, <a href="https://lawsofux.com/von-restorff-effect/" target="_blank" rel="noopener">von Restorff</a>, <a href="https://lawsofux.com/fittss-law/" target="_blank" rel="noopener">Fitts</a>, <a href="https://lawsofux.com/hicks-law/" target="_blank" rel="noopener">Hick</a>, <a href="https://lawsofux.com/doherty-threshold/" target="_blank" rel="noopener">Doherty threshold</a>, <a href="https://lawsofux.com/jakobs-law/" target="_blank" rel="noopener">Jakob</a>, <a href="https://lawsofux.com/aesthetic-usability-effect/" target="_blank" rel="noopener">aesthetic-usability</a>.</span></li>
+    <li><a href="resources.html">The reading list</a><span>Where to look every day, Figma once, briefs, motion, and putting it in front of someone.</span></li>
+  </ul>
+  </div>
+</section>
+</main>
+</div>
+
+<script>
+(function(){
+  var html=document.documentElement;
+  var secs=Array.prototype.slice.call(document.querySelectorAll('section[data-i]'));
+  var LAST=secs.length-1;            /* 11: the system */
+  var FIRST_CSS=2, LAST_CSS=10;      /* width ... motion */
+  var KEY='dfnd-step';
+  var restart=document.getElementById('restart');
+  var sheets=Array.prototype.slice.call(document.querySelectorAll('link.sys-css'));
+
+  /* state: n = sections shown, done = the last one has been applied */
+  function apply(n,done,scroll){
+    var level=done?n:n-1, sys=n===LAST&&done;
+    for(var i=FIRST_CSS;i<=LAST_CSS;i++) html.classList.toggle('s'+i,!sys&&i<=level);
+    html.classList.toggle('sys',sys);
+    sheets.forEach(function(l){l.media=sys?'all':'not all'});
+    if(sys&&window.C8Kit&&C8Kit.wbDefs) C8Kit.wbDefs();
+    secs.forEach(function(s){
+      var i=+s.getAttribute('data-i'), d=s.querySelector('.do'), af=s.querySelector('.after'), g=s.querySelector('.go');
+      s.hidden=i>n;
+      var applied=i<n||(i===n&&(done||!d));
+      if(d) d.hidden=applied;
+      if(af) af.hidden=!applied;
+      if(g){g.classList.toggle('done',i<n);var ga=g.querySelector('a');if(i<n)ga.setAttribute('tabindex','-1');else ga.removeAttribute('tabindex');}
+    });
+    restart.hidden=n===0;
+    try{localStorage.setItem(KEY,n+':'+(done?1:0));}catch(e){}
+    if(scroll){
+      var el=done?secs[n].querySelector('.after'):secs[n];
+      el.classList.remove('in'); void el.offsetWidth; el.classList.add('in');
+      el.scrollIntoView({behavior:'smooth',block:done?'center':'start'});
+    }
+  }
+
+  secs.forEach(function(s){
+    var i=+s.getAttribute('data-i');
+    var g=s.querySelector('.go a'), d=s.querySelector('.do a');
+    if(g) g.addEventListener('click',function(e){e.preventDefault();apply(i+1,false,true);});
+    if(d) d.addEventListener('click',function(e){e.preventDefault();apply(i,true,true);});
+  });
+
+  function reset(){apply(0,false,false);window.scrollTo({top:0,behavior:'smooth'});}
+  restart.addEventListener('click',reset);
+  document.getElementById('again').addEventListener('click',reset);
+
+  var lines=Array.prototype.map.call(document.querySelectorAll('.brief span'),function(x){return '- '+x.textContent;});
+  var brief='# design.md\n\nFeel: calm, like a well-kept notebook. Nothing shouts.\n\n'+lines.join('\n')+'\n';
+  var out=document.getElementById('out'); out.textContent=brief;
+  document.getElementById('copy').addEventListener('click',function(){
+    var btn=this;
+    function done(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy design.md';},1500);}
+    function fallback(){var r=document.createRange();r.selectNodeContents(out);var sel=window.getSelection();sel.removeAllRanges();sel.addRange(r);try{document.execCommand('copy');done();}catch(e){}}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(brief).then(done,fallback);}else{fallback();}
+  });
+
+  var sn=0, sd=false;
+  try{var v=(localStorage.getItem(KEY)||'0:0').split(':');sn=Math.min(LAST,Math.max(0,parseInt(v[0],10)||0));sd=v[1]==='1';}catch(e){}
+  apply(sn,sd,false);
+})();
+</script>
+</body>
+</html>
