@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>100x Tutor | 100xEngineers</title>
+<meta name="description" content="Turn a chatbot into a tutor that asks you the questions. Paste it in after a lecture and see what you really understood.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .opener{display:block;font:14px/1.6 var(--mono);margin:.7em 0 1em;overflow-wrap:anywhere;background:none;border:0;padding:0}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read .chat{margin:1.2em 0 .6em;display:grid;gap:18px}
+body.read .chat>div{min-width:0}
+body.read .chat .who{display:block;font-size:13.5px;font-weight:600;margin-bottom:2px}
+body.read .chat .you .who{color:var(--ink2)}
+body.read .chat .you p{color:var(--ink2)}
+body.read .chat p{margin:0 0 .6em}
+body.read .chat p:last-child{margin-bottom:0}
+body.read .chat .skip{color:var(--ink3);font-size:14px}
+body.read pre.map,body.read pre.cmd{font:12.5px/1.55 var(--mono);overflow-x:auto;margin:.6em 0;padding:0}
+body.read pre.cmd{background:var(--bg2);padding:12px 14px;border-radius:8px}
+body.read .cap{font-size:14px;color:var(--ink3)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="100x-tutor" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Curriculum"><a href="/">Map</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Study tool · Any lecture · Both tracks</p>
+  <h1>100x Tutor</h1>
+  <p class="dek">Turn a chatbot into a tutor that asks you the questions, so you can see what you really understood.</p>
+  <div class="meta"><span>About 25 to 40 short replies per lecture, over as many sittings as you like.</span></div>
+</div>
+
+<div class="call"><p class="kick">Start here</p>
+  <p>Copy the tutor, paste it into a new chat, and fill in the last line:</p>
+  <code class="opener">Teach me [topic]. I'm [your background]. Use only these notes: [paste your notes].</code>
+  <button class="btn" id="copy-tutor" type="button">Copy the tutor</button>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Why it's here</h2>
+<p>Following a lecture and being able to do it yourself are two different things. The gap usually shows up when you sit down to build.</p>
+<p>A normal chat hands you the answer, so the AI does the thinking. The tutor asks instead. It finds out what you already know, asks one question at a time, and pushes on the part that is shaky.</p>
+<p>Use it after a lecture, while the notes are fresh, or before an office hour to find out what to ask.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>How to use it</h2>
+<ol>
+  <li><b>Copy and paste.</b> Open a new chat in Claude, paste the tutor, replace the brackets in the last line, and send.</li>
+  <li><b>Answer in your own words.</b> Guesses help, and "I don't know" is a useful answer. Both show the tutor where to start.</li>
+  <li><b>Save before you stop.</b> Type <code>save state</code> and keep the block it gives you.</li>
+  <li><b>Pick it up later.</b> In a new chat, paste the tutor again, then type <code>resume from:</code> followed by your saved block and your notes.</li>
+</ol>
+<details>
+  <summary>Use Claude Code? Install it once</summary>
+  <pre class="cmd">mkdir -p ~/.claude/skills/100x-tutor &amp;&amp; curl -o ~/.claude/skills/100x-tutor/SKILL.md https://100x-curriculum.vercel.app/c8/100x-tutor/SKILL.md</pre>
+  <p>Then say "teach me tool calling" in any session. Or <a href="/c8/100x-tutor/SKILL.md" download>download the file</a>.</p>
+</details>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>What it looks like</h2>
+<p>An HR professional who doesn't code, working through the Lecture 9 notes.</p>
+<div class="chat">
+  <div class="you"><span class="who">You</span><p>Teach me the main ideas from this lecture. I'm from HR and I don't code. Here are the notes: [Lecture 9 notes]</p></div>
+  <div><span class="who">Tutor</span><p>The lecture comes down to 4 ideas: rules vs. prediction, checking an answer, whether a machine can learn it, and your own job. First, a few quick questions to see where you're starting from.</p><p>Your payroll system calculates salaries. Your colleague asks ChatGPT, "Is this candidate a good culture fit?" Which of the two would you expect to give the same answer every time you ask? Why?</p></div>
+  <div class="you"><span class="who">You</span><p>The payroll system I think, because it's just doing math. ChatGPT would probably give different answers because it's kind of looking up opinions from somewhere?</p></div>
+  <div><span class="who">Tutor</span><p>You have the first half: payroll follows fixed rules, so the same input gives the same output. I'll come back to the "looking up opinions" part later, because I think the mechanism is a bit different from that.</p></div>
+  <p class="skip">A little later</p>
+  <div><span class="who">Tutor</span><p>Suppose you wanted a machine to get good at judging hiring decisions. You could start with 10 years of hiring records, with nothing about how each hire turned out. Or a clear definition of a good hire, but no past records. Which would help more, and why?</p></div>
+  <div class="you"><span class="who">You</span><p>Option 1 at first, because 10 years sounds like a lot. But there's nothing saying how each hire turned out, so it couldn't tell which ones were good? And with no records I'm not sure what it would practice on, so maybe neither is enough alone?</p></div>
+  <div><span class="who">Tutor</span><p>You reasoned your way to the right answer. Records without outcomes can't teach right from wrong, and a definition without examples gives nothing to practice on. The lecture's term for this is "verifier first, data second."</p>
+<pre class="map">1 Rules vs. prediction     [██░░░░░░░░]  1/5  &lt;- start here
+2 Checking an answer       [████░░░░░░]  2/5
+3 Can a machine learn it?  [████░░░░░░]  2/5
+4 Your own job             [░░░░░░░░░░]  0/5</pre></div>
+</div>
+<p class="cap">Trimmed from a test session.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>What you can type</h2>
+<table class="dials"><thead><tr><th>Type</th><th>What happens</th></tr></thead><tbody>
+  <tr><td><code>show progress</code></td><td>Shows where you stand on each part</td></tr>
+  <tr><td><code>easier</code> or <code>harder</code></td><td>Changes the difficulty</td></tr>
+  <tr><td><code>just tell me</code></td><td>Answers this one question, then goes back to asking</td></tr>
+  <tr><td><code>save state</code></td><td>Gives you a block to continue in a new chat</td></tr>
+  <tr><td><code>resume from:</code></td><td>Picks up from a saved block</td></tr>
+</tbody></table>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Good to know</h2>
+<ul>
+  <li><b>Levels are practice feedback, not a grade.</b> The target is 3 out of 5, which means you can do it with some help. Ask for full mastery if you want to go further.</li>
+  <li><b>Your practice set stays yours.</b> The tutor will review your draft and show examples on other tasks. It won't write what you hand in.</li>
+  <li><b>It can be wrong.</b> When it disagrees with the notes, go with the notes and bring the question to the office hour. Use the best model you have, because the cheapest one we tried taught a wrong idea in testing.</li>
+  <li><b>Tested on Claude.</b> You can paste it into ChatGPT or Gemini, but we haven't tested it there.</li>
+</ul>
+<p class="cap">Adapted from Jane Street's open-source <a href="https://github.com/janestreet/agent_skills" target="_blank" rel="noopener">socratic-tutor</a>, used under the <a href="/c8/100x-tutor/LICENSE.md">MIT license</a>.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9 notes</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10 notes</a></li>
+  <li><a href="/">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · 100x Tutor</span><a href="/">Curriculum map</a></div></footer>
+<script>
+(function(){
+  var OPENER='\n\nTeach me [topic]. I\'m [your background]. Use only these notes: [paste your notes].';
+  var btn=document.getElementById('copy-tutor'), text=null;
+  fetch('/c8/100x-tutor/SKILL.md').then(function(r){if(!r.ok)throw 0;return r.text();}).then(function(t){
+    text=t.replace(/^---[\s\S]*?---\s*/,'').trim()+OPENER;
+    btn.dataset.ready='1';
+  }).catch(function(){btn.dataset.ready='0';});
+  btn.addEventListener('click',function(){
+    if(text&&window.c8copy){window.c8copy(btn,text);}
+    else{location.href='/c8/100x-tutor/SKILL.md';}
+  });
+})();
+</script>
+</body>
+</html>
