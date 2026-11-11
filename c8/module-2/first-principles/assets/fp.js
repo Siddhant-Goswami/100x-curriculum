@@ -50,15 +50,15 @@ var W={},PIC={};
 W.gate=function(s){
   var on=[0,0,0,0],t=[];
   function paint(){
-    var sh=R(18,52,104,56,on[0]?'f-det':'f-card',10),tx=T(70,87,on[0]?'voltage on':'voltage off','s')+HIT(18,52,104,56,'v','Put voltage on the first gate');
+    var sh=R(18,52,104,56,on[0]?'f-det':'f-card',10),tx=T(70,87,on[0]?'power on':'power off','s')+HIT(18,52,104,56,'v','Put power on the first gate');
     [0,1,2].forEach(function(i){var x=166+i*118;sh+=P('M'+(x-40)+' 80H'+(x-6),'arw'+(on[i]?' c-det':''))+R(x,50,78,60,on[i+1]?'f-det':'f-card');tx+=T(x+39,77,'gate '+(i+1),'s')+T(x+39,99,on[i+1]?'open':'shut','xs')});
     sh+=P('M484 80H514','arw'+(on[3]?' c-det':''))+C(550,80,24,on[3]?'f-det':'f-card')+(on[3]?P('M550 46V36M574 56l8-7M584 80h10M526 56l-8-7M574 104l8 7M526 104l-8 7','c-det'):'');
     tx+=T(550,138,on[3]?'lit':'lamp','xs');
-    draw(s.stage,600,156,sh,tx,'A voltage switch, three gates in a chain, and a lamp');
+    draw(s.stage,600,156,sh,tx,'A power switch, three gates in a chain, and a lamp');
   }
   tap(s.stage,function(){t.forEach(clearTimeout);t=[];var v=on[0]^1;on[0]=v;paint();
     [1,2,3].forEach(function(i){t.push(setTimeout(function(){on[i]=v;paint();if(i===3&&v){s.say('You touched one gate. Its output opened the next, and the next.','ok');s.win()}},i*260))})});
-  paint();s.say('Click the raised <b>voltage off</b> box.');
+  paint();s.say('Click the raised <b>power off</b> box.');
 };
 W.byte=function(s){
   var vals=[128,64,32,16,8,4,2,1],bits=[0,0,0,0,0,0,0,0],goals=[5,65],g=0;
@@ -124,11 +124,11 @@ W.bench=function(s){
   function run(){clearInterval(timer);tick=0;timer=setInterval(function(){tick++;
     if(power){lv=tick%5===0?1:Math.max(.4,lv-.13);if(tick>45){clearInterval(timer);lv=1}}
     else{lv=Math.max(0,lv-.2);if(lv===0){clearInterval(timer);bench=false;paint();
-      if(disk){s.say('The bench is wiped. Storage still holds "hi".','ok');s.win()}else s.say('The buckets drained. "hi" is gone for good. Type it again, and save before you cut.');return}}
+      if(disk){s.say('The workbench is wiped. Storage still holds "hi".','ok');s.win()}else s.say('The buckets drained. "hi" is gone for good. Type it again, and save before you cut.');return}}
     paint()},170)}
-  s.btn('Type hi','pri',function(){power=true;bench=true;lv=1;run();paint();s.say('On the bench at once. The buckets leak, so the chip keeps topping them up.')});
-  s.btn('Save to storage','',function(){if(!bench||!power){s.say('Nothing on the bench to save.');return}disk=true;paint();s.say('Pushed through the wall and locked in. No leak, no topping up. But slow to write.')});
-  s.btn('Cut the power','',function(){if(!power)return;if(!bench){s.say('The bench is empty. Type hi first.');return}power=false;run();s.say('The topping-up has stopped.')});
+  s.btn('Type hi','pri',function(){power=true;bench=true;lv=1;run();paint();s.say('On the workbench at once. The buckets leak, so the chip keeps topping them up.')});
+  s.btn('Save to storage','',function(){if(!bench||!power){s.say('Nothing on the workbench to save.');return}disk=true;paint();s.say('Pushed through the wall and locked in. No leak, no topping up. But slow to write.')});
+  s.btn('Cut the power','',function(){if(!power)return;if(!bench){s.say('The workbench is empty. Type hi first.');return}power=false;run();s.say('The topping-up has stopped.')});
   paint();s.say('Type hi, then cut the power.');
 };
 W.dir=function(s){
@@ -136,13 +136,13 @@ W.dir=function(s){
   function paint(){var sh='',tx='';
     for(var i=0;i<12;i++){var n=36+i,x=16+(i%6)*76,y=30+Math.floor(i/6)*76,o=open[n];
       sh+=R(x,y,66,50,o?(B[n]==='chats'?'f-hum':'f-bg'):'f-card');tx+=T(x+33,y-6,n,'xs c-mute')+T(x+33,y+33,o?(B[n]||'…'):'?','s')+(o?'':HIT(x,y,66,50,n,'Read block '+n));}
-    if(round===2){sh+=R(482,24,106,132,'f-det',8);tx+=T(535,50,'directory','xs')+T(535,80,'chats 42','s')+T(535,106,'plans 38','s')+T(535,132,'notes 45','s')}
+    if(round===2){sh+=R(482,24,106,132,'f-det',8);tx+=T(535,50,'contents','xs')+T(535,80,'chats 42','s')+T(535,106,'plans 38','s')+T(535,132,'notes 45','s')}
     tx+=T(16,190,'reads: '+reads,'s l');
     draw(s.stage,600,200,sh,tx,'A row of numbered disk blocks, face down');}
   tap(s.stage,function(k){if(busy||open[k])return;open[k]=1;reads++;paint();
     if(B[k]!=='chats'){s.say(B[k]?'Block '+k+' is where '+B[k]+' starts. Keep reading.':'Block '+k+': not the start of anything. Keep reading.');return}
-    if(round===1){busy=true;s.say('Found in <b>'+reads+'</b> reads. A disk only knows numbered blocks. So set a few aside as a small card.','ok');setTimeout(function(){round=2;open={};reads=0;busy=false;paint();s.say('Same disk, plus the card. Find the chats again.')},1900)}
-    else{s.say(reads===1?'One read. The card said where to look.':'Found in '+reads+'. The card said 42.','ok');s.win()}});
+    if(round===1){busy=true;s.say('Found in <b>'+reads+'</b> reads. A disk only knows numbered blocks. So set a few blocks aside as a contents page.','ok');setTimeout(function(){round=2;open={};reads=0;busy=false;paint();s.say('Same disk, plus the contents page. Find the chats again.')},1900)}
+    else{s.say(reads===1?'One read. The contents page said where to look.':'Found in '+reads+'. The contents page said 42.','ok');s.win()}});
   paint();s.say('The chats start in one of these blocks. Click blocks to read them until you find it.');
 };
 W.index=function(s){
@@ -331,7 +331,7 @@ W.map=function(s){
     if(step>=1){sh+=arrow([.95,.2],[.9,.9]);tx+=T(px(.9)-34,py(.55),'country to capital','xs r c-prob')}
     if(step>=2){sh+=arrow([.12,.2],[.07,.9])+C(px(.07),py(.9),7,'gp');tx+=T(px(.07)+14,py(.9)+6,'Berlin','s l c-prob')}
     if(!guess)tx+=HITA(60,16,524,234,'plot','The map. Click where you think Berlin sits.');
-    draw(s.stage,600,282,sh,tx,'Four words on a map with two rulers: how French, and how much of a city',true);}
+    draw(s.stage,600,282,sh,tx,'Four words on a map with two scales: how French, and how much of a city',true);}
   s.stage.addEventListener('click',function(e){if(guess||!e.target.closest('[data-k="plot"]'))return;var svg=s.stage.querySelector('svg'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;var q=pt.matrixTransform(svg.getScreenCTM().inverse());
     guess=[Math.max(0,Math.min(1,(q.x-60)/500)),Math.max(0,Math.min(1,(250-q.y)/210))];b1.disabled=false;paint();s.say('Marked. Now find it with arithmetic instead.')});
   b1=s.btn('Paris minus France','pri',function(){step=Math.max(step,1);b2.disabled=false;paint();s.say('Paris − France = (0.90 − 0.95, 0.90 − 0.20) = <b>(−0.05, +0.70)</b>. A short arrow that means "country to capital".')});
@@ -402,8 +402,8 @@ W.trip=function(s){
   function paint(){var d=8e9,maths=2*d/1e15,gb=d*bits/8/1e9,carry=gb*1e9/3e12,tps=batch/(carry+batch*maths),w=gb*9,ok=tps>=GOAL;
     var sh=R(16,50,120,70,'f-det')+R(464,50,120,70,'f-card')+P('M140 132H458','arw')+R(300-w/2,62,w,46,'f-prob',8);
     var n=Math.min(batch,40),i;for(i=0;i<n;i++)sh+=C(300-(Math.min(n,20)-1)*5.5+(i%20)*11,i<20?48:36,3.5,'dot');
-    var tx=T(76,82,'the bench','s')+T(76,104,'8 billion dials','xs c-mute')+T(524,82,'the workers','s')+T(524,104,'mostly waiting','xs c-mute')+T(300,92,gb+' GB','s')+T(300,156,'one trip serves '+num(batch)+(batch>1?' people':' person'),'xs c-mute')+T(300,204,num(tps)+' tokens a second','h'+(ok?' c-hum':''))+T(300,230,'goal: '+num(GOAL),'xs c-mute');
-    draw(stage,600,240,sh,tx,'The dials travel from the bench to the workers for every token');
+    var tx=T(76,82,'the workbench','s')+T(76,104,'8 billion dials','xs c-mute')+T(524,82,'the workers','s')+T(524,104,'mostly waiting','xs c-mute')+T(300,92,gb+' GB','s')+T(300,156,'one trip serves '+num(batch)+(batch>1?' people':' person'),'xs c-mute')+T(300,204,num(tps)+' tokens a second','h'+(ok?' c-hum':''))+T(300,230,'goal: '+num(GOAL),'xs c-mute');
+    draw(stage,600,240,sh,tx,'The dials travel from the workbench to the workers for every token');
     s.say((bits<16?'Each dial held in '+bits+' bits: rougher dials. ':'')+(batch>1?'Needs '+num(batch)+' people chatting at the same moment.':'')||'One person, sixteen bits a dial. Pull the two levers.',ok?'ok':'');
     if(ok)s.win();}
   var r=h('div','fp-row');r.appendChild(range(1,300,1,1,'People sharing each trip (batching)',function(v){batch=v;paint()}));s.stage.appendChild(r);
@@ -415,11 +415,11 @@ W.scaling=function(s){
   var n=D.length,sx=0,sy=0,sxx=0,sxy=0;D.forEach(function(d){sx+=d[0];sy+=d[1];sxx+=d[0]*d[0];sxy+=d[0]*d[1]});var m=(n*sxy-sx*sy)/(n*sxx-sx*sx),c0=(sy-m*sx)/n,pred=m*BX+c0;
   function px(x){return 60+x*54}function py(l){return 20+(4.4-l)*58}
   function paint(){var sh=P('M60 14V'+py(.6)+'H590','ax')+D.map(function(d){return C(px(d[0]),py(d[1]),6,'pt')}).join('')+'<line class="gh" x1="'+px(BX)+'" y1="14" x2="'+px(BX)+'" y2="'+py(.6)+'"/>';
-    var tx=T(54,26,'loss','xs r c-mute')+T(590,py(.6)+24,'compute spent (each step is ten times more)','xs r c-mute')+T(px(3.5),py(4.25),'ten small models','xs c-mute')+T(px(BX),py(4.3),'the big one','xs c-mute');
+    var tx=T(54,26,'loss','xs r c-mute')+T(590,py(.6)+24,'computing spent (each step is ten times more)','xs r c-mute')+T(px(3.5),py(4.25),'ten small models','xs c-mute')+T(px(BX),py(4.3),'the big one','xs c-mute');
     if(guess!=null)tx+=T(px(BX)-16,py(guess)+8,'?','m c-act');
     if(ext){sh+='<line class="curve" x1="'+px(.4)+'" y1="'+py(m*.4+c0)+'" x2="'+px(9.4)+'" y2="'+py(m*9.4+c0)+'"/>'+C(px(BX),py(pred),7,'gp')}
     if(!ext)tx+=HITA(px(BX)-28,14,56,py(.6)-14,'col','The big model. Click how low you think its loss will be.');
-    draw(s.stage,600,py(.6)+34,sh,tx,'Loss against compute for small models, and a dashed line where the big model will be',true);}
+    draw(s.stage,600,py(.6)+34,sh,tx,'Loss against computing spent for small models, and a dashed line where the big model will be',true);}
   s.stage.addEventListener('click',function(e){if(ext||!e.target.closest('[data-k="col"]'))return;var svg=s.stage.querySelector('svg'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;var q=pt.matrixTransform(svg.getScreenCTM().inverse());
     guess=Math.max(.7,Math.min(4.3,4.4-(q.y-20)/58));b.disabled=false;paint();s.say('Marked. Now extend the line.')});
   b=s.btn('Extend the line','pri',function(){ext=true;paint();var off=Math.abs(guess-pred);s.say('The line says a loss of about <b>'+pred.toFixed(1)+'</b>. '+(off<.3?'Your eye had it.':'You were '+off.toFixed(1)+' away.')+' Draw the line through the ones you have, and it guesses the one you do not. The house prices again.','ok');s.win()});
@@ -467,7 +467,7 @@ W.attempts=function(s){
     if(!Wn.length){paint(cells,'All sixteen failed. Nothing to tell good working from bad, so no nudge. Run it again.');return}
     var dw=Wn.filter(function(x){return x.chk}).length/Wn.length,dl=L.filter(function(x){return x.chk}).length/L.length;habit=Math.max(.03,Math.min(.995,habit+.3*(dw-dl)));
     paint(cells,'Every token in a winning attempt nudged up, every token in a losing one nudged down. Nobody read the working. The underlined attempts paused to check.')}
-  function reset(){habit=.12;round=0;paint([],'Each tick or cross is one whole attempt: thousands of tokens of working. Only the last line is checked.')}
+  function reset(){habit=.12;round=0;paint([],'Each right or wrong mark is one whole attempt: thousands of tokens of working. Only the last line is checked.')}
   s.btn('Run sixteen attempts','pri',run);s.btn('Start again','',reset);reset();
 };
 W.check=function(s){
@@ -476,7 +476,7 @@ W.check=function(s){
     list=h('div','fp-rub'),res=h('div','fp-two'),run,patch;
   s.stage.appendChild(list);s.stage.appendChild(res);
   function paint(r){list.innerHTML='<p class="mut">The check you wrote</p>'+rules.map(function(x){return '<p>'+(r==null?'☐ ':'☑ ')+x+'</p>'}).join('');
-    res.innerHTML=r==null?'':'<div><span>Score</span><b class="big">100%</b><small>every line of your check is ticked</small></div><div><span>Code that works?</span><b class="big">'+(r===2?'yes':'no')+'</b><small>'+OUT[r]+'</small></div>'}
+    res.innerHTML=r==null?'':'<div><span>Score</span><b class="big">100%</b><small>every line of your check passes</small></div><div><span>Code that works?</span><b class="big">'+(r===2?'yes':'no')+'</b><small>'+OUT[r]+'</small></div>'}
   run=s.btn('Let the model try','pri',function(){paint(step);run.disabled=true;
     if(step===2){s.say('Three lines to get what you meant by one. An honest check costs effort. A careless one costs more.','ok');s.win();return}
     patch.hidden=false;patch.textContent='Patch the check: '+ADD[step].charAt(0).toLowerCase()+ADD[step].slice(1);s.say('It scored full marks and missed the goal. It learned the check you wrote.')});
@@ -508,7 +508,7 @@ W.match=function(s){
   function paint(){card.innerHTML=rows.map(function(r,i){return '<tr class="'+(i===at?'fp-at':'')+'"><th>'+r.slot+'</th><td>'+(i<at?r.ans:i===at?'?':'')+'</td></tr>'}).join('')}
   shuf(rows.map(function(r,i){return i})).forEach(function(i){pool.appendChild(btn(rows[i].ans,'opt',function(){
     if(i!==at){nope(this);s.say('That belongs in a different row.');return}
-    at++;this.remove();paint();if(at===rows.length){s.say(s.fig.getAttribute('data-end')||'The card is full.','ok');s.win()}else s.say('Yes. Now: '+rows[at].slot.toLowerCase()+'?')}))});
+    at++;this.remove();paint();if(at===rows.length){s.say(s.fig.getAttribute('data-end')||'All filled in.','ok');s.win()}else s.say('Yes. Now: '+rows[at].slot.toLowerCase()+'?')}))});
   paint();s.say('Fill the highlighted row.');
 };
 /* sort: <ul><li data-a="0|1" data-why="…">item</li>…</ul>, data-bins="Left|Right" */
@@ -523,7 +523,7 @@ W.sort=function(s){
 };
 
 /* ================= still pictures used inside the "found" blocks ================= */
-PIC.clock=function(el){var rows=[['add two numbers','1 second',0],['your message lands on the bench','5 minutes',2.48],['a copy saved to phone storage','3 days',5.41],['a spinning disk far away','1 year',7.5]],sh='',tx='';
+PIC.clock=function(el){var rows=[['add two numbers','1 second',0],['your message on the workbench','5 minutes',2.48],['a copy saved to phone storage','3 days',5.41],['a spinning disk far away','1 year',7.5]],sh='',tx='';
   rows.forEach(function(r,i){var y=22+i*40;sh+=R(250,y,8+r[2]*36,22,i?'f-det':'f-card',4);tx+=T(240,y+18,r[0],'xs r')+T(268+r[2]*36,y+19,r[1],'s l')});
   draw(el,600,206,sh,tx+T(250,198,'each step along the bar is ten times longer','xs l c-mute'),'How long each action takes when one tick of the chip is slowed to one second');};
 PIC.wait=function(el){draw(el,600,112,R(200,16,2,24,'fill-det',0)+R(200,62,380,24,'f-prob',4),T(190,36,'doing the maths','xs r')+T(212,36,'1 second','s l')+T(190,82,'waiting for the dials','xs r')+T(390,81,'5 minutes','s')+T(200,108,'on the slowed-down clock, drawn to scale','xs l c-mute'),'One second of maths against five minutes of waiting, drawn to scale')};
@@ -545,7 +545,7 @@ function here(){return location.pathname.replace(/\.html$/,'').replace(/\/index$
 function lessonState(li){var sc=li.getAttribute('data-scene');return sc?(ST[sc]||0):(V[li.getAttribute('data-href')]?2:0)}
 function paintToc(){
   var chs=[].slice.call(document.querySelectorAll('.fp-ch>li[data-ch]'));if(!chs.length)return;
-  var me=here(),total=0,doneN=0,firstOpen=null,earned={};
+  var me=here(),total=0,doneN=0,firstOpen=null,earned={},doneCh={};
   /* the drawer and the course home both list every lesson; count once, from the first list */
   var counted=document.querySelector('.fp-ch');
   chs.forEach(function(fl){
@@ -557,12 +557,16 @@ function paintToc(){
     fl.classList.toggle('won',d===ls.length&&won===ls.length);fl.classList.toggle('seen',d===ls.length&&won<ls.length);fl.classList.toggle('half',d>0&&d<ls.length);
     var c=fl.querySelector('[data-count]');if(c)c.textContent=d?d+' of '+ls.length:ls.length+' lessons';
     if(sceneN&&sceneWon===sceneN)earned[fl.getAttribute('data-ch')]=1;
+    if(d===ls.length)doneCh[fl.getAttribute('data-ch')]=1;
   });
   /* the lesson to do now gets a "next" chip in every list */
   [].forEach.call(document.querySelectorAll('.fp-ls>li.up'),function(li){li.classList.remove('up')});
   if(firstOpen)[].forEach.call(document.querySelectorAll('.fp-ls>li[data-href="'+firstOpen.getAttribute('data-href')+'"]'),function(li){li.classList.add('up')});
   [].forEach.call(document.querySelectorAll('[data-sum]'),function(el){el.textContent=doneN?doneN+' of '+total+' lessons done':total+' lessons'});
-  [].forEach.call(document.querySelectorAll('[data-earn]'),function(li){li.classList.toggle('earned',!!earned[li.getAttribute('data-earn')])});
+  /* course home: a principle shows once its chapter is done (marked "found" if every drawing was played); the whole chain at the very end */
+  [].forEach.call(document.querySelectorAll('[data-earn]'),function(li){var c=li.getAttribute('data-earn');li.hidden=!doneCh[c];li.classList.toggle('earned',!!earned[c])});
+  [].forEach.call(document.querySelectorAll('[data-found]'),function(el){el.hidden=!Object.keys(doneCh).length});
+  [].forEach.call(document.querySelectorAll('[data-finish]'),function(el){el.hidden=!(total&&doneN===total)});
   var go=document.querySelector('[data-continue]');
   if(go){var t=firstOpen||counted.querySelector('.fp-ls>li');var n=t.querySelector('.n').textContent,ti=t.querySelector('.t').textContent;
     go.href=t.getAttribute('data-href');go.textContent=!doneN?'Start with lesson 1.1':firstOpen?'Continue: '+n+' '+ti:'All done. Back to lesson 1.1';
@@ -642,7 +646,7 @@ document.addEventListener('DOMContentLoaded',function(){
   paintToc();drawer();chapterDone();termTips();chainInView();
   /* two clicks, not a browser dialog: the first arms the button, the second clears */
   var rs=document.querySelector('[data-fpreset]');if(rs)rs.addEventListener('click',function(){
-    if(!rs.classList.contains('arm')){rs.classList.add('arm');rs.textContent='Click again to clear every tick';setTimeout(function(){rs.classList.remove('arm');rs.textContent='Clear my ticks and start again'},4000);return}
+    if(!rs.classList.contains('arm')){rs.classList.add('arm');rs.textContent='Click again to clear your progress';setTimeout(function(){rs.classList.remove('arm');rs.textContent='Clear my progress and start again'},4000);return}
     ST={};V={};store.set(KEY,ST);store.set(VKEY,V);location.reload()});
 });
 })();

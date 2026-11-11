@@ -21,7 +21,12 @@
   "redirects": [
     {
       "source": "/c8/module-2/first-principles/03-can-you-trust-a-machine/a-memory-that-guesses",
-      "destination": "/c8/module-2/first-principles/04-what-is-learning/a-memory-that-guesses",
+      "destination": "/c8/module-2/first-principles/04-what-is-learning/",
+      "permanent": true
+    },
+    {
+      "source": "/c8/module-2/first-principles/04-what-is-learning/a-memory-that-guesses",
+      "destination": "/c8/module-2/first-principles/04-what-is-learning/",
       "permanent": true
     },
     {

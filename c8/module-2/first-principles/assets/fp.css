@@ -290,6 +290,12 @@ body.read .fp-ls li{margin:0}
 .fp-lesson .lead{font-size:18px;line-height:1.5;color:var(--ink2)}
 .fp-lesson .fp-how{margin:-4px 0 18px;font-size:14px;color:var(--ink3)}
 .fp-lesson .fp-how b{color:var(--ink2)}
+/* a chapter's first lesson: one line on why it matters to the learner's build */
+.fp-lesson .fp-why{margin:-4px 0 18px;font-size:15px;line-height:1.5;color:var(--ink2)}
+.fp-lesson .fp-why b{color:var(--ink);font-weight:600}
+.fp-lesson .fp-why+.fp-how{margin-top:-8px}
+/* a picture in a reading lesson (no drawing to play) */
+body.read .fp-lesson>.pic{margin:4px 0 18px;max-width:560px}
 
 /* one way forward: Previous and Next right after the lesson, in the page. Next turns solid once the lesson is done. */
 .fp-nav{display:flex;align-items:center;gap:12px;margin:28px 0 0}
