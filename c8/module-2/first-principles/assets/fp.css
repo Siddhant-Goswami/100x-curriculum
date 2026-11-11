@@ -322,6 +322,8 @@ body.read .fp-outline .hd p{margin:0;font-size:14px;line-height:1.5;color:var(--
 .fp-outline .fp-ls .t{flex:1;min-width:0;font:500 15px/1.35 var(--sans);color:var(--ink)}
 .fp-outline .fp-ls small{display:block;font:400 13px/1.45 var(--sans);color:var(--ink3);margin-top:2px}
 .fp-ls .chip{display:none}
+.fp-ls .min{display:none}
+.fp-outline .fp-ls .min{display:inline;flex:none;font:400 13px var(--sans);color:var(--ink3);font-variant-numeric:tabular-nums}
 .fp-outline li.up a{background:var(--bg2)}
 .fp-outline li.up .chip{display:inline-block;flex:none;font:600 11.5px/1 var(--sans);color:var(--bg);background:var(--ink);border-radius:999px;padding:4px 9px}
 /* How it works: three numbered steps */

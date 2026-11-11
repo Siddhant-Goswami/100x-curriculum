@@ -154,7 +154,7 @@ film('02-how-a-machine-remembers', 'Data from First Principles, Part One', '6:02
 {FOUND('<p>One number on the many side. A list on the conversation grows with every message, and the whole row is rewritten each time. With <code>conv = 7</code> on each message, nothing grows. The list is never stored. It is found.</p>' + T(['id', 'conv', 'sender', 'text'], [['102', '7', 'maya', 'plan for mon?'], ['103', '5', 'you', 'on it'], ['104', '7', 'ravi', 'sounds good']]) + '<p>The top row says how to read every row below it. So did "65 means A", and so did the directory card.</p>' + PR('Principle Two', 'A little data says how to read the rest.'))}
 ''') +
      S(5, 'One row in a billion', f'''
-<p>In 1970 Edgar Codd proposed: do not tell the machine how to search. Tell it what you want. That became <b>SQL</b>: <code>SELECT text FROM messages WHERE conv = 7</code>. But how does the machine find those rows without reading every one?</p>
+<p>In 1970 Edgar Codd proposed: do not tell the machine how to search. Tell it what you want, like "every message in conversation 7". That idea became <b>SQL</b>, the language databases understand. But how does the machine find those rows without reading every one?</p>
 {FP('f2-index', 'index', 'an index', 'Find the number in 5 looks or fewer.')}
 {FOUND('<p>The sorted copy is an <b>index</b>. Put signposts above it, each pointing to a thousand more, and you have a <b>B-tree</b>: one hop reaches a thousand rows, two a million, three a billion.</p><p>The price: every write now happens twice, once in the table and once in the index.</p>' + PR('Principle Three', 'Faster reading means a second copy.'))}
 ''') +
@@ -175,7 +175,7 @@ film('02-how-a-machine-remembers', 'Data from First Principles, Part One', '6:02
 # ------------------------------------------------------------------ 3
 film('03-can-you-trust-a-machine', 'Data from First Principles, Part Two', '8:43', 'trust, and a guess',
      'Can you trust a machine?',
-     'The screen says "saved". One second later the power dies. Is it saved? Then: a second kind of memory, one that guesses.',
+     'The screen says "saved". One second later the power dies. Is it saved?',
      S(1, 'Break one upgrade', f'''
 <p>A user upgrades to a paid plan. That is two writes: take the credits, raise the plan.</p>
 {FP('f3-journal', 'journal', 'a journal', 'Break the upgrade. Then write the journal first and try to break it again.')}
@@ -191,6 +191,23 @@ film('03-can-you-trust-a-machine', 'Data from First Principles, Part Two', '8:43
 {FP('f3-original', 'original', 'one original', 'Catch two truths. Then lose the copy and get it back.')}
 {FOUND('<ul><li><b>Floors.</b> To grow further, split: teams A to F on one machine, G to M on the next. Each floor keeps its own copies.</li><li><b>When the cable is cut</b> between two copies there are two choices: show what this copy last heard, or make the customer wait. There is no third.</li><li><b>The warehouse.</b> One more copy, arranged for reports, on its own machine.</li></ul><p>Follower, index, warehouse. When two disagree, which is right? Decide in advance: keep one original, the <b>system of record</b>.</p>' + PR('Principle Five', 'Keep one original. Every copy can be thrown away and remade.'))}
 ''') +
+     S(6, 'In your build', f'''
+<ul>
+  <li>The database behind your app from <a href="{L7}">Lecture 7</a> keeps these promises for you: all or nothing, and done means stored.</li>
+  <li>Show "saved" only after the database says so. Until then it is the bubble with the small clock.</li>
+  <li>Your database is the original. A copy, like a spreadsheet export or a cache, can always be thrown away and remade from it.</li>
+</ul>
+'''),
+     [('ACID', 'Four promises: all or nothing, no rule broken, no overwrites, done means stored.'), ('Write-ahead log', 'A journal line written before the real change.'),
+      ('Leader, follower', 'The machine that takes all writes, and a copy that replays its journal.'), ('System of record', 'The one original every copy is made from.')],
+     [('Why is one journal line safer than editing the rows directly?', 'It is written in one place, so after a crash it is either whole or visibly torn, and the machine can finish what it says.'),
+      ('A message appears on your screen. Is it safe?', 'Not yet. Safe is when the server has written its journal line to disk and said so: the tick.'),
+      ('The network between two copies is cut. What are the only two choices?', 'Show what this copy last heard, which may be old, or make the customer wait.')])
+
+# ------------------------------------------------------------------ 4
+film('04-what-is-learning', 'Language Models from First Principles, Part One', '11:05', 'learning',
+     'What is learning?',
+     'Give a model "France" and out comes "Paris". Inside are billions of dials. Nobody set one by hand. So who did?',
      S(4, 'A memory that guesses', f'''
 <p>Every memory so far is exact. Ask a table of sales for a house that was never sold and you get <b>not found</b>. An estate agent could still guess, from patterns in past sales. Draw the pattern as a line. A line is two numbers: how steep, and where it starts.</p>
 {FP('f3-line', 'line', 'a line', 'Fit the line until the average mistake is under $25k. Then throw the sales away.')}
@@ -202,34 +219,13 @@ film('03-can-you-trust-a-machine', 'Data from First Principles, Part Two', '8:43
 {FP('f3-loop', 'loop', 'the loop', 'Finish both sentences, one token at a time.')}
 {FOUND(PR('The first principle of a language model', 'Everything it writes is the next token, guessed from patterns held in its dials.') + '<p>A table has "not found". A model does not. Where the pattern is weak, the guess is whatever sounds right: fluent, confident, wrong. That is <b>hallucination</b>.</p>' + T(['', 'Records', 'Dials'], [['Look like', 'Rows in a table', 'Numbers in a network'], ['When it does not have it', '"Not found"', 'A guess anyway'], ['Can you point to the source?', 'Yes, the row', 'No, there is no original'], ['Use it for', 'What must be exact', 'What must be figured out']]) + '<p>"I don\'t know" is also a pattern: a learned response, not a check. So when it matters, <b>hand the model the record and make it read before it writes.</b></p>')}
 ''') +
-     S(6, 'In your build', f'''
-<ul>
-  <li>Your database is the record. The model is the dials. Every AI app puts them side by side.</li>
-  <li>The hallucinated track list in <a href="{L9}">Lecture 9</a> was a weak pattern with no "not found".</li>
-  <li>Handing the model the record is what the reverse call in <a href="{L10}">Lecture 10</a> does.</li>
-</ul>
-'''),
-     [('ACID', 'Four promises: all or nothing, no rule broken, no overwrites, done means stored.'), ('Write-ahead log', 'A journal line written before the real change.'),
-      ('Leader, follower', 'The machine that takes all writes, and a copy that replays its journal.'), ('System of record', 'The one original every copy is made from.'),
-      ('Parameter (dial)', 'One learned number saying how much one signal pushes on another.'), ('Token', 'A piece of text with a number. What a model reads and writes.'),
-      ('Hallucination', 'A fluent, confident, wrong guess, made because there is always a next token.')],
-     [('Why is one journal line safer than editing the rows directly?', 'It is written in one place, so after a crash it is either whole or visibly torn, and the machine can finish what it says.'),
-      ('A message appears on your screen. Is it safe?', 'Not yet. Safe is when the server has written its journal line to disk and said so: the tick.'),
-      ('The network between two copies is cut. What are the only two choices?', 'Show what this copy last heard, which may be old, or make the customer wait.'),
-      ('Why can a database say "not found" while a language model cannot?', 'A database looks a row up. A model calculates a next token from patterns, and there is always a next token.'),
-      ('How can a line through house sales price a house that was never sold?', 'The line holds the pattern, not the sales. Give it any size and it returns a price.')])
-
-# ------------------------------------------------------------------ 4
-film('04-what-is-learning', 'Language Models from First Principles, Part One', '11:05', 'learning',
-     'What is learning?',
-     'Give a model "France" and out comes "Paris". Inside are billions of dials. Nobody set one by hand. So who did?',
      S(1, 'A guessing game', f'''
 <p>In 1951 Claude Shannon showed people a line of text, covered the rest, and asked for the next letter.</p>
 {FP('f4-game', 'game', "Shannon's game", 'Guess the next fourteen letters.')}
 {FOUND('<p>A language model is a machine playing that game. It does not guess letters. It guesses <b>tokens</b>. And it has to start from what the chip already has: bytes. The word <b>the</b> is stored as <code>116 104 101</code>. Text on a chip is a row of bytes, nothing else.</p>')}
 ''') +
      S(2, 'Who decided what the tokens are?', f'''
-<p>Start with 256 tokens, one per byte. It works, but " the capital of France is" takes 25 guesses. For bigger tokens, do not ask a person. Count.</p>
+<p>Start with 256 tokens, one per byte: in English, one per letter. It works, but then " the capital of France is" is 25 tokens, and the model must guess 25 times to write it. Bigger tokens mean fewer guesses. Nobody picks them by hand. The machine counts.</p>
 {FP('f4-token', 'token', 'a token', 'Merge pairs until "the" is one token.')}
 {FOUND('<p>That is <b>byte pair encoding</b>. About fifty thousand merges later, those 25 bytes are 5 tokens. Common words are one token, rare words stay in parts, and a word nobody has written can still be spelled byte by byte. Nothing is ever unknown.</p><p>A byte is a pattern we agreed on. A token is a pattern a machine counted.</p>')}
 ''') +
@@ -255,15 +251,21 @@ film('04-what-is-learning', 'Language Models from First Principles, Part One', '
 ''') +
      S(7, 'In your build', f'''
 <ul>
+  <li>Your database is the record. The model is the dials. Every AI app puts them side by side.</li>
+  <li>The hallucinated track list in <a href="{L9}">Lecture 9</a> was a weak pattern with no "not found". Handing the model the record is what the reverse call in <a href="{L10}">Lecture 10</a> does.</li>
   <li>Tokens are what you are billed for and what the context limit counts.</li>
   <li>The temperature setting in the Groq playground is the dice.</li>
   <li>You cannot add a fact to the dials. You put it in the prompt, as in <a href="{L10}">Lecture 10</a>.</li>
 </ul>
 '''),
-     [('Byte pair encoding', 'Building tokens by merging the most common neighbouring pair, again and again.'), ('Model', 'A wall of dials that turns tokens in into a chance for every next token.'),
+     [('Parameter (dial)', 'One learned number saying how much one signal pushes on another.'), ('Token', 'A piece of text with a number. What a model reads and writes.'),
+      ('Hallucination', 'A fluent, confident, wrong guess, made because there is always a next token.'),
+      ('Byte pair encoding', 'Building tokens by merging the most common neighbouring pair, again and again.'), ('Model', 'A wall of dials that turns tokens in into a chance for every next token.'),
       ('Loss', 'The score for how far off a guess was. Lower is better.'), ('Gradient', 'The direction each dial should turn to lower the loss.'),
       ('Training', 'The loop: attempt, measure the mistake, feed it back.'), ('Self-supervised learning', 'Learning where the text supplies its own answers.')],
-     [('Why start from bytes and not a dictionary of words?', 'Any text on a chip is already bytes, so every word, even a new one, can be spelled. Nothing is unknown.'),
+     [('How can a line through house sales price a house that was never sold?', 'The line holds the pattern, not the sales. Give it any size and it returns a price.'),
+      ('Why can a database say "not found" while a language model cannot?', 'A database looks a row up. A model calculates a next token from patterns, and there is always a next token.'),
+      ('Why start from bytes and not a dictionary of words?', 'Any text on a chip is already bytes, so every word, even a new one, can be spelled. Nothing is unknown.'),
       ('What is the count table\'s one rule, and why does it lose "Paris"?', 'Open the row for the last token. The last token is "is", and that row mixes every sentence that ever had "is" in it.'),
       ('Why not make the table look at the last ten tokens?', 'It would need more rows than grains of sand, and almost all would be empty: not found.'),
       ('What do the gates between dials add?', 'They let the chain bend. Scaling alone, however many times, is still a straight line.'),
@@ -512,6 +514,8 @@ def lessons(fi, f):
     out.append(dict(title='Check yourself', scene='', sub='Questions on the chapter, and where it shows up in your build.',
                     body='<p>Answer each one in your head, then open it.</p>\n' + QA(f['qa']) + WORDS(f['words']) + '<h2>In your build</h2>\n' + secs[-1][1]))
     for k, l in enumerate(out):
+        # minutes, as a guide: reading at 200 words a minute, plus 2 for the drawing (1 for thinking through the questions)
+        l['min'] = max(2, round(len(plain(l['body']).split()) / 200 + (2 if l['scene'] else 1)))
         l['n'] = f'{fi + 1}.{k + 1}'
         l['path'] = f['slug'] + ('/index.html' if k == 0 else f'/{slug(l["title"])}.html')
         l['href'] = BASE + f['slug'] + ('' if k == 0 else '/' + slug(l['title']))
@@ -532,15 +536,16 @@ def outline(course):
     rows = ''
     for fi, (f, ls) in enumerate(course):
         lis = ''.join(f'<li data-href="{l["href"]}"{f" data-scene=\"{l["scene"]}\"" if l["scene"] else ""}><a href="{l["href"]}"><i class="st" aria-hidden="true"></i><span class="n">{l["n"]}</span>'
-                      f'<span class="t">{l["title"]}<small>{html.escape(l["sub"])}</small></span><span class="chip">next</span></a></li>' for l in ls)
+                      f'<span class="t">{l["title"]}<small>{html.escape(l["sub"])}</small></span><span class="chip">next</span><span class="min">{l["min"]} min</span></a></li>' for l in ls)
         rows += (f'  <li data-ch="{fi + 1}"><div class="hd"><span class="badge">{fi + 1:02d}</span><div><h3>{f["q"]}</h3>'
-                 f'<p>{f["dek"]} <span class="c" data-count>{len(ls)} lessons</span></p></div></div><ol class="fp-ls">{lis}</ol></li>\n')
+                 f'<p>{f["dek"]} <span class="c"><span data-count>{len(ls)} lessons</span> · about {sum(l["min"] for l in ls)} min</span></p></div></div><ol class="fp-ls">{lis}</ol></li>\n')
     return f'<ol class="fp-ch fp-outline">\n{rows}</ol>'
 
 
 def build():
-    for old in OUT.glob('0*.html'):
-        old.unlink()
+    import shutil
+    for old in OUT.glob('0*'):  # stale lesson pages from an earlier build (a lesson can move chapter)
+        shutil.rmtree(old) if old.is_dir() else old.unlink()
     course = [(f, lessons(i, f)) for i, f in enumerate(FILMS)]
     flat = [(fi, k, l) for fi, (f, ls) in enumerate(course) for k, l in enumerate(ls)]
     home = dict(href=BASE, n='', title='Course home')
@@ -555,7 +560,7 @@ def build():
                            page=f'fp-{f["slug"]}-{k + 1}', crumbs=crumbs, toc=toc(course, fi))
         attrs = f' data-scene="{l["scene"]}"' if l['scene'] else ''
         page += f'<article class="fp-lesson"{attrs}>\n'
-        page += f'<p class="fp-meta">Lesson {l["n"]} · {k + 1} of {len(ls)} in chapter {fi + 1}</p>\n<h1>{l["title"]}</h1>\n'
+        page += f'<p class="fp-meta">Lesson {l["n"]} · {k + 1} of {len(ls)} in chapter {fi + 1} · about {l["min"]} min</p>\n<h1>{l["title"]}</h1>\n'
         # the very first lesson says once how a lesson works; the chapter blurbs live on the course outline
         if j == 0:
             page += '<p class="fp-how"><b>How it works:</b> play the drawing until the explanation opens, then press Next. Pieces with a shadow under them can be clicked.</p>\n'
@@ -577,6 +582,8 @@ def build():
 
     # course home
     total = len(flat)
+    mins = sum(l['min'] for _, _, l in flat)
+    span = f'About {round(mins / 30) / 2:g} hours in all' if mins >= 90 else f'About {mins} minutes in all'
     scenes = sum(1 for _, _, l in flat if l['scene'])
     page = HEAD.format(title='From Sand to Language Models', desc=f'A self-paced course in eight chapters and {total} short lessons, from a grain of sand to a large language model. Cohort 8, Module 2, before Lecture 11.',
                        page='fp-index', crumbs='<span class="here">From sand to language models</span>', toc=toc(course))
@@ -584,7 +591,7 @@ def build():
   <p class="kick">Cohort 8 · Module 2 · Self-paced · Both tracks</p>
   <h1>From sand to language models</h1>
   <p class="dek">Eight chapters. One idea per lesson.</p>
-  <p class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}">Start with lesson 1.1</a> <span class="muted" data-sum></span></p>
+  <p class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}">Start with lesson 1.1</a> <span class="muted">{span} · <span data-sum></span></span></p>
 </div>
 
 <section class="fp-sec fp-how-it"><h2>How it works</h2>

@@ -278,11 +278,11 @@ W.token=function(s){
   function paint(){chips.innerHTML=toks.map(function(t){return '<span class="'+(t.length>1?'m':'')+'">'+show(t)+'</span>'}).join('');
     out.innerHTML='<b class="big">'+toks.length+'</b> tokens <span class="mut">for '+TEXT.length+' bytes</span>'+(log.length?' <span class="mut">· new:</span> '+log.slice(-4).map(function(l){return '<code>'+l[0]+' = '+show(l[1])+'</code>'}).join(' '):'');
     var p=pairs().filter(function(x){return x[1]>1});opts.innerHTML='';if(!p.length){opts.appendChild(h('span','lab','No pair appears twice any more.'));return}
-    var max=p[0][1];opts.appendChild(h('span','lab','Which pair of neighbours is most common?'));
-    shuf(p.slice(0,4)).forEach(function(x){opts.appendChild(btn('<code>'+show(x[0][0])+'</code> + <code>'+show(x[0][1])+'</code>','',function(){
-      if(x[1]!==max){nope(this);s.say('That pair appears '+x[1]+' times. Another appears '+max+'. Count again.');return}
+    var max=p[0][1];opts.appendChild(h('span','lab','The machine counted every pair of neighbours. Merge the most common:'));
+    shuf(p.slice(0,4)).forEach(function(x){opts.appendChild(btn('<code>'+show(x[0][0])+'</code> + <code>'+show(x[0][1])+'</code> <span class="mut">'+x[1]+' times</span>','',function(){
+      if(x[1]!==max){nope(this);s.say('That pair appears '+x[1]+' times. Another appears '+max+'. Merge the most common one.');return}
       merge(x[0][0],x[0][1]);paint();var has=toks.indexOf('the')>-1;s.say('<code>'+show(x[0][0]+x[0][1])+'</code> appeared '+max+' times, so it becomes token '+(next-1)+'. The text got shorter.'+(has?' And "the" is now one token.':''),'ok');if(has)s.win()}))});}
-  function reset(){toks=TEXT.split('');next=256;log=[];paint();s.say('Every character is one byte, so one token. Token numbers 0 to 255 are taken.')}
+  function reset(){toks=TEXT.split('');next=256;log=[];paint();s.say('Every character is one byte, so one token. A · is a space. Token numbers 0 to 255 are taken.')}
   s.btn('Let the machine finish','',function(){for(;;){var p=pairs();if(!p.length||p[0][1]<2)break;merge(p[0][0][0],p[0][0][1])}paint();s.say('Count, merge, repeat. A real tokenizer does this about fifty thousand times.')});
   s.btn('Start again','',reset);
   reset();
