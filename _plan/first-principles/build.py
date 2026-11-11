@@ -214,10 +214,9 @@ film('04-what-is-learning', 'Language Models from First Principles, Part One', '
 {FOUND('<p>Those two numbers are <b>parameters</b>. Start them random. Guess one house, check the real sale, nudge the numbers a little. A million times. Then throw the sales away, and the line still prices a house nobody sold.</p><p>Everything in a language model is this line, scaled up.</p>')}
 ''') +
      S(5, 'One job, repeated', f'''
-<p>For language, text is chopped into pieces and each piece gets a number: <code>un | believ | able</code> is <code>403 | 31141 | 481</code>. A piece is a <b>token</b>. Inside the model, one number says how hard "France" pushes toward "Paris". It is not a switch. It is a <b>dial</b>, the same kind of thing as "how steep".</p>
-<p>The model does one job: score every possible next token, pick one, add it to the end, go again.</p>
+<p>A language model reads text in small pieces called <b>tokens</b>. Its patterns live in numbers like "how steep" from the last lesson, called <b>dials</b>. It does one job: score every possible next token, pick one, add it to the end, go again.</p>
 {FP('f3-loop', 'loop', 'the loop', 'Finish both sentences, one token at a time.')}
-{FOUND(PR('The first principle of a language model', 'Everything it writes is the next token, guessed from patterns held in its dials.') + '<p>A table has "not found". A model does not. Where the pattern is weak, the guess is whatever sounds right: fluent, confident, wrong. That is <b>hallucination</b>.</p>' + T(['', 'Records', 'Dials'], [['Look like', 'Rows in a table', 'Numbers in a network'], ['When it does not have it', '"Not found"', 'A guess anyway'], ['Can you point to the source?', 'Yes, the row', 'No, there is no original'], ['Use it for', 'What must be exact', 'What must be figured out']]) + '<p>"I don\'t know" is also a pattern: a learned response, not a check. So when it matters, <b>hand the model the record and make it read before it writes.</b></p>')}
+{FOUND(PR('The first principle of a language model', 'Everything it writes is the next token, guessed from patterns held in its dials.') + '<p>A table has "not found". A model does not. Where the pattern is weak, the guess is whatever sounds right: fluent, confident, wrong. That is <b>hallucination</b>.</p>' + T(['', 'Records', 'Dials'], [['Look like', 'Rows in a table', 'Numbers in a network'], ['When it does not have it', '"Not found"', 'A guess anyway'], ['Can you point to the source?', 'Yes, the row', 'No, there is no original'], ['Use it for', 'What must be exact', 'What must be figured out']]) + '<p>"I don\'t know" is also a pattern: a learned response, not a check. So when it matters, <b>hand the model the record and make it read before it writes.</b></p><p>A token is often part of a word: <code>un | believ | able</code> is three tokens, numbered 403, 31141 and 481. One dial says how hard "France" pushes toward "Paris".</p>')}
 ''') +
      S(1, 'A guessing game', f'''
 <p>In 1951 Claude Shannon showed people a line of text, covered the rest, and asked for the next letter.</p>
@@ -512,7 +511,7 @@ def lessons(fi, f):
         goal = re.search(r'<figcaption>(.*?)</figcaption>', body)
         out.append(dict(title=title, body=body, scene=scene.group(1) if scene else '', sub=plain(goal.group(1)) if goal else ''))
     out.append(dict(title='Check yourself', scene='', sub='Questions on the chapter, and where it shows up in your build.',
-                    body='<p>Answer each one in your head, then open it.</p>\n' + QA(f['qa']) + WORDS(f['words']) + '<h2>In your build</h2>\n' + secs[-1][1]))
+                    body=f'<div class="fp-chdone" data-chdone="{fi + 1}" hidden></div>\n<p>Answer each one in your head, then open it.</p>\n' + QA(f['qa']) + WORDS(f['words']) + '<h2>In your build</h2>\n' + secs[-1][1]))
     for k, l in enumerate(out):
         # minutes, as a guide: reading at 200 words a minute, plus 2 for the drawing (1 for thinking through the questions)
         l['min'] = max(2, round(len(plain(l['body']).split()) / 200 + (2 if l['scene'] else 1)))

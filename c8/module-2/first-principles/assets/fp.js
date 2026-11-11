@@ -181,16 +181,20 @@ W.journal=function(s){
     sh+=C(30+540*p,196,9,off?'f-act':'f-prob');
     if(off)tx+=T(450,128,'power off','h c-act');
     draw(s.stage,600,240,sh,tx,'The books, the journal, and a timeline of the upgrade',true);}
+  /* three buttons, each lit only when it can be used: start the upgrade, cut the power mid-way, restart */
+  var cut,rs;
+  function sync(){go.disabled=run||off;cut.disabled=!run;rs.disabled=!off}
   go=s.btn('Upgrade','pri',function(){
-    if(off){off=false;go.textContent='Upgrade';
-      if(mode){held=true;if(p>=.25){st.credits=0;st.plan='pro';p=1;s.say('The machine reads the journal and finishes what it says. Credits taken, plan raised. All or nothing.','ok')}else{st.j='';p=0;s.say('The journal line is torn, so the machine throws it away. Nothing changed. All or nothing.','ok')}}
-      else if(p>=.3&&p<.8){broke=true;s.say('Back on. The credits are gone and the plan never rose. Nothing on the disk says a change was half done. Now write the journal first.','ok')}
-      else s.say(p<.3?'Nothing had been written yet. Cut a little later.':'Both writes had landed. Cut a little earlier.');
-      paint();if(broke&&held)s.win();return}
-    if(run){clearInterval(timer);run=false;off=true;go.textContent='Restart the machine';paint();s.say('Power off, mid-upgrade.');return}
-    reset();run=true;go.textContent='Cut the power';s.say('Two writes: take the credits, raise the plan.');
-    timer=setInterval(function(){p=Math.min(1,p+.011);apply();paint();if(p>=1){clearInterval(timer);run=false;go.textContent='Upgrade';s.say('Both writes landed. A good day. Run it again and cut the power partway.')}},50)});
-  s.add(seg(['Edit the books directly','Write the journal first'],0,function(i){clearInterval(timer);mode=i;reset();go.textContent='Upgrade';paint();s.say(i?'One line goes in the journal before anything else is touched. Try to break it.':'Two writes: take the credits, raise the plan.')}));
+    reset();run=true;sync();s.say('Two writes: take the credits, raise the plan. Cut the power before both land.');
+    timer=setInterval(function(){p=Math.min(1,p+.011);apply();paint();if(p>=1){clearInterval(timer);run=false;sync();s.say('Both writes landed. A good day. Upgrade again and cut the power partway.')}},50)});
+  cut=s.btn('Cut the power','',function(){clearInterval(timer);run=false;off=true;sync();paint();s.say('Power off, mid-upgrade. Now restart the machine.')});
+  rs=s.btn('Restart the machine','',function(){off=false;
+    if(mode){held=true;if(p>=.25){st.credits=0;st.plan='pro';p=1;s.say('The machine reads the journal and finishes what it says. Credits taken, plan raised. All or nothing.','ok')}else{st.j='';p=0;s.say('The journal line is torn, so the machine throws it away. Nothing changed. All or nothing.','ok')}}
+    else if(p>=.3&&p<.8){broke=true;s.say('Back on. The credits are gone and the plan never rose. Nothing on the disk says a change was half done. Now write the journal first.','ok')}
+    else s.say(p<.3?'Nothing had been written yet. Cut a little later.':'Both writes had landed. Cut a little earlier.');
+    sync();paint();if(broke&&held)s.win()});
+  s.add(seg(['Edit the books directly','Write the journal first'],0,function(i){clearInterval(timer);mode=i;reset();sync();paint();s.say(i?'One line goes in the journal before anything else is touched. Try to break it.':'Two writes: take the credits, raise the plan.')}));
+  sync();
   reset();paint();s.say('Press Upgrade, then cut the power between the two writes.');
 };
 W.original=function(s){
@@ -564,6 +568,15 @@ function paintToc(){
     go.href=t.getAttribute('data-href');go.textContent=!doneN?'Start with lesson 1.1':firstOpen?'Continue: '+n+' '+ti:'All done. Back to lesson 1.1';
     var f=t.closest('[data-ch]').getAttribute('data-ch');if(doneN)[].forEach.call(document.querySelectorAll('.fp-ch>li[data-ch="'+f+'"]>details'),function(d){d.open=true})}
 }
+/* end of a chapter: on its Check yourself page, say what was found and link what is still to play */
+function chapterDone(){
+  var el=document.querySelector('[data-chdone]');if(!el)return;var n=el.getAttribute('data-chdone');
+  var ls=[].slice.call(document.querySelectorAll('#fp-toc .fp-ch>li[data-ch="'+n+'"] .fp-ls>li[data-scene]'));if(!ls.length)return;
+  var won=ls.filter(function(li){return ST[li.getAttribute('data-scene')]===2}),open=ls.filter(function(li){return ST[li.getAttribute('data-scene')]!==2});
+  function link(li){return '<a href="'+li.getAttribute('data-href')+'">'+esc(li.querySelector('.n').textContent+' '+li.querySelector('.t').textContent)+'</a>'}
+  el.innerHTML='<p class="kick">End of chapter '+n+'</p><p>'+(open.length?'You found <b>'+won.length+' of '+ls.length+'</b> by playing. Still to play: '+open.map(link).join(', ')+'.':'You found <b>all '+ls.length+'</b> by playing. This chapter is done.')+'</p>';
+  el.classList.toggle('all',!open.length);el.hidden=false;
+}
 function drawer(){
   var b=document.querySelector('.fp-menu'),p=document.getElementById('fp-toc'),sc=document.querySelector('.fp-scrim'),from=b;if(!b||!p)return;
   function set(open){p.hidden=sc.hidden=!open;b.setAttribute('aria-expanded',open);document.body.classList.toggle('fp-locked',open);
@@ -609,7 +622,7 @@ document.addEventListener('DOMContentLoaded',function(){
   [].forEach.call(document.querySelectorAll('[data-pic]'),function(el){var fn=PIC[el.getAttribute('data-pic')];if(fn)fn(el)});
   /* a lesson without a scene (Check yourself) has nothing to win: Next is ready from the start */
   var nx=document.querySelector('[data-next]');if(nx&&!document.querySelector('.fp-lesson figure.fp'))nx.classList.add('ready');
-  paintToc();drawer();
+  paintToc();drawer();chapterDone();
   /* two clicks, not a browser dialog: the first arms the button, the second clears */
   var rs=document.querySelector('[data-fpreset]');if(rs)rs.addEventListener('click',function(){
     if(!rs.classList.contains('arm')){rs.classList.add('arm');rs.textContent='Click again to clear every tick';setTimeout(function(){rs.classList.remove('arm');rs.textContent='Clear my ticks and start again'},4000);return}

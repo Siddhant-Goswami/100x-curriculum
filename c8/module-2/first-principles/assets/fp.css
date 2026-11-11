@@ -302,6 +302,15 @@ body.read .fp-ls li{margin:0}
 .fp-nav .next.ready,.fp-nav .next.ready:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 @media (max-width:560px){.fp-nav .prev .t{display:none}.fp-nav .next{max-width:none;flex:1;justify-content:space-between}}
 
+/* end of a chapter, on its Check yourself page */
+.fp-chdone{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 16px;margin:0 0 22px}
+.fp-chdone.all{border-color:var(--hum);background:var(--hum-soft)}
+body.read .fp-chdone .kick{font:600 13.5px/1.3 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink2);margin:0 0 4px}
+.fp-chdone.all .kick{color:var(--hum-ink)}
+.fp-chdone.all .kick::before{content:"✓ "}
+body.read .fp-chdone p{margin:0;font-size:15.5px}
+.fp-chdone a{color:var(--ink)}
+
 /* the course home */
 .fp-cta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:24px 0 0}
 .fp-cta .btn,.fp-cta .btn:hover{background:var(--ink);color:var(--bg);padding:12px 18px;font-size:15px}

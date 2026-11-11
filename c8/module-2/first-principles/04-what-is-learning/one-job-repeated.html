@@ -41,14 +41,13 @@
 <article class="fp-lesson" data-scene="f3-loop">
 <p class="fp-meta">Lesson 4.2 · 2 of 9 in chapter 4 · about 3 min</p>
 <h1>One job, repeated</h1>
-<p>For language, text is chopped into pieces and each piece gets a number: <code>un | believ | able</code> is <code>403 | 31141 | 481</code>. A piece is a <b>token</b>. Inside the model, one number says how hard "France" pushes toward "Paris". It is not a switch. It is a <b>dial</b>, the same kind of thing as "how steep".</p>
-<p>The model does one job: score every possible next token, pick one, add it to the end, go again.</p>
+<p>A language model reads text in small pieces called <b>tokens</b>. Its patterns live in numbers like "how steep" from the last lesson, called <b>dials</b>. It does one job: score every possible next token, pick one, add it to the end, go again.</p>
 <figure class="fp" id="f3-loop" data-fp="loop" data-part="the loop"><figcaption>Finish both sentences, one token at a time.</figcaption></figure>
 
 <div class="found"><p class="kick">What you just found</p>
 <p class="pull"><small>The first principle of a language model</small>Everything it writes is the next token, guessed from patterns held in its dials.</p>
 <p>A table has "not found". A model does not. Where the pattern is weak, the guess is whatever sounds right: fluent, confident, wrong. That is <b>hallucination</b>.</p><div class="tw"><table><thead><tr><th></th><th>Records</th><th>Dials</th></tr></thead><tbody><tr><td>Look like</td><td>Rows in a table</td><td>Numbers in a network</td></tr><tr><td>When it does not have it</td><td>"Not found"</td><td>A guess anyway</td></tr><tr><td>Can you point to the source?</td><td>Yes, the row</td><td>No, there is no original</td></tr><tr><td>Use it for</td><td>What must be exact</td><td>What must be figured out</td></tr></tbody></table></div>
-<p>"I don't know" is also a pattern: a learned response, not a check. So when it matters, <b>hand the model the record and make it read before it writes.</b></p>
+<p>"I don't know" is also a pattern: a learned response, not a check. So when it matters, <b>hand the model the record and make it read before it writes.</b></p><p>A token is often part of a word: <code>un | believ | able</code> is three tokens, numbered 403, 31141 and 481. One dial says how hard "France" pushes toward "Paris".</p>
 </div>
 </article>
 <nav class="fp-nav" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/04-what-is-learning" rel="prev" title="Previous: 4.1 A memory that guesses"><span aria-hidden="true">←</span><span class="t">4.1 A memory that guesses</span></a><a class="next" href="/c8/module-2/first-principles/04-what-is-learning/a-guessing-game" rel="next" data-next><span class="t">Next: 4.3 A guessing game</span><span aria-hidden="true">→</span></a></nav>
