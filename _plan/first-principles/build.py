@@ -582,7 +582,7 @@ def build():
     page = HEAD.format(title='From Sand to Language Models', desc=f'A self-paced course in eight chapters and {total} short lessons, from a grain of sand to a chatbot. Cohort 8, Module 2, before Lecture 11.',
                        page='fp-index', crumbs='<span class="here">From sand to language models</span>', toc=toc(course))
     page += f'''<div class="hero">
-  <p class="kick">Cohort 8 · Module 2 · Self-paced, before Lecture 11 · Both tracks</p>
+  <p class="kick">Cohort 8 · Module 2 · Self-paced · Both tracks</p>
   <h1>From sand to language models</h1>
   <p class="dek">Eight chapters. One idea per lesson, from a grain of sand to a chatbot.</p>
   <p class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}">Start with lesson 1.1</a> <span class="muted" data-sum></span></p>
