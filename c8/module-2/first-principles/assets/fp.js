@@ -553,6 +553,9 @@ function paintToc(){
     var c=fl.querySelector('[data-count]');if(c)c.textContent=d?d+' of '+ls.length:ls.length+' lessons';
     if(sceneN&&sceneWon===sceneN)earned[fl.getAttribute('data-ch')]=1;
   });
+  /* the lesson to do now gets a "next" chip in every list */
+  [].forEach.call(document.querySelectorAll('.fp-ls>li.up'),function(li){li.classList.remove('up')});
+  if(firstOpen)[].forEach.call(document.querySelectorAll('.fp-ls>li[data-href="'+firstOpen.getAttribute('data-href')+'"]'),function(li){li.classList.add('up')});
   [].forEach.call(document.querySelectorAll('[data-sum]'),function(el){el.textContent=doneN?doneN+' of '+total+' lessons done':total+' lessons'});
   [].forEach.call(document.querySelectorAll('[data-earn]'),function(li){li.classList.toggle('earned',!!earned[li.getAttribute('data-earn')])});
   var go=document.querySelector('[data-continue]');
@@ -561,21 +564,18 @@ function paintToc(){
     var f=t.closest('[data-ch]').getAttribute('data-ch');if(doneN)[].forEach.call(document.querySelectorAll('.fp-ch>li[data-ch="'+f+'"]>details'),function(d){d.open=true})}
 }
 function drawer(){
-  var b=document.querySelector('.fp-menu'),p=document.getElementById('fp-toc'),sc=document.querySelector('.fp-scrim');if(!b||!p)return;
+  var b=document.querySelector('.fp-menu'),p=document.getElementById('fp-toc'),sc=document.querySelector('.fp-scrim'),from=b;if(!b||!p)return;
   function set(open){p.hidden=sc.hidden=!open;b.setAttribute('aria-expanded',open);document.body.classList.toggle('fp-locked',open);
-    if(open){var cur=p.querySelector('li.here a')||p.querySelector('a');requestAnimationFrame(function(){p.classList.add('on');if(cur){cur.focus({preventScroll:true});cur.scrollIntoView({block:'center'})}})}else{p.classList.remove('on');b.focus()}}
-  b.addEventListener('click',function(){set(p.hidden)});
+    if(open){var cur=p.querySelector('li.here a')||p.querySelector('a');requestAnimationFrame(function(){p.classList.add('on');if(cur){cur.focus({preventScroll:true});cur.scrollIntoView({block:'center'})}})}else{p.classList.remove('on');from.focus()}}
+  /* the menu button in the header and "Contents" in the bottom bar both open it */
+  [].forEach.call(document.querySelectorAll('.fp-menu,.fp-open'),function(t){t.addEventListener('click',function(){from=t;set(p.hidden)})});
   sc.addEventListener('click',function(){set(false)});
   p.querySelector('[data-close]').addEventListener('click',function(){set(false)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!p.hidden)set(false)});
 }
-/* A scene reads top to bottom: status + goal, then what to do now (the note), then the drawing, then the buttons.
-   Under it sits a shut box that says the explanation opens there; it becomes "What you just found" and ends in a link to the next lesson. */
-function nextLink(found){
-  var nx=document.querySelector('[data-next]');if(!nx||found.querySelector('.fp-next'))return;
-  var a=h('a','fp-next');a.href=nx.getAttribute('href');a.innerHTML='Next: '+esc(nx.querySelector('span').textContent)+' <span aria-hidden="true">→</span>';found.appendChild(a);
-  nx.classList.add('ready');
-}
+/* A scene is one card, read top to bottom: status + goal, what to do now (the note), the drawing, the buttons,
+   and at the bottom of the same card a shut line that becomes "What you just found". Next lives in the bottom bar only. */
+function ready(){var nx=document.querySelector('[data-next]');if(nx)nx.classList.add('ready')}
 function paintParts(){paintToc()}
 var seenIO=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;seenIO.unobserve(e.target);
   if(e.target.classList.contains('fp-fresh')){e.target.classList.add('fp-hint');setTimeout(function(){e.target.classList.remove('fp-hint')},2400)}})},{threshold:.6}):null;
@@ -584,18 +584,20 @@ function mount(fig){
   var id=fig.id,body=h('div','fp-b'),stage=h('div','fp-stage'),ctl=h('div','fp-row'),note=h('p','fp-note'),skip=h('button','fp-skip','Show me the answer');
   var found=fig.nextElementSibling,lock=null;if(!found||!found.classList.contains('found'))found=null;
   body.appendChild(note);body.appendChild(stage);body.appendChild(ctl);fig.appendChild(body);skip.type='button';
+  if(found)fig.appendChild(found);
   function open(v,quiet){if((ST[id]||0)<v){ST[id]=v;store.set(KEY,ST)}fig.classList.add('done');fig.classList.remove('fp-fresh','fp-hint');fig.classList.toggle('won',ST[id]===2);skip.hidden=true;
     if(lock){lock.remove();lock=null}
-    if(found&&found.hidden){found.hidden=false;nextLink(found);if(!quiet)found.classList.add('fp-pop')}paintParts()}
+    if(found&&found.hidden){found.hidden=false;if(!quiet)found.classList.add('fp-pop')}ready();paintParts()}
   skip.addEventListener('click',function(){open(1)});
-  if(found){found.hidden=true;lock=h('p','fp-lock','Reach the goal above and the explanation opens here.');found.parentNode.insertBefore(lock,found)}
+  if(found){found.hidden=true;lock=h('p','fp-lock','Reach the goal and the explanation opens here.');fig.insertBefore(lock,found)}
   fn({fig:fig,id:id,stage:stage,ctl:ctl,
     say:function(m,c){note.innerHTML=m||'';note.className='fp-note'+(c?' '+c:'')},
     win:function(){open(2)},seen:function(){open(1)},
     btn:function(l,c,f){var b=btn(l,c,f);ctl.appendChild(b);return b},
     add:function(el){ctl.appendChild(el);return el}});
   ctl.appendChild(skip);
-  if(ST[id])open(ST[id],true);
+  /* back on a lesson already played: say so, instead of repeating the first instruction */
+  if(ST[id]){open(ST[id],true);ST[id]===2?note.className='fp-note ok':note.className='fp-note';note.innerHTML=ST[id]===2?'You found this earlier. Play it again if you like.':'You opened the answer earlier. Play it to find it yourself.'}
   else{fig.classList.add('fp-fresh');
     var first=function(){fig.classList.remove('fp-fresh','fp-hint');fig.removeEventListener('pointerdown',first);fig.removeEventListener('keydown',first)};
     fig.addEventListener('pointerdown',first);fig.addEventListener('keydown',first);if(seenIO)seenIO.observe(fig)}

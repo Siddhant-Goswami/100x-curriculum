@@ -17,7 +17,7 @@
 <body data-page="fp-05-attention-and-transformers-3" class="read fp-course">
 <header class="top"><div class="in">
   <button class="tbtn fp-menu" type="button" aria-label="Table of contents" aria-expanded="false" aria-controls="fp-toc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
-  <div class="fp-crumbs" role="navigation" aria-label="You are here"><a class="home" href="/c8/module-2/first-principles/">Sand to LLMs</a><span class="sep">›</span><a class="ch" href="/c8/module-2/first-principles/05-attention-and-transformers">5. What are attention and transformers?</a><span class="sep">›</span><span class="here">5.3</span></div>
+  <div class="fp-crumbs" role="navigation" aria-label="You are here"><a class="home" href="/c8/module-2/first-principles/">From sand to language models</a><span class="sep">›</span><a class="ch" href="/c8/module-2/first-principles/05-attention-and-transformers">5. What are attention and transformers?</a><span class="sep">›</span><span class="here">5.3</span></div>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 <div class="fp-scrim" hidden></div>
@@ -39,8 +39,8 @@
 <div class="wrap">
   <main>
 <article class="fp-lesson" data-scene="f5-listen">
-<p class="kick">Chapter 5 · What are attention and transformers? · Lesson 3 of 6</p>
-<h1><span class="n">5.3</span>Every token asks a question</h1>
+<p class="fp-meta">Lesson 5.3 · 3 of 6 in chapter 5</p>
+<h1>Every token asks a question</h1>
 <p>Every token makes three things from its list of numbers: a <b>question</b> (what it is looking for), a <b>label</b> (what it offers) and a <b>message</b> (what it passes on if chosen). Follow the last token, "is".</p>
 <figure class="fp" id="f5-listen" data-fp="listen" data-part="attention"><figcaption>Pick the two words "is" should listen to most.</figcaption></figure>
 
@@ -48,7 +48,7 @@
 <ol><li><b>Ask.</b> "is" asks: what am I describing? Every earlier token holds up its label.</li><li><b>Match.</b> Line the question up with a label, multiply pair by pair, add.</li><li><b>Share.</b> Turn the totals into shares that add up to 100.</li><li><b>Collect.</b> Take each token's message at that volume, and move to a new spot.</li></ol><p>It is no longer just "is". It is "is, after the capital of France". That is <b>attention</b>. Engineers call the three things query, key and value. A token reads only the tokens before it, and every token does this at once.</p>
 </div>
 </article>
-<nav class="fp-pn" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/05-attention-and-transformers/one-word-two-meanings" rel="prev"><small>← Previous</small><span>5.2 One word, two meanings</span></a><a class="next" href="/c8/module-2/first-principles/05-attention-and-transformers/listen-then-think" rel="next" data-next><small>Next →</small><span>5.4 Listen, then think</span></a></nav>
+<nav class="fp-bar" aria-label="Lessons"><div class="in"><a class="prev" href="/c8/module-2/first-principles/05-attention-and-transformers/one-word-two-meanings" rel="prev" title="Previous: 5.2 One word, two meanings"><span aria-hidden="true">←</span><span class="t">5.2 One word, two meanings</span></a><button type="button" class="fp-open">Contents</button><a class="next" href="/c8/module-2/first-principles/05-attention-and-transformers/listen-then-think" rel="next" data-next><span class="t">Next: 5.4 Listen, then think</span><span aria-hidden="true">→</span></a></div></nav>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · From sand to language models</span><a href="/#FP">Curriculum map</a><a href="/c8/module-2/first-principles/">Course home</a></div></footer>

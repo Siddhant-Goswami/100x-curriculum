@@ -507,8 +507,9 @@ def lessons(fi, f):
     out = []
     for k, (title, body) in enumerate(secs[:-1]):
         scene = re.search(r'<figure class="fp" id="([^"]+)"', body)
-        out.append(dict(title=title, body=body, scene=scene.group(1) if scene else ''))
-    out.append(dict(title='Check yourself', scene='',
+        goal = re.search(r'<figcaption>(.*?)</figcaption>', body)
+        out.append(dict(title=title, body=body, scene=scene.group(1) if scene else '', sub=plain(goal.group(1)) if goal else ''))
+    out.append(dict(title='Check yourself', scene='', sub='Questions on the chapter, and where it shows up in your build.',
                     body='<p>Answer each one in your head, then open it.</p>\n' + QA(f['qa']) + WORDS(f['words']) + '<h2>In your build</h2>\n' + secs[-1][1]))
     for k, l in enumerate(out):
         l['n'] = f'{fi + 1}.{k + 1}'
@@ -527,6 +528,16 @@ def toc(course, here_film=None):
     return f'<ol class="fp-ch">\n{rows}</ol>'
 
 
+def outline(course):
+    rows = ''
+    for fi, (f, ls) in enumerate(course):
+        lis = ''.join(f'<li data-href="{l["href"]}"{f" data-scene=\"{l["scene"]}\"" if l["scene"] else ""}><a href="{l["href"]}"><i class="st" aria-hidden="true"></i><span class="n">{l["n"]}</span>'
+                      f'<span class="t">{l["title"]}<small>{html.escape(l["sub"])}</small></span><span class="chip">next</span></a></li>' for l in ls)
+        rows += (f'  <li data-ch="{fi + 1}"><div class="hd"><span class="badge">{fi + 1:02d}</span><div><h3>{f["q"]}</h3>'
+                 f'<p>{f["dek"]} <span class="c" data-count>{len(ls)} lessons</span></p></div></div><ol class="fp-ls">{lis}</ol></li>\n')
+    return f'<ol class="fp-ch fp-outline">\n{rows}</ol>'
+
+
 def build():
     for old in OUT.glob('0*.html'):
         old.unlink()
@@ -538,26 +549,28 @@ def build():
         f, ls = course[fi]
         prev = flat[j - 1][2] if j else home
         nxt = flat[j + 1][2] if j + 1 < len(flat) else None
-        crumbs = (f'<a class="home" href="{BASE}">Sand to LLMs</a><span class="sep">›</span>'
+        crumbs = (f'<a class="home" href="{BASE}">From sand to language models</a><span class="sep">›</span>'
                   f'<a class="ch" href="{ls[0]["href"]}">{fi + 1}. {f["q"]}</a><span class="sep">›</span><span class="here">{l["n"]}</span>')
         page = HEAD.format(title=html.escape(f'{l["n"]} {plain(l["title"])} · {plain(f["q"])}'), desc=html.escape(f['dek'], quote=True),
                            page=f'fp-{f["slug"]}-{k + 1}', crumbs=crumbs, toc=toc(course, fi))
         attrs = f' data-scene="{l["scene"]}"' if l['scene'] else ''
         page += f'<article class="fp-lesson"{attrs}>\n'
-        page += f'<p class="kick">Chapter {fi + 1} · {f["q"]} · Lesson {k + 1} of {len(ls)}</p>\n<h1><span class="n">{l["n"]}</span>{l["title"]}</h1>\n'
+        page += f'<p class="fp-meta">Lesson {l["n"]} · {k + 1} of {len(ls)} in chapter {fi + 1}</p>\n<h1>{l["title"]}</h1>\n'
         if k == 0:
             page += (f'<p class="lead">{f["dek"]}</p>\n'
                      f'<p class="fp-how"><b>How each lesson works:</b> read the two lines, then play the drawing. Click the <span class="fp-key">raised</span> pieces or the buttons under it. '
-                     f'Reach the goal and the explanation opens. Then press <b>Next</b>. This chapter has {len(ls)} lessons.</p>\n')
+                     f'Reach the goal and the explanation opens. Then press <b>Next</b> at the bottom right. This chapter has {len(ls)} lessons.</p>\n')
         page += l['body'].strip() + '\n</article>\n'
-        pv = f'<a class="prev" href="{prev["href"]}" rel="prev"><small>← Previous</small><span>{(prev["n"] + " ") if prev["n"] else ""}{prev["title"]}</span></a>'
+        # one way forward: a bar fixed to the bottom, like a course player. Next turns solid once the lesson is done.
+        pt = (prev['n'] + ' ' if prev['n'] else '') + plain(prev['title'])
+        pv = f'<a class="prev" href="{prev["href"]}" rel="prev" title="Previous: {html.escape(pt, quote=True)}"><span aria-hidden="true">←</span><span class="t">{html.escape(pt)}</span></a>'
         if nxt:
             nf = flat[j + 1][0]
-            lab = f'Next chapter: {nf + 1}. {FILMS[nf]["q"]}' if nf != fi else f'{nxt["n"]} {nxt["title"]}'
-            nx = f'<a class="next" href="{nxt["href"]}" rel="next" data-next><small>Next →</small><span>{lab}</span></a>'
+            lab = f'Next chapter: {FILMS[nf]["q"]}' if nf != fi else f'Next: {nxt["n"]} {plain(nxt["title"])}'
+            nx = f'<a class="next" href="{nxt["href"]}" rel="next" data-next><span class="t">{html.escape(lab)}</span><span aria-hidden="true">→</span></a>'
         else:
-            nx = f'<a class="next" href="{BASE}" data-next><small>Finish →</small><span>See everything you found</span></a>'
-        page += f'<nav class="fp-pn" aria-label="Lessons">{pv}{nx}</nav>\n'
+            nx = f'<a class="next" href="{BASE}" data-next><span class="t">Finish: see everything you found</span><span aria-hidden="true">→</span></a>'
+        page += f'<nav class="fp-bar" aria-label="Lessons"><div class="in">{pv}<button type="button" class="fp-open">Contents</button>{nx}</div></nav>\n'
         page += FOOT
         dst = OUT / l['path']
         dst.parent.mkdir(parents=True, exist_ok=True)
@@ -575,10 +588,17 @@ def build():
   <p class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}">Start with lesson 1.1</a> <span class="muted" data-sum></span></p>
 </div>
 
-<div class="call"><p class="kick">How it works</p><p>Each lesson is one page: two lines to read, a drawing to play, then what you just found. Press <b>Next</b> at the bottom to go on. The <b>☰</b> button at the top left shows every lesson, with a tick on the ones you have done. Nothing to submit.</p></div>
+<section class="fp-sec fp-how-it"><h2>How it works</h2>
+<ol class="fp-steps">
+  <li><b>Read two lines.</b> Each lesson is one page and one idea.</li>
+  <li><b>Play the drawing.</b> Reach its goal and the explanation opens.</li>
+  <li><b>Press Next.</b> Contents shows every lesson, with a tick on the ones you have done.</li>
+</ol>
+<p class="muted">Nothing to submit. Your ticks stay on this device.</p>
+</section>
 
-<section class="fp-sec"><h2>Lessons</h2>
-{toc(course)}
+<section class="fp-sec"><h2>The course</h2>
+{outline(course)}
 <p><button type="button" class="fp-reset" data-fpreset>Clear my ticks and start again</button></p>
 </section>
 

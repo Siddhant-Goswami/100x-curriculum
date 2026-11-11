@@ -17,7 +17,7 @@
 <body data-page="fp-06-what-hardware-powers-llms-2" class="read fp-course">
 <header class="top"><div class="in">
   <button class="tbtn fp-menu" type="button" aria-label="Table of contents" aria-expanded="false" aria-controls="fp-toc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></button>
-  <div class="fp-crumbs" role="navigation" aria-label="You are here"><a class="home" href="/c8/module-2/first-principles/">Sand to LLMs</a><span class="sep">›</span><a class="ch" href="/c8/module-2/first-principles/06-what-hardware-powers-llms">6. What hardware powers LLMs?</a><span class="sep">›</span><span class="here">6.2</span></div>
+  <div class="fp-crumbs" role="navigation" aria-label="You are here"><a class="home" href="/c8/module-2/first-principles/">From sand to language models</a><span class="sep">›</span><a class="ch" href="/c8/module-2/first-principles/06-what-hardware-powers-llms">6. What hardware powers LLMs?</a><span class="sep">›</span><span class="here">6.2</span></div>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
 <div class="fp-scrim" hidden></div>
@@ -39,8 +39,8 @@
 <div class="wrap">
   <main>
 <article class="fp-lesson" data-scene="f6-wait">
-<p class="kick">Chapter 6 · What hardware powers LLMs? · Lesson 2 of 5</p>
-<h1><span class="n">6.2</span>What does the chip wait for?</h1>
+<p class="fp-meta">Lesson 6.2 · 2 of 5 in chapter 6</p>
+<h1>What does the chip wait for?</h1>
 <p>But the dials do not live inside the workers. They sit on the GPU's own workbench, the leaky buckets from chapter 2.</p>
 <figure class="fp" id="f6-wait" data-fp="guess" data-part="the wait" data-a="1"><figcaption>For one token, what takes longer?</figcaption><ul><li>Doing 16 billion multiply-and-adds</li><li>Carrying the dials from the bench to the workers</li><li>They take about the same</li></ul></figure>
 
@@ -49,7 +49,7 @@
 <p>For every token, every dial travels from the bench to the workers. Eight billion dials at 16 bits each is 16 gigabytes, carried across for one token. The workers spend almost all their time waiting.</p><p class="pull"><small>The lesson</small>The maths is cheap. Moving the numbers is the cost.</p>
 </div>
 </article>
-<nav class="fp-pn" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/06-what-hardware-powers-llms" rel="prev"><small>← Previous</small><span>6.1 The right shape of chip</span></a><a class="next" href="/c8/module-2/first-principles/06-what-hardware-powers-llms/make-every-trip-count" rel="next" data-next><small>Next →</small><span>6.3 Make every trip count</span></a></nav>
+<nav class="fp-bar" aria-label="Lessons"><div class="in"><a class="prev" href="/c8/module-2/first-principles/06-what-hardware-powers-llms" rel="prev" title="Previous: 6.1 The right shape of chip"><span aria-hidden="true">←</span><span class="t">6.1 The right shape of chip</span></a><button type="button" class="fp-open">Contents</button><a class="next" href="/c8/module-2/first-principles/06-what-hardware-powers-llms/make-every-trip-count" rel="next" data-next><span class="t">Next: 6.3 Make every trip count</span><span aria-hidden="true">→</span></a></div></nav>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · From sand to language models</span><a href="/#FP">Curriculum map</a><a href="/c8/module-2/first-principles/">Course home</a></div></footer>
