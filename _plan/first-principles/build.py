@@ -556,10 +556,9 @@ def build():
         attrs = f' data-scene="{l["scene"]}"' if l['scene'] else ''
         page += f'<article class="fp-lesson"{attrs}>\n'
         page += f'<p class="fp-meta">Lesson {l["n"]} · {k + 1} of {len(ls)} in chapter {fi + 1}</p>\n<h1>{l["title"]}</h1>\n'
-        if k == 0:
-            page += (f'<p class="lead">{f["dek"]}</p>\n'
-                     f'<p class="fp-how"><b>How each lesson works:</b> read the two lines, then play the drawing. Click the <span class="fp-key">raised</span> pieces or the buttons under it. '
-                     f'Reach the goal and the explanation opens. Then press <b>Next</b> at the bottom right. This chapter has {len(ls)} lessons.</p>\n')
+        # the very first lesson says once how a lesson works; the chapter blurbs live on the course outline
+        if j == 0:
+            page += '<p class="fp-how"><b>How it works:</b> play the drawing until the explanation opens, then press Next. Pieces with a shadow under them can be clicked.</p>\n'
         page += l['body'].strip() + '\n</article>\n'
         # one way forward: Previous and Next in the page, right after the lesson (not fixed to the screen). Next turns solid once the lesson is done.
         pt = (prev['n'] + ' ' if prev['n'] else '') + plain(prev['title'])
@@ -584,7 +583,7 @@ def build():
     page += f'''<div class="hero">
   <p class="kick">Cohort 8 · Module 2 · Self-paced · Both tracks</p>
   <h1>From sand to language models</h1>
-  <p class="dek">Eight chapters. One idea per lesson, from a grain of sand to a large language model.</p>
+  <p class="dek">Eight chapters. One idea per lesson.</p>
   <p class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}">Start with lesson 1.1</a> <span class="muted" data-sum></span></p>
 </div>
 

@@ -175,6 +175,7 @@ W.journal=function(s){
   function paint(){var sh=R(30,40,250,50,st.credits===0?'f-bg':'f-card')+R(30,104,250,50,st.plan==='pro'?'f-hum':'f-card'),
     tx=T(30,30,'the books','s l')+T(46,73,'credits','s l')+T(264,74,st.credits,'m r')+T(46,137,'plan','s l')+T(264,138,st.plan,'m r');
     if(mode){sh+=R(320,40,264,50,st.j?'f-det':'f-card');tx+=T(320,30,'the journal','s l')+T(334,72,st.j||'(empty)','xs l')}
+    else{sh+=R(320,40,264,50,'dash');tx+=T(320,30,'the journal','s l c-mute')+T(452,72,'not used yet','xs c-mute')}
     var marks=mode?[[.25,'journal line'],[.5,'take credits'],[.85,'raise plan']]:[[.3,'take credits'],[.8,'raise plan']];
     sh+=P('M30 196H570','thin');marks.forEach(function(m){var x=30+540*m[0];sh+=P('M'+x+' 186V206','thin');tx+=T(x,230,m[1],'xs c-mute')});
     sh+=C(30+540*p,196,9,off?'f-act':'f-prob');
@@ -580,9 +581,9 @@ var seenIO=('IntersectionObserver' in window)?new IntersectionObserver(function(
   if(e.target.classList.contains('fp-fresh')){e.target.classList.add('fp-hint');setTimeout(function(){e.target.classList.remove('fp-hint')},2400)}})},{threshold:.6}):null;
 function mount(fig){
   var fn=W[fig.getAttribute('data-fp')];if(!fn)return;
-  var id=fig.id,body=h('div','fp-b'),stage=h('div','fp-stage'),ctl=h('div','fp-row'),note=h('p','fp-note'),skip=h('button','fp-skip','Show me the answer');
+  var id=fig.id,body=h('div','fp-b'),stage=h('div','fp-stage'),ctl=h('div','fp-row'),opt=h('div','fp-row fp-opt'),note=h('p','fp-note'),skip=h('button','fp-skip','Show me the answer');
   var found=fig.nextElementSibling,lock=null;if(!found||!found.classList.contains('found'))found=null;
-  body.appendChild(note);body.appendChild(stage);body.appendChild(ctl);fig.appendChild(body);skip.type='button';
+  body.appendChild(note);body.appendChild(opt);body.appendChild(stage);body.appendChild(ctl);fig.appendChild(body);skip.type='button';
   if(found)fig.appendChild(found);
   function open(v,quiet){if((ST[id]||0)<v){ST[id]=v;store.set(KEY,ST)}fig.classList.add('done');fig.classList.remove('fp-fresh','fp-hint');fig.classList.toggle('won',ST[id]===2);skip.hidden=true;
     if(lock){lock.remove();lock=null}
@@ -593,7 +594,7 @@ function mount(fig){
     say:function(m,c){note.innerHTML=m||'';note.className='fp-note'+(c?' '+c:'')},
     win:function(){open(2)},seen:function(){open(1)},
     btn:function(l,c,f){var b=btn(l,c,f);ctl.appendChild(b);return b},
-    add:function(el){ctl.appendChild(el);return el}});
+    add:function(el){opt.appendChild(el);return el}});
   ctl.appendChild(skip);
   /* back on a lesson already played: say so, instead of repeating the first instruction */
   if(ST[id]){open(ST[id],true);ST[id]===2?note.className='fp-note ok':note.className='fp-note';note.innerHTML=ST[id]===2?'You found this earlier. Play it again if you like.':'You opened the answer earlier. Play it to find it yourself.'}

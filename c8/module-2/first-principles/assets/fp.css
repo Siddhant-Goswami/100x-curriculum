@@ -32,8 +32,11 @@ body.read .fp p{margin:0;max-width:none}
 .fp .good{color:var(--hum-ink)}
 .fp .mut{color:var(--ink2)}
 .fp .lab{font:500 14px var(--sans);color:var(--ink2)}
-.fp .seg{flex-wrap:wrap;border-radius:12px}
-.fp .seg button{font-size:13.5px;padding:6px 13px}
+/* a toggle is a setting, not an action: a grey track with the chosen side lifted, never black like a button */
+.fp .seg{flex-wrap:wrap;border-radius:10px;background:var(--bg2);border-color:var(--line);padding:3px}
+.fp .seg button{font-size:13.5px;padding:6px 13px;border-radius:7px;color:var(--ink2)}
+.fp .seg button:hover{color:var(--ink)}
+.fp .seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.1),0 0 0 1px var(--line2)}
 .fp-skip{margin-left:auto;border:0;background:none;padding:8px 0;font:500 13.5px var(--sans);color:var(--ink2);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .fp-skip:hover{color:var(--ink)}
 .fp-skip[hidden]{display:none}
@@ -281,7 +284,8 @@ body.read .fp-ls li{margin:0}
 .fp-lesson li{margin:0 0 8px}
 .fp-lesson h2{font:600 20px/1.3 var(--sans);letter-spacing:-.015em;margin:36px 0 12px}
 .fp-lesson .lead{font-size:18px;line-height:1.5;color:var(--ink2)}
-.fp-lesson .fp-how{margin:0 0 22px;padding:12px 14px;background:var(--bg2);border-radius:10px}
+.fp-lesson .fp-how{margin:-4px 0 18px;font-size:14px;color:var(--ink3)}
+.fp-lesson .fp-how b{color:var(--ink2)}
 
 /* one way forward: Previous and Next right after the lesson, in the page. Next turns solid once the lesson is done. */
 .fp-nav{display:flex;align-items:center;gap:12px;margin:28px 0 0}
