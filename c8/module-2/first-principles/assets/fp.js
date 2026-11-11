@@ -1,12 +1,9 @@
-/* First-principles films: every idea is a small hand-drawn scene you play.
+/* From sand to language models: every idea is a small hand-drawn scene you play.
    A scene is <figure class="fp" id="f1-gate" data-fp="gate" data-part="a gate"><figcaption>the goal</figcaption></figure>
    followed by <div class="found">what the scene showed</div>, which stays shut until the goal is met (or "Show me").
-   Progress saves on this device under c8.fp. The pages are generated: edit _plan/first-principles-films/build.py. */
+   Progress saves on this device under c8.fp. The pages are generated: edit _plan/first-principles/build.py. */
 (function(){
 'use strict';
-
-/* Film links. Paste each film's URL here (YouTube or Google Drive); an empty one shows no player. */
-var VIDEOS={1:'',2:'',3:'',4:'',5:'',6:'',7:'',8:''};
 
 var store=window.c8store||{get:function(k,d){return d},set:function(){}};
 var KEY='c8.fp',ST=store.get(KEY,{})||{};
@@ -542,11 +539,11 @@ var VKEY='c8.fpv',V=store.get(VKEY,{})||{};
 function here(){return location.pathname.replace(/\.html$/,'').replace(/\/index$/,'').replace(/\/$/,'')||'/'}
 function lessonState(li){var sc=li.getAttribute('data-scene');return sc?(ST[sc]||0):(V[li.getAttribute('data-href')]?2:0)}
 function paintToc(){
-  var films=[].slice.call(document.querySelectorAll('.fp-ch>li[data-ch]'));if(!films.length)return;
+  var chs=[].slice.call(document.querySelectorAll('.fp-ch>li[data-ch]'));if(!chs.length)return;
   var me=here(),total=0,doneN=0,firstOpen=null,earned={};
   /* the drawer and the course home both list every lesson; count once, from the first list */
   var counted=document.querySelector('.fp-ch');
-  films.forEach(function(fl){
+  chs.forEach(function(fl){
     var ls=[].slice.call(fl.querySelectorAll('.fp-ls>li')),d=0,won=0,sceneN=0,sceneWon=0;
     ls.forEach(function(li){var s=lessonState(li);li.classList.toggle('won',s===2);li.classList.toggle('seen',s===1);
       var on=li.getAttribute('data-href')===me;li.classList.toggle('here',on);var a=li.querySelector('a');if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
@@ -615,10 +612,5 @@ document.addEventListener('DOMContentLoaded',function(){
   var rs=document.querySelector('[data-fpreset]');if(rs)rs.addEventListener('click',function(){
     if(!rs.classList.contains('arm')){rs.classList.add('arm');rs.textContent='Click again to clear every tick';setTimeout(function(){rs.classList.remove('arm');rs.textContent='Clear my ticks and start again'},4000);return}
     ST={};V={};store.set(KEY,ST);store.set(VKEY,V);location.reload()});
-  [].forEach.call(document.querySelectorAll('[data-film]'),function(el){
-    var u=VIDEOS[el.getAttribute('data-film')];if(!u){el.remove();return}
-    var yt=/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/.exec(u),dr=/drive\.google\.com\/file\/d\/([\w-]+)/.exec(u),src=yt?'https://www.youtube-nocookie.com/embed/'+yt[1]:dr?'https://drive.google.com/file/d/'+dr[1]+'/preview':'';
-    el.innerHTML=src?'<div class="fp-video"><iframe src="'+src+'" title="The film" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>':'<a href="'+esc(u)+'" target="_blank" rel="noopener">Watch the film</a>';
-  });
 });
 })();

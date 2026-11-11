@@ -1,4 +1,4 @@
-/* First-principles films: hand-drawn scenes you play. Load after docs.css. Colours are docs.css tokens only.
+/* From sand to language models: hand-drawn scenes you play. Load after docs.css. Colours are docs.css tokens only.
    Amber (det) = exact memory: bits, records. Violet (prob) = dials and guesses. Green (hum) = right. Coral = something going wrong. */
 
 /* ---------- a scene ---------- */
@@ -108,7 +108,7 @@ body.read .found a.fp-next:hover{border-color:var(--ink3)}
 /* overview rows are links */
 .wb .hit.row{stroke:none}
 .wb a:hover .hit.row{fill:rgba(128,128,128,.1)}
-/* the "How to play" line under each film's title */
+/* the "How each lesson works" line in each chapter's first lesson */
 .fp-how{margin:16px 0 0;font-size:14.5px;line-height:1.5;color:var(--ink2)}
 .fp-how b{color:var(--ink);font-weight:600}
 .fp-key{display:inline-block;padding:1px 9px;border:1.5px solid var(--ink);border-radius:6px;box-shadow:0 3px 0 var(--ink3);font:600 17px/1.2 Caveat,cursive;color:var(--ink);background:var(--card)}
@@ -180,9 +180,7 @@ body.read .fp .fp-mail p+p{margin-top:6px}
 .fp-grid .win{background:var(--hum-soft);border-color:var(--hum);color:var(--hum-ink)}
 .fp-grid .chk{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
 
-/* ---------- the film, the principle, the rest of the page ---------- */
-.fp-video{position:relative;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--code-bg);margin:8px 0 0}
-.fp-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* ---------- the principle, the rest of the page ---------- */
 body.read .pull{font:700 30px/1.2 Caveat,cursive;letter-spacing:0;max-width:26ch}
 body.read .pull small{display:block;font:500 13px var(--sans);letter-spacing:0;color:var(--ink2);margin-bottom:6px}
 body.read details.qa{border-bottom:1px solid var(--line)}
@@ -227,7 +225,7 @@ body.read ol.fp-pr li.earned::after{content:"found";font:700 19px Caveat,cursive
 .fp-crumbs{flex:1;min-width:0;display:flex;align-items:center;gap:7px;font:500 13px var(--sans);color:var(--ink2);white-space:nowrap;overflow:hidden}
 .fp-crumbs a{color:var(--ink2);text-decoration:none}
 .fp-crumbs a:hover{color:var(--ink)}
-.fp-crumbs .film{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fp-crumbs .ch{overflow:hidden;text-overflow:ellipsis;min-width:0}
 .fp-crumbs .sep{color:var(--ink3)}
 .fp-crumbs .here{color:var(--ink);font-variant-numeric:tabular-nums;flex:none}
 @media (max-width:640px){.fp-crumbs .home,.fp-crumbs .home+.sep{display:none}}

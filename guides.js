@@ -118,8 +118,8 @@ var GUIDE_LINKS = {
   l09TrackA: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s02',
   l09Submit: '/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s06',
   l09OfficeHour: '/c8/module-2/lecture-09-llms-from-first-principles/office-hour',  /* the Write the eval exercise, used by Practice set 2 */
-  fpHub: '/c8/module-2/first-principles-films/',  /* eight pre-recorded films with notes, map stop FP before Lecture 11 */
-  fpStart: '/c8/module-2/first-principles-films/01-sand-to-screen',
+  fpHub: '/c8/module-2/first-principles/',  /* self-paced course, eight chapters, one lesson per page; map stop FP before Lecture 11 */
+  fpStart: '/c8/module-2/first-principles/01-sand-to-screen',
   ps2: '/c8/module-2/practice-set-2-write-the-eval/',  /* Practice set 2 brief: write the eval for the row tested in PS1 s04 */
   jasonWei: 'https://www.jasonwei.net/blog/asymmetry-of-verification-and-verifiers-law',
   delegation: '/c8/delegation-framework/',

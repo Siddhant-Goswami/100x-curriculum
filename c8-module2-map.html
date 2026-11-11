@@ -901,10 +901,10 @@ var STOPS = [
   {id:'P2',kind:'step',num:'P2',t:'Practice set 2: Write the eval',type:'Office hour and practice set',date:d(2026,11,3),x:2108,y:1244,
     can:'Between Lecture 10 and Lecture 11, on your own. The 3 Nov office hour showed why expert judgment on real tasks is what labs now pay for. Practice set 2 turns the score you gave your tested task by feel into an eval anyone could run the same way.',
     kw:'practice set 2 write the eval rubric grader hard lines office hour golden pair judgment score'},
-  /* Self-paced films, the last stop before Lecture 11. A step with self:true is not a practice set: its labels come from here. */
-  {id:'FP',kind:'step',self:true,num:'FP',t:'From sand to language models',type:'Eight pre-recorded films, each with scenes to play',date:d(2026,11,11),x:2148,y:1219,
-    can:'Eight short films, about an hour in all, from a grain of sand to a chatbot: how a machine computes, remembers, learns, pays attention, and why it only gets better where its work can be checked. Each film has a page of small scenes you play.',
-    kw:'first principles films videos pre-recorded sand to screen transistor bits bytes memory database acid tokens dials loss gradient training attention transformer embedding gpu fine-tuning rlhf eval reward hacking'},
+  /* Self-paced course, the last stop before Lecture 11. A step with self:true is not a practice set: its labels come from here. */
+  {id:'FP',kind:'step',self:true,num:'FP',t:'From sand to language models',type:'Self-paced course: eight chapters, one lesson per page',date:d(2026,11,11),x:2148,y:1219,
+    can:'A self-paced course from a grain of sand to a chatbot: how a machine computes, remembers, learns, pays attention, and why it only gets better where its work can be checked. Eight chapters, 48 short lessons, each one page with a drawing you play.',
+    kw:'first principles self-paced course lessons sand to screen transistor bits bytes memory database acid tokens dials loss gradient training attention transformer embedding gpu fine-tuning rlhf eval reward hacking'},
   {id:'L11',n:11,w:6,d:'Sat',x:2182,y:1190,nocode:{},code:{},kw:'tool calling mcp verifier'},
   {id:'L12',n:12,w:7,d:'Fri',x:2105,y:975,kw:'rag retrieval augmented generation embeddings'},
   {id:'L13',n:13,w:7,d:'Sat',x:2215,y:860,nocode:{},code:{},kw:'rag retrieval citations'},
@@ -1005,7 +1005,7 @@ function status(s){
     if(s.results && days(TODAY,s.results)>=0) return {cls:'st-held',txt:'Held · results '+fmt(s.results)};
     return {cls:'st-held',txt:'Held · '+fmt(s.date)};
   }
-  if(s.self) return days(TODAY,ST.L11.date)>=0 ? {cls:'st-active',txt:'Self-paced · before Lecture 11',hot:true} : {cls:'st-held',txt:'Self-paced · eight films'};
+  if(s.self) return days(TODAY,ST.L11.date)>=0 ? {cls:'st-active',txt:'Self-paced · before Lecture 11',hot:true} : {cls:'st-held',txt:'Self-paced · 48 lessons'};
   if(s.kind==='step'){
     if(days(TODAY,s.date)>0) return {cls:'st-up',txt:'After Lecture 10 · '+fmt(s.date)};
     if(days(TODAY,d(2026,11,12))>=0) return {cls:'st-active',txt:'Due before L11, Thu 12 Nov',hot:true};
@@ -1576,8 +1576,8 @@ function p2HTML(){
   if(x) h+='<div class="hubs"><a href="'+esc(x)+'">Start the exercise</a>'+(gl('l09Practice')?'<a href="'+esc(gl('l09Practice'))+'">Practice set 1</a>':'')+'</div>';
   return h;
 }
-/* The first-principles films stop, just before Lecture 11: the overview with all eight film pages. */
-function fpHTML(){ var u=gl('fpHub'), a=gl('fpStart'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the eight films</b><i>Each film is a set of small scenes you play, about an hour in all</i></span><em aria-hidden="true">→</em></a>'+(a?'<div class="hubs"><a href="'+esc(a)+'">Start with film 1</a></div>':'') : ''; }
+/* The first-principles course stop, just before Lecture 11: the course home and lesson 1.1. */
+function fpHTML(){ var u=gl('fpHub'), a=gl('fpStart'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the course</b><i>Eight chapters, 48 short lessons, one idea per page</i></span><em aria-hidden="true">→</em></a>'+(a?'<div class="hubs"><a href="'+esc(a)+'">Start with lesson 1.1</a></div>':'') : ''; }
 /* The hackathon page sits on the hackathon bridge. */
 function hackHTML(){ var u=gl('hackathon'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the hackathon page</b><i>Pick a problem, the five moves, timeline, rules, submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* A lecture that has happened shows one line and four key points from its notes (RECAP in guides.js); the pages hold the rest. */

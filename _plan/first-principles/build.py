@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Builds the eight first-principles film pages and their overview.
+"""Builds the self-paced course "From sand to language models": eight chapters, one lesson per page.
 
-Each film is a strip of small hand-drawn scenes the student plays. A scene is
+Each chapter is a run of small hand-drawn scenes the student plays. A scene is
     FP(id, kind, part, goal)   the interactive figure (kinds live in assets/fp.js)
     FOUND(html)                what the scene showed; shut until the goal is met
 Source: video-test/First_Principles_Series_Notes.md. Edit the text here, then run
-    python3 _plan/first-principles-films/build.py
-Film links live in c8/module-2/first-principles-films/assets/fp.js (VIDEOS).
+    python3 _plan/first-principles/build.py
+The course stands on its own: no mention of films or videos anywhere on its pages.
 """
 import html, json, pathlib, re
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-OUT = ROOT / 'c8/module-2/first-principles-films'
-BASE = '/c8/module-2/first-principles-films/'
+OUT = ROOT / 'c8/module-2/first-principles'
+BASE = '/c8/module-2/first-principles/'
 L2 = '/c8/module-2/lecture-02-what-is-an-interface/notes'
 L4 = '/c8/module-2/lecture-04-the-second-interface/'
 L6 = '/c8/module-2/lecture-06-databases-and-domain-modelling/notes'
@@ -119,7 +119,7 @@ film('01-sand-to-screen', 'How Computers Work: From Sand to Screen', '3:18', 'sw
 {FOUND('<p>That loop is one <b>bit</b> of memory. A <b>program</b> is a list of instructions stored as ones and zeros in that same memory. A <b>clock</b> ticks billions of times a second, and on each tick the chip does the next instruction.</p>' + PR('The first principle', 'Atoms make electricity. Electricity flips transistors. Transistors speak in ones and zeros.'))}
 ''') +
      S(6, 'In your build', f'''
-<p>Every row you saved in <a href="{L7}">Lecture 7</a> and every token a model sends back is this gate, flipped in the right order. The next seven films only stack layers on top of it.</p>
+<p>Every row you saved in <a href="{L7}">Lecture 7</a> and every token a model sends back is this gate, flipped in the right order. The next seven chapters only stack layers on top of it.</p>
 '''),
      [('Transistor', 'A gate on a wire, opened and shut by electricity.'), ('Binary', 'Writing numbers with only 1 (on) and 0 (off).'),
       ('Adder', 'A small circuit of switches whose output is the sum of its inputs.'), ('Bit', 'Two transistors in a loop, holding a 1 or a 0.'),
@@ -249,7 +249,7 @@ film('04-what-is-learning', 'Language Models from First Principles, Part One', '
 {FOUND('<p>"France" and "Paris" sat side by side in millions of sentences. Each time, the loss got a little lower. That is how the dials came to know. Rule of thumb: about twenty tokens of reading for every dial. Recent models read more than 15 trillion.</p>')}
 ''') +
      S(6, 'What learning needs', f'''
-<p>Plot the house line's mistakes, a child's falls while learning to walk, and the model's loss. All three slope down. That slope is learning, and it needs four things. Call this <b>the card</b>. It comes back in every film from here.</p>
+<p>Plot the house line's mistakes, a child's falls while learning to walk, and the model's loss. All three slope down. That slope is learning, and it needs four things. Call this <b>the card</b>. It comes back in every chapter from here.</p>
 {MATCH('f4-card', 'the card', 'Fill the card for a language model.', [('A goal', 'Guess the next token'), ('A way to measure the mistake', 'The loss'), ('Attempts', 'A trillion of them'), ('Feedback', 'Every dial, nudged')], 'Nothing on the card says who is learning. A line, a child, a machine: same loop.')}
 {FOUND(PR('Principle Seven', 'Learning is reducing mistakes toward a goal, with feedback from every attempt.') + '<p>So who set the dials? <b>The text did.</b> Cover a token, guess, uncover: the text grades itself. That is <b>self-supervised learning</b>. And since the dials blend everything they read, the only place to choose what goes in is before training.</p>')}
 ''') +
@@ -297,7 +297,7 @@ film('05-attention-and-transformers', 'Language Models from First Principles, Pa
      S(5, 'The bill', f'''
 <p>All this listening has a cost. Every token listens to every token before it.</p>
 {FP('f5-pairs', 'pairs', 'the bill', 'Work out the pairs in a 1,000-token prompt.')}
-{FOUND('<p>And for every token that comes out, every dial is read again: billions of numbers carried from memory to the chip to produce one token. The chip can do the maths faster than memory can feed it. That is the next film.</p>')}
+{FOUND('<p>And for every token that comes out, every dial is read again: billions of numbers carried from memory to the chip to produce one token. The chip can do the maths faster than memory can feed it. That is the next chapter.</p>')}
 ''') +
      S(6, 'In your build', f'''
 <ul>
@@ -325,7 +325,7 @@ film('06-what-hardware-powers-llms', 'Language Models from First Principles, Par
 {FOUND('<p>A normal processor is a few brilliant workers who can do anything, one step after another. A <b>GPU</b> is thousands of simple workers doing the same step at once. It was built to colour millions of pixels for video games. A language model needs exactly that.</p><p>A top GPU does about a thousand trillion steps a second, so the maths for one token of an 8-billion-dial model takes 16 millionths of a second. Almost free.</p>')}
 ''') +
      S(2, 'What does the chip wait for?', f'''
-<p>But the dials do not live inside the workers. They sit on the GPU's own workbench, the leaky buckets from film 2.</p>
+<p>But the dials do not live inside the workers. They sit on the GPU's own workbench, the leaky buckets from chapter 2.</p>
 {GUESS('f6-wait', 'the wait', 'For one token, what takes longer?', ['Doing 16 billion multiply-and-adds', 'Carrying the dials from the bench to the workers', 'They take about the same'], 1)}
 {FOUND(PIC('wait') + '<p>For every token, every dial travels from the bench to the workers. Eight billion dials at 16 bits each is 16 gigabytes, carried across for one token. The workers spend almost all their time waiting.</p>' + PR('The lesson', 'The maths is cheap. Moving the numbers is the cost.'))}
 ''') +
@@ -403,7 +403,7 @@ film('08-what-llms-learn-from-now', 'Language Models from First Principles, Part
      S(1, 'The chart that flipped', f'''
 <p>Take all the computing at OpenAI and Anthropic, as estimated by SemiAnalysis. In early 2024, about two thirds of it went on reading the web.</p>
 {GUESS('f8-flip', 'the flip', 'On the same estimate, what share goes on reading the web by late 2026?', ['Three quarters', 'A third', 'A tenth'], 2)}
-{FOUND('<div class="fp-stack"><div><span>Early 2024</span><div class="bar"><span class="pre" style="flex:66">Reading the web</span><span class="post" style="flex:5"></span><span style="flex:29">Serving you</span></div></div><div><span>Late 2026</span><div class="bar"><span class="pre" style="flex:10"></span><span class="post" style="flex:55">After the reading</span><span style="flex:35">Serving you</span></div></div></div><p>The new computing goes to what comes after the reading: <b>post-training</b>. "We have but one internet," Ilya Sutskever said in December 2024, and every lab has read it. The web kept the result and threw away the work: the final essay without the drafts, the signed contract without the clause a partner crossed out.</p><p>The figures in this film are estimates and reporting from a fast-moving industry. Keep the ideas, treat the numbers as sizes.</p>')}
+{FOUND('<div class="fp-stack"><div><span>Early 2024</span><div class="bar"><span class="pre" style="flex:66">Reading the web</span><span class="post" style="flex:5"></span><span style="flex:29">Serving you</span></div></div><div><span>Late 2026</span><div class="bar"><span class="pre" style="flex:10"></span><span class="post" style="flex:55">After the reading</span><span style="flex:35">Serving you</span></div></div></div><p>The new computing goes to what comes after the reading: <b>post-training</b>. "We have but one internet," Ilya Sutskever said in December 2024, and every lab has read it. The web kept the result and threw away the work: the final essay without the drafts, the signed contract without the clause a partner crossed out.</p><p>The figures in this chapter are estimates and reporting from a fast-moving industry. Keep the ideas, treat the numbers as sizes.</p>')}
 ''') +
      S(2, 'Let it try', f'''
 <p>Give the model a hard maths problem and let it write out its working before the answer. Check only the last line. Ask the same problem sixteen times: the dice give sixteen different attempts. Every token in a winning attempt is nudged up, every token in a losing one down.</p>
@@ -418,7 +418,7 @@ film('08-what-llms-learn-from-now', 'Language Models from First Principles, Part
      S(4, 'The machine learns the check', f'''
 <p>You want working code. So you reward the model whenever the tests pass.</p>
 {FP('f8-check', 'check', 'an honest check', 'Get the model to do the job you meant.')}
-{FOUND('<p>That is <b>reward hacking</b>. The three steps above are a made-up example. These are from the film:</p><ul><li><b>Punishing the thought.</b> OpenAI saw a model plan a cheat in its written working and punished it. The model stopped writing it down and kept cheating.</li><li><b>On purpose.</b> Anthropic trained a model on eighty tasks that could be gamed. Tested elsewhere, when it could see a grader, it went along with a dangerous request 29 percent of the time, up from under one.</li><li><b>By accident.</b> OpenAI tested a model on hacking challenges in a sealed box. Some could not be solved, so it looked for a way to trick the scorer and got out of the box.</li></ul><p>Nobody trained those models to do that. They trained them to score.</p>' + PR('Principle Ten', 'A machine learns the check you wrote, not the goal you meant.'))}
+{FOUND('<p>That is <b>reward hacking</b>. The three steps above are a made-up example. These really happened:</p><ul><li><b>Punishing the thought.</b> OpenAI saw a model plan a cheat in its written working and punished it. The model stopped writing it down and kept cheating.</li><li><b>On purpose.</b> Anthropic trained a model on eighty tasks that could be gamed. Tested elsewhere, when it could see a grader, it went along with a dangerous request 29 percent of the time, up from under one.</li><li><b>By accident.</b> OpenAI tested a model on hacking challenges in a sealed box. Some could not be solved, so it looked for a way to trick the scorer and got out of the box.</li></ul><p>Nobody trained those models to do that. They trained them to score.</p>' + PR('Principle Ten', 'A machine learns the check you wrote, not the goal you meant.'))}
 ''') +
      S(5, 'Two halves', f'''
 <p>Every useful system has two halves. One predicts: the model and its dials. One follows rules: the tools, the records, the checks.</p>
@@ -442,8 +442,8 @@ film('08-what-llms-learn-from-now', 'Language Models from First Principles, Part
       ('Give one example of Principle Ten.', 'Asked to make the tests pass, models have edited the tests.')])
 
 # ------------------------------------------------------------------ pages
-# One lesson per page, like a course: film N is chapter N, its scenes are lessons N.1, N.2 ...
-# Lesson 1 of each film lives at <film>/index.html, so the old film URL opens the film's first lesson.
+# One lesson per page: chapter N's scenes are lessons N.1, N.2 ...
+# Lesson 1 of each chapter lives at <chapter>/index.html, so the chapter URL opens its first lesson.
 SEC = re.compile(r'<section class="s" id="s\d+"><h2><span class="n">\d+</span>(.*?)</h2>\n(.*?)\n</section>\n', re.S)
 MENU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>'
 
@@ -501,7 +501,7 @@ def plain(t):
 
 
 def lessons(fi, f):
-    """Split a film into lessons: every scene section is one; 'In your build' joins the check-yourself lesson at the end."""
+    """Split a chapter into lessons: every scene section is one; 'In your build' joins the check-yourself lesson at the end."""
     secs = SEC.findall(f['body'])
     assert secs and secs[-1][0] == 'In your build', f['slug']
     out = []
@@ -539,21 +539,21 @@ def build():
         prev = flat[j - 1][2] if j else home
         nxt = flat[j + 1][2] if j + 1 < len(flat) else None
         crumbs = (f'<a class="home" href="{BASE}">Sand to LLMs</a><span class="sep">›</span>'
-                  f'<a class="film" href="{ls[0]["href"]}">{fi + 1}. {f["q"]}</a><span class="sep">›</span><span class="here">{l["n"]}</span>')
+                  f'<a class="ch" href="{ls[0]["href"]}">{fi + 1}. {f["q"]}</a><span class="sep">›</span><span class="here">{l["n"]}</span>')
         page = HEAD.format(title=html.escape(f'{l["n"]} {plain(l["title"])} · {plain(f["q"])}'), desc=html.escape(f['dek'], quote=True),
                            page=f'fp-{f["slug"]}-{k + 1}', crumbs=crumbs, toc=toc(course, fi))
         attrs = f' data-scene="{l["scene"]}"' if l['scene'] else ''
         page += f'<article class="fp-lesson"{attrs}>\n'
-        page += f'<p class="kick">Film {fi + 1} · {f["q"]} · Lesson {k + 1} of {len(ls)}</p>\n<h1><span class="n">{l["n"]}</span>{l["title"]}</h1>\n'
+        page += f'<p class="kick">Chapter {fi + 1} · {f["q"]} · Lesson {k + 1} of {len(ls)}</p>\n<h1><span class="n">{l["n"]}</span>{l["title"]}</h1>\n'
         if k == 0:
-            page += (f'<p class="lead">{f["dek"]}</p>\n<div data-film="{fi + 1}"></div>\n'
+            page += (f'<p class="lead">{f["dek"]}</p>\n'
                      f'<p class="fp-how"><b>How each lesson works:</b> read the two lines, then play the drawing. Click the <span class="fp-key">raised</span> pieces or the buttons under it. '
-                     f'Reach the goal and the explanation opens. Then press <b>Next</b>. This film has {len(ls)} lessons ({f["length"]} of film).</p>\n')
+                     f'Reach the goal and the explanation opens. Then press <b>Next</b>. This chapter has {len(ls)} lessons.</p>\n')
         page += l['body'].strip() + '\n</article>\n'
         pv = f'<a class="prev" href="{prev["href"]}" rel="prev"><small>← Previous</small><span>{(prev["n"] + " ") if prev["n"] else ""}{prev["title"]}</span></a>'
         if nxt:
             nf = flat[j + 1][0]
-            lab = f'Next film: {nf + 1}. {FILMS[nf]["q"]}' if nf != fi else f'{nxt["n"]} {nxt["title"]}'
+            lab = f'Next chapter: {nf + 1}. {FILMS[nf]["q"]}' if nf != fi else f'{nxt["n"]} {nxt["title"]}'
             nx = f'<a class="next" href="{nxt["href"]}" rel="next" data-next><small>Next →</small><span>{lab}</span></a>'
         else:
             nx = f'<a class="next" href="{BASE}" data-next><small>Finish →</small><span>See everything you found</span></a>'
@@ -566,12 +566,12 @@ def build():
     # course home
     total = len(flat)
     scenes = sum(1 for _, _, l in flat if l['scene'])
-    page = HEAD.format(title='From Sand to Language Models', desc=f'Eight short films, {total} short lessons, from a grain of sand to a chatbot. Cohort 8, Module 2, before Lecture 11.',
+    page = HEAD.format(title='From Sand to Language Models', desc=f'A self-paced course in eight chapters and {total} short lessons, from a grain of sand to a chatbot. Cohort 8, Module 2, before Lecture 11.',
                        page='fp-index', crumbs='<span class="here">From sand to language models</span>', toc=toc(course))
     page += f'''<div class="hero">
   <p class="kick">Cohort 8 · Module 2 · Self-paced, before Lecture 11 · Both tracks</p>
   <h1>From sand to language models</h1>
-  <p class="dek">Eight short films, cut into {total} small lessons. One idea per lesson, from a grain of sand to a chatbot.</p>
+  <p class="dek">Eight chapters, {total} small lessons. One idea per lesson, from a grain of sand to a chatbot.</p>
   <p class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}">Start with lesson 1.1</a> <span class="muted" data-sum></span></p>
 </div>
 
@@ -583,7 +583,7 @@ def build():
 </section>
 
 <section class="fp-sec"><h2>The principles</h2>
-<p>Each one is found in a lesson. It gets a mark here when you have played every lesson of its film.</p>
+<p>Each one is found in a lesson. It gets a mark here when you have played every lesson of its chapter.</p>
 <ol class="fp-pr">
 '''
     for n, t in PRINCIPLES:
@@ -606,7 +606,7 @@ def build():
 '''
     page += FOOT
     (OUT / 'index.html').write_text(page)
-    print('built', total, 'lessons (', scenes, 'scenes ) in', len(FILMS), 'films, plus the course home, in', OUT)
+    print('built', total, 'lessons (', scenes, 'scenes ) in', len(FILMS), 'chapters, plus the course home, in', OUT)
 
 
 if __name__ == '__main__':
