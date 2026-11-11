@@ -221,6 +221,11 @@ body.read ol.fp-pr li.earned::after{content:"found";font:700 19px Caveat,cursive
 /* ================= the course: one lesson per page ================= */
 /* header: menu, breadcrumb, theme */
 .fp-course .top .in{gap:10px}
+/* the footer always sits at the bottom of the window: the page is a column and the content takes the spare height */
+body.fp-course{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+body.fp-course>.wrap{flex:1 0 auto;width:100%;box-sizing:border-box}
+body.fp-course main{padding-bottom:48px}
+body.fp-course>footer{margin-top:0;padding:20px 0 24px}
 .fp-crumbs{flex:1;min-width:0;display:flex;align-items:center;gap:7px;font:500 13px var(--sans);color:var(--ink2);white-space:nowrap;overflow:hidden}
 .fp-crumbs a{color:var(--ink2);text-decoration:none}
 .fp-crumbs a:hover{color:var(--ink)}
