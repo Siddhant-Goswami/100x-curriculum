@@ -289,6 +289,8 @@ footer a{color:var(--ink2)}
 span.trk{display:none}
 html[data-track="all"] span.trk,html[data-track="a"] span.trk.a,html[data-track="b"] span.trk.b{display:inline}
 a.btn{text-decoration:none}
+a.btn:hover{color:#fff}
+a.btn.ghost:hover,a.btn.quiet:hover{color:var(--ink)}
 
 /* ================= reading pages (body.read): one column, one accent, one thing at a time ================= */
 body.read{--ink3:#6F6F6F;font-size:1.0625rem;line-height:1.65;-webkit-text-size-adjust:100%}

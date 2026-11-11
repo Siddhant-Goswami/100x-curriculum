@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How does sand do maths? | 100xEngineers</title>
+<meta name="description" content="Melt sand, grow a crystal, carve it with light. After that it can add. Start with the smallest piece and build up.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/first-principles-films/assets/fp.css">
+<script src="/c8/docs.js"></script>
+<script src="/c8/module-2/first-principles-films/assets/fp.js" defer></script>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="fp-01-sand-to-screen" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#FP">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Film pages"><a href="/c8/module-2/first-principles-films/">All films</a><a href="/c8/module-2/first-principles-films/02-how-a-machine-remembers">Next</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Film 1 of 8 · How Computers Work: From Sand to Screen · 3:18</p>
+  <h1>How does sand do maths?</h1>
+  <p class="dek">Melt sand, grow a crystal, carve it with light. After that it can add. Start with the smallest piece and build up.</p>
+  <div data-film="1"></div>
+  <p class="fp-how"><b>How to play:</b> click the <span class="fp-key">raised</span> pieces in each drawing, or the buttons under it. Reach the goal and the explanation opens.</p>
+  <div class="fp-parts" data-parts aria-label="What there is to find on this page"></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>A gate on a wire</h2>
+<p>Sand is mostly silicon. Push electrons down a wire and that flow is electricity. Carve silicon the right way and you get a gate on that wire: a little voltage opens it.</p>
+<figure class="fp" id="f1-gate" data-fp="gate" data-part="a gate"><figcaption>Light the lamp. You may only touch the first gate.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<p>That gate is a <b>transistor</b>. It is opened by electricity, and what comes out is electricity, so <b>one transistor can open another</b>, in chains as long as you like. A phone chip holds tens of billions of them.</p>
+</div>
+</section>
+<section class="s" id="s02"><h2><span class="n">02</span>Ones and zeros</h2>
+<p>A gate has two states. Call on a 1 and off a 0. To count higher, line switches up and give each one a value.</p>
+<figure class="fp" id="f1-byte" data-fp="byte" data-part="a number"><figcaption>Make 5. Then make 65.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<p>Each switch you add doubles how far you can count. Writing numbers this way is <b>binary</b>. And anything can become a number: a letter (A is 65, because we agreed), a pixel (three numbers: red, green, blue), a sound (a long list tracing a wave). Everything on a screen is numbers, and every number is switches.</p>
+</div>
+</section>
+<section class="s" id="s03"><h2><span class="n">03</span>Two switches in a row</h2>
+<p>Now wire two switches one after the other on the same wire.</p>
+<figure class="fp" id="f1-carry" data-fp="carry" data-part="a carry"><figcaption>Try all four combinations.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<p>Current gets through only when both are on. Now look at what adding two digits needs:</p><div class="tw"><table><thead><tr><th>A + B</th><th>In binary</th><th>Carry digit</th></tr></thead><tbody><tr><td>0 + 0</td><td>00</td><td>0</td></tr><tr><td>0 + 1</td><td>01</td><td>0</td></tr><tr><td>1 + 0</td><td>01</td><td>0</td></tr><tr><td>1 + 1</td><td>10</td><td>1</td></tr></tbody></table></div>
+<p>The carry is 1 only when both are 1. That is the circuit you just tested. One more small circuit gives the other digit, and you have an <b>adder</b>.</p>
+</div>
+</section>
+<section class="s" id="s04"><h2><span class="n">04</span>Be the adder</h2>
+<p>Before the circuit does it, do it by hand. The answer switches are worth 4, 2 and 1.</p>
+<figure class="fp" id="f1-adder" data-fp="adder" data-part="an adder"><figcaption>Set the answer switches for three sums.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<p>In the chip, nobody does the maths. Switches open and shut, and the answer is where the current ends up. Subtracting is adding a negative number. Multiplying is adding again and again. Pack these circuits together and you have the calculator at the heart of every chip.</p>
+</div>
+</section>
+<section class="s" id="s05"><h2><span class="n">05</span>A loop that remembers</h2>
+<p>Wire two gates in a loop, so each one's output feeds the other's gate.</p>
+<figure class="fp" id="f1-bit" data-fp="bit" data-part="a bit"><figcaption>Make the loop hold a 1 with the input off.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<p>That loop is one <b>bit</b> of memory. A <b>program</b> is a list of instructions stored as ones and zeros in that same memory. A <b>clock</b> ticks billions of times a second, and on each tick the chip does the next instruction.</p><p class="pull"><small>The first principle</small>Atoms make electricity. Electricity flips transistors. Transistors speak in ones and zeros.</p>
+</div>
+</section>
+<section class="s" id="s06"><h2><span class="n">06</span>In your build</h2>
+<p>Every row you saved in <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Lecture 7</a> and every token a model sends back is this gate, flipped in the right order. The next seven films only stack layers on top of it.</p>
+</section>
+<div class="fp-end" data-fpend><p data-count></p><p><a href="/c8/module-2/first-principles-films/02-how-a-machine-remembers">Next film: How does a machine remember?</a></p></div>
+<section class="s" id="s07"><h2><span class="n">07</span>Check yourself</h2>
+<p>Answer in your head, then open it.</p>
+<details class="qa"><summary>Why does it matter that a transistor is opened by electricity?</summary><p>Because its output is also electricity, so one transistor can open the next. That is what lets them form circuits.</p></details>
+<details class="qa"><summary>With switches worth 4, 2 and 1, which number is 101? How many numbers can three switches show?</summary><p>4 + 1 = 5. Three switches show eight numbers, 0 to 7.</p></details>
+<details class="qa"><summary>Two switches in a row let current through only when both are on. Which digit of an addition is that?</summary><p>The carry digit.</p></details>
+<details class="qa"><summary>How does a loop of two transistors keep a 1 after the input is removed?</summary><p>Each one's output holds the other one's gate open, so the loop keeps itself on.</p></details>
+<details class="words"><summary>Words you now own</summary><dl><div><dt>Transistor</dt><dd>A gate on a wire, opened and shut by electricity.</dd></div><div><dt>Binary</dt><dd>Writing numbers with only 1 (on) and 0 (off).</dd></div><div><dt>Adder</dt><dd>A small circuit of switches whose output is the sum of its inputs.</dd></div><div><dt>Bit</dt><dd>Two transistors in a loop, holding a 1 or a 0.</dd></div><div><dt>Program</dt><dd>A list of instructions stored as ones and zeros.</dd></div><div><dt>Clock</dt><dd>The tick on which the chip does its next instruction.</dd></div></dl></details>
+</section>
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/first-principles-films/02-how-a-machine-remembers">Next film: How does a machine remember?</a></li>
+  <li><a href="/c8/module-2/first-principles-films/">All eight films</a></li>
+  <li><a href="/#FP">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · From sand to language models</span><a href="/#FP">Curriculum map</a><a href="/c8/module-2/first-principles-films/">All eight films</a></div></footer>
+</body>
+</html>

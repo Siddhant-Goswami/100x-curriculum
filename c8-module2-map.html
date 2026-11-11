@@ -865,7 +865,7 @@ var REGIONS = [
   {id:'api',c:'rules',name:'The second interface',stops:['L4','L5'],desc:'Why the frontend cannot store or protect data on its own. The API, and the cliff of the no-code track.'},
   {id:'data',c:'rules',name:'Data',stops:['L6','L7'],desc:'Model the domain before any table exists, then make data survive a refresh.'},
   {id:'launch',c:'rules',name:'Launch',stops:['L8'],desc:'One deployed MVP, in the hands of a named person who did not build it.'},
-  {id:'models',c:'judgment',name:'LLM primitives',stops:['L9','L10','P2','L11'],desc:'What an LLM can and cannot know, and tool calling as the model asking for an action, not taking it.'},
+  {id:'models',c:'judgment',name:'LLM primitives',stops:['L9','L10','P2','FP','L11'],desc:'What an LLM can and cannot know, and tool calling as the model asking for an action, not taking it.'},
   {id:'retrieval',c:'judgment',name:'Context',stops:['L12','L13','L14'],desc:'Why the model cannot answer from your documents by default, and what retrieval and memory change.'},
   {id:'harness',c:'judgment',name:'Harness',stops:['L15'],desc:'Connecting the dots. The arrangement of rule, model and human nodes, not the model, decides reliability.'},
   {id:'measure',c:'judgment',name:'Model behavior',stops:['L16','L17','L18'],desc:'Fine-tune only when it is the right answer, prepare clean data, and judge the judge.'},
@@ -898,10 +898,14 @@ var STOPS = [
     kw:'hackathon bridge deterministic probabilistic rules models lecture 8 results'},
   {id:'L9',n:9,w:5,d:'Sat',x:1935,y:1140,kw:'llm language model knowledge cutoff'},
   {id:'L10',n:10,w:6,d:'Fri',x:2040,y:1265,kw:'tool calling mcp model context protocol'},
-  {id:'P2',kind:'step',num:'P2',t:'Practice set 2: Write the eval',type:'Office hour and practice set',date:d(2026,11,3),x:2132,y:1236,
+  {id:'P2',kind:'step',num:'P2',t:'Practice set 2: Write the eval',type:'Office hour and practice set',date:d(2026,11,3),x:2108,y:1244,
     can:'Between Lecture 10 and Lecture 11, on your own. The 3 Nov office hour showed why expert judgment on real tasks is what labs now pay for. Practice set 2 turns the score you gave your tested task by feel into an eval anyone could run the same way.',
     kw:'practice set 2 write the eval rubric grader hard lines office hour golden pair judgment score'},
-  {id:'L11',n:11,w:6,d:'Sat',x:2170,y:1210,nocode:{},code:{},kw:'tool calling mcp verifier'},
+  /* Self-paced films, the last stop before Lecture 11. A step with self:true is not a practice set: its labels come from here. */
+  {id:'FP',kind:'step',self:true,num:'FP',t:'From sand to language models',type:'Eight pre-recorded films, each with scenes to play',date:d(2026,11,11),x:2148,y:1219,
+    can:'Eight short films, about an hour in all, from a grain of sand to a chatbot: how a machine computes, remembers, learns, pays attention, and why it only gets better where its work can be checked. Each film has a page of small scenes you play.',
+    kw:'first principles films videos pre-recorded sand to screen transistor bits bytes memory database acid tokens dials loss gradient training attention transformer embedding gpu fine-tuning rlhf eval reward hacking'},
+  {id:'L11',n:11,w:6,d:'Sat',x:2182,y:1190,nocode:{},code:{},kw:'tool calling mcp verifier'},
   {id:'L12',n:12,w:7,d:'Fri',x:2105,y:975,kw:'rag retrieval augmented generation embeddings'},
   {id:'L13',n:13,w:7,d:'Sat',x:2215,y:860,nocode:{},code:{},kw:'rag retrieval citations'},
   {id:'L14',n:14,w:8,d:'Fri',x:2345,y:925,nocode:{},code:{},kw:'memory second brain'},
@@ -1001,6 +1005,7 @@ function status(s){
     if(s.results && days(TODAY,s.results)>=0) return {cls:'st-held',txt:'Held · results '+fmt(s.results)};
     return {cls:'st-held',txt:'Held · '+fmt(s.date)};
   }
+  if(s.self) return days(TODAY,ST.L11.date)>=0 ? {cls:'st-active',txt:'Self-paced · before Lecture 11',hot:true} : {cls:'st-held',txt:'Self-paced · eight films'};
   if(s.kind==='step'){
     if(days(TODAY,s.date)>0) return {cls:'st-up',txt:'After Lecture 10 · '+fmt(s.date)};
     if(days(TODAY,d(2026,11,12))>=0) return {cls:'st-active',txt:'Due before L11, Thu 12 Nov',hot:true};
@@ -1308,7 +1313,7 @@ function renderPin(s){
   var st = status(s), el = s.item.el, C = s.cont;
   s.item.plw = 0;
   el.className = 'ov pin k-'+s.kind+' '+(s.item.fl?'flip ':'')+st.cls+(s.item.on?' on':'')+(s.done?' is-cp':'')+(s.done&&cpDone(s)?' cleared':'')+(sget('c8m2-note-'+s.id)?' has-note':'')+(selected===s.id?' sel':'');
-  var label = s.kind==='lec' ? 'Lecture '+s.n : s.kind==='step' ? 'Practice set' : s.kind==='camp' ? 'What to build' : s.kind==='m3' ? 'Module 3' : 'Bridge';
+  var label = s.kind==='lec' ? 'Lecture '+s.n : s.kind==='step' ? (s.self?'Self-paced':'Practice set') : s.kind==='camp' ? 'What to build' : s.kind==='m3' ? 'Module 3' : 'Bridge';
   var P = workProgress(s), ring = '';
   if(P && P.done){ var rr=16.5, f=P.done/P.total, a=f*2*Math.PI, ex=(19+rr*Math.sin(a)).toFixed(2), ey=(19-rr*Math.cos(a)).toFixed(2);
     ring = '<svg class="ring" viewBox="0 0 38 38" aria-hidden="true"><circle class="bg" cx="19" cy="19" r="'+rr+'"/>'+(f>=1 ? '<circle class="fg" cx="19" cy="19" r="'+rr+'"/>' : '<path class="fg" d="M19 '+(19-rr)+' A'+rr+' '+rr+' 0 '+(f>0.5?1:0)+' 1 '+ex+' '+ey+'"/>')+'</svg>'; }
@@ -1545,7 +1550,7 @@ function formatLabel(s){
   return t;
 }
 function agendaHTML(s){
-  var when = s.kind==='lec' ? fmt(s.date)+' · Week '+s.w : s.kind==='step' ? 'Office hour '+fmt(s.date)+' · practice set due '+fmt(d(2026,11,12)) : s.due ? 'Due '+fmt(s.due) : s.date ? fmt(s.date) : s.id==='b2' ? 'Self-paced · Week 0' : (s.type||'');
+  var when = s.kind==='lec' ? fmt(s.date)+' · Week '+s.w : s.self ? 'Self-paced · before Lecture 11, '+fmt(ST.L11.date) : s.kind==='step' ? 'Office hour '+fmt(s.date)+' · practice set due '+fmt(d(2026,11,12)) : s.due ? 'Due '+fmt(s.due) : s.date ? fmt(s.date) : s.id==='b2' ? 'Self-paced · Week 0' : (s.type||'');
   var rows = [['When', esc(when)], ['Format', formatLabel(s)]];
   var lead = track==='code' && s.codeOwner ? s.codeOwner : s.owner;
   if(lead) rows.push(['Led by', esc(lead)]);
@@ -1571,6 +1576,8 @@ function p2HTML(){
   if(x) h+='<div class="hubs"><a href="'+esc(x)+'">Start the exercise</a>'+(gl('l09Practice')?'<a href="'+esc(gl('l09Practice'))+'">Practice set 1</a>':'')+'</div>';
   return h;
 }
+/* The first-principles films stop, just before Lecture 11: the overview with all eight film pages. */
+function fpHTML(){ var u=gl('fpHub'), a=gl('fpStart'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the eight films</b><i>Each film is a set of small scenes you play, about an hour in all</i></span><em aria-hidden="true">→</em></a>'+(a?'<div class="hubs"><a href="'+esc(a)+'">Start with film 1</a></div>':'') : ''; }
 /* The hackathon page sits on the hackathon bridge. */
 function hackHTML(){ var u=gl('hackathon'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the hackathon page</b><i>Pick a problem, the five moves, timeline, rules, submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* A lecture that has happened shows one line and four key points from its notes (RECAP in guides.js); the pages hold the rest. */
@@ -1587,7 +1594,7 @@ function trackSwHTML(s){
 }
 function trackBitsHTML(s){
   var r = s.kind==='lec' ? recapFor(s) : null;
-  var h = notesHTML(s) + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.id==='P2' ? p2HTML() : '') + (s.kind==='bridge' ? '' : agendaHTML(s));
+  var h = notesHTML(s) + (s.id==='b3' ? wtbA1HTML() : '') + (s.id==='b2' ? wtbExampleHTML() : '') + (s.id==='HK' ? hackHTML() : '') + hubHTML(s) + (s.id==='P2' ? p2HTML() : '') + (s.id==='FP' ? fpHTML() : '') + (s.kind==='bridge' ? '' : agendaHTML(s));
   if(r) return h + recapHTML(r) + trackSwHTML(s);
   h += canHTML(s) + loHTML(s) + toolsHTML(s);
   var cl = (s.nocode && track!=='code' && s.nocode.cliff) || s.cliff;
@@ -1596,7 +1603,7 @@ function trackBitsHTML(s){
 }
 function stopCard(s, focus){
   var C=s.cont, st=status(s);
-  var kick = s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w : s.kind==='step' ? 'Practice set · after Lecture 10' : s.kind==='camp' ? 'What to build · Week 0' : s.kind==='m3' ? 'Human · Module 3' : 'Bridge · '+C.name;
+  var kick = s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w : s.kind==='step' ? (s.self?'Self-paced · before Lecture 11':'Practice set · after Lecture 10') : s.kind==='camp' ? 'What to build · Week 0' : s.kind==='m3' ? 'Human · Module 3' : 'Bridge · '+C.name;
   var h = '<h2 id="ptitle">'+esc(s.t)+'</h2>';
   h += '<div class="pills"><span class="pill '+(st.hot?'hot':st.cls==='st-held'?'ok':'')+'">'+(st.cls==='st-held'?'✓ ':'')+esc(st.txt)+'</span><span class="pill">'+esc(s.type)+'</span>'+(C.bridge?'<span class="pill terr">'+esc(C.verif)+'</span>':'<button type="button" class="pill terr" data-cont="'+C.id+'">'+esc(C.name)+' · '+esc(C.verif)+'</button>')+tickPillHTML(s)+'</div>';
   if(s.kind==='m3'){
@@ -2031,7 +2038,7 @@ function stopLook(s){
   if(st.hot) return {coin:'#F2603C',num:'#F2603C',st:st};
   return {coin:C.c,num:C.ci,st:st};
 }
-function kickFor(s){ return s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w+' · '+fmt(s.date) : s.kind==='step' ? 'Practice set · after Lecture 10' : s.kind==='camp' ? 'What to build · '+s.type : s.kind==='m3' ? 'Module 3 · locked' : s.type; }
+function kickFor(s){ return s.kind==='lec' ? 'Lecture '+s.n+' · Week '+s.w+' · '+fmt(s.date) : s.kind==='step' ? (s.self?'Self-paced · before Lecture 11':'Practice set · after Lecture 10') : s.kind==='camp' ? 'What to build · '+s.type : s.kind==='m3' ? 'Module 3 · locked' : s.type; }
 function stopLabel(a){
   var s=a.s, lk=stopLook(s);
   a.label = retext(a.label, {w:5.4,lines:[
@@ -2243,7 +2250,7 @@ function frame(now){
   cam.position.copy(camT).addScaledVector(OFF,camD); cam.lookAt(camT);
   R.render(scene,cam);
 }
-function areaName(a){ return a.kind==='in' ? 'Start · your observation' : a.kind==='ns' ? 'Your North Star' : (a.s.kind==='lec'?'Lecture '+a.s.n:a.s.kind==='step'?'Practice set':a.s.kind==='camp'?'What to build '+a.s.num:a.s.kind==='m3'?'Module 3':'Bridge')+' · '+a.s.t; }
+function areaName(a){ return a.kind==='in' ? 'Start · your observation' : a.kind==='ns' ? 'Your North Star' : (a.s.kind==='lec'?'Lecture '+a.s.n:a.s.kind==='step'?(a.s.self?'Self-paced':'Practice set'):a.s.kind==='camp'?'What to build '+a.s.num:a.s.kind==='m3'?'Module 3':'Bridge')+' · '+a.s.t; }
 function setCur(a){
   cur=a; var km=DRIVE.key;
   if(a){ km.visible=true; km.scale.set(.2,.075,1); km.position.set(a.x+a.half-1.05, .05, a.z+a.half-.5);

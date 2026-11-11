@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What are attention and transformers? | 100xEngineers</title>
+<meta name="description" content="The count table only saw the last token. The dials read all five and know that &quot;capital&quot; and &quot;France&quot; matter. How?">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/first-principles-films/assets/fp.css">
+<script src="/c8/docs.js"></script>
+<script src="/c8/module-2/first-principles-films/assets/fp.js" defer></script>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="fp-05-attention-and-transformers" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#FP">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Film pages"><a href="/c8/module-2/first-principles-films/">All films</a><a href="/c8/module-2/first-principles-films/04-what-is-learning">Previous</a><a href="/c8/module-2/first-principles-films/06-what-hardware-powers-llms">Next</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Film 5 of 8 · Language Models from First Principles, Part Two · 6:30</p>
+  <h1>What are attention and transformers?</h1>
+  <p class="dek">The count table only saw the last token. The dials read all five and know that "capital" and "France" matter. How?</p>
+  <div data-film="5"></div>
+  <p class="fp-how"><b>How to play:</b> click the <span class="fp-key">raised</span> pieces in each drawing, or the buttons under it. Reach the goal and the explanation opens.</p>
+  <div class="fp-parts" data-parts aria-label="What there is to find on this page"></div>
+</div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>A map of words</h2>
+<p>A token's number is only a code. 4881 for France says nothing about 6342 for Paris. So rate every token on rulers instead. With two rulers, every token is a spot on a map.</p>
+<figure class="fp" id="f5-map" data-fp="map" data-part="a map"><figcaption>Mark where Berlin belongs. Then find it with arithmetic.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<ul><li>Nobody writes the ratings. Each one is a dial. If Paris and London sit close, one sentence ("flew to Paris") teaches both, and the loss is lower. <b>The mistakes drew the map.</b></li><li>A real map has thousands of rulers, about twelve thousand in GPT-3. So keep the list of numbers: a <b>vector</b>. A token's list is its <b>embedding</b>.</li></ul>
+</div>
+</section>
+<section class="s" id="s02"><h2><span class="n">02</span>One word, two meanings</h2>
+<p>Each token gets its spot alone, before it sees its neighbours. That breaks on a word like "bank".</p>
+<figure class="fp" id="f5-bank" data-fp="bank" data-part="company"><figcaption>Move "bank" to the right side of the map, in both sentences.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<p>"You shall know a word by the company it keeps," a linguist wrote in 1957. So each token needs a way to look at the others and move its spot.</p><p>One fix first: the map has no sense of order, so each token also gets a <b>position stamp</b> for its place in line.</p>
+</div>
+</section>
+<section class="s" id="s03"><h2><span class="n">03</span>Every token asks a question</h2>
+<p>Every token makes three things from its list of numbers: a <b>question</b> (what it is looking for), a <b>label</b> (what it offers) and a <b>message</b> (what it passes on if chosen). Follow the last token, "is".</p>
+<figure class="fp" id="f5-listen" data-fp="listen" data-part="attention"><figcaption>Pick the two words "is" should listen to most.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<ol><li><b>Ask.</b> "is" asks: what am I describing? Every earlier token holds up its label.</li><li><b>Match.</b> Line the question up with a label, multiply pair by pair, add.</li><li><b>Share.</b> Turn the totals into shares that add up to 100.</li><li><b>Collect.</b> Take each token's message at that volume, and move to a new spot.</li></ol><p>It is no longer just "is". It is "is, after the capital of France". That is <b>attention</b>. Engineers call the three things query, key and value. A token reads only the tokens before it, and every token does this at once.</p>
+</div>
+</section>
+<section class="s" id="s04"><h2><span class="n">04</span>Listen, then think</h2>
+<p>After listening, each token thinks on its own: its list of numbers runs through a big block of dials and a new list comes out. Listen, then think. That pair is one <b>layer</b>.</p>
+<figure class="fp" id="f5-stack" data-fp="guess" data-part="a layer" data-a="2"><figcaption>Where do most of the dials sit?</figcaption><ul><li>In the map of words</li><li>In the question, label and message makers</li><li>In the thinking blocks</li></ul></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<div class="pic" data-pic="stack"></div>
+<ul><li><b>Heads.</b> One question is not enough, so the model asks many side by side. GPT-3 runs 96.</li><li><b>Stack it.</b> GPT-3 stacks 96 layers. Lower ones tend to sort out grammar, higher ones meaning.</li><li>That stack is a <b>transformer</b>, the T in GPT.</li></ul><p>Nobody wrote a rule that says "look at France". Listening to France lowered the loss.</p><p class="pull"><small>Principle Eight</small>Meaning comes from company. Every token listens to the ones before it, and becomes what it hears.</p>
+</div>
+</section>
+<section class="s" id="s05"><h2><span class="n">05</span>The bill</h2>
+<p>All this listening has a cost. Every token listens to every token before it.</p>
+<figure class="fp" id="f5-pairs" data-fp="pairs" data-part="the bill"><figcaption>Work out the pairs in a 1,000-token prompt.</figcaption></figure>
+
+<div class="found"><p class="kick">What you just found</p>
+<p>And for every token that comes out, every dial is read again: billions of numbers carried from memory to the chip to produce one token. The chip can do the maths faster than memory can feed it. That is the next film.</p>
+</div>
+</section>
+<section class="s" id="s06"><h2><span class="n">06</span>In your build</h2>
+<ul>
+  <li>The model can only listen to what is in the prompt. If "capital" and "France" are not there, nothing can attend to them.</li>
+  <li>Long prompts cost more than their length suggests.</li>
+  <li>Embeddings are what search by meaning runs on. You will use them in Lecture 12.</li>
+</ul>
+</section>
+<div class="fp-end" data-fpend><p data-count></p><p><a href="/c8/module-2/first-principles-films/06-what-hardware-powers-llms">Next film: What hardware powers LLMs?</a></p></div>
+<section class="s" id="s07"><h2><span class="n">07</span>Check yourself</h2>
+<p>Answer in your head, then open it.</p>
+<details class="qa"><summary>What is the difference between a token's code and its embedding?</summary><p>The code is an agreed or counted number that says nothing about meaning. The embedding is a list of numbers found by training.</p></details>
+<details class="qa"><summary>Why do "Paris" and "London" drift together if nobody rates the words?</summary><p>When they sit close, one sentence teaches both, which lowers the loss. Lower loss is the only direction nudges push.</p></details>
+<details class="qa"><summary>What problem does "bank" expose, and what solves it?</summary><p>A token gets its spot alone, before seeing its neighbours. Attention lets it move based on the words around it.</p></details>
+<details class="qa"><summary>Why can a token not look at the tokens after it?</summary><p>They are the answer it is being trained to guess.</p></details>
+<details class="qa"><summary>Why does doubling a text roughly quadruple the listening?</summary><p>Every token listens to every earlier one, so the work grows with the number of pairs.</p></details>
+<details class="words"><summary>Words you now own</summary><dl><div><dt>Embedding</dt><dd>A token's list of numbers: its spot on the map of meaning.</dd></div><div><dt>Vector</dt><dd>A list of numbers.</dd></div><div><dt>Attention</dt><dd>Each token matches its question against earlier tokens' labels and blends their messages.</dd></div><div><dt>Query, key, value</dt><dd>Question, label, message.</dd></div><div><dt>Head</dt><dd>One of many questions asked side by side.</dd></div><div><dt>Layer</dt><dd>One round of listen, then think.</dd></div><div><dt>Transformer</dt><dd>A stack of such layers.</dd></div></dl></details>
+</section>
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/first-principles-films/06-what-hardware-powers-llms">Next film: What hardware powers LLMs?</a></li>
+  <li><a href="/c8/module-2/first-principles-films/">All eight films</a></li>
+  <li><a href="/#FP">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · From sand to language models</span><a href="/#FP">Curriculum map</a><a href="/c8/module-2/first-principles-films/">All eight films</a></div></footer>
+</body>
+</html>
