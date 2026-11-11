@@ -465,7 +465,7 @@ HEAD = '''<!DOCTYPE html>
 </head>
 <body data-page="{page}" class="read fp-course">
 <header class="top"><div class="in">
-  <button class="tbtn fp-menu" type="button" aria-label="Table of contents" aria-expanded="false" aria-controls="fp-toc">''' + MENU + '''</button>
+  <button class="tbtn fp-menu" type="button" aria-expanded="false" aria-controls="fp-toc">''' + MENU + '''<span>Contents</span></button>
   <div class="fp-crumbs" role="navigation" aria-label="You are here">{crumbs}</div>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
@@ -591,7 +591,7 @@ def build():
 <ol class="fp-steps">
   <li><b>Read two lines.</b> Each lesson is one page and one idea.</li>
   <li><b>Play the drawing.</b> Reach its goal and the explanation opens.</li>
-  <li><b>Press Next.</b> Contents shows every lesson, with a tick on the ones you have done.</li>
+  <li><b>Press Next.</b> <b>Contents</b>, at the top left, shows every lesson, with a tick on the ones you have done.</li>
 </ol>
 <p class="muted">Nothing to submit. Your ticks stay on this device.</p>
 </section>

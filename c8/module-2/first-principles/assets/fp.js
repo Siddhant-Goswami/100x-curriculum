@@ -591,13 +591,13 @@ function mount(fig){
   skip.addEventListener('click',function(){open(1)});
   if(found){found.hidden=true;lock=h('p','fp-lock','Reach the goal and the explanation opens here.');fig.insertBefore(lock,found)}
   fn({fig:fig,id:id,stage:stage,ctl:ctl,
-    say:function(m,c){note.innerHTML=m||'';note.className='fp-note'+(c?' '+c:'')},
+    say:function(m,c){note.innerHTML=m?'<span>'+m+'</span>':'';note.className='fp-note'+(c?' '+c:'')},
     win:function(){open(2)},seen:function(){open(1)},
     btn:function(l,c,f){var b=btn(l,c,f);ctl.appendChild(b);return b},
     add:function(el){opt.appendChild(el);return el}});
   ctl.appendChild(skip);
   /* back on a lesson already played: say so, instead of repeating the first instruction */
-  if(ST[id]){open(ST[id],true);ST[id]===2?note.className='fp-note ok':note.className='fp-note';note.innerHTML=ST[id]===2?'You found this earlier. Play it again if you like.':'You opened the answer earlier. Play it to find it yourself.'}
+  if(ST[id]){open(ST[id],true);ST[id]===2?note.className='fp-note ok':note.className='fp-note';note.innerHTML='<span>'+(ST[id]===2?'You found this earlier. Play it again if you like.':'You opened the answer earlier. Play it to find it yourself.')+'</span>'}
   else{fig.classList.add('fp-fresh');
     var first=function(){fig.classList.remove('fp-fresh','fp-hint');fig.removeEventListener('pointerdown',first);fig.removeEventListener('keydown',first)};
     fig.addEventListener('pointerdown',first);fig.addEventListener('keydown',first);if(seenIO)seenIO.observe(fig)}

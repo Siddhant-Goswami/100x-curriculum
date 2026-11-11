@@ -23,8 +23,9 @@ body.read figure.fp.won figcaption::before{content:"✓ Found";color:var(--hum-i
 body.read .fp p{margin:0;max-width:none}
 .fp-out{font-size:16px;line-height:1.6}
 /* the note: what to do right now, then what happened. It sits above the drawing so it is read first. */
-.fp-note{font:500 15.5px/1.5 var(--sans);color:var(--ink);padding:9px 12px 9px 36px;background:var(--bg2);border-radius:8px;position:relative}
-.fp-note::before{content:"→";position:absolute;left:13px;top:9px;font-weight:600;color:var(--ink2)}
+/* the note keeps room for two lines, so feedback never pushes the drawing and its buttons out from under the cursor */
+.fp-note{font:500 15.5px/1.5 var(--sans);color:var(--ink);padding:9px 12px 9px 36px;background:var(--bg2);border-radius:8px;position:relative;min-height:calc(3em + 18px);box-sizing:border-box;display:flex;align-items:center}
+.fp-note::before{content:"→";position:absolute;left:13px;top:50%;transform:translateY(-50%);font-weight:600;color:var(--ink2)}
 .fp-note.ok{background:var(--hum-soft);color:var(--hum-ink)}
 .fp-note.ok::before{content:"✓";color:var(--hum-ink)}
 .fp-note b{color:inherit}
@@ -224,6 +225,9 @@ body.read ol.fp-pr li.earned::after{content:"found";font:700 19px Caveat,cursive
 /* ================= the course: one lesson per page ================= */
 /* header: menu, breadcrumb, theme */
 .fp-course .top .in{gap:10px}
+/* the menu says what it is: an icon and the word Contents */
+.fp-course .fp-menu{width:auto;padding:0 11px 0 9px;gap:7px;display:inline-flex;align-items:center;font:500 13px var(--sans);color:var(--ink)}
+.fp-course .fp-menu:hover{background:var(--bg2)}
 /* the footer always sits at the bottom of the window: the page is a column and the content takes the spare height */
 body.fp-course{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 body.fp-course>.wrap{flex:1 0 auto;width:100%;box-sizing:border-box}
