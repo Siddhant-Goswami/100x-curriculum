@@ -568,6 +568,23 @@ function paintToc(){
     go.href=t.getAttribute('data-href');go.textContent=!doneN?'Start with lesson 1.1':firstOpen?'Continue: '+n+' '+ti:'All done. Back to lesson 1.1';
     var f=t.closest('[data-ch]').getAttribute('data-ch');if(doneN)[].forEach.call(document.querySelectorAll('.fp-ch>li[data-ch="'+f+'"]>details'),function(d){d.open=true})}
 }
+/* term reminders: an underlined word shows its one-line meaning and where it was first explained */
+function termTips(){
+  var tip=null,at=null;
+  function close(){if(tip){tip.remove();tip=null}if(at){at.setAttribute('aria-expanded','false');at=null}}
+  function open(b){close();at=b;b.setAttribute('aria-expanded','true');
+    tip=h('div','fp-tip','<b>'+esc(b.getAttribute('data-term'))+'</b><span>'+esc(b.getAttribute('data-def'))+'</span><a href="'+esc(b.getAttribute('data-from'))+'">First explained in '+esc(b.getAttribute('data-fromt'))+'</a>');
+    tip.setAttribute('role','tooltip');document.body.appendChild(tip);
+    var r=b.getBoundingClientRect(),w=tip.offsetWidth,x=Math.max(12,Math.min(innerWidth-w-12,r.left+r.width/2-w/2)),y=r.bottom+8;
+    if(y+tip.offsetHeight>innerHeight-8&&r.top>tip.offsetHeight+16)y=r.top-tip.offsetHeight-8;
+    tip.style.left=x+scrollX+'px';tip.style.top=y+scrollY+'px'}
+  document.addEventListener('click',function(e){var b=e.target.closest('.fp-term');if(b){e.preventDefault();if(at===b)close();else open(b);return}if(tip&&!tip.contains(e.target))close()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&tip){var b=at;close();if(b)b.focus()}});
+  addEventListener('resize',close);
+  [].forEach.call(document.querySelectorAll('.fp-term'),function(b){b.setAttribute('aria-expanded','false');b.title='What does this mean?'});
+}
+/* where you are: keep this chapter's step in view when the strip scrolls sideways on a phone */
+function chainInView(){var c=document.querySelector('.fp-chain'),a=c&&c.querySelector('.here');if(a&&c.scrollWidth>c.clientWidth)c.scrollLeft=a.offsetLeft-c.clientWidth/2+a.offsetWidth/2}
 /* end of a chapter: on its Check yourself page, say what was found and link what is still to play */
 function chapterDone(){
   var el=document.querySelector('[data-chdone]');if(!el)return;var n=el.getAttribute('data-chdone');
@@ -622,7 +639,7 @@ document.addEventListener('DOMContentLoaded',function(){
   [].forEach.call(document.querySelectorAll('[data-pic]'),function(el){var fn=PIC[el.getAttribute('data-pic')];if(fn)fn(el)});
   /* a lesson without a scene (Check yourself) has nothing to win: Next is ready from the start */
   var nx=document.querySelector('[data-next]');if(nx&&!document.querySelector('.fp-lesson figure.fp'))nx.classList.add('ready');
-  paintToc();drawer();chapterDone();
+  paintToc();drawer();chapterDone();termTips();chainInView();
   /* two clicks, not a browser dialog: the first arms the button, the second clears */
   var rs=document.querySelector('[data-fpreset]');if(rs)rs.addEventListener('click',function(){
     if(!rs.classList.contains('arm')){rs.classList.add('arm');rs.textContent='Click again to clear every tick';setTimeout(function(){rs.classList.remove('arm');rs.textContent='Clear my ticks and start again'},4000);return}

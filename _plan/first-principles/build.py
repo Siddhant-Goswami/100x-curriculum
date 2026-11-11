@@ -521,6 +521,75 @@ def lessons(fi, f):
     return out
 
 
+# ---- term reminders: a word explained in one lesson is underlined in later ones; a tap shows its meaning
+# glossary label (from a chapter's words) -> the forms it takes in running text
+TERMS = {'Transistor': ['transistor'], 'Bit': ['bit'], 'Binary': ['binary'], 'RAM': ['RAM'], 'Index': ['index'],
+         'SQL': ['SQL'], 'Write-ahead log': ['write-ahead log'], 'System of record': ['system of record'],
+         'Parameter (dial)': ['dial', 'parameter'], 'Token': ['token'], 'Hallucination': ['hallucination'], 'Loss': ['loss'],
+         'Gradient': ['gradient'], 'Embedding': ['embedding'], 'Vector': ['vector'], 'Attention': ['attention'],
+         'Layer': ['layer'], 'Transformer': ['transformer'], 'GPU': ['GPU'], 'Batching': ['batching'], 'KV cache': ['KV cache'],
+         'Quantization': ['quantization', 'quantized'], 'Pre-training': ['pre-training'], 'Supervised fine-tuning': ['fine-tuning'],
+         'RLHF': ['RLHF'], 'Eval': ['eval'], 'Rubric': ['rubric'], 'Post-training': ['post-training'], 'Reward hacking': ['reward hacking']}
+NOT_AFTER = {'Bit': re.compile(r'\ba $', re.I)}  # "a bit of maths" means a little, not a binary digit
+SKIP = {'figure', 'b', 'strong', 'code', 'a', 'h1', 'h2', 'h3', 'summary', 'dt', 'th', 'pre', 'small', 'button', 'span', 'table', 'details'}
+
+
+def term_re(form):
+    return re.compile(r'(?<![\w-])(' + re.escape(form) + r')(e?s)?(?![\w-])', 0 if form.isupper() or ' ' in form and form[0].isupper() else re.I)
+
+
+def terms(flat):
+    """Find the lesson that introduces each term (its first bold use), then underline its first plain use in each later lesson."""
+    defs = {t: d for f in FILMS for t, d in f['words']}
+    intro = {}
+    for j, (fi, k, l) in enumerate(flat):
+        for t, forms in TERMS.items():
+            if t not in intro and any(re.search(r'<b>' + re.escape(f) + r'(e?s)?</b>', l['body'], re.I) for f in forms):
+                intro[t] = j
+    for j, (fi, k, l) in enumerate(flat):
+        if not l['scene']:
+            continue  # Check yourself pages define the words themselves
+        todo = [t for t in TERMS if t in intro and intro[t] < j]
+        parts, depth, out = re.split(r'(<[^>]+>)', l['body']), 0, []
+        for part in parts:
+            m = re.match(r'<(/?)(\w+)', part)
+            if m:
+                if m.group(2).lower() in SKIP and not part.endswith('/>'):
+                    depth += -1 if m.group(1) else 1
+                out.append(part)
+                continue
+            if depth == 0:
+                hits = []  # (start, end, term) found in this text only, never overlapping
+                for t in list(todo):
+                    for f in TERMS[t]:
+                        mm = next((x for x in term_re(f).finditer(part) if not (t in NOT_AFTER and NOT_AFTER[t].search(part[:x.start()]))), None)
+                        if mm and not any(mm.start() < e and mm.end() > st for st, e, _ in hits):
+                            hits.append((mm.start(), mm.end(), t))
+                            todo.remove(t)
+                            break
+                for st, e, t in sorted(hits, reverse=True):
+                    src = flat[intro[t]][2]
+                    shown = {'Parameter (dial)': 'Dial (parameter)'}.get(t, t)
+                    tag = (f'<button type="button" class="fp-term" data-term="{html.escape(shown, quote=True)}" data-def="{html.escape(defs[t], quote=True)}" '
+                           f'data-from="{src["href"]}" data-fromt="{src["n"]} {html.escape(plain(src["title"]), quote=True)}">{part[st:e]}</button>')
+                    part = part[:st] + tag + part[e:]
+            out.append(part)
+        l['body'] = ''.join(out)
+
+
+# ---- where you are: the whole argument as one line, this lesson's chapter lit
+CHAIN = ['bits', 'memory', 'trust', 'learning', 'attention', 'chips', 'assistant', 'checks']
+
+
+def chain(course, here):
+    items = ['<span class="sand">sand</span>']
+    for fi, (f, ls) in enumerate(course):
+        cls = 'here' if fi == here else ('past' if fi < here else '')
+        cur = ' aria-current="step"' if fi == here else ''
+        items.append(f'<a class="{cls}" href="{ls[0]["href"]}" title="Chapter {fi + 1}: {html.escape(plain(f["q"]), quote=True)}"{cur}>{CHAIN[fi]}</a>')
+    return '<nav class="fp-chain" aria-label="Where this chapter sits, from sand to language models">' + '<i aria-hidden="true">→</i>'.join(items) + '</nav>\n'
+
+
 def toc(course, here_film=None):
     rows = ''
     for fi, (f, ls) in enumerate(course):
@@ -548,6 +617,7 @@ def build():
     course = [(f, lessons(i, f)) for i, f in enumerate(FILMS)]
     flat = [(fi, k, l) for fi, (f, ls) in enumerate(course) for k, l in enumerate(ls)]
     home = dict(href=BASE, n='', title='Course home')
+    terms(flat)
 
     for j, (fi, k, l) in enumerate(flat):
         f, ls = course[fi]
@@ -558,7 +628,7 @@ def build():
         page = HEAD.format(title=html.escape(f'{l["n"]} {plain(l["title"])} · {plain(f["q"])}'), desc=html.escape(f['dek'], quote=True),
                            page=f'fp-{f["slug"]}-{k + 1}', crumbs=crumbs, toc=toc(course, fi))
         attrs = f' data-scene="{l["scene"]}"' if l['scene'] else ''
-        page += f'<article class="fp-lesson"{attrs}>\n'
+        page += f'<article class="fp-lesson"{attrs}>\n' + chain(course, fi)
         page += f'<p class="fp-meta">Lesson {l["n"]} · {k + 1} of {len(ls)} in chapter {fi + 1} · about {l["min"]} min</p>\n<h1>{l["title"]}</h1>\n'
         # the very first lesson says once how a lesson works; the chapter blurbs live on the course outline
         if j == 0:

@@ -302,6 +302,24 @@ body.read .fp-ls li{margin:0}
 .fp-nav .next.ready,.fp-nav .next.ready:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
 @media (max-width:560px){.fp-nav .prev .t{display:none}.fp-nav .next{max-width:none;flex:1;justify-content:space-between}}
 
+/* where you are: the whole argument as one line, this chapter lit */
+.fp-chain{display:flex;align-items:center;gap:6px;margin:0 0 14px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;font:500 12.5px/1 var(--sans);padding:2px 0}
+.fp-chain::-webkit-scrollbar{display:none}
+.fp-chain i{font-style:normal;color:var(--line2);flex:none}
+.fp-chain .sand{color:var(--ink3);flex:none}
+.fp-chain a{flex:none;color:var(--ink3);text-decoration:none;padding:4px 8px;border-radius:999px}
+.fp-chain a.past{color:var(--ink2)}
+.fp-chain a:hover{color:var(--ink);background:var(--bg2)}
+.fp-chain a.here{color:var(--bg);background:var(--ink)}
+
+/* term reminders: a word explained earlier, underlined; a tap shows its meaning */
+.fp-term{display:inline;border:0;background:none;padding:0;margin:0;font:inherit;color:inherit;cursor:help;text-decoration:underline dotted var(--ink3);text-decoration-thickness:1.5px;text-underline-offset:3px}
+.fp-term:hover,.fp-term[aria-expanded="true"]{text-decoration-color:var(--ink);text-decoration-style:solid}
+.fp-tip{position:absolute;z-index:95;max-width:min(320px,calc(100vw - 24px));background:var(--card);border:1px solid var(--line2);border-radius:10px;box-shadow:var(--float);padding:10px 12px;font:400 14px/1.45 var(--sans);color:var(--ink2);display:flex;flex-direction:column;gap:4px}
+.fp-tip b{font:600 14px var(--sans);color:var(--ink)}
+.fp-tip a{font-size:13px;color:var(--ink3)}
+.fp-tip a:hover{color:var(--ink)}
+
 /* end of a chapter, on its Check yourself page */
 .fp-chdone{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:14px 16px;margin:0 0 22px}
 .fp-chdone.all{border-color:var(--hum);background:var(--hum-soft)}
