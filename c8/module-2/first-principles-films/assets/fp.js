@@ -535,23 +535,51 @@ PIC.env=function(el){draw(el,600,150,R(150,30,270,104,'dash',10)+R(166,70,70,46,
   T(285,54,'a copy of a workplace','xs')+T(201,99,'email','xs')+T(290,99,'documents','xs')+T(375,99,'tools','xs')+T(50,98,'a task','s')+T(524,86,'a program checks','xs')+T(524,108,'what changed','xs'),'An environment: a task goes into a copy of a workplace, and a program checks what changed')};
 
 /* ================= the engine ================= */
-function figs(){return [].slice.call(document.querySelectorAll('figure.fp[data-part]'))}
-function paintParts(){
-  var all=figs(),el=document.querySelector('[data-parts]'),end=document.querySelector('[data-fpend]');if(!all.length)return;
-  var won=all.filter(function(f){return ST[f.id]===2}).length,seen=all.filter(function(f){return ST[f.id]}).length;
-  if(el)el.innerHTML='<span class="lab">'+won+' of '+all.length+' found</span>'+all.map(function(f){return '<a href="#'+f.id+'" class="'+(ST[f.id]===2?'won':ST[f.id]?'seen':'')+'">'+esc(f.getAttribute('data-part'))+'</a>'}).join('');
-  if(end){end.classList.toggle('on',won===all.length);var t=end.querySelector('[data-count]');if(t)t.textContent=won===all.length?'All '+all.length+' found. This film is in your machine.':seen===all.length?won+' of '+all.length+' found by playing. The rest you opened with "Show me".':won+' of '+all.length+' found. Scroll back up for the rest.'}
+/* ---------- the course: one lesson per page, a table of contents with ticks ----------
+   A lesson with a scene is done when its scene is found (2, green tick) or its answer was shown (1, grey tick).
+   A lesson without one (Check yourself) is done once it has been opened. Visits save under c8.fpv. */
+var VKEY='c8.fpv',V=store.get(VKEY,{})||{};
+function here(){return location.pathname.replace(/\.html$/,'').replace(/\/index$/,'').replace(/\/$/,'')||'/'}
+function lessonState(li){var sc=li.getAttribute('data-scene');return sc?(ST[sc]||0):(V[li.getAttribute('data-href')]?2:0)}
+function paintToc(){
+  var films=[].slice.call(document.querySelectorAll('.fp-ch>li[data-ch]'));if(!films.length)return;
+  var me=here(),total=0,doneN=0,firstOpen=null,earned={};
+  /* the drawer and the course home both list every lesson; count once, from the first list */
+  var counted=document.querySelector('.fp-ch');
+  films.forEach(function(fl){
+    var ls=[].slice.call(fl.querySelectorAll('.fp-ls>li')),d=0,won=0,sceneN=0,sceneWon=0;
+    ls.forEach(function(li){var s=lessonState(li);li.classList.toggle('won',s===2);li.classList.toggle('seen',s===1);
+      var on=li.getAttribute('data-href')===me;li.classList.toggle('here',on);var a=li.querySelector('a');if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+      if(s)d++;if(s===2)won++;if(li.hasAttribute('data-scene')){sceneN++;if(ST[li.getAttribute('data-scene')]===2)sceneWon++}
+      if(fl.parentNode===counted){total++;if(s)doneN++;else if(!firstOpen)firstOpen=li}});
+    fl.classList.toggle('won',d===ls.length&&won===ls.length);fl.classList.toggle('seen',d===ls.length&&won<ls.length);fl.classList.toggle('half',d>0&&d<ls.length);
+    var c=fl.querySelector('[data-count]');if(c)c.textContent=d?d+' of '+ls.length:ls.length+' lessons';
+    if(sceneN&&sceneWon===sceneN)earned[fl.getAttribute('data-ch')]=1;
+  });
+  [].forEach.call(document.querySelectorAll('[data-sum]'),function(el){el.textContent=doneN?doneN+' of '+total+' lessons done':total+' lessons'});
+  [].forEach.call(document.querySelectorAll('[data-earn]'),function(li){li.classList.toggle('earned',!!earned[li.getAttribute('data-earn')])});
+  var go=document.querySelector('[data-continue]');
+  if(go){var t=firstOpen||counted.querySelector('.fp-ls>li');var n=t.querySelector('.n').textContent,ti=t.querySelector('.t').textContent;
+    go.href=t.getAttribute('data-href');go.textContent=!doneN?'Start with lesson 1.1':firstOpen?'Continue: '+n+' '+ti:'All done. Back to lesson 1.1';
+    var f=t.closest('[data-ch]').getAttribute('data-ch');if(doneN)[].forEach.call(document.querySelectorAll('.fp-ch>li[data-ch="'+f+'"]>details'),function(d){d.open=true})}
+}
+function drawer(){
+  var b=document.querySelector('.fp-menu'),p=document.getElementById('fp-toc'),sc=document.querySelector('.fp-scrim');if(!b||!p)return;
+  function set(open){p.hidden=sc.hidden=!open;b.setAttribute('aria-expanded',open);document.body.classList.toggle('fp-locked',open);
+    if(open){var cur=p.querySelector('li.here a')||p.querySelector('a');requestAnimationFrame(function(){p.classList.add('on');if(cur){cur.focus({preventScroll:true});cur.scrollIntoView({block:'center'})}})}else{p.classList.remove('on');b.focus()}}
+  b.addEventListener('click',function(){set(p.hidden)});
+  sc.addEventListener('click',function(){set(false)});
+  p.querySelector('[data-close]').addEventListener('click',function(){set(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!p.hidden)set(false)});
 }
 /* A scene reads top to bottom: status + goal, then what to do now (the note), then the drawing, then the buttons.
-   Under it sits a shut box that says the explanation opens there; it becomes "What you just found" and ends in a link to the next scene. */
+   Under it sits a shut box that says the explanation opens there; it becomes "What you just found" and ends in a link to the next lesson. */
 function nextLink(found){
-  var sec=found.closest('section.s'),nx=sec&&sec.nextElementSibling;
-  while(nx&&!(nx.matches('section.s')||nx.matches('[data-fpend]')))nx=nx.nextElementSibling;
-  if(!nx||found.querySelector('.fp-next'))return;
-  var h2=nx.querySelector('h2'),t=h2?h2.textContent.replace(/^\s*\d+\s*/,''):'',a=h('a','fp-next');
-  if(nx.matches('[data-fpend]')){if(!nx.id)nx.id='fp-end';t='Finish this film'}
-  a.href='#'+nx.id;a.innerHTML='Next: '+esc(t)+' <span aria-hidden="true">↓</span>';found.appendChild(a);
+  var nx=document.querySelector('[data-next]');if(!nx||found.querySelector('.fp-next'))return;
+  var a=h('a','fp-next');a.href=nx.getAttribute('href');a.innerHTML='Next: '+esc(nx.querySelector('span').textContent)+' <span aria-hidden="true">→</span>';found.appendChild(a);
+  nx.classList.add('ready');
 }
+function paintParts(){paintToc()}
 var seenIO=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting)return;seenIO.unobserve(e.target);
   if(e.target.classList.contains('fp-fresh')){e.target.classList.add('fp-hint');setTimeout(function(){e.target.classList.remove('fp-hint')},2400)}})},{threshold:.6}):null;
 function mount(fig){
@@ -575,24 +603,18 @@ function mount(fig){
     var first=function(){fig.classList.remove('fp-fresh','fp-hint');fig.removeEventListener('pointerdown',first);fig.removeEventListener('keydown',first)};
     fig.addEventListener('pointerdown',first);fig.addEventListener('keydown',first);if(seenIO)seenIO.observe(fig)}
 }
-/* the overview: one machine, a layer per film */
-function tower(el){
-  var F=JSON.parse(el.getAttribute('data-tower')),sh='',tx='',total=0,got=0;
-  F.forEach(function(f,i){var y=(F.length-1-i)*54+10,won=f.ids.filter(function(k){return ST[k]===2}).length,full=won===f.ids.length,w=300+i*0;total+=f.ids.length;got+=won;
-    sh+=R(60,y,w,44,full?(i<3?'f-det':'f-prob'):won?'f-bg':'f-card',8)+(won&&!full?R(60,y,w*won/f.ids.length,44,i<3?'f-det':'f-prob',8):'');
-    tx+='<a href="'+f.href+'">'+T(210,y+30,f.layer,'m')+T(374,y+20,'film '+(i+1)+' · '+f.len,'xs l')+T(374,y+40,won+' of '+f.ids.length+' found','xs l c-mute')+T(588,y+30,'open ›','s r c-prob')+'<rect x="60" y="'+y+'" width="530" height="44" class="hit row"/></a>';});
-  draw(el,600,F.length*54+16,sh,tx,'Your machine: eight layers, one per film, sand at the bottom');
-  var c=document.querySelector('[data-total]');if(c)c.textContent=got+' of '+total+' found';
-  [].forEach.call(document.querySelectorAll('[data-earn]'),function(li){var f=F[+li.getAttribute('data-earn')-1];li.classList.toggle('earned',f.ids.every(function(k){return ST[k]===2}))});
-}
-
 document.addEventListener('DOMContentLoaded',function(){
   defs();
+  if(document.querySelector('.fp-lesson')){V[here()]=1;store.set(VKEY,V)}
   [].forEach.call(document.querySelectorAll('figure.fp[data-fp]'),mount);
   [].forEach.call(document.querySelectorAll('[data-pic]'),function(el){var fn=PIC[el.getAttribute('data-pic')];if(fn)fn(el)});
-  paintParts();
-  var tw=document.querySelector('[data-tower]');if(tw)tower(tw);
-  var rs=document.querySelector('[data-fpreset]');if(rs)rs.addEventListener('click',function(){if(!confirm('Clear everything you have found in all eight films?'))return;ST={};store.set(KEY,ST);location.reload()});
+  /* a lesson without a scene (Check yourself) has nothing to win: Next is ready from the start */
+  var nx=document.querySelector('[data-next]');if(nx&&!document.querySelector('.fp-lesson figure.fp'))nx.classList.add('ready');
+  paintToc();drawer();
+  /* two clicks, not a browser dialog: the first arms the button, the second clears */
+  var rs=document.querySelector('[data-fpreset]');if(rs)rs.addEventListener('click',function(){
+    if(!rs.classList.contains('arm')){rs.classList.add('arm');rs.textContent='Click again to clear every tick';setTimeout(function(){rs.classList.remove('arm');rs.textContent='Clear my ticks and start again'},4000);return}
+    ST={};V={};store.set(KEY,ST);store.set(VKEY,V);location.reload()});
   [].forEach.call(document.querySelectorAll('[data-film]'),function(el){
     var u=VIDEOS[el.getAttribute('data-film')];if(!u){el.remove();return}
     var yt=/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{6,})/.exec(u),dr=/drive\.google\.com\/file\/d\/([\w-]+)/.exec(u),src=yt?'https://www.youtube-nocookie.com/embed/'+yt[1]:dr?'https://drive.google.com/file/d/'+dr[1]+'/preview':'';

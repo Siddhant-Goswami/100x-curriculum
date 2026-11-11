@@ -442,6 +442,11 @@ film('08-what-llms-learn-from-now', 'Language Models from First Principles, Part
       ('Give one example of Principle Ten.', 'Asked to make the tests pass, models have edited the tests.')])
 
 # ------------------------------------------------------------------ pages
+# One lesson per page, like a course: film N is chapter N, its scenes are lessons N.1, N.2 ...
+# Lesson 1 of each film lives at <film>/index.html, so the old film URL opens the film's first lesson.
+SEC = re.compile(r'<section class="s" id="s\d+"><h2><span class="n">\d+</span>(.*?)</h2>\n(.*?)\n</section>\n', re.S)
+MENU = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg>'
+
 HEAD = '''<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -453,23 +458,30 @@ HEAD = '''<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/c8/docs.css">
-<link rel="stylesheet" href="/c8/module-2/first-principles-films/assets/fp.css">
+<link rel="stylesheet" href="''' + BASE + '''assets/fp.css">
 <script src="/c8/docs.js"></script>
-<script src="/c8/module-2/first-principles-films/assets/fp.js" defer></script>
+<script src="''' + BASE + '''assets/fp.js" defer></script>
 <script src="/analytics.js" defer></script>
 </head>
-<body data-page="{page}" class="read">
+<body data-page="{page}" class="read fp-course">
 <header class="top"><div class="in">
-  <a class="brand" href="/#FP">100x<b>·</b><span>C8 Module 2</span></a>
-  <nav aria-label="Film pages">{nav}</nav>
+  <button class="tbtn fp-menu" type="button" aria-label="Table of contents" aria-expanded="false" aria-controls="fp-toc">''' + MENU + '''</button>
+  <div class="fp-crumbs" role="navigation" aria-label="You are here">{crumbs}</div>
   <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
 </div></header>
+<div class="fp-scrim" hidden></div>
+<aside class="fp-toc" id="fp-toc" aria-label="Table of contents" hidden>
+  <div class="hd"><b>Table of contents</b><button type="button" class="tbtn" data-close aria-label="Close the table of contents">&times;</button></div>
+  <p class="fp-sum" data-sum></p>
+{toc}
+  <div class="ft"><a href="''' + BASE + '''">Course home</a><a href="/#FP">Curriculum map</a></div>
+</aside>
 <div class="wrap">
   <main>
 '''
 FOOT = '''  </main>
 </div>
-<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · From sand to language models</span><a href="/#FP">Curriculum map</a><a href="''' + BASE + '''">All eight films</a></div></footer>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · From sand to language models</span><a href="/#FP">Curriculum map</a><a href="''' + BASE + '''">Course home</a></div></footer>
 </body>
 </html>
 '''
@@ -480,54 +492,98 @@ PRINCIPLES = [(2, 'Fast memory forgets. Lasting memory lags.'), (2, 'A little da
               (7, 'A machine learns what you can check. The easier the check, the faster it learns.'), (8, 'A machine learns the check you wrote, not the goal you meant.')]
 
 
-def build():
-    (OUT / 'assets').mkdir(parents=True, exist_ok=True)
-    for i, f in enumerate(FILMS):
-        prev = FILMS[i - 1] if i else None
-        nxt = FILMS[i + 1] if i + 1 < len(FILMS) else None
-        nav = f'<a href="{BASE}">All films</a>' + (f'<a href="{BASE}{prev["slug"]}">Previous</a>' if prev else '') + (f'<a href="{BASE}{nxt["slug"]}">Next</a>' if nxt else '')
-        n = f['body'].count('<section class="s"')
-        page = HEAD.format(title=html.escape(f['q']), desc=html.escape(f['dek'], quote=True), page='fp-' + f['slug'], nav=nav)
-        page += '<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>\n'
-        page += f'<div class="hero">\n  <p class="kick">Film {i + 1} of 8 · {f["series"]} · {f["length"]}</p>\n  <h1>{f["q"]}</h1>\n  <p class="dek">{f["dek"]}</p>\n  <div data-film="{i + 1}"></div>\n  <p class="fp-how"><b>How to play:</b> click the <span class="fp-key">raised</span> pieces in each drawing, or the buttons under it. Reach the goal and the explanation opens.</p>\n  <div class="fp-parts" data-parts aria-label="What there is to find on this page"></div>\n</div>\n\n'
-        page += f['body']
-        go = (f'<a href="{BASE}{nxt["slug"]}">Next film: {nxt["q"]}</a>' if nxt else f'<a href="{BASE}">See your whole machine</a>')
-        page += f'<div class="fp-end" data-fpend><p data-count></p><p>{go}</p></div>\n'
-        page += S(n + 1, 'Check yourself', '<p>Answer in your head, then open it.</p>\n' + QA(f['qa']) + WORDS(f['words']))
-        go = (f'<li><a href="{BASE}{nxt["slug"]}">Next film: {nxt["q"]}</a></li>' if nxt else f'<li><a href="{PS2}">Practice set 2: Write the eval</a></li>')
-        page += f'<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>\n  {go}\n  <li><a href="{BASE}">All eight films</a></li>\n  <li><a href="/#FP">Curriculum map</a></li>\n</ul></nav>\n'
-        page += FOOT
-        (OUT / (f['slug'] + '.html')).write_text(page)
+def slug(t):
+    return re.sub(r'[^a-z0-9]+', '-', re.sub(r'<[^>]+>', '', t).lower()).strip('-')
 
-    # overview
-    tower = [dict(href=BASE + f['slug'], layer=f['layer'], len=f['length'], ids=f['ids']) for f in FILMS]
-    total = sum(len(f['ids']) for f in FILMS)
-    nav = f'<a href="{BASE}">All films</a><a href="{BASE}{FILMS[0]["slug"]}">Start</a>'
-    page = HEAD.format(title='From Sand to Language Models', desc='Eight short pre-recorded films, from a grain of sand to a chatbot. Each one is a set of small scenes you play. Cohort 8, Module 2, before Lecture 11.', page='fp-index', nav=nav)
-    page += '''<div class="hero">
-  <p class="kick">Cohort 8 · Module 2 · LLM primitives · Self-paced, before Lecture 11 · Both tracks</p>
+
+def plain(t):
+    return html.unescape(re.sub(r'<[^>]+>', '', t))
+
+
+def lessons(fi, f):
+    """Split a film into lessons: every scene section is one; 'In your build' joins the check-yourself lesson at the end."""
+    secs = SEC.findall(f['body'])
+    assert secs and secs[-1][0] == 'In your build', f['slug']
+    out = []
+    for k, (title, body) in enumerate(secs[:-1]):
+        scene = re.search(r'<figure class="fp" id="([^"]+)"', body)
+        out.append(dict(title=title, body=body, scene=scene.group(1) if scene else ''))
+    out.append(dict(title='Check yourself', scene='',
+                    body='<p>Answer each one in your head, then open it.</p>\n' + QA(f['qa']) + WORDS(f['words']) + '<h2>In your build</h2>\n' + secs[-1][1]))
+    for k, l in enumerate(out):
+        l['n'] = f'{fi + 1}.{k + 1}'
+        l['path'] = f['slug'] + ('/index.html' if k == 0 else f'/{slug(l["title"])}.html')
+        l['href'] = BASE + f['slug'] + ('' if k == 0 else '/' + slug(l['title']))
+    return out
+
+
+def toc(course, here_film=None):
+    rows = ''
+    for fi, (f, ls) in enumerate(course):
+        lis = ''.join(f'<li data-href="{l["href"]}"{f" data-scene=\"{l["scene"]}\"" if l["scene"] else ""}><a href="{l["href"]}"><i class="st" aria-hidden="true"></i><span class="n">{l["n"]}</span><span class="t">{l["title"]}</span></a></li>' for l in ls)
+        rows += (f'  <li data-ch="{fi + 1}"><details{" open" if here_film == fi else ""}><summary><i class="st" aria-hidden="true"></i>'
+                 f'<span class="t"><span class="n">{fi + 1}.</span> {f["q"]}</span><span class="c" data-count>{len(ls)} lessons</span></summary>'
+                 f'<ol class="fp-ls">{lis}</ol></details></li>\n')
+    return f'<ol class="fp-ch">\n{rows}</ol>'
+
+
+def build():
+    for old in OUT.glob('0*.html'):
+        old.unlink()
+    course = [(f, lessons(i, f)) for i, f in enumerate(FILMS)]
+    flat = [(fi, k, l) for fi, (f, ls) in enumerate(course) for k, l in enumerate(ls)]
+    home = dict(href=BASE, n='', title='Course home')
+
+    for j, (fi, k, l) in enumerate(flat):
+        f, ls = course[fi]
+        prev = flat[j - 1][2] if j else home
+        nxt = flat[j + 1][2] if j + 1 < len(flat) else None
+        crumbs = (f'<a class="home" href="{BASE}">Sand to LLMs</a><span class="sep">›</span>'
+                  f'<a class="film" href="{ls[0]["href"]}">{fi + 1}. {f["q"]}</a><span class="sep">›</span><span class="here">{l["n"]}</span>')
+        page = HEAD.format(title=html.escape(f'{l["n"]} {plain(l["title"])} · {plain(f["q"])}'), desc=html.escape(f['dek'], quote=True),
+                           page=f'fp-{f["slug"]}-{k + 1}', crumbs=crumbs, toc=toc(course, fi))
+        attrs = f' data-scene="{l["scene"]}"' if l['scene'] else ''
+        page += f'<article class="fp-lesson"{attrs}>\n'
+        page += f'<p class="kick">Film {fi + 1} · {f["q"]} · Lesson {k + 1} of {len(ls)}</p>\n<h1><span class="n">{l["n"]}</span>{l["title"]}</h1>\n'
+        if k == 0:
+            page += (f'<p class="lead">{f["dek"]}</p>\n<div data-film="{fi + 1}"></div>\n'
+                     f'<p class="fp-how"><b>How each lesson works:</b> read the two lines, then play the drawing. Click the <span class="fp-key">raised</span> pieces or the buttons under it. '
+                     f'Reach the goal and the explanation opens. Then press <b>Next</b>. This film has {len(ls)} lessons ({f["length"]} of film).</p>\n')
+        page += l['body'].strip() + '\n</article>\n'
+        pv = f'<a class="prev" href="{prev["href"]}" rel="prev"><small>← Previous</small><span>{(prev["n"] + " ") if prev["n"] else ""}{prev["title"]}</span></a>'
+        if nxt:
+            nf = flat[j + 1][0]
+            lab = f'Next film: {nf + 1}. {FILMS[nf]["q"]}' if nf != fi else f'{nxt["n"]} {nxt["title"]}'
+            nx = f'<a class="next" href="{nxt["href"]}" rel="next" data-next><small>Next →</small><span>{lab}</span></a>'
+        else:
+            nx = f'<a class="next" href="{BASE}" data-next><small>Finish →</small><span>See everything you found</span></a>'
+        page += f'<nav class="fp-pn" aria-label="Lessons">{pv}{nx}</nav>\n'
+        page += FOOT
+        dst = OUT / l['path']
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        dst.write_text(page)
+
+    # course home
+    total = len(flat)
+    scenes = sum(1 for _, _, l in flat if l['scene'])
+    page = HEAD.format(title='From Sand to Language Models', desc=f'Eight short films, {total} short lessons, from a grain of sand to a chatbot. Cohort 8, Module 2, before Lecture 11.',
+                       page='fp-index', crumbs='<span class="here">From sand to language models</span>', toc=toc(course))
+    page += f'''<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Self-paced, before Lecture 11 · Both tracks</p>
   <h1>From sand to language models</h1>
-  <p class="dek">Eight short films, about an hour in all. One argument, from a grain of sand to a chatbot.</p>
+  <p class="dek">Eight short films, cut into {total} small lessons. One idea per lesson, from a grain of sand to a chatbot.</p>
+  <p class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}">Start with lesson 1.1</a> <span class="muted" data-sum></span></p>
 </div>
 
-<div class="call"><p class="kick">The brief</p><p>Each film has a page of small scenes. In each one you do what the film shows: be the gate, be the index, be the model. Click the raised pieces in the drawing or the buttons under it. Meet the goal and the idea opens. Nothing to submit.</p><p><a class="btn" href="''' + BASE + FILMS[0]['slug'] + '''">Start with film 1</a></p></div>
+<div class="call"><p class="kick">How it works</p><p>Each lesson is one page: two lines to read, a drawing to play, then what you just found. Press <b>Next</b> at the bottom to go on. The <b>☰</b> button at the top left shows every lesson, with a tick on the ones you have done. Nothing to submit.</p></div>
 
-<section class="s" id="s01"><h2><span class="n">01</span>Your machine <span class="ready" data-total>0 of ''' + str(total) + ''' found</span></h2>
-<p>Sand at the bottom, a chatbot at the top. Each film adds a layer, and a layer fills in as you play its scenes.</p>
-<div class="fp-tower" data-tower="''' + html.escape(json.dumps(tower), quote=True) + '''"></div>
-<p><button type="button" class="fp-reset" data-fpreset>Start all eight films again</button></p>
+<section class="fp-sec"><h2>Lessons</h2>
+{toc(course)}
+<p><button type="button" class="fp-reset" data-fpreset>Clear my ticks and start again</button></p>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>The eight films</h2>
-<ol>
-'''
-    for f in FILMS:
-        page += f'<li><a href="{BASE}{f["slug"]}">{f["q"]}</a> <span class="muted">{f["length"]} · {len(f["ids"])} scenes</span></li>\n'
-    page += '''</ol>
-</section>
-
-<section class="s" id="s03"><h2><span class="n">03</span>The principles</h2>
-<p>Each one is found in a scene. Remember these and you can rebuild most of the rest.</p>
+<section class="fp-sec"><h2>The principles</h2>
+<p>Each one is found in a lesson. It gets a mark here when you have played every lesson of its film.</p>
 <ol class="fp-pr">
 '''
     for n, t in PRINCIPLES:
@@ -535,7 +591,7 @@ def build():
     page += '''</ol>
 </section>
 
-<section class="s" id="s04"><h2><span class="n">04</span>The chain</h2>
+<section class="fp-sec"><h2>The chain</h2>
 <pre class="chain">atoms → electricity → transistors → bits → bytes
 → memory → files → tables → databases you can trust
 → tokens → dials → learning → attention → transformer
@@ -550,7 +606,7 @@ def build():
 '''
     page += FOOT
     (OUT / 'index.html').write_text(page)
-    print('built', len(FILMS) + 1, 'pages,', total, 'scenes, in', OUT)
+    print('built', total, 'lessons (', scenes, 'scenes ) in', len(FILMS), 'films, plus the course home, in', OUT)
 
 
 if __name__ == '__main__':

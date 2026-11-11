@@ -58,18 +58,6 @@ body.read .fp-lock{border-left:2px dashed var(--line2);padding:2px 0 2px 18px;ma
 body.read .found a.fp-next{display:inline-flex;gap:6px;align-items:center;margin-top:14px;padding:8px 14px;border:1px solid var(--line2);border-radius:8px;font:500 14px var(--sans);color:var(--ink);text-decoration:none;background:var(--card)}
 body.read .found a.fp-next:hover{border-color:var(--ink3)}
 
-/* parts found, under the title and at the end */
-.fp-parts{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center;margin:18px 0 0}
-.fp-parts .lab{font:500 13px var(--sans);color:var(--ink2);margin-right:4px}
-.fp-parts a{font:600 19px/1 Caveat,cursive;padding:5px 11px 6px;border:1.5px dashed var(--line2);border-radius:999px;color:var(--ink3);text-decoration:none}
-.fp-parts a:hover{color:var(--ink);border-color:var(--ink3)}
-.fp-parts a.seen{border-style:solid;color:var(--ink2)}
-.fp-parts a.won{border-style:solid;border-color:var(--hum);background:var(--hum-soft);color:var(--hum-ink)}
-.fp-end{border:1.5px dashed var(--line2);border-radius:12px;padding:16px 18px;margin:2.5em 0 0}
-.fp-end.on{border-style:solid;border-color:var(--hum);background:var(--hum-soft)}
-body.read .fp-end p{margin:0 0 10px}
-body.read .fp-end p:last-child{margin:0}
-
 /* ---------- hand-drawn stage ---------- */
 .wb{display:block;width:100%;height:auto;color:var(--ink);overflow:visible;-webkit-user-select:none;user-select:none}
 .wb .ln *{fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
@@ -212,8 +200,7 @@ body.read pre.chain{font:14px/1.7 var(--mono);background:transparent;border:0;pa
 .fp-stack .bar .post{background:var(--prob);color:#fff}
 .fp-stack .bar .pre{background:var(--line2);color:var(--ink)}
 
-/* ---------- the overview ---------- */
-.fp-tower{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:0 0 1em}
+/* ---------- the course home ---------- */
 body.read ol.fp-pr{padding-left:26px}
 body.read ol.fp-pr li{padding-left:4px}
 body.read ol.fp-pr li.earned::marker{color:var(--hum-ink);font-weight:600}
@@ -233,3 +220,85 @@ body.read ol.fp-pr li.earned::after{content:"found";font:700 19px Caveat,cursive
   .fp-keys{gap:4px}
   .fp-shan span{width:19px;font-size:17px}
 }
+
+/* ================= the course: one lesson per page ================= */
+/* header: menu, breadcrumb, theme */
+.fp-course .top .in{gap:10px}
+.fp-crumbs{flex:1;min-width:0;display:flex;align-items:center;gap:7px;font:500 13px var(--sans);color:var(--ink2);white-space:nowrap;overflow:hidden}
+.fp-crumbs a{color:var(--ink2);text-decoration:none}
+.fp-crumbs a:hover{color:var(--ink)}
+.fp-crumbs .film{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fp-crumbs .sep{color:var(--ink3)}
+.fp-crumbs .here{color:var(--ink);font-variant-numeric:tabular-nums;flex:none}
+@media (max-width:640px){.fp-crumbs .home,.fp-crumbs .home+.sep{display:none}}
+
+/* the table of contents: a drawer from the left */
+.fp-scrim{position:fixed;inset:0;background:rgba(0,0,0,.32);z-index:80}
+.fp-toc{position:fixed;top:0;left:0;bottom:0;width:min(360px,88vw);background:var(--card);border-right:1px solid var(--line);z-index:90;overflow:auto;padding:12px 12px 28px;transform:translateX(-100%);transition:transform .2s ease-out;box-shadow:var(--float)}
+.fp-toc.on{transform:none}
+@media (prefers-reduced-motion:reduce){.fp-toc{transition:none}}
+.fp-toc .hd{display:flex;justify-content:space-between;align-items:center;padding:4px 4px 6px 6px}
+.fp-toc .hd b{font:600 15px var(--sans)}
+.fp-toc .hd .tbtn{font-size:20px;line-height:1}
+.fp-toc .fp-sum{font:500 12.5px var(--sans);color:var(--ink3);margin:0 6px 8px}
+.fp-toc .ft{display:flex;gap:18px;padding:16px 6px 0;font:500 13px var(--sans)}
+.fp-toc .ft a{color:var(--ink2);text-decoration:none}
+.fp-toc .ft a:hover{color:var(--ink)}
+body.fp-locked{overflow:hidden}
+
+/* chapters and lessons, in the drawer and on the course home */
+.fp-ch{list-style:none;margin:0;padding:0}
+.fp-ch>li{border-top:1px solid var(--line);margin:0}
+.fp-ch summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:center;padding:11px 6px;font:500 14.5px/1.35 var(--sans);color:var(--ink);border-radius:8px}
+.fp-ch summary::-webkit-details-marker{display:none}
+.fp-ch summary:hover{background:var(--bg2)}
+.fp-ch summary .t{flex:1;min-width:0}
+.fp-ch summary .t .n{color:var(--ink3);font-variant-numeric:tabular-nums}
+.fp-ch summary .c{font:500 12px var(--sans);color:var(--ink3);white-space:nowrap}
+.fp-ch summary::after{content:"";flex:none;width:6px;height:6px;border-right:1.5px solid var(--ink3);border-bottom:1.5px solid var(--ink3);transform:rotate(45deg) translateY(-2px);transition:transform .15s;margin-right:4px}
+.fp-ch details[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+.fp-ls{list-style:none;margin:0 0 10px;padding:0 0 0 4px}
+body.read .fp-ls li{margin:0}
+.fp-ls a{display:flex;gap:10px;align-items:baseline;padding:7px 8px 7px 6px;border-radius:7px;color:var(--ink2);text-decoration:none;font-size:14px;line-height:1.35}
+.fp-ls a:hover{background:var(--bg2);color:var(--ink)}
+.fp-ls li.here a{background:var(--bg2);color:var(--ink);font-weight:500}
+.fp-ls .n{font:500 12px var(--mono);color:var(--ink3);min-width:28px;flex:none}
+/* the tick: an empty ring; green with a check when found; grey with a check when the answer was shown */
+.fp-ch .st{flex:none;width:17px;height:17px;border-radius:50%;border:1.5px solid var(--line2);position:relative;box-sizing:border-box;align-self:center}
+.fp-ls li.won .st,.fp-ch>li.won>details>summary>.st{background:var(--hum);border-color:var(--hum)}
+.fp-ls li.seen .st,.fp-ch>li.seen>details>summary>.st{background:var(--ink3);border-color:var(--ink3)}
+.fp-ch>li.half>details>summary>.st{border-color:var(--hum);background:linear-gradient(90deg,var(--hum-soft) 50%,transparent 50%)}
+.fp-ls li.won .st::after,.fp-ls li.seen .st::after,.fp-ch>li.won>details>summary>.st::after,.fp-ch>li.seen>details>summary>.st::after{content:"";position:absolute;left:4.6px;top:1.6px;width:3.6px;height:7.4px;border:solid #fff;border-width:0 1.9px 1.9px 0;transform:rotate(45deg)}
+
+/* a lesson */
+.fp-lesson{padding:40px 0 0}
+.fp-lesson>.kick{margin:0 0 10px;line-height:1.5}
+.fp-lesson h1{font:600 clamp(28px,4.4vw,40px)/1.12 var(--sans);letter-spacing:-.025em;margin:0 0 20px;padding-bottom:18px;border-bottom:1px solid var(--line);text-wrap:balance}
+.fp-lesson h1 .n{color:var(--ink3);font-variant-numeric:tabular-nums;margin-right:.35em}
+.fp-lesson p{margin:0 0 14px}
+.fp-lesson ul,.fp-lesson ol{padding-left:22px;margin:0 0 14px}
+.fp-lesson li{margin:0 0 8px}
+.fp-lesson h2{font:500 22px/1.25 var(--sans);letter-spacing:-.02em;margin:36px 0 12px}
+.fp-lesson .lead{font-size:18.5px;line-height:1.5;color:var(--ink2)}
+.fp-lesson .fp-how{margin:0 0 22px;padding:12px 14px;background:var(--bg2);border-radius:10px}
+
+/* previous and next: the way through. Next turns solid once the lesson is done. */
+.fp-pn{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:44px 0 0;padding-top:24px;border-top:1px solid var(--line)}
+.fp-pn a{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border:1px solid var(--line2);border-radius:10px;text-decoration:none;color:var(--ink);background:var(--card);min-width:0;transition:border-color .15s,background .2s,color .2s}
+.fp-pn a:hover{border-color:var(--ink3);color:var(--ink)}
+.fp-pn small{font:500 12.5px var(--sans);color:var(--ink3)}
+.fp-pn span{font:500 15px/1.35 var(--sans);overflow-wrap:anywhere}
+.fp-pn .next{grid-column:2;text-align:right;align-items:flex-end}
+.fp-pn .next.ready,.fp-pn .next.ready:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.fp-pn .next.ready small{color:inherit;opacity:.72}
+@media (max-width:520px){.fp-pn{grid-template-columns:1fr}.fp-pn .next{grid-column:auto;order:-1}}
+
+/* the course home */
+.fp-cta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:24px 0 0}
+.fp-cta .btn,.fp-cta .btn:hover{background:var(--ink);color:var(--bg);padding:12px 18px;font-size:15px}
+.fp-cta .muted{font:500 13.5px var(--sans);color:var(--ink3)}
+.fp-sec{margin:44px 0 0}
+.fp-sec>h2{font:500 clamp(22px,3vw,28px)/1.2 var(--sans);letter-spacing:-.02em;margin:0 0 14px}
+.fp-sec>p{margin:0 0 14px}
+main .fp-ch{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:2px 10px;margin:0 0 14px}
+main .fp-ch>li:first-child{border-top:0}
