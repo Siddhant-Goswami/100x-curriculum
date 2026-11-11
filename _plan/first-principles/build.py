@@ -561,7 +561,7 @@ def build():
                      f'<p class="fp-how"><b>How each lesson works:</b> read the two lines, then play the drawing. Click the <span class="fp-key">raised</span> pieces or the buttons under it. '
                      f'Reach the goal and the explanation opens. Then press <b>Next</b> at the bottom right. This chapter has {len(ls)} lessons.</p>\n')
         page += l['body'].strip() + '\n</article>\n'
-        # one way forward: a bar fixed to the bottom, like a course player. Next turns solid once the lesson is done.
+        # one way forward: Previous and Next in the page, right after the lesson (not fixed to the screen). Next turns solid once the lesson is done.
         pt = (prev['n'] + ' ' if prev['n'] else '') + plain(prev['title'])
         pv = f'<a class="prev" href="{prev["href"]}" rel="prev" title="Previous: {html.escape(pt, quote=True)}"><span aria-hidden="true">←</span><span class="t">{html.escape(pt)}</span></a>'
         if nxt:
@@ -570,7 +570,7 @@ def build():
             nx = f'<a class="next" href="{nxt["href"]}" rel="next" data-next><span class="t">{html.escape(lab)}</span><span aria-hidden="true">→</span></a>'
         else:
             nx = f'<a class="next" href="{BASE}" data-next><span class="t">Finish: see everything you found</span><span aria-hidden="true">→</span></a>'
-        page += f'<nav class="fp-bar" aria-label="Lessons"><div class="in">{pv}<button type="button" class="fp-open">Contents</button>{nx}</div></nav>\n'
+        page += f'<nav class="fp-nav" aria-label="Lessons">{pv}{nx}</nav>\n'
         page += FOOT
         dst = OUT / l['path']
         dst.parent.mkdir(parents=True, exist_ok=True)

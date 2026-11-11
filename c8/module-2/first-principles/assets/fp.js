@@ -567,8 +567,7 @@ function drawer(){
   var b=document.querySelector('.fp-menu'),p=document.getElementById('fp-toc'),sc=document.querySelector('.fp-scrim'),from=b;if(!b||!p)return;
   function set(open){p.hidden=sc.hidden=!open;b.setAttribute('aria-expanded',open);document.body.classList.toggle('fp-locked',open);
     if(open){var cur=p.querySelector('li.here a')||p.querySelector('a');requestAnimationFrame(function(){p.classList.add('on');if(cur){cur.focus({preventScroll:true});cur.scrollIntoView({block:'center'})}})}else{p.classList.remove('on');from.focus()}}
-  /* the menu button in the header and "Contents" in the bottom bar both open it */
-  [].forEach.call(document.querySelectorAll('.fp-menu,.fp-open'),function(t){t.addEventListener('click',function(){from=t;set(p.hidden)})});
+  [].forEach.call(document.querySelectorAll('.fp-menu'),function(t){t.addEventListener('click',function(){from=t;set(p.hidden)})});
   sc.addEventListener('click',function(){set(false)});
   p.querySelector('[data-close]').addEventListener('click',function(){set(false)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!p.hidden)set(false)});
