@@ -597,21 +597,31 @@ function paintToc(){
       if(fl.parentNode===counted){total++;if(s)doneN++;else if(!firstOpen)firstOpen=li}});
     fl.classList.toggle('won',d===ls.length&&won===ls.length);fl.classList.toggle('seen',d===ls.length&&won<ls.length);fl.classList.toggle('half',d>0&&d<ls.length);
     var c=fl.querySelector('[data-count]');if(c)c.textContent=d?d+' of '+ls.length:ls.length+' lessons';
+    fl.style.setProperty('--p',d/ls.length);
     if(sceneN&&sceneWon===sceneN)earned[fl.getAttribute('data-ch')]=1;
     if(d===ls.length)doneCh[fl.getAttribute('data-ch')]=1;
   });
   /* the lesson to do now gets a "next" chip in every list */
   [].forEach.call(document.querySelectorAll('.fp-ls>li.up'),function(li){li.classList.remove('up')});
   if(firstOpen)[].forEach.call(document.querySelectorAll('.fp-ls>li[data-href="'+firstOpen.getAttribute('data-href')+'"]'),function(li){li.classList.add('up')});
-  [].forEach.call(document.querySelectorAll('[data-sum]'),function(el){el.textContent=doneN?doneN+' of '+total+' lessons done':total+' lessons'});
+  [].forEach.call(document.querySelectorAll('[data-sum]'),function(el){el.textContent=doneN?doneN+' of '+total+' done':total+' lessons'});
   /* course home: a principle shows once its chapter is done (marked "found" if every drawing was played); the whole chain at the very end */
   [].forEach.call(document.querySelectorAll('[data-earn]'),function(li){var c=li.getAttribute('data-earn');li.hidden=!doneCh[c];li.classList.toggle('earned',!!earned[c])});
   [].forEach.call(document.querySelectorAll('[data-found]'),function(el){el.hidden=!Object.keys(doneCh).length});
   [].forEach.call(document.querySelectorAll('[data-finish]'),function(el){el.hidden=!(total&&doneN===total)});
   var go=document.querySelector('[data-continue]');
   if(go){var t=firstOpen||counted.querySelector('.fp-ls>li');var n=t.querySelector('.n').textContent,ti=t.querySelector('.t').textContent;
-    go.href=t.getAttribute('data-href');go.textContent=!doneN?'Start with lesson 1.1':firstOpen?'Continue: '+n+' '+ti:'All done. Back to lesson 1.1';
+    go.href=t.getAttribute('data-href');var gl=go.querySelector('[data-go]');(gl||go).textContent=!doneN?'Start the course':firstOpen?'Continue':'Start again';
+    var up=document.querySelector('[data-upto]'),ul=document.querySelector('[data-uplab]');
+    if(up){up.href=go.href;up.innerHTML='<span class="n"></span> ';up.firstChild.textContent=n;up.appendChild(document.createTextNode(ti))}
+    if(ul)ul.textContent=!doneN?'First':firstOpen?'Next':'Again from';
+    var cta=go.closest('.fp-cta');if(cta)cta.style.setProperty('--p',total?doneN/total:0);if(cta)cta.classList.toggle('begun',doneN>0);
     var f=t.closest('[data-ch]').getAttribute('data-ch');if(doneN)[].forEach.call(document.querySelectorAll('.fp-ch>li[data-ch="'+f+'"]>details'),function(d){d.open=true})}
+  /* course home: the road lights the chapters done and the one to do now; only that chapter's card starts open */
+  var nowCh=firstOpen?firstOpen.closest('[data-ch]').getAttribute('data-ch'):null,road=0;
+  [].forEach.call(document.querySelectorAll('.fp-road .stop'),function(g){var n=g.getAttribute('data-node');g.classList.toggle('done',!!doneCh[n]);g.classList.toggle('now',doneN>0&&n===nowCh);if(doneCh[n]&&+n>road)road=+n});
+  [].forEach.call(document.querySelectorAll('.fp-road'),function(sv){sv.style.setProperty('--road',road/8)});
+  if(doneN&&!paintToc.once){paintToc.once=1;[].forEach.call(document.querySelectorAll('.fp-outline>li>details'),function(d){d.open=d.parentNode.getAttribute('data-ch')===(nowCh||'1')})}
 }
 /* term reminders: an underlined word shows its one-line meaning and where it was first explained */
 function termTips(){

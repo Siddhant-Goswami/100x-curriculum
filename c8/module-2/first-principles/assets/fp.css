@@ -377,3 +377,79 @@ body.read .fp-steps li{counter-increment:s;position:relative;padding-left:32px;m
 .fp-steps li::before{content:counter(s);position:absolute;left:0;top:2px;width:20px;height:20px;box-sizing:border-box;border:1px solid var(--line2);border-radius:50%;font:500 11.5px/18px var(--sans);text-align:center;color:var(--ink2)}
 .fp-steps b{font-weight:600}
 .fp-sec .muted{font-size:13.5px;color:var(--ink3)}
+
+/* ---- course home, visual pass (12 Nov): a drawn road in the hero, step cards, folding chapter cards ---- */
+.fp-course .hero{position:relative}
+.fp-road{display:block;width:100%;height:auto;margin:30px 0 0;overflow:visible;-webkit-user-select:none;user-select:none}
+.fp-road.narrow{display:none;max-width:400px;margin-left:auto;margin-right:auto}
+@media (max-width:620px){.fp-road.wide{display:none}.fp-road.narrow{display:block}}
+.fp-road .road{fill:none;stroke:var(--line2);stroke-width:2.2;stroke-dasharray:2 7;stroke-linecap:round}
+.fp-road .road.done{stroke:var(--hum);stroke-dasharray:1;stroke-dashoffset:calc(1 - var(--road,0));stroke-width:2.6;opacity:.8}
+.fp-road .sand circle{fill:var(--det);opacity:.75}
+.fp-road text{font-family:Caveat,cursive;text-anchor:middle}
+.fp-road .lb{font-size:21px;font-weight:600;fill:var(--ink2)}
+.fp-road .stop{--c:var(--det);--s:var(--det-soft);--i:var(--det-ink);cursor:pointer;text-decoration:none}
+.fp-road .stop.prob{--c:var(--prob);--s:var(--prob-soft);--i:var(--prob-ink)}
+.fp-road .stop.hum{--c:var(--hum);--s:var(--hum-soft);--i:var(--hum-ink)}
+.fp-road .dot{fill:var(--card);stroke:var(--c);stroke-width:2.2;transition:fill .2s}
+.fp-road .nm{font:600 13px var(--mono);fill:var(--i)}
+.fp-road .halo{fill:none;stroke:var(--c);stroke-width:1.5;opacity:0}
+.fp-road .tick{fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;display:none}
+.fp-road .stop:hover .dot,.fp-road .stop:focus-visible .dot{fill:var(--s)}
+.fp-road .stop:hover .lb{fill:var(--ink)}
+.fp-road .stop.done .dot{fill:var(--c)}
+.fp-road .stop.done .nm{display:none}
+.fp-road .stop.done .tick{display:inline}
+.fp-road .stop.now .dot{fill:var(--s)}
+.fp-road .stop.now .lb{fill:var(--ink)}
+.fp-road .stop.now .halo{opacity:.5;transform-box:fill-box;transform-origin:center;animation:fphalo 2.2s ease-out infinite}
+@keyframes fphalo{0%{transform:scale(.75);opacity:.6}100%{transform:scale(1.25);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fp-road .stop.now .halo{animation:none}}
+
+.fp-course .fp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 14px}
+body.read.fp-course .fp-steps li{margin:0;padding:44px 16px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;font-size:14.5px;line-height:1.5;color:var(--ink2)}
+body.read.fp-course .fp-steps li b{color:var(--ink)}
+body.read.fp-course .fp-steps li>b:first-child{display:block;margin-bottom:2px}
+.fp-course .fp-steps li::before{left:16px;top:14px;width:22px;height:22px;border:0;background:var(--ink);color:var(--bg);font:600 12px/22px var(--sans)}
+@media (max-width:620px){.fp-course .fp-steps{grid-template-columns:1fr}body.read.fp-course .fp-steps li{padding:14px 16px 14px 50px}.fp-course .fp-steps li::before{top:15px}}
+
+.fp-outline>li{margin:0 0 12px}
+.fp-outline>li{--c:var(--det);--s:var(--det-soft);--i:var(--det-ink)}
+.fp-outline>li.prob{--c:var(--prob);--s:var(--prob-soft);--i:var(--prob-ink)}
+.fp-outline>li.hum{--c:var(--hum);--s:var(--hum-soft);--i:var(--hum-ink)}
+.fp-outline details{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:box-shadow .2s,border-color .2s}
+.fp-outline details:hover{border-color:var(--line2)}
+.fp-outline details[open]{box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.12)}
+.fp-ch.fp-outline summary{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;border-radius:0;font:inherit}
+.fp-ch.fp-outline summary:hover{background:transparent}
+.fp-ch.fp-outline summary::after{align-self:center;width:8px;height:8px;margin-left:4px}
+.fp-outline .badge{flex:none;width:44px;height:44px;border-radius:12px;background:var(--s);color:var(--i);border:0;font:700 15px/44px var(--mono);text-align:center;padding:0;margin:0}
+.fp-outline>li.won .badge,.fp-outline>li.seen .badge{background:var(--c);color:#fff}
+.fp-outline .hd{flex:1;min-width:0;display:block;margin:0}
+.fp-outline .hd .word{display:block;font:600 11.5px/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--i);margin:2px 0 6px}
+body.read .fp-outline h3{font:600 18px/1.3 var(--sans);margin:0 0 4px}
+body.read .fp-outline .hd p{margin:0 0 10px;font-size:14px;line-height:1.5;color:var(--ink2)}
+.fp-outline .hd .c{display:flex;align-items:center;gap:8px;font:500 12.5px var(--sans);color:var(--ink3);white-space:normal}
+.fp-outline .bar{flex:none;width:72px;height:5px;border-radius:9px;background:var(--bg2);overflow:hidden}
+.fp-outline .bar i{display:block;height:100%;width:calc(var(--p,0)*100%);background:var(--c);border-radius:9px;transition:width .4s}
+.fp-outline .fp-ls{border:0;border-top:1px solid var(--line);border-radius:0;background:transparent}
+.fp-outline .fp-ls a{padding:12px 20px}
+.fp-outline li.up a{background:var(--s)}
+@media (max-width:620px){.fp-ch.fp-outline summary{padding:16px 14px;gap:12px}.fp-outline .badge{width:36px;height:36px;line-height:36px;font-size:13px;border-radius:10px}.fp-outline .fp-ls a{padding:12px 14px}}
+
+/* course home call to action: a short button, the lesson to do next beside it, overall progress under that */
+.fp-course .fp-cta{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin:26px 0 0}
+.fp-course .fp-cta .btn,.fp-course .fp-cta .btn:hover{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--bg);padding:13px 20px;border-radius:12px;font:600 15px/1 var(--sans);text-decoration:none;white-space:nowrap}
+.fp-course .fp-cta .btn span[aria-hidden]{transition:transform .15s}
+.fp-course .fp-cta .btn:hover span[aria-hidden]{transform:translateX(3px)}
+.fp-up{min-width:0;flex:1}
+body.read .fp-up p{margin:0}
+.fp-up .nx{font:400 14.5px/1.4 var(--sans);color:var(--ink3)}
+.fp-up .nx a{color:var(--ink);font-weight:500;text-decoration:none}
+.fp-up .nx a:hover{text-decoration:underline;text-underline-offset:3px}
+.fp-up .nx .n{font:500 13px var(--mono);color:var(--ink3);margin-right:2px}
+.fp-up .pg{display:flex;align-items:center;gap:10px;margin-top:7px!important;font:500 12.5px var(--sans);color:var(--ink3)}
+.fp-up .bar{display:none;flex:none;width:96px;height:5px;border-radius:9px;background:var(--line);overflow:hidden}
+.fp-up .bar i{display:block;height:100%;width:calc(var(--p,0)*100%);min-width:0;background:var(--hum);border-radius:9px;transition:width .4s}
+.fp-cta.begun .fp-up .bar{display:block}
+.fp-cta.begun .fp-up .hrs{display:none}

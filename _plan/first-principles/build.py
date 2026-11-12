@@ -719,13 +719,47 @@ def toc(course, here_film=None):
     return f'<ol class="fp-ch">\n{rows}</ol>'
 
 
+# each chapter's colour on the course home: amber = exact memory and machines, violet = dials and guesses, green = checks
+ACC = ['det', 'det', 'det', 'prob', 'prob', 'det', 'prob', 'hum']
+STOPS = ['sand'] + CHAIN
+
+
+def journey(course):
+    # course home hero: the chain as a hand-drawn road, sand first, each chapter a stop that links to its first lesson.
+    # Two drawings: one wave for wide screens, a 3 x 3 snake for phones. fp.js marks stops done / now.
+    def svg(cls, vb, pts, path):
+        g = ''
+        for i, (x, y) in enumerate(pts):
+            lab = f'<text class="lb" x="{x}" y="{y + 40}">{STOPS[i]}</text>'
+            if i == 0:  # a few grains of sand, not a stop
+                g += (f'<g class="sand"><circle cx="{x - 7}" cy="{y + 4}" r="3"/><circle cx="{x + 5}" cy="{y + 6}" r="2.4"/>'
+                      f'<circle cx="{x}" cy="{y - 5}" r="2.7"/><circle cx="{x + 9}" cy="{y - 4}" r="1.9"/><circle cx="{x - 10}" cy="{y - 6}" r="1.6"/>{lab}</g>')
+                continue
+            f, ls = course[i - 1]
+            g += (f'<a href="{ls[0]["href"]}" class="stop {ACC[i - 1]}" data-node="{i}" aria-label="Chapter {i}: {html.escape(plain(f["q"]), quote=True)}">'
+                  f'<title>{i}. {html.escape(plain(f["q"]))}</title><circle class="halo" cx="{x}" cy="{y}" r="25"/>'
+                  f'<circle class="dot" cx="{x}" cy="{y}" r="17"/><text class="nm" x="{x}" y="{y + 4.5}">{i}</text>'
+                  f'<path class="tick" d="M{x - 6} {y + 0.5} l4.5 4.5 l8 -9"/>{lab}</a>')
+        return (f'<svg class="fp-road {cls}" viewBox="{vb}" role="img" aria-label="The course as a road: sand, then eight chapters">'
+                f'<path class="road" d="{path}"/><path class="road done" pathLength="1" d="{path}"/>{g}</svg>')
+    xs = [36 + 81 * i for i in range(9)]
+    wide = [(x, 46 if i % 2 == 0 else 74) for i, x in enumerate(xs)]
+    wp = f'M{wide[0][0]} {wide[0][1]}' + ''.join(f' C{a[0] + 40} {a[1]} {b[0] - 40} {b[1]} {b[0]} {b[1]}' for a, b in zip(wide, wide[1:]))
+    nar = [(55, 40), (180, 40), (305, 40), (305, 150), (180, 150), (55, 150), (55, 260), (180, 260), (305, 260)]
+    np_ = 'M55 40 L305 40 C362 40 362 150 305 150 L55 150 C-2 150 -2 260 55 260 L305 260'
+    return svg('wide', '0 0 720 130', wide, wp) + svg('narrow', '0 0 360 312', nar, np_)
+
+
 def outline(course):
+    # one card per chapter, folded; the chapter to do now opens (fp.js), the first one opens before any progress
     rows = ''
     for fi, (f, ls) in enumerate(course):
         lis = ''.join(f'<li data-href="{l["href"]}"{f" data-scene=\"{l["scene"]}\"" if l["scene"] else ""}><a href="{l["href"]}"><i class="st" aria-hidden="true"></i><span class="n">{l["n"]}</span>'
                       f'<span class="t">{l["title"]}<small>{html.escape(l["sub"])}</small></span><span class="chip">next</span><span class="min">{l["min"]} min</span></a></li>' for l in ls)
-        rows += (f'  <li data-ch="{fi + 1}"><div class="hd"><span class="badge">{fi + 1:02d}</span><div><h3>{f["q"]}</h3>'
-                 f'<p>{f["dek"]} <span class="c"><span data-count>{len(ls)} lessons</span> · about {sum(l["min"] for l in ls)} min</span></p></div></div><ol class="fp-ls">{lis}</ol></li>\n')
+        rows += (f'  <li data-ch="{fi + 1}" class="{ACC[fi]}"><details{" open" if fi == 0 else ""}><summary>'
+                 f'<span class="badge">{fi + 1:02d}</span><div class="hd"><span class="word">{"sand to bits" if fi == 0 else CHAIN[fi]}</span><h3>{f["q"]}</h3>'
+                 f'<p>{f["dek"]}</p><span class="c"><span class="bar"><i></i></span><span data-count>{len(ls)} lessons</span> · about {sum(l["min"] for l in ls)} min</span></div></summary>'
+                 f'<ol class="fp-ls">{lis}</ol></details></li>\n')
     return f'<ol class="fp-ch fp-outline">\n{rows}</ol>'
 
 
@@ -786,14 +820,17 @@ def build():
   <p class="kick">Cohort 8 · Module 2 · Self-paced · Both tracks</p>
   <h1>From sand to language models</h1>
   <p class="dek">What really happens when your app saves a row, or a model answers a question. Built up from a single switch, with no maths needed.</p>
-  <p class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}">Start with lesson 1.1</a> <span class="muted">{span} · <span data-sum></span></span></p>
+  <div class="fp-cta"><a class="btn" data-continue href="{flat[0][2]["href"]}"><span data-go>Start the course</span> <span aria-hidden="true">→</span></a>
+    <div class="fp-up"><p class="nx"><span data-uplab>First</span> <a data-upto href="{flat[0][2]["href"]}"><span class="n">{flat[0][2]["n"]}</span> {plain(flat[0][2]["title"])}</a></p>
+    <p class="pg"><span class="bar"><i></i></span><span><span data-sum></span><span class="hrs"> · {span.replace("About ", "").replace(" in all", "")}</span></span></p></div></div>
+  {journey(course)}
 </div>
 
 <section class="fp-sec fp-how-it"><h2>How it works</h2>
 <ol class="fp-steps">
   <li><b>Read the short opening.</b> Each lesson is one page and one idea.</li>
-  <li><b>Play the drawing.</b> Reach its goal and the explanation opens. A few lessons are a short read with no drawing.</li>
-  <li><b>Press Next.</b> <b>Contents</b>, at the top left, shows every lesson and which ones you have done.</li>
+  <li><b>Play the drawing.</b> Reach its goal and the explanation opens. A few lessons are a short read.</li>
+  <li><b>Press Next.</b> <b>Contents</b>, at the top left, shows every lesson and what you have done.</li>
 </ol>
 <p class="muted">Nothing to submit. Your progress stays on this device.</p>
 </section>
@@ -820,11 +857,6 @@ def build():
 → GPUs and training → assistant → checks and evals</pre>
 </section>
 
-<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
-  <li><a href="''' + L9 + '''">Lecture 9 notes: LLMs from first principles</a></li>
-  <li><a href="''' + PS2 + '''">Practice set 2: Write the eval</a></li>
-  <li><a href="/#FP">Curriculum map</a></li>
-</ul></nav>
 '''
     page += FOOT
     (OUT / 'index.html').write_text(page)
