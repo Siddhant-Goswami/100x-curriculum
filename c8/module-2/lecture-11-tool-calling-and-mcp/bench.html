@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tool Bench | 100xEngineers</title>
+<meta name="description" content="Make your first tool call and your first MCP server on one bench: a model, a server, a sheet, and every message that crosses between them.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-11-tool-calling-and-mcp/assets/bench.css">
+<script src="/c8/docs.js"></script>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l11-bench" data-noaarav>
+<!--
+  One bench that never changes: You, Model, Server, Sheet, and the wire that shows every real message.
+  Only the instruction changes. The headline is the instruction; Continue appears once the step is done.
+  Five steps: ask, carry it by hand, write the card, switch the server on, move the card (MCP).
+-->
+<header class="bar">
+  <div class="in">
+    <a class="brand" href="/#L11" title="Back to the curriculum map">100x<b>·</b><span>Tool Bench</span></a>
+    <p class="where" id="where" aria-live="polite"></p>
+    <a class="exit" href="/#L11">Exit</a>
+  </div>
+  <nav class="segs" id="segs" aria-label="Five steps">
+    <a href="#1" data-s="1"><i></i><span>Ask</span></a>
+    <a href="#2" data-s="2"><i></i><span>Carry it by hand</span></a>
+    <a href="#3" data-s="3"><i></i><span>Write the card</span></a>
+    <a href="#4" data-s="4"><i></i><span>Switch the server on</span></a>
+    <a href="#5" data-s="5"><i></i><span>Move the card</span></a>
+  </nav>
+</header>
+
+<main class="app" id="app">
+  <h1 id="ins" tabindex="-1"></h1>
+  <p class="ctx" id="ctx"></p>
+
+  <section class="bench" aria-label="The bench">
+    <ol class="nodes" id="nodes">
+      <li class="node" data-n="you"><b>You</b><span>ask</span></li>
+      <li class="lane" data-l="you-model" aria-hidden="true"><i></i></li>
+      <li class="node" data-n="model"><b>Model</b><span>predicts</span></li>
+      <li class="lane" data-l="model-server" aria-hidden="true"><i></i></li>
+      <li class="node" data-n="server"><b>Server</b><span id="serverSub">follows rules</span><em class="slot" data-slot="server"></em></li>
+      <li class="lane" data-l="server-sheet" aria-hidden="true"><i></i></li>
+      <li class="node" data-n="sheet"><b id="sheetName">Sheet</b><span id="sheetSub">the data</span><em class="slot" data-slot="sheet"></em></li>
+    </ol>
+
+    <div class="work">
+      <div class="side">
+        <div class="panel" id="panel"></div>
+        <div class="msg" id="msg" aria-live="polite"></div>
+      </div>
+      <div class="wirebox">
+        <h2>The wire <small>every message that crossed</small></h2>
+        <ol class="wire" id="wire"></ol>
+        <p class="empty" id="empty">Nothing has crossed yet.</p>
+      </div>
+      <div class="tail">
+        <div class="after" id="after"></div>
+        <div class="forward" id="fwd"></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="backrow"><a href="#" id="back">Back</a></p>
+</main>
+
+<script src="/c8/module-2/lecture-11-tool-calling-and-mcp/assets/bench.js"></script>
+</body>
+</html>

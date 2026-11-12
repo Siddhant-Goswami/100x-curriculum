@@ -36,9 +36,11 @@ class H(SimpleHTTPRequestHandler):
             self.send_error(404); return
         body = self.rfile.read(int(self.headers.get('Content-Length') or 0)).decode('utf-8')
         js = ("import(process.argv[1]).then(async m=>{const r=await m.handle(new Request('http://localhost'+process.argv[2],"
-              "{method:'POST',headers:{'content-type':'application/json'},body:process.argv[3]}));"
+              "{method:'POST',headers:Object.assign(JSON.parse(process.argv[4]),{'content-type':'application/json'}),body:process.argv[3]}));"
               "process.stdout.write(JSON.stringify({s:r.status,b:await r.text()}))})")
-        out = subprocess.run(['node', '-e', js, mod, self.path, body], capture_output=True, text=True, cwd=ROOT)
+        hdrs = {k.lower(): v for k, v in self.headers.items() if k.lower().startswith('x-')}
+        hdrs.setdefault('x-forwarded-for', self.client_address[0])
+        out = subprocess.run(['node', '-e', js, mod, self.path, body, json.dumps(hdrs)], capture_output=True, text=True, cwd=ROOT)
         try:
             r = json.loads(out.stdout.strip().splitlines()[-1])
         except Exception:
