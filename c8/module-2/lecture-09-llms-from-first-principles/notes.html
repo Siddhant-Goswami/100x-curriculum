@@ -127,7 +127,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>The module: what to build, then how. Each box is defined by how its output is verified.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>Client</b> is the first interface: the browser, the device, the UI a person touches.</li>
+  <li><b>UI</b> is the first interface: the screen a person sees and touches. It runs on the <b>client</b>, the browser or device in their hands.</li>
   <li><b>Server</b> holds the business logic. For us, the diagnoser that turns a workflow into an automation plan for Aarav.</li>
   <li><b>API</b> is the second interface: address, action, package, key. <b>Data</b> lives in files, then in a database.</li>
   <li><b>All of that is <span class="o">orange</span>:</b> deterministic, same input, same output.</li>
@@ -135,7 +135,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <li><b>Drawing this for a new problem is the HLD round.</b> A student interviewing at Anthropic was asked to design a web research agent: inputs, outputs, client, server, data, and where the LLM is actually needed. No code.</li>
 </ul>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="An orange dashed zone labelled deterministic holds client, server and data with SQL, joined by API arrows. A purple dashed zone labelled probabilistic holds the LLM, joined to the server by an API arrow. Note: the orange system makes the model usable.">
+<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="An orange dashed zone labelled deterministic holds client, server and data with SQL, joined by API arrows. The client runs the UI, the first interface. A purple dashed zone labelled probabilistic holds the LLM, joined to the server by an API arrow. Note: the orange system makes the model usable.">
   <g class="ln" filter="url(#wob)">
     <path class="z-det" d="M20 40 H520 V290 H20 Z"/>
     <path class="z-prob" d="M574 40 H740 V290 H574 Z"/>
@@ -158,7 +158,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="360" y="186" class="xxs l">API</text>
     <text x="332" y="248" class="xs">data</text>
     <text x="410" y="248" class="xxs l">SQL</text>
-    <text x="106" y="186" class="xxs">first interface</text>
+    <text x="106" y="186" class="xxs">UI · first interface</text>
     <text x="657" y="186" class="xxs">GPT OSS on Groq</text>
     <text x="380" y="320" class="xs c-act">the model is useful; the orange system makes it usable</text>
   </g>
@@ -170,10 +170,9 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 
 <section class="s" id="s02"><h2><span class="n">02</span>Why the second mountain is steeper</h2>
 <ul class="pt">
-  <li><b>From about 5 out of 10 to about 8.</b> An estimate from seven cohorts and roughly 2,500 students.</li>
-  <li><b>A UI breaks where you can see it.</b> A model gives a different answer tomorrow, after an update, or for another user. Even its builders cannot fully say why; that is its own field, interpretability.</li>
-  <li><b>Answers that shift are normal,</b> not a sign you broke something. The series stays practical; research depth goes in extra resources.</li>
-  <li><b>The most common mistake in past cohorts:</b> reaching for the LLM first, even for jobs it is bad at, like storing information.</li>
+  <li><b>A UI breaks where you can see it.</b> A model answers differently tomorrow, after an update, or for another user, and even its builders cannot fully say why.</li>
+  <li><b>Shifting answers are normal,</b> not a sign you broke something.</li>
+  <li><b>The most common mistake:</b> reaching for the LLM first, even for jobs it is bad at, like storing information.</li>
 </ul>
 <p class="pull">Start left of the line. Move a step into the purple box only when you cannot verify its output with rules. Given two equal solutions, the rule-based one wins: reproducible, cheaper, predictable at scale.</p>
 </section>
