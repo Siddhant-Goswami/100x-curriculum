@@ -132,6 +132,11 @@ var GUIDE_LINKS = {
   l10Proposals: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s05',
   l10Reverse: '/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12',
   l10OfficeHour: '/c8/module-2/lecture-10-tool-calling-and-mcp/office-hour',  /* recap of the Tue 3 Nov office hour, bridges the sheet to Write the eval */
+  /* Lecture 11 · Tool calling and MCP, part 2 (both tracks together, pages in c8/module-2/lecture-11-tool-calling-and-mcp) */
+  l11Hub: '/c8/module-2/lecture-11-tool-calling-and-mcp/',
+  l11Notes: '/c8/module-2/lecture-11-tool-calling-and-mcp/notes',
+  l11Bench: '/c8/module-2/lecture-11-tool-calling-and-mcp/bench',
+  l11SecondApp: '/c8/module-2/lecture-11-tool-calling-and-mcp/second-app',
   groqPlay: 'https://console.groq.com/playground',
   l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
   l07Police: '/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s07',
@@ -827,6 +832,11 @@ GUIDES.L10 = { all: {
     ['Execution environment', 'Your backend: runs the tool call and returns the raw result.']
   ],
   kw: 'tool calling function calling hallucination missing context never says no openorca karpathy temperature golden pair golden dataset data source bridge interface json crud server execution environment reverse call curriculum csv groq gpt-oss playground indexing routing keywords practice set break it build the bridge'
+}};
+
+/* Lecture 11: only the pages link for now. The card shows it before the lecture too (upcoming cards show the hub). */
+GUIDES.L11 = { all: {
+  hub: {link:'l11Hub', title:'Open the Lecture 11 pages', sub:'The overview, the notes and the Tool Bench', more:[['l11Notes','Notes'],['l11Bench','Tool Bench'],['l11SecondApp','Second app']]}
 }};
 
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from
