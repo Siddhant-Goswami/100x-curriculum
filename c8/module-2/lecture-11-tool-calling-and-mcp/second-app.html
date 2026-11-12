@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Second App | 100xEngineers</title>
+<meta name="description" content="A second app that knows nothing about your tool. Give it an MCP address and it finds the tool and uses it.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-11-tool-calling-and-mcp/assets/bench.css">
+<script src="/c8/docs.js"></script>
+<script src="/analytics.js" defer></script>
+<style>
+  .app{max-width:720px}
+  .found{display:flex;flex-direction:column;gap:8px}
+</style>
+</head>
+<body data-page="l11-second-app" data-noaarav>
+<!--
+  A second MCP host. It holds no card and no sheet code: only what the address gives it.
+  It reuses /api/toolcall (op mcplist, op loop via mcp), so the same server does the same moves, and the wire shows them.
+-->
+<header class="bar">
+  <div class="in">
+    <a class="brand" href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench#5" title="Back to the Tool Bench">100x<b>·</b><span>Second App</span></a>
+    <p class="where"></p>
+    <a class="exit" href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench#5">Back to the bench</a>
+  </div>
+</header>
+
+<main class="app" id="app">
+  <h1 id="ins" class="do" tabindex="-1">Paste the address of an MCP server.</h1>
+  <p class="ctx" id="ctx">This app has never seen your card, your sheet or your code. It knows how to speak MCP, and nothing else.</p>
+
+  <div class="work" data-nolabel>
+    <div class="side">
+      <div class="panel" id="panel"></div>
+      <div class="msg" id="msg" aria-live="polite"></div>
+    </div>
+    <div class="wirebox">
+      <h2>The wire <small>this app’s server and the MCP server</small></h2>
+      <p class="wnote">This app sends your question to its server, which talks to the model and to the MCP server. Shown here: every message its server sent and got back.</p>
+      <ol class="wire" id="wire"></ol>
+      <p class="empty" id="empty">Nothing has crossed yet.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+(function () {
+'use strict';
+var API = '/api/toolcall', KEYS = 'c8.l11.key', key = '', tool = null, address = '';
+try { key = sessionStorage.getItem(KEYS) || ''; } catch (e) { /* asked below */ }
+var $ = function (s) { return document.querySelector(s); };
+var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+var pretty = function (v) { return typeof v === 'string' ? v : JSON.stringify(v, null, 2); };
+var NODE = { server: 'This app’s server', model: 'Model', sheet: 'MCP server' };
+function say(t) { $('#msg').textContent = t || ''; }
+function post(body) {
+  var h = { 'content-type': 'application/json' }; if (key) h['x-groq-key'] = key;
+  return fetch(API, { method: 'POST', headers: h, body: JSON.stringify(body) }).then(function (r) {
+    return r.json().catch(function () { return null; }).then(function (d) {
+      if (!r.ok) { var e = new Error((d && d.message) || 'The server did not answer. Try again.'); e.data = d; e.code = d && d.error; throw e; }
+      return d;
+    });
+  }, function () { throw new Error('No connection. Check your internet and try again.'); });
+}
+function hop(e) {
+  var li = document.createElement('li');
+  if (e.note) { li.className = 'w n'; li.innerHTML = '<span class="tt">' + esc(e.kind === 'cache' ? 'Used its copy of the sheet.' : e.text) + '</span>'; }
+  else {
+    var title = e.kind === 'model_req' ? 'The question + the tool it found' : e.kind === 'model_res' ? (e.failed ? 'A tool call Groq could not read' : e.call ? 'A request: ' + e.call.name + ' ' + JSON.stringify(e.call.arguments) : 'An answer')
+      : e.kind === 'rpc' ? e.method : e.method + ' reply';
+    li.className = 'w c';
+    li.innerHTML = '<span class="rt"><b class="n-' + e.from + '">' + esc(NODE[e.from]) + '</b><i>→</i><b class="n-' + e.to + '">' + esc(NODE[e.to]) + '</b></span><span class="tt">' + esc(title) + '</span>' +
+      '<details><summary>The message, exactly</summary><pre>' + esc(pretty(e.body)) + '</pre></details>';
+  }
+  $('#wire').appendChild(li); $('#empty').hidden = true;
+}
+function play(events) { (events || []).forEach(hop); }
+function busy(b, fn) {
+  if (b.disabled) return; say(''); b.disabled = true; b.classList.add('busy');
+  Promise.resolve().then(fn).catch(function (e) {
+    if (e.data && e.data.events) play(e.data.events);
+    if (e.code === 'need_key') { key = ''; try { sessionStorage.removeItem(KEYS); } catch (x) {} keyView(e.message); return; }
+    say(e.message);
+  }).then(function () { b.disabled = false; b.classList.remove('busy'); });
+}
+function keyView(message) {
+  $('#ins').textContent = 'Paste your Groq key.';
+  $('#ctx').textContent = message || 'The same key you used on the bench. This app runs the model on it too.';
+  $('#panel').innerHTML = '<div class="ask"><input id="gk" type="password" placeholder="gsk_..." autocomplete="off" aria-label="Your Groq key"><button class="btn act" id="gkok">Use my key</button></div>';
+  $('#gkok').onclick = function () { var v = $('#gk').value.trim(); if (!/^gsk_[A-Za-z0-9]{20,}$/.test(v)) return say('A Groq key starts with gsk_.'); key = v; busy(this, function () { return post({ op: 'key' }).then(function () { try { sessionStorage.setItem(KEYS, v); } catch (e) {} connectView(); }); }); };
+}
+function connectView() {
+  $('#ins').textContent = 'Paste the address of an MCP server.';
+  $('#ctx').textContent = 'This app has never seen your card, your sheet or your code. It knows how to speak MCP, and nothing else.';
+  $('#panel').innerHTML = '<label class="lab" for="addr">MCP address</label><div class="ask"><input id="addr" placeholder="' + esc(location.origin) + '/api/mcp?…" aria-label="MCP address"><button class="btn act" id="cn">Connect</button></div>';
+  $('#addr').onkeydown = function (e) { if (e.key === 'Enter') $('#cn').click(); };
+  $('#cn').onclick = function () {
+    address = $('#addr').value.trim();
+    if (!address) return say('Paste the address you copied on the bench first.');
+    busy(this, function () { $('#wire').innerHTML = ''; return post({ op: 'mcplist', mcp: address }).then(function (d) { play(d.events); tool = d.tool; askView(); }); });
+  };
+}
+function askView() {
+  $('#ins').textContent = 'It found a tool. Ask it something.';
+  $('#ctx').textContent = 'Everything below came from the address. This app did not have it a moment ago.';
+  $('#panel').innerHTML = '<div class="found cardview"><span class="lab">The tool it found</span><dl><dt>Name</dt><dd><code>' + esc(tool.name) + '</code></dd><dt>Use it when</dt><dd>' + esc(tool.description) + '</dd></dl></div>' +
+    '<div class="ask"><input id="q" maxlength="300" placeholder="Ask a question" aria-label="Your question"><button class="btn act" id="ask">Ask</button></div><p class="ans" id="ans" hidden></p>';
+  $('#q').onkeydown = function (e) { if (e.key === 'Enter') $('#ask').click(); };
+  $('#ask').onclick = function () {
+    var q = $('#q').value.trim(); if (!q) return say('Type a question first.');
+    busy(this, function () {
+      $('#wire').innerHTML = '';
+      return post({ op: 'loop', via: 'mcp', mcp: address, question: q, tool: { name: tool.name, description: tool.description, parameters: tool.inputSchema } }).then(function (d) {
+        play(d.events);
+        var a = $('#ans'); a.hidden = false;
+        a.textContent = d.failed ? 'The model wrote a tool call Groq could not read. Ask again.' : (d.answer || '(no answer)');
+        if (!d.used && !d.failed) say('No tool call this time: the model answered without it.');
+      });
+    });
+  };
+}
+if (key) connectView(); else keyView();
+})();
+</script>
+</body>
+</html>

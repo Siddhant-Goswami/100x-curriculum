@@ -49,6 +49,19 @@ Why: a free-tier key allows 8,000 tokens a minute and 1,000 requests a day. One 
 2. Deploy, then run all five steps once on the live URL.
 3. Decide which second app, if any, to plug the MCP address into on stage. Not tested with Claude, ChatGPT, Groq or n8n. A FastMCP client connects and calls.
 
+## Audit fixes (12 Nov evening)
+
+A cold review plus live tests found 22 problems; all were fixed in one pass.
+- **The server is the hub on the bench.** You talk only to the server; it talks to the model and to the sheet. Every hop shows the exact JSON (the route returns what it sent and what came back). Non-messages (server's cached copy, picking a row) are dashed notes. Step 3's wire says it leaves out the page↔server hops.
+- **The server runs the loop** in steps 4 and 5 (`op: loop`) and the MCP handshake (`op: mcplist`: initialize, notifications/initialized, tools/list), and returns a transcript the page plays back.
+- **Nothing hidden** in requests to Groq: no token limit, no tool_choice, no system prompt.
+- **Step 1**: the learner checks the sheet themselves (opens it), so no fetch crosses in step 1.
+- **Step 3**: tests then card then Run; one test at a time, each drawn as it lands; a rate limit keeps the results already in; Run refuses when nothing changed; a garbled tool call counts as a fail. Test 4 is now "session ten" (Lecture 14's tools are still "[TO NAME]" in the sheet).
+- **Own sheet**: the check shows the tab it read and its first row, warns when the link has no tab number, and refuses Aarav's example tab. Search ignores small words.
+- **Key screen** names Lecture 4 (where both tracks made the key), not Lecture 5.
+- **Second app**: `second-app.html` takes only an MCP address. Code track gets a FastMCP client snippet. All three Python snippets ran as generated.
+- MCP card text capped (400/200), links removed, and `initialize` says the description is learner-written. Analytics replays skip the wire, panel and context (`data-nolabel`). Grey text darkened on this page to 4.5:1+.
+
 ## Not done
 
 - No overview, notes or practice set page for Lecture 11, and no link from the map.

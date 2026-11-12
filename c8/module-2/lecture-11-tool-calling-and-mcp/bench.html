@@ -17,6 +17,8 @@
 <body data-page="l11-bench" data-noaarav>
 <!--
   One bench that never changes: You, Model, Server, Sheet, and the wire that shows every real message.
+  The server is the hub: you only ever talk to it, and it talks to the model and to the sheet.
+  data-nolabel keeps questions, answers and a learner's own rows out of analytics replays (see /analytics.js).
   Only the instruction changes. The headline is the instruction; Continue appears once the step is done.
   Five steps: ask, carry it by hand, write the card, switch the server on, move the card (MCP).
 -->
@@ -37,26 +39,27 @@
 
 <main class="app" id="app">
   <h1 id="ins" tabindex="-1"></h1>
-  <p class="ctx" id="ctx"></p>
+  <p class="ctx" id="ctx" data-nolabel></p>
 
   <section class="bench" aria-label="The bench">
-    <ol class="nodes" id="nodes">
-      <li class="node" data-n="you"><b>You</b><span>ask</span></li>
-      <li class="lane" data-l="you-model" aria-hidden="true"><i></i></li>
-      <li class="node" data-n="model"><b>Model</b><span>predicts</span></li>
-      <li class="lane" data-l="model-server" aria-hidden="true"><i></i></li>
-      <li class="node" data-n="server"><b>Server</b><span id="serverSub">follows rules</span><em class="slot" data-slot="server"></em></li>
-      <li class="lane" data-l="server-sheet" aria-hidden="true"><i></i></li>
-      <li class="node" data-n="sheet"><b id="sheetName">Sheet</b><span id="sheetSub">the data</span><em class="slot" data-slot="sheet"></em></li>
-    </ol>
+    <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server talks to the model on one side and the sheet on the other.">
+      <div class="node" data-n="you"><b>You</b><span>ask</span></div>
+      <div class="lane v" data-l="server-you" aria-hidden="true"><i></i></div>
+      <div class="node" data-n="model"><b>Model</b><span>predicts</span></div>
+      <div class="lane h" data-l="model-server" aria-hidden="true"><i></i></div>
+      <div class="node" data-n="server"><b>Server</b><span>follows rules</span><em class="slot" data-slot="server"></em></div>
+      <div class="lane h" data-l="server-sheet" aria-hidden="true"><i></i></div>
+      <div class="node" data-n="sheet"><b id="sheetName">Sheet</b><span id="sheetSub">the data</span><em class="slot" data-slot="sheet"></em></div>
+    </div>
 
-    <div class="work">
+    <div class="work" data-nolabel>
       <div class="side">
         <div class="panel" id="panel"></div>
         <div class="msg" id="msg" aria-live="polite"></div>
       </div>
       <div class="wirebox">
         <h2>The wire <small>every message that crossed</small></h2>
+        <p class="wnote" id="wnote" hidden></p>
         <ol class="wire" id="wire"></ol>
         <p class="empty" id="empty">Nothing has crossed yet.</p>
       </div>

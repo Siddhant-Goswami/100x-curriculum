@@ -36,10 +36,12 @@ function parseCSV(text) {
   return rows;
 }
 
-/* -> {columns: [names], rows: [[cells]]}. The header is the first row with three or more filled cells. */
+/* -> {columns, rows, title, meta}. The header is the first row with three or more filled cells; title is the first
+   cell above it, if any (a tab's own heading, such as "Aarav's week · example").
+   meta says what actually crossed: fetched now, or the server's copy from age seconds ago, and the CSV's size and first lines. */
 export async function load(src) {
   const key = src.sheet + '/' + src.gid, hit = cache.get(key);
-  if (hit && Date.now() - hit.at < TTL) return hit.table;
+  if (hit && Date.now() - hit.at < TTL) return Object.assign({}, hit.table, { meta: Object.assign({}, hit.meta, { cached: true, age: Math.round((Date.now() - hit.at) / 1000) }) });
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 8000);
   let res, text;
   try {
@@ -56,10 +58,12 @@ export async function load(src) {
   if (h < 0) throw new SheetError(422, 'This sheet needs a header row with at least three columns.');
   const columns = all[h].map((c, i) => c || (i === 0 && isCurriculum(src) ? 'Date' : 'Column ' + (i + 1)));
   const rows = all.slice(h + 1).filter(r => r.some(Boolean));
-  const table = { columns, rows };
-  cache.set(key, { at: Date.now(), table });
+  const above = all.slice(0, h).map(r => r.find(Boolean)).filter(Boolean);
+  const table = { columns, rows, title: above[0] || '' };
+  const meta = { url: csvUrl(src), bytes: text.length, lines: all.length, head: text.split('\n').slice(0, 4).join('\n').slice(0, 700) };
+  cache.set(key, { at: Date.now(), table, meta });
   if (cache.size > 200) cache.delete(cache.keys().next().value);
-  return table;
+  return Object.assign({}, table, { meta: Object.assign({}, meta, { cached: false, age: 0 }) });
 }
 
 function record(table, row, keep) {
@@ -71,14 +75,16 @@ function record(table, row, keep) {
 /* The tool's shape. The curriculum sheet is looked up by lecture number; any other sheet is searched by words.
    The card (name, when, needs) is the learner's own wording; the defaults are a card that works. */
 const NAME = /^[A-Za-z][A-Za-z0-9_]{0,47}$/;
+export const CARD_MAX = { when: 400, needs: 200 };
 export function tool(src, card) {
   const cur = isCurriculum(src), c = card || {};
-  const clip = (s, n) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, n);
+  /* learner-written text: capped, and links removed, so an address on this domain can't carry anything long or clickable */
+  const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\b(?:https?:\/\/|www\.)\S+/gi, '[link removed]').replace(/\s+/g, ' ').trim().slice(0, n);
   const name = NAME.test(c.name || '') ? c.name : (cur ? 'get_lecture' : 'find_rows');
-  const when = c.when != null ? clip(c.when, 600) : cur
+  const when = c.when != null ? clip(c.when, CARD_MAX.when) : cur
     ? 'Returns one lecture of the 100xEngineers Cohort 8 curriculum: its date, title, type and tools. Use it when someone asks about a specific lecture by number. Not for general questions.'
     : 'Returns the rows of the sheet that contain the search words. Use it when the question is about what is written in the sheet.';
-  const needs = c.needs != null ? clip(c.needs, 300) : cur ? 'The lecture number, 1 to 18.' : 'One or two words to look for in the sheet.';
+  const needs = c.needs != null ? clip(c.needs, CARD_MAX.needs) : cur ? 'The lecture number, 1 to 18.' : 'One or two words to look for in the sheet.';
   const arg = cur ? 'number' : 'search';
   return {
     name, description: when,
@@ -86,20 +92,22 @@ export function tool(src, card) {
   };
 }
 
-/* Runs the tool. Never throws for a bad argument: it answers the way a server should, with an error the model can read. */
+/* Runs the tool. Never throws for a bad argument: it answers the way a server should, with an error the model can read.
+   -> {ok, result, meta, pick}: pick says, in words, what the server did with the sheet. */
+const STOP = new Set('a an and are as at be by can do does for from has have how i in is it its me my of on or our so that the their this to was we what when where which who why will with you your'.split(' '));
 export async function run(src, args) {
-  const table = await load(src), a = args && typeof args === 'object' ? args : {};
+  const table = await load(src), a = args && typeof args === 'object' ? args : {}, meta = table.meta;
   if (isCurriculum(src)) {
     const n = Number(a.number);
-    if (!Number.isInteger(n)) return { ok: false, result: { error: 'The input "number" must be a whole number, the lecture number.' } };
+    if (!Number.isInteger(n)) return { ok: false, meta, pick: 'No lecture number in the request.', result: { error: 'The input "number" must be a whole number, the lecture number.' } };
     const row = table.rows.find(r => new RegExp('^' + n + '\\.\\s').test(r[1] || ''));
-    if (!row) return { ok: false, result: { error: 'There is no lecture ' + n + '. Lectures run from 1 to 18.' } };
-    return { ok: true, result: Object.assign({ lecture: n }, record(table, row, ['Date', 'Lecture title', 'Type', 'Tools', 'Students can'])) };
+    if (!row) return { ok: false, meta, pick: 'No row for lecture ' + n + '.', result: { error: 'There is no lecture ' + n + '. Lectures run from 1 to 18.' } };
+    return { ok: true, meta, pick: 'Picked the row for lecture ' + n + ', five of its columns.', result: Object.assign({ lecture: n }, record(table, row, ['Date', 'Lecture title', 'Type', 'Tools', 'Students can'])) };
   }
-  const words = String(a.search == null ? '' : a.search).toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 1).slice(0, 6);
-  if (!words.length) return { ok: false, result: { error: 'The input "search" must be one or two words to look for.' } };
+  const words = String(a.search == null ? '' : a.search).toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 1 && !STOP.has(w)).slice(0, 6);
+  if (!words.length) return { ok: false, meta, pick: 'No search words in the request.', result: { error: 'The input "search" must be one or two words to look for.' } };
   const scored = table.rows.map(r => { const t = r.join(' ').toLowerCase(); return [words.filter(w => t.includes(w)).length, r]; })
     .filter(x => x[0]).sort((x, y) => y[0] - x[0]);
-  if (!scored.length) return { ok: false, result: { error: 'No row contains "' + words.join(' ') + '".', columns: table.columns } };
-  return { ok: true, result: { matches: scored.length, rows: scored.slice(0, 5).map(x => record(table, x[1])) } };
+  if (!scored.length) return { ok: false, meta, pick: 'No row contains ' + words.join(', ') + '.', result: { error: 'No row contains "' + words.join(' ') + '".', columns: table.columns } };
+  return { ok: true, meta, pick: 'Searched ' + table.rows.length + ' rows for ' + words.join(', ') + ': ' + scored.length + ' matched, sent the top ' + Math.min(5, scored.length) + '.', result: { matches: scored.length, rows: scored.slice(0, 5).map(x => record(table, x[1])) } };
 }

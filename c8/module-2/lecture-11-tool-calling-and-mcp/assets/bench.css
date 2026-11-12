@@ -3,6 +3,9 @@
    Violet = the model (predicts). Amber = the server (follows rules). Grey = you and the sheet.
    Coral = the thing to do now. Continue is the only coral filled button once a step is done. */
 [hidden]{display:none!important}
+:root{--ink3:#666462}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink3:#9A968E}}
+:root[data-theme="dark"]{--ink3:#9A968E}
 body{overflow-x:hidden}
 p{margin:0}
 
@@ -34,10 +37,17 @@ p{margin:0}
 .ctx:empty{display:none}
 .ctx b{color:var(--ink);font-weight:500}
 
-/* ---------- the four boxes ---------- */
+/* ---------- the four boxes: the server is the hub ---------- */
 .bench{display:flex;flex-direction:column;gap:14px}
-.nodes{list-style:none;margin:0;padding:14px;display:grid;grid-template-columns:1fr minmax(18px,.7fr) 1fr minmax(18px,.7fr) 1fr minmax(18px,.7fr) 1fr;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px}
-.node{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px 10px;border-radius:12px;border:1.5px solid var(--line2);background:var(--bg);text-align:center;min-width:0;transition:box-shadow .25s,border-color .25s,transform .25s var(--e-out)}
+.nodes{margin:0;padding:14px;display:grid;grid-template-columns:1fr minmax(22px,.6fr) 1fr minmax(22px,.6fr) 1fr;grid-template-rows:auto 26px auto;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px}
+.node[data-n=you]{grid-column:3;grid-row:1}
+.lane.v{grid-column:3;grid-row:2}
+.node[data-n=model]{grid-column:1;grid-row:3}
+.lane[data-l=model-server]{grid-column:2;grid-row:3}
+.node[data-n=server]{grid-column:3;grid-row:3}
+.lane[data-l=server-sheet]{grid-column:4;grid-row:3}
+.node[data-n=sheet]{grid-column:5;grid-row:3}
+.node{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 6px 9px;border-radius:12px;border:1.5px solid var(--line2);background:var(--bg);text-align:center;min-width:0;align-self:stretch;justify-content:center;transition:box-shadow .25s,border-color .25s,transform .25s var(--e-out)}
 .node b{font:600 15px var(--sans);color:var(--ink)}
 .node span{font:500 11px var(--mono);color:var(--ink3);letter-spacing:.02em}
 .node[data-n=model]{background:var(--prob-soft);border-color:color-mix(in srgb,var(--prob-ink) 45%,transparent)}
@@ -47,17 +57,24 @@ p{margin:0}
 .node.lit{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.10)}
 .node.wait{border-color:var(--coral);animation:wait 1.2s ease-in-out infinite}
 @keyframes wait{0%,100%{box-shadow:0 0 0 0 var(--coral-soft)}50%{box-shadow:0 0 0 7px var(--coral-soft)}}
-.slot{display:block;min-height:0;font-style:normal}
-.slot .cardchip{display:inline-block;margin-top:6px;font:500 10.5px var(--mono);padding:2px 7px;border-radius:6px;background:var(--card);border:1px dashed var(--ink3);color:var(--ink2);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;animation:drop .5s var(--e-out)}
+.slot{display:block;max-width:100%;font-style:normal}
+.slot .cardchip{display:block;margin-top:6px;font:500 10.5px var(--mono);padding:2px 6px;border-radius:6px;background:var(--card);border:1px dashed var(--ink3);color:var(--ink2);max-width:100%;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;animation:drop .5s var(--e-out)}
 @keyframes drop{from{opacity:0;transform:translateY(-10px) scale(.9)}to{opacity:1;transform:none}}
-.lane{position:relative;height:2px;background:var(--line2);align-self:center}
-.lane i{position:absolute;top:-4px;left:0;width:10px;height:10px;border-radius:50%;background:var(--ink);opacity:0}
+.lane{position:relative;background:var(--line2)}
+.lane.h{height:2px}
+.lane.v{width:2px;height:100%;justify-self:center}
+.lane i{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--ink);opacity:0}
+.lane.h i{top:-4px;left:0}
+.lane.v i{left:-4px;top:0}
 .lane.ltr i{animation:ltr .7s var(--e-out)}
 .lane.rtl i{animation:rtl .7s var(--e-out)}
+.lane.ttb i{animation:ttb .6s var(--e-out)}
+.lane.btt i{animation:btt .6s var(--e-out)}
 @keyframes ltr{0%{left:0;opacity:1}90%{opacity:1}100%{left:calc(100% - 10px);opacity:0}}
 @keyframes rtl{0%{left:calc(100% - 10px);opacity:1}90%{opacity:1}100%{left:0;opacity:0}}
-.lane.quiet{background:repeating-linear-gradient(90deg,var(--line2) 0 4px,transparent 4px 8px)}
-@media (max-width:560px){.nodes{padding:10px 8px}.node{padding:9px 2px 8px}.node b{font-size:13px}.node span{font-size:9.5px}.slot .cardchip{font-size:9px;padding:1px 4px}}
+@keyframes ttb{0%{top:0;opacity:1}90%{opacity:1}100%{top:calc(100% - 10px);opacity:0}}
+@keyframes btt{0%{top:calc(100% - 10px);opacity:1}90%{opacity:1}100%{top:0;opacity:0}}
+@media (max-width:560px){.nodes{padding:10px 8px;grid-template-columns:1fr 14px 1fr 14px 1fr}.node{padding:8px 3px 7px}.node b{font-size:13px}.node span{font-size:9.5px}.slot .cardchip{font-size:9px;padding:1px 3px}}
 @media (prefers-reduced-motion:reduce){.lane i,.node.wait,.slot .cardchip{animation:none}}
 
 /* ---------- the two halves under the boxes ---------- */
@@ -111,7 +128,8 @@ p{margin:0}
 .tres:empty{display:none}
 .t.pass .tres{color:var(--hum-ink)}
 .t.fail .tres{color:var(--coral-ink)}
-.score{font:600 15px var(--mono);color:var(--ink)}
+.tscore{font:600 15px var(--mono);color:var(--ink)}
+.tscore:empty{display:none}
 
 /* ask row, chips */
 .ask{display:flex;gap:8px}
@@ -153,6 +171,12 @@ p{margin:0}
 .w pre,.py pre{margin:6px 0 0;font:12px/1.5 var(--mono);background:var(--bg2);border-radius:8px;padding:10px;overflow:auto;max-height:260px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
 .w.stop{border-color:var(--coral);border-style:dashed}
 .empty{font-size:14px;color:var(--ink3)}
+.wnote{font-size:13px;line-height:1.45;color:var(--ink2);background:var(--bg2);border-radius:8px;padding:8px 10px;margin:0 0 10px}
+.w.n{border-style:dashed;background:transparent;padding:7px 11px}
+.w.n .tt{font-size:13.5px;color:var(--ink2)}
+.w.n .tt b{color:var(--det-ink);font-weight:600}
+.w.c{padding:7px 10px}
+.w.c .tt{font-size:13.5px}
 
 /* ---------- after a step ---------- */
 .after{display:flex;flex-direction:column;gap:10px;animation:in .4s var(--e-out)}
@@ -176,3 +200,13 @@ details.py summary{cursor:pointer;font:500 14px var(--sans);color:var(--ink2)}
 .backrow{margin-top:20px}
 .backrow a{font:500 13px var(--sans);color:var(--ink3);text-decoration:none}
 .backrow a:hover{color:var(--ink)}
+
+/* step 1: checking the sheet yourself; own sheet preview */
+.check{display:flex;flex-direction:column;gap:10px}
+.check ol{margin:0;padding-left:20px;font-size:15px;line-height:1.55;color:var(--ink2)}
+.check ol b{color:var(--ink);font-weight:500}
+.preview{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:14.5px;background:var(--bg)}
+.preview dt{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.preview dd{margin:0 0 6px;color:var(--ink);overflow-wrap:anywhere}
+.preview.warn{border-color:var(--coral);background:var(--coral-soft)}
+.links{display:flex;flex-direction:column;gap:8px}
