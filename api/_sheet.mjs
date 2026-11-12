@@ -84,7 +84,7 @@ export function tool(src, card) {
   const when = c.when != null ? clip(c.when, CARD_MAX.when) : cur
     ? 'Returns one lecture of the 100xEngineers Cohort 8 curriculum: its date, title, type and tools. Use it when someone asks about a specific lecture by number. Not for general questions.'
     : 'Returns the rows of the sheet that contain the search words. Use it when the question is about what is written in the sheet.';
-  const needs = c.needs != null ? clip(c.needs, CARD_MAX.needs) : cur ? 'The lecture number, 1 to 18.' : 'One or two words to look for in the sheet.';
+  const needs = c.needs != null ? clip(c.needs, CARD_MAX.needs) : cur ? 'The lecture number, 1 to 19.' : 'One or two words to look for in the sheet.';
   const arg = cur ? 'number' : 'search';
   return {
     name, description: when,
@@ -101,7 +101,7 @@ export async function run(src, args) {
     const n = Number(a.number);
     if (!Number.isInteger(n)) return { ok: false, meta, pick: 'No lecture number in the request.', result: { error: 'The input "number" must be a whole number, the lecture number.' } };
     const row = table.rows.find(r => new RegExp('^' + n + '\\.\\s').test(r[1] || ''));
-    if (!row) return { ok: false, meta, pick: 'No row for lecture ' + n + '.', result: { error: 'There is no lecture ' + n + '. Lectures run from 1 to 18.' } };
+    if (!row) return { ok: false, meta, pick: 'No row for lecture ' + n + '.', result: { error: 'There is no lecture ' + n + '. Lectures run from 1 to 19.' } };
     return { ok: true, meta, pick: 'Picked the row for lecture ' + n + ', five of its columns.', result: Object.assign({ lecture: n }, record(table, row, ['Date', 'Lecture title', 'Type', 'Tools', 'Students can'])) };
   }
   const words = String(a.search == null ? '' : a.search).toLowerCase().split(/[^a-z0-9]+/).filter(w => w.length > 1 && !STOP.has(w)).slice(0, 6);

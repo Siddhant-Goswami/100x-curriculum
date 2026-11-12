@@ -394,7 +394,7 @@ film('05-attention-and-transformers', 'Language Models from First Principles, Pa
 <ul>
   <li>The model can only listen to what is in the prompt. In <a href="{L10}#s02">Lecture 10</a> the same question scored 1, then 5, then 7 as more of the real curriculum went in. If a fact is not in the context window, nothing can pay attention to it.</li>
   <li>Double the prompt and the listening work roughly quadruples. Cut what the model does not need.</li>
-  <li>Embeddings are what search by meaning runs on. You will use them in Lecture 12.</li>
+  <li>Embeddings are what search by meaning runs on. You will use them in Lecture 13.</li>
 </ul>
 '''),
      [('Embedding', 'A token\'s list of numbers: its spot on the map of meaning.'), ('Vector', 'A list of numbers.'),

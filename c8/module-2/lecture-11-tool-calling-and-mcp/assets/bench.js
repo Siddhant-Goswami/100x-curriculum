@@ -17,7 +17,7 @@ var NAMES = ['', 'Ask', 'Carry it by hand', 'Write the card', 'Switch the server
 var NODE = { you: 'You', model: 'Model', server: 'Server', sheet: 'Sheet' };
 var LANE = { 'server-you': ['server-you', 'btt', 'ttb'], 'you-server': ['server-you', 'ttb', 'btt'], 'model-server': ['model-server', 'rtl'], 'server-model': ['model-server', 'ltr'], 'server-sheet': ['server-sheet', 'rtl'], 'sheet-server': ['server-sheet', 'ltr'] };
 var Q1 = 'When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?';
-var GOOD = { name: 'get_lecture', when: 'Returns one lecture of the 100xEngineers Cohort 8 curriculum: its date, title, type and tools. Use it when someone asks about a specific lecture by number. Not for general questions.', needs: 'The lecture number, 1 to 18.' };
+var GOOD = { name: 'get_lecture', when: 'Returns one lecture of the 100xEngineers Cohort 8 curriculum: its date, title, type and tools. Use it when someone asks about a specific lecture by number. Not for general questions.', needs: 'The lecture number, 1 to 19.' };
 var TESTS = [Q1, 'Which tools do we use in the seventh class?', 'What is an API?', 'Is session ten a combined one or separate?', 'In lecture 3 of Harvard CS50, which language is taught?'];
 var CARD_MAX = { when: 400, needs: 200 };
 
@@ -541,7 +541,7 @@ function pyTool(withNeeds) {
   '    for row in csv.reader(io.StringIO(requests.get(SHEET).text)):\n' +
   '        if row[1].startswith(f"{number}. "):\n' +
   '            return {"lecture": number, "Date": row[0], "Lecture title": row[1], "Type": row[2], "Tools": row[3]}\n' +
-  '    return {"error": f"There is no lecture {number}. Lectures run from 1 to 18."}\n';
+  '    return {"error": f"There is no lecture {number}. Lectures run from 1 to 19."}\n';
 }
 function pyLoop() {
   var card = { type: 'function', function: toolOf(S.card) };

@@ -50,12 +50,12 @@ Each seed is one tick-list item in `guides.js` and one sentence on the lecture's
 |---|---|---|---|
 | L11 Tool calling practical | Fri 13 Nov | Keep the log of ten tool calls (query, arguments, result). | Arc 2 done equals is already "a log showing the call, the arguments and the result, plus the verifier". |
 | L13 Building RAG apps | Fri 20 Nov | Three known-answer questions, with the ideal answer written before the first run. | The sheet already says "Three known-answer questions as the eval from the first run." |
-| L14 Second brain | Sat 21 Nov | Score the three questions before and after retrieval. Keep the outputs, not just the score. | Arc 3 done equals already asks for exactly this. |
+| L15 Second brain | Fri 27 Nov | Score the three questions before and after retrieval. Keep the outputs, not just the score. | Arc 3 done equals already asks for exactly this. |
 | L15 Harness | Fri 27 Nov | On the control graph, mark each purple node with its verifier, or "none yet". | The "none yet" nodes are the rows L18 starts from. |
 
 Each seed goes into the same Google Sheet template (section 6). By L18 the sheet has: ten tool-call traces, three RAG questions with before-and-after outputs, and the purple nodes with no verifier.
 
-## 5. Lecture 18 outline (60 minutes, both tracks)
+## 5. Lecture 19 outline (60 minutes, both tracks)
 
 Overview page "The lecture in one line": An eval is the verifier for a purple step. Build it orange where you can. When a model must grade, judge the judge before you trust it.
 
