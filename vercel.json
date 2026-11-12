@@ -50,6 +50,16 @@
       "permanent": false
     },
     {
+      "source": "/c8/module-2/first-principles-films/",
+      "destination": "/c8/module-2/first-principles/",
+      "permanent": true
+    },
+    {
+      "source": "/c8/module-2/first-principles-films/:path*/",
+      "destination": "/c8/module-2/first-principles/:path*/",
+      "permanent": true
+    },
+    {
       "source": "/c8/module-2/first-principles-films",
       "destination": "/c8/module-2/first-principles/",
       "permanent": true

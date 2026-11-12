@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>5.3 Attention: every token asks a question · What are attention and transformers? | 100xEngineers</title>
 <meta name="description" content="A count table only saw the last token. A model reads all five and knows that &quot;capital&quot; and &quot;France&quot; matter. How?">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -49,7 +50,7 @@
 <ol><li><b>Ask.</b> "is" asks: what am I describing? Every earlier token holds up its label.</li><li><b>Match.</b> Score how well the question fits each label. A better fit gets a higher score.</li><li><b>Share.</b> Turn the scores into shares that add up to 100.</li><li><b>Collect.</b> Take in each token's message at its share, and move to a new spot.</li></ol><p>It is no longer just "is". It is "is, after the capital of France". That is <b>attention</b>. Engineers call the three things query, key and value. Each token reads only the tokens before it, and every token does this at the same time.</p>
 </div>
 </article>
-<nav class="fp-nav" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/05-attention-and-transformers/one-word-two-meanings" rel="prev" title="Previous: 5.2 One word, two meanings"><span aria-hidden="true">←</span><span class="t">5.2 One word, two meanings</span></a><a class="next" href="/c8/module-2/first-principles/05-attention-and-transformers/listen-then-think" rel="next" data-next><span class="t">Next: 5.4 Layers: listen, then think</span><span aria-hidden="true">→</span></a></nav>
+<nav class="fp-nav" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/05-attention-and-transformers/one-word-two-meanings" rel="prev" title="Previous: 5.2 One word, two meanings" aria-label="Previous: 5.2 One word, two meanings"><span aria-hidden="true">←</span><span class="t">5.2 One word, two meanings</span></a><a class="next" href="/c8/module-2/first-principles/05-attention-and-transformers/listen-then-think" rel="next" data-next><span class="t">Next: 5.4 Layers: listen, then think</span><span aria-hidden="true">→</span></a></nav>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · From sand to language models</span><a href="/#FP">Curriculum map</a><a href="/c8/module-2/first-principles/">Course home</a></div></footer>

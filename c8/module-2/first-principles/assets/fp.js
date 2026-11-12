@@ -29,11 +29,18 @@ function T(x,y,s,c){return '<text x="'+x+'" y="'+y+'" class="'+(c||'s')+'">'+esc
 function HIT(x,y,w,ht,k,label){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+ht+'" rx="8" class="hit" data-k="'+k+'" tabindex="0" role="button" aria-label="'+esc(label)+'"/>'}
 function HITA(x,y,w,ht,k,label){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+ht+'" rx="8" class="hit area" data-k="'+k+'" tabindex="0" role="button" aria-label="'+esc(label)+'"/>'}
 function draw(el,w,ht,shapes,texts,label,plain){
-  var f=document.activeElement&&el.contains(document.activeElement)?document.activeElement.getAttribute('data-k'):null,caps='';
-  texts.replace(/<rect x="([\d.-]+)" y="([\d.-]+)" width="([\d.-]+)" height="([\d.-]+)" rx="8" class="hit"/g,function(m,x,y,cw,ch){caps+='<rect x="'+x+'" y="'+(+y+6)+'" width="'+cw+'" height="'+ch+'" rx="9" class="cap"/>';return m});
-  el.innerHTML='<svg class="wb" viewBox="0 0 '+w+' '+ht+'" role="group" aria-label="'+esc(label||'')+'"><g class="ln"'+(plain?'':' filter="url(#fpwob)"')+'>'+caps+shapes+'</g><g class="tx">'+texts+'</g></svg>';
-  if(f!=null){var n=el.querySelector('[data-k="'+f+'"]');if(n)n.focus()}
+  var f=document.activeElement&&el.contains(document.activeElement)?document.activeElement.getAttribute('data-k'):null,caps='',rs=[];
+  texts.replace(/<rect x="([\d.-]+)" y="([\d.-]+)" width="([\d.-]+)" height="([\d.-]+)" rx="8" class="hit" data-k="([^"]*)"/g,function(m,x,y,cw,ch,k){caps+='<rect x="'+x+'" y="'+(+y+6)+'" width="'+cw+'" height="'+ch+'" rx="9" class="cap"/>';rs.push({x:+x,y:+y,w:+cw,h:+ch,k:k});return m});
+  el.innerHTML='<svg class="wb" viewBox="0 0 '+w+' '+ht+'" role="group" aria-label="'+esc(label||'')+'"><g class="ln"'+(plain?'':' filter="url(#fpwob)"')+'>'+caps+shapes+'</g><g class="tx">'+pads(rs)+texts+'</g></svg>';
+  if(f!=null){var n=el.querySelector('.hit[data-k="'+f+'"]');if(n)n.focus()}
 }
+/* a drawing shrinks to about half size on a phone, so each pressable piece gets an invisible margin that also takes the click:
+   up to 14 units a side, never more than half the gap to its neighbour, and drawn under every piece so a piece always wins over a margin */
+function pads(rs){var E=14;return rs.map(function(r){var l=E,rt=E,t=E,b=E;
+  rs.forEach(function(o){if(o===r)return;var vy=o.y<r.y+r.h&&o.y+o.h>r.y,vx=o.x<r.x+r.w&&o.x+o.w>r.x;
+    if(vy&&o.x+o.w<=r.x)l=Math.min(l,(r.x-o.x-o.w)/2);if(vy&&o.x>=r.x+r.w)rt=Math.min(rt,(o.x-r.x-r.w)/2);
+    if(vx&&o.y+o.h<=r.y)t=Math.min(t,(r.y-o.y-o.h)/2);if(vx&&o.y>=r.y+r.h)b=Math.min(b,(o.y-r.y-r.h)/2)});
+  return '<rect x="'+(r.x-l)+'" y="'+(r.y-t)+'" width="'+(r.w+l+rt)+'" height="'+(r.h+t+b)+'" class="pad" data-k="'+r.k+'" aria-hidden="true"/>'}).join('')}
 function tap(el,fn){
   el.addEventListener('click',function(e){var t=e.target.closest('[data-k]');if(t)fn(t.getAttribute('data-k'),t,e)});
   el.addEventListener('keydown',function(e){if(e.key!=='Enter'&&e.key!==' ')return;var t=e.target.closest('[data-k]');if(t){e.preventDefault();fn(t.getAttribute('data-k'),t,e)}});
@@ -56,8 +63,10 @@ W.gate=function(s){
     tx+=T(550,138,on[3]?'lit':'lamp','xs');
     draw(s.stage,600,156,sh,tx,'A power switch, three gates in a chain, and a lamp');
   }
-  tap(s.stage,function(){t.forEach(clearTimeout);t=[];var v=on[0]^1;on[0]=v;paint();
-    [1,2,3].forEach(function(i){t.push(setTimeout(function(){on[i]=v;paint();if(i===3&&v){s.say('You touched one gate. Its output opened the next, and the next.','ok');s.win()}},i*260))})});
+  /* a click while the chain is still flipping is ignored, so a double-click does not switch the power straight back off */
+  var busy=false;
+  tap(s.stage,function(){if(busy)return;busy=true;t.forEach(clearTimeout);t=[];var v=on[0]^1;on[0]=v;paint();
+    [1,2,3].forEach(function(i){t.push(setTimeout(function(){on[i]=v;paint();if(i===3){busy=false;if(v){s.say('You touched one gate. Its output opened the next, and the next.','ok');s.win()}}},i*260))})});
   paint();s.say('Click the raised <b>power off</b> box.');
 };
 W.byte=function(s){
@@ -414,14 +423,16 @@ W.scaling=function(s){
   var D=[[1,3.96],[1.5,3.75],[2,3.66],[2.5,3.53],[3,3.29],[3.5,3.19],[4,2.96],[4.5,2.9],[5,2.68],[5.5,2.58]],BX=9,guess=null,ext=false,b;
   var n=D.length,sx=0,sy=0,sxx=0,sxy=0;D.forEach(function(d){sx+=d[0];sy+=d[1];sxx+=d[0]*d[0];sxy+=d[0]*d[1]});var m=(n*sxy-sx*sy)/(n*sxx-sx*sx),c0=(sy-m*sx)/n,pred=m*BX+c0;
   function px(x){return 60+x*54}function py(l){return 20+(4.4-l)*58}
-  function paint(){var sh=P('M60 14V'+py(.6)+'H590','ax')+D.map(function(d){return C(px(d[0]),py(d[1]),6,'pt')}).join('')+'<line class="gh" x1="'+px(BX)+'" y1="14" x2="'+px(BX)+'" y2="'+py(.6)+'"/>';
+  /* the click column starts below its "the big one" label, so the dashed frame never runs through the words */
+  var TOP=36;
+  function paint(){var sh=P('M60 14V'+py(.6)+'H590','ax')+D.map(function(d){return C(px(d[0]),py(d[1]),6,'pt')}).join('')+'<line class="gh" x1="'+px(BX)+'" y1="'+TOP+'" x2="'+px(BX)+'" y2="'+py(.6)+'"/>';
     var tx=T(54,26,'loss','xs r c-mute')+T(590,py(.6)+24,'computing spent (each step is ten times more)','xs r c-mute')+T(px(3.5),py(4.25),'ten small models','xs c-mute')+T(px(BX),py(4.3),'the big one','xs c-mute');
     if(guess!=null)tx+=T(px(BX)-16,py(guess)+8,'?','m c-act');
     if(ext){sh+='<line class="curve" x1="'+px(.4)+'" y1="'+py(m*.4+c0)+'" x2="'+px(9.4)+'" y2="'+py(m*9.4+c0)+'"/>'+C(px(BX),py(pred),7,'gp')}
-    if(!ext)tx+=HITA(px(BX)-28,14,56,py(.6)-14,'col','The big model. Click how low you think its loss will be.');
+    if(!ext)tx+=HITA(px(BX)-28,TOP,56,py(.6)-TOP,'col','The big model. Click how low you think its loss will be.');
     draw(s.stage,600,py(.6)+34,sh,tx,'Loss against computing spent for small models, and a dashed line where the big model will be',true);}
   s.stage.addEventListener('click',function(e){if(ext||!e.target.closest('[data-k="col"]'))return;var svg=s.stage.querySelector('svg'),pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;var q=pt.matrixTransform(svg.getScreenCTM().inverse());
-    guess=Math.max(.7,Math.min(4.3,4.4-(q.y-20)/58));b.disabled=false;paint();s.say('Marked. Now extend the line.')});
+    guess=Math.max(.7,Math.min(4.4-(TOP+6-20)/58,4.4-(q.y-20)/58));b.disabled=false;paint();s.say('Marked. Now extend the line.')});
   b=s.btn('Extend the line','pri',function(){ext=true;paint();var off=Math.abs(guess-pred);s.say('The line says a loss of about <b>'+pred.toFixed(1)+'</b>. '+(off<.3?'Your eye had it.':'You were '+off.toFixed(1)+' away.')+' Draw the line through the ones you have, and it guesses the one you do not. The house prices again.','ok');s.win()});
   b.disabled=true;paint();s.say('Ten small models are trained and measured. On the dashed line, click where the big one will land.');
 };
@@ -488,7 +499,10 @@ W.check=function(s){
 /* guess: <ul><li>option</li>…</ul>, data-a = index of the right one. The explanation is the "found" block. */
 W.guess=function(s){
   var ul=s.fig.querySelector('ul'),right=+s.fig.getAttribute('data-a'),r=h('div','fp-opts');
-  [].forEach.call(ul.children,function(li,i){var x=btn(li.innerHTML,'opt',function(){[].forEach.call(r.children,function(y,j){y.disabled=true;if(j===right)y.classList.add('right')});if(i!==right)x.classList.add('wrong');if(i===right){s.say('Right.','ok');s.win()}else{s.say('Not that one. The answer is marked.');s.seen()}});r.appendChild(x)});
+  /* a wrong pick crosses out only that option; the others stay open, so a second try is still a find */
+  [].forEach.call(ul.children,function(li,i){var x=btn(li.innerHTML,'opt',function(){
+    if(i===right){[].forEach.call(r.children,function(y,j){y.disabled=true;if(j===right)y.classList.add('right')});s.say('Right.','ok');s.win()}
+    else{x.disabled=true;x.classList.add('wrong');s.say('Not that one. Think again and pick another.')}});r.appendChild(x)});
   ul.remove();s.stage.appendChild(r);
 };
 /* order: <ol><li data-label="shown once placed">item</li>…</ol> written in the right order */
@@ -588,14 +602,24 @@ function termTips(){
   [].forEach.call(document.querySelectorAll('.fp-term'),function(b){b.setAttribute('aria-expanded','false');b.title='What does this mean?'});
 }
 /* where you are: keep this chapter's step in view when the strip scrolls sideways on a phone */
-function chainInView(){var c=document.querySelector('.fp-chain'),a=c&&c.querySelector('.here');if(a&&c.scrollWidth>c.clientWidth)c.scrollLeft=a.offsetLeft-c.clientWidth/2+a.offsetWidth/2}
+/* when the strip is cut off, the cut side fades instead of slicing a word in half */
+function chainInView(){var c=document.querySelector('.fp-chain'),a=c&&c.querySelector('a.here');if(!c)return;
+  function edges(){var max=c.scrollWidth-c.clientWidth;c.classList.toggle('cut-l',c.scrollLeft>2);c.classList.toggle('cut-r',c.scrollLeft<max-2)}
+  if(a&&c.scrollWidth>c.clientWidth)c.scrollLeft=a.offsetLeft-c.clientWidth/2+a.offsetWidth/2;
+  edges();c.addEventListener('scroll',edges,{passive:true});addEventListener('resize',edges)}
 /* end of a chapter: on its Check yourself page, say what was found and link what is still to play */
 function chapterDone(){
   var el=document.querySelector('[data-chdone]');if(!el)return;var n=el.getAttribute('data-chdone');
   var ls=[].slice.call(document.querySelectorAll('#fp-toc .fp-ch>li[data-ch="'+n+'"] .fp-ls>li[data-scene]'));if(!ls.length)return;
   var won=ls.filter(function(li){return ST[li.getAttribute('data-scene')]===2}),open=ls.filter(function(li){return ST[li.getAttribute('data-scene')]!==2});
   function link(li){return '<a href="'+li.getAttribute('data-href')+'">'+esc(li.querySelector('.n').textContent+' '+li.querySelector('.t').textContent)+'</a>'}
-  el.innerHTML='<p class="kick">End of chapter '+n+'</p><p>'+(open.length?'You found <b>'+won.length+' of '+ls.length+'</b> by playing. Still to play: '+open.map(link).join(', ')+'.':'You found <b>all '+ls.length+'</b> by playing. This chapter is done.')+'</p>';
+  /* one link to the next drawing, never the whole list; the rest are ticked in Contents */
+  var more=open.length>1?' Then '+(open.length-1)+' more, marked in Contents.':'';
+  /* a title that ends in "?" takes no full stop after it */
+  function first(){var t=open[0].querySelector('.t').textContent;return link(open[0])+(/[?!.]$/.test(t.trim())?'':'.')}
+  el.innerHTML='<p class="kick">End of chapter '+n+'</p><p>'+(!open.length?'You found <b>all '+ls.length+'</b> by playing. This chapter is done.'
+    :!won.length?'This chapter has <b>'+ls.length+' drawings</b> to play. Start with '+first()+more
+    :'You found <b>'+won.length+' of '+ls.length+'</b> by playing. Next to play: '+first()+more)+'</p>';
   el.classList.toggle('all',!open.length);el.hidden=false;
 }
 function drawer(){
@@ -615,14 +639,17 @@ var seenIO=('IntersectionObserver' in window)?new IntersectionObserver(function(
   if(e.target.classList.contains('fp-fresh')){e.target.classList.add('fp-hint');setTimeout(function(){e.target.classList.remove('fp-hint')},2400)}})},{threshold:.6}):null;
 function mount(fig){
   var fn=W[fig.getAttribute('data-fp')];if(!fn)return;
-  var id=fig.id,body=h('div','fp-b'),stage=h('div','fp-stage'),ctl=h('div','fp-row'),opt=h('div','fp-row fp-opt'),note=h('p','fp-note'),skip=h('button','fp-skip','Show me the answer');
+  var id=fig.id,body=h('div','fp-b'),stage=h('div','fp-stage'),ctl=h('div','fp-row'),opt=h('div','fp-row fp-opt'),note=h('p','fp-note'),skip=h('button','fp-skip','Skip to the explanation');
   var found=fig.nextElementSibling,lock=null;if(!found||!found.classList.contains('found'))found=null;
   body.appendChild(note);body.appendChild(opt);body.appendChild(stage);body.appendChild(ctl);fig.appendChild(body);skip.type='button';
   if(found)fig.appendChild(found);
+  /* the explanation is "What you just found" only when it was found; opened by skipping, it is just "The explanation" */
+  var kick=found&&found.querySelector('.kick');
   function open(v,quiet){if((ST[id]||0)<v){ST[id]=v;store.set(KEY,ST)}fig.classList.add('done');fig.classList.remove('fp-fresh','fp-hint');fig.classList.toggle('won',ST[id]===2);skip.hidden=true;
+    if(kick)kick.textContent=ST[id]===2?'What you just found':'The explanation';
     if(lock){lock.remove();lock=null}
     if(found&&found.hidden){found.hidden=false;if(!quiet)found.classList.add('fp-pop')}ready();paintParts()}
-  skip.addEventListener('click',function(){open(1)});
+  skip.addEventListener('click',function(){open(1);note.className='fp-note';note.innerHTML='<span>The explanation is open below. Play the drawing any time to find it yourself.</span>'});
   if(found){found.hidden=true;lock=h('p','fp-lock','Reach the goal and the explanation opens here.');fig.insertBefore(lock,found)}
   fn({fig:fig,id:id,stage:stage,ctl:ctl,
     say:function(m,c){note.innerHTML=m?'<span>'+m+'</span>':'';note.className='fp-note'+(c?' '+c:'')},
@@ -631,7 +658,7 @@ function mount(fig){
     add:function(el){opt.appendChild(el);return el}});
   ctl.appendChild(skip);
   /* back on a lesson already played: say so, instead of repeating the first instruction */
-  if(ST[id]){open(ST[id],true);ST[id]===2?note.className='fp-note ok':note.className='fp-note';note.innerHTML='<span>'+(ST[id]===2?'You found this earlier. Play it again if you like.':'You opened the answer earlier. Play it to find it yourself.')+'</span>'}
+  if(ST[id]){open(ST[id],true);ST[id]===2?note.className='fp-note ok':note.className='fp-note';note.innerHTML='<span>'+(ST[id]===2?'You found this earlier. Play it again if you like.':'You skipped to the explanation earlier. Play the drawing to find it yourself.')+'</span>'}
   else{fig.classList.add('fp-fresh');
     var first=function(){fig.classList.remove('fp-fresh','fp-hint');fig.removeEventListener('pointerdown',first);fig.removeEventListener('keydown',first)};
     fig.addEventListener('pointerdown',first);fig.addEventListener('keydown',first);if(seenIO)seenIO.observe(fig)}

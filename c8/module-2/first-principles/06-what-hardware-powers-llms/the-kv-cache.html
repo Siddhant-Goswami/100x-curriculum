@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>6.4 The KV cache · What hardware runs a language model? | 100xEngineers</title>
 <meta name="description" content="What does the chip spend its time on, and what does a model cost to make?">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -45,7 +46,7 @@
 <p>Each new <button type="button" class="fp-term" data-term="Token" data-def="A piece of text with a number. What a model reads and writes." data-from="/c8/module-2/first-principles/04-what-is-learning/a-guessing-game" data-fromt="4.2 The next-letter game">token</button> listens to every token before it, using their labels and messages. Remaking those for the whole chat at every new token would be wasted work, so the chip keeps them. That stored copy is the <b>KV cache</b>: K and V for key and value, the label and the message. A cache is any copy kept to save work.</p>
 <p>It is Principle 4 again: faster reading means a second copy. The price is memory, and it grows with every token of the chat. That is one reason chats have a length limit.</p>
 </article>
-<nav class="fp-nav" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/06-what-hardware-powers-llms/make-every-trip-count" rel="prev" title="Previous: 6.3 Batching and quantization"><span aria-hidden="true">←</span><span class="t">6.3 Batching and quantization</span></a><a class="next" href="/c8/module-2/first-principles/06-what-hardware-powers-llms/know-before-you-spend" rel="next" data-next><span class="t">Next: 6.5 Scaling laws: know before you spend</span><span aria-hidden="true">→</span></a></nav>
+<nav class="fp-nav" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/06-what-hardware-powers-llms/make-every-trip-count" rel="prev" title="Previous: 6.3 Batching and quantization" aria-label="Previous: 6.3 Batching and quantization"><span aria-hidden="true">←</span><span class="t">6.3 Batching and quantization</span></a><a class="next" href="/c8/module-2/first-principles/06-what-hardware-powers-llms/know-before-you-spend" rel="next" data-next><span class="t">Next: 6.5 Scaling laws: know before you spend</span><span aria-hidden="true">→</span></a></nav>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · From sand to language models</span><a href="/#FP">Curriculum map</a><a href="/c8/module-2/first-principles/">Course home</a></div></footer>

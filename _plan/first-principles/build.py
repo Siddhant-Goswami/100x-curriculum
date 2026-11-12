@@ -539,6 +539,7 @@ HEAD = '''<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title} | 100xEngineers</title>
 <meta name="description" content="{desc}">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -669,7 +670,8 @@ CHAIN = ['bits', 'memory', 'trust', 'learning', 'attention', 'chips', 'assistant
 
 
 def chain(course, here):
-    items = ['<span class="sand">sand</span>']
+    # chapter 1 goes from sand to bits, so it lights both
+    items = ['<span class="sand here">sand</span>' if here == 0 else '<span class="sand">sand</span>']
     for fi, (f, ls) in enumerate(course):
         cls = 'here' if fi == here else ('past' if fi < here else '')
         cur = ' aria-current="step"' if fi == here else ''
@@ -726,7 +728,11 @@ def build():
         page += l['body'].strip() + '\n</article>\n'
         # one way forward: Previous and Next in the page, right after the lesson (not fixed to the screen). Next turns solid once the lesson is done.
         pt = (prev['n'] + ' ' if prev['n'] else '') + plain(prev['title'])
-        pv = f'<a class="prev" href="{prev["href"]}" rel="prev" title="Previous: {html.escape(pt, quote=True)}"><span aria-hidden="true">←</span><span class="t">{html.escape(pt)}</span></a>'
+        # the first lesson's way back is the course home: say so, on phones too (other lessons show only the arrow there)
+        if prev['href'] == BASE:
+            pv = f'<a class="prev home" href="{BASE}" rel="prev"><span aria-hidden="true">←</span><span class="t">Course home</span></a>'
+        else:
+            pv = f'<a class="prev" href="{prev["href"]}" rel="prev" title="Previous: {html.escape(pt, quote=True)}" aria-label="Previous: {html.escape(pt, quote=True)}"><span aria-hidden="true">←</span><span class="t">{html.escape(pt)}</span></a>'
         if nxt:
             nf = flat[j + 1][0]
             lab = f'Next chapter: {FILMS[nf]["q"]}' if nf != fi else f'Next: {nxt["n"]} {plain(nxt["title"])}'
