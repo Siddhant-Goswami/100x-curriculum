@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Checklist Stats | 100xEngineers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:0 0 28px}
+.tile{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:14px 16px}
+.tile b{display:block;font-size:30px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums}
+.tile span{display:block;font-size:13px;color:var(--ink2);margin-top:4px}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,1fr)}}
+.dist{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:end;height:150px;margin:0 0 6px}
+.dist div{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+.dist i{display:block;width:100%;background:var(--prob);border-radius:4px 4px 0 0;min-height:2px}
+.dist em{font-style:normal;font-size:13px;font-weight:600;margin-bottom:4px;font-variant-numeric:tabular-nums}
+.distl{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;font-size:12px;color:var(--ink2);text-align:center;margin:0 0 28px}
+table.st{width:100%;border-collapse:collapse;font-size:14px;margin:0 0 8px}
+table.st th{font-weight:500;color:var(--ink2);text-align:right;padding:6px 0 6px 10px;border-bottom:1px solid var(--line2);font-size:12px;white-space:nowrap}
+table.st th:first-child{text-align:left;padding-left:0}
+table.st td{padding:8px 0 8px 10px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+table.st td:first-child{text-align:left;padding-left:0;white-space:normal;width:44%}
+table.st tr.sec td{font-weight:600;color:var(--ink);border-bottom:0;padding-top:18px;font-size:13px}
+.bar{display:inline-block;vertical-align:middle;width:70px;height:8px;border-radius:4px;background:var(--line);margin-right:8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--hum)}
+.mut{color:var(--ink3)}
+.note{font-size:13px;color:var(--ink2);margin:0 0 20px}
+.upd{font-family:var(--mono);font-size:12px;color:var(--ink2)}
+@media (max-width:640px){table.st .hide{display:none}.bar{width:40px}}
+</style>
+</head>
+<body data-page="checklist-before-l11-stats" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/c8/module-2/checklist/">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Checklist"><a href="/c8/module-2/checklist/">Checklist</a><a href="/c8/module-2/checklist/stats">Stats</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<div class="hero">
+  <p class="kick">Before Lecture 11 · Live</p>
+  <h1>Who has done what</h1>
+  <p class="dek">Ticks from the checklist, and page visits from PostHog.</p>
+  <div class="meta"><span class="upd" id="upd">Loading…</span></div>
+</div>
+
+<div class="tiles" id="tiles"></div>
+
+<section class="s" id="s01"><h2>How far people are</h2>
+<p class="note">Everyone who opened the checklist, by how many of the 18 they have ticked.</p>
+<div class="dist" id="dist"></div>
+<div class="distl"><span>0</span><span>1 to 5</span><span>6 to 11</span><span>12 to 17</span><span>All 18</span></div>
+</section>
+
+<section class="s" id="s02"><h2>Item by item</h2>
+<p class="note" id="phnote"></p>
+<table class="st"><thead><tr><th>Item</th><th>Ticked</th><th class="hide">Clicked here</th><th>Visited page</th><th class="hide">Last 24h</th></tr></thead><tbody id="rows"></tbody></table>
+<p class="note">Ticked and clicked count browsers that opened this checklist. Visited page counts everyone PostHog saw on that page since 29 Oct, from any link, including the team.</p>
+</section>
+
+<script>
+(function(){
+  var SECTIONS=[
+    ['Lecture 9',[['l9notes','Lecture 9 notes'],['wei','Jason Wei essay']]],
+    ['Lecture 10',[['l10notes','Lecture 10 notes'],['oh','3 Nov office hour recap']]],
+    ['Practice set 1',[['ps1ns','North Star'],['ps1sheet','Sheet filled'],['ps1test','One task tested'],['ps1share','Shared on the Discord']]],
+    ['Practice set 2',[['ps2ex','Write the eval exercise'],['ps2score','Re-scored the task'],['ps2share','Shared on the Discord']]],
+    ['From sand to language models',[['fp1','Chapters 1 to 3'],['fp4','Chapter 4'],['fp5','Chapters 5 and 6'],['fp7','Chapters 7 and 8']]],
+    ['Bring to Lecture 11',[['key','Groq key'],['sheet','Practice set 1 sheet link'],['bench','Opened the Tool Bench']]]
+  ];
+  var $=function(id){return document.getElementById(id)};
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function n(v){return v==null?'<span class="mut">–</span>':String(v)}
+  function render(d){
+    var done=d.done||[], all=done.filter(function(x){return x>=d.total}).length;
+    var sorted=done.slice().sort(function(a,b){return a-b}), med=sorted.length?sorted[Math.floor((sorted.length-1)/2)]:0;
+    var pages=d.pages||{}, ck=pages._checklist;
+    $('tiles').innerHTML=[
+      [d.opened,'opened the checklist'+(ck?' · '+ck.people+' in PostHog':'')],
+      [d.active.hour,'active in the last hour'],
+      [all,'ticked all '+d.total],
+      [med+' / '+d.total,'median ticked']
+    ].map(function(t){return '<div class="tile"><b>'+esc(t[0])+'</b><span>'+esc(t[1])+'</span></div>'}).join('');
+    var b=[0,0,0,0,0]; done.forEach(function(x){b[x<=0?0:x<=5?1:x<=11?2:x<d.total?3:4]++});
+    var max=Math.max.apply(null,b.concat([1]));
+    $('dist').innerHTML=b.map(function(v){return '<div><em>'+v+'</em><i style="height:'+(v/max*100)+'%"></i></div>'}).join('');
+    var base=Math.max(d.opened,1), h='';
+    SECTIONS.forEach(function(s){
+      h+='<tr class="sec"><td colspan="5">'+esc(s[0])+'</td></tr>';
+      s[1].forEach(function(it){
+        var r=d.items[it[0]]||{}, p=pages[it[0]];
+        h+='<tr><td>'+esc(it[1])+'</td><td><span class="bar"><i style="width:'+((r.ticked||0)/base*100)+'%"></i></span>'+n(r.ticked)+'</td><td class="hide">'+n(r.clicked)+'</td><td>'+(p?p.people:'<span class="mut">–</span>')+'</td><td class="hide">'+(p?p.day:'<span class="mut">–</span>')+'</td></tr>';
+      });
+    });
+    $('rows').innerHTML=h;
+    $('phnote').textContent=d.posthog==='ok'?'':d.posthog==='no-key'?'Page visits need a PostHog personal API key on Vercel (POSTHOG_PERSONAL_API_KEY). Ticks work without it.':'PostHog did not answer: '+d.posthog;
+    $('upd').textContent='Updated '+new Date(d.at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'})+' · refreshes every 30 seconds';
+  }
+  function load(){
+    fetch('/api/checklist?list=l11',{cache:'no-store'}).then(function(r){return r.json()}).then(function(d){ if(d.error) throw new Error(d.error); render(d); })
+      .catch(function(e){ $('upd').textContent='Could not load: '+e.message; });
+  }
+  load();
+  setInterval(function(){ if(!document.hidden) load(); },30000);
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden) load(); });
+})();
+</script>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Checklist stats</span><a href="/c8/module-2/checklist/">The checklist</a></div></footer>
+</body>
+</html>

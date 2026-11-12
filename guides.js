@@ -137,6 +137,7 @@ var GUIDE_LINKS = {
   l11Notes: '/c8/module-2/lecture-11-tool-calling-and-mcp/notes',
   l11Bench: '/c8/module-2/lecture-11-tool-calling-and-mcp/bench',
   l11SecondApp: '/c8/module-2/lecture-11-tool-calling-and-mcp/second-app',
+  l11Checklist: '/c8/module-2/checklist/',  /* Before Lecture 11: everything from the probabilistic half so far, as ticks */
   groqPlay: 'https://console.groq.com/playground',
   l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
   l07Police: '/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s07',
@@ -836,7 +837,7 @@ GUIDES.L10 = { all: {
 
 /* Lecture 11: only the pages link for now. The card shows it before the lecture too (upcoming cards show the hub). */
 GUIDES.L11 = { all: {
-  hub: {link:'l11Hub', title:'Open the Lecture 11 pages', sub:'The overview, the notes and the Tool Bench', more:[['l11Notes','Notes'],['l11Bench','Tool Bench'],['l11SecondApp','Second app']]}
+  hub: {link:'l11Hub', title:'Open the Lecture 11 pages', sub:'The overview, the notes and the Tool Bench', more:[['l11Checklist','Before Lecture 11 checklist'],['l11Notes','Notes'],['l11Bench','Tool Bench'],['l11SecondApp','Second app']]}
 }};
 
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from
