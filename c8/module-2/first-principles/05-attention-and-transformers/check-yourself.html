@@ -53,7 +53,7 @@
 <details class="words"><summary>Words you now own</summary><dl><div><dt>Embedding</dt><dd>A token's list of numbers: its spot on the map of meaning.</dd></div><div><dt>Vector</dt><dd>A list of numbers.</dd></div><div><dt>Attention</dt><dd>Each token matches its question against earlier tokens' labels and blends their messages.</dd></div><div><dt>Query, key, value</dt><dd>Question, label, message.</dd></div><div><dt>Head</dt><dd>One of many questions asked side by side.</dd></div><div><dt>Layer</dt><dd>One round of listen, then think.</dd></div><div><dt>Transformer</dt><dd>A stack of such layers.</dd></div></dl></details>
 <h2>In your build</h2>
 <ul>
-  <li>The model can only listen to what is in the prompt. If "capital" and "France" are not there, nothing can pay attention to them.</li>
+  <li>The model can only listen to what is in the prompt. In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s02">Lecture 10</a> the same question scored 1, then 5, then 7 as more of the real curriculum went in. If a fact is not in the context window, nothing can pay attention to it.</li>
   <li>Double the prompt and the listening work roughly quadruples. Cut what the model does not need.</li>
   <li>Embeddings are what search by meaning runs on. You will use them in Lecture 12.</li>
 </ul>

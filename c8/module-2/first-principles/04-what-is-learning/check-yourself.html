@@ -56,10 +56,10 @@
 <details class="words"><summary>Words you now own</summary><dl><div><dt>Parameter (dial)</dt><dd>One learned number saying how much one signal pushes on another.</dd></div><div><dt>Token</dt><dd>A piece of text with a number. What a model reads and writes.</dd></div><div><dt>Byte pair encoding</dt><dd>Building tokens by merging the most common neighbouring pair, again and again.</dd></div><div><dt>Model</dt><dd>A wall of dials that turns tokens in into a chance for every next token.</dd></div><div><dt>Hallucination</dt><dd>A fluent, confident, wrong guess, made because there is always a next token.</dd></div><div><dt>Loss</dt><dd>The score for how far off a guess was. Lower is better.</dd></div><div><dt>Gradient</dt><dd>The direction each dial should turn to lower the loss.</dd></div><div><dt>Training</dt><dd>The loop: attempt, measure the mistake, feed it back.</dd></div><div><dt>Self-supervised learning</dt><dd>Learning where the text supplies its own answers.</dd></div></dl></details>
 <h2>In your build</h2>
 <ul>
-  <li>Your database is the record. The model is the dials. Every AI app uses both, side by side.</li>
-  <li>The hallucinated track list in <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9</a> was a weak pattern with no "not found". In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10</a> the model asked your code for the record before answering. That is the fix.</li>
+  <li>Your database is the record, the orange box. The model is the dials, the purple box. Every AI app uses both, side by side.</li>
+  <li>The hallucinated track list in <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes#s04">Lecture 9</a> was a weak pattern with no "not found". In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s02">Lecture 10</a> you pasted the real tracks into the prompt and the score went from 1 to 5 to 7. Function calling, drawn on the whiteboard that day, lets the model ask your server for the record instead of you pasting it.</li>
   <li>Tokens are what you are billed for, and what the context limit counts.</li>
-  <li>The temperature setting in the Groq playground sets how often the dice pick a less likely token.</li>
+  <li>The temperature setting in the Groq playground sets how often the dice pick a less likely token. In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s05">Lecture 10</a>, temperature 0 still gave a wrong answer, just the same one every time: turning off the dice does not add a missing fact.</li>
   <li>You cannot add a fact to the dials yourself. Put it in the prompt, as in <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10</a>.</li>
 </ul>
 </article>

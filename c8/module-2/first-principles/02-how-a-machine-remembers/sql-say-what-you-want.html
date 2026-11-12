@@ -47,6 +47,8 @@
 <div class="tw"><table><thead><tr><th>You want</th><th>You write</th></tr></thead><tbody><tr><td>The text of every message in conversation 7</td><td><code>SELECT text FROM messages WHERE conversation_id = 7</code></td></tr></tbody></table></div>
 
 <p>That language is <b>SQL</b>. Read it as plain words: select the text, from the messages table, where the pointer says conversation 7. The database works out how to find the rows.</p>
+<aside class="fp-seen"><p class="fp-seen-k"><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes#s04">Lecture 4 · The CRUD quiz</a></p><p>You know the four things you can do to anything stored from the CRUD quiz. Each request your API gets becomes one SQL word on the database: <code>POST /workflows</code> becomes an INSERT, a new row in workflows.</p><div class="tw"><table><thead><tr><th>CRUD</th><th>On the wire</th><th>In SQL</th></tr></thead><tbody><tr><td>Read</td><td>GET</td><td>SELECT</td></tr><tr><td>Create</td><td>POST</td><td>INSERT</td></tr><tr><td>Update</td><td>PUT or PATCH</td><td>UPDATE</td></tr><tr><td>Delete</td><td>DELETE</td><td>DELETE</td></tr></tbody></table></div>
+</aside>
 </article>
 <nav class="fp-nav" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/02-how-a-machine-remembers/where-does-a-link-live" rel="prev" title="Previous: 2.4 Tables, rows and links" aria-label="Previous: 2.4 Tables, rows and links"><span aria-hidden="true">←</span><span class="t">2.4 Tables, rows and links</span></a><a class="next" href="/c8/module-2/first-principles/02-how-a-machine-remembers/one-row-in-a-billion" rel="next" data-next><span class="t">Next: 2.6 Indexes: one row in a billion</span><span aria-hidden="true">→</span></a></nav>
   </main>

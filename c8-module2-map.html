@@ -1005,7 +1005,7 @@ function status(s){
     if(s.results && days(TODAY,s.results)>=0) return {cls:'st-held',txt:'Held · results '+fmt(s.results)};
     return {cls:'st-held',txt:'Held · '+fmt(s.date)};
   }
-  if(s.self) return days(TODAY,ST.L11.date)>=0 ? {cls:'st-active',txt:'Self-paced · before Lecture 11',hot:true} : {cls:'st-held',txt:'Self-paced · 48 lessons'};
+  if(s.self) return days(TODAY,ST.L11.date)>=0 ? {cls:'st-active',txt:'Self-paced · before Lecture 11',hot:true} : {cls:'st-held',txt:'Self-paced · 58 lessons'};
   if(s.kind==='step'){
     if(days(TODAY,s.date)>0) return {cls:'st-up',txt:'After Lecture 10 · '+fmt(s.date)};
     if(days(TODAY,d(2026,11,12))>=0) return {cls:'st-active',txt:'Due before L11, Thu 12 Nov',hot:true};

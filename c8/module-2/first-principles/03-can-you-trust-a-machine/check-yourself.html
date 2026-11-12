@@ -51,8 +51,8 @@
 <details class="words"><summary>Words you now own</summary><dl><div><dt>ACID</dt><dd>Four promises: all or nothing, no rule broken, no overwrites, done means stored.</dd></div><div><dt>Write-ahead log</dt><dd>A journal line written before the real change.</dd></div><div><dt>Server</dt><dd>The computer, somewhere else, that runs your app and keeps its data.</dd></div><div><dt>Leader, follower</dt><dd>The machine that takes all saves, and a copy that replays its journal.</dd></div><div><dt>System of record</dt><dd>The one original every copy is made from.</dd></div></dl></details>
 <h2>In your build</h2>
 <ul>
-  <li>The database behind your app from <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Lecture 7</a> keeps these promises for you: all or nothing, and done means stored.</li>
-  <li>Show "saved" only after the database says so. Until then it is the bubble with the small clock.</li>
+  <li>Make the storage box (box 7) on your <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s07">Lecture 6</a> HLD a database, and it keeps these promises for you: all or nothing, and done means stored.</li>
+  <li>Show "saved" only after the server replies <code>201 Created</code>. Until then it is the bubble with the small clock.</li>
   <li>Your database is the original. A copy, like a spreadsheet export or a cache, can always be thrown away and remade from it.</li>
 </ul>
 </article>

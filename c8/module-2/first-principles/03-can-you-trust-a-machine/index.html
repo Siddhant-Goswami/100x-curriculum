@@ -49,6 +49,7 @@
 
 <div class="found"><p class="kick">What you just found</p>
 <p>Rows are spread across the disk, so a power cut halfway leaves some changed and some not, and nothing says which. So write one line in a journal first, then change the rows. After a crash a journal line is either whole (finish what it says) or visibly torn (throw it away). Accountants have always worked this way. A database calls its journal the <b>write-ahead log</b>.</p><p class="pull"><small>Principle 5</small>Record the change in one place before changing anything else.</p>
+<aside class="fp-seen"><p class="fp-seen-k"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s05">Lecture 6 · memory.txt</a></p><p>In Lecture 6 the plainest fix for a forgetful app was memory.txt: after every reply, add a line saying who said what, and when. That was already a journal. You only ever add to the end, so a crash can tear at most the last line.</p></aside>
 </div>
 </article>
 <nav class="fp-nav" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/02-how-a-machine-remembers/check-yourself" rel="prev" title="Previous: 2.7 Check yourself" aria-label="Previous: 2.7 Check yourself"><span aria-hidden="true">←</span><span class="t">2.7 Check yourself</span></a><a class="next" href="/c8/module-2/first-principles/03-can-you-trust-a-machine/four-promises" rel="next" data-next><span class="t">Next: 3.2 Four promises a database makes</span><span aria-hidden="true">→</span></a></nav>
