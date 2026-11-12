@@ -42,14 +42,14 @@
   <p class="ctx" id="ctx" data-nolabel></p>
 
   <section class="bench" aria-label="The bench">
-    <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server talks to the model on one side and the sheet on the other.">
+    <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server talks to the sheet on its left and the model on its right.">
       <div class="node" data-n="you"><b>You</b><span>ask</span></div>
       <div class="lane v" data-l="server-you" aria-hidden="true"><i></i></div>
-      <div class="node" data-n="model"><b>Model</b><span>predicts</span></div>
-      <div class="lane h" data-l="model-server" aria-hidden="true"><i></i></div>
-      <div class="node" data-n="server"><b>Server</b><span>follows rules</span><em class="slot" data-slot="server"></em></div>
-      <div class="lane h" data-l="server-sheet" aria-hidden="true"><i></i></div>
       <div class="node" data-n="sheet"><b id="sheetName">Sheet</b><span id="sheetSub">the data</span><em class="slot" data-slot="sheet"></em></div>
+      <div class="lane h" data-l="server-sheet" aria-hidden="true"><i></i></div>
+      <div class="node" data-n="server"><b>Server</b><span>follows rules</span><em class="slot" data-slot="server"></em></div>
+      <div class="lane h" data-l="model-server" aria-hidden="true"><i></i></div>
+      <div class="node" data-n="model"><b>Model</b><span>predicts</span></div>
     </div>
 
     <div class="work" data-nolabel>
