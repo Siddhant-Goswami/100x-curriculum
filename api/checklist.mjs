@@ -29,10 +29,7 @@ const LISTS = {
       fp1: [FP + '/01-sand-to-screen*', FP + '/02-how-a-machine-remembers*', FP + '/03-can-you-trust-a-machine*'],
       fp4: [FP + '/04-what-is-learning*'],
       fp5: [FP + '/05-attention-and-transformers*', FP + '/06-what-hardware-powers-llms*'],
-      fp7: [FP + '/07-guesser-to-assistant*', FP + '/08-what-llms-learn-from-now*'],
-      key: [],
-      sheet: [],
-      bench: ['/c8/module-2/lecture-11-tool-calling-and-mcp/bench']
+      fp7: [FP + '/07-guesser-to-assistant*', FP + '/08-what-llms-learn-from-now*']
     }
   }
 };

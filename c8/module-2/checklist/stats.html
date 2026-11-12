@@ -53,9 +53,9 @@ table.st tr.sec td{font-weight:600;color:var(--ink);border-bottom:0;padding-top:
 <div class="tiles" id="tiles"></div>
 
 <section class="s" id="s01"><h2>How far people are</h2>
-<p class="note">Everyone who opened the checklist, by how many of the 18 they have ticked.</p>
+<p class="note">Everyone who opened the checklist, by how many of the 15 they have ticked.</p>
 <div class="dist" id="dist"></div>
-<div class="distl"><span>0</span><span>1 to 5</span><span>6 to 11</span><span>12 to 17</span><span>All 18</span></div>
+<div class="distl"><span>0</span><span>1 to 4</span><span>5 to 9</span><span>10 to 14</span><span>All 15</span></div>
 </section>
 
 <section class="s" id="s02"><h2>Item by item</h2>
@@ -71,8 +71,7 @@ table.st tr.sec td{font-weight:600;color:var(--ink);border-bottom:0;padding-top:
     ['Lecture 10',[['l10notes','Lecture 10 notes'],['oh','3 Nov office hour recap']]],
     ['Practice set 1',[['ps1ns','North Star'],['ps1sheet','Sheet filled'],['ps1test','One task tested'],['ps1share','Shared on the Discord']]],
     ['Practice set 2',[['ps2ex','Write the eval exercise'],['ps2score','Re-scored the task'],['ps2share','Shared on the Discord']]],
-    ['From sand to language models',[['fp1','Chapters 1 to 3'],['fp4','Chapter 4'],['fp5','Chapters 5 and 6'],['fp7','Chapters 7 and 8']]],
-    ['Bring to Lecture 11',[['key','Groq key'],['sheet','Practice set 1 sheet link'],['bench','Opened the Tool Bench']]]
+    ['From sand to language models',[['fp1','Chapters 1 to 3'],['fp4','Chapter 4'],['fp5','Chapters 5 and 6'],['fp7','Chapters 7 and 8']]]
   ];
   var $=function(id){return document.getElementById(id)};
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
@@ -87,7 +86,7 @@ table.st tr.sec td{font-weight:600;color:var(--ink);border-bottom:0;padding-top:
       [all,'ticked all '+d.total],
       [med+' / '+d.total,'median ticked']
     ].map(function(t){return '<div class="tile"><b>'+esc(t[0])+'</b><span>'+esc(t[1])+'</span></div>'}).join('');
-    var b=[0,0,0,0,0]; done.forEach(function(x){b[x<=0?0:x<=5?1:x<=11?2:x<d.total?3:4]++});
+    var b=[0,0,0,0,0]; done.forEach(function(x){b[x<=0?0:x<=4?1:x<=9?2:x<d.total?3:4]++});
     var max=Math.max.apply(null,b.concat([1]));
     $('dist').innerHTML=b.map(function(v){return '<div><em>'+v+'</em><i style="height:'+(v/max*100)+'%"></i></div>'}).join('');
     var base=Math.max(d.opened,1), h='';
