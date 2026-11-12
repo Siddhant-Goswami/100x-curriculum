@@ -201,7 +201,7 @@ film('02-how-a-machine-remembers', 'Data from First Principles, Part One', '6:02
      S(6, 'Indexes: one row in a billion', f'''
 <p>The database has to find every message in conversation 7. With a billion rows, how does it do that without reading every one?</p>
 {FP('f2-index', 'index', 'an index', 'Find the number in 5 looks or fewer.')}
-{FOUND('<p>The sorted copy is an <b>index</b>. Start in the middle and halve what is left each time. Add signposts above it, each pointing to a thousand more, and one hop reaches a thousand rows, two hops a million, three a billion. (Engineers call this shape a B-tree.)</p><p>The price: every save now happens twice, once in the table and once in the index.</p>' + PRN(4, 'Faster reading means a second copy.') + SEEN(10, 13, 'Routing by search', 'In the Lecture 10 Q&A, the better way to pick a data source was a keyword list for each source that the server searches, instead of asking the model. That was called indexing for the same reason: a second copy, built ahead of time, so finding something never means reading everything.'))}
+{FOUND('<p>The sorted copy is an <b>index</b>. Start in the middle and halve what is left each time. Add signposts above it, each pointing to a thousand more, and one hop reaches a thousand rows, two hops a million, three a billion. (Engineers call this shape a B-tree.)</p><p>The price: every save now happens twice, once in the table and once in the index.</p>' + PRN(4, 'Faster reading means a second copy.'))}
 ''', 'Find one row among a billion in a few looks, by keeping a sorted copy.', 'one-row-in-a-billion') +
      S(7, 'In your build', f'''
 <ul>
@@ -389,7 +389,7 @@ film('05-attention-and-transformers', 'Language Models from First Principles, Pa
      S(6, 'Why long prompts cost more', f'''
 <p>All this listening has a cost. Every token listens to every token before it.</p>
 {FP('f5-pairs', 'pairs', 'the bill', 'Work out the pairs in a 1,000-token prompt.')}
-{FOUND('<p>A 1,000-token prompt makes about half a million pairs. Double the text and the pairs grow four times. That is why a long prompt costs more than its length suggests.</p>' + SEEN(10, 2, 'More context helps', 'In Lecture 10, pasting the whole curriculum as CSV lifted the score to 7, and every token of it listened to every token before it. That is why the Q&A ended on keyword lists: send only the part the question needs.'))}
+{FOUND('<p>A 1,000-token prompt makes about half a million pairs. Double the text and the pairs grow four times. That is why a long prompt costs more than its length suggests.</p>' + SEEN(10, 2, 'More context helps', 'In Lecture 10, pasting the whole curriculum as CSV lifted the score to 7, and every token of it listened to every token before it. More context helps, and every extra token adds to the bill.'))}
 ''', 'Every word listens to every word before it, so the work grows faster than the text.', 'the-bill') +
      S(7, 'In your build', f'''
 <ul>
