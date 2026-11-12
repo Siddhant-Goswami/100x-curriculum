@@ -44,9 +44,9 @@
 <p class="fp-meta">Lesson 2.5 · 5 of 7 in chapter 2 · about 2 min</p>
 <h1>SQL: say what you want</h1>
 <p>In 1970 Edgar Codd, a researcher at IBM, proposed a new way to ask a database for things: do not tell the machine how to search. Tell it what you want.</p>
-<div class="tw"><table><thead><tr><th>You want</th><th>You write</th></tr></thead><tbody><tr><td>The text of every message in conversation 7</td><td><code>SELECT text FROM messages WHERE conv = 7</code></td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>You want</th><th>You write</th></tr></thead><tbody><tr><td>The text of every message in conversation 7</td><td><code>SELECT text FROM messages WHERE conversation_id = 7</code></td></tr></tbody></table></div>
 
-<p>That language is <b>SQL</b>. Read it as plain words: select the text, from the messages table, where the conversation is 7. The database works out how to find the rows.</p>
+<p>That language is <b>SQL</b>. Read it as plain words: select the text, from the messages table, where the pointer says conversation 7. The database works out how to find the rows.</p>
 </article>
 <nav class="fp-nav" aria-label="Lessons"><a class="prev" href="/c8/module-2/first-principles/02-how-a-machine-remembers/where-does-a-link-live" rel="prev" title="Previous: 2.4 Tables, rows and links" aria-label="Previous: 2.4 Tables, rows and links"><span aria-hidden="true">←</span><span class="t">2.4 Tables, rows and links</span></a><a class="next" href="/c8/module-2/first-principles/02-how-a-machine-remembers/one-row-in-a-billion" rel="next" data-next><span class="t">Next: 2.6 Indexes: one row in a billion</span><span aria-hidden="true">→</span></a></nav>
   </main>

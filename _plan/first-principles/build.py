@@ -174,14 +174,14 @@ film('02-how-a-machine-remembers', 'Data from First Principles, Part One', '6:02
 {FOUND('<p>That list is a <b>file system</b>: names on one side, block numbers on the other, like the contents page of a book.</p><p>It is the same trick as the letter A. The pattern <code>01000001</code> means 65, and 65 means A, only because we agreed. Bits mean nothing until someone agrees how to read them.</p>')}
 ''', 'A short list of names and block numbers says where everything is.', 'a-card-that-says-where-things-are') +
      S(4, 'Tables, rows and links', f'''
-<p>One file that holds everything is hard to search, so split it. Each kind of <b>thing</b> (users, conversations, messages) gets a table. Each <b>fact</b> about a thing is a column. Each single thing is a row. That leaves the <b>links</b> between things.</p>
-{GUESS('f2-link', 'a link', 'Conversation 7 has thousands of messages. Where do you store that link?', ['On the conversation row: a list of its message ids', 'On each message row: one number, its conversation id'], 1)}
-{FOUND('<p>Put one number on the many side. A list on the conversation row would grow with every message, and the whole row would be rewritten each time. With <code>conv = 7</code> on each message, nothing grows. You never save the list. When you need it, you ask for every message where conv is 7.</p>' + T(['id', 'conv', 'sender', 'text'], [['102', '7', 'maya', 'plan for mon?'], ['103', '5', 'you', 'on it'], ['104', '7', 'ravi', 'sounds good']]) + '<p>The top row, the column names, says how to read every row below it. So did "65 means A", and so did the contents page.</p>' + PRN(3, 'A little data says how to read the rest.'))}
+<p>In <a href="{L6}">Lecture 6</a>, <code>memory.txt</code> kept everything in one file, so finding one chat meant reading all of it. Split it instead. Each kind of <b>thing</b> (users, conversations, messages) gets a table. Each <b>fact</b> about a thing is a column. Each single thing is a row, numbered by an <code>id</code> that never repeats. That leaves the <b>links</b> between things.</p>
+{FP('f2-link', 'link', 'a link', 'Try both places for the link. Send two messages each way.')}
+{FOUND('<p>Put one number on the <b>many side</b>. The list grows with every message, and the whole row is written again each time: a slow write (lesson 2.2) that keeps getting longer. A message belongs to only one conversation, so one cell on it holds the 7, and nothing grows.</p>' + T(['id', 'conversation_id', 'text'], [['102', '7', 'plan for mon?'], ['103', '5', 'on it'], ['104', '7', 'sounds good']]) + '<p><code>id</code> is each row\'s <b>key</b>. <code>conversation_id</code> holds another row\'s key, so it is a <b>pointer</b> (formally, a foreign key): the one you placed in Level 3 of the Lecture 6 lab. You never save the list. You ask for every message whose conversation_id is 7.</p><p>Both sides many? A workflow uses many tools, and a tool sits in many workflows. No single cell can hold that, so a third table keeps one row per pair.</p><p>On its own, "sounds good" means nothing. The 7 says which conversation to read it in, the way 65 says read this as A.</p>' + PRN(3, 'A little data says how to read the rest.'))}
 ''', 'Where to store "these messages belong to that chat" so nothing keeps growing.', 'where-does-a-link-live') +
      S(5, 'SQL: say what you want', f'''
 <p>In 1970 Edgar Codd, a researcher at IBM, proposed a new way to ask a database for things: do not tell the machine how to search. Tell it what you want.</p>
-{T(['You want', 'You write'], [['The text of every message in conversation 7', '<code>SELECT text FROM messages WHERE conv = 7</code>']])}
-<p>That language is <b>SQL</b>. Read it as plain words: select the text, from the messages table, where the conversation is 7. The database works out how to find the rows.</p>
+{T(['You want', 'You write'], [['The text of every message in conversation 7', '<code>SELECT text FROM messages WHERE conversation_id = 7</code>']])}
+<p>That language is <b>SQL</b>. Read it as plain words: select the text, from the messages table, where the pointer says conversation 7. The database works out how to find the rows.</p>
 ''', 'Tell the database what you want, and let it work out how to find it.', 'sql-say-what-you-want') +
      S(6, 'Indexes: one row in a billion', f'''
 <p>The database has to find every message in conversation 7. With a billion rows, how does it do that without reading every one?</p>
@@ -190,16 +190,18 @@ film('02-how-a-machine-remembers', 'Data from First Principles, Part One', '6:02
 ''', 'Find one row among a billion in a few looks, by keeping a sorted copy.', 'one-row-in-a-billion') +
      S(7, 'In your build', f'''
 <ul>
-  <li>Things, facts and links are what you modelled in <a href="{L6}">Lecture 6</a>. The conversation number on each message is the link.</li>
+  <li>Things, facts and links are what you modelled in <a href="{L6}">Lecture 6</a>. <code>conversation_id</code> on each message is a pointer, like the ones you placed in Level 3.</li>
   <li>Your tables from <a href="{L7}">Lecture 7</a> are lasting memory. What your page shows before the save comes back is the workbench.</li>
 </ul>
 '''),
      [('RAM', 'The workbench next to the processor. Fast, wiped when the power goes.'), ('Storage', 'Flash or disk. Holds on without power, slow to write.'),
       ('File system', 'A contents page of names and block numbers that says where each file sits on the disk.'), ('Table, column, row', 'A kind of thing, a fact about it, one thing.'),
+      ('Key', 'A row\'s id. It never repeats.'), ('Pointer (foreign key)', 'A column on the many side that holds another row\'s key.'),
       ('SQL', 'A language for saying what you want, not how to find it.'), ('Index', 'A sorted second copy of one column, with signposts, for fast lookup.')],
      [('RAM does two of the three jobs well. Which one does it fail?', 'Store. The buckets leak, and with no power nobody tops them up.'),
       ('Why does a chat app show your message before it is saved?', 'The workbench is fast and storage is slow, so it shows from the workbench and saves in the background.'),
-      ('Name three places where a little data says how to read the rest.', '65 means A, the contents page of block numbers, and the column names at the top of a table.'),
+      ('A user has many conversations. Which table gets the link, and what goes in it?', 'Conversations, the many side. Each conversation row gets <code>user_id</code>: one number, the key of the user it belongs to.'),
+      ('Name three places where a little data says how to read the rest.', '65 means A, the contents page of block numbers, and the conversation_id that says which conversation a message belongs to.'),
       ('What do you pay for an index?', 'A second copy to keep, and every save happens twice.')])
 
 # ------------------------------------------------------------------ 3

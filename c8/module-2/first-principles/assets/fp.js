@@ -175,6 +175,33 @@ W.index=function(s){
   s.btn('Deal again','',function(){deal()});
   deal();
 };
+/* link: pick where conversation 7 keeps its link, then send messages. The list rewrites the conversation row every time;
+   a number on each message never touches it. Found once both ways have had two messages. */
+W.link=function(s){
+  var TX=['plan for mon?','sounds good','see you at 9','sent the doc','on it','thanks!','noted'],mode=-1,msgs,rw,run,sent=[0,0],won=false,go;
+  function start(){msgs=[[102,TX[0]],[104,TX[1]]];rw=0;run=0}
+  function paint(){var sh='',tx='',list=mode===0,num=mode===1,ids=msgs.map(function(m){return m[0]});
+    function C(x,y,w,ht,c,t,tc){sh+=R(x,y,w,ht,c,4);tx+=T(x+w/2,y+ht/2+8,t,tc||'s')}
+    tx+=T(14,22,'conversations','xs l');
+    C(14,30,70,30,'f-bg','id','xs');C(84,30,150,30,'f-bg','title','xs');C(14,60,70,40,'f-card','7');C(84,60,150,40,'f-card','Mon plan');
+    if(list){C(234,30,352,30,'f-bg','message ids','xs');C(234,60,352,40,rw?'f-prob':'f-card',ids.length>5?ids[0]+', '+ids[1]+' … '+ids[ids.length-1]+'  ('+ids.length+')':ids.join(', '))}
+    tx+=T(14,130,'conversation row rewritten: '+rw+(rw===1?' time':' times'),'xs l'+(rw?' c-prob':''));
+    tx+=T(14,166,'messages','xs l')+(msgs.length>3?T(586,166,(msgs.length-3)+' earlier '+(msgs.length===4?'row':'rows')+' above','xs r c-mute'):'');
+    var cols=num?[[14,80,'id'],[94,210,'conversation_id'],[304,282,'text']]:[[14,80,'id'],[94,492,'text']];
+    cols.forEach(function(c){C(c[0],174,c[1],30,'f-bg',c[2],'xs')});
+    msgs.slice(-3).forEach(function(m,i,a){var y=204+i*40,last=i===a.length-1&&run>0;
+      C(14,y,80,40,'f-card',m[0]);
+      if(num){C(94,y,210,40,last?'f-det':'f-card','7');C(304,y,282,40,'f-card',m[1])}else C(94,y,492,40,'f-card',m[1])});
+    draw(s.stage,600,330,sh,tx,'A conversations table with one row, conversation 7, and a messages table');}
+  s.add(seg(['A list on the conversation','A number on each message'],-1,function(i){mode=i;start();go.disabled=false;paint();
+    s.say(i?'Each message row gets a <b>conversation_id</b> column. Now send a message.':'Conversation 7 gets a <b>message ids</b> column. Now send a message.')}));
+  go=s.btn('A new message arrives','pri',function(){if(mode<0)return;var id=msgs[msgs.length-1][0]+1;msgs.push([id,TX[msgs.length%TX.length]]);run++;sent[mode]++;if(!mode)rw++;paint();
+    var other=sent[mode?0:1]<2?' Now switch to the other way and send two more.':'';
+    if(!won&&sent[0]>=2&&sent[1]>=2){won=true;s.say('One number on the many side: the conversation row is never rewritten, and no row grows.','ok');s.win();return}
+    if(!mode)s.say(run<2?'Message '+id+' arrives, so the list gains '+id+' and the whole conversation row is written again.':'The list grows with every message, and the row is written again each time. At 4,000 messages, one "hi" rewrites 4,000 ids.'+other);
+    else s.say(run<2?'Message '+id+' gets conversation_id 7. The conversation row was not touched.':'Every message row is the same size, and the conversation row was never rewritten.'+other)});
+  go.disabled=true;start();paint();s.say('Conversation 7 will get thousands of messages. Pick where the link goes, then send messages.');
+};
 
 /* ================= 3. Can you trust a machine ================= */
 W.journal=function(s){
