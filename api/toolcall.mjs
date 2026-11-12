@@ -7,7 +7,8 @@
      POST /api/toolcall  {op:'key'}                    ->  {ok:true}                checks the learner's Groq key (lists models, costs nothing)
 
    chat is one round with the model, nothing more: the bench shows every message, so the loop lives in the page.
-   The model and the instruction are fixed here. Every learner brings their own Groq key (header x-groq-key).
+   The model is fixed here. There is no hidden instruction and no changed setting: the request is the one the page
+   shows on the wire, sent with the GroqCloud playground's defaults, so a learner can repeat any run there. Every learner brings their own Groq key (header x-groq-key).
    It is used for that one request and never stored or logged; there is no shared key, so no shared limit.
    Logs counts only, never the questions. No dependencies, like aarav.mjs. */
 import { source, tool, run, load, csvUrl, isCurriculum, SheetError } from './_sheet.mjs';
@@ -18,7 +19,6 @@ const KEY_RE = /^gsk_[A-Za-z0-9]{20,}$/;
 const ownKey = request => { const k = (request.headers.get('x-groq-key') || '').trim(); return KEY_RE.test(k) ? k : ''; };
 const NEED = { error: 'need_key', message: 'Paste your Groq key first.' };
 const MODEL = 'openai/gpt-oss-120b';
-const SYSTEM = 'You are the assistant for 100xEngineers Cohort 8. Answer in at most three short sentences, in plain text.';
 const MAX = { messages: 8, content: 6000, tools: 2, desc: 1200, schema: 2000 };
 
 const HEAD = {
@@ -59,9 +59,8 @@ function cleanTools(list) {
 }
 
 /* ---------- one round with the model ---------- */
-async function groq(key, messages, tools, lean) {
-  const body = { model: MODEL, messages: [{ role: 'system', content: SYSTEM }].concat(messages), temperature: 0, max_completion_tokens: 900 };
-  if (!lean) body.reasoning_effort = 'low';
+async function groq(key, messages, tools) {
+  const body = { model: MODEL, messages, max_completion_tokens: 2000 };
   if (tools.length) { body.tools = tools; body.tool_choice = 'auto'; }
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 25000);
   try {
@@ -80,9 +79,7 @@ async function chat(request, body) {
   const t0 = Date.now();
   let r;
   try {
-    r = await groq(key, messages, tools, false);
-    const code = r.data && r.data.error && r.data.error.code;
-    if (r.status === 400 && code !== 'tool_use_failed') r = await groq(key, messages, tools, true); /* in case the model rejects a setting */
+    r = await groq(key, messages, tools);
   } catch (e) { return reply(504, { error: 'model_down', message: 'The model did not answer in time. Try again.' }); }
   const ms = Date.now() - t0, e = r.data && r.data.error;
   console.log(JSON.stringify({ op: 'chat', status: r.status, ms, tools: tools.length }));

@@ -12,7 +12,8 @@ var CUR = '1Kg6T-dJWaYx_JCPiRk3u0nBuAQcsCVRDPj1NFKP4WzM';
 var NAMES = ['', 'Ask', 'Carry it by hand', 'Write the card', 'Switch the server on', 'Move the card'];
 var NODE = { you: 'You', model: 'Model', server: 'Server', sheet: 'Sheet' };
 var ORDER = ['you', 'model', 'server', 'sheet'];
-var Q1 = 'When is Lecture 12, and what is it about?';
+var Q1 = 'When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?';
+var MODEL = 'openai/gpt-oss-120b';
 var GOOD = { name: 'get_lecture', when: 'Returns one lecture of the 100xEngineers Cohort 8 curriculum: its date, title, type and tools. Use it when someone asks about a specific lecture by number. Not for general questions.', needs: 'The lecture number, 1 to 18.' };
 var TESTS = [Q1, 'Which tools do we use in the seventh class?', 'What is an API?', 'Is session fourteen a combined one or separate?', 'In lecture 3 of Harvard CS50, which language is taught?'];
 
@@ -20,7 +21,7 @@ var $ = function (s, r) { return (r || document).querySelector(s); };
 var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
 var sleep = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
-var plain = function (s) { return String(s == null ? '' : s).replace(/\*\*(.+?)\*\*/g, '$1').replace(/(^|\s)\*(\S.*?)\*(?=\s|$)/g, '$1$2').replace(/^#+\s*/gm, ''); };
+var plain = function (s) { return String(s == null ? '' : s).replace(/^[ \t]*\|?[ \t:|-]*-{3,}[ \t:|-]*$/gm, '').replace(/^[ \t]*\|[ \t]*|[ \t]*\|[ \t]*$/gm, '').replace(/[ \t]*\|[ \t]*/g, ' · ').replace(/\n{2,}/g, '\n').replace(/\*\*(.+?)\*\*/g, '$1').replace(/(^|\s)\*(\S.*?)\*(?=\s|$)/g, '$1$2').replace(/^#+\s*/gm, ''); };
 var pretty = function (v) { return typeof v === 'string' ? v : JSON.stringify(v, null, 2); };
 
 /* ---------- state ---------- */
@@ -45,6 +46,16 @@ function post(url, body) {
       return d;
     });
   }, function () { throw new Error('No connection. Check your internet and try again.'); });
+}
+function request(messages, tools) {          /* what the model receives, shown on the wire as it is sent */
+  var r = { model: MODEL, messages: messages.map(function (m) {
+    if (!m.tool_calls) return m;
+    return { role: 'assistant', content: m.content, tool_calls: m.tool_calls.map(function (c) {
+      return { id: c.id, type: 'function', function: { name: c.name, arguments: typeof c.arguments === 'string' ? c.arguments : JSON.stringify(c.arguments) } };
+    }) };
+  }) };
+  if (tools && tools.length) r.tools = tools.map(function (t) { return { type: 'function', function: t }; });
+  return r;
 }
 function chat(messages, tools) { return post(API, { op: 'chat', messages: messages, tools: tools || [] }); }
 function runTool(args, src) { return post(API, { op: 'run', src: src || undefined, args: args }); }
@@ -158,7 +169,8 @@ function step1() {
     ctx('The model was trained before this course existed. Watch the wire.');
     panel('<p class="q">“' + esc(Q1) + '”</p><div class="row"><button class="btn act" id="a">Ask the model</button></div>');
     $('#a').onclick = function () { act(this, function () {
-      return wire('you', 'model', Q1).then(function () { return chat([{ role: 'user', content: Q1 }]); }).then(function (d) {
+      var m1 = [{ role: 'user', content: Q1 }];
+      return wire('you', 'model', Q1, request(m1)).then(function () { return chat(m1); }).then(function (d) {
         t.answer = plain(d.message.content) || '(no answer)';
         return wire('model', 'you', t.answer);
       }).then(step1);
@@ -174,9 +186,9 @@ function step1() {
     return;
   }
   ins('Nothing reached the sheet.', false);
-  ctx('');
+  ctx('Same model and settings as the GroqCloud playground, with nothing added. Ask it there and you get the same kind of answer.');
   panel(head + '<p class="truth">' + esc(t.truth.Date) + ' · ' + esc(t.truth['Lecture title']) + '<br><a href="' + sheetLink() + '" target="_blank" rel="noopener">Open the sheet</a></p>');
-  after('<p>Count the messages on the wire: two, both between you and the model. Whatever it said, it said from memory. The line to the sheet never lit up.</p>');
+  after('<p>Ask again and you may get the other kind of answer: it says it does not know, or it makes something up. Either way, count the messages on the wire: two, both between you and the model. The line to the sheet never lit up.</p>');
   forward('Continue');
 }
 
@@ -192,7 +204,7 @@ function step2() {
     panel('<p class="q">“' + esc(Q1) + '”</p>' + cardView(GOOD) + '<div class="row"><button class="btn act" id="a">Ask again, with the card</button></div>');
     $('#a').onclick = function () { act(this, function () {
       t.msgs = [{ role: 'user', content: Q1 }];
-      return wire('you', 'model', Q1 + '  + the card', tool).then(function () { return chat(t.msgs, [tool]); }).then(function (d) {
+      return wire('you', 'model', Q1 + '  + the card', request(t.msgs, [tool])).then(function () { return chat(t.msgs, [tool]); }).then(function (d) {
         var c = d.message.tool_calls[0];
         if (!c) return wire('model', 'you', plain(d.message.content) || '(no answer)').then(function () { say('This time it answered without asking for the tool. It predicts, so that can happen. Ask again.'); });
         t.call = c; t.msgs.push(asMsg({ content: d.message.content, tool_calls: [c] })); t.p = 1;
@@ -220,7 +232,7 @@ function step2() {
     panel('<p class="truth">' + esc(t.result.Date || '') + ' · ' + esc(t.result['Lecture title'] || t.result.error || '') + '</p><div class="row"><button class="btn act" id="h">Hand it back</button></div>');
     $('#h').onclick = function () { act(this, function () {
       t.msgs.push({ role: 'tool', tool_call_id: t.call.id, content: JSON.stringify(t.result) });
-      return wire('server', 'model', 'Here is the result', t.result).then(function () { return chat(t.msgs, [tool]); }).then(function (d) {
+      return wire('server', 'model', 'Here is the result', request(t.msgs, [tool])).then(function () { return chat(t.msgs, [tool]); }).then(function (d) {
         t.answer = plain(d.message.content) || '(no answer)';
         return wire('model', 'you', t.answer);
       }).then(function () { t.p = 3; finish(2); step2(); });
@@ -332,11 +344,11 @@ function loop(question, tool, via) {
         });
       }).then(function (res) {
         msgs.push({ role: 'tool', tool_call_id: c.id, content: JSON.stringify(res).slice(0, 5800) });
-        return wire('server', 'model', 'Here is the result').then(next);
+        return wire('server', 'model', 'Here is the result', request(msgs, [tool])).then(next);
       });
     });
   }
-  return wire('you', 'model', question + '  + the card').then(next);
+  return wire('you', 'model', question + '  + the card', request(msgs, [tool])).then(next);
 }
 function askBox(chips, label) {
   return '<div class="ask"><input id="q" maxlength="300" placeholder="Ask a question" aria-label="Your question"><button class="btn act" id="ask">' + (label || 'Ask') + '</button></div>' +

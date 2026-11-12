@@ -27,13 +27,15 @@ Curriculum sheet: `get_lecture(number)`. Any other sheet: `find_rows(search)`.
 
 ## Tested against the real model (12 Nov, GPT-OSS 120B on Groq)
 
-- Step 1: the bare model invents a lecture (March 2025, microservices) every time.
-- Step 2: the card makes it call `get_lecture(12)` 5 of 5 times; the handed-back row gives the right date and title.
-- Step 3 question set, two runs per card, same result both runs: empty card 2 of 5; sensible cards 5 of 5; a card that says only "by number" fails the CS50 question (calls lecture 3) until it says "our course". A name alone (`get_lecture`, no description) also passes.
-- Left out on purpose: "Summarise Karpathy's lecture on hallucination". Every described card invents a lecture number for it and no wording fixed it reliably. Worth saying on stage: some routing can't be fixed with words, so the server has to check (Lecture 10, section 13).
+No hidden instruction and no changed settings: each request is exactly what the wire shows, sent with the GroqCloud playground's defaults, so learners can repeat any run there. (A first version sent a system prompt naming the course and asking for three sentences; it made the model invent a lecture every time, which the playground never does. Removed 12 Nov.)
+
+- Step 1, question names the course: 4 of 5 runs say "I don't have the schedule", 1 invents a date. Either way nothing reaches the sheet.
+- Step 2: `get_lecture(12)` 5 of 5; the handed-back row gives the right date and topic.
+- Step 3, 3 runs per card at playground defaults: empty card 3/5 every run; "Gets a lecture by number" 4, 5, 4 (fails the CS50 question); proper descriptions 5/5 every run.
+- Left out on purpose: "Summarise Karpathy's lecture on hallucination". Described cards invent a lecture number for it and no wording fixed it reliably. Worth saying on stage: some routing can't be fixed with words, so the server has to check (Lecture 10, section 13).
 - Step 4: Lecture 40 reaches the server's error and the model says it doesn't exist.
-- Step 5: `tools/list` and `tools/call` through `/api/mcp`, right answer.
-- Own-sheet path tested only at the server level, with a made-up sheet.
+- Step 5: `tools/list` and `tools/call` through `/api/mcp`; a FastMCP client also connects to the live address.
+- About 400 tokens a call.
 
 ## Keys: every learner brings their own
 
