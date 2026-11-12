@@ -616,6 +616,7 @@ function paintToc(){
     if(up){up.href=go.href;up.innerHTML='<span class="n"></span> ';up.firstChild.textContent=n;up.appendChild(document.createTextNode(ti))}
     if(ul)ul.textContent=!doneN?'First':firstOpen?'Next':'Again from';
     var cta=go.closest('.fp-cta');if(cta)cta.style.setProperty('--p',total?doneN/total:0);if(cta)cta.classList.toggle('begun',doneN>0);
+    [].forEach.call(document.querySelectorAll('.fp-toc'),function(el){el.style.setProperty('--p',total?doneN/total:0)});
     var f=t.closest('[data-ch]').getAttribute('data-ch');if(doneN)[].forEach.call(document.querySelectorAll('.fp-ch>li[data-ch="'+f+'"]>details'),function(d){d.open=true})}
   /* course home: the road lights the chapters done and the one to do now; only that chapter's card starts open */
   var nowCh=firstOpen?firstOpen.closest('[data-ch]').getAttribute('data-ch'):null,road=0;

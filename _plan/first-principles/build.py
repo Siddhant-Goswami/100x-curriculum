@@ -579,8 +579,8 @@ HEAD = '''<!DOCTYPE html>
 </div></header>
 <div class="fp-scrim" hidden></div>
 <aside class="fp-toc" id="fp-toc" aria-label="Table of contents" hidden>
-  <div class="hd"><b>Table of contents</b><button type="button" class="tbtn" data-close aria-label="Close the table of contents">&times;</button></div>
-  <p class="fp-sum" data-sum></p>
+  <div class="hd"><b>Contents</b><button type="button" class="tbtn" data-close aria-label="Close the table of contents">&times;</button></div>
+  <div class="fp-tsum"><span class="bar"><i></i></span><p class="fp-sum" data-sum></p></div>
 {toc}
   <div class="ft"><a href="''' + BASE + '''">Course home</a><a href="/#FP">Curriculum map</a></div>
 </aside>
@@ -713,8 +713,8 @@ def toc(course, here_film=None):
     rows = ''
     for fi, (f, ls) in enumerate(course):
         lis = ''.join(f'<li data-href="{l["href"]}"{f" data-scene=\"{l["scene"]}\"" if l["scene"] else ""}><a href="{l["href"]}"><i class="st" aria-hidden="true"></i><span class="n">{l["n"]}</span><span class="t">{l["title"]}</span></a></li>' for l in ls)
-        rows += (f'  <li data-ch="{fi + 1}"><details{" open" if here_film == fi else ""}><summary><i class="st" aria-hidden="true"></i>'
-                 f'<span class="t"><span class="n">{fi + 1}.</span> {f["q"]}</span><span class="c" data-count>{len(ls)} lessons</span></summary>'
+        rows += (f'  <li data-ch="{fi + 1}" class="{ACC[fi]}"><details{" open" if here_film == fi else ""}><summary><span class="badge" aria-hidden="true"><b>{fi + 1}</b></span>'
+                 f'<span class="t">{f["q"]}<span class="c" data-count>{len(ls)} lessons</span></span></summary>'
                  f'<ol class="fp-ls">{lis}</ol></details></li>\n')
     return f'<ol class="fp-ch">\n{rows}</ol>'
 
