@@ -691,14 +691,22 @@ def terms(flat):
 CHAIN = ['bits', 'memory', 'trust', 'learning', 'attention', 'chips', 'assistant', 'checks']
 
 
-def chain(course, here):
-    # chapter 1 goes from sand to bits, so it lights both
-    items = ['<span class="sand here">sand</span>' if here == 0 else '<span class="sand">sand</span>']
-    for fi, (f, ls) in enumerate(course):
-        cls = 'here' if fi == here else ('past' if fi < here else '')
+def chain(course, here, k):
+    # one quiet line (chapter + its link in the chain, lesson count, minutes) over a thin bar of 8 segments;
+    # past chapters full, this one filled up to this lesson, the chain words live in each segment's tooltip
+    f, ls = course[here]
+    word = 'sand to bits' if here == 0 else CHAIN[here]
+    segs = ''
+    for fi, (g, gl) in enumerate(course):
+        fill = 100 if fi < here else (round(100 * (k + 1) / len(ls)) if fi == here else 0)
+        cls = ' class="here"' if fi == here else ''
         cur = ' aria-current="step"' if fi == here else ''
-        items.append(f'<a class="{cls}" href="{ls[0]["href"]}" title="Chapter {fi + 1}: {html.escape(plain(f["q"]), quote=True)}"{cur}>{CHAIN[fi]}</a>')
-    return '<nav class="fp-chain" aria-label="Where this chapter sits, from sand to language models">' + '<i aria-hidden="true">→</i>'.join(items) + '</nav>\n'
+        lab = html.escape(f'Chapter {fi + 1}, {"sand to bits" if fi == 0 else CHAIN[fi]}: {plain(g["q"])}', quote=True)
+        segs += f'<a{cls} href="{gl[0]["href"]}" title="{lab}" aria-label="{lab}"{cur}><i style="width:{fill}%"></i></a>'
+    l = ls[k]
+    return (f'<div class="fp-where"><p><span class="ch">Chapter {here + 1} · {word}</span>'
+            f'<span class="ls">Lesson {k + 1} of {len(ls)} · {l["min"]} min</span></p>'
+            f'<nav class="bar" aria-label="Eight chapters, from sand to language models">{segs}</nav></div>\n')
 
 
 def toc(course, here_film=None):
@@ -739,8 +747,8 @@ def build():
         page = HEAD.format(title=html.escape(f'{l["n"]} {plain(l["title"])} · {plain(f["q"])}'), desc=html.escape(f['dek'], quote=True),
                            page=f'fp-{f["slug"]}-{k + 1}', crumbs=crumbs, toc=toc(course, fi))
         attrs = f' data-scene="{l["scene"]}"' if l['scene'] else ''
-        page += f'<article class="fp-lesson"{attrs}>\n' + chain(course, fi)
-        page += f'<p class="fp-meta">Lesson {l["n"]} · {k + 1} of {len(ls)} in chapter {fi + 1} · about {l["min"]} min</p>\n<h1>{l["title"]}</h1>\n'
+        page += f'<article class="fp-lesson"{attrs}>\n' + chain(course, fi, k)
+        page += f'<h1>{l["title"]}</h1>\n'
         # each chapter opens with why it matters to the learner's own build (the full list is on its Check yourself page)
         if k == 0:
             page += f'<p class="fp-why"><b>Why this matters:</b> {f["why"]}</p>\n'
