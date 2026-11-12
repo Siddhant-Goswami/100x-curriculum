@@ -185,7 +185,7 @@ film('02-how-a-machine-remembers', 'Data from First Principles, Part One', '6:02
      S(3, 'A contents page for the disk', f'''
 <p>A disk does not know what a chat is. It is one long row of numbered slots, called blocks, and it understands two commands: read block 42, and write block 90.</p>
 {FP('f2-card', 'dir', 'a contents page', 'Find where the chats start. Then find them again.')}
-{FOUND('<p>That list is a <b>file system</b>: names on one side, block numbers on the other, like the contents page of a book.</p><p>It is the same trick as the letter A. The pattern <code>01000001</code> means 65, and 65 means A, only because we agreed. Bits mean nothing until someone agrees how to read them.</p>' + SEEN(6, 6, 'Where does storage live?', 'In Lecture 6 your server reached memory.txt "through the file system (read, write, edit)", and we called that an interface too. Now you know what it is: a contents page that turns a file name into block numbers.'))}
+{FOUND('<p>That list is a <b>file system</b>: names on one side, block numbers on the other, like the contents page of a book.</p><p>It is the same trick as the letter A. The pattern <code>01000001</code> means 65, and 65 means A, only because we agreed. Bits mean nothing until someone agrees how to read them.</p>')}
 ''', 'A short list of names and block numbers says where everything is.', 'a-card-that-says-where-things-are') +
      S(4, 'Tables, rows and links', f'''
 <p>In <a href="{L6}">Lecture 6</a>, <code>memory.txt</code> kept everything in one file, so finding one chat meant reading all of it. Split it instead. Each kind of <b>thing</b> (users, conversations, messages) gets a table. Each <b>fact</b> about a thing is a column. Each single thing is a row, numbered by an <code>id</code> that never repeats. That leaves the <b>links</b> between things.</p>
@@ -252,7 +252,6 @@ film('03-can-you-trust-a-machine', 'Data from First Principles, Part Two', '8:43
   <li><b>A warehouse.</b> One more copy, arranged for reports, on its own machine.</li>
 </ul>
 <p>Follower, index, warehouse: all copies. Each one can be thrown away and remade from the system of record.</p>
-{SEEN(9, 10, "Aarav's Monday", "Aarav's first task in Lecture 9 was to collect last quarter's numbers from Databricks. Databricks is a warehouse: a copy of the company's records, arranged for reports.")}
 ''', 'Split the data, choose what to show when a cable is cut, keep a copy for reports.', 'growing-past-one-machine') +
      S(6, 'In your build', f'''
 <ul>
@@ -286,7 +285,7 @@ film('04-what-is-learning', 'Language Models from First Principles, Part One', '
      S(3, 'Tokens: who decided them?', f'''
 <p>Start with 256 tokens, one for each possible byte. In English that is about one per letter. It works, but then " the capital of France is" is 25 tokens, and the model must guess 25 times to write it. Bigger tokens mean fewer guesses. Nobody picks them by hand. The machine counts.</p>
 {FP('f4-token', 'token', 'a token', 'Merge pairs until "the" is one token.')}
-{FOUND('<p>That is <b>byte pair encoding</b>. About fifty thousand merges later, those 25 bytes are 5 tokens. Common words become one token. Rare words stay in pieces: <code>un | believ | able</code> is three tokens. A word nobody has written yet can still be spelled byte by byte, so no text is ever unknown.</p><p>A byte is a pattern we agreed on. A token is a pattern a machine counted.</p>' + SEEN(9, 12, 'Data is bigger than you think', 'Lecture 9 described tokens as words turned into numbers. Close, and now sharper: a token is a piece of text with a number, often only part of a word, and the pieces were counted by a machine, not chosen by anyone.'))}
+{FOUND('<p>That is <b>byte pair encoding</b>. About fifty thousand merges later, those 25 bytes are 5 tokens. Common words become one token. Rare words stay in pieces: <code>un | believ | able</code> is three tokens. A word nobody has written yet can still be spelled byte by byte, so no text is ever unknown.</p><p>A byte is a pattern we agreed on. A token is a pattern a machine counted.</p>')}
 ''', 'The machine counts which neighbours appear together most, and merges them.', 'who-decided-what-the-tokens-are') +
      S(4, 'The first language model was a count', f'''
 <p>Read a pile of text. For every token, count what came right after it, and turn the counts into chances. To guess, look up the row for the last token and pick. For decades, this was a language model. Ask it to finish <i>the capital of France is</i>.</p>
@@ -321,7 +320,7 @@ film('04-what-is-learning', 'Language Models from First Principles, Part One', '
      S(9, 'Training, a trillion times', f'''
 <p>Guess, measure the mistake, feed it back. Then the next sentence. A trillion times. Along the way, what the model writes changes.</p>
 {ORDER('f4-train', 'the loop', 'Put what the model writes in order, from untrained to trained.', [('no training', 'teaspoon qu the7 blor of'), ('a little', 'the of and the is a the'), ('more', 'The capital is of the France city.'), ('a trillion tries', 'The capital of France is Paris.')], 'Babble, then common words, then grammar, then facts.')}
-{FOUND('<p>"France" and "Paris" sat side by side in millions of sentences. Each time, the loss dropped a little. That is how the dials came to know. Rule of thumb: about twenty tokens of reading for every dial. Recent models read more than 15 trillion tokens.</p>' + SEEN(9, 12, 'Data is bigger than you think', 'Lecture 9 showed FineWeb, a public crawl of the web: 44 TB and 15 trillion tokens, and only about the floor for testing a small model. Every one of those tokens is one guess, one measured mistake and one nudge.'))}
+{FOUND('<p>"France" and "Paris" sat side by side in millions of sentences. Each time, the loss dropped a little. That is how the dials came to know. Rule of thumb: about twenty tokens of reading for every dial. Recent models read more than 15 trillion tokens.</p>')}
 ''', 'Guess, measure, nudge, a trillion times, until babble turns into facts.', 'training') +
      S(10, 'What learning needs', f'''
 <p>Plot the house line's mistakes, a child's falls while learning to walk, and the model's loss. All three slope down. That slope is learning, and it needs four things. Call them <b>the recipe</b>. It comes back in every chapter from here.</p>
@@ -359,7 +358,7 @@ film('05-attention-and-transformers', 'Language Models from First Principles, Pa
      S(1, 'Embeddings: a map of words', f'''
 <p>A token's number is only a label. 4881 for France says nothing about 6342 for Paris. So rate every token on a few scales instead, like "how French" and "how much a city". With two scales, every token is a spot on a map.</p>
 {FP('f5-map', 'map', 'a map', 'Mark where Berlin belongs. Then find it with arithmetic.')}
-{FOUND('<ul><li>Nobody writes the ratings. Each one is a dial. If Paris and London sit close, one sentence ("flew to Paris") teaches both, and the loss drops. <b>The mistakes drew the map.</b></li><li>A real map has thousands of scales: GPT-3, an OpenAI model from 2020, used about twelve thousand. So keep it as a list of numbers, called a <b>vector</b>. A token\'s list is its <b>embedding</b>.</li></ul>' + SEEN(9, 3, 'Input and output of the bare model', 'Lecture 9 asked you to define embeddings in one line, and said they are not what you hand the model. Now you can see why: you send text, and the model turns each token into its embedding itself.'))}
+{FOUND('<ul><li>Nobody writes the ratings. Each one is a dial. If Paris and London sit close, one sentence ("flew to Paris") teaches both, and the loss drops. <b>The mistakes drew the map.</b></li><li>A real map has thousands of scales: GPT-3, an OpenAI model from 2020, used about twelve thousand. So keep it as a list of numbers, called a <b>vector</b>. A token\'s list is its <b>embedding</b>.</li></ul>')}
 ''', 'Each word gets a spot on a map, and similar meanings land close together.') +
      S(2, 'One word, two meanings', f'''
 <p>Each token gets its spot alone, before it sees its neighbours. That breaks on a word like "bank".</p>
@@ -389,7 +388,7 @@ film('05-attention-and-transformers', 'Language Models from First Principles, Pa
      S(6, 'Why long prompts cost more', f'''
 <p>All this listening has a cost. Every token listens to every token before it.</p>
 {FP('f5-pairs', 'pairs', 'the bill', 'Work out the pairs in a 1,000-token prompt.')}
-{FOUND('<p>A 1,000-token prompt makes about half a million pairs. Double the text and the pairs grow four times. That is why a long prompt costs more than its length suggests.</p>' + SEEN(10, 2, 'More context helps', 'In Lecture 10, pasting the whole curriculum as CSV lifted the score to 7, and every token of it listened to every token before it. More context helps, and every extra token adds to the bill.'))}
+{FOUND('<p>A 1,000-token prompt makes about half a million pairs. Double the text and the pairs grow four times. That is why a long prompt costs more than its length suggests.</p>')}
 ''', 'Every word listens to every word before it, so the work grows faster than the text.', 'the-bill') +
      S(7, 'In your build', f'''
 <ul>
@@ -439,7 +438,7 @@ film('06-what-hardware-powers-llms', 'Language Models from First Principles, Par
      S(6, 'In your build', f'''
 <ul>
   <li>Long chats get slower and hit a limit because the KV cache grows with every token.</li>
-  <li>A model that runs on a laptop is usually a quantized one: smaller, slightly rougher dials. The Qwen that <a href="{L9}#s12">Lecture 9</a> suggested runs on Ollama in 6 to 7 GB, on a 16 GB laptop.</li>
+  <li>A model that runs on a laptop is usually a quantized one: smaller, slightly rougher dials.</li>
   <li>You pay per token because every token costs a trip of the dials. Shorter prompts and answers cost less.</li>
 </ul>
 '''),
@@ -506,7 +505,7 @@ film('08-what-llms-learn-from-now', 'Language Models from First Principles, Part
      S(1, 'Where the computing goes now', f'''
 <p>Take all the computing at OpenAI and Anthropic, as estimated by SemiAnalysis, a firm that tracks chips and data centres. In early 2024, about two thirds of it went on reading the web.</p>
 {GUESS('f8-flip', 'the flip', 'On the same estimate, what share goes on reading the web by late 2026?', ['Three quarters', 'A third', 'A tenth'], 2)}
-{FOUND('<div class="fp-stack"><div><span>Early 2024</span><div class="bar"><span class="pre" style="flex:66">Reading the web</span><span class="post" style="flex:5"></span><span style="flex:29">Serving you</span></div></div><div><span>Late 2026</span><div class="bar"><span class="pre" style="flex:10"></span><span class="post" style="flex:55">After the reading</span><span style="flex:35">Serving you</span></div></div></div><p>The new computing goes to what comes after the reading: <b>post-training</b>. Why? "We have but one internet," as Ilya Sutskever, a co-founder of OpenAI, said in December 2024. Every lab has already read it.</p><p>These figures are estimates from a fast-moving industry. Keep the idea, and treat the numbers as rough sizes.</p>' + SEEN(9, 12, 'Data is bigger than you think', 'FineWeb from Lecture 9, 15 trillion tokens of the public web, is roughly what "one internet" means. Every lab has read it, so more reading buys less.'))}
+{FOUND('<div class="fp-stack"><div><span>Early 2024</span><div class="bar"><span class="pre" style="flex:66">Reading the web</span><span class="post" style="flex:5"></span><span style="flex:29">Serving you</span></div></div><div><span>Late 2026</span><div class="bar"><span class="pre" style="flex:10"></span><span class="post" style="flex:55">After the reading</span><span style="flex:35">Serving you</span></div></div></div><p>The new computing goes to what comes after the reading: <b>post-training</b>. Why? "We have but one internet," as Ilya Sutskever, a co-founder of OpenAI, said in December 2024. Every lab has already read it.</p><p>These figures are estimates from a fast-moving industry. Keep the idea, and treat the numbers as rough sizes.</p>')}
 ''', 'Labs now spend most of their computing after the model has read the web.') +
      S(2, 'Learning by trying', f'''
 <p>Give the model a hard maths problem and let it write out its working before the answer. Check only the last line. Ask the same problem sixteen times: the dice give sixteen different attempts. Every token in a winning attempt is nudged up, every token in a losing one down.</p>
