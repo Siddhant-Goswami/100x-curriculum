@@ -280,7 +280,7 @@ film('04-what-is-learning', 'Language Models from First Principles, Part One', '
 ''', 'A line through past sales can price a house nobody ever sold.') +
      S(2, 'The next-letter game', f'''
 <p>In 1951 Claude Shannon, the scientist who founded the study of information, showed people a line of text, covered the rest, and asked them for the next letter.</p>
-{FP('f4-game', 'game', "Shannon's game", 'Guess the next fourteen letters.')}
+{FP('f4-game', 'game', "Shannon's game", 'Finish the sentence, one letter at a time.')}
 {FOUND('<p>A language model is a machine playing that game. It does not guess letters, though. It guesses <b>tokens</b>: pieces of text, often part of a word. It builds them from what the chip already has, which is bytes. The word "the" is stored as the bytes <code>116 104 101</code>.</p>')}
 ''', 'Guess the next letter of a sentence: the game every language model plays.', 'a-guessing-game') +
      S(3, 'Tokens: who decided them?', f'''

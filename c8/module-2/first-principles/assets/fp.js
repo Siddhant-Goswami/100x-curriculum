@@ -300,7 +300,7 @@ W.loop=function(s){
 
 /* ================= 4. What is learning ================= */
 W.game=function(s){
-  var KNOWN='THE ROOM WAS ',REST='NOT VERY LIGHT',i=0,right=0,res=[],line=h('p','fp-shan'),keys=h('div','fp-keys');
+  var KNOWN='THANK ',REST='YOU VERY MUCH',i=0,right=0,res=[],line=h('p','fp-shan'),keys=h('div','fp-keys');
   s.stage.appendChild(line);s.stage.appendChild(keys);
   function ch(c){return c===' '?'_':c}
   function paint(){line.innerHTML=KNOWN.split('').map(function(c){return '<span>'+ch(c)+'</span>'}).join('')+REST.split('').map(function(c,j){return j<i?'<span class="'+(res[j]?'ok':'miss')+'">'+ch(c)+'</span>':j===i?'<span class="fp-cur">?</span>':'<span class="mut">·</span>'}).join('')}
