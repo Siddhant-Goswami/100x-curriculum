@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lecture Notes: Tool Calling and MCP, Part 2 | 100xEngineers</title>
-<meta name="description" content="Notes for Lecture 11: the Tool Bench step by step. The bare model never reaches the sheet; one tool call carried by hand; the tool card written against tests; the server running the loop; the card moved next to the data, which is MCP; then the same on your own sheet.">
+<meta name="description" content="Notes for Lecture 11: one shop's Google Sheet, from a pasted prompt to a tool call to MCP. Why the model fills gaps, the server as the bridge, function calling in six steps, the tool schema, tool failures, verifying the execution record, and MCP's host, client and server.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -78,15 +78,139 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
   <p class="kick">Lecture notes · Lecture 11 · 13 November 2026 · Both tracks</p>
-  <h1>Make the reverse call yourself</h1>
-  <p class="dek">One tool call by hand, a tool card that passes its tests, a server that runs the loop, and the card moved next to the data: MCP.</p>
+  <h1>The model asks. The server acts. The record proves it.</h1>
+  <p class="dek">One shop's Google Sheet, followed from a pasted prompt to a tool call to MCP.</p>
 </div>
 
-<p>In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Lecture 10</a> you derived function calling on paper: the model asks, the server acts. Today you run it on the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a>, one section per step. Both tracks do the same steps; the code track also gets the Python under steps 4 and 5.</p>
+<p><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10</a> derived function calling. This lecture ran the same chain on one business, Priya's shop, and added four things: the tool schema, what to do when a tool fails, how to verify a tool call, and MCP. Tomorrow, in <a href="/#L12">Lecture 12</a>, you connect it for real.</p>
 
-<section class="s" id="s01"><h2><span class="n">01</span>The bench</h2>
+<section class="s" id="s01"><h2><span class="n">01</span>Where tools and MCP sit</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three boxes in a row: the Sheet that holds the data on the left, the orange Server that follows rules in the middle, and the purple Model that predicts on the right. Arrows join Sheet to Server and Server to Model. Below the Server, You, joined to the Server by an arrow.">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Four stacked layers. From the bottom: Infrastructure, Agent internet, Protocol, Tooling. Protocol and Tooling are highlighted. Tooling is what the agent can do. Protocol is how those tools are reached, such as MCP and A2A.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-act" x="210" y="20" width="250" height="44" rx="8"/>
+    <rect class="f-act" x="210" y="74" width="250" height="44" rx="8"/>
+    <rect class="f-card" x="210" y="128" width="250" height="44" rx="8"/>
+    <rect class="f-card" x="210" y="182" width="250" height="44" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="335" y="49" class="m c-act">Tooling</text>
+    <text x="335" y="103" class="m c-act">Protocol</text>
+    <text x="335" y="157" class="m">Agent internet</text>
+    <text x="335" y="211" class="m">Infrastructure</text>
+    <text x="480" y="48" class="xxs l">what the agent can do</text>
+    <text x="480" y="102" class="xxs l">how tools are reached: MCP, A2A</text>
+    <text x="480" y="156" class="xxs l c-mute">where agents run and meet</text>
+    <text x="480" y="210" class="xxs l c-mute">cloud, GPUs, databases</text>
+  </g>
+</svg>
+<figcaption>Today is the top two layers.</figcaption>
+</figure>
+<p>An agent is a system, not an LLM with a prompt. The model does the reasoning; memory, tools, orchestration, feedback and security sit around it.</p>
+<p class="pull">Tools give an agent capabilities. A protocol defines how those capabilities are exposed.</p>
+<table class="dials">
+  <tr><th>Protocol</th><th>Who talks to whom</th></tr>
+  <tr><td>REST</td><td>An app to a service, through fixed endpoints with fixed parameters.</td></tr>
+  <tr><td>GraphQL</td><td>An app to a service, and the app says exactly which data it wants.</td></tr>
+  <tr><td>MCP</td><td>An AI app to tools and data.</td></tr>
+  <tr><td>A2A</td><td>One agent to another agent, to hand over work.</td></tr>
+</table>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>From Lecture 10: the model fills gaps</h2>
+<p>"Which execution track should I choose in 100x?" With no context the model scored 1 out of 10, with a short description 5, with the full curriculum 7. It still named Zapier, which is nowhere in the file. <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s02">Lecture 10 has the runs.</a></p>
+<ul class="pt">
+  <li><b>It predicts the next token.</b> It does not look anything up.</li>
+  <li><b>It fills a gap with the likely answer,</b> and does not tell you it did.</li>
+  <li><b>Confidence is not proof.</b></li>
+  <li><b>A better prompt and a lower temperature help, and neither adds a fact.</b> At temperature 0 you get the same wrong answer every time.</li>
+</ul>
+<p>To find what went wrong, write a <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">golden pair</a>: the ideal input and the ideal output, decided before you run the model. Then compare.</p>
+<p class="pull">Reducing randomness does not create missing knowledge.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Priya's shop: the paste problem</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Priya copies the sheet at 6:40 and pastes it into the model. A new order arrives in the sheet at 7:10 and stays there. The model answers from the 6:40 copy.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#db" x="50" y="50" class="c-det"/>
+    <use href="#person" x="330" y="30" style="stroke:var(--ink2)"/>
+    <rect class="f-prob" x="570" y="55" width="160" height="90" rx="10"/>
+    <path class="arw" d="M150 95 H318" marker-end="url(#ah)"/>
+    <path class="arw" d="M394 95 H562" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="95" y="152" class="m c-det">Sheet</text>
+    <text x="95" y="180" class="xxs c-act">new order, 7:10</text>
+    <text x="95" y="202" class="xxs c-act">stays here</text>
+    <text x="356" y="186" class="m">Priya</text>
+    <text x="234" y="82" class="xxs">copy, 6:40</text>
+    <text x="478" y="82" class="xxs">paste</text>
+    <text x="650" y="95" class="m c-prob">Model</text>
+    <text x="650" y="123" class="xxs">sees the 6:40 copy</text>
+  </g>
+</svg>
+<figcaption>The sheet is right. The way it reaches the model is the problem.</figcaption>
+</figure>
+<p>Priya runs Northwind Goods, a home products shop. Everything is in one Google Sheet. Every morning she copies the orders into ChatGPT and asks what is pending and what to restock.</p>
+<ul class="pt">
+  <li><b>Repetitive.</b> She pastes every single time.</li>
+  <li><b>Error-prone.</b> She copies 40 rows. The new order is on row 41.</li>
+  <li><b>Stale.</b> She copied at 6:40. An order came at 7:10.</li>
+  <li><b>Doesn't scale.</b> Five employees need the same answers, all day.</li>
+</ul>
+<p>She needs two things: a <b>trusted source</b>, which she has, and a <b>bridge</b> that fetches from it whenever a question needs it.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The sheet and its one rule</h2>
+<p>Three tabs: <b>Orders</b>, <b>Customers</b>, <b>Products</b>. Six orders: some delivered, three pending, one cancelled.</p>
+<p><b>The rule:</b> revenue counts every order except cancelled ones. Pending counts. Order 1046, a kettle, is cancelled, so it is left out.</p>
+<table class="dials">
+  <tr><th>Product</th><th>Revenue</th></tr>
+  <tr><td>Kettle</td><td>4,980</td></tr>
+  <tr><td>Mug set</td><td>3,960</td></tr>
+  <tr><td>Linen</td><td>3,870</td></tr>
+  <tr><td>Oak board</td><td>1,890</td></tr>
+</table>
+<p>So the golden pair is ready before any model runs: "Which product generated the highest revenue?" The kettle, 4,980. You can check it in the sheet by hand.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>What reaches the model</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="Three boxes on the left: the question, the instruction, and the data. Arrows carry all three into one box on the right, the context window, which is all the model can see.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="15" width="270" height="58" rx="8"/>
+    <rect class="f-card" x="30" y="91" width="270" height="58" rx="8"/>
+    <rect class="f-det" x="30" y="167" width="270" height="58" rx="8"/>
+    <rect class="f-prob" x="490" y="40" width="240" height="160" rx="10"/>
+    <path class="arw" d="M308 44 L482 92" marker-end="url(#ah)"/>
+    <path class="arw" d="M308 120 H482" marker-end="url(#ah)"/>
+    <path class="arw" d="M308 196 L482 148" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="165" y="40" class="m">Question</text>
+    <text x="165" y="62" class="xxxs">Which product earned the most?</text>
+    <text x="165" y="116" class="m">Instruction</text>
+    <text x="165" y="138" class="xxxs">use the sheet, skip cancelled orders</text>
+    <text x="165" y="192" class="m c-det">Data</text>
+    <text x="165" y="214" class="xxxs">the order rows, as text</text>
+    <text x="610" y="112" class="m c-prob">Context window</text>
+    <text x="610" y="140" class="xxs">all the model can see</text>
+  </g>
+</svg>
+<figcaption>Three things go in. Nothing else exists for the model.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>If it doesn't reach the model, the model can't use it.</b> An order the server never fetched does not exist.</li>
+  <li><b>Send records, not a screenshot.</b> Text with named fields.</li>
+  <li><b>Send only what the question needs.</b> A products question gets product rows, not the whole sheet. Tokens cost money.</li>
+  <li><b>Right data is not a right answer.</b> The model can still misread or miscalculate. So you verify.</li>
+</ul>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>The server is the bridge</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three boxes in a row: the Sheet that stores the data on the left, the orange Server that follows rules in the middle, and the purple Model that predicts on the right. Arrows join Sheet to Server and Server to Model. Below the Server, Priya, joined to the Server by an arrow.">
   <g class="ln" filter="url(#wob)">
     <use href="#db" x="50" y="68" class="c-det"/>
     <rect class="f-det" x="295" y="60" width="170" height="90" rx="10"/>
@@ -98,39 +222,49 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   </g>
   <g class="tx">
     <text x="95" y="172" class="m c-det">Sheet</text>
-    <text x="95" y="196" class="xxs">the data</text>
+    <text x="95" y="196" class="xxs">stores</text>
     <text x="380" y="100" class="m c-det">Server</text>
     <text x="380" y="128" class="xxs">follows rules</text>
     <text x="635" y="100" class="m c-prob">Model</text>
     <text x="635" y="128" class="xxs">predicts</text>
-    <text x="336" y="276" class="m r">You</text>
-    <text x="500" y="290" class="xxs l">every message shows</text>
-    <text x="500" y="312" class="xxs l">on the wire, as JSON</text>
+    <text x="336" y="276" class="m r">Priya</text>
+    <text x="218" y="92" class="xxxs">Sheets API</text>
+    <text x="500" y="290" class="xxs l">rows or an error,</text>
+    <text x="500" y="312" class="xxs l">never a guess</text>
   </g>
 </svg>
-<figcaption>You only talk to the server. The server talks to the sheet on its left and the model on its right.</figcaption>
+<figcaption>The sheet stores. The model predicts. Only the server can be trusted to fetch.</figcaption>
 </figure>
+<p>Google Sheets already has an API. Why not connect the model straight to it? The sheet only stores: it knows no questions and no business rules. The model only predicts: you can't trust it to run every request correctly, or hand it your keys. The <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s11">server</a> stands between.</p>
+<p class="pull">The API is the door. The server is the guard at the door.</p>
+<p>They talk in JSON, because every field has a name and can be checked:</p>
+<pre class="code">{ "sheet": "Orders", "action": "read", "range": "A1:G100" }</pre>
+<p>One request through the server, with no model involved:</p>
+<ol>
+  <li><b>Receive</b> the JSON request.</li>
+  <li><b>Validate</b> it. Right sheet? Allowed action? Valid range? If not, stop with an error.</li>
+  <li><b>Select</b> the operation: read, add or update.</li>
+  <li><b>Call</b> the Sheets API with the server's own credentials.</li>
+  <li><b>Retrieve</b> the rows and give every value its field name.</li>
+  <li><b>Return</b> JSON. No summary, no explanation.</li>
+</ol>
+<table class="dials">
+  <tr><th><span class="p">Model</span></th><th><span class="o">Server</span></th></tr>
+  <tr><td>Understands the question</td><td>Fetches the data</td></tr>
+  <tr><td>Decides what it needs</td><td>Applies the business rules</td></tr>
+  <tr><td>Writes the answer in plain English</td><td>Does the calculations, checks permissions</td></tr>
+</table>
 <ul class="pt">
-  <li><b>Nothing on the bench is simulated.</b> The model is GPT-OSS 120B on Groq, the sheet is the real curriculum sheet, and the server is a real route.</li>
-  <li><b>The wire</b> lists every message that crossed, with the exact JSON. Things that are not messages, like the server picking a row, show as dashed notes.</li>
-  <li><b>Nothing hidden.</b> No system prompt, no changed settings: each request is exactly what the wire shows, so you can repeat any run in the <a href="https://console.groq.com/playground" target="_blank" rel="noopener">GroqCloud playground</a>.</li>
-  <li><b>Your key.</b> Every model call runs on your own Groq key from <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Lecture 4</a>. It stays in your tab and is not stored. The whole bench costs about 35 calls, well inside the free tier.</li>
+  <li><b>Same request, same steps,</b> on Tuesday and on Wednesday. The data may change; the process does not.</li>
+  <li><b>Keys stay on the server.</b> Never in the browser, never given to the model.</li>
+  <li><b>Cancelling is an update, not a delete.</b> Set the status to cancelled and keep the row.</li>
 </ul>
+<p class="pull">Move whatever can't afford to be wrong to the deterministic side.</p>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>Ask: nothing reaches the sheet</h2>
-<blockquote class="q9">When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?</blockquote>
-<ul class="pt">
-  <li><b>The model was trained before this course existed.</b> It either says it doesn't have the schedule or makes something up.</li>
-  <li><b>Check it yourself.</b> Open the curriculum sheet and find the row that starts <b>12.</b></li>
-  <li><b>Count the wire.</b> Four messages: you to the server, the server to the model, and back. None went to the sheet.</li>
-</ul>
-<p class="pull">The data sits one box away, and nothing connects the model to it.</p>
-</section>
-
-<section class="s" id="s03"><h2><span class="n">03</span>Carry one tool call by hand</h2>
+<section class="s" id="s07"><h2><span class="n">07</span>Function calling: the model asks</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 275" role="img" aria-label="Six numbered arrows. 1, the server sends the question and the card to the model on the right. 2, in coral, the model sends back a tool call, get_lecture 12, and stops. 3, you press run and the server fetches from the sheet on the left. 4, the sheet returns row 12. 5, the server hands the row to the model. 6, the model sends back the sentence.">
+<svg class="wb" viewBox="0 0 760 285" role="img" aria-label="Six numbered arrows. 1, the server sends the question and the tool list to the model on the right. 2, in coral, the model sends back a tool call, get_orders with status pending. 3, the server reads the Orders tab of the sheet on the left. 4, the sheet returns three rows. 5, the server hands the rows to the model. 6, the model sends back the answer.">
   <g class="ln" filter="url(#wob)">
     <use href="#db" x="50" y="110" class="c-det"/>
     <rect class="f-det" x="290" y="50" width="140" height="205" rx="10"/>
@@ -153,222 +287,265 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="360" y="38" class="m c-det">Server</text>
     <text x="95" y="205" class="m c-det">Sheet</text>
     <text x="520" y="89" class="bn">1</text>
-    <text x="520" y="70" class="xxs c-prob">question + card</text>
+    <text x="520" y="70" class="xxs c-prob">question + tools</text>
     <text x="520" y="144" class="bn">2</text>
-    <text x="520" y="125" class="xxxs c-act">get_lecture(12)</text>
-    <text x="520" y="163" class="xxxs c-act">and it stops</text>
+    <text x="520" y="125" class="xxxs c-act">get_orders(pending)</text>
     <text x="215" y="119" class="bn">3</text>
-    <text x="215" y="100" class="xxs c-det">you press Run</text>
+    <text x="215" y="100" class="xxs c-det">read Orders</text>
     <text x="215" y="174" class="bn">4</text>
-    <text x="215" y="194" class="xxs">row 12</text>
+    <text x="215" y="194" class="xxs">3 rows</text>
     <text x="520" y="209" class="bn">5</text>
-    <text x="520" y="191" class="xxs c-prob">the row</text>
+    <text x="520" y="191" class="xxs c-prob">the rows</text>
     <text x="520" y="247" class="bn">6</text>
-    <text x="520" y="270" class="xxs">the sentence</text>
-    <text x="360" y="145" class="xxs c-det">waits</text>
-    <text x="360" y="167" class="xxs c-det">for you</text>
+    <text x="520" y="270" class="xxs">the answer</text>
+    <text x="360" y="145" class="xxs c-det">validates,</text>
+    <text x="360" y="167" class="xxs c-det">then runs</text>
     <text x="675" y="160" class="xxs">predicts</text>
   </g>
 </svg>
-<figcaption>Step 2 is the only thing the model does that is new: it writes a request instead of an answer, and stops.</figcaption>
+<figcaption>Send, decide, request, execute, return, answer.</figcaption>
 </figure>
-<p>The same question, plus a ready-made <b>tool card</b>: a description of one tool the server can run. The model reads the card and, instead of answering, sends back a request:</p>
-<pre class="code">"tool_calls": [{
-  "id": "call_…",
-  "type": "function",
-  "function": { "name": "get_lecture", "arguments": "{\"number\": 12}" }
-}]</pre>
-<ul class="pt">
-  <li><b>It waits at the server.</b> Nothing happens until someone runs it. Today that someone is you: press Run, and the server fetches row 12.</li>
-  <li><b>Hand the row back.</b> The server sends the model the whole conversation again, plus the row in a message with <code>"role": "tool"</code>. Now the model has the data, and it writes the sentence.</li>
-  <li><b>It predicts, so it can wobble.</b> Sometimes it answers without asking, or writes a call Groq can't read. Ask again.</li>
-</ul>
-<p class="pull">The model touched the sheet zero times. It wrote a request and a sentence. The server did everything in between.</p>
-</section>
-
-<section class="s" id="s04"><h2><span class="n">04</span>Write the tool card against tests</h2>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="The tool card on the left with three fields: Name, get_lecture. Use it when, returns one lecture, by number. It needs, the lecture number. Arrows map each field to the JSON the server sends: name, description, parameters.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="f-card" x="30" y="30" width="300" height="200" rx="10"/>
-    <path class="arw" d="M338 92 L420 82" marker-end="url(#ah)"/>
-    <path class="arw" d="M338 150 L420 140" marker-end="url(#ah)"/>
-    <path class="arw" d="M338 206 L420 198" marker-end="url(#ah)"/>
-  </g>
-  <g class="tx">
-    <text x="50" y="68" class="xxxs l c-mute">Name</text>
-    <text x="50" y="92" class="mono l">get_lecture</text>
-    <text x="50" y="126" class="xxxs l c-mute">Use it when</text>
-    <text x="50" y="150" class="xxs l c-ink">returns one lecture of our course,</text>
-    <text x="50" y="170" class="xxs l c-ink">by number. Not for general questions</text>
-    <text x="50" y="196" class="xxxs l c-mute">It needs</text>
-    <text x="50" y="218" class="xxs l c-ink">the lecture number, 1 to 19</text>
-    <text x="430" y="86" class="mono l">"name": "get_lecture"</text>
-    <text x="430" y="144" class="mono l">"description": "Returns…"</text>
-    <text x="430" y="202" class="mono l">"parameters": {"number": …}</text>
-    <text x="560" y="40" class="xxs c-mute">what the model reads</text>
-  </g>
-</svg>
-<figcaption>Three plain fields on the bench. The server sends them to the model as this JSON. The model reads nothing else about the tool.</figcaption>
-</figure>
-<p>Step 3 hands you an empty card named <code>tool_1</code>. Before writing a word, mark what each question should do. That is the golden pair from <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10</a>, and the check you write before the run, as in <a href="/c8/module-2/practice-set-2-write-the-eval/">Practice set 2</a>.</p>
-<table class="dials">
-  <tr><th>Question</th><th>Should</th></tr>
-  <tr><td>When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?</td><td>Call the tool, with 12</td></tr>
-  <tr><td>Which tools do we use in the seventh class?</td><td>Call the tool, with 7</td></tr>
-  <tr><td>What is an API?</td><td>Answer itself</td></tr>
-  <tr><td>Is session ten a combined one or separate?</td><td>Call the tool, with 10</td></tr>
-  <tr><td>In lecture 3 of Harvard CS50, which language is taught?</td><td>Answer itself</td></tr>
-</table>
-<p>Then edit the card and run until all five pass. Same model, same questions; only the card changes. In our runs:</p>
-<table class="dials">
-  <tr><th>Card</th><th>Passed, out of 5</th></tr>
-  <tr><td>Empty</td><td>3</td></tr>
-  <tr><td>"Gets a lecture by number"</td><td>4 or 5. It calls the tool for the CS50 question too.</td></tr>
-  <tr><td>Says what it returns, when to use it, when not to, and what the number is</td><td>5, every run</td></tr>
-</table>
-<ul class="pt">
-  <li><b>When stuck:</b> say what the tool returns, when to use it, and when not to (any course, or only ours?). Then say exactly what the input is. Change one thing and run again.</li>
-  <li><b>A tool card is an interface written in English:</b> a common language plus rules, as in <a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s05">Lecture 2</a>. The tests are how you know it holds.</li>
-  <li><b>Words have a limit.</b> Some routing no wording fixes reliably. Then the server has to check, as in <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s13">Lecture 10's routing by search</a>.</li>
-</ul>
-</section>
-
-<section class="s" id="s05"><h2><span class="n">05</span>Switch the server on</h2>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 255" role="img" aria-label="You send one question to the server and get one answer back. Between, the server runs the loop on its own: question and card to the model, a tool call back, a fetch from the sheet, the row back, up to three rounds.">
-  <g class="ln" filter="url(#wob)">
-    <use href="#person" x="40" y="60" style="stroke:var(--ink2)"/>
-    <rect class="f-det" x="268" y="50" width="170" height="160" rx="10"/>
-    <rect class="f-prob" x="600" y="40" width="130" height="75" rx="10"/>
-    <use href="#db" x="620" y="150" class="c-det"/>
-    <path class="arw" d="M104 100 H260" marker-end="url(#ah)"/>
-    <path class="arw" d="M260 160 H104" marker-end="url(#ah)"/>
-    <path class="arw c-prob" d="M446 70 H592" marker-end="url(#ahv)"/>
-    <path class="arw c-act" d="M592 98 H446" marker-end="url(#ahc)"/>
-    <path class="arw c-det" d="M446 165 H612" marker-end="url(#ahd)"/>
-    <path class="arw" d="M612 190 H446" marker-end="url(#ah)"/>
-  </g>
-  <g class="tx">
-    <text x="182" y="88" class="xxs">one question</text>
-    <text x="182" y="182" class="xxs">one answer</text>
-    <text x="353" y="118" class="m c-det">Server</text>
-    <text x="353" y="146" class="xxs c-det">runs the loop</text>
-    <text x="665" y="85" class="m c-prob">Model</text>
-    <text x="665" y="245" class="m c-det">Sheet</text>
-    <text x="519" y="60" class="xxxs c-prob">question + card</text>
-    <text x="519" y="118" class="xxxs c-act">tool call</text>
-    <text x="519" y="155" class="xxxs c-det">fetch</text>
-    <text x="519" y="210" class="xxxs">row</text>
-    <text x="353" y="240" class="xxs">up to 3 rounds, no human</text>
-  </g>
-</svg>
-<figcaption>Every button you pressed in step 2 is now a rule in the server.</figcaption>
-</figure>
-<ul class="pt">
-  <li><b>Flip By hand to On</b> and ask anything about a lecture. The server sends the card, runs whatever the model asks for, hands back the result, and repeats until the model answers, up to three rounds. The server decides when the loop stops.</li>
-  <li><b>Try Lecture 40.</b> The server returns an error, there is no lecture 40, and the model passes that on instead of inventing one.</li>
-  <li><b>Download the log.</b> The call, the arguments, the result and the answer. That log is the proof the tool was called with the right input.</li>
-</ul>
-<p>For the code track, the bench prints this loop in Python with your own card in it. The core:</p>
-<pre class="code">for _ in range(3):                      # the server decides when the loop stops
-    msg = ask_groq(messages, [CARD])    # one chat completions call
-    if not msg.get("tool_calls"):       # no request: this is the answer
-        print(msg["content"]); break
-    call = msg["tool_calls"][0]         # the model asked; the server acts
-    result = get_lecture(**json.loads(call["function"]["arguments"]))
-    messages.append(msg)
-    messages.append({"role": "tool", "tool_call_id": call["id"],
-                     "content": json.dumps(result)})</pre>
-<p class="pull"><span class="p">Purple</span> wrote the request and the sentence. <span class="o">Orange</span> did everything in between, the same way every time.</p>
-</section>
-
-<section class="s" id="s06"><h2><span class="n">06</span>Move the card: MCP</h2>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="Before: App 1 and App 2 each keep their own copy of the card and the fetch code, and each reaches the sheet. After: the card sits with the sheet's server, and App 1 and App 2 both connect to that one address.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="f-det" x="30" y="60" width="150" height="80" rx="10"/>
-    <rect class="f-act" x="50" y="102" width="110" height="26" rx="5"/>
-    <rect class="f-det" x="30" y="180" width="150" height="80" rx="10"/>
-    <rect class="f-act" x="50" y="222" width="110" height="26" rx="5"/>
-    <use href="#db" x="250" y="125" class="c-det"/>
-    <path class="arw" d="M186 105 L244 140" marker-end="url(#ah)"/>
-    <path class="arw" d="M186 215 L244 180" marker-end="url(#ah)"/>
-    <path class="dash" d="M385 40 V290"/>
-    <rect class="f-det" x="415" y="60" width="120" height="60" rx="10"/>
-    <rect class="f-det" x="415" y="190" width="120" height="60" rx="10"/>
-    <rect class="f-det" x="600" y="100" width="140" height="95" rx="10"/>
-    <rect class="f-act" x="620" y="150" width="100" height="26" rx="5"/>
-    <use href="#db" x="625" y="225" class="c-det"/>
-    <path class="arw" d="M670 199 V219" marker-start="url(#ah)" marker-end="url(#ah)"/>
-    <path class="arw" d="M541 95 L592 130" marker-end="url(#ah)"/>
-    <path class="arw" d="M541 215 L592 175" marker-end="url(#ah)"/>
-  </g>
-  <g class="tx">
-    <text x="200" y="32" class="m">Before</text>
-    <text x="105" y="90" class="xxs c-det">App 1 server</text>
-    <text x="105" y="120" class="xxxs c-act">card + fetch</text>
-    <text x="105" y="210" class="xxs c-det">App 2 server</text>
-    <text x="105" y="240" class="xxxs c-act">a copy of both</text>
-    <text x="295" y="225" class="xxs c-det">Sheet</text>
-    <text x="575" y="32" class="m">After</text>
-    <text x="475" y="96" class="xxs c-det">App 1</text>
-    <text x="475" y="226" class="xxs c-det">App 2</text>
-    <text x="670" y="134" class="xxs c-det">sheet's server</text>
-    <text x="670" y="168" class="xxxs c-act">the card</text>
-    <text x="670" y="92" class="xxxs c-mute">one address</text>
-  </g>
-</svg>
-<figcaption>Put the card and the fetch code where the data is, once. Every app needs only the address.</figcaption>
-</figure>
-<p>A second app wants your tool. Today the card and the fetch code live inside your server, so the second app would need a copy of both, and so would a third. Step 5 moves the card to the sheet's side. Your server no longer knows the tool; it has to ask.</p>
-<table class="dials">
-  <tr><th>Message</th><th>Means</th></tr>
-  <tr><td><code>initialize</code></td><td>Hello. Here is who I am.</td></tr>
-  <tr><td><code>notifications/initialized</code></td><td>I'm ready.</td></tr>
-  <tr><td><code>tools/list</code></td><td>What can you do? Your card comes back.</td></tr>
-  <tr><td><code>tools/call</code></td><td>Run this, whenever the model asks.</td></tr>
-</table>
-<p>Ask the same question again: the loop is the same, but the fetch now goes to the sheet's server. Those four messages are the <b>Model Context Protocol</b>, <b>MCP</b>. Any app that speaks them can use any MCP server, whatever the tool.</p>
-<ul class="pt">
-  <li><b>Try the address in a second app.</b> Copy it and open <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/second-app">the second app</a>. It has never seen your card or your sheet. Paste the address and ask.</li>
-  <li><b>Code track:</b> under step 5 the bench prints the same server in Python (FastMCP) and a second app in Python (a FastMCP client), built from your card.</li>
-</ul>
-<p class="pull">Tool calling is the model asking. MCP is where the tool lives, so that any app can ask.</p>
-</section>
-
-<section class="s" id="s07"><h2><span class="n">07</span>Do it with your own sheet</h2>
-<p>The same steps, on your <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set 1</a> sheet:</p>
+<p>Until now the server decided what to fetch. With several tools, who picks the right one for each question? The model does. It reads the question and the list of tools, and instead of an answer it sends back a request:</p>
+<pre class="code">{ "name": "get_orders", "arguments": { "status": "pending" } }</pre>
 <ol>
-  <li><b>Share it as a viewer.</b> In the sheet: Share, General access, "Anyone with the link", Viewer.</li>
-  <li><b>Copy your own tab's link,</b> not Aarav's example tab. It ends in <code>#gid=</code> and a number. Paste it on the bench after step 5 and check the tab and first row it shows.</li>
-  <li><b>Write five questions:</b> three your sheet can answer and two the tool should not be used for. Mark them before you run anything.</li>
-  <li><b>Write the card</b> until all pass. On your sheet the tool searches your rows for the words the model sends, so "It needs" says what those words should be.</li>
-  <li><b>Switch the server on, move the card,</b> and copy your own MCP address into the second app.</li>
+  <li><b>Send.</b> The app sends the question and the list of tools.</li>
+  <li><b>Decide.</b> The model decides whether it needs a tool.</li>
+  <li><b>Request.</b> It writes the tool name and the arguments.</li>
+  <li><b>Execute.</b> The server validates the request and reads the sheet.</li>
+  <li><b>Return.</b> Rows, an empty list, or an error go back to the model.</li>
+  <li><b>Answer.</b> "You have three pending orders: 1043, 1045 and 1047."</li>
 </ol>
-<p>Anyone with your address can read what the tool returns, the same as anyone with your sheet link. Share it only where you would share the sheet.</p>
+<ul class="pt">
+  <li><b>The request holds no orders.</b> It only says what the model wants.</li>
+  <li><b>The model never opens the sheet</b> and never sees the keys.</li>
+  <li><b>One question can take several rounds,</b> or several tools. With five tools the model calls only the ones the question needs.</li>
+</ul>
+<p>This is the <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">reverse call</a> from Lecture 10: the server used to call the model, and now the model asks the server.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>The tool schema</h2>
+<p>How does the model know a tool exists and how to ask for it? From the <b>tool schema</b>, the contract between the model and your server. It has five parts.</p>
+<pre class="code">{
+  "name": "get_orders",
+  "description": "Reads orders from the Northwind Goods sheet. Can filter by status or customer.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "status":   { "type": "string", "enum": ["pending", "delivered", "cancelled"] },
+      "customer": { "type": "string" }
+    },
+    "required": []
+  }
+}</pre>
+<table class="dials">
+  <tr><th>Part</th><th>Says</th></tr>
+  <tr><td>Name</td><td>What to call it. Short and meaningful.</td></tr>
+  <tr><td>Description</td><td>What the tool does. The model picks tools by reading this.</td></tr>
+  <tr><td>Parameters</td><td>The inputs it accepts: status, customer.</td></tr>
+  <tr><td>Required</td><td>Which inputs must be given. Here none, so the model can ask for all orders.</td></tr>
+  <tr><td>Types</td><td>What each input is. Status is text, not a number.</td></tr>
+</table>
+<p>The schema is like a form: it tells the model what to fill in. The server still checks what was filled in before it runs anything.</p>
+<p class="pull">A good schema helps the model pick the right tool. A good server makes sure the tool is used correctly.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>When the tool fails</h2>
+<table class="dials">
+  <tr><th>What happened</th><th>What the user should hear</th></tr>
+  <tr><td><b>400</b> The model sent a status that doesn't exist</td><td>The request was invalid, and why. The server does not quietly fix it.</td></tr>
+  <tr><td><b>401</b> The credentials are wrong or expired</td><td>"I couldn't sign in to the sheet." Not "there are no orders".</td></tr>
+  <tr><td><b>404</b> The sheet was renamed or moved</td><td>"I couldn't find the sheet."</td></tr>
+  <tr><td><b>500</b> Google Sheets is down</td><td>"I couldn't retrieve the data."</td></tr>
+  <tr><td><b>Empty result</b> It worked, and nothing is pending</td><td>"There are no pending orders." This is an answer, not an error.</td></tr>
+</table>
+<p>An empty result, an error and missing data are three different things. The model must not smooth any of them into a made-up order.</p>
+<p class="pull">A real error is better than an invented answer.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Verify the record, not the sentence</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 215" role="img" aria-label="On the left, what the model said: You have 4 pending orders. On the right, what the system did: tool get_orders, arguments status pending, result 3 rows, status success. They do not match.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-prob" x="30" y="45" width="290" height="150" rx="10"/>
+    <rect class="f-det" x="440" y="45" width="290" height="150" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="175" y="32" class="m c-prob">What the model said</text>
+    <text x="175" y="112" class="xs">"You have 4</text>
+    <text x="175" y="138" class="xs">pending orders."</text>
+    <text x="585" y="32" class="m c-det">What the system did</text>
+    <text x="462" y="84" class="mono l c-mute">tool</text><text x="560" y="84" class="mono l">get_orders</text>
+    <text x="462" y="112" class="mono l c-mute">arguments</text><text x="560" y="112" class="mono l">status: pending</text>
+    <text x="462" y="140" class="mono l c-mute">result</text><text x="560" y="140" class="mono l">3 rows</text>
+    <text x="462" y="168" class="mono l c-mute">status</text><text x="560" y="168" class="mono l">success</text>
+    <text x="380" y="132" class="h c-act">≠</text>
+  </g>
+</svg>
+<figcaption>Only the record on the right can show you the sentence on the left is wrong.</figcaption>
+</figure>
+<p>A model can write a confident answer when the tool was never called, or when the call failed. So don't check the sentence. Keep an <b>execution record</b> of every tool call and check that.</p>
+<pre class="code">{
+  "tool": "get_orders",
+  "arguments": { "status": "pending" },
+  "result": ["1043", "1045", "1047"],
+  "status": "success"
+}</pre>
+<ul class="pt">
+  <li><b>Write the expected record first:</b> which tool, which arguments, which result. Then run and compare.</li>
+  <li><b>When an answer is wrong, walk the chain.</b> Right tool? Right API call? Right rows? Right final sentence?</li>
+</ul>
+<p class="pull">Don't verify what the AI says. Verify what the system did.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>MCP: one standard for every tool</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Before: two apps each build their own connection to Sheets, Gmail and Slack, six connections in all. After: both apps speak MCP, and MCP reaches Sheets, Gmail and Slack.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="85" width="100" height="44" rx="8"/>
+    <rect class="f-card" x="30" y="185" width="100" height="44" rx="8"/>
+    <rect class="f-det" x="250" y="55" width="100" height="40" rx="8"/>
+    <rect class="f-det" x="250" y="137" width="100" height="40" rx="8"/>
+    <rect class="f-det" x="250" y="219" width="100" height="40" rx="8"/>
+    <path class="arw thin" d="M134 100 L246 75"/>
+    <path class="arw thin" d="M134 107 L246 155"/>
+    <path class="arw thin" d="M134 114 L246 235"/>
+    <path class="arw thin" d="M134 200 L246 79"/>
+    <path class="arw thin" d="M134 207 L246 159"/>
+    <path class="arw thin" d="M134 214 L246 240"/>
+    <path class="dash" d="M385 40 V275"/>
+    <rect class="f-card" x="415" y="85" width="90" height="44" rx="8"/>
+    <rect class="f-card" x="415" y="185" width="90" height="44" rx="8"/>
+    <rect class="f-act" x="548" y="55" width="52" height="204" rx="8"/>
+    <rect class="f-det" x="640" y="55" width="100" height="40" rx="8"/>
+    <rect class="f-det" x="640" y="137" width="100" height="40" rx="8"/>
+    <rect class="f-det" x="640" y="219" width="100" height="40" rx="8"/>
+    <path class="arw" d="M509 107 L544 125"/>
+    <path class="arw" d="M509 207 L544 189"/>
+    <path class="arw" d="M604 75 H636"/>
+    <path class="arw" d="M604 157 H636"/>
+    <path class="arw" d="M604 239 H636"/>
+  </g>
+  <g class="tx">
+    <text x="190" y="30" class="m">Before</text>
+    <text x="80" y="113" class="xxs">App 1</text>
+    <text x="80" y="213" class="xxs">App 2</text>
+    <text x="300" y="81" class="xxs c-det">Sheets</text>
+    <text x="300" y="163" class="xxs c-det">Gmail</text>
+    <text x="300" y="245" class="xxs c-det">Slack</text>
+    <text x="578" y="30" class="m">After</text>
+    <text x="460" y="113" class="xxs">App 1</text>
+    <text x="460" y="213" class="xxs">App 2</text>
+    <text x="574" y="163" class="xxs c-act">MCP</text>
+    <text x="690" y="81" class="xxs c-det">Sheets</text>
+    <text x="690" y="163" class="xxs c-det">Gmail</text>
+    <text x="690" y="245" class="xxs c-det">Slack</text>
+  </g>
+</svg>
+<figcaption>Before, every app builds every connection. After, every app speaks one protocol.</figcaption>
+</figure>
+<p>Priya now wants Gmail, Slack and Supabase too. Each has its own way to connect, its own formats and its own errors. A second AI app would rebuild all of them. That is the integration problem.</p>
+<p><b>MCP, the Model Context Protocol,</b> is one standard way for an AI app to find out what a server can do and ask for it. Like USB-C: one port, many devices.</p>
+<table class="dials">
+  <tr><th>Term</th><th>Its job</th><th>In the building</th></tr>
+  <tr><td>API</td><td>How the server reaches the sheet</td><td>The door</td></tr>
+  <tr><td>Function calling</td><td>How the model asks for an action</td><td>Asking for the door to be opened</td></tr>
+  <tr><td>MCP</td><td>How any AI app finds and reaches tools</td><td>The standard hallway to every door</td></tr>
+</table>
+<ul class="pt">
+  <li><b>MCP does not replace APIs.</b> It is a layer over them. If you write your own MCP server for a database, you still define every action and every table it can touch.</li>
+  <li><b>MCP does not replace function calling.</b> The model still asks. MCP carries the request.</li>
+  <li><b>The value grows with other people's servers.</b> Connect to one someone already built and its tools are yours to use.</li>
+  <li><b>None of the three makes the answer correct.</b> You still verify.</li>
+</ul>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Host, client, server</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 225" role="img" aria-label="A chain from left to right. Priya talks to the host, the AI app, which holds the model and an MCP client. The client talks to the MCP server over MCP. The MCP server talks to the sheet through the Sheets API.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="20" y="45" style="stroke:var(--ink2)"/>
+    <rect class="f-card" x="110" y="35" width="262" height="140" rx="10"/>
+    <rect class="f-prob" x="125" y="75" width="100" height="60" rx="8"/>
+    <rect class="f-act" x="255" y="75" width="102" height="60" rx="8"/>
+    <rect class="f-det" x="445" y="75" width="130" height="60" rx="8"/>
+    <use href="#db" x="645" y="70" class="c-det"/>
+    <path class="arw" d="M78 105 H106"/>
+    <path class="arw" d="M229 105 H251"/>
+    <path class="arw c-act" d="M363 105 H439" marker-start="url(#ahc)" marker-end="url(#ahc)"/>
+    <path class="arw" d="M581 105 H639" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="46" y="200" class="m">Priya</text>
+    <text x="241" y="60" class="xxs c-mute">Host: the AI app</text>
+    <text x="175" y="111" class="xs c-prob">Model</text>
+    <text x="306" y="111" class="xs c-act">Client</text>
+    <text x="401" y="92" class="xxs c-act">MCP</text>
+    <text x="510" y="111" class="xs c-det">MCP server</text>
+    <text x="610" y="92" class="xxs">API</text>
+    <text x="690" y="170" class="m c-det">Sheet</text>
+  </g>
+</svg>
+<figcaption>The answer travels back along the same chain.</figcaption>
+</figure>
+<table class="dials">
+  <tr><th>Role</th><th>What it is</th><th>What it does</th></tr>
+  <tr><td>Host</td><td>The AI app Priya uses: Claude Desktop, Antigravity, or one you built</td><td>Holds the model and runs the conversation</td></tr>
+  <tr><td>Client</td><td>A piece inside the host, one per server</td><td>Asks the server which tools it has, carries each request, brings back the result</td></tr>
+  <tr><td>Server</td><td>The program next to the data</td><td>Offers the tools, validates, calls the Sheets API, returns the rows</td></tr>
+</table>
+<p>"Find all pending orders", end to end:</p>
+<ol>
+  <li>Priya asks the host. She knows nothing about APIs or MCP.</li>
+  <li>The model reads the tools the host already discovered and writes <code>get_orders</code> with status pending. That is function calling.</li>
+  <li>The client carries the request to the Google Sheets MCP server. That is MCP.</li>
+  <li>The server validates it, calls the Sheets API, and reads six orders. Three are pending.</li>
+  <li>The three rows travel back through the client to the host.</li>
+  <li>The model writes the answer.</li>
+</ol>
+<p class="pull">The MCP server is not the spreadsheet. The MCP client is not the model.</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Tomorrow: Lecture 12</h2>
+<p>You connect a Google Sheets MCP server in Antigravity. The order matters.</p>
+<ol>
+  <li><b>Connect</b> the Google Sheets MCP server.</li>
+  <li><b>Discover</b> the tools it offers. Look at the list; don't assume the names.</li>
+  <li><b>Wire</b> one tool into a working flow.</li>
+  <li><b>Write the verifier</b> before you run: expected input, expected output, expected execution record.</li>
+  <li><b>Run,</b> capture the log, and compare.</li>
+</ol>
+<p>Three questions to walk in with:</p>
+<table class="dials">
+  <tr><th>Question</th><th>Answer</th></tr>
+  <tr><td>An AI has five tools. Does it call all five?</td><td>No. It picks the ones the question needs.</td></tr>
+  <tr><td>Does MCP replace APIs?</td><td>No. It standardises how an AI app reaches tools. The tools still use APIs underneath.</td></tr>
+  <tr><td>Does connecting a tool guarantee a right answer?</td><td>No. That is why you verify.</td></tr>
+</table>
+<p>Want to make a tool call yourself before then? The <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a> takes about fifteen minutes, with <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench-notes">its own notes</a>.</p>
 <details class="words"><summary>Words from this lecture</summary>
 <dl>
-  <dt>Tool card</dt><dd>The description of one tool: its name, when to use it, and what it needs. The model reads only this.</dd>
-  <dt>Tool call</dt><dd>The model's JSON naming the tool and its arguments. A request, not an action.</dd>
-  <dt>Tool result</dt><dd>What the server got back from running the call, handed to the model with <code>"role": "tool"</code>.</dd>
-  <dt>The loop</dt><dd>The server repeating model call, tool run, hand back, until the model answers or the server stops it.</dd>
-  <dt>The wire</dt><dd>On the bench: every message that crossed, with its exact JSON.</dd>
-  <dt>MCP server</dt><dd>A server that keeps tools next to the data and answers <code>tools/list</code> and <code>tools/call</code> for any app.</dd>
-  <dt>MCP (Model Context Protocol)</dt><dd>The shared messages any app uses to find and call tools on any MCP server.</dd>
+  <dt>Source of truth</dt><dd>The place the real records live. Here, Priya's Google Sheet.</dd>
+  <dt>Deterministic bridge</dt><dd>The server between the model and the data. Same request, same steps, or an error.</dd>
+  <dt>Context window</dt><dd>Everything the model can see while answering: the question, the instruction and the data.</dd>
+  <dt>Function calling (tool calling)</dt><dd>The model writes a request for an action. The server runs it.</dd>
+  <dt>Tool schema</dt><dd>The description of one tool: name, description, parameters, required fields, types.</dd>
+  <dt>Execution record</dt><dd>The log of one tool call: the tool, the arguments, the result and whether it succeeded.</dd>
+  <dt>Verifier</dt><dd>The expected record, written before the run, that the real record is compared against.</dd>
+  <dt>MCP (Model Context Protocol)</dt><dd>One standard way for AI apps to find and reach tools on any server.</dd>
+  <dt>Host, client, server</dt><dd>The AI app; the piece inside it that speaks MCP; the program that offers the tools.</dd>
+  <dt>A2A (agent to agent)</dt><dd>A protocol for one agent handing work to another.</dd>
 </dl>
 </details>
 </section>
 
-<div class="call"><p class="kick">Keep this</p><p>The model writes a request and stops; the server runs it. The tool card is the only thing the model knows about the tool, so write it against tests marked before the run. Move the card next to the data and any app can use it with one address: that is MCP.</p></div>
+<div class="call"><p class="kick">Keep this</p><p>The model asks for an action. A deterministic server executes it. The verifier proves what happened.</p></div>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">The Tool Bench</a></li>
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/second-app">The second app</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">The Tool Bench: make one tool call yourself</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench-notes">Tool Bench notes</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10 notes</a></li>
   <li><a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">The Model Context Protocol site</a></li>
-  <li><a href="https://console.groq.com/docs/tool-use" target="_blank" rel="noopener">GroqCloud: tool use</a></li>
-  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Lecture 10: function calling, the reverse call</a></li>
-  <li><a href="/#L12">Lecture 12, Sat 14 Nov: build it again on your own track</a></li>
+  <li><a href="/#L12">Lecture 12, Sat 14 Nov: connect it for real</a></li>
   <li><a href="/#L11">Curriculum map</a></li>
 </ul></nav>
 

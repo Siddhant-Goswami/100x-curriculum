@@ -136,6 +136,7 @@ var GUIDE_LINKS = {
   l11Hub: '/c8/module-2/lecture-11-tool-calling-and-mcp/',
   l11Notes: '/c8/module-2/lecture-11-tool-calling-and-mcp/notes',
   l11Bench: '/c8/module-2/lecture-11-tool-calling-and-mcp/bench',
+  l11BenchNotes: '/c8/module-2/lecture-11-tool-calling-and-mcp/bench-notes',  /* the Tool Bench walkthrough, written before the lecture; /notes is the post-read */
   l11SecondApp: '/c8/module-2/lecture-11-tool-calling-and-mcp/second-app',
   l11Checklist: '/c8/module-2/checklist/',  /* Before Lecture 11: everything from the probabilistic half so far, as ticks */
   groqPlay: 'https://console.groq.com/playground',
@@ -837,7 +838,7 @@ GUIDES.L10 = { all: {
 
 /* Lecture 11: only the pages link for now. The card shows it before the lecture too (upcoming cards show the hub). */
 GUIDES.L11 = { all: {
-  hub: {link:'l11Hub', title:'Open the Lecture 11 pages', sub:'The overview, the notes and the Tool Bench', more:[['l11Checklist','Before Lecture 11 checklist'],['l11Notes','Notes'],['l11Bench','Tool Bench'],['l11SecondApp','Second app']]}
+  hub: {link:'l11Hub', title:'Open the Lecture 11 pages', sub:'The overview, the notes and the Tool Bench', more:[['l11Notes','Notes'],['l11Bench','Tool Bench'],['l11BenchNotes','Tool Bench notes'],['l11SecondApp','Second app'],['l11Checklist','Before Lecture 11 checklist']]}
 }};
 
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from
@@ -923,5 +924,13 @@ var RECAP = {
       'Hallucination = missing context + a trained habit of never saying no.',
       'An API alone cannot be the bridge: a file speaks no language, and a model cannot make requests.',
       'The reverse call: the model asks the server to act, the server runs it and returns the result.'
+    ]}},
+  L11: { all: {
+    line: 'The model asks for an action, a deterministic server executes it, and the verifier proves what happened. MCP is the standard way for any AI app to find and reach those tools.',
+    points: [
+      'Priya pasted her sheet into a chat every morning: slow, stale, and row 41 goes missing.',
+      'A tool schema has five parts: name, description, parameters, required fields, types.',
+      'An empty result is not an error. A real error is better than an invented answer.',
+      'MCP replaces neither APIs nor function calling. Host, client and server carry the request.'
     ]}}
 };

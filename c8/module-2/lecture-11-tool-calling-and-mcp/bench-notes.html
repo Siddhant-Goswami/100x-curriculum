@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tool Bench Notes: Tool Calling and MCP, Part 2 | 100xEngineers</title>
+<meta name="description" content="The Tool Bench step by step. The bare model never reaches the sheet; one tool call carried by hand; the tool card written against tests; the server running the loop; the card moved next to the data, which is MCP; then the same on your own sheet.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read .o{color:var(--det-ink);font-weight:500}
+body.read .p{color:var(--prob-ink);font-weight:500}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l11-bench-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L11">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 11 pages"><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/">Overview</a><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Notes</a><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Tool Bench notes · Lecture 11 · Both tracks</p>
+  <h1>Make the reverse call yourself</h1>
+  <p class="dek">One tool call by hand, a tool card that passes its tests, a server that runs the loop, and the card moved next to the data: MCP.</p>
+</div>
+
+<p>In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Lecture 10</a> you derived function calling on paper, and the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Lecture 11 notes</a> follow it through one shop's sheet: the model asks, the server acts. Here you run it yourself on the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a>, one section per step. Both tracks do the same steps; the code track also gets the Python under steps 4 and 5.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The bench</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three boxes in a row: the Sheet that holds the data on the left, the orange Server that follows rules in the middle, and the purple Model that predicts on the right. Arrows join Sheet to Server and Server to Model. Below the Server, You, joined to the Server by an arrow.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#db" x="50" y="68" class="c-det"/>
+    <rect class="f-det" x="295" y="60" width="170" height="90" rx="10"/>
+    <rect class="f-prob" x="550" y="60" width="170" height="90" rx="10"/>
+    <path class="arw" d="M148 105 H287" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw" d="M473 105 H542" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw" d="M380 158 V196" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <use href="#person" x="354" y="204" style="stroke:var(--ink2)"/>
+  </g>
+  <g class="tx">
+    <text x="95" y="172" class="m c-det">Sheet</text>
+    <text x="95" y="196" class="xxs">the data</text>
+    <text x="380" y="100" class="m c-det">Server</text>
+    <text x="380" y="128" class="xxs">follows rules</text>
+    <text x="635" y="100" class="m c-prob">Model</text>
+    <text x="635" y="128" class="xxs">predicts</text>
+    <text x="336" y="276" class="m r">You</text>
+    <text x="500" y="290" class="xxs l">every message shows</text>
+    <text x="500" y="312" class="xxs l">on the wire, as JSON</text>
+  </g>
+</svg>
+<figcaption>You only talk to the server. The server talks to the sheet on its left and the model on its right.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Nothing on the bench is simulated.</b> The model is GPT-OSS 120B on Groq, the sheet is the real curriculum sheet, and the server is a real route.</li>
+  <li><b>The wire</b> lists every message that crossed, with the exact JSON. Things that are not messages, like the server picking a row, show as dashed notes.</li>
+  <li><b>Nothing hidden.</b> No system prompt, no changed settings: each request is exactly what the wire shows, so you can repeat any run in the <a href="https://console.groq.com/playground" target="_blank" rel="noopener">GroqCloud playground</a>.</li>
+  <li><b>Your key.</b> Every model call runs on your own Groq key from <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Lecture 4</a>. It stays in your tab and is not stored. The whole bench costs about 35 calls, well inside the free tier.</li>
+</ul>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Ask: nothing reaches the sheet</h2>
+<blockquote class="q9">When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?</blockquote>
+<ul class="pt">
+  <li><b>The model was trained before this course existed.</b> It either says it doesn't have the schedule or makes something up.</li>
+  <li><b>Check it yourself.</b> Open the curriculum sheet and find the row that starts <b>12.</b></li>
+  <li><b>Count the wire.</b> Four messages: you to the server, the server to the model, and back. None went to the sheet.</li>
+</ul>
+<p class="pull">The data sits one box away, and nothing connects the model to it.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Carry one tool call by hand</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 275" role="img" aria-label="Six numbered arrows. 1, the server sends the question and the card to the model on the right. 2, in coral, the model sends back a tool call, get_lecture 12, and stops. 3, you press run and the server fetches from the sheet on the left. 4, the sheet returns row 12. 5, the server hands the row to the model. 6, the model sends back the sentence.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#db" x="50" y="110" class="c-det"/>
+    <rect class="f-det" x="290" y="50" width="140" height="205" rx="10"/>
+    <rect class="f-prob" x="610" y="50" width="130" height="205" rx="10"/>
+    <path class="arw c-prob" d="M438 85 H602" marker-end="url(#ahv)"/>
+    <path class="arw c-act" d="M602 140 H438" marker-end="url(#ahc)"/>
+    <path class="arw c-det" d="M282 115 H148" marker-end="url(#ahd)"/>
+    <path class="arw" d="M148 170 H282" marker-end="url(#ah)"/>
+    <path class="arw c-prob" d="M438 205 H602" marker-end="url(#ahv)"/>
+    <path class="arw" d="M602 243 H438" marker-end="url(#ah)"/>
+    <circle class="badge" cx="520" cy="85" r="11"/>
+    <circle class="badge act" cx="520" cy="140" r="11"/>
+    <circle class="badge" cx="215" cy="115" r="11"/>
+    <circle class="badge" cx="215" cy="170" r="11"/>
+    <circle class="badge" cx="520" cy="205" r="11"/>
+    <circle class="badge" cx="520" cy="243" r="11"/>
+  </g>
+  <g class="tx">
+    <text x="675" y="38" class="m c-prob">Model</text>
+    <text x="360" y="38" class="m c-det">Server</text>
+    <text x="95" y="205" class="m c-det">Sheet</text>
+    <text x="520" y="89" class="bn">1</text>
+    <text x="520" y="70" class="xxs c-prob">question + card</text>
+    <text x="520" y="144" class="bn">2</text>
+    <text x="520" y="125" class="xxxs c-act">get_lecture(12)</text>
+    <text x="520" y="163" class="xxxs c-act">and it stops</text>
+    <text x="215" y="119" class="bn">3</text>
+    <text x="215" y="100" class="xxs c-det">you press Run</text>
+    <text x="215" y="174" class="bn">4</text>
+    <text x="215" y="194" class="xxs">row 12</text>
+    <text x="520" y="209" class="bn">5</text>
+    <text x="520" y="191" class="xxs c-prob">the row</text>
+    <text x="520" y="247" class="bn">6</text>
+    <text x="520" y="270" class="xxs">the sentence</text>
+    <text x="360" y="145" class="xxs c-det">waits</text>
+    <text x="360" y="167" class="xxs c-det">for you</text>
+    <text x="675" y="160" class="xxs">predicts</text>
+  </g>
+</svg>
+<figcaption>Step 2 is the only thing the model does that is new: it writes a request instead of an answer, and stops.</figcaption>
+</figure>
+<p>The same question, plus a ready-made <b>tool card</b>: a description of one tool the server can run. The model reads the card and, instead of answering, sends back a request:</p>
+<pre class="code">"tool_calls": [{
+  "id": "call_…",
+  "type": "function",
+  "function": { "name": "get_lecture", "arguments": "{\"number\": 12}" }
+}]</pre>
+<ul class="pt">
+  <li><b>It waits at the server.</b> Nothing happens until someone runs it. Today that someone is you: press Run, and the server fetches row 12.</li>
+  <li><b>Hand the row back.</b> The server sends the model the whole conversation again, plus the row in a message with <code>"role": "tool"</code>. Now the model has the data, and it writes the sentence.</li>
+  <li><b>It predicts, so it can wobble.</b> Sometimes it answers without asking, or writes a call Groq can't read. Ask again.</li>
+</ul>
+<p class="pull">The model touched the sheet zero times. It wrote a request and a sentence. The server did everything in between.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Write the tool card against tests</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="The tool card on the left with three fields: Name, get_lecture. Use it when, returns one lecture, by number. It needs, the lecture number. Arrows map each field to the JSON the server sends: name, description, parameters.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="30" width="300" height="200" rx="10"/>
+    <path class="arw" d="M338 92 L420 82" marker-end="url(#ah)"/>
+    <path class="arw" d="M338 150 L420 140" marker-end="url(#ah)"/>
+    <path class="arw" d="M338 206 L420 198" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="50" y="68" class="xxxs l c-mute">Name</text>
+    <text x="50" y="92" class="mono l">get_lecture</text>
+    <text x="50" y="126" class="xxxs l c-mute">Use it when</text>
+    <text x="50" y="150" class="xxs l c-ink">returns one lecture of our course,</text>
+    <text x="50" y="170" class="xxs l c-ink">by number. Not for general questions</text>
+    <text x="50" y="196" class="xxxs l c-mute">It needs</text>
+    <text x="50" y="218" class="xxs l c-ink">the lecture number, 1 to 19</text>
+    <text x="430" y="86" class="mono l">"name": "get_lecture"</text>
+    <text x="430" y="144" class="mono l">"description": "Returns…"</text>
+    <text x="430" y="202" class="mono l">"parameters": {"number": …}</text>
+    <text x="560" y="40" class="xxs c-mute">what the model reads</text>
+  </g>
+</svg>
+<figcaption>Three plain fields on the bench. The server sends them to the model as this JSON. The model reads nothing else about the tool.</figcaption>
+</figure>
+<p>Step 3 hands you an empty card named <code>tool_1</code>. Before writing a word, mark what each question should do. That is the golden pair from <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10</a>, and the check you write before the run, as in <a href="/c8/module-2/practice-set-2-write-the-eval/">Practice set 2</a>.</p>
+<table class="dials">
+  <tr><th>Question</th><th>Should</th></tr>
+  <tr><td>When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?</td><td>Call the tool, with 12</td></tr>
+  <tr><td>Which tools do we use in the seventh class?</td><td>Call the tool, with 7</td></tr>
+  <tr><td>What is an API?</td><td>Answer itself</td></tr>
+  <tr><td>Is session ten a combined one or separate?</td><td>Call the tool, with 10</td></tr>
+  <tr><td>In lecture 3 of Harvard CS50, which language is taught?</td><td>Answer itself</td></tr>
+</table>
+<p>Then edit the card and run until all five pass. Same model, same questions; only the card changes. In our runs:</p>
+<table class="dials">
+  <tr><th>Card</th><th>Passed, out of 5</th></tr>
+  <tr><td>Empty</td><td>3</td></tr>
+  <tr><td>"Gets a lecture by number"</td><td>4 or 5. It calls the tool for the CS50 question too.</td></tr>
+  <tr><td>Says what it returns, when to use it, when not to, and what the number is</td><td>5, every run</td></tr>
+</table>
+<ul class="pt">
+  <li><b>When stuck:</b> say what the tool returns, when to use it, and when not to (any course, or only ours?). Then say exactly what the input is. Change one thing and run again.</li>
+  <li><b>A tool card is an interface written in English:</b> a common language plus rules, as in <a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s05">Lecture 2</a>. The tests are how you know it holds.</li>
+  <li><b>Words have a limit.</b> Some routing no wording fixes reliably. Then the server has to check, as in <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s13">Lecture 10's routing by search</a>.</li>
+</ul>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Switch the server on</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 255" role="img" aria-label="You send one question to the server and get one answer back. Between, the server runs the loop on its own: question and card to the model, a tool call back, a fetch from the sheet, the row back, up to three rounds.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="40" y="60" style="stroke:var(--ink2)"/>
+    <rect class="f-det" x="268" y="50" width="170" height="160" rx="10"/>
+    <rect class="f-prob" x="600" y="40" width="130" height="75" rx="10"/>
+    <use href="#db" x="620" y="150" class="c-det"/>
+    <path class="arw" d="M104 100 H260" marker-end="url(#ah)"/>
+    <path class="arw" d="M260 160 H104" marker-end="url(#ah)"/>
+    <path class="arw c-prob" d="M446 70 H592" marker-end="url(#ahv)"/>
+    <path class="arw c-act" d="M592 98 H446" marker-end="url(#ahc)"/>
+    <path class="arw c-det" d="M446 165 H612" marker-end="url(#ahd)"/>
+    <path class="arw" d="M612 190 H446" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="182" y="88" class="xxs">one question</text>
+    <text x="182" y="182" class="xxs">one answer</text>
+    <text x="353" y="118" class="m c-det">Server</text>
+    <text x="353" y="146" class="xxs c-det">runs the loop</text>
+    <text x="665" y="85" class="m c-prob">Model</text>
+    <text x="665" y="245" class="m c-det">Sheet</text>
+    <text x="519" y="60" class="xxxs c-prob">question + card</text>
+    <text x="519" y="118" class="xxxs c-act">tool call</text>
+    <text x="519" y="155" class="xxxs c-det">fetch</text>
+    <text x="519" y="210" class="xxxs">row</text>
+    <text x="353" y="240" class="xxs">up to 3 rounds, no human</text>
+  </g>
+</svg>
+<figcaption>Every button you pressed in step 2 is now a rule in the server.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Flip By hand to On</b> and ask anything about a lecture. The server sends the card, runs whatever the model asks for, hands back the result, and repeats until the model answers, up to three rounds. The server decides when the loop stops.</li>
+  <li><b>Try Lecture 40.</b> The server returns an error, there is no lecture 40, and the model passes that on instead of inventing one.</li>
+  <li><b>Download the log.</b> The call, the arguments, the result and the answer. That log is the proof the tool was called with the right input.</li>
+</ul>
+<p>For the code track, the bench prints this loop in Python with your own card in it. The core:</p>
+<pre class="code">for _ in range(3):                      # the server decides when the loop stops
+    msg = ask_groq(messages, [CARD])    # one chat completions call
+    if not msg.get("tool_calls"):       # no request: this is the answer
+        print(msg["content"]); break
+    call = msg["tool_calls"][0]         # the model asked; the server acts
+    result = get_lecture(**json.loads(call["function"]["arguments"]))
+    messages.append(msg)
+    messages.append({"role": "tool", "tool_call_id": call["id"],
+                     "content": json.dumps(result)})</pre>
+<p class="pull"><span class="p">Purple</span> wrote the request and the sentence. <span class="o">Orange</span> did everything in between, the same way every time.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Move the card: MCP</h2>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="Before: App 1 and App 2 each keep their own copy of the card and the fetch code, and each reaches the sheet. After: the card sits with the sheet's server, and App 1 and App 2 both connect to that one address.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="30" y="60" width="150" height="80" rx="10"/>
+    <rect class="f-act" x="50" y="102" width="110" height="26" rx="5"/>
+    <rect class="f-det" x="30" y="180" width="150" height="80" rx="10"/>
+    <rect class="f-act" x="50" y="222" width="110" height="26" rx="5"/>
+    <use href="#db" x="250" y="125" class="c-det"/>
+    <path class="arw" d="M186 105 L244 140" marker-end="url(#ah)"/>
+    <path class="arw" d="M186 215 L244 180" marker-end="url(#ah)"/>
+    <path class="dash" d="M385 40 V290"/>
+    <rect class="f-det" x="415" y="60" width="120" height="60" rx="10"/>
+    <rect class="f-det" x="415" y="190" width="120" height="60" rx="10"/>
+    <rect class="f-det" x="600" y="100" width="140" height="95" rx="10"/>
+    <rect class="f-act" x="620" y="150" width="100" height="26" rx="5"/>
+    <use href="#db" x="625" y="225" class="c-det"/>
+    <path class="arw" d="M670 199 V219" marker-start="url(#ah)" marker-end="url(#ah)"/>
+    <path class="arw" d="M541 95 L592 130" marker-end="url(#ah)"/>
+    <path class="arw" d="M541 215 L592 175" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="200" y="32" class="m">Before</text>
+    <text x="105" y="90" class="xxs c-det">App 1 server</text>
+    <text x="105" y="120" class="xxxs c-act">card + fetch</text>
+    <text x="105" y="210" class="xxs c-det">App 2 server</text>
+    <text x="105" y="240" class="xxxs c-act">a copy of both</text>
+    <text x="295" y="225" class="xxs c-det">Sheet</text>
+    <text x="575" y="32" class="m">After</text>
+    <text x="475" y="96" class="xxs c-det">App 1</text>
+    <text x="475" y="226" class="xxs c-det">App 2</text>
+    <text x="670" y="134" class="xxs c-det">sheet's server</text>
+    <text x="670" y="168" class="xxxs c-act">the card</text>
+    <text x="670" y="92" class="xxxs c-mute">one address</text>
+  </g>
+</svg>
+<figcaption>Put the card and the fetch code where the data is, once. Every app needs only the address.</figcaption>
+</figure>
+<p>A second app wants your tool. Today the card and the fetch code live inside your server, so the second app would need a copy of both, and so would a third. Step 5 moves the card to the sheet's side. Your server no longer knows the tool; it has to ask.</p>
+<table class="dials">
+  <tr><th>Message</th><th>Means</th></tr>
+  <tr><td><code>initialize</code></td><td>Hello. Here is who I am.</td></tr>
+  <tr><td><code>notifications/initialized</code></td><td>I'm ready.</td></tr>
+  <tr><td><code>tools/list</code></td><td>What can you do? Your card comes back.</td></tr>
+  <tr><td><code>tools/call</code></td><td>Run this, whenever the model asks.</td></tr>
+</table>
+<p>Ask the same question again: the loop is the same, but the fetch now goes to the sheet's server. Those four messages are the <b>Model Context Protocol</b>, <b>MCP</b>. Any app that speaks them can use any MCP server, whatever the tool.</p>
+<ul class="pt">
+  <li><b>Try the address in a second app.</b> Copy it and open <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/second-app">the second app</a>. It has never seen your card or your sheet. Paste the address and ask.</li>
+  <li><b>Code track:</b> under step 5 the bench prints the same server in Python (FastMCP) and a second app in Python (a FastMCP client), built from your card.</li>
+</ul>
+<p class="pull">Tool calling is the model asking. MCP is where the tool lives, so that any app can ask.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Do it with your own sheet</h2>
+<p>The same steps, on your <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set 1</a> sheet:</p>
+<ol>
+  <li><b>Share it as a viewer.</b> In the sheet: Share, General access, "Anyone with the link", Viewer.</li>
+  <li><b>Copy your own tab's link,</b> not Aarav's example tab. It ends in <code>#gid=</code> and a number. Paste it on the bench after step 5 and check the tab and first row it shows.</li>
+  <li><b>Write five questions:</b> three your sheet can answer and two the tool should not be used for. Mark them before you run anything.</li>
+  <li><b>Write the card</b> until all pass. On your sheet the tool searches your rows for the words the model sends, so "It needs" says what those words should be.</li>
+  <li><b>Switch the server on, move the card,</b> and copy your own MCP address into the second app.</li>
+</ol>
+<p>Anyone with your address can read what the tool returns, the same as anyone with your sheet link. Share it only where you would share the sheet.</p>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Tool card</dt><dd>The description of one tool: its name, when to use it, and what it needs. The model reads only this.</dd>
+  <dt>Tool call</dt><dd>The model's JSON naming the tool and its arguments. A request, not an action.</dd>
+  <dt>Tool result</dt><dd>What the server got back from running the call, handed to the model with <code>"role": "tool"</code>.</dd>
+  <dt>The loop</dt><dd>The server repeating model call, tool run, hand back, until the model answers or the server stops it.</dd>
+  <dt>The wire</dt><dd>On the bench: every message that crossed, with its exact JSON.</dd>
+  <dt>MCP server</dt><dd>A server that keeps tools next to the data and answers <code>tools/list</code> and <code>tools/call</code> for any app.</dd>
+  <dt>MCP (Model Context Protocol)</dt><dd>The shared messages any app uses to find and call tools on any MCP server.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>The model writes a request and stops; the server runs it. The tool card is the only thing the model knows about the tool, so write it against tests marked before the run. Move the card next to the data and any app can use it with one address: that is MCP.</p></div>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">The Tool Bench</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Lecture 11 notes</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/second-app">The second app</a></li>
+  <li><a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">The Model Context Protocol site</a></li>
+  <li><a href="https://console.groq.com/docs/tool-use" target="_blank" rel="noopener">GroqCloud: tool use</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Lecture 10: function calling, the reverse call</a></li>
+  <li><a href="/#L12">Lecture 12, Sat 14 Nov: build it again on your own track</a></li>
+  <li><a href="/#L11">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 11: Tool calling and MCP, part 2</span><a href="/#L11">Curriculum map</a><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/">All Lecture 11 pages</a></div></footer>
+</body>
+</html>

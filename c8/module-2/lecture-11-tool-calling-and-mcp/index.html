@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tool Calling and MCP, Part 2 | 100xEngineers</title>
-<meta name="description" content="Cohort 8 Module 2, Lecture 11. Make the reverse call yourself on the Tool Bench: carry one tool call by hand, write the tool card against tests, let the server run the loop, then move the card next to the data and you have an MCP server.">
+<meta name="description" content="Cohort 8 Module 2, Lecture 11. One shop's Google Sheet, from a pasted prompt to a tool call to MCP: the server as the bridge, function calling, the tool schema, tool failures, verifying the execution record, and MCP's host, client and server.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -28,36 +28,37 @@
 <div class="hero">
   <p class="kick">Cohort 8 · Module 2 · Lecture 11 · Fri 13 Nov 2026 · Both tracks</p>
   <h1>Tool calling and MCP, part 2</h1>
-  <p class="dek">In Lecture 10 you derived the reverse call on paper. Today you make one.</p>
+  <p class="dek">One shop's Google Sheet, followed from a pasted prompt to a tool call to MCP.</p>
 </div>
 
-<div class="call"><p class="kick">The lecture in one line</p><p>The model writes a request and stops. The server runs it. Write the tool card well and the model asks at the right moments; put the card next to the data and any app can use it. That is MCP.</p></div>
+<div class="call"><p class="kick">The lecture in one line</p><p>The model asks for an action. A deterministic server executes it. The verifier proves what happened.</p></div>
 
-<div class="when"><p class="kick">01</p><h2>Bring</h2></div>
-<ul>
-  <li>Your Groq key, the one you made in <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Lecture 4</a>. Lost it? Make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</li>
-  <li>Your <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set 1</a> sheet, for the last part.</li>
-</ul>
-<p><a class="btn" href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Open the Tool Bench</a></p>
+<p><a class="btn" href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Read the notes</a></p>
 
-<div class="when"><p class="kick">02</p><h2>The lecture</h2></div>
+<div class="when"><p class="kick">01</p><h2>The lecture</h2></div>
 <ol class="steps">
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s02">Ask: nothing reaches the sheet</a></li>
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s03">Carry one tool call by hand</a></li>
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s04">Write the tool card against tests</a></li>
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s05">Switch the server on</a></li>
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s06">Move the card: MCP</a></li>
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s07">Do it with your own sheet</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s01">Where tools and MCP sit</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s03">Priya's shop: the paste problem</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s06">The server is the bridge</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s07">Function calling: the model asks</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s08">The tool schema</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s09">When the tool fails</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s10">Verify the record, not the sentence</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s11">MCP: one standard for every tool</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s12">Host, client, server</a></li>
 </ol>
 
-<div class="when"><p class="kick">03</p><h2>Done equals</h2></div>
-<p>Your tests marked before the first run, all passing. The downloaded log showing the call, the arguments, the result and the answer. And an MCP address for your own sheet that the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/second-app">second app</a> can answer through.</p>
-
-<div class="when"><p class="kick">04</p><h2>When you need it</h2></div>
+<div class="when"><p class="kick">02</p><h2>Try it yourself</h2></div>
+<p>Make one tool call by hand on the Tool Bench, then turn it into an MCP server. Bring your Groq key from <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Lecture 4</a>, or make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</p>
 <ul>
-  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Notes: every step of the bench, with sketches</a></li>
   <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">The Tool Bench</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench-notes">Tool Bench notes</a></li>
   <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/second-app">The second app: paste an MCP address</a></li>
+</ul>
+
+<div class="when"><p class="kick">03</p><h2>When you need it</h2></div>
+<ul>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s13">Tomorrow's five steps, and three questions</a></li>
   <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Lecture 10: function calling, the reverse call</a></li>
   <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10: diagnose with a golden pair</a></li>
   <li><a href="/#L11">Lecture 11 on the map</a></li>
