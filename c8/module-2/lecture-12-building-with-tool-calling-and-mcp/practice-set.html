@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Practice Set 3: Give Your Row a Tool | 100xEngineers</title>
-<meta name="description" content="Practice set 3, code track. Make the failing October case pass with a tool of your own, then build a tool for the row you tested in Practice set 1, verify it, and put it on an MCP server.">
+<meta name="description" content="Practice set 3, code track. Build a tool for the row you tested in Practice set 1, then put it on an MCP server.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -32,49 +32,33 @@
   <p class="dek">Due before Lecture 13, Fri 20 Nov 2026.</p>
 </div>
 
-<div class="call"><p class="kick">The brief</p><p>Make one failing case pass by writing a tool. Then build a tool for the row you tested in Practice set 1, with the cases written first. Start from <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>.</p></div>
+<div class="call"><p class="kick">The brief</p><p>Do the two steps from the lecture for your own row. Start from <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>.</p></div>
 
-<section class="s" id="s01"><h2><span class="n">01</span>Warm-up: make case 6 pass</h2>
-<p><code>python verify.py</code> fails on "Which lectures on the code track use Supabase?" The sheet says lectures 7 and 8. Neither tool can answer it in one call. <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s09">The notes show why.</a></p>
+<section class="s" id="s01"><h2><span class="n">01</span>Pick your tool</h2>
+<p>Open your <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04">Practice set 1</a> sheet at the row you tested in step 04. Beside it you wrote what the model was missing. Your tool fetches that: from a CSV file, a Supabase table, or an API you already called in this course.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Step 1: one tool call</h2>
+<p>Copy <code>tool_call.py</code> and change three things:</p>
 <ol>
-  <li>In <code>tools.py</code>, write a function that takes a tool name and a track, and returns the lectures that use it.</li>
-  <li>Write its card. Say when to use it and when <code>get_lecture</code> is the better one.</li>
-  <li>Add the function to <code>FUNCTIONS</code> and the card to <code>CARDS</code>.</li>
-  <li>Run the verifier until case 6 passes. The cases that passed before must still pass.</li>
+  <li><b>The function.</b> Make it fetch what your row was missing. Run it alone first.</li>
+  <li><b>The card.</b> Its name, what it does, and what to pass in.</li>
+  <li><b>The question.</b> Your row's question.</li>
+</ol>
+<p>Run it. Check that the model asked for your function and that the answer uses its result.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Step 2: the MCP server</h2>
+<ol>
+  <li>Copy <code>mcp_server.py</code> and put your function in it, under <code>@mcp.tool</code>, with a docstring.</li>
+  <li>Run it. In a second terminal: <code>fastmcp list http://localhost:8000/mcp</code>, then <code>fastmcp call</code> with your tool's name.</li>
 </ol>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>Your row: write the cases first</h2>
-<p>Open your <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04">Practice set 1</a> sheet at the row you tested in step 04. Beside it you wrote what the model was missing. That is what your tool fetches.</p>
-<ol>
-  <li><b>Name the source.</b> A CSV file, a Supabase table, or an API you already called in this course.</li>
-  <li><b>Write three cases</b> in <code>verify.py</code>, before any other code: one question that should call your tool, one with a tricky input, and one the model should answer itself.</li>
-  <li><b>Work out each answer by hand</b> from the source and put it in <code>answer_has</code>.</li>
-</ol>
-</section>
-
-<section class="s" id="s03"><h2><span class="n">03</span>Build the tool</h2>
-<ol>
-  <li><b>The function.</b> It checks its input and returns a dictionary. Run it alone first, the way <code>python tools.py</code> does.</li>
-  <li><b>The card.</b> Name, description, parameters, required, types.</li>
-  <li><b>Run the loop</b> with <code>python ask.py "your question"</code> and read the record.</li>
-  <li><b>Run your cases.</b> When one fails, decide which it is: the function, the card, missing context, or a part only a person can judge.</li>
-</ol>
-</section>
-
-<section class="s" id="s04"><h2><span class="n">04</span>Give it an address</h2>
-<ol>
-  <li>Run <code>python tools.py serve</code>. Your tool is already on it: the server hands out every card in <code>CARDS</code>.</li>
-  <li>In a second terminal, ask through the address: <code>python ask.py mcp "your question"</code>.</li>
-  <li>Write one line: does your task need MCP? Use the table in <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s12">section 12</a>.</li>
-</ol>
-</section>
-
-<section class="s" id="s05"><h2><span class="n">05</span>Share it</h2>
+<section class="s" id="s04"><h2><span class="n">04</span>Share it</h2>
 <ul>
-  <li>Your cases and the verifier's output.</li>
-  <li>One line of <code>log.jsonl</code>: the call, the arguments, the result, the answer.</li>
-  <li>Your one line on MCP.</li>
+  <li>Your two files.</li>
+  <li>The output of <code>python tool_call.py</code> and of <code>fastmcp call</code>.</li>
 </ul>
 <p>Once you're done, share it on the Discord. We go through them in the office hour.</p>
 </section>

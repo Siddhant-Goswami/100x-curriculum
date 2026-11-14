@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Building with Tool Calling and MCP | 100xEngineers</title>
-<meta name="description" content="Cohort 8 Module 2, Lecture 12, code track. Which track should I choose, answered in Python: one function, one tool call, the loop and its record, a verifier written first, then the same tools on an MCP server.">
+<meta name="description" content="Cohort 8 Module 2, Lecture 12, code track. Two Python files: one tool call, then the same function as an MCP server.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -35,49 +35,38 @@ body.read table.dials code{white-space:nowrap}
   <p class="dek">Which track should I choose? The question from Lecture 9, answered with a tool you write in Python.</p>
 </div>
 
-<div class="call"><p class="kick">The lecture in one line</p><p>Put the rule in a function, describe it on a card, let the model ask and your code run, and believe only the record. When a second app needs the tool, give the tool an address.</p></div>
+<div class="call"><p class="kick">The lecture in one line</p><p>Write a function and a card. The model asks, your code runs it. Then put the function on an MCP server so any app can use it.</p></div>
 
 <div class="when"><p class="kick">01</p><h2>Bring</h2></div>
 <ul>
   <li>Your Groq key. Lost it? Make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</li>
   <li>Python, and <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>: <code>pip install requests python-dotenv fastmcp</code>, then put your key in a file called <code>.env</code>.</li>
-  <li>Your <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set 1</a> sheet, for the last part.</li>
 </ul>
 <p><a class="btn" href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Open the notes</a></p>
 
-<div class="when"><p class="kick">02</p><h2>Three files</h2></div>
+<div class="when"><p class="kick">02</p><h2>Two files</h2></div>
 <table class="dials">
-  <tr><th>File</th><th>Holds</th><th>Run</th></tr>
-  <tr><td><code>tools.py</code></td><td>The two functions, their cards, and the MCP server</td><td><code>python tools.py</code><br><code>python tools.py serve</code></td></tr>
-  <tr><td><code>ask.py</code></td><td>The one call to Groq, the loop, and the MCP client</td><td><code>python ask.py bare</code><br><code>python ask.py paste</code><br><code>python ask.py hand</code><br><code>python ask.py "your question"</code><br><code>python ask.py mcp</code></td></tr>
-  <tr><td><code>verify.py</code></td><td>The cases and the check</td><td><code>python verify.py</code></td></tr>
+  <tr><th>Step</th><th>File</th><th>Run</th></tr>
+  <tr><td>1. One tool call</td><td><code>tool_call.py</code></td><td><code>python tool_call.py</code></td></tr>
+  <tr><td>2. The same function as an MCP server</td><td><code>mcp_server.py</code></td><td><code>python mcp_server.py</code></td></tr>
 </table>
 
 <div class="when"><p class="kick">03</p><h2>The lecture</h2></div>
 <ol class="steps">
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s01">The question and its golden pair</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s02">A system prompt alone</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s03">Paste the curriculum</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s04">Just the function</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s05">Write the card</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s06">One tool call, by hand</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s07">The loop, and the record</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s08">Write the verifier first</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s09">Where it breaks</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s10">A second app wants your tools</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s11">The second app</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s12">Do you need MCP?</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s01">The function</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s02">The card</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s03">The tool call</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s04">The MCP server</a></li>
 </ol>
 
 <div class="when"><p class="kick">04</p><h2>Done equals</h2></div>
-<p>Cases written before the run. A log showing the call, the arguments and the result. The same tool answering from an MCP server through a second app. And one line on whether your own task needs MCP.</p>
+<p>Your function answering through a tool call, and the same function listed and called from an MCP server.</p>
 
 <div class="when"><p class="kick">05</p><h2>When you need it</h2></div>
 <ul>
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/practice-set">Practice set 3: give your row a tool</a></li>
   <li><a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">The code: c8-tools</a></li>
   <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Lecture 11 notes</a></li>
-  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Lecture 10: function calling, the reverse call</a></li>
   <li><a href="/#L12">Lecture 12 on the map</a></li>
 </ul>
 
