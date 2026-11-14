@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Practice Set 3: Give Your Row a Tool | 100xEngineers</title>
-<meta name="description" content="Practice set 3, code track. Build a tool for the row you tested in Practice set 1, then put it on an MCP server.">
+<title>Practice Set 3: Write the Code Behind the Bench | 100xEngineers</title>
+<meta name="description" content="Practice set 3, code track. Write the Tool Bench's tool call in Python, then turn it into an MCP server and deploy it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -28,42 +28,53 @@
 <details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
   <p class="kick">Practice set 3 · after Lecture 12 · Code track</p>
-  <h1>Give your row a tool</h1>
+  <h1>Write the code behind the bench</h1>
   <p class="dek">Due before Lecture 13, Fri 20 Nov 2026.</p>
 </div>
 
-<div class="call"><p class="kick">The brief</p><p>Do the two steps from the lecture for your own row. Start from <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>.</p></div>
+<div class="call"><p class="kick">The brief</p><p>On the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a> you pressed buttons. Now write the code behind each one, on the same course sheet, then put the tool on the internet. Every step is in <a href="https://github.com/Siddhant-Goswami/c8-tools#readme" target="_blank" rel="noopener">the c8-tools repo</a>.</p></div>
 
-<section class="s" id="s01"><h2><span class="n">01</span>Pick your tool</h2>
-<p>Open your <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04">Practice set 1</a> sheet at the row you tested in step 04. Beside it you wrote what the model was missing. Your tool fetches that: from a CSV file, a Supabase table, or an API you already called in this course.</p>
+<section class="s" id="s01"><h2><span class="n">01</span>Set up</h2>
+<p>Fork <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">c8-tools</a>, install, and add your Groq key. The sheet's function and the request to the model are given.</p>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>Step 1: one tool call</h2>
-<p>Copy <code>tool_call.py</code> and change three things:</p>
+<section class="s" id="s02"><h2><span class="n">02</span>Part 1: the tool call</h2>
+<p>In <code>tool_call.py</code>. Run it after every step.</p>
 <ol>
-  <li><b>The function.</b> Make it fetch what your row was missing. Run it alone first.</li>
-  <li><b>The card.</b> Its name, what it does, and what to pass in.</li>
-  <li><b>The question.</b> Your row's question.</li>
-</ol>
-<p>Run it. Check that the model asked for your function and that the answer uses its result.</p>
-</section>
-
-<section class="s" id="s03"><h2><span class="n">03</span>Step 2: the MCP server</h2>
-<ol>
-  <li>Copy <code>mcp_server.py</code> and put your function in it, under <code>@mcp.tool</code>, with a docstring.</li>
-  <li>Run it. In a second terminal: <code>fastmcp list http://localhost:8000/mcp</code>, then <code>fastmcp call</code> with your tool's name.</li>
+  <li>Ask without a card</li>
+  <li>Write the card</li>
+  <li>Run the request</li>
+  <li>Hand the row back</li>
+  <li>Let your code carry it</li>
+  <li>Test the card with five questions</li>
 </ol>
 </section>
 
-<section class="s" id="s04"><h2><span class="n">04</span>Share it</h2>
+<section class="s" id="s03"><h2><span class="n">03</span>Part 2: the MCP server</h2>
+<p>In <code>mcp_server.py</code>.</p>
+<ol>
+  <li>Move the function</li>
+  <li>Write the card into the function</li>
+  <li>Switch it on, then list and call it</li>
+  <li>Put it on the internet with FastMCP Gateway</li>
+  <li>Call it from anywhere</li>
+</ol>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Now your own data</h2>
+<p>Do it once more with your own Google Sheet, a CSV file, a Supabase table, or an API from this course: your function, your card, your five questions.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Share it</h2>
 <ul>
-  <li>Your two files.</li>
-  <li>The output of <code>python tool_call.py</code> and of <code>fastmcp call</code>.</li>
+  <li>The link to your fork, with the five-question table filled in.</li>
+  <li>Your deployed address.</li>
 </ul>
 <p>Once you're done, share it on the Discord. We go through them in the office hour.</p>
 </section>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a></li>
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Lecture 12 notes</a></li>
   <li><a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">The code: c8-tools</a></li>
   <li><a href="/c8/module-2/practice-set-2-write-the-eval/">Practice set 2: write the eval</a></li>
