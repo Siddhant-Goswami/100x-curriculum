@@ -32,40 +32,44 @@ body.read table.dials code{white-space:nowrap}
 <div class="hero">
   <p class="kick">Cohort 8 · Module 2 · Lecture 12 · Sat 14 Nov 2026 · Code track</p>
   <h1>Building with tool calling and MCP</h1>
-  <p class="dek">Which track should I choose? The question from Lecture 9, answered with a tool you write in Python.</p>
+  <p class="dek">A tool call and an MCP server, one step at a time on the Tool Bench. Then you write the same thing in Python.</p>
 </div>
 
-<div class="call"><p class="kick">The lecture in one line</p><p>Write a function and a card. The model asks, your code runs it. Then put the function on an MCP server so any app can use it.</p></div>
+<div class="call"><p class="kick">The lecture in one line</p><p>The model does not fetch anything. It writes a request, your code runs it and hands the result back. Move the card to the data's side and any app can use the tool.</p></div>
 
-<div class="when"><p class="kick">01</p><h2>Bring</h2></div>
-<ul>
-  <li>Your Groq key. Lost it? Make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</li>
-  <li>Python, and <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>: <code>pip install requests python-dotenv fastmcp</code>, then put your key in a file called <code>.env</code>.</li>
-</ul>
-<p><a class="btn" href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Open the notes</a></p>
-
-<div class="when"><p class="kick">02</p><h2>Two files</h2></div>
-<table class="dials">
-  <tr><th>Step</th><th>File</th><th>Run</th></tr>
-  <tr><td>1. One tool call</td><td><code>tool_call.py</code></td><td><code>python tool_call.py</code></td></tr>
-  <tr><td>2. The same function as an MCP server</td><td><code>mcp_server.py</code></td><td><code>python mcp_server.py</code></td></tr>
-</table>
-
-<div class="when"><p class="kick">03</p><h2>The lecture</h2></div>
+<div class="when"><p class="kick">01</p><h2>The lecture</h2></div>
 <ol class="steps">
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s01">The function</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s02">The card</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s03">The tool call</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s04">The MCP server</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench#1">Ask</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench#2">Carry it by hand</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench#3">Write the card</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench#4">Switch the server on</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench#5">Move the card</a></li>
 </ol>
+<p><a class="btn" href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Open the Tool Bench</a></p>
+
+<div class="when"><p class="kick">02</p><h2>Practice set 3</h2></div>
+<p>Write the code behind the bench. Due before Lecture 13, Fri 20 Nov 2026.</p>
+<table class="dials">
+  <tr><th>Part</th><th>File</th><th>You end with</th></tr>
+  <tr><td>1. The tool call</td><td><code>tool_call.py</code></td><td>An answer written from the sheet</td></tr>
+  <tr><td>2. The MCP server</td><td><code>mcp_server.py</code></td><td>An address any app can use</td></tr>
+</table>
+<p><a class="btn" href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/practice-set">Open the practice set</a></p>
+
+<div class="when"><p class="kick">03</p><h2>You need</h2></div>
+<ul>
+  <li>Your Groq key from the bench. Lost it? Make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</li>
+  <li>Python.</li>
+  <li>Your GitHub account, to fork <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">c8-tools</a> and to deploy.</li>
+</ul>
 
 <div class="when"><p class="kick">04</p><h2>Done equals</h2></div>
-<p>Your function answering through a tool call, and the same function listed and called from an MCP server.</p>
+<p>Your fork with the five-question table filled in, and your MCP server's address on the internet.</p>
 
 <div class="when"><p class="kick">05</p><h2>When you need it</h2></div>
 <ul>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/practice-set">Practice set 3: write the code behind the bench</a></li>
-  <li><a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">The code: c8-tools</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Lecture 12 notes: a worked example in Python</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench-notes">Tool Bench notes</a></li>
   <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Lecture 11 notes</a></li>
   <li><a href="/#L12">Lecture 12 on the map</a></li>
 </ul>

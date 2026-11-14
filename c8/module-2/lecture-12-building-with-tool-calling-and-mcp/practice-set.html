@@ -34,35 +34,44 @@
 
 <div class="call"><p class="kick">The brief</p><p>On the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a> you pressed buttons. Now write the code behind each one, on the same course sheet, then put the tool on the internet. Every step is in <a href="https://github.com/Siddhant-Goswami/c8-tools#readme" target="_blank" rel="noopener">the c8-tools repo</a>.</p></div>
 
-<section class="s" id="s01"><h2><span class="n">01</span>Set up</h2>
-<p>Fork <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">c8-tools</a>, install, and add your Groq key. The sheet's function and the request to the model are given.</p>
+<section class="s" id="s01"><h2><span class="n">01</span>What you write</h2>
+<table class="dials">
+  <tr><th>On the bench</th><th>In the repo</th><th></th></tr>
+  <tr><td>The sheet</td><td><code>get_lecture(number)</code></td><td>Given</td></tr>
+  <tr><td>The model</td><td><code>ask_model(messages, tools)</code></td><td>Given</td></tr>
+  <tr><td>Your server</td><td>The bottom of <code>tool_call.py</code></td><td>Part 1</td></tr>
+  <tr><td>The sheet's server</td><td><code>mcp_server.py</code></td><td>Part 2</td></tr>
+</table>
+<p><a href="https://github.com/Siddhant-Goswami/c8-tools#setup" target="_blank" rel="noopener">Set up</a> first: fork the repo, install, add your Groq key.</p>
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>Part 1: the tool call</h2>
 <p>In <code>tool_call.py</code>. Run it after every step.</p>
 <ol>
-  <li>Ask without a card</li>
-  <li>Write the card</li>
-  <li>Run the request</li>
-  <li>Hand the row back</li>
-  <li>Let your code carry it</li>
-  <li>Test the card with five questions</li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-1-ask-without-a-card" target="_blank" rel="noopener">Ask without a card</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-2-write-the-card" target="_blank" rel="noopener">Write the card</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-3-run-the-request" target="_blank" rel="noopener">Run the request</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-4-hand-the-row-back" target="_blank" rel="noopener">Hand the row back</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-5-let-your-code-carry-it" target="_blank" rel="noopener">Let your code carry it</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-6-test-the-card" target="_blank" rel="noopener">Test the card</a></li>
 </ol>
+<p>Done when the same file answers a lecture question from the sheet and "What is an API?" on its own.</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Part 2: the MCP server</h2>
 <p>In <code>mcp_server.py</code>.</p>
 <ol>
-  <li>Move the function</li>
-  <li>Write the card into the function</li>
-  <li>Switch it on, then list and call it</li>
-  <li>Put it on the internet with FastMCP Gateway</li>
-  <li>Call it from anywhere</li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-1-move-the-function" target="_blank" rel="noopener">Move the function</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-2-write-the-card-into-the-function" target="_blank" rel="noopener">Write the card into the function</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-3-switch-it-on" target="_blank" rel="noopener">Switch it on</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-4-put-it-on-the-internet" target="_blank" rel="noopener">Put it on the internet</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/c8-tools#step-5-call-it-from-anywhere" target="_blank" rel="noopener">Call it from anywhere</a></li>
 </ol>
+<p>Done when <code>fastmcp call</code> returns the Lecture 12 row from your address on the internet.</p>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Now your own data</h2>
-<p>Do it once more with your own Google Sheet, a CSV file, a Supabase table, or an API from this course: your function, your card, your five questions.</p>
+<p><a href="https://github.com/Siddhant-Goswami/c8-tools#now-your-own-data" target="_blank" rel="noopener">Do it once more</a> with your own Google Sheet, a CSV file, a Supabase table, or an API from this course: your function, your card, your five questions.</p>
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Share it</h2>

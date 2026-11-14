@@ -847,7 +847,7 @@ GUIDES.L11 = { all: {
 
 /* Lecture 12, code track only: 'Which track should I choose?' answered in Python, from one function to an MCP server. */
 GUIDES.L12 = { code: {
-  hub: {link:'l12Hub', title:'Open the Lecture 12 pages', sub:'The overview, the notes and Practice set 3', more:[['l12Notes','Notes'],['l12Practice','Practice set 3'],['l12Code','The code']]}
+  hub: {link:'l12Hub', title:'Open the Lecture 12 pages', sub:'The overview, the notes and Practice set 3', more:[['l11Bench','Tool Bench'],['l12Practice','Practice set 3'],['l12Notes','Notes'],['l12Code','The code']]}
 }};
 
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from
