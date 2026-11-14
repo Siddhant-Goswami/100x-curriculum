@@ -7,7 +7,7 @@
   <p class="dek">The question from Lecture 9, answered in Python: one function, one tool call, a verifier, and an MCP server.</p>
 </div>
 
-<p>Since Lecture 9 you have asked a model one question: which track should I choose? In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s02">Lecture 10</a> it scored 1, then 5, then 7 out of 10, and still named Zapier. On the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a> you gave it a tool by clicking. Today you write that tool in Python. Every step is one short file in <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>, and every output below is from a real run on 14 November.</p>
+<p>Since Lecture 9 you have asked a model one question: which track should I choose? In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s02">Lecture 10</a> it scored 1, then 5, then 7 out of 10, and still named Zapier. On the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a> you gave it a tool by clicking. Today you write that tool in Python. The whole lecture is three files in <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>: <code>tools.py</code>, <code>ask.py</code> and <code>verify.py</code>. Every step is one command, and every output below is from a real run on 14 November.</p>
 
 <section class="s" id="s01"><h2><span class="n">01</span>The question and its golden pair</h2>
 <blockquote class="q9">Which track should I choose in the 100xEngineers cohort?</blockquote>
@@ -28,8 +28,9 @@
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>A system prompt alone</h2>
-{{cut:01_bare.py|QUESTION = }}
-<pre class="code">$ python 01_bare.py
+<p><code>ask.py</code> sends the question with one line of system prompt and nothing else:</p>
+{{cut:ask.py|SYSTEM = "You|RULE = (}}
+<pre class="code">$ python ask.py bare
 * If you're new to coding or love building user-facing features, the Frontend track (React/JavaScript, UI/UX basics) …
 * If you enjoy working with servers, APIs, databases, and system design, go for the Backend track (Node.js, Python/Django, Go, micro-services).
 * … the Full-Stack track … the Data Engineering/Science track … the DevOps/Cloud track (Docker, Kubernetes, AWS/GCP) …</pre>
@@ -37,8 +38,8 @@
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Paste the curriculum</h2>
-<p><code>02_paste.py</code> pastes both tabs under the question, all 38 rows.</p>
-<pre class="code">$ python 02_paste.py
+<p><code>python ask.py paste</code> pastes both tabs under the question, all 38 rows.</p>
+<pre class="code">$ python ask.py paste
 Choose the code track if you're comfortable writing Python (or want to learn it) …
 Pick the no-code track if you prefer visual tools … using platforms like Antigravity, Google Stitch, and Vercel.
 
@@ -80,14 +81,14 @@ Pick the no-code track if you prefer visual tools … using platforms like Antig
 </figure>
 <p>As in <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s06">Lecture 7</a>, strip the job to a function first. This one is in <code>tools.py</code>:</p>
 {{cut:tools.py|NOT_TOOLS = |def get_lecture}}
-<pre class="code">$ python 03_function.py
+<pre class="code">$ python tools.py
 {'track': 'no-code', 'tools': ['Google Stitch', 'Google AI Studio', 'Antigravity', 'Supabase', 'Vercel', 'Tool Bench', 'Groq']}
 {'track': 'code', 'tools': ['Python', 'Gradio', 'Streamlit', 'Hugging Face Spaces', 'FastAPI', 'Render', 'Supabase', 'Tool Bench', 'Groq', 'FastMCP']}</pre>
 <ul class="pt">
   <li><b>It matches what you read by hand.</b> It cannot name Zapier: Zapier is not in the sheet.</li>
   <li><b>The rule lives here,</b> in code you can test. Not in a prompt.</li>
   <li><b>It checks its input.</b> A track that is not <code>code</code> or <code>no-code</code> raises an error.</li>
-  <li><b>It reads the live sheet,</b> through <code>fetch_lectures</code> in <code>data.py</code>. Change a cell and the next answer changes.</li>
+  <li><b>It reads the live sheet,</b> through <code>fetch_lectures</code> at the top of the same file. Change a cell and the next answer changes.</li>
 </ul>
 <p>A second function, <code>get_lecture(number, track)</code>, returns one lecture. It is the Tool Bench's tool, in Python.</p>
 </section>
@@ -143,7 +144,7 @@ Pick the no-code track if you prefer visual tools … using platforms like Antig
 <figcaption>The same six arrows as the Tool Bench. This time the server is a Python file and you are its Enter key.</figcaption>
 </figure>
 <p>The request to Groq is the one from <a href="/c8/module-2/lecture-05-building-apis/">Lecture 5</a> with one new field, <code>tools</code>. Start with a smaller question, "Which tools does the no-code track use?" Send it with the card, and the model does not answer. It sends this and stops:</p>
-<pre class="code">$ python 04_by_hand.py
+<pre class="code">$ python ask.py hand
 {
   "role": "assistant",
   "reasoning": "We need to answer using function get_track_tools with track \"no-code\".",
@@ -156,8 +157,12 @@ Pick the no-code track if you prefer visual tools … using platforms like Antig
 
 Run get_track_tools({'track': 'no-code'})? Press Enter.</pre>
 <p>Nothing has touched the sheet. Press Enter and your code runs the function, then hands the result back with the whole conversation:</p>
-{{cut:04_by_hand.py|messages.append(reply)|print("\nThe model's answer}}
-<pre class="code">The no-code track uses the following tools: Google Stitch, Google AI Studio, Antigravity, Supabase, Vercel, Tool Bench, and Groq.</pre>
+<pre class="code">tool      get_track_tools
+arguments {'track': 'no-code'}
+result    {'track': 'no-code', 'tools': ['Google Stitch', 'Google AI Studio', 'Antigravity', 'Supabase', 'Vercel', 'Tool Bench', 'Groq']}
+status    success
+
+answer    The no-code track uses these tools: Google Stitch, Google AI Studio, Antigravity, Supabase, Vercel, Tool Bench, and Groq.</pre>
 <ul class="pt">
   <li><b>Read <code>arguments</code> closely.</b> It is a string of JSON, so you <code>json.loads</code> it.</li>
   <li><b>Compare with section 01.</b> Seven tools, the same seven, in the same order. The model copied them from the result.</li>
@@ -166,10 +171,10 @@ Run get_track_tools({'track': 'no-code'})? Press Enter.</pre>
 </section>
 
 <section class="s" id="s07"><h2><span class="n">07</span>The loop, and the record</h2>
-<p>Every key you pressed becomes a rule. This is all of <code>agent.py</code>:</p>
-{{cut:agent.py|def ask(}}
-<p>Now the real question:</p>
-<pre class="code">$ python 05_loop.py
+<p>Every key you pressed becomes a rule. This is the loop in <code>ask.py</code>. The by-hand step was this same loop with <code>pause</code> on:</p>
+{{cut:ask.py|def ask(|MCP: the tools come from an address}}
+<p>Now the real question, with no pause:</p>
+<pre class="code">$ python ask.py
 tool      get_track_tools
 arguments {'track': 'code'}
 result    {'track': 'code', 'tools': ['Python', 'Gradio', 'Streamlit', 'Hugging Face Spaces', 'FastAPI', 'Render', 'Supabase', 'Tool Bench', 'Groq', 'FastMCP']}
@@ -190,16 +195,17 @@ answer    Choose the code track if you enjoy writing programs and want to work w
 <ul class="pt">
   <li><b>Your code decides when it stops:</b> five rounds, then it gives up.</li>
   <li><b>An error goes back to the model as a result.</b> <code>run_tool</code> catches it and returns <code>{"error": …}</code>. It never guesses.</li>
-  <li><b>The record is the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s10">execution record</a>:</b> tool, arguments, result, status. <code>05_loop.py</code> appends each one to <code>log.jsonl</code>.</li>
+  <li><b>The record is the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s10">execution record</a>:</b> tool, arguments, result, status. <code>ask.py</code> appends each one to <code>log.jsonl</code>.</li>
+  <li><b>In an app, the loop sits behind a route,</b> as in <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s07">Lecture 7</a>. The key, the functions and the cards stay on the server, and the route returns the answer with the record.</li>
 </ul>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>Write the verifier first</h2>
 <p>Six questions, and what should happen for each, written from the sheet before the run. This is your Practice set 2 eval turned into code: the hard lines become checks a rule can run.</p>
-{{cut:06_verify.py|INVENTED = |def plain}}
-{{cut:06_verify.py|def plain|passed = 0}}
+{{cut:verify.py|INVENTED = |def plain}}
+{{cut:verify.py|def plain|passed = 0}}
 <p>Three checks per case: did the system make the calls you wrote down, does the sentence say what it must, and does it avoid what it must not.</p>
-<pre class="code">$ python 06_verify.py
+<pre class="code">$ python verify.py
 PASS  Which tools does the no-code track use?
 PASS  Which track should I choose in the 100xEngineers cohort?
 PASS  When is Lecture 13 on the code track, and what is it about?
@@ -252,14 +258,13 @@ FAIL  Which lectures on the code track use Supabase?
   <tr><td>"What tools do we use in Lecture 7?"</td><td>One run fetched both tracks. Another asked back, "code or no-code?" Same question, two behaviours.</td><td>Context. Tell it which track the student is on: one call, the right one, 3 runs of 3.</td></tr>
   <tr><td>"Which lectures on the code track use Supabase?"</td><td>It fetched lecture 1, then 2, then 3, one per round, and ended with "I could not finish in five rounds."</td><td>A tool that fits the question. The sheet says lectures 7 and 8.</td></tr>
 </table>
-<p>The first fix is <code>RULE</code> in <code>llm.py</code>. In <code>06_verify.py</code>, change <code>SYSTEM_PROMPT = SYSTEM</code> to <code>SYSTEM + RULE</code> and run it again:</p>
-{{cut:llm.py|RULE = (|USED = }}
+<p>The first fix is <code>RULE</code> in <code>ask.py</code>. In <code>verify.py</code>, change <code>SYSTEM_PROMPT = SYSTEM</code> to <code>SYSTEM + RULE</code> and run it again:</p>
+{{cut:ask.py|RULE = (|USED = }}
 <p>The second is a line added to the description on the card:</p>
 <pre class="code">"The sheet only knows these two tracks. If the question names any other track, say the sheet does not have it."</pre>
 <ul class="pt">
   <li><b>Having a tool is not using it.</b> Lecture 10 went 1, 5, 7 out of 10. With the tool the answer is clean when the model asks, and Zapier is back when it doesn't.</li>
   <li><b>Every fix can break something else.</b> With the rule, "What is an API?" got "I can only help with questions about the course." Run all the cases after each change.</li>
-<ul class="pt">
   <li><b>A valid argument can still be the wrong one.</b> Your check can't catch it. Only a case written first can.</li>
   <li><b>Vague question:</b> the model needs context, as in Lecture 10. Tools don't replace it.</li>
   <li><b>No tool fits:</b> build one, or say on the card what the tool can't do.</li>
@@ -268,20 +273,7 @@ FAIL  Which lectures on the code track use Supabase?
 <p class="pull">Every call can succeed and the answer can still be wrong. Only a case written first can tell you.</p>
 </section>
 
-<section class="s" id="s10"><h2><span class="n">10</span>Put it behind a route</h2>
-<p>The same move as <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s07">Lecture 7</a>: the loop goes behind FastAPI, and Gradio becomes a client that only asks.</p>
-{{cut:07_server.py|app = FastAPI()}}
-{{cut:07_chat.py|def chat(}}
-<pre class="code">uvicorn 07_server:app --port 8001      # one terminal
-python 07_chat.py                      # another</pre>
-<ul class="pt">
-  <li><b>The route returns the answer and the record together.</b> The chat prints the record under the answer, so the reader sees the evidence.</li>
-  <li><b>The key, the functions and the cards stay on the server.</b> The client knows one address.</li>
-  <li><b>The rule and the student's track are added here,</b> on the server, because the runs in section 09 said they were needed. The app knows who is asking. The model does not.</li>
-</ul>
-</section>
-
-<section class="s" id="s11"><h2><span class="n">11</span>A second app wants your tools</h2>
+<section class="s" id="s10"><h2><span class="n">10</span>A second app wants your tools</h2>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Before: your app holds the cards and the functions and reaches the sheet. A second app has no way in. After: the cards and functions sit in an MCP server next to the sheet, at one address, and both apps connect to it.">
   <g class="ln" filter="url(#wob)">
@@ -319,43 +311,51 @@ python 07_chat.py                      # another</pre>
 </figure>
 <p>A friend wants to ask the same question inside the AI app they already chat with. Your cards and functions live inside <code>tools.py</code>. That app can't import your Python file. Copying the code into every app means fixing every bug in every copy.</p>
 <p>So move the tools out of your app and put them at an address. That is an MCP server. On the Tool Bench the site ran one for you; with FastMCP you write it yourself:</p>
-{{cut:08_mcp_server.py|from typing import Annotated}}
+{{cut:tools.py|def serve():|if __name__}}
 <ul class="pt">
-  <li><b>The card is now the function itself.</b> The docstring is the description. The type hints are the parameters.</li>
-  <li><b>The function body didn't change.</b> It still calls <code>tools.py</code>.</li>
-  <li><b>Run it</b> with <code>python 08_mcp_server.py</code>. The address is <code>http://localhost:8000/mcp</code>.</li>
+  <li><b>The server hands out the cards you already wrote,</b> and runs the same functions behind them.</li>
+  <li><b>Nothing above it in <code>tools.py</code> changed.</b></li>
+  <li><b>Run it</b> with <code>python tools.py serve</code>. The address is <code>http://localhost:8000/mcp</code>.</li>
 </ul>
 </section>
 
-<section class="s" id="s12"><h2><span class="n">12</span>The second app</h2>
-<p><code>09_second_app.py</code> never imports <code>tools.py</code>. It knows one address. An MCP message is a POST with a JSON package, like every request since <a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a>:</p>
-{{cut:09_second_app.py|ADDRESS = |# 3. The loop}}
+<section class="s" id="s11"><h2><span class="n">11</span>The second app</h2>
+<p><code>python ask.py mcp</code> never imports <code>tools.py</code>. It knows one address. An MCP message is a POST with a JSON package, like every request since <a href="/c8/module-2/lecture-04-the-second-interface/">Lecture 4</a>:</p>
+{{cut:ask.py|ADDRESS = |- the steps}}
 <table class="dials">
   <tr><th>Message</th><th>Means</th></tr>
   <tr><td><code>tools/list</code></td><td>What can you do? The cards come back.</td></tr>
   <tr><td><code>tools/call</code></td><td>Run this one, with these arguments.</td></tr>
 </table>
 <p>The loop is the one from section 07, with two things swapped: where the cards come from, and who runs the call.</p>
-<pre class="code">out = ask(question, cards=cards, run=run_on_server, system=SYSTEM + RULE)</pre>
-<pre class="code">$ python 09_second_app.py
+{{cut:ask.py|elif step == "mcp":|else:}}
+<pre class="code">$ python tools.py serve                  # one terminal
+$ python ask.py mcp                     # another
 The server offers: ['get_track_tools', 'get_lecture']
 
-[{ "tool": "get_track_tools", "arguments": { "track": "code" }, "result": { … }, "status": "success" },
- { "tool": "get_track_tools", "arguments": { "track": "no-code" }, "result": { … }, "status": "success" }]
+tool      get_track_tools
+arguments {'track': 'code'}
+result    {'track': 'code', 'tools': ['Python', 'Gradio', 'Streamlit', 'Hugging Face Spaces', 'FastAPI', 'Render', 'Supabase', 'Tool Bench', 'Groq', 'FastMCP']}
+status    success
 
-answer    Code track: uses programming-focused tools such as Python, Gradio, Streamlit, Hugging Face Spaces,
-          FastAPI, Render, Supabase, Tool Bench, Groq, and FastMCP. …
-          No-code track: works with visual platforms like Google Stitch, Google AI Studio, Antigravity,
-          plus Supabase, Vercel, Tool Bench, and Groq. …</pre>
+tool      get_track_tools
+arguments {'track': 'no-code'}
+result    {'track': 'no-code', 'tools': ['Google Stitch', 'Google AI Studio', 'Antigravity', 'Supabase', 'Vercel', 'Tool Bench', 'Groq']}
+status    success
+
+answer    Code Track: teaches programming-based tools such as Python, Gradio, Streamlit, FastAPI, Render,
+          Supabase, Tool Bench, Groq, FastMCP, and Hugging Face Spaces. …
+          No-Code Track: focuses on visual and low-code platforms like Google Stitch, Google AI Studio,
+          Antigravity, plus shared services Supabase, Vercel, Tool Bench, and Groq. …</pre>
 <ul class="pt">
-  <li><b>In Lecture 11's words:</b> the second app is the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s12">host</a>, the <code>mcp()</code> function is the client, and <code>08_mcp_server.py</code> is the server.</li>
+  <li><b>In Lecture 11's words:</b> <code>ask.py</code> is the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s12">host</a>, its <code>mcp()</code> function is the client, and <code>tools.py serve</code> is the server.</li>
   <li><b>An error comes back with <code>isError: true</code></b> and the same message your function raised. The track check still works from the other side.</li>
   <li><b>Any MCP host can use the same address:</b> an AI desktop app or a code editor that lets you add an MCP server. They send the same two messages.</li>
-  <li><b>The verifier still applies.</b> Point it at <code>cards</code> and <code>run_on_server</code> and the same six cases run through the server.</li>
+  <li><b>The verifier still applies.</b> In <code>verify.py</code>, pass <code>cards_from_server()</code> and <code>run_on_server</code> to <code>ask</code>, and the same six cases run through the server.</li>
 </ul>
 </section>
 
-<section class="s" id="s13"><h2><span class="n">13</span>Do you need MCP?</h2>
+<section class="s" id="s12"><h2><span class="n">12</span>Do you need MCP?</h2>
 <table class="dials">
   <tr><th>Your situation</th><th>Use</th></tr>
   <tr><td>One app, your own code, a few tools</td><td>A function and a card, as in section 07. MCP adds a server to run and nothing else.</td></tr>
@@ -370,7 +370,7 @@ answer    Code track: uses programming-focused tools such as Python, Gradio, Str
 </ul>
 </section>
 
-<section class="s" id="s14"><h2><span class="n">14</span>Your turn</h2>
+<section class="s" id="s13"><h2><span class="n">13</span>Your turn</h2>
 <p>In <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set#s04">Practice set 1, step 04</a> you tested one row and wrote what the model was missing. That missing thing is your first tool. <a href="{BASE}/practice-set">Practice set 3</a> walks it through: make the October case pass, then build the tool for your own row.</p>
 <details class="words"><summary>Words from this lecture</summary>
 <dl>
@@ -381,7 +381,7 @@ answer    Code track: uses programming-focused tools such as Python, Gradio, Str
   <dt>Execution record</dt><dd>Tool, arguments, result and status for every call. The evidence.</dd>
   <dt>Verifier</dt><dd>Cases written before the run: the calls that should happen, what the answer must say and what it must not.</dd>
   <dt>MCP server</dt><dd>Tools at an address. It answers <code>tools/list</code> and <code>tools/call</code> for any app.</dd>
-  <dt>FastMCP</dt><dd>The Python library that turns a function, its docstring and its type hints into an MCP tool.</dd>
+  <dt>FastMCP</dt><dd>The Python library that puts your functions and their cards at an address.</dd>
 </dl>
 </details>
 </section>

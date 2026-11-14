@@ -14,6 +14,10 @@
 .when{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
 .when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
 .when .kick{margin:0}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials code{white-space:nowrap}
 </style>
 <script src="/analytics.js" defer></script>
 </head>
@@ -36,12 +40,20 @@
 <div class="when"><p class="kick">01</p><h2>Bring</h2></div>
 <ul>
   <li>Your Groq key. Lost it? Make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</li>
-  <li>Python, and <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>: <code>pip install -r requirements.txt</code>, then paste the key into <code>.env</code>.</li>
+  <li>Python, and <a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">the c8-tools repo</a>: <code>pip install requests python-dotenv fastmcp</code>, then put your key in a file called <code>.env</code>.</li>
   <li>Your <a href="/c8/module-2/lecture-09-llms-from-first-principles/practice-set">Practice set 1</a> sheet, for the last part.</li>
 </ul>
 <p><a class="btn" href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Open the notes</a></p>
 
-<div class="when"><p class="kick">02</p><h2>The lecture</h2></div>
+<div class="when"><p class="kick">02</p><h2>Three files</h2></div>
+<table class="dials">
+  <tr><th>File</th><th>Holds</th><th>Run</th></tr>
+  <tr><td><code>tools.py</code></td><td>The two functions, their cards, and the MCP server</td><td><code>python tools.py</code><br><code>python tools.py serve</code></td></tr>
+  <tr><td><code>ask.py</code></td><td>The one call to Groq, the loop, and the MCP client</td><td><code>python ask.py bare</code><br><code>python ask.py paste</code><br><code>python ask.py hand</code><br><code>python ask.py "your question"</code><br><code>python ask.py mcp</code></td></tr>
+  <tr><td><code>verify.py</code></td><td>The cases and the check</td><td><code>python verify.py</code></td></tr>
+</table>
+
+<div class="when"><p class="kick">03</p><h2>The lecture</h2></div>
 <ol class="steps">
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s01">The question and its golden pair</a></li>
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s02">A system prompt alone</a></li>
@@ -52,16 +64,15 @@
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s07">The loop, and the record</a></li>
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s08">Write the verifier first</a></li>
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s09">Where it breaks</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s10">Put it behind a route</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s11">A second app wants your tools</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s12">The second app</a></li>
-  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s13">Do you need MCP?</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s10">A second app wants your tools</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s11">The second app</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s12">Do you need MCP?</a></li>
 </ol>
 
-<div class="when"><p class="kick">03</p><h2>Done equals</h2></div>
+<div class="when"><p class="kick">04</p><h2>Done equals</h2></div>
 <p>Cases written before the run. A log showing the call, the arguments and the result. The same tool answering from an MCP server through a second app. And one line on whether your own task needs MCP.</p>
 
-<div class="when"><p class="kick">04</p><h2>When you need it</h2></div>
+<div class="when"><p class="kick">05</p><h2>When you need it</h2></div>
 <ul>
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/practice-set">Practice set 3: give your row a tool</a></li>
   <li><a href="https://github.com/Siddhant-Goswami/c8-tools" target="_blank" rel="noopener">The code: c8-tools</a></li>

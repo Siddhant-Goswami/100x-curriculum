@@ -26,7 +26,7 @@ head = L11.read_text().split('<div class="wrap">')[0]
 head = head.replace("<title>Lecture Notes: Tool Calling and MCP, Part 2 | 100xEngineers</title>",
                     "<title>Lecture Notes: Building with Tool Calling and MCP | 100xEngineers</title>")
 head = re.sub(r'<meta name="description" content="[^"]*">',
-              '<meta name="description" content="Notes for Lecture 12, code track: which track should I choose, answered in Python. A system prompt alone, the pasted curriculum, one function, the tool card, one tool call by hand, the loop and its record, a verifier written first, where it breaks, FastAPI and Gradio, then the same tools on an MCP server and a second app.">', head)
+              '<meta name="description" content="Notes for Lecture 12, code track: which track should I choose, answered in Python. A system prompt alone, the pasted curriculum, one function, the tool card, one tool call by hand, the loop and its record, a verifier written first, where it breaks, then the same tools on an MCP server and a second app.">', head)
 head = head.replace('data-page="l11-notes"', 'data-page="l12-notes"').replace('href="/#L11"', 'href="/#L12"')
 head = re.sub(r'<nav aria-label="Lecture 11 pages">.*?</nav>',
               f'<nav aria-label="Lecture 12 pages"><a href="{BASE}/">Overview</a><a href="{BASE}/notes">Notes</a><a href="{BASE}/practice-set">Practice set</a></nav>', head)
