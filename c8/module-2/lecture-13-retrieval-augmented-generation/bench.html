@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Retrieval Bench | 100xEngineers</title>
+<meta name="description" content="Find the right passage in our own notes and hand it to the model: by lecture number, by its words, by its meaning, and by letting the model search. Five questions, every message on the wire.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-13-retrieval-augmented-generation/assets/bench.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-13-retrieval-augmented-generation/assets/retrieval.css">
+<script src="/c8/docs.js"></script>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l13-bench" data-noaarav>
+<!--
+  The Lecture 11 Tool Bench with three new parts: the scoreboard (five questions with known answers), the pile view
+  (Text, Map, Prompt) and the meter. You talk only to the Server (/api/retrieve). The Server searches the Pile it holds
+  (the twelve notes pages, cut into passages) and talks to the Model. Only the instruction changes; Continue appears
+  once a station is done. data-nolabel keeps questions and answers out of analytics replays.
+-->
+<header class="bar">
+  <div class="in">
+    <a class="brand" href="/#L13" title="Back to the curriculum map">100x<b>·</b><span>Retrieval Bench</span></a>
+    <p class="where" id="where" aria-live="polite"></p>
+    <a class="exit" href="/#L13">Exit</a>
+  </div>
+  <nav class="segs" id="segs" aria-label="Six stations">
+    <a href="#1" data-s="1"><i></i><span>Ask</span></a>
+    <a href="#2" data-s="2"><i></i><span>By number</span></a>
+    <a href="#3" data-s="3"><i></i><span>Paste it all</span></a>
+    <a href="#4" data-s="4"><i></i><span>By its words</span></a>
+    <a href="#5" data-s="5"><i></i><span>By its meaning</span></a>
+    <a href="#6" data-s="6"><i></i><span>Search twice</span></a>
+  </nav>
+</header>
+
+<main class="app" id="app">
+  <h1 id="ins" tabindex="-1"></h1>
+  <p class="ctx" id="ctx" data-nolabel></p>
+
+  <section class="board" id="score" aria-label="The scoreboard: five questions with known answers" data-nolabel></section>
+
+  <section class="bench" aria-label="The bench">
+    <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server searches the pile on its left and talks to the model on its right.">
+      <div class="node" data-n="you"><b>You</b><span>ask</span></div>
+      <div class="lane v" data-l="server-you" aria-hidden="true"><i></i></div>
+      <div class="node" data-n="pile"><b>Pile</b><span>our 12 notes pages</span></div>
+      <div class="lane h" data-l="server-pile" aria-hidden="true"><i></i></div>
+      <div class="node" data-n="server"><b>Server</b><span>follows rules</span></div>
+      <div class="lane h" data-l="model-server" aria-hidden="true"><i></i></div>
+      <div class="node" data-n="model"><b>Model</b><span>predicts</span></div>
+      <div class="meter" id="meter" aria-live="polite"></div>
+    </div>
+
+    <div class="work" data-nolabel>
+      <div class="side">
+        <div class="panel" id="panel"></div>
+        <div class="msg" id="msg" aria-live="polite"></div>
+        <div class="tail">
+          <div class="after" id="after"></div>
+          <div class="forward" id="fwd"></div>
+        </div>
+        <section class="pileview" id="pileview" aria-label="The pile">
+          <div class="tabs" role="tablist">
+            <button role="tab" data-tab="text" aria-selected="true">Text</button>
+            <button role="tab" data-tab="map" aria-selected="false">Map</button>
+            <button role="tab" data-tab="prompt" aria-selected="false">Prompt</button>
+          </div>
+          <div class="tabbody" id="tabbody"></div>
+        </section>
+      </div>
+      <div class="wirebox">
+        <h2>The wire <small>every message that crossed</small></h2>
+        <p class="wnote" id="wnote" hidden></p>
+        <ol class="wire" id="wire"></ol>
+        <p class="empty" id="empty">Nothing has crossed yet.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="backrow"><a href="#" id="back">Back</a></p>
+</main>
+
+<script src="/c8/module-2/lecture-13-retrieval-augmented-generation/assets/bench.js"></script>
+</body>
+</html>

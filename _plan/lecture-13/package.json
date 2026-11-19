@@ -1,0 +1,1 @@
+{ "name": "l13-pile", "private": true, "type": "module", "dependencies": { "@huggingface/transformers": "3.7.6" } }

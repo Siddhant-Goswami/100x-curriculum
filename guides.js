@@ -142,6 +142,7 @@ var GUIDE_LINKS = {
   l12Notes: '/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes',
   l12Practice: '/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/practice-set',
   l12Code: 'https://github.com/Siddhant-Goswami/c8-tools',
+  l13Bench: '/c8/module-2/lecture-13-retrieval-augmented-generation/bench',  /* the Retrieval Bench: five questions about our notes, six stations */
   l11Checklist: '/c8/module-2/checklist/',  /* Before Lecture 11: everything from the probabilistic half so far, as ticks */
   groqPlay: 'https://console.groq.com/playground',
   l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
@@ -848,6 +849,11 @@ GUIDES.L11 = { all: {
 /* Lecture 12, code track only: 'Which track should I choose?' answered in Python, from one function to an MCP server. */
 GUIDES.L12 = { code: {
   hub: {link:'l12Hub', title:'Open the Lecture 12 pages', sub:'The overview, the notes and Practice set 3', more:[['l11Bench','Tool Bench'],['l12Practice','Practice set 3'],['l12Notes','Notes'],['l12Code','The code']]}
+}};
+
+/* Lecture 13: no pages yet, so the card links straight to the Retrieval Bench (both tracks). */
+GUIDES.L13 = { all: {
+  hub: {link:'l13Bench', title:'Open the Retrieval Bench', sub:'Five questions about our notes, and six ways to find the answer'}
 }};
 
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from

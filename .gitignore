@@ -2,3 +2,4 @@
 .vercel
 .env*
 __pycache__/
+_plan/lecture-13/node_modules/
