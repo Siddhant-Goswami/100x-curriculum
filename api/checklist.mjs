@@ -1,7 +1,9 @@
-/* Counts for the "Before Lecture 11" checklist (c8/module-2/checklist) and its stats page.
+/* Counts for the Lectures 9 to 12 checklist (c8/module-2/checklist), the Tool Bench steps, and the stats page.
+   The list is still called l11 (its name since the first version, "Before Lecture 11") so earlier ticks keep counting.
 
      POST /api/checklist  {list, id, type:'state', ticked:[item...]}   this browser's whole set of ticks
      POST /api/checklist  {list, id, type:'click', item}               a link on the checklist was opened
+     POST /api/checklist  {list, id, type:'bench', step}                this browser finished that Tool Bench step (1 to 5)
      POST /api/checklist  {list, id, type:'forget'}                     drop this id from every count (test runs)
      GET  /api/checklist?list=l11                                     counts for the stats page
 
@@ -11,6 +13,7 @@
 
 /* Each item: the PostHog pages that count as "opened it". A trailing * means every page under that path. */
 const L9 = '/c8/module-2/lecture-09-llms-from-first-principles', L10 = '/c8/module-2/lecture-10-tool-calling-and-mcp', FP = '/c8/module-2/first-principles';
+const L11 = '/c8/module-2/lecture-11-tool-calling-and-mcp', L12 = '/c8/module-2/lecture-12-building-with-tool-calling-and-mcp';
 const LISTS = {
   l11: {
     since: '2026-10-29',
@@ -26,11 +29,20 @@ const LISTS = {
       ps2ex: [L9 + '/office-hour'],
       ps2score: ['/c8/module-2/practice-set-2-write-the-eval'],
       ps2share: ['/c8/module-2/practice-set-2-write-the-eval'],
+      l11notes: [L11 + '/notes'],
+      bench: [L11 + '/bench'],
+      benchnotes: [L11 + '/bench-notes'],
+      l12notes: [L12 + '/notes'],
+      ps3p1: [L12 + '/practice-set'],
+      ps3p2: [L12 + '/practice-set'],
+      ps3own: [L12 + '/practice-set'],
+      ps3submit: [L12 + '/practice-set'],
       fp1: [FP + '/01-sand-to-screen*', FP + '/02-how-a-machine-remembers*', FP + '/03-can-you-trust-a-machine*'],
       fp4: [FP + '/04-what-is-learning*'],
       fp5: [FP + '/05-attention-and-transformers*', FP + '/06-what-hardware-powers-llms*'],
       fp7: [FP + '/07-guesser-to-assistant*', FP + '/08-what-llms-learn-from-now*']
-    }
+    },
+    benchSteps: 5   /* the Tool Bench reports each step it finishes (bench.js finish()) */
   }
 };
 const CHECKLIST_PATH = '/c8/module-2/checklist';
@@ -65,8 +77,8 @@ for i = 4, #KEYS do
 end
 redis.call('HSET', KEYS[2], id, n)
 return n`;
-/* KEYS: opened set, done hash, seen hash, then the tick set and the click set of every item.
-   Returns {opened, done values, seen values, tick and click counts...}. */
+/* KEYS: opened set, done hash, seen hash, then the tick set and the click set of every item, then one set per bench step.
+   Returns {opened, done values, seen values, tick, click and bench counts...}. */
 const READ = `
 local out = {redis.call('SCARD', KEYS[1]), redis.call('HVALS', KEYS[2]), redis.call('HVALS', KEYS[3])}
 for i = 4, #KEYS do out[#out + 1] = redis.call('SCARD', KEYS[i]) end
@@ -137,12 +149,15 @@ export async function handle(request) {
     const keys = [k(list, 'opened'), k(list, 'done'), k(list, 'seen')];
     ids.forEach(i => keys.push(k(list, 't:' + i)));
     ids.forEach(i => keys.push(k(list, 'c:' + i)));
+    const steps = Array.from({ length: L.benchSteps || 0 }, (_, n) => n + 1);
+    steps.forEach(n => keys.push(k(list, 'b:' + n)));
     const [r, ph] = await Promise.all([redis(['EVAL', READ, String(keys.length), ...keys]), posthogPages(list)]);
     const done = (r[1] || []).map(Number), seen = (r[2] || []).map(Number), now = Date.now();
     const items = {};
     ids.forEach((id, n) => { items[id] = { ticked: r[3 + n], clicked: r[3 + ids.length + n] }; });
     return json(200, {
       list, total: ids.length, opened: r[0], items, done,
+      bench: steps.map((_, n) => r[3 + 2 * ids.length + n]),
       active: { hour: seen.filter(t => now - t < 3600e3).length, day: seen.filter(t => now - t < 86400e3).length },
       pages: ph.rows, posthog: ph.rows ? 'ok' : ph.error, at: now
     });
@@ -161,6 +176,12 @@ export async function handle(request) {
     await redis(['SADD', k(b.list, 'c:' + b.item), b.id]);
     return json(200, { ok: true });
   }
+  if (b.type === 'bench') {
+    const step = Number(b.step);
+    if (!Number.isInteger(step) || step < 1 || step > (L.benchSteps || 0)) return json(400, { error: 'Unknown step.' });
+    await redis(['SADD', k(b.list, 'b:' + step), b.id]);
+    return json(200, { ok: true });
+  }
   if (b.type === 'state') {
     const on = new Set(Array.isArray(b.ticked) ? b.ticked : []);
     const keys = [k(b.list, 'opened'), k(b.list, 'done'), k(b.list, 'seen'), ...ids.map(i => k(b.list, 't:' + i))];
@@ -168,7 +189,8 @@ export async function handle(request) {
     return json(200, { ok: true, done: n });
   }
   if (b.type === 'forget') { /* drops this id from every count: for test runs */
-    const keys = [k(b.list, 'opened'), k(b.list, 'done'), k(b.list, 'seen'), ...ids.map(i => k(b.list, 't:' + i)), ...ids.map(i => k(b.list, 'c:' + i))];
+    const bench = Array.from({ length: L.benchSteps || 0 }, (_, n) => k(b.list, 'b:' + (n + 1)));
+    const keys = [k(b.list, 'opened'), k(b.list, 'done'), k(b.list, 'seen'), ...ids.map(i => k(b.list, 't:' + i)), ...ids.map(i => k(b.list, 'c:' + i)), ...bench];
     await redis(['EVAL', FORGET, String(keys.length), ...keys, b.id]);
     return json(200, { ok: true });
   }

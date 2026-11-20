@@ -167,7 +167,17 @@ function forward(label) {
   b.onclick = function () { go(S.step + 1); };
   f.appendChild(b);
 }
-function finish(n) { S.done[n] = true; S.max = Math.max(S.max, Math.min(5, n + 1)); save(); paintBar(); }
+function finish(n) { var first = !S.done[n]; S.done[n] = true; S.max = Math.max(S.max, Math.min(5, n + 1)); save(); paintBar(); if (first) report(n); }
+
+/* The checklist's stats page counts how many browsers finished each step: the step number goes to /api/checklist under
+   the same anonymous id the checklist uses (localStorage c8.ckid), and to PostHog as bench_step. Nothing typed is sent. */
+function report(n) {
+  if (/^(localhost|127\.)/.test(location.hostname)) return;
+  try { if (window.posthog) posthog.capture('bench_step', { step: n }); } catch (e) { /* ignore */ }
+  var id = null;
+  try { id = localStorage.getItem('c8.ckid'); if (!id) { id = Math.random().toString(36).slice(2, 12) + Date.now().toString(36); localStorage.setItem('c8.ckid', id); } } catch (e) { return; }
+  try { fetch('/api/checklist', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ list: 'l11', id: id, type: 'bench', step: n }), keepalive: true }).catch(function () {}); } catch (e) { /* ignore */ }
+}
 
 /* Runs fn while the button shows it is working. A rejected key opens the key screen; anything else is said in one line. */
 function act(btn, fn) {

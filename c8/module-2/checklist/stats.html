@@ -44,21 +44,26 @@ table.st tr.sec td{font-weight:600;color:var(--ink);border-bottom:0;padding-top:
 <div class="wrap">
   <main>
 <div class="hero">
-  <p class="kick">Before Lecture 11 · Live</p>
+  <p class="kick">Lectures 9 to 12 · Live</p>
   <h1>Who has done what</h1>
-  <p class="dek">Ticks from the checklist, and page visits from PostHog.</p>
+  <p class="dek">Ticks from the checklist, steps finished on the Tool Bench, and page visits from PostHog.</p>
   <div class="meta"><span class="upd" id="upd">Loading…</span></div>
 </div>
 
 <div class="tiles" id="tiles"></div>
 
 <section class="s" id="s01"><h2>How far people are</h2>
-<p class="note">Everyone who opened the checklist, by how many of the 15 they have ticked.</p>
+<p class="note" id="distnote">Everyone who opened the checklist, by how many items they have ticked.</p>
 <div class="dist" id="dist"></div>
-<div class="distl"><span>0</span><span>1 to 4</span><span>5 to 9</span><span>10 to 14</span><span>All 15</span></div>
+<div class="distl" id="distl"></div>
 </section>
 
-<section class="s" id="s02"><h2>Item by item</h2>
+<section class="s" id="s02"><h2>Tool Bench</h2>
+<p class="note">Browsers that finished each step on the bench. Counted from 20 Nov, when the bench started reporting steps; earlier runs are not in here.</p>
+<table class="st"><thead><tr><th>Step</th><th>Finished</th></tr></thead><tbody id="bench"></tbody></table>
+</section>
+
+<section class="s" id="s03"><h2>Item by item</h2>
 <p class="note" id="phnote"></p>
 <table class="st"><thead><tr><th>Item</th><th>Ticked</th><th class="hide">Clicked here</th><th>Visited page</th><th class="hide">Last 24h</th></tr></thead><tbody id="rows"></tbody></table>
 <p class="note">Ticked and clicked count browsers that opened this checklist. Visited page counts everyone PostHog saw on that page since 29 Oct, from any link, including the team.</p>
@@ -71,6 +76,9 @@ table.st tr.sec td{font-weight:600;color:var(--ink);border-bottom:0;padding-top:
     ['Lecture 10',[['l10notes','Lecture 10 notes'],['oh','3 Nov office hour recap']]],
     ['Practice set 1',[['ps1ns','North Star'],['ps1sheet','Sheet filled'],['ps1test','One task tested'],['ps1share','Shared on the Discord']]],
     ['Practice set 2',[['ps2ex','Write the eval exercise'],['ps2score','Re-scored the task'],['ps2share','Shared on the Discord']]],
+    ['Lecture 11',[['l11notes','Lecture 11 notes'],['bench','Tool Bench, five steps'],['benchnotes','Tool Bench notes']]],
+    ['Lecture 12 · Code track',[['l12notes','Lecture 12 notes']]],
+    ['Practice set 3 · Code track',[['ps3p1','Part 1: tool_call.py'],['ps3p2','Part 2: MCP server online'],['ps3own','Own data'],['ps3submit','Submitted on the LMS']]],
     ['From sand to language models',[['fp1','Chapters 1 to 3'],['fp4','Chapter 4'],['fp5','Chapters 5 and 6'],['fp7','Chapters 7 and 8']]]
   ];
   var $=function(id){return document.getElementById(id)};
@@ -86,7 +94,12 @@ table.st tr.sec td{font-weight:600;color:var(--ink);border-bottom:0;padding-top:
       [all,'ticked all '+d.total],
       [med+' / '+d.total,'median ticked']
     ].map(function(t){return '<div class="tile"><b>'+esc(t[0])+'</b><span>'+esc(t[1])+'</span></div>'}).join('');
-    var b=[0,0,0,0,0]; done.forEach(function(x){b[x<=0?0:x<=4?1:x<=9?2:x<d.total?3:4]++});
+    /* five buckets: none, three even ranges, all. Edges follow the item count */
+    var T=d.total, e1=Math.round(T/3), e2=Math.round(2*T/3);
+    var b=[0,0,0,0,0]; done.forEach(function(x){b[x<=0?0:x<=e1?1:x<=e2?2:x<T?3:4]++});
+    $('distl').innerHTML=['0','1 to '+e1,(e1+1)+' to '+e2,(e2+1)+' to '+(T-1),'All '+T].map(function(t){return '<span>'+t+'</span>'}).join('');
+    var STEPS=['Ask','Carry it by hand','Write the card','Switch the server on','Move the card'], bmax=Math.max.apply(null,(d.bench||[]).concat([1]));
+    $('bench').innerHTML=(d.bench||[]).map(function(v,i){return '<tr><td>'+(i+1)+'. '+esc(STEPS[i]||'')+'</td><td><span class="bar"><i style="width:'+(v/bmax*100)+'%"></i></span>'+n(v)+'</td></tr>'}).join('');
     var max=Math.max.apply(null,b.concat([1]));
     $('dist').innerHTML=b.map(function(v){return '<div><em>'+v+'</em><i style="height:'+(v/max*100)+'%"></i></div>'}).join('');
     var base=Math.max(d.opened,1), h='';
