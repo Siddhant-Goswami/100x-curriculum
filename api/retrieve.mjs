@@ -21,7 +21,7 @@ const KEY_RE = /^gsk_[A-Za-z0-9]{20,}$/;
 const ownKey = request => { const k = (request.headers.get('x-groq-key') || '').trim(); return KEY_RE.test(k) ? k : ''; };
 const NEED = { error: 'need_key', message: 'Paste your Groq key first.' };
 /* content is high because station 3 pastes whole lectures (all twelve are about 125,000 characters) */
-const MAX = { messages: 12, content: 140000, tools: 1, desc: 1200, schema: 2000, rounds: 4, k: 10 };
+const MAX = { messages: 12, content: 140000, tools: 1, desc: 1200, schema: 2000, rounds: 6, k: 10 };
 
 const HEAD = {
   'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store',

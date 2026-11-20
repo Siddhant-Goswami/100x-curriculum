@@ -15,18 +15,18 @@ function answer(body) {
   if (tools.includes('get_lecture')) return [200, last.role === 'tool' ? msg('Lecture 6 is **Databases and domain modelling**: in-memory state against storage that persists, entities and relationships, primary and foreign keys.') : call('get_lecture', { number: 6 })];
   if (tools.includes('search_notes')) {
     const results = ms.filter(m => m.role === 'tool').length;
-    if (results === 0) return [200, call('search_notes', { words: 'verification by judgment' })];
-    if (results === 1) return [200, call('search_notes', { words: 'refund' })];
-    return [200, msg('The refund example first appears in **Lecture 1**. The stakes: about 7.5 crore rupees, roughly a million US dollars.')];
+    if (results === 0) return [200, call('search_notes', { words: 'still named Zapier' })];
+    if (results === 1) return [200, call('search_notes', { words: 'UI builders' })];
+    return [200, msg('The runs are in **Lecture 10**. The curriculum said the No Code track uses UI builders but never named one, so the real set was added: **Lovable, Google AI Studio and Antigravity**.')];
   }
   if (/^Answer the question using these passages/.test(first)) {
     const q = first.split('Question: ').pop();
-    if (/refund policy/i.test(q)) return [200, /say it is not in the notes/.test(first) ? msg('The passages provided do not contain information about the refund policy for this cohort.') : msg('**Refund policy for this cohort** (Lecture 1, “Round three: a million-dollar refund”): a refund is granted only when the cost of warranty issues (Y) exceeds the car’s price (X), and a support executive checks the case before the final yes or no.')];
+    if (/fee for this cohort/i.test(q)) return [200, /say it is not in the notes/.test(first) ? msg('The passages do not provide information about the fee for this cohort.') : msg('The cohort is **free**: there is no fee. As Lecture 5, “Free Is a Design Decision”, explains, Groq’s free tier (30 requests per minute, about 200,000 tokens a day) powers a real MVP at zero cost.')];
     if (/Verifier/i.test(q)) return [200, msg('The Verifier’s Law is introduced in **Lecture 1**, “What was actually missing.”')];
     if (/making things up/i.test(q)) return [200, msg('As Lecture 10 puts it, hallucination = missing context + a trained habit of never saying no. The model predicts; when context is missing it fills the gap.')];
   }
   if (/^Lecture 1: /.test(first)) return [200, msg('Verifier’s Law is taught in **Lecture 1** (Orientation and State of AI 2026).')];
-  const bare = { 'Lecture 6': 'Could you tell me which course you mean by “Lecture 6”?', 'Verifier': 'Verifier’s Law is introduced in MIT 6.821, Lecture 9.', 'making things up': 'Language models predict the next word, so they can produce plausible but false text.', 'refund policy': '| Timeframe | Refund |\n|---|---|\n| First 7 days | 100% |\n| After | None |', 'verification by judgment': 'The amount at stake was **$100**.' };
+  const bare = { 'Lecture 6': 'Could you tell me which course you mean by “Lecture 6”?', 'Verifier': 'Verifier’s Law is introduced in MIT 6.821, Lecture 9.', 'making things up': 'Language models predict the next word, so they can produce plausible but false text.', 'fee for this cohort': 'Could you tell me which program or cohort you mean? Then I can give you the exact fee.', 'still named Zapier': 'The runs lecture added **Retool, Bubble and Webflow** as real UI builders.' };
   for (const k in bare) if (first.includes(k)) return [200, msg(bare[k])];
   return [200, msg('(stand-in) I do not know.')];
 }

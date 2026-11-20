@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Retrieval-Augmented Generation | 100xEngineers</title>
+<meta name="description" content="Cohort 8 Module 2, Lecture 13, both tracks. Five questions about our own notes, and what each one hands you. When to paste, when to look up, when to search by words or by meaning, and when to let the model search in rounds. With the Retrieval Bench.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+.when{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
+.when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
+.when .kick{margin:0}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l13-index" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L13">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 13 pages"><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/">Overview</a><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Notes</a><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">Retrieval Bench</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<div class="hero">
+  <p class="kick">Cohort 8 · Module 2 · Lecture 13 · Fri 20 Nov 2026 · Both tracks</p>
+  <h1>Retrieval-augmented generation</h1>
+  <p class="dek">Five questions about our own notes, and what each one hands you.</p>
+</div>
+
+<div class="call"><p class="kick">The lecture in one line</p><p>The model has not read our notes. If they fit, paste them. If not, find the few passages that matter, hand them over with their source, and let the model say when the answer is not there.</p></div>
+
+<p><a class="btn" href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Read the notes</a></p>
+
+<div class="when"><p class="kick">01</p><h2>The lecture</h2></div>
+<ol class="steps">
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s01">The closed book: 0 out of 5</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s02">Why not paste it all? Rule zero</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s03">Find it by its words</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s04">Find it by its meaning</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s05">Similar is not correct</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s06">The path: two searches</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s07">The ladder: what does the question hand you?</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s08">Read any retrieval diagram</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s09">Design it, defend it</a></li>
+</ol>
+
+<div class="when"><p class="kick">02</p><h2>Try it yourself</h2></div>
+<p>Run all five questions on the Retrieval Bench: by number, by pasting, by words, by meaning, and by letting the model search. Every message shows on the wire. Bring the Groq key you used on the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a>, or make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</p>
+<p><a class="btn" href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">Open the Retrieval Bench</a></p>
+
+<div class="when"><p class="kick">03</p><h2>Done equals</h2></div>
+<p>One <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s09">design card</a>, all nine lines, for your own project or one of the three cases. It has three known-answer questions, one of them absent from the documents. Bring it to the next session: we build from it.</p>
+
+<div class="when"><p class="kick">04</p><h2>When you need it</h2></div>
+<ul>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Notes: the lecture, with the whiteboard</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s03">Lecture 12: the tool call loop</a></li>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s10">Lecture 11: verify the record, not the sentence</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s03">Lecture 10: why models hallucinate</a></li>
+  <li><a href="/c8/module-2/first-principles/05-attention-and-transformers/">Course lesson 5.1: embeddings, a map of words</a></li>
+  <li><a href="/#L13">Lecture 13 on the map</a></li>
+</ul>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>Next session: we make it fail on real documents, and repair it one level at a time.</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 13: Retrieval-augmented generation</span><a href="/#L13">Curriculum map</a><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/">All Lecture 13 pages</a></div></footer>
+</body>
+</html>

@@ -25,8 +25,8 @@ var RULES = {
   Q2: { kind: 'exact words', pass: 'it says Lecture 1', test: function (a) { return /\blecture\s*(1|one)\b/i.test(a); } },
   Q3: { kind: 'only a meaning', pass: 'it points to Lecture 10', test: function (a) { return /\blecture\s*10\b/i.test(a); } },
   Q4: { kind: 'nothing: it is not in the notes', pass: 'it says the notes do not cover it', test: function (a) {
-    return /(passages|notes|context)[^.]{0,50}\b(do not|don['’]t|does not|doesn['’]t|did not|didn['’]t|not)\s+(contain|include|mention|cover|say|describe|provide|address|state|specify|discuss)|\b(not|n['’]t)\s+(in|part of|covered (in|by)|mentioned in)\s+(the|our|my|your|these)\s+(notes|passages)|\bno (information|mention|details?|refund policy)\b[^.]{0,40}\b(in|from|within)\s+(the|our|these)\s+(notes|passages)/i.test(a); } },
-  Q5: { kind: 'a path: two searches', pass: 'it says a million dollars (or 7.5 crore)', test: function (a) { return /million|7\.5\s*crore/i.test(a); } }
+    return /(passages|notes|context)[^.]{0,50}\b(do not|don['’]t|does not|doesn['’]t|did not|didn['’]t|not)\s+(contain|include|mention|cover|say|describe|provide|address|state|specify|discuss)|\b(not|n['’]t)\s+(in|part of|covered (in|by)|mentioned in)\s+(the|our|my|your|these)\s+(notes|passages)|\bno (information|mention|details?|fee)\b[^.]{0,40}\b(in|from|within)\s+(the|our|these)\s+(notes|passages)/i.test(a); } },
+  Q5: { kind: 'a path: two searches', pass: 'it names Lovable and Antigravity', test: function (a) { return /lovable/i.test(a) && /antigravity/i.test(a); } }
 };
 var ORDER = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5'];
 var LOOKUP = { name: 'get_lecture', description: 'Returns the notes of one lecture of the 100xEngineers Cohort 8 course, by its number. Use it when someone asks about a specific lecture by number.', parameters: { type: 'object', properties: { number: { type: 'integer', description: 'The lecture number, 1 to 12.' } }, required: ['number'] } };
@@ -538,7 +538,7 @@ function st4() {
 function uniq(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
 
 /* ---------- station 5: find it by its meaning ---------- */
-var G5 = ['“It’s not in the notes”', 'A refund policy'];
+var G5 = ['“It’s not in the notes”', 'A fee'];
 function st5() {
   var t = T[5] || (T[5] = { p: 0 }), q3 = P.Q.Q3.q, q4 = P.Q.Q4.q;
   tab('map'); wnote('The question becomes 384 numbers in your browser. The server scores every passage against them and sends back the closest.');
@@ -572,7 +572,7 @@ function st5() {
   }
   if (t.p === 2) {
     ins('Now drop Q4 on the map.', true);
-    ctx('The refund policy for this cohort is not in our notes. Something will still be nearest.');
+    ctx('The fee for this cohort is not in our notes. Something will still be nearest.');
     panel(answerBox(q3, t.a3, t.ok3, t.h3) + verdict('Q3', t.ok3) + '<hr><p class="q">“' + esc(q4) + '”</p>' + kRow + '<div class="row"><button class="btn act" id="a">Place Q4 and find the nearest</button></div>');
     bindReceipts(); bindK();
     $('#a').onclick = function () { act(this, function () {
@@ -635,7 +635,7 @@ function st6() {
   var card = '<div class="cardview"><span class="lab">The tool card the server sends</span><dl><dt>Name</dt><dd><code>search_notes</code></dd><dt>Use it when</dt><dd>Searches the 100xEngineers Cohort 8 lecture notes (Lectures 1 to 12) for passages that contain the exact words you give. Returns up to 3 passages, each with its lecture number. Use 1 to 3 words exactly as they would appear in the notes. If nothing comes back, try other words.</dd><dt>It needs</dt><dd>The exact words to look for, 1 to 3 words.</dd></dl></div>';
   if (!t.answer) {
     ins('Let the model search for Q5 itself.', true);
-    ctx('The answer is in Lecture 1, but the question only names Lecture 9. One search cannot reach it: the second search depends on what the first one finds.');
+    ctx('The question names Lecture 11, but the fix is in Lecture 10. One search cannot reach it: the second search depends on what the first one finds.');
     panel('<p class="q">“' + esc(q5) + '”</p>' + card + guessBox(6, 'How many searches will the model ask for?', G6) + '<div class="row"><button class="btn act" id="a"' + (S.guess[6] == null ? ' disabled' : '') + '>Ask Q5, search card attached</button></div>');
     bindGuess(6, st6);
     $('#a').onclick = function () { act(this, function () {
@@ -654,7 +654,7 @@ function st6() {
   }
   var all = ORDER.every(function (id) { return S.score[id] === true; });
   ins(t.ok ? (all ? 'Five out of five.' : 'Q5 passes.') : 'Q5 did not pass this time.', !t.ok);
-  ctx(guessed(6, G6) + 'It searched ' + t.searches + ' time' + (t.searches === 1 ? '' : 's') + '. Read the searches on the wire: the second one uses a word the first one found.');
+  ctx(guessed(6, G6) + 'It searched ' + t.searches + ' time' + (t.searches === 1 ? '' : 's') + '. Read the searches on the wire: the first one finds where the runs are, the second one finds the fix inside that lecture.');
   panel(answerBox(q5, t.answer, t.ok, VIEWSTATE.used6) + verdict('Q5', t.ok) + '<div class="row"><button class="btn" id="again">Ask again</button><button class="btn" id="dl">Download the log</button></div>');
   bindReceipts();
   $('#again').onclick = function () { T[6] = {}; clearWire(); st6(); };

@@ -50,6 +50,11 @@
       "permanent": false
     },
     {
+      "source": "/c8/module-2/lecture-13-retrieval-augmented-generation/whiteboard",
+      "destination": "/c8/module-2/lecture-13-retrieval-augmented-generation/notes",
+      "permanent": false
+    },
+    {
       "source": "/c8/module-2/first-principles-films/",
       "destination": "/c8/module-2/first-principles/",
       "permanent": true
