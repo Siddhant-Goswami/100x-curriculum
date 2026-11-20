@@ -52,7 +52,7 @@
         <div class="after" id="after"></div>
         <div class="forward" id="fwd"></div>
       </div>
-      <section class="pileview" id="pileview" aria-label="The pile">
+      <section class="pileview" id="pileview" aria-label="The data">
         <div class="tabs" role="tablist">
           <button role="tab" data-tab="text" aria-selected="true">Text</button>
           <button role="tab" data-tab="map" aria-selected="false">Map</button>
@@ -64,10 +64,10 @@
 
     <aside class="rail" aria-label="What happened">
       <section class="board" id="score" aria-label="The scoreboard: five questions with known answers" data-nolabel></section>
-      <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server searches the pile on its left and talks to the LLM on its right.">
+      <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server searches the data on its left and talks to the LLM on its right.">
         <div class="node" data-n="you"><b>You</b><span>ask</span></div>
         <div class="lane v" data-l="server-you" aria-hidden="true"><i></i></div>
-        <div class="node" data-n="pile"><b>Pile</b><span>12 notes pages</span></div>
+        <div class="node" data-n="pile"><b>Data</b><span>12 notes pages</span></div>
         <div class="lane h" data-l="server-pile" aria-hidden="true"><i></i></div>
         <div class="node" data-n="server"><b>Server</b><span>follows rules</span></div>
         <div class="lane h" data-l="model-server" aria-hidden="true"><i></i></div>
@@ -86,6 +86,6 @@
   <p class="backrow"><a href="#" id="back">Back</a></p>
 </main>
 
-<script src="/c8/module-2/lecture-13-retrieval-augmented-generation/assets/bench.js?v=9"></script>
+<script src="/c8/module-2/lecture-13-retrieval-augmented-generation/assets/bench.js?v=10"></script>
 </body>
 </html>

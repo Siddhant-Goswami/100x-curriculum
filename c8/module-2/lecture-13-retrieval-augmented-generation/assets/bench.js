@@ -21,7 +21,7 @@ var NAMES = ['', 'Ask', 'By number', 'Paste it all', 'By its words', 'By its mea
 var N = 7;
 var TABS = [null, 'text', 'text', 'text', 'text', 'map', 'map', 'text'];   /* the pile view each station opens on; after that only the learner switches it */
 var ROUNDS = 6;   /* the server's loop limit, api/retrieve.mjs MAX.rounds */
-var NODE = { you: 'You', model: 'LLM', server: 'Server', pile: 'Pile', groq: 'Groq' };
+var NODE = { you: 'You', model: 'LLM', server: 'Server', pile: 'Data', groq: 'Groq' };
 var LANE = { 'server-you': ['server-you', 'btt', 'ttb'], 'you-server': ['server-you', 'ttb', 'btt'], 'model-server': ['model-server', 'rtl'], 'server-model': ['model-server', 'ltr'], 'server-pile': ['server-pile', 'rtl'], 'pile-server': ['server-pile', 'ltr'] };
 var FREE_TPM = 8000;   /* what Groq's own refusal said for a free key on 20 Nov 2026: "Limit 8000" */
 /* the five questions; each is marked by a rule anyone can check, never by an LLM */
@@ -211,14 +211,14 @@ function paintMeter(planned) {
   if (planned) {   /* station 3, before sending: an estimate from the pile's own token counts */
     var pct = Math.min(100, 100 * planned / whole);
     m.innerHTML = '<div class="mbar"><i style="width:' + pct + '%" class="est"></i><em style="left:' + Math.min(100, 100 * FREE_TPM / whole) + '%" title="A free key: 8,000 tokens a minute"></em></div>' +
-      '<p><b>About ' + fmt(planned) + ' tokens</b> to send, before your question. The whole pile is about ' + fmt(whole) + '. The mark is a free key’s 8,000 a minute.</p>';
+      '<p><b>About ' + fmt(planned) + ' tokens</b> to send, before your question. All the data is about ' + fmt(whole) + ' tokens. The mark is a free key’s 8,000 a minute.</p>';
     return;
   }
   if (RUN && RUN.refused) { m.innerHTML = '<div class="mbar"><i class="est" style="width:100%"></i><em style="left:' + Math.min(100, 100 * FREE_TPM / whole) + '%"></em></div><p><b>Refused: ' + fmt(RUN.refused) + ' tokens asked for</b>, 8,000 a minute allowed on a free key. The LLM read nothing and nothing was billed.</p>'; return; }
-  if (!RUN || !RUN.rounds) { m.innerHTML = '<div class="mbar"></div><p>Nothing sent to the LLM yet. The whole pile is about ' + fmt(whole) + ' tokens.</p>'; return; }
+  if (!RUN || !RUN.rounds) { m.innerHTML = '<div class="mbar"></div><p>Nothing sent to the LLM yet. All the data is about ' + fmt(whole) + ' tokens.</p>'; return; }
   var cost = RUN.inT * S.price.in / 1e6 + RUN.outT * S.price.out / 1e6;
   m.innerHTML = '<div class="mbar"><i style="width:' + Math.min(100, 100 * RUN.inT / whole) + '%"></i></div>' +
-    '<p><b>' + fmt(RUN.inT) + ' tokens in</b>, ' + fmt(RUN.outT) + ' out' + (RUN.rounds > 1 ? ', over ' + RUN.rounds + ' rounds' : '') + ' · ' + money(cost) + ' at $' + S.price.in.toFixed(2) + ' and $' + S.price.out.toFixed(2) + ' per million · the bar is the share of the whole pile (' + fmt(whole) + ')</p>';
+    '<p><b>' + fmt(RUN.inT) + ' tokens in</b>, ' + fmt(RUN.outT) + ' out' + (RUN.rounds > 1 ? ', over ' + RUN.rounds + ' rounds' : '') + ' · ' + money(cost) + ' at $' + S.price.in.toFixed(2) + ' and $' + S.price.out.toFixed(2) + ' per million · the bar is the share of all the data (' + fmt(whole) + ')</p>';
 }
 
 /* ---------- the pile view ---------- */
@@ -257,14 +257,14 @@ function drawPile() {
             var h = V.lit[c.id];
             return '<button type="button" class="blk' + (h ? ' lit' : '') + (V.pick === c.id ? ' pick' : '') + '" style="flex-grow:' + c.tok + '" data-id="' + c.id + '" title="Lecture ' + c.l + ' · ' + esc(c.title) + '">' + (h && h.n > 1 ? '<i>' + h.n + '</i>' : '') + '</button>';
           }).join('') + '</div></div>';
-      }).join('') + '</div>' + passageBox(BY[V.pick]) + '<p class="pfoot">Pile built ' + esc(P.built) + ' from the notes pages.</p>';
+      }).join('') + '</div>' + passageBox(BY[V.pick]) + '<p class="pfoot">Data built ' + esc(P.built) + ' from the notes pages.</p>';
     $$('.blk', b).forEach(function (el) { el.onclick = function () { V.pick = el.getAttribute('data-id'); drawPile(); }; });
     return;
   }
   if (V.tab === 'map') { drawMap(b); return; }
   /* prompt */
   if (!V.prompt) { b.innerHTML = '<p class="pmeta">Nothing sent to the LLM yet. When something is, the exact text it read shows here.</p>'; return; }
-  b.innerHTML = '<p class="pmeta">The exact text the LLM was sent last' + (V.promptTok ? ', <b>' + fmt(V.promptTok) + ' tokens</b> by Groq’s count' : '') + '. <span class="key"><i class="kp"></i>from the pile</span></p><pre class="prompt">' + promptHtml(V) + '</pre>';
+  b.innerHTML = '<p class="pmeta">The exact text the LLM was sent last' + (V.promptTok ? ', <b>' + fmt(V.promptTok) + ' tokens</b> by Groq’s count' : '') + '. <span class="key"><i class="kp"></i>from the data</span></p><pre class="prompt">' + promptHtml(V) + '</pre>';
 }
 function promptHtml(V) {
   if (!V.parts) return esc(V.prompt);
@@ -430,10 +430,10 @@ function st1() {
     return;
   }
   var n = t.res.filter(function (r) { return r.ok; }).length;
-  ins(n + ' of 5. Nothing went to the pile.', false);
+  ins(n + ' of 5. Nothing went to the data.', false);
   ctx(guessed(1, G1, n === 0 ? 0 : n <= 2 ? 1 : n <= 4 ? 2 : 3) + 'Each answer is marked by a rule. Tap a question on the scoreboard to read its rule.');
   panel('<ol class="five">' + t.res.map(function (r) { return '<li class="' + (r.ok ? 'pass' : 'fail') + '"><b>' + r.id + '</b> ' + esc(clip(r.a, 150)) + '</li>'; }).join('') + '</ol>');
-  after('<p>Read the route on each line of the wire: you, the server, the LLM, and back. <b>None went to the pile.</b> The LLM could only use what it learned before this course existed. Where it answered, it sounded just as sure when it was wrong.</p>');
+  after('<p>Read the route on each line of the wire: you, the server, the LLM, and back. <b>None went to the data.</b> The LLM could only use what it learned before this course existed. Where it answered, it sounded just as sure when it was wrong.</p>');
   forward('Continue');
 }
 
@@ -472,7 +472,7 @@ function st2() {
     }); };
     return;
   }
-  ins(t.ok ? 'Q1 passes. One hop to the pile and back.' : 'One hop to the pile and back.', false);
+  ins(t.ok ? 'Q1 passes. One hop to the data and back.' : 'One hop to the data and back.', false);
   ctx('');
   panel(answerBox(q, t.answer, t.ok) + verdict('Q1', t.ok));
   after('<p>The LLM asked for lecture ' + esc(t.num) + ', the server fetched those notes, the LLM read them. <b>The question carried its own key.</b></p>' +
@@ -540,7 +540,7 @@ var G4 = ['None', '1 to 5', '6 or more'];
 function lectCount(d) { return d.lectures != null ? d.lectures : uniq(d.hits.map(function (h) { return h.lecture; })).length; }
 function st4() {
   var t = T[4] || (T[4] = { p: 0 }), q2 = P.Q.Q2.q, q3 = P.Q.Q3.q;
-  wnote('The pile lives with the server. A search is the server’s own code running over it, so the wire shows what went in and what came out.');
+  wnote('The data lives with the server. A search is the server’s own code running over it, so the wire shows what went in and what came out.');
   if (t.p === 0) {
     ins('Find Q2 by its words.', true);
     ctx('Like Ctrl+F across every passage: type words from the question and watch which passages light up.');
@@ -729,7 +729,7 @@ function st7() {
   $('#dl').onclick = download; bindOwn();
 }
 function ownQuestion() {
-  return '<details class="own"><summary>Optional: place your own question on the map</summary><p>Your browser loads the same small model the pile was built with, places the question, and the server finds the nearest passages. Nothing is sent to the LLM.</p><div class="ask"><input id="oq" maxlength="200" placeholder="A question about our course"><button class="btn act" id="og">Place it</button></div><p class="ost" id="ost" hidden></p><ol class="hitlist" id="ores"></ol></details>';
+  return '<details class="own"><summary>Optional: place your own question on the map</summary><p>Your browser loads the same small model the data was built with, places the question, and the server finds the nearest passages. Nothing is sent to the LLM.</p><div class="ask"><input id="oq" maxlength="200" placeholder="A question about our course"><button class="btn act" id="og">Place it</button></div><p class="ost" id="ost" hidden></p><ol class="hitlist" id="ores"></ol></details>';
 }
 function bindOwn() {
   var fire = function () { var v = $('#oq').value.trim(); if (!v) return say('Type a question first.'); act($('#og'), function () {
@@ -800,5 +800,5 @@ function go(n) {
 $$('#segs a').forEach(function (a) { a.onclick = function (e) { e.preventDefault(); go(+a.getAttribute('data-s')); }; });
 $('#back').onclick = function (e) { e.preventDefault(); go(S.step - 1); };
 window.addEventListener('hashchange', function () { var n = +location.hash.slice(1); if (n && n !== S.step && P) go(n); });
-pileReady.then(function () { go(+location.hash.slice(1) || S.step); }, function () { ins('The pile did not load. Refresh the page.', false); });
+pileReady.then(function () { go(+location.hash.slice(1) || S.step); }, function () { ins('The data did not load. Refresh the page.', false); });
 })();
