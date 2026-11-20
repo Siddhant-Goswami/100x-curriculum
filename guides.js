@@ -950,5 +950,13 @@ var RECAP = {
       'A tool schema has five parts: name, description, parameters, required fields, types.',
       'An empty result is not an error. A real error is better than an invented answer.',
       'MCP replaces neither APIs nor function calling. Host, client and server carry the request.'
+    ]}},
+  L13: { all: {
+    line: 'RAG is a tool call in three steps: retrieve, augment, generate. When the data is too big or too costly to paste, cut it into chunks and label them so you can filter.',
+    points: [
+      'You named the three steps of a tool call yourselves: retrieval, augmentation, generation.',
+      '"Which lecture teaches Verifier\'s Law?" has no number, so retrieval failed and the LLM guessed.',
+      'Pasting it all works until about 128,000 tokens. Chunks fit, but every question pays for all of them.',
+      'Label the chunks, then filter. To label well, know the domain; if the data has structure, let the LLM write SQL.'
     ]}}
 };

@@ -81,7 +81,8 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <p>An LLM makes things up when the context it needs is missing. In Lecture 12, a tool supplied that context. Today we named what the tool does, then broke it.</p>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Name the three steps</h2>
-<p>Ask: "When is Lecture 12?" The tool reads the lectures sheet by number, and the LLM answers: Saturday 14 November, building with tool calling and MCP.</p>
+<p>Ask: "When is Lecture 12?" The tool reads the lectures sheet by number. The LLM answers: Saturday 14 November, building with tool calling and MCP.</p>
+<p>Then the question to you: what happens at each numbered step, in one word?</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Tool calling in three steps. The data, a file, is the tool, joined by an API to the server: both deterministic. The server is joined by an API to the LLM, which is probabilistic. Step 1, retrieval, between the data and the server. Step 2, augmentation, between the server and the LLM. Step 3, generation, at the LLM. Input: When is Lecture 12? Output: Saturday 14 November.">
   <g class="ln" filter="url(#wob)">
@@ -130,12 +131,12 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="552" y="317" class="xxs l">generation: write the answer</text>
   </g>
 </svg>
-<figcaption>Retrieve, augment, generate. Swap the file for Supabase and step 1 is still retrieval.</figcaption>
+<figcaption>Retrieve, augment, generate. Swap the sheet for Supabase and step 1 is still retrieval.</figcaption>
 </figure>
-<p>You named each step yourselves:</p>
+<p>For step 1 the chat first said "an API call". True, but step 2 is an API call too, so that name does not tell them apart. Checking the data, a GET request, fetching it: all say the same thing in more words. You named each step yourselves:</p>
 <ul class="pt">
-  <li><b>1 Retrieval.</b> The server fetches the data from the tool.</li>
-  <li><b>2 Augmentation.</b> The server adds it to the prompt: the data, the instruction, the question.</li>
+  <li><b>1 Retrieval.</b> The server runs the tool, and the tool reads the sheet.</li>
+  <li><b>2 Augmentation.</b> The server adds it to the prompt. The prompt now holds the row it fetched, the instruction, and the question.</li>
   <li><b>3 Generation.</b> The LLM writes the answer.</li>
 </ul>
 <p>Together: retrieval-augmented generation, or <b>RAG</b>.</p>
@@ -144,24 +145,26 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>Break it: a question with no number</h2>
-<p>Now ask: "Which lecture teaches Verifier's Law?" A fair question. But the tool takes only a lecture number, 1 to 19, and this question has none. So no tool call happens.</p>
-<p>Asked bare, the LLM asked which course we meant. Told "100x Engineers, Cohort 8", it said: "Lecture 12: Security and cryptography." Made up. Retrieval failed, so generation guessed.</p>
+<p>Now ask: "Which lecture teaches Verifier's Law?" A fair question. But the tool takes only a lecture number, 1 to 19, and this question has none. So no tool call happens. What does the LLM answer: an error, the right lecture, or a wrong one?</p>
+<p>Asked without the tool, the LLM asked which course we meant. Told "100x Engineers, Cohort 8", it said: "Lecture 12: Security and cryptography." Made up. Retrieval failed, so generation guessed.</p>
 <p>And you cannot write your users' questions for them. Two hundred learners will ask the same thing two hundred ways: "Which lecture teaches the law that checks the output?"</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Three fixes from the chat</h2>
+<p>How do you fix it? One rule: use only what we have already learned. Answers that leaned on new words did not count.</p>
 <table class="dials">
   <tr><th>The fix</th><th>What happened</th></tr>
   <tr><td>Check the question for a number</td><td>No number, so it says "Not found". But the answer is in the data.</td></tr>
   <tr><td>Have the LLM pick the keyword, with a rubric</td><td>Which word is the right one? People use other words for the same idea. No rubric catches them all.</td></tr>
-  <tr><td>Paste the whole sheet</td><td>It answered from the data. This one works, until it does not fit.</td></tr>
+  <tr><td>Paste the whole sheet</td><td>It used the data, though the answer was still wrong (below). The only fix that can work, until the data does not fit.</td></tr>
 </table>
 <p>One catch with pasting: the LLM said Lecture 12. The sheet holds only dates and titles, and Verifier's Law is from Lecture 1. What you paste has to contain the answer.</p>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Paste it all, until it does not fit</h2>
 <p>Count first. A tokenizer counts text the way the LLM reads it, in tokens. The lectures sheet is <b>2,834 tokens</b>.</p>
-<p>GPT-OSS 120B, the LLM we use on Groq, reads at most about <b>128,000 tokens</b> at once. That is its <b>context window</b>. The sheet is a sliver of it. But add the transcripts, the notes and the practice sets, keep pasting, and you cross the line. The API answered 400: reduce the length of the messages.</p>
+<p>Is there a limit to how much you can paste? Find it for GPT-OSS 120B, the LLM we use on Groq. One guess from the chat was 1 million tokens.</p>
+<p>The answer: it reads at most about <b>128,000 tokens</b> at once. That is its <b>context window</b>. The sheet is a sliver of it. But add the transcripts, the notes and the practice sets, keep pasting, and you cross the line. It took five or six pastes of the same file. The API answered 400, an invalid request: reduce the length of the messages.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 236" role="img" aria-label="Two bars against the context window, a dashed line at 128,000 tokens. The lectures sheet, 2,834 tokens, is a sliver that fits. Everything pasted runs past the line, and the request fails with a 400 error.">
   <g class="ln" filter="url(#wob)">
@@ -180,11 +183,11 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>Under the line, pasting works. Over it, the request fails before the LLM reads a word.</figcaption>
 </figure>
-<p>Summarise it first? To summarise with the same LLM, the text has to fit first. A bigger LLM moves the line (the largest read 1 to 2 million tokens), and you hit it again. So, one rule for the rest of the lecture: one LLM, as many calls as you like.</p>
+<p>Summarise it first? To summarise with the same LLM, the text has to fit first. A bigger LLM moves the line (the largest read 1 to 2 million tokens), and you hit it again. So a bigger LLM is not the fix. One rule for the rest of the lecture: you keep the same LLM, and you may call it as many times as you like.</p>
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Cut it into chunks</h2>
-<p>Cut the data into pieces that fit. A million tokens in chunks of 100,000 is 10 chunks. Send each one with the question, and one of them finds the answer. This is <b>chunking</b>.</p>
+<p>Cut the data into pieces that fit. A million tokens in chunks of 100,000 is 10 chunks. Send each one with the question, one call at a time, until a chunk holds the answer. This is <b>chunking</b>.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 240" role="img" aria-label="A document of a million tokens is cut into ten chunks of 100,000 tokens each. Each chunk fits. All ten go to the LLM: ten calls for one question.">
   <g class="ln" filter="url(#wob)">
@@ -215,12 +218,13 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>Every chunk fits. But every question pays for all ten.</figcaption>
 </figure>
-<p>It works, but one question now costs 10 calls. With 1,000 chunks, 1,000 calls. Slow and expensive. How do you send only the chunks that matter?</p>
+<p>It works, but one question now costs 10 calls. With 1,000 chunks, 1,000 calls. Slow, and you pay for every one. How do you send only the chunks that matter?</p>
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>Label the chunks, then filter</h2>
-<p>Give every chunk a label for where it sits. Our course already has the shape: three modules (images, LLMs, then Module 3), each module has weeks, each week has lectures. Give each module a list of its words.</p>
+<p>Mark every chunk with where it sits. That mark is its <b>label</b>. The first idea from the chat was lecture numbers. But Verifier's Law comes up in almost every lecture, so a number alone does not say where it is taught. The label needs what each part covers. Our course already has the shape: three modules (images, LLMs, then Module 3), each module has weeks, each week has lectures. Give each module a list of its words.</p>
 <p>"Verifier's Law" is on Module 2's list. So send only Module 2's chunks. The rest never reach the LLM.</p>
+<p>Is this the keyword fix again? No. There, the LLM had to guess the one word to search the sheet for. Here, it picks one of three modules, and you wrote down what each one covers.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 262" role="img" aria-label="Which lecture teaches Verifier's Law? Three module boxes, each holding chunks. Module 2, LLMs, has a word list with Verifier's Law on it, so its chunks are picked. Module 1, images, and Module 3 stay out.">
   <g class="ln" filter="url(#wob)">
@@ -293,16 +297,22 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>The LLM writes the query. The server runs it. The words come from your domain model.</figcaption>
 </figure>
-<p>LLMs write SQL very well when they can see the schema. The server runs it on the database, here Supabase as the tool. That answers "which keyword?": the words in your schema. And it works on billions of rows.</p>
-<p>The limit is in the name. SQL is Structured Query Language: it needs structured data. The chat in this lecture has no structure. That is where we go next.</p>
-<p>It is also why the LLM will not choose a retrieval plan for you. It does not know what good looks like in your data. You do.</p>
+<p>LLMs write SQL very well when they can see the schema: the tables and columns your domain model became. The server runs it on the database, here Supabase as the tool. That answers "which keyword?": the words in your schema. And it works on billions of rows.</p>
+<p>The limit is in the name. SQL is Structured Query Language: it needs structured data. The chat messages from this lecture have no structure. That is where we go next.</p>
+<p>It is also why the LLM will not choose how to fetch your data for you. It does not know what good looks like in your data. You do.</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>Tool call or RAG?</h2>
-<p>Same idea. RAG is a tool call, plus the tricks you add when a plain fetch is not enough: chunks, labels, an index, SQL.</p>
-<p>When do you need them? Most teams hit the <b>budget</b> before the context window. On the Retrieval Bench, one question used 424 tokens. Tiny. But send our twelve notes pages, about 30,000 tokens, with every question: 1,000 questions a day for 30 days, at $0.15 per million input tokens, is <b>$135</b>. Send only the two passages that matter, about 1,500 tokens, and it is <b>$6.75</b>.</p>
+<p>Same idea. A plain tool call already retrieves, augments and generates, so in principle it is RAG. When people say RAG, they usually mean that plus the tricks you add when a plain fetch is not enough: chunks, labels, an index, SQL.</p>
+<p>From the chat: is the context window the only reason to go past a plain tool call? No. Most teams hit the <b>budget</b> first.</p>
+<p>On the Retrieval Bench (section 09), one question used 424 tokens: a small fraction of a cent. Now ask hundreds of questions a day, every day, and the bill can grow from $100 to a million dollars. Two people can answer the same questions for $100 or for $10,000. The difference is how little they send.</p>
 <p>Each step can be cheaper: retrieve less, add less with a clear instruction, generate less. That gap is what most RAG interview questions are about.</p>
-<p class="pull">Rule zero: if it fits and the bill is fine, just paste it. If not, send the fewest tokens that still answer.</p>
+<p class="pull">If it fits and the bill is fine, a plain tool call is enough. If not, send the fewest tokens that still answer.</p>
+<p>Look back: the whole lecture faced two problems. Which word in the question finds the data? And how do you fit the data into a window that has a limit? Every fix today came from those two.</p>
+<p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
+<details class="acc"><summary>The lectures sheet is 2,834 tokens. You paste it with every question. Does the request fail? Is the problem solved?</summary><div class="b"><p>It fits: the line is about 128,000. But it still said Lecture 12, because the sheet holds only dates and titles. What you paste has to contain the answer, and every question pays for all of it.</p></div></details>
+<details class="acc"><summary>A friend says a bigger LLM removes the need for chunks. What is wrong with that?</summary><div class="b"><p>A bigger LLM moves the line, to 1 or 2 million tokens at most. Keep adding data and you cross it again. And you pay for every token you send.</p></div></details>
+<details class="acc"><summary>A shop has 60,000 phones. A customer wants a Samsung, delivered tomorrow, in their budget. How do you send the LLM only a few?</summary><div class="b"><p>Label every phone by what a shopper filters on: brand, delivery, price. Filter first, so only the few that match reach the LLM. Choosing those labels needs knowing phones: domain knowledge.</p></div></details>
 <details class="words"><summary>Words from this lecture</summary>
 <dl>
   <dt>Retrieval-augmented generation (RAG)</dt><dd>Fetch the data that matters, add it to the prompt, let the LLM write.</dd>
@@ -310,12 +320,12 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <dt>Chunk</dt><dd>A piece of the data small enough to fit.</dd>
   <dt>Label</dt><dd>A tag that says where a chunk sits (module, week, lecture), so you can filter.</dd>
   <dt>Index</dt><dd>The labels read like a contents page: go straight to the right chunk.</dd>
-  <dt>Rule zero</dt><dd>If it fits and the bill is fine, just paste it.</dd>
+  <dt>Domain knowledge</dt><dd>Knowing the things in your data well enough to label them.</dd>
 </dl>
 </details>
 </section>
 
-<div class="call"><p class="kick">Keep this</p><p>RAG is a tool call in three steps: retrieve, augment, generate. When the data is too big or too costly to paste, cut it into chunks, label them so you can filter, and if the data has structure, let the LLM write the SQL.</p></div>
+<div class="call"><p class="kick">Keep this</p><p>RAG is a tool call in three steps: retrieve, augment, generate. When the data is too big or too costly to paste, cut it into chunks and label them so you can filter. If the data has structure, let the LLM write the SQL.</p></div>
 
 <section class="s" id="s09"><h2><span class="n">09</span>Now do the Retrieval Bench</h2>
 <p>Do all seven stations. The first half replays this lecture. The second half breaks it, and you fix it. Every message, token count and bill shows on the wire. Bring the Groq key you used on the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a>, or make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</p>
