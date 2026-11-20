@@ -84,7 +84,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <tr><td>Q1</td><td>What is Lecture 6 about?</td><td>A key: the lecture number</td></tr>
   <tr><td>Q2</td><td>Which lecture teaches Verifier's Law?</td><td>Exact words</td></tr>
   <tr><td>Q3</td><td>Why is the model making things up?</td><td>Only a meaning</td></tr>
-  <tr><td>Q4</td><td>What is the fee for this cohort?</td><td>Nothing: it is not in the notes</td></tr>
+  <tr><td>Q4</td><td>Which lecture shows how to put our app on the App Store?</td><td>Nothing: it is not in the notes</td></tr>
   <tr><td>Q5</td><td>Lecture 11 says the model "still named Zapier". In the lecture with the runs, the fix added three real UI builders to the data. Which three?</td><td>A path: two searches</td></tr>
 </table>
 <p>Every run below is on the <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">Retrieval Bench</a>, with GPT-OSS 120B on Groq. Bring your own Groq key and run them yourself.</p>
@@ -295,15 +295,15 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Similar is not correct</h2>
-<p>Q4: "What is the fee for this cohort?" No notes page says. Search by meaning still returns three passages: a template from Lecture 9, "Free Is a Design Decision" from Lecture 5 (Groq's free tier), and the roadmap from Lecture 2. None of them is about a fee. The map has no edge, so something is always nearest.</p>
-<p>Hand those three to the model and it says <b>"The cohort is free"</b>, read off Groq's free tier. It did that in 3 runs out of 3.</p>
+<p>Q4: "Which lecture shows how to put our app on the App Store?" No notes page does. Search by meaning still returns three passages: Lecture 7's opening (the app's function moves to a rented machine, behind a URL), how the Lecture 4 notes are organised, and Lecture 8's opening (that API on Vercel learns to remember). None of them is about the App Store. The map has no edge, so something is always nearest.</p>
+<p>Hand those three to the model and it can answer anyway: <b>"Lecture 7"</b>, read off the deploy passage. Putting an app behind a URL is not putting it on the App Store.</p>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="The question, what is the fee for this cohort, goes to the three nearest passages: Lecture 9, a template; Lecture 5, Groq's free tier; Lecture 2, the roadmap. The model reads them and says the cohort is free, read off the free tier. With the line that it may say not in the notes, it says not in the notes.">
+<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="The question, which lecture shows how to put our app on the App Store, goes to the three nearest passages: Lecture 7, deploying to a URL; Lecture 4, how the notes are organised; Lecture 8, the API on Vercel. The model reads them and says Lecture 7, read off the deploy passage. With the line that it may say not in the notes, it says not in the notes.">
   <g class="ln" filter="url(#wob)">
     <rect class="f-card" x="20" y="95" width="150" height="70" rx="9"/>
     <path class="arw" d="M176 130 H222" marker-end="url(#ah)"/>
-    <rect class="f-card" x="228" y="30" width="180" height="50" rx="8"/>
-    <rect class="f-act" x="228" y="105" width="180" height="50" rx="8"/>
+    <rect class="f-act" x="228" y="30" width="180" height="50" rx="8"/>
+    <rect class="f-card" x="228" y="105" width="180" height="50" rx="8"/>
     <rect class="f-card" x="228" y="180" width="180" height="50" rx="8"/>
     <path class="arw" d="M414 55 L462 110" marker-end="url(#ah)"/>
     <path class="arw" d="M414 130 H462" marker-end="url(#ah)"/>
@@ -313,16 +313,15 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <path class="arw c-det" d="M574 150 L612 196" marker-end="url(#ahd)"/>
   </g>
   <g class="tx">
-    <text x="95" y="125" class="xxs">What is the fee</text>
-    <text x="95" y="147" class="xxs">for this cohort?</text>
+    <text x="95" y="125" class="xxs">Put our app on</text>
+    <text x="95" y="147" class="xxs">the App Store?</text>
     <text x="318" y="20" class="xxxs c-mute">the nearest 3</text>
-    <text x="318" y="61" class="xxs">L9 · a template</text>
-    <text x="318" y="136" class="xxs c-act">L5 · Groq's free tier</text>
-    <text x="318" y="211" class="xxs">L2 · the roadmap</text>
+    <text x="318" y="61" class="xxs c-act">L7 · deploy to a URL</text>
+    <text x="318" y="136" class="xxs">L4 · notes contents</text>
+    <text x="318" y="211" class="xxs">L8 · the API on Vercel</text>
     <text x="518" y="136" class="xxs c-prob">Model</text>
-    <text x="618" y="62" class="xs c-act l">"The cohort</text>
-    <text x="618" y="84" class="xs c-act l">is free."</text>
-    <text x="618" y="104" class="xxxs c-mute l">read off the free tier</text>
+    <text x="618" y="72" class="xs c-act l">"Lecture 7."</text>
+    <text x="618" y="94" class="xxxs c-mute l">read off the deploy</text>
     <text x="618" y="200" class="xs c-det l">"Not in</text>
     <text x="618" y="222" class="xs c-det l">the notes."</text>
     <text x="505" y="196" class="xxxs c-det">+ may say "not in the notes"</text>
@@ -332,7 +331,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </figure>
 <p>Which step failed? The search did what we built it to do. The model did what we asked. The design had no way to say no. Three fixes:</p>
 <ul class="pt">
-  <li><b>The honest miss.</b> Add one line to the prompt: "If the passages do not answer it, say it is not in the notes." With that line, 3 runs out of 3 said the notes do not give the fee. Q4 passes, and the right answer was a refusal.</li>
+  <li><b>The honest miss.</b> Add one line to the prompt: "If the passages do not answer it, say it is not in the notes." With that line it says the notes do not cover it. Q4 passes, and the right answer was a refusal.</li>
   <li><b>The receipt.</b> Show the passage beside the answer, so anyone can check it.</li>
   <li><b>Check the passage, not the sentence.</b> A fluent answer proves nothing. Verify the record (<a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s10">Lecture 11</a>).</li>
 </ul>
@@ -445,6 +444,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Start at the top. Move down only when the cheaper rung fails on real questions.</figcaption>
 </figure>
 <p>Each rung costs more to build, and is harder to check, than the one above it. A lookup is right or wrong. A keyword hit can be read. A nearest passage is a guess you must test. A model searching in rounds is several guesses in a row. Most real systems use more than one rung: a support bot looks up the order by its number and searches the help articles by meaning, in the same answer.</p>
+<details class="words"><summary>Six situations, and the rung for each</summary>
 <table class="dials">
   <tr><th>The situation</th><th>The rung</th><th>Why</th></tr>
   <tr><td>A 20-page HR handbook, 30 questions a day</td><td>Paste</td><td>Rule zero</td></tr>
@@ -454,6 +454,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <tr><td>Customers describing a problem in their own words, 5,000 help articles</td><td>Meaning</td><td>No shared words; usually mixed with keyword search</td></tr>
   <tr><td>"Make the model write in our brand voice"</td><td>None</td><td>That is behaviour, not missing knowledge</td></tr>
 </table>
+</details>
 <blockquote class="q9">In an interview: "First I ask whether retrieval is needed at all: is it behaviour, does it fit, is it a database question. If it is needed, I ask what the question hands me: a key, exact words, a meaning, or a path. I start at the cheapest rung and only move down when it fails on real questions."</blockquote>
 </section>
 
@@ -465,6 +466,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <li><b>Which rung does it serve?</b> Key, words, meaning, path, or is it a check?</li>
   <li><b>If I delete it, which question on the scoreboard turns red?</b> If none, it is not needed yet.</li>
 </ol>
+<details class="words"><summary>The usual boxes, in our words</summary>
 <table class="dials">
   <tr><th>On the diagram</th><th>In our words</th><th>Phase</th></tr>
   <tr><td>Chunker, text splitter</td><td>Split into chunks</td><td>Once</td></tr>
@@ -476,6 +478,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <tr><td>Reranker</td><td>A slower, careful second look at the top 20</td><td>Every question</td></tr>
   <tr><td>Citations, grounding check</td><td>The receipt and the honest miss</td><td>Every question</td></tr>
 </table>
+</details>
 <p>Question 4 turns reading into judgment. For our twelve pages, most boxes on a production diagram can go.</p>
 </section>
 
@@ -500,6 +503,28 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <li><b>The law firm.</b> 50,000 contracts. Lawyers ask for clause 14.2 of a named contract, and "which contracts let the client leave early?"</li>
 </ul>
 <p>To defend a line, give four things: <b>the choice, the reason, the cost, and how you would test it.</b> A weak answer names a tool before a reason, never mentions a case where retrieval is not needed, and says "it works" without saying how that was checked.</p>
+<p><b>This card is Practice set 4.</b> Fill all nine lines and submit it on the LMS by Thu 26 Nov 2026.</p>
+<p class="copyrow"><button class="btn" type="button" id="copycard">Copy a blank card</button> <span id="copied" hidden>Copied. Paste it into a doc, fill all nine lines, and submit it on the LMS.</span></p>
+<script>
+(function () {
+  var card = 'Practice set 4: design card for ____ (your project, or the clinic, the shop, the law firm)\n\n' + [
+    'Who asks, and one real question they ask',
+    'What documents, how many, how often they change',
+    'Rule zero: does it fit, and is pasting good enough?',
+    'What do the questions hand you? Which rungs?',
+    'What is one chunk, and why that size?',
+    'What goes in the prompt? What may the model refuse?',
+    'What does the user see as the receipt?',
+    'Three questions with known answers, one absent from the documents',
+    'What breaks first, and how will you notice?'
+  ].map(function (l, i) { return (i + 1) + '. ' + l + '\n   '; }).join('\n') + '\n\nFor each line: the choice, the reason, the cost, and how you would test it.\n';
+  var b = document.getElementById('copycard'), done = document.getElementById('copied');
+  b.onclick = function () {
+    var ok = function () { done.hidden = false; };
+    if (navigator.clipboard) navigator.clipboard.writeText(card).then(ok, function () { done.hidden = false; done.textContent = 'Copy did not work here. Select the nine lines in the table above instead.'; });
+  };
+})();
+</script>
 <details class="words"><summary>Words from this lecture</summary>
 <dl>
   <dt>Retrieval-augmented generation (RAG)</dt><dd>Fetch the passages that matter, add them to the prompt, let the model write.</dd>

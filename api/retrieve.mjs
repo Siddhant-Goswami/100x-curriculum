@@ -45,7 +45,7 @@ export function words(q, k) {
   const found = [];
   TEXT.forEach((t, i) => { const n = (t.match(re) || []).length; if (n) found.push({ i, n }); });
   found.sort((a, b) => b.n - a.n || a.i - b.i);
-  return { total: found.length, hits: found.slice(0, k).map(f => Object.assign(lectureOf(PILE.chunks[f.i]), { mentions: f.n, text: PILE.chunks[f.i].text })) };
+  return { total: found.length, lectures: new Set(found.map(f => PILE.chunks[f.i].l)).size, hits: found.slice(0, k).map(f => Object.assign(lectureOf(PILE.chunks[f.i]), { mentions: f.n, text: PILE.chunks[f.i].text })) };
 }
 /* search by meaning: score every passage by how close its 384 numbers are to the question's (cosine; both are length 1) */
 export function nearest(v, k) {

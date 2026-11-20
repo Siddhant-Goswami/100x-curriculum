@@ -144,7 +144,8 @@ var GUIDE_LINKS = {
   l12Code: 'https://github.com/Siddhant-Goswami/c8-tools',
   l13Hub: '/c8/module-2/lecture-13-retrieval-augmented-generation/',
   l13Notes: '/c8/module-2/lecture-13-retrieval-augmented-generation/notes',  /* notes with the whiteboard sketches inline; /whiteboard redirects here */
-  l13Bench: '/c8/module-2/lecture-13-retrieval-augmented-generation/bench',  /* the Retrieval Bench: five questions about our notes, six stations */
+  l13Bench: '/c8/module-2/lecture-13-retrieval-augmented-generation/bench',
+  l13Practice: '/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s09',  /* Practice set 4: the nine-line design card, submitted on the LMS, due Thu 26 Nov 2026 */  /* the Retrieval Bench: five questions about our notes, seven stations */
   l11Checklist: '/c8/module-2/checklist/',  /* Before Lecture 11: everything from the probabilistic half so far, as ticks */
   groqPlay: 'https://console.groq.com/playground',
   l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
@@ -855,7 +856,7 @@ GUIDES.L12 = { code: {
 
 /* Lecture 13, both tracks: the overview, the notes (whiteboard inline) and the Retrieval Bench. */
 GUIDES.L13 = { all: {
-  hub: {link:'l13Hub', title:'Open the Lecture 13 pages', sub:'The overview, the notes with the whiteboard, and the Retrieval Bench', more:[['l13Notes','Notes'],['l13Bench','Retrieval Bench']]}
+  hub: {link:'l13Hub', title:'Open the Lecture 13 pages', sub:'The overview, the notes, the Retrieval Bench and Practice set 4', more:[['l13Notes','Notes'],['l13Bench','Retrieval Bench'],['l13Practice','Practice set 4']]}
 }};
 
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from

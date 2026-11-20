@@ -2,23 +2,26 @@
    Amber = rules: the pile, the server, search hits, map dots, the meter. Violet = only what the model wrote. Grey = you.
    Green/coral on the scoreboard = a rule passed or failed. */
 
-/* layout: the action, then what happened, then the pile view, all in the left column; the wire on the right */
+/* layout: the action sits right under the instruction. Left: the panel, what happened, the pile view.
+   Right: the rail, which holds the scoreboard, the bench and the wire (below the action on a phone). */
+.rail{display:flex;flex-direction:column;gap:14px;min-width:0}
 @media (min-width:880px){
-  .work{grid-template-areas:"side wire";grid-template-rows:auto}
-  .wirebox{max-height:calc(100vh - 112px)}
+  .work{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);grid-template-areas:"side wire";grid-template-rows:auto}
+  .rail{grid-area:wire;position:sticky;top:96px;max-height:calc(100vh - 112px)}
+  .rail .wirebox{position:static;top:auto;grid-area:auto;max-height:none;flex:1 1 auto;min-height:140px;overflow:auto}
 }
 .side .tail{grid-area:auto}
 
 /* ---------- the scoreboard ---------- */
-.board{display:flex;flex-direction:column;gap:10px}
+.board{display:flex;flex-direction:column;gap:8px}
 .board:empty{display:none}
 .board .sh{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 12px}
-.board .sh b{font:600 17px var(--sans);letter-spacing:-.01em;color:var(--ink);font-variant-numeric:tabular-nums}
-.board .sh span{font-size:13.5px;color:var(--ink3)}
+.board .sh b{font:600 15px var(--sans);letter-spacing:-.01em;color:var(--ink);font-variant-numeric:tabular-nums}
+.board .sh span{font-size:12.5px;color:var(--ink3)}
 .qs{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .qq{position:relative;min-width:0}
-.qq > button{width:100%;height:100%;display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;cursor:pointer;
-  border:1px solid var(--line);background:var(--card);border-radius:12px;padding:9px 11px 10px;font:inherit;color:var(--ink);transition:border-color .15s,background .25s}
+.qq > button{width:100%;height:100%;display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:4px;text-align:left;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 9px;font:inherit;color:var(--ink);transition:border-color .15s,background .25s}
 .qq > button:hover{border-color:var(--ink3)}
 .qq > button b{font:600 13px var(--sans);color:var(--ink2);display:flex;align-items:center;gap:6px}
 .qq > button b::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--line2)}
@@ -39,8 +42,7 @@
 .qq .qd .last{color:var(--ink3);font-size:13px;border-top:1px solid var(--line);padding-top:6px}
 @media (max-width:720px){
   .qs{grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
-  .qq > button{padding:7px 6px 8px;align-items:center;text-align:center}
-  .qq > button span{display:none}
+  .qq > button{padding:6px 6px;flex-direction:column;gap:1px;align-items:center;text-align:center}
   .qq > button i{font-size:10.5px}
   .qq .qd{left:0;right:auto;position:fixed;top:auto;bottom:16px;left:16px;right:16px;width:auto}
 }
@@ -56,6 +58,13 @@
 .mbar i.est{background:repeating-linear-gradient(45deg,var(--det),var(--det) 4px,color-mix(in srgb,var(--det) 55%,transparent) 4px,color-mix(in srgb,var(--det) 55%,transparent) 8px)}
 .mbar em{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:var(--coral);border-radius:1px}
 @media (max-width:640px){.nodes{grid-template-rows:auto 20px auto auto}.meter{margin-top:12px}.meter p{font-size:12px}}
+/* in the rail the bench is a small reference picture, not the stage */
+.rail .nodes{padding:14px;grid-template-columns:minmax(0,1fr) minmax(14px,.45fr) minmax(0,1fr) minmax(14px,.45fr) minmax(0,1fr);grid-template-rows:auto 16px auto auto;border-radius:14px}
+.rail .node{padding:7px 4px 6px;border-radius:10px}
+.rail .node b{font-size:13.5px}
+.rail .node span{font-size:11px}
+.rail .meter{margin-top:10px;gap:5px}
+.rail .meter p{font-size:12.5px}
 
 /* ---------- the panel's new pieces ---------- */
 .panel .ans.pass{box-shadow:inset 3px 0 0 var(--hum)}
@@ -137,3 +146,35 @@
 .key .kp{width:12px;height:10px;border-radius:2px;background:var(--det-soft);border:1px solid color-mix(in srgb,var(--det) 40%,transparent)}
 .w:has(.rt b:first-child.n-pile)::before{background:var(--det)}
 @media (prefers-reduced-motion:reduce){.map .nl line,.map .qd circle,.pbox{animation:none}}
+
+/* ---------- added with the seven-station rebuild ---------- */
+.pwarn{font-size:13px;line-height:1.5;color:var(--ink2);background:var(--bg2);border-radius:10px;padding:8px 11px}
+.pricebox summary{cursor:pointer;font-size:13.5px;color:var(--ink3);list-style:none;user-select:none}
+.pricebox summary::-webkit-details-marker{display:none}
+.pricebox summary::after{content:"Change";margin-left:8px;color:var(--ink2);text-decoration:underline;text-underline-offset:2px}
+.pricebox[open] summary::after{content:"Done"}
+.pricebox[open] summary{margin-bottom:10px}
+.jog{font-size:14px;line-height:1.55;color:var(--ink2);border-left:2px solid var(--line2);padding-left:11px}
+.ladder{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.ladder ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+.ladder li{font-size:15px;line-height:1.55;color:var(--ink2)}
+.ladder li b{color:var(--ink);font-weight:600;margin-right:6px}
+.ladder li i{font-style:normal;color:var(--ink3);margin:0 3px}
+.after .ladder p{font-size:14px;color:var(--ink3)}
+.handoff{margin-top:2px}
+.handoff .btn.go{min-height:50px;padding:12px 26px;font-size:16px}
+details.own{gap:10px}
+details.own summary{cursor:pointer;font:600 15.5px var(--sans);color:var(--ink);list-style:none;user-select:none}
+details.own summary::-webkit-details-marker{display:none}
+details.own summary::before{content:"+";display:inline-block;width:16px;color:var(--ink3)}
+details.own[open] summary::before{content:"−"}
+details.own p{font-size:14px;line-height:1.55;color:var(--ink2)}
+.ost{font-size:13.5px;line-height:1.5;color:var(--ink2);background:var(--bg2);border-radius:10px;padding:8px 11px}
+.ost[hidden]{display:none}
+.hitlist:empty{display:none}
+.w .rt b.n-groq{background:var(--coral-soft);color:var(--coral-ink)}
+/* the header on a phone: long station names shrink with an ellipsis instead of pushing Exit off the screen */
+@media (max-width:640px){
+  .bar .in{grid-template-columns:auto minmax(0,1fr) auto}
+  .bar .where{overflow:hidden;text-overflow:ellipsis;min-width:0}
+}

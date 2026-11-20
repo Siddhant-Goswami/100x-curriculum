@@ -21,12 +21,12 @@ function answer(body) {
   }
   if (/^Answer the question using these passages/.test(first)) {
     const q = first.split('Question: ').pop();
-    if (/fee for this cohort/i.test(q)) return [200, /say it is not in the notes/.test(first) ? msg('The passages do not provide information about the fee for this cohort.') : msg('The cohort is **free**: there is no fee. As Lecture 5, “Free Is a Design Decision”, explains, Groq’s free tier (30 requests per minute, about 200,000 tokens a day) powers a real MVP at zero cost.')];
+    if (/App Store/i.test(q)) return [200, /say it is not in the notes/.test(first) ? msg('It is not in the notes: none of the passages shows how to put an app on the App Store.') : msg('**Lecture 7** shows it: the app’s function runs on a rented machine, behind a URL anyone can call, deployed with Vercel.')];
     if (/Verifier/i.test(q)) return [200, msg('The Verifier’s Law is introduced in **Lecture 1**, “What was actually missing.”')];
     if (/making things up/i.test(q)) return [200, msg('As Lecture 10 puts it, hallucination = missing context + a trained habit of never saying no. The model predicts; when context is missing it fills the gap.')];
   }
   if (/^Lecture 1: /.test(first)) return [200, msg('Verifier’s Law is taught in **Lecture 1** (Orientation and State of AI 2026).')];
-  const bare = { 'Lecture 6': 'Could you tell me which course you mean by “Lecture 6”?', 'Verifier': 'Verifier’s Law is introduced in MIT 6.821, Lecture 9.', 'making things up': 'Language models predict the next word, so they can produce plausible but false text.', 'fee for this cohort': 'Could you tell me which program or cohort you mean? Then I can give you the exact fee.', 'still named Zapier': 'The runs lecture added **Retool, Bubble and Webflow** as real UI builders.' };
+  const bare = { 'Lecture 6': 'Could you tell me which course you mean by “Lecture 6”?', 'Verifier': 'Verifier’s Law is introduced in MIT 6.821, Lecture 9.', 'making things up': 'Language models predict the next word, so they can produce plausible but false text.', 'App Store': 'Could you tell me which course you mean? Then I can point you to the right lecture.', 'still named Zapier': 'The runs lecture added **Retool, Bubble and Webflow** as real UI builders.' };
   for (const k in bare) if (first.includes(k)) return [200, msg(bare[k])];
   return [200, msg('(stand-in) I do not know.')];
 }

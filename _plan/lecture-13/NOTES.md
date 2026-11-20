@@ -34,3 +34,21 @@ Card sort (cards and their numbers are already in pile.json), chunk-size switch,
     node _plan/lecture-13/standin.mjs 8799 &
     GROQ_URL=http://127.0.0.1:8799/chat GROQ_MODELS_URL=http://127.0.0.1:8799/models python3 _plan/serve.py 8771
 Then open /c8/module-2/lecture-13-retrieval-augmented-generation/bench with any fake gsk_ key.
+
+## UX pass (20 Nov 2026, after a student walkthrough)
+- Layout: the action panel sits right under the headline. Scoreboard (five compact pills), the bench diagram and the wire share the right-hand rail (`.rail`, sticky on laptops; below the action on a phone).
+- Seven stations: station 5 split into By its meaning (Q3, top-k slider after the nearest come back) and Nearest is not right (Q4, fixed nearest 3 = the tested trap; the honest-line switch appears only after the first answer). Q5 is station 7, "Let it search" (old name "Search twice" gave the guess away; the Q5 rule now says "one search leads to the next").
+- localStorage moved to v2; `migrate()` maps old six-station progress.
+- Wire: station 1 is one line per question (`trip()`); JSON never opens by itself; Groq refusals and rate limits come from a "Groq" node, not the model.
+- Every guess is answered ("You guessed X. Right." / "It was Y."); guess chips stay put after a tap.
+- RAG is named at station 2 (matches the notes s01); embedding and top-k at station 5; "the Lecture 12 move" (matches the notes).
+- Station 3: "Lecture 1 only" label, price folded into a details row, and the "Lucky: Verifier's Law is in Lecture 1" line.
+- Station 4: `api/retrieve.mjs` words() now returns `lectures` (distinct lectures over all matches), so the bench says "24 passages, in 6 lectures", same as the notes.
+- Map: the flat-picture warning sits above the map once a question is placed; lecture labels nudged apart.
+- End screen: the ladder recap (Q1 to Q5 and rule zero), "Fill your design card" (notes#s09), "Save the wire as a text file", and the optional own question (moved here from station 5; loading status is neutral, not red).
+- Notes: the six-situations and usual-boxes tables are folded into details; s09 has "Copy a blank card".
+- Asset links carry ?v=N; bump it when bench.js/css change.
+
+## Q4 replaced again (20 Nov 2026): no cohort pricing or refunds
+The user ruled out the cohort fee (and any 100x pricing or refund example): sensitive, it changes, and it pulls attention away from the lesson. Q4 is now "Which lecture shows how to put our app on the App Store?" (App Store appears nowhere in the pile). Nearest 3 by meaning: L7 "The lecture in one line" 0.82 (the function moves to a rented machine, behind a URL), L4 "How These Notes Are Organised" 0.811, L8 "The lecture in one line" 0.811. The intended trap: the model answers "Lecture 7", read off the deploy passage. Only pile.json's Q4 entry was patched (text, 384 numbers, map x/y); passages unchanged. The Q4 rule also accepts "none of the passages ... mention/cover/show" and "no lecture".
+**Not yet checked on the real model.** Run `GROQ_API_KEY=... node _plan/lecture-13/check_q4.mjs` (or put the key in .env.local): want line off 0 of 3 passing, line on 3 of 3. If the line-off runs already pass (the model refuses without being told), Q4 needs a sharper decoy; the notes s05 says "it can answer anyway: Lecture 7" until then.
