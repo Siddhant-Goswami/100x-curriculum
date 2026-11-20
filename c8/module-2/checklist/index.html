@@ -13,7 +13,19 @@
 <style>
 body.read .ck .h a{color:inherit}
 body.read .total{font-family:var(--mono);font-size:13px;color:var(--ink2)}
+/* the track picker: shown until the learner picks code or no-code (localStorage c8m2-track, shared with the map) */
+.pick{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:18px 20px;margin:0 0 26px}
+.pick p{margin:0 0 12px}
+.pick .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.pick .opts{grid-template-columns:1fr}}
+.pick button{text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:12px 14px;font:inherit;color:inherit;cursor:pointer}
+.pick button:hover{border-color:var(--ink3)}
+.pick button b{display:block;font-weight:500}
+.pick button small{color:var(--ink2);font-size:13px}
+html[data-cktrack="none"] main section.s,html[data-cktrack="none"] .hero .meta,html:not([data-cktrack="none"]) #pick{display:none}
+.trkc{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 </style>
+<script>(function(){var t=null;try{t=localStorage.getItem('c8m2-track')}catch(e){}document.documentElement.setAttribute('data-cktrack',t==='code'||t==='nocode'?t:'none')})();</script>
 <script src="/analytics.js" defer></script>
 </head>
 <body data-page="checklist-before-l11" class="read">
@@ -29,7 +41,15 @@ body.read .total{font-family:var(--mono);font-size:13px;color:var(--ink2)}
   <p class="kick">Checklist · Lectures 9 to 12 · Both tracks</p>
   <h1>Lectures 9 to 12</h1>
   <p class="dek">Tick what you have done. Finish the rest before Lecture 13.</p>
-  <div class="meta"><span>Lecture 13 is on Fri 20 Nov.</span><span class="total ready" data-ready="all">0 of 23 ready</span></div>
+  <div class="meta"><span id="trkname"></span><span class="total ready" data-ready="all">0 of 23 ready</span></div>
+</div>
+
+<div class="pick" id="pick">
+  <p><b>Which track are you on?</b> The list shows your track's lectures and practice sets.</p>
+  <div class="opts">
+    <button type="button" data-t="nocode"><b>No-code</b><small>Read the plan, approve, verify</small></button>
+    <button type="button" data-t="code"><b>Code</b><small>Python, your own backend</small></button>
+  </div>
 </div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Lecture 9 · LLMs from first principles <span class="ready" data-ready="a">0 of 2</span></h2>
@@ -71,13 +91,13 @@ body.read .total{font-family:var(--mono);font-size:13px;color:var(--ink2)}
 </ul></div>
 </section>
 
-<section class="s" id="s06"><h2><span class="n">06</span>Lecture 12 · Building with tool calling and MCP · Code track <span class="ready" data-ready="g">0 of 1</span></h2>
+<section class="s" id="s06" data-code><h2><span class="n">06</span>Lecture 12 · Building with tool calling and MCP · Code track <span class="ready" data-ready="g">0 of 1</span></h2>
 <div data-stage="g"><ul class="ck">
 <li><input type="checkbox" id="l12notes"><label for="l12notes"><span class="t"><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes" data-item="l12notes">Read the Lecture 12 notes</a></span><span class="h">A worked example in Python.</span></label></li>
 </ul></div>
 </section>
 
-<section class="s" id="s07"><h2><span class="n">07</span>Practice set 3 · Write the code behind the bench · Code track <span class="ready" data-ready="h">0 of 4</span></h2>
+<section class="s" id="s07" data-code><h2><span class="n">07</span>Practice set 3 · Write the code behind the bench · Code track <span class="ready" data-ready="h">0 of 4</span></h2>
 <div data-stage="h"><ul class="ck">
 <li><input type="checkbox" id="ps3p1"><label for="ps3p1"><span class="t"><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/practice-set#s02" data-item="ps3p1">Part 1: write the tool call in tool_call.py</a></span><span class="h">Done when it answers a lecture question from the sheet, and "What is an API?" on its own.</span></label></li>
 <li><input type="checkbox" id="ps3p2"><label for="ps3p2"><span class="t"><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/practice-set#s03" data-item="ps3p2">Part 2: put mcp_server.py on the internet</a></span><span class="h">Done when fastmcp call returns the Lecture 12 row from your address.</span></label></li>
@@ -99,16 +119,27 @@ body.read .total{font-family:var(--mono);font-size:13px;color:var(--ink2)}
 /* Ticks stay in this browser (docs.js, key c8.ck.checklist-before-l11: kept from the first version so old ticks survive). Each change also sends the whole set of ticks, under an anonymous id,
    to /api/checklist so the stats page can count them, and to PostHog as checklist_tick. No names, no typed text. */
 (function(){
+  /* The track comes from localStorage c8m2-track, the same key the map uses. No-code learners don't get the
+     code-only sections: they are removed here, before docs.js counts the boxes, so totals read "of 18". */
+  var TRACK=document.documentElement.getAttribute('data-cktrack');
+  if(TRACK==='nocode') [].forEach.call(document.querySelectorAll('section[data-code]'),function(s){s.remove()});
+  var nm=document.getElementById('trkname');
+  if(TRACK!=='none'){ nm.innerHTML=(TRACK==='code'?'Code track':'No-code track')+' · <button type="button" class="trkc">change</button>';
+    nm.querySelector('button').addEventListener('click',function(){ document.documentElement.setAttribute('data-cktrack','none'); }); }
+  [].forEach.call(document.querySelectorAll('#pick button[data-t]'),function(b){ b.addEventListener('click',function(){
+    try{ localStorage.setItem('c8m2-track',b.dataset.t); }catch(e){}
+    try{ window.posthog&&posthog.capture('checklist_track',{list:'l11',track:b.dataset.t}); }catch(e){}
+    location.reload(); }); });
   var LIST='l11', id=null;   /* the list's storage name since 12 Nov; it now covers Lectures 9 to 12 */
   try{ id=localStorage.getItem('c8.ckid'); if(!id){ id=Math.random().toString(36).slice(2,12)+Date.now().toString(36); localStorage.setItem('c8.ckid',id); } }catch(e){}
   var boxes=[].slice.call(document.querySelectorAll('.ck input[type=checkbox]')), sent=null, timer=0;
-  function post(body){ if(!id||/^(localhost|127\.)/.test(location.hostname)) return; body.list=LIST; body.id=id;
+  function post(body){ if(!id||/^(localhost|127\.)/.test(location.hostname)) return; body.list=LIST; body.id=id; body.track=TRACK==='none'?'':TRACK;
     try{ fetch('/api/checklist',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),keepalive:true}).catch(function(){}); }catch(e){} }
   function ph(name,props){ try{ window.posthog&&posthog.capture(name,props); }catch(e){} }
   function state(){ return boxes.filter(function(b){return b.checked}).map(function(b){return b.id}); }
   /* docs.js fires c8:ck after it restores saved ticks, after every tick and after a reset: send the set when it changes */
   document.addEventListener('c8:ck',function(){ clearTimeout(timer); timer=setTimeout(function(){ var t=state(), k=t.join(','); if(k===sent) return; sent=k; post({type:'state',ticked:t}); },300); });
-  boxes.forEach(function(b){ b.addEventListener('change',function(){ ph('checklist_tick',{list:LIST,item:b.id,checked:b.checked,done:state().length,total:boxes.length}); }); });
+  boxes.forEach(function(b){ b.addEventListener('change',function(){ ph('checklist_tick',{list:LIST,track:TRACK,item:b.id,checked:b.checked,done:state().length,total:boxes.length}); }); });
   document.addEventListener('click',function(e){ var a=e.target.closest('a[data-item]'); if(!a) return; post({type:'click',item:a.dataset.item}); ph('checklist_link',{list:LIST,item:a.dataset.item}); });
 })();
 </script>

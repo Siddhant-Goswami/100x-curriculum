@@ -1,7 +1,7 @@
 /* Counts for the Lectures 9 to 12 checklist (c8/module-2/checklist), the Tool Bench steps, and the stats page.
    The list is still called l11 (its name since the first version, "Before Lecture 11") so earlier ticks keep counting.
 
-     POST /api/checklist  {list, id, type:'state', ticked:[item...]}   this browser's whole set of ticks
+     POST /api/checklist  {list, id, type:'state', ticked:[item...], track}   this browser's whole set of ticks; track is 'code', 'nocode' or ''
      POST /api/checklist  {list, id, type:'click', item}               a link on the checklist was opened
      POST /api/checklist  {list, id, type:'bench', step}                this browser finished that Tool Bench step (1 to 5)
      POST /api/checklist  {list, id, type:'forget'}                     drop this id from every count (test runs)
@@ -42,6 +42,7 @@ const LISTS = {
       fp5: [FP + '/05-attention-and-transformers*', FP + '/06-what-hardware-powers-llms*'],
       fp7: [FP + '/07-guesser-to-assistant*', FP + '/08-what-llms-learn-from-now*']
     },
+    codeOnly: ['l12notes', 'ps3p1', 'ps3p2', 'ps3own', 'ps3submit'],   /* no-code learners don't see these */
     benchSteps: 5   /* the Tool Bench reports each step it finishes (bench.js finish()) */
   }
 };
@@ -65,17 +66,17 @@ async function redis(cmd) {
   } finally { clearTimeout(timer); }
 }
 
-/* KEYS: opened set, done hash (id -> how many ticked), seen hash (id -> ms), then one set per item.
-   ARGV: id, now, then '1' or '0' per item in the same order. */
+/* KEYS: opened set, done hash (id -> "how many ticked|track"; entries from before 20 Nov are a bare number),
+   seen hash (id -> ms), then one set per item. ARGV: id, now, track, then '1' or '0' per item in the same order. */
 const STATE = `
 local id = ARGV[1]
 redis.call('SADD', KEYS[1], id)
 redis.call('HSET', KEYS[3], id, ARGV[2])
 local n = 0
 for i = 4, #KEYS do
-  if ARGV[i - 1] == '1' then redis.call('SADD', KEYS[i], id); n = n + 1 else redis.call('SREM', KEYS[i], id) end
+  if ARGV[i] == '1' then redis.call('SADD', KEYS[i], id); n = n + 1 else redis.call('SREM', KEYS[i], id) end
 end
-redis.call('HSET', KEYS[2], id, n)
+redis.call('HSET', KEYS[2], id, n .. '|' .. ARGV[3])
 return n`;
 /* KEYS: opened set, done hash, seen hash, then the tick set and the click set of every item, then one set per bench step.
    Returns {opened, done values, seen values, tick, click and bench counts...}. */
@@ -152,11 +153,12 @@ export async function handle(request) {
     const steps = Array.from({ length: L.benchSteps || 0 }, (_, n) => n + 1);
     steps.forEach(n => keys.push(k(list, 'b:' + n)));
     const [r, ph] = await Promise.all([redis(['EVAL', READ, String(keys.length), ...keys]), posthogPages(list)]);
-    const done = (r[1] || []).map(Number), seen = (r[2] || []).map(Number), now = Date.now();
+    const people = (r[1] || []).map(v => { const [n, t] = String(v).split('|'); return [Number(n) || 0, t === 'code' || t === 'nocode' ? t : '']; });
+    const seen = (r[2] || []).map(Number), now = Date.now(), codeOnly = L.codeOnly || [];
     const items = {};
     ids.forEach((id, n) => { items[id] = { ticked: r[3 + n], clicked: r[3 + ids.length + n] }; });
     return json(200, {
-      list, total: ids.length, opened: r[0], items, done,
+      list, total: ids.length, totals: { code: ids.length, nocode: ids.length - codeOnly.length, '': ids.length }, codeOnly, opened: r[0], items, people,
       bench: steps.map((_, n) => r[3 + 2 * ids.length + n]),
       active: { hour: seen.filter(t => now - t < 3600e3).length, day: seen.filter(t => now - t < 86400e3).length },
       pages: ph.rows, posthog: ph.rows ? 'ok' : ph.error, at: now
@@ -185,7 +187,8 @@ export async function handle(request) {
   if (b.type === 'state') {
     const on = new Set(Array.isArray(b.ticked) ? b.ticked : []);
     const keys = [k(b.list, 'opened'), k(b.list, 'done'), k(b.list, 'seen'), ...ids.map(i => k(b.list, 't:' + i))];
-    const n = await redis(['EVAL', STATE, String(keys.length), ...keys, b.id, String(Date.now()), ...ids.map(i => on.has(i) ? '1' : '0')]);
+    const track = b.track === 'code' || b.track === 'nocode' ? b.track : '';
+    const n = await redis(['EVAL', STATE, String(keys.length), ...keys, b.id, String(Date.now()), track, ...ids.map(i => on.has(i) ? '1' : '0')]);
     return json(200, { ok: true, done: n });
   }
   if (b.type === 'forget') { /* drops this id from every count: for test runs */
