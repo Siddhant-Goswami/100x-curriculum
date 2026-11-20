@@ -93,7 +93,43 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <li><b>Paste the notes</b> into the prompt.</li>
   <li><b>Give the LLM a tool</b> that fetches a page. You did this in <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Lecture 12</a>.</li>
 </ul>
-<p>Q1 has a number in it: Lecture 6. So a tool can fetch Lecture 6 by its number. The LLM reads it and answers: databases. Q1 passes.</p>
+<p>Q1 has a number in it: Lecture 6. So a tool can fetch Lecture 6 by its number. The LLM reads it and answers: databases and domain modelling. Q1 passes.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Tool calling. The data, a file, is the tool, joined by an API to the server: both deterministic. The server is joined by an API to the LLM, which is probabilistic. Input: What is Lecture 6 about? goes to the LLM. Output: domain modelling. The prompt is the data, plus the instruction, plus the input.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="20" y="56" width="130" height="190" rx="12"/>
+    <path class="f-card" d="M62 102 H94 L108 116 V160 H62 Z"/>
+    <path class="thin" d="M94 102 V116 H108 M70 124 H100 M70 134 H100 M70 144 H92"/>
+    <path class="arw" d="M158 138 H204" marker-end="url(#ah)"/>
+    <path class="arw" d="M204 160 H158" marker-end="url(#ah)"/>
+    <rect class="f-det" x="210" y="56" width="150" height="190" rx="12"/>
+    <rect class="dash ink" x="226" y="118" width="118" height="62" rx="10" fill="none"/>
+    <path class="arw" d="M368 138 H414" marker-end="url(#ah)"/>
+    <path class="arw" d="M414 160 H368" marker-end="url(#ah)"/>
+    <rect class="f-prob" x="420" y="56" width="96" height="190" rx="12"/>
+    <path class="arw" d="M566 128 H524" marker-end="url(#ah)"/>
+    <path class="arw" d="M524 176 H566" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="268" y="28" class="m">Tool calling</text>
+    <text x="85" y="48" class="xxxs c-mute">tool</text>
+    <text x="85" y="186" class="xxs">data (file)</text>
+    <text x="181" y="128" class="xxxs c-mute">API</text>
+    <text x="285" y="154" class="xxs">server</text>
+    <text x="391" y="128" class="xxxs c-mute">API</text>
+    <text x="468" y="154" class="xs c-prob">LLM</text>
+    <text x="574" y="116" class="xxxs c-mute l">input</text>
+    <text x="574" y="136" class="xxs l">What is Lecture 6 about?</text>
+    <text x="574" y="166" class="xxxs c-mute l">output</text>
+    <text x="574" y="186" class="xxs c-act l">Domain modelling</text>
+    <text x="574" y="232" class="xxxs l">prompt = data + instruction + input</text>
+    <text x="85" y="272" class="xxs c-det">deterministic</text>
+    <text x="285" y="272" class="xxs c-det">deterministic</text>
+    <text x="468" y="272" class="xxs c-prob">probabilistic</text>
+  </g>
+</svg>
+<figcaption>The tool fetches Lecture 6 by its number. The LLM gets the data, the instruction and the question in one prompt.</figcaption>
+</figure>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Closed book: a question goes to the LLM, and the answers come back wrong. Open book: 1, fetch the passage from the notes. 2, add it to the prompt beside the question. 3, the LLM writes an answer, with its source.">
   <g class="ln" filter="url(#wob)">
