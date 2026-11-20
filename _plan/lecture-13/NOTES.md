@@ -23,7 +23,7 @@ The user asked that the old Lecture 1 car example (Q4 trap and Q5 path) not be u
 - Q1 with get_lecture: calls get_lecture(6), answers databases (2,892 tokens in).
 - Q2 with words "Verifier's Law": Lecture 1. Q3 with nearest 3: cites Lecture 10.
 - Q4 "What is the fee for this cohort?" with nearest 3 (L9 "The deterministic answer already existed" 0.83, L5 "Free Is a Design Decision", L2 summit map): "The cohort is free", read off Groq's free tier, 3/3. With the honest line: "the notes do not provide the fee" 3/3.
-- Q5 loop ("Lecture 11 says the model 'still named Zapier'..."): search "still named Zapier" (L10 runs table + L11) then "UI builders" (L10.s06), answers Lovable, Google AI Studio, Antigravity, 5/5 runs, two searches each, ~1,700 tokens in all, no rate-limit wait.
+- Q5 loop: the first wording ("...which real UI builders were added to close the gap?") passed 5/5 on the command line but 1/5 on production: the model took "Bubble, Webflow" from the L10 runs table as the answer. The shipped wording says the fix added three: "Lecture 11 says the model 'still named Zapier'. In the lecture with the runs, the fix added three real UI builders to the data. Which three?" 12/12 runs, 2 to 4 searches ("still named Zapier", then "UI builders"), 1.7k to 3.8k tokens, no rate-limit wait. Bare: names Bubble etc., fails.
 - Loop limit raised from 4 to 6 rounds (cheap now). An earlier Q5 draft on the roadmap and the hackathon passed only 3 of 5, because exact-phrase searches for words not in the notes used up the rounds.
 - All twelve pasted: 413 "Limit 8000, Requested 31131". The pile is 29,982 tokens by o200k_base.
 

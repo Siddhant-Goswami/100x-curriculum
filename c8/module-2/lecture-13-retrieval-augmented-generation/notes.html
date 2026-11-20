@@ -85,7 +85,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <tr><td>Q2</td><td>Which lecture teaches Verifier's Law?</td><td>Exact words</td></tr>
   <tr><td>Q3</td><td>Why is the model making things up?</td><td>Only a meaning</td></tr>
   <tr><td>Q4</td><td>What is the fee for this cohort?</td><td>Nothing: it is not in the notes</td></tr>
-  <tr><td>Q5</td><td>Lecture 11 says the model "still named Zapier". In the lecture with the runs, which real UI builders were added to close the gap?</td><td>A path: two searches</td></tr>
+  <tr><td>Q5</td><td>Lecture 11 says the model "still named Zapier". In the lecture with the runs, the fix added three real UI builders to the data. Which three?</td><td>A path: two searches</td></tr>
 </table>
 <p>Every run below is on the <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">Retrieval Bench</a>, with GPT-OSS 120B on Groq. Bring your own Groq key and run them yourself.</p>
 
@@ -368,7 +368,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>The path</h2>
-<p>Q5: 'Lecture 11 says the model "still named Zapier". In the lecture with the runs, which real UI builders were added to close the gap?'</p>
+<p>Q5: 'Lecture 11 says the model "still named Zapier". In the lecture with the runs, the fix added three real UI builders to the data. Which three?'</p>
 <p>The first search, <b>still named Zapier</b>, finds two passages: Lecture 11's recap and Lecture 10's table of runs. Neither names the fix. But Lecture 11 says "Lecture 10 has the runs". The second search, <b>UI builders</b>, finds the fix in another Lecture 10 section: <b>Lovable, Google AI Studio and Antigravity</b>.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 270" role="img" aria-label="Search 1, still named Zapier, returns Lecture 11 and Lecture 10's runs: Lecture 10 has the runs, but no fix there. The model reads that and writes search 2, UI builders. It returns Lecture 10's fix: Lovable, Google AI Studio, Antigravity.">
@@ -400,7 +400,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>The second search depends on what the first one found.</figcaption>
 </figure>
-<p>Could our code write the second search before it reads the first result? No: code does not read. The model writes it. Search is one more tool on the <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s03">Lecture 12 loop</a>: the model asks, the server searches, the model reads the result and decides whether to search again. On the bench it took two searches, every run.</p>
+<p>Could our code write the second search before it reads the first result? No: code does not read. The model writes it. Search is one more tool on the <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s03">Lecture 12 loop</a>: the model asks, the server searches, the model reads the result and decides whether to search again. On the bench it passed 12 runs out of 12, with two to four searches each.</p>
 <p>The cost: every round sends the whole conversation again, passages included. More calls, more tokens, more waiting.</p>
 <p class="pull">Let the model search in rounds only when the question hands you a path.</p>
 </section>

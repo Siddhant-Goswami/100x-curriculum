@@ -40,7 +40,7 @@ QUESTIONS = [
     {'id': 'Q2', 'q': "Which lecture teaches Verifier's Law?", 'known': 'Lecture 1'},
     {'id': 'Q3', 'q': 'Why is the model making things up?', 'known': 'The Lecture 10 passage on hallucination'},
     {'id': 'Q4', 'q': 'What is the fee for this cohort?', 'known': 'Not in the notes'},
-    {'id': 'Q5', 'q': 'Lecture 11 says the model "still named Zapier". In the lecture with the runs, which real UI builders were added to close the gap?', 'known': 'Lovable, Google AI Studio and Antigravity (Lecture 10)'},
+    {'id': 'Q5', 'q': 'Lecture 11 says the model "still named Zapier". In the lecture with the runs, the fix added three real UI builders to the data. Which three?', 'known': 'Lovable, Google AI Studio and Antigravity (Lecture 10)'},
 ]
 # card sort (station 5): eight sentences, placed by the learner first, then by the model
 CARDS = [
