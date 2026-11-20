@@ -1,7 +1,7 @@
 /* The server behind the Lecture 11 Tool Bench. On the bench it is the box called Server.
 
      POST /api/toolcall  {op:'key'}                           -> {ok}            checks the learner's Groq key (lists models, costs nothing)
-     POST /api/toolcall  {op:'chat', request}                 -> {sent, raw, call, failed, ms}       one round with the model
+     POST /api/toolcall  {op:'chat', request}                 -> {sent, raw, call, failed, ms}       one round with the LLM
      POST /api/toolcall  {op:'run', src, args}                -> {ok, result, events}                 the sheet tool, by hand
      POST /api/toolcall  {op:'loop', question, tool, via, src, mcp} -> {events, used, failed, answer} the whole loop, no human
      POST /api/toolcall  {op:'mcplist', mcp}                  -> {events, tool}  initialize + initialized + tools/list
@@ -67,7 +67,7 @@ function cleanRequest(r) {
   return out;
 }
 
-/* ---------- one round with the model: send exactly `sent`, return exactly what came back ---------- */
+/* ---------- one round with the LLM: send exactly `sent`, return exactly what came back ---------- */
 function waitWords(wait) {
   if (wait <= 90) return 'Your key hit its limit for this minute. Try again in ' + wait + ' seconds.';
   const m = Math.round(wait / 60);
@@ -79,7 +79,7 @@ async function round(key, sent) {
   try {
     res = await fetch(GROQ, { method: 'POST', signal: ctl.signal, headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' }, body: JSON.stringify(sent) });
     try { data = await res.json(); } catch (e) { /* not JSON: handled by status below */ }
-  } catch (e) { throw new Stop(504, { error: 'model_down', message: 'The model did not answer in time. Try again.' }); }
+  } catch (e) { throw new Stop(504, { error: 'model_down', message: 'The LLM did not answer in time. Try again.' }); }
   finally { clearTimeout(timer); }
   const ms = Date.now() - t0, err = data && data.error;
   console.log(JSON.stringify({ op: 'round', status: res.status, ms, tools: (sent.tools || []).length }));
@@ -87,7 +87,7 @@ async function round(key, sent) {
   if (res.status === 429) { const wait = Math.ceil(+res.headers.get('retry-after') || 10); throw new Stop(429, { error: 'slow_down', message: waitWords(wait), wait }); }
   /* Groq refuses a tool call it cannot parse; that refusal is what came back, so it is shown as is */
   if (res.status === 400 && err && err.code === 'tool_use_failed') return { raw: { error: err }, call: null, failed: String(err.failed_generation || err.message || ''), ms };
-  if (res.status !== 200 || !data || !data.choices) throw new Stop(502, { error: 'model_down', message: 'The model returned an error. Try again.' });
+  if (res.status !== 200 || !data || !data.choices) throw new Stop(502, { error: 'model_down', message: 'The LLM returned an error. Try again.' });
   const raw = data.choices[0].message || {}, c = (raw.tool_calls || [])[0];
   let call = null;
   if (c) { let args = c.function && c.function.arguments; try { args = JSON.parse(args); } catch (x) { /* as written */ } call = { id: c.id, name: c.function && c.function.name, arguments: args }; }
@@ -161,7 +161,7 @@ async function loop(key, body) {
       let result;
       if (r.call.name !== tool.function.name) {
         result = { error: 'No tool called ' + r.call.name + '.' };
-        events.push({ note: 'server', kind: 'refuse', text: 'The model asked for a tool the server does not have, so the server answered with an error.' });
+        events.push({ note: 'server', kind: 'refuse', text: 'The LLM asked for a tool the server does not have, so the server answered with an error.' });
       } else if (via === 'mcp') {
         const res = await mcp(url, { jsonrpc: '2.0', id: 3 + n, method: 'tools/call', params: { name: r.call.name, arguments: r.call.arguments } }, events);
         result = res && res.result ? res.result.content.map(c => c.text).join('\n') : { error: 'No result.' };

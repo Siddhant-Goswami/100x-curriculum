@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lecture Notes: Tool Calling and MCP, Part 2 | 100xEngineers</title>
-<meta name="description" content="Notes for Lecture 11: one shop's Google Sheet, from a pasted prompt to a tool call to MCP. Why the model fills gaps, the server as the bridge, function calling in six steps, the tool schema, tool failures, verifying the execution record, and MCP's host, client and server.">
+<meta name="description" content="Notes for Lecture 11: one shop's Google Sheet, from a pasted prompt to a tool call to MCP. Why the LLM fills gaps, the server as the bridge, function calling in six steps, the tool schema, tool failures, verifying the execution record, and MCP's host, client and server.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -79,7 +79,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
 <div class="hero">
   <p class="kick">Lecture notes · Lecture 11 · 13 November 2026 · Both tracks</p>
-  <h1>The model asks. The server acts. The record proves it.</h1>
+  <h1>The LLM asks. The server acts. The record proves it.</h1>
   <p class="dek">One shop's Google Sheet, followed from a pasted prompt to a tool call to MCP.</p>
 </div>
 
@@ -107,7 +107,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>Today is the top two layers.</figcaption>
 </figure>
-<p>An agent is a system, not an LLM with a prompt. The model does the reasoning; memory, tools, orchestration, feedback and security sit around it.</p>
+<p>An agent is a system, not an LLM with a prompt. The LLM does the reasoning; memory, tools, orchestration, feedback and security sit around it.</p>
 <p class="pull">Tools give an agent capabilities. A protocol defines how those capabilities are exposed.</p>
 <table class="dials">
   <tr><th>Protocol</th><th>Who talks to whom</th></tr>
@@ -118,21 +118,21 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </table>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>From Lecture 10: the model fills gaps</h2>
-<p>"Which execution track should I choose in 100x?" With no context the model scored 1 out of 10, with a short description 5, with the full curriculum 7. It still named Zapier, which is nowhere in the file. <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s02">Lecture 10 has the runs.</a></p>
+<section class="s" id="s02"><h2><span class="n">02</span>From Lecture 10: the LLM fills gaps</h2>
+<p>"Which execution track should I choose in 100x?" With no context the LLM scored 1 out of 10, with a short description 5, with the full curriculum 7. It still named Zapier, which is nowhere in the file. <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s02">Lecture 10 has the runs.</a></p>
 <ul class="pt">
   <li><b>It predicts the next token.</b> It does not look anything up.</li>
   <li><b>It fills a gap with the likely answer,</b> and does not tell you it did.</li>
   <li><b>Confidence is not proof.</b></li>
   <li><b>A better prompt and a lower temperature help, and neither adds a fact.</b> At temperature 0 you get the same wrong answer every time.</li>
 </ul>
-<p>To find what went wrong, write a <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">golden pair</a>: the ideal input and the ideal output, decided before you run the model. Then compare.</p>
+<p>To find what went wrong, write a <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">golden pair</a>: the ideal input and the ideal output, decided before you run the LLM. Then compare.</p>
 <p class="pull">Reducing randomness does not create missing knowledge.</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Priya's shop: the paste problem</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Priya copies the sheet at 6:40 and pastes it into the model. A new order arrives in the sheet at 7:10 and stays there. The model answers from the 6:40 copy.">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Priya copies the sheet at 6:40 and pastes it into the LLM. A new order arrives in the sheet at 7:10 and stays there. The LLM answers from the 6:40 copy.">
   <g class="ln" filter="url(#wob)">
     <use href="#db" x="50" y="50" class="c-det"/>
     <use href="#person" x="330" y="30" style="stroke:var(--ink2)"/>
@@ -147,11 +147,11 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="356" y="186" class="m">Priya</text>
     <text x="234" y="82" class="xxs">copy, 6:40</text>
     <text x="478" y="82" class="xxs">paste</text>
-    <text x="650" y="95" class="m c-prob">Model</text>
+    <text x="650" y="95" class="m c-prob">LLM</text>
     <text x="650" y="123" class="xxs">sees the 6:40 copy</text>
   </g>
 </svg>
-<figcaption>The sheet is right. The way it reaches the model is the problem.</figcaption>
+<figcaption>The sheet is right. The way it reaches the LLM is the problem.</figcaption>
 </figure>
 <p>Priya runs Northwind Goods, a home products shop. Everything is in one Google Sheet. Every morning she copies the orders into ChatGPT and asks what is pending and what to restock.</p>
 <ul class="pt">
@@ -176,9 +176,9 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <p>So the golden pair is ready before any model runs: "Which product generated the highest revenue?" The kettle, 4,980. You can check it in the sheet by hand.</p>
 </section>
 
-<section class="s" id="s05"><h2><span class="n">05</span>What reaches the model</h2>
+<section class="s" id="s05"><h2><span class="n">05</span>What reaches the LLM</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="Three boxes on the left: the question, the instruction, and the data. Arrows carry all three into one box on the right, the context window, which is all the model can see.">
+<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="Three boxes on the left: the question, the instruction, and the data. Arrows carry all three into one box on the right, the context window, which is all the LLM can see.">
   <g class="ln" filter="url(#wob)">
     <rect class="f-card" x="30" y="15" width="270" height="58" rx="8"/>
     <rect class="f-card" x="30" y="91" width="270" height="58" rx="8"/>
@@ -196,22 +196,22 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="165" y="192" class="m c-det">Data</text>
     <text x="165" y="214" class="xxxs">the order rows, as text</text>
     <text x="610" y="112" class="m c-prob">Context window</text>
-    <text x="610" y="140" class="xxs">all the model can see</text>
+    <text x="610" y="140" class="xxs">all the LLM can see</text>
   </g>
 </svg>
-<figcaption>Three things go in. Nothing else exists for the model.</figcaption>
+<figcaption>Three things go in. Nothing else exists for the LLM.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>If it doesn't reach the model, the model can't use it.</b> An order the server never fetched does not exist.</li>
+  <li><b>If it doesn't reach the LLM, the LLM can't use it.</b> An order the server never fetched does not exist.</li>
   <li><b>Send records, not a screenshot.</b> Text with named fields.</li>
   <li><b>Send only what the question needs.</b> A products question gets product rows, not the whole sheet. Tokens cost money.</li>
-  <li><b>Right data is not a right answer.</b> The model can still misread or miscalculate. So you verify.</li>
+  <li><b>Right data is not a right answer.</b> The LLM can still misread or miscalculate. So you verify.</li>
 </ul>
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>The server is the bridge</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three boxes in a row: the Sheet that stores the data on the left, the orange Server that follows rules in the middle, and the purple Model that predicts on the right. Arrows join Sheet to Server and Server to Model. Below the Server, Priya, joined to the Server by an arrow.">
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three boxes in a row: the Sheet that stores the data on the left, the orange Server that follows rules in the middle, and the purple LLM that predicts on the right. Arrows join Sheet to Server and Server to LLM. Below the Server, Priya, joined to the Server by an arrow.">
   <g class="ln" filter="url(#wob)">
     <use href="#db" x="50" y="68" class="c-det"/>
     <rect class="f-det" x="295" y="60" width="170" height="90" rx="10"/>
@@ -226,7 +226,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="95" y="196" class="xxs">stores</text>
     <text x="380" y="100" class="m c-det">Server</text>
     <text x="380" y="128" class="xxs">follows rules</text>
-    <text x="635" y="100" class="m c-prob">Model</text>
+    <text x="635" y="100" class="m c-prob">LLM</text>
     <text x="635" y="128" class="xxs">predicts</text>
     <text x="336" y="276" class="m r">Priya</text>
     <text x="218" y="92" class="xxxs">Sheets API</text>
@@ -234,9 +234,9 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="500" y="312" class="xxs l">never a guess</text>
   </g>
 </svg>
-<figcaption>The sheet stores. The model predicts. Only the server can be trusted to fetch.</figcaption>
+<figcaption>The sheet stores. The LLM predicts. Only the server can be trusted to fetch.</figcaption>
 </figure>
-<p>Google Sheets already has an API. Why not connect the model straight to it? The sheet only stores: it knows no questions and no business rules. The model only predicts: you can't trust it to run every request correctly, or hand it your keys. The <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s11">server</a> stands between.</p>
+<p>Google Sheets already has an API. Why not connect the LLM straight to it? The sheet only stores: it knows no questions and no business rules. The LLM only predicts: you can't trust it to run every request correctly, or hand it your keys. The <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s11">server</a> stands between.</p>
 <p class="pull">The API is the door. The server is the guard at the door.</p>
 <p>They talk in JSON, because every field has a name and can be checked:</p>
 <pre class="code">{ "sheet": "Orders", "action": "read", "range": "A1:G100" }</pre>
@@ -250,22 +250,22 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <li><b>Return</b> JSON. No summary, no explanation.</li>
 </ol>
 <table class="dials">
-  <tr><th><span class="p">Model</span></th><th><span class="o">Server</span></th></tr>
+  <tr><th><span class="p">LLM</span></th><th><span class="o">Server</span></th></tr>
   <tr><td>Understands the question</td><td>Fetches the data</td></tr>
   <tr><td>Decides what it needs</td><td>Applies the business rules</td></tr>
   <tr><td>Writes the answer in plain English</td><td>Does the calculations, checks permissions</td></tr>
 </table>
 <ul class="pt">
   <li><b>Same request, same steps,</b> on Tuesday and on Wednesday. The data may change; the process does not.</li>
-  <li><b>Keys stay on the server.</b> Never in the browser, never given to the model.</li>
+  <li><b>Keys stay on the server.</b> Never in the browser, never given to the LLM.</li>
   <li><b>Cancelling is an update, not a delete.</b> Set the status to cancelled and keep the row.</li>
 </ul>
 <p class="pull">Move whatever can't afford to be wrong to the deterministic side.</p>
 </section>
 
-<section class="s" id="s07"><h2><span class="n">07</span>Function calling: the model asks</h2>
+<section class="s" id="s07"><h2><span class="n">07</span>Function calling: the LLM asks</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 285" role="img" aria-label="Six numbered arrows. 1, the server sends the question and the tool list to the model on the right. 2, in coral, the model sends back a tool call, get_orders with status pending. 3, the server reads the Orders tab of the sheet on the left. 4, the sheet returns three rows. 5, the server hands the rows to the model. 6, the model sends back the answer.">
+<svg class="wb" viewBox="0 0 760 285" role="img" aria-label="Six numbered arrows. 1, the server sends the question and the tool list to the LLM on the right. 2, in coral, the LLM sends back a tool call, get_orders with status pending. 3, the server reads the Orders tab of the sheet on the left. 4, the sheet returns three rows. 5, the server hands the rows to the LLM. 6, the LLM sends back the answer.">
   <g class="ln" filter="url(#wob)">
     <use href="#db" x="50" y="110" class="c-det"/>
     <rect class="f-det" x="290" y="50" width="140" height="205" rx="10"/>
@@ -284,7 +284,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <circle class="badge" cx="520" cy="243" r="11"/>
   </g>
   <g class="tx">
-    <text x="675" y="38" class="m c-prob">Model</text>
+    <text x="675" y="38" class="m c-prob">LLM</text>
     <text x="360" y="38" class="m c-det">Server</text>
     <text x="95" y="205" class="m c-det">Sheet</text>
     <text x="520" y="89" class="bn">1</text>
@@ -306,26 +306,26 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>Send, decide, request, execute, return, answer.</figcaption>
 </figure>
-<p>Until now the server decided what to fetch. With several tools, who picks the right one for each question? The model does. It reads the question and the list of tools, and instead of an answer it sends back a request:</p>
+<p>Until now the server decided what to fetch. With several tools, who picks the right one for each question? The LLM does. It reads the question and the list of tools, and instead of an answer it sends back a request:</p>
 <pre class="code">{ "name": "get_orders", "arguments": { "status": "pending" } }</pre>
 <ol>
   <li><b>Send.</b> The app sends the question and the list of tools.</li>
-  <li><b>Decide.</b> The model decides whether it needs a tool.</li>
+  <li><b>Decide.</b> The LLM decides whether it needs a tool.</li>
   <li><b>Request.</b> It writes the tool name and the arguments.</li>
   <li><b>Execute.</b> The server validates the request and reads the sheet.</li>
-  <li><b>Return.</b> Rows, an empty list, or an error go back to the model.</li>
+  <li><b>Return.</b> Rows, an empty list, or an error go back to the LLM.</li>
   <li><b>Answer.</b> "You have three pending orders: 1043, 1045 and 1047."</li>
 </ol>
 <ul class="pt">
-  <li><b>The request holds no orders.</b> It only says what the model wants.</li>
-  <li><b>The model never opens the sheet</b> and never sees the keys.</li>
-  <li><b>One question can take several rounds,</b> or several tools. With five tools the model calls only the ones the question needs.</li>
+  <li><b>The request holds no orders.</b> It only says what the LLM wants.</li>
+  <li><b>The LLM never opens the sheet</b> and never sees the keys.</li>
+  <li><b>One question can take several rounds,</b> or several tools. With five tools the LLM calls only the ones the question needs.</li>
 </ul>
-<p>This is the <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">reverse call</a> from Lecture 10: the server used to call the model, and now the model asks the server.</p>
+<p>This is the <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">reverse call</a> from Lecture 10: the server used to call the LLM, and now the LLM asks the server.</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>The tool schema</h2>
-<p>How does the model know a tool exists and how to ask for it? From the <b>tool schema</b>, the contract between the model and your server. It has five parts.</p>
+<p>How does the LLM know a tool exists and how to ask for it? From the <b>tool schema</b>, the contract between the LLM and your server. It has five parts.</p>
 <pre class="code">{
   "name": "get_orders",
   "description": "Reads orders from the Northwind Goods sheet. Can filter by status or customer.",
@@ -341,37 +341,37 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <table class="dials">
   <tr><th>Part</th><th>Says</th></tr>
   <tr><td>Name</td><td>What to call it. Short and meaningful.</td></tr>
-  <tr><td>Description</td><td>What the tool does. The model picks tools by reading this.</td></tr>
+  <tr><td>Description</td><td>What the tool does. The LLM picks tools by reading this.</td></tr>
   <tr><td>Parameters</td><td>The inputs it accepts: status, customer.</td></tr>
-  <tr><td>Required</td><td>Which inputs must be given. Here none, so the model can ask for all orders.</td></tr>
+  <tr><td>Required</td><td>Which inputs must be given. Here none, so the LLM can ask for all orders.</td></tr>
   <tr><td>Types</td><td>What each input is. Status is text, not a number.</td></tr>
 </table>
-<p>The schema is like a form: it tells the model what to fill in. The server still checks what was filled in before it runs anything.</p>
-<p class="pull">A good schema helps the model pick the right tool. A good server makes sure the tool is used correctly.</p>
+<p>The schema is like a form: it tells the LLM what to fill in. The server still checks what was filled in before it runs anything.</p>
+<p class="pull">A good schema helps the LLM pick the right tool. A good server makes sure the tool is used correctly.</p>
 </section>
 
 <section class="s" id="s09"><h2><span class="n">09</span>When the tool fails</h2>
 <table class="dials">
   <tr><th>What happened</th><th>What the user should hear</th></tr>
-  <tr><td><b>400</b> The model sent a status that doesn't exist</td><td>The request was invalid, and why. The server does not quietly fix it.</td></tr>
+  <tr><td><b>400</b> The LLM sent a status that doesn't exist</td><td>The request was invalid, and why. The server does not quietly fix it.</td></tr>
   <tr><td><b>401</b> The credentials are wrong or expired</td><td>"I couldn't sign in to the sheet." Not "there are no orders".</td></tr>
   <tr><td><b>404</b> The sheet was renamed or moved</td><td>"I couldn't find the sheet."</td></tr>
   <tr><td><b>500</b> Google Sheets is down</td><td>"I couldn't retrieve the data."</td></tr>
   <tr><td><b>Empty result</b> It worked, and nothing is pending</td><td>"There are no pending orders." This is an answer, not an error.</td></tr>
 </table>
-<p>An empty result, an error and missing data are three different things. The model must not smooth any of them into a made-up order.</p>
+<p>An empty result, an error and missing data are three different things. The LLM must not smooth any of them into a made-up order.</p>
 <p class="pull">A real error is better than an invented answer.</p>
 </section>
 
 <section class="s" id="s10"><h2><span class="n">10</span>Verify the record, not the sentence</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 215" role="img" aria-label="On the left, what the model said: You have 4 pending orders. On the right, what the system did: tool get_orders, arguments status pending, result 3 rows, status success. They do not match.">
+<svg class="wb" viewBox="0 0 760 215" role="img" aria-label="On the left, what the LLM said: You have 4 pending orders. On the right, what the system did: tool get_orders, arguments status pending, result 3 rows, status success. They do not match.">
   <g class="ln" filter="url(#wob)">
     <rect class="f-prob" x="30" y="45" width="290" height="150" rx="10"/>
     <rect class="f-det" x="440" y="45" width="290" height="150" rx="10"/>
   </g>
   <g class="tx">
-    <text x="175" y="32" class="m c-prob">What the model said</text>
+    <text x="175" y="32" class="m c-prob">What the LLM said</text>
     <text x="175" y="112" class="xs">"You have 4</text>
     <text x="175" y="138" class="xs">pending orders."</text>
     <text x="585" y="32" class="m c-det">What the system did</text>
@@ -449,12 +449,12 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <table class="dials">
   <tr><th>Term</th><th>Its job</th><th>In the building</th></tr>
   <tr><td>API</td><td>How the server reaches the sheet</td><td>The door</td></tr>
-  <tr><td>Function calling</td><td>How the model asks for an action</td><td>Asking for the door to be opened</td></tr>
+  <tr><td>Function calling</td><td>How the LLM asks for an action</td><td>Asking for the door to be opened</td></tr>
   <tr><td>MCP</td><td>How any AI app finds and reaches tools</td><td>The standard hallway to every door</td></tr>
 </table>
 <ul class="pt">
   <li><b>MCP does not replace APIs.</b> It is a layer over them. If you write your own MCP server for a database, you still define every action and every table it can touch.</li>
-  <li><b>MCP does not replace function calling.</b> The model still asks. MCP carries the request.</li>
+  <li><b>MCP does not replace function calling.</b> The LLM still asks. MCP carries the request.</li>
   <li><b>The value grows with other people's servers.</b> Connect to one someone already built and its tools are yours to use.</li>
   <li><b>None of the three makes the answer correct.</b> You still verify.</li>
 </ul>
@@ -462,7 +462,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 
 <section class="s" id="s12"><h2><span class="n">12</span>Host, client, server</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 225" role="img" aria-label="A chain from left to right. Priya talks to the host, the AI app, which holds the model and an MCP client. The client talks to the MCP server over MCP. The MCP server talks to the sheet through the Sheets API.">
+<svg class="wb" viewBox="0 0 760 225" role="img" aria-label="A chain from left to right. Priya talks to the host, the AI app, which holds the LLM and an MCP client. The client talks to the MCP server over MCP. The MCP server talks to the sheet through the Sheets API.">
   <g class="ln" filter="url(#wob)">
     <use href="#person" x="20" y="45" style="stroke:var(--ink2)"/>
     <rect class="f-card" x="110" y="35" width="262" height="140" rx="10"/>
@@ -478,7 +478,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <g class="tx">
     <text x="46" y="200" class="m">Priya</text>
     <text x="241" y="60" class="xxs c-mute">Host: the AI app</text>
-    <text x="175" y="111" class="xs c-prob">Model</text>
+    <text x="175" y="111" class="xs c-prob">LLM</text>
     <text x="306" y="111" class="xs c-act">Client</text>
     <text x="401" y="92" class="xxs c-act">MCP</text>
     <text x="510" y="111" class="xs c-det">MCP server</text>
@@ -490,20 +490,20 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </figure>
 <table class="dials">
   <tr><th>Role</th><th>What it is</th><th>What it does</th></tr>
-  <tr><td>Host</td><td>The AI app Priya uses: Claude Desktop, Antigravity, or one you built</td><td>Holds the model and runs the conversation</td></tr>
+  <tr><td>Host</td><td>The AI app Priya uses: Claude Desktop, Antigravity, or one you built</td><td>Holds the LLM and runs the conversation</td></tr>
   <tr><td>Client</td><td>A piece inside the host, one per server</td><td>Asks the server which tools it has, carries each request, brings back the result</td></tr>
   <tr><td>Server</td><td>The program next to the data</td><td>Offers the tools, validates, calls the Sheets API, returns the rows</td></tr>
 </table>
 <p>"Find all pending orders", end to end:</p>
 <ol>
   <li>Priya asks the host. She knows nothing about APIs or MCP.</li>
-  <li>The model reads the tools the host already discovered and writes <code>get_orders</code> with status pending. That is function calling.</li>
+  <li>The LLM reads the tools the host already discovered and writes <code>get_orders</code> with status pending. That is function calling.</li>
   <li>The client carries the request to the Google Sheets MCP server. That is MCP.</li>
   <li>The server validates it, calls the Sheets API, and reads six orders. Three are pending.</li>
   <li>The three rows travel back through the client to the host.</li>
-  <li>The model writes the answer.</li>
+  <li>The LLM writes the answer.</li>
 </ol>
-<p class="pull">The MCP server is not the spreadsheet. The MCP client is not the model.</p>
+<p class="pull">The MCP server is not the spreadsheet. The MCP client is not the LLM.</p>
 </section>
 
 <section class="s" id="s13"><h2><span class="n">13</span>Tomorrow: Lecture 12</h2>
@@ -526,9 +526,9 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <details class="words"><summary>Words from this lecture</summary>
 <dl>
   <dt>Source of truth</dt><dd>The place the real records live. Here, Priya's Google Sheet.</dd>
-  <dt>Deterministic bridge</dt><dd>The server between the model and the data. Same request, same steps, or an error.</dd>
-  <dt>Context window</dt><dd>Everything the model can see while answering: the question, the instruction and the data.</dd>
-  <dt>Function calling (tool calling)</dt><dd>The model writes a request for an action. The server runs it.</dd>
+  <dt>Deterministic bridge</dt><dd>The server between the LLM and the data. Same request, same steps, or an error.</dd>
+  <dt>Context window</dt><dd>Everything the LLM can see while answering: the question, the instruction and the data.</dd>
+  <dt>Function calling (tool calling)</dt><dd>The LLM writes a request for an action. The server runs it.</dd>
   <dt>Tool schema</dt><dd>The description of one tool: name, description, parameters, required fields, types.</dd>
   <dt>Execution record</dt><dd>The log of one tool call: the tool, the arguments, the result and whether it succeeded.</dd>
   <dt>Verifier</dt><dd>The expected record, written before the run, that the real record is compared against.</dd>
@@ -539,7 +539,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </details>
 </section>
 
-<div class="call"><p class="kick">Keep this</p><p>The model asks for an action. A deterministic server executes it. The verifier proves what happened.</p></div>
+<div class="call"><p class="kick">Keep this</p><p>The LLM asks for an action. A deterministic server executes it. The verifier proves what happened.</p></div>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
   <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">The Tool Bench: make one tool call yourself</a></li>

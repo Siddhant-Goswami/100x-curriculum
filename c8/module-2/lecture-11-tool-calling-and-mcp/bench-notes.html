@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tool Bench Notes: Tool Calling and MCP, Part 2 | 100xEngineers</title>
-<meta name="description" content="The Tool Bench step by step. The bare model never reaches the sheet; one tool call carried by hand; the tool card written against tests; the server running the loop; the card moved next to the data, which is MCP; then the same on your own sheet.">
+<meta name="description" content="The Tool Bench step by step. The bare LLM never reaches the sheet; one tool call carried by hand; the tool card written against tests; the server running the loop; the card moved next to the data, which is MCP; then the same on your own sheet.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -83,11 +83,11 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <p class="dek">One tool call by hand, a tool card that passes its tests, a server that runs the loop, and the card moved next to the data: MCP.</p>
 </div>
 
-<p>In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Lecture 10</a> you derived function calling on paper, and the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Lecture 11 notes</a> follow it through one shop's sheet: the model asks, the server acts. Here you run it yourself on the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a>, one section per step. Both tracks do the same steps; the code track also gets the Python under steps 4 and 5.</p>
+<p>In <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s12">Lecture 10</a> you derived function calling on paper, and the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Lecture 11 notes</a> follow it through one shop's sheet: the LLM asks, the server acts. Here you run it yourself on the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a>, one section per step. Both tracks do the same steps; the code track also gets the Python under steps 4 and 5.</p>
 
 <section class="s" id="s01"><h2><span class="n">01</span>The bench</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three boxes in a row: the Sheet that holds the data on the left, the orange Server that follows rules in the middle, and the purple Model that predicts on the right. Arrows join Sheet to Server and Server to Model. Below the Server, You, joined to the Server by an arrow.">
+<svg class="wb" viewBox="0 0 760 340" role="img" aria-label="Three boxes in a row: the Sheet that holds the data on the left, the orange Server that follows rules in the middle, and the purple LLM that predicts on the right. Arrows join Sheet to Server and Server to LLM. Below the Server, You, joined to the Server by an arrow.">
   <g class="ln" filter="url(#wob)">
     <use href="#db" x="50" y="68" class="c-det"/>
     <rect class="f-det" x="295" y="60" width="170" height="90" rx="10"/>
@@ -102,17 +102,17 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="95" y="196" class="xxs">the data</text>
     <text x="380" y="100" class="m c-det">Server</text>
     <text x="380" y="128" class="xxs">follows rules</text>
-    <text x="635" y="100" class="m c-prob">Model</text>
+    <text x="635" y="100" class="m c-prob">LLM</text>
     <text x="635" y="128" class="xxs">predicts</text>
     <text x="336" y="276" class="m r">You</text>
     <text x="500" y="290" class="xxs l">every message shows</text>
     <text x="500" y="312" class="xxs l">on the wire, as JSON</text>
   </g>
 </svg>
-<figcaption>You only talk to the server. The server talks to the sheet on its left and the model on its right.</figcaption>
+<figcaption>You only talk to the server. The server talks to the sheet on its left and the LLM on its right.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>Nothing on the bench is simulated.</b> The model is GPT-OSS 120B on Groq, the sheet is the real curriculum sheet, and the server is a real route.</li>
+  <li><b>Nothing on the bench is simulated.</b> The LLM is GPT-OSS 120B on Groq, the sheet is the real curriculum sheet, and the server is a real route.</li>
   <li><b>The wire</b> lists every message that crossed, with the exact JSON. Things that are not messages, like the server picking a row, show as dashed notes.</li>
   <li><b>Nothing hidden.</b> No system prompt, no changed settings: each request is exactly what the wire shows, so you can repeat any run in the <a href="https://console.groq.com/playground" target="_blank" rel="noopener">GroqCloud playground</a>.</li>
   <li><b>Your key.</b> Every model call runs on your own Groq key from <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder">Lecture 4</a>. It stays in your tab and is not stored. The whole bench costs about 35 calls, well inside the free tier.</li>
@@ -122,16 +122,16 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <section class="s" id="s02"><h2><span class="n">02</span>Ask: nothing reaches the sheet</h2>
 <blockquote class="q9">When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?</blockquote>
 <ul class="pt">
-  <li><b>The model was trained before this course existed.</b> It either says it doesn't have the schedule or makes something up.</li>
+  <li><b>The LLM was trained before this course existed.</b> It either says it doesn't have the schedule or makes something up.</li>
   <li><b>Check it yourself.</b> Open the curriculum sheet and find the row that starts <b>12.</b></li>
-  <li><b>Count the wire.</b> Four messages: you to the server, the server to the model, and back. None went to the sheet.</li>
+  <li><b>Count the wire.</b> Four messages: you to the server, the server to the LLM, and back. None went to the sheet.</li>
 </ul>
-<p class="pull">The data sits one box away, and nothing connects the model to it.</p>
+<p class="pull">The data sits one box away, and nothing connects the LLM to it.</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Carry one tool call by hand</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 275" role="img" aria-label="Six numbered arrows. 1, the server sends the question and the card to the model on the right. 2, in coral, the model sends back a tool call, get_lecture 12, and stops. 3, you press run and the server fetches from the sheet on the left. 4, the sheet returns row 12. 5, the server hands the row to the model. 6, the model sends back the sentence.">
+<svg class="wb" viewBox="0 0 760 275" role="img" aria-label="Six numbered arrows. 1, the server sends the question and the card to the LLM on the right. 2, in coral, the LLM sends back a tool call, get_lecture 12, and stops. 3, you press run and the server fetches from the sheet on the left. 4, the sheet returns row 12. 5, the server hands the row to the LLM. 6, the LLM sends back the sentence.">
   <g class="ln" filter="url(#wob)">
     <use href="#db" x="50" y="110" class="c-det"/>
     <rect class="f-det" x="290" y="50" width="140" height="205" rx="10"/>
@@ -150,7 +150,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <circle class="badge" cx="520" cy="243" r="11"/>
   </g>
   <g class="tx">
-    <text x="675" y="38" class="m c-prob">Model</text>
+    <text x="675" y="38" class="m c-prob">LLM</text>
     <text x="360" y="38" class="m c-det">Server</text>
     <text x="95" y="205" class="m c-det">Sheet</text>
     <text x="520" y="89" class="bn">1</text>
@@ -171,9 +171,9 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="675" y="160" class="xxs">predicts</text>
   </g>
 </svg>
-<figcaption>Step 2 is the only thing the model does that is new: it writes a request instead of an answer, and stops.</figcaption>
+<figcaption>Step 2 is the only thing the LLM does that is new: it writes a request instead of an answer, and stops.</figcaption>
 </figure>
-<p>The same question, plus a ready-made <b>tool card</b>: a description of one tool the server can run. The model reads the card and, instead of answering, sends back a request:</p>
+<p>The same question, plus a ready-made <b>tool card</b>: a description of one tool the server can run. The LLM reads the card and, instead of answering, sends back a request:</p>
 <pre class="code">"tool_calls": [{
   "id": "call_…",
   "type": "function",
@@ -181,10 +181,10 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 }]</pre>
 <ul class="pt">
   <li><b>It waits at the server.</b> Nothing happens until someone runs it. Today that someone is you: press Run, and the server fetches row 12.</li>
-  <li><b>Hand the row back.</b> The server sends the model the whole conversation again, plus the row in a message with <code>"role": "tool"</code>. Now the model has the data, and it writes the sentence.</li>
+  <li><b>Hand the row back.</b> The server sends the LLM the whole conversation again, plus the row in a message with <code>"role": "tool"</code>. Now the LLM has the data, and it writes the sentence.</li>
   <li><b>It predicts, so it can wobble.</b> Sometimes it answers without asking, or writes a call Groq can't read. Ask again.</li>
 </ul>
-<p class="pull">The model touched the sheet zero times. It wrote a request and a sentence. The server did everything in between.</p>
+<p class="pull">The LLM touched the sheet zero times. It wrote a request and a sentence. The server did everything in between.</p>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Write the tool card against tests</h2>
@@ -207,10 +207,10 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="430" y="86" class="mono l">"name": "get_lecture"</text>
     <text x="430" y="144" class="mono l">"description": "Returns…"</text>
     <text x="430" y="202" class="mono l">"parameters": {"number": …}</text>
-    <text x="560" y="40" class="xxs c-mute">what the model reads</text>
+    <text x="560" y="40" class="xxs c-mute">what the LLM reads</text>
   </g>
 </svg>
-<figcaption>Three plain fields on the bench. The server sends them to the model as this JSON. The model reads nothing else about the tool.</figcaption>
+<figcaption>Three plain fields on the bench. The server sends them to the LLM as this JSON. The LLM reads nothing else about the tool.</figcaption>
 </figure>
 <p>Step 3 hands you an empty card named <code>tool_1</code>. Before writing a word, mark what each question should do. That is the golden pair from <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10</a>, and the check you write before the run, as in <a href="/c8/module-2/practice-set-2-write-the-eval/">Practice set 2</a>.</p>
 <table class="dials">
@@ -221,7 +221,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <tr><td>Is session ten a combined one or separate?</td><td>Call the tool, with 10</td></tr>
   <tr><td>In lecture 3 of Harvard CS50, which language is taught?</td><td>Answer itself</td></tr>
 </table>
-<p>Then edit the card and run until all five pass. Same model, same questions; only the card changes. In our runs:</p>
+<p>Then edit the card and run until all five pass. Same LLM, same questions; only the card changes. In our runs:</p>
 <table class="dials">
   <tr><th>Card</th><th>Passed, out of 5</th></tr>
   <tr><td>Empty</td><td>3</td></tr>
@@ -237,7 +237,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 
 <section class="s" id="s05"><h2><span class="n">05</span>Switch the server on</h2>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 255" role="img" aria-label="You send one question to the server and get one answer back. Between, the server runs the loop on its own: question and card to the model, a tool call back, a fetch from the sheet, the row back, up to three rounds.">
+<svg class="wb" viewBox="0 0 760 255" role="img" aria-label="You send one question to the server and get one answer back. Between, the server runs the loop on its own: question and card to the LLM, a tool call back, a fetch from the sheet, the row back, up to three rounds.">
   <g class="ln" filter="url(#wob)">
     <use href="#person" x="40" y="60" style="stroke:var(--ink2)"/>
     <rect class="f-det" x="268" y="50" width="170" height="160" rx="10"/>
@@ -255,7 +255,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="182" y="182" class="xxs">one answer</text>
     <text x="353" y="118" class="m c-det">Server</text>
     <text x="353" y="146" class="xxs c-det">runs the loop</text>
-    <text x="665" y="85" class="m c-prob">Model</text>
+    <text x="665" y="85" class="m c-prob">LLM</text>
     <text x="665" y="245" class="m c-det">Sheet</text>
     <text x="519" y="60" class="xxxs c-prob">question + card</text>
     <text x="519" y="118" class="xxxs c-act">tool call</text>
@@ -267,8 +267,8 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Every button you pressed in step 2 is now a rule in the server.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>Flip By hand to On</b> and ask anything about a lecture. The server sends the card, runs whatever the model asks for, hands back the result, and repeats until the model answers, up to three rounds. The server decides when the loop stops.</li>
-  <li><b>Try Lecture 40.</b> The server returns an error, there is no lecture 40, and the model passes that on instead of inventing one.</li>
+  <li><b>Flip By hand to On</b> and ask anything about a lecture. The server sends the card, runs whatever the LLM asks for, hands back the result, and repeats until the LLM answers, up to three rounds. The server decides when the loop stops.</li>
+  <li><b>Try Lecture 40.</b> The server returns an error, there is no lecture 40, and the LLM passes that on instead of inventing one.</li>
   <li><b>Download the log.</b> The call, the arguments, the result and the answer. That log is the proof the tool was called with the right input.</li>
 </ul>
 <p>For the code track, the bench prints this loop in Python with your own card in it. The core:</p>
@@ -276,7 +276,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     msg = ask_groq(messages, [CARD])    # one chat completions call
     if not msg.get("tool_calls"):       # no request: this is the answer
         print(msg["content"]); break
-    call = msg["tool_calls"][0]         # the model asked; the server acts
+    call = msg["tool_calls"][0]         # the LLM asked; the server acts
     result = get_lecture(**json.loads(call["function"]["arguments"]))
     messages.append(msg)
     messages.append({"role": "tool", "tool_call_id": call["id"],
@@ -328,14 +328,14 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <tr><td><code>initialize</code></td><td>Hello. Here is who I am.</td></tr>
   <tr><td><code>notifications/initialized</code></td><td>I'm ready.</td></tr>
   <tr><td><code>tools/list</code></td><td>What can you do? Your card comes back.</td></tr>
-  <tr><td><code>tools/call</code></td><td>Run this, whenever the model asks.</td></tr>
+  <tr><td><code>tools/call</code></td><td>Run this, whenever the LLM asks.</td></tr>
 </table>
 <p>Ask the same question again: the loop is the same, but the fetch now goes to the sheet's server. Those four messages are the <b>Model Context Protocol</b>, <b>MCP</b>. Any app that speaks them can use any MCP server, whatever the tool.</p>
 <ul class="pt">
   <li><b>Try the address in a second app.</b> Copy it and open <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/second-app">the second app</a>. It has never seen your card or your sheet. Paste the address and ask.</li>
   <li><b>Code track:</b> under step 5 the bench prints the same server in Python (FastMCP) and a second app in Python (a FastMCP client), built from your card.</li>
 </ul>
-<p class="pull">Tool calling is the model asking. MCP is where the tool lives, so that any app can ask.</p>
+<p class="pull">Tool calling is the LLM asking. MCP is where the tool lives, so that any app can ask.</p>
 </section>
 
 <section class="s" id="s07"><h2><span class="n">07</span>Do it with your own sheet</h2>
@@ -344,16 +344,16 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <li><b>Share it as a viewer.</b> In the sheet: Share, General access, "Anyone with the link", Viewer.</li>
   <li><b>Copy your own tab's link,</b> not Aarav's example tab. It ends in <code>#gid=</code> and a number. Paste it on the bench after step 5 and check the tab and first row it shows.</li>
   <li><b>Write five questions:</b> three your sheet can answer and two the tool should not be used for. Mark them before you run anything.</li>
-  <li><b>Write the card</b> until all pass. On your sheet the tool searches your rows for the words the model sends, so "It needs" says what those words should be.</li>
+  <li><b>Write the card</b> until all pass. On your sheet the tool searches your rows for the words the LLM sends, so "It needs" says what those words should be.</li>
   <li><b>Switch the server on, move the card,</b> and copy your own MCP address into the second app.</li>
 </ol>
 <p>Anyone with your address can read what the tool returns, the same as anyone with your sheet link. Share it only where you would share the sheet.</p>
 <details class="words"><summary>Words from this lecture</summary>
 <dl>
-  <dt>Tool card</dt><dd>The description of one tool: its name, when to use it, and what it needs. The model reads only this.</dd>
-  <dt>Tool call</dt><dd>The model's JSON naming the tool and its arguments. A request, not an action.</dd>
-  <dt>Tool result</dt><dd>What the server got back from running the call, handed to the model with <code>"role": "tool"</code>.</dd>
-  <dt>The loop</dt><dd>The server repeating model call, tool run, hand back, until the model answers or the server stops it.</dd>
+  <dt>Tool card</dt><dd>The description of one tool: its name, when to use it, and what it needs. The LLM reads only this.</dd>
+  <dt>Tool call</dt><dd>The LLM's JSON naming the tool and its arguments. A request, not an action.</dd>
+  <dt>Tool result</dt><dd>What the server got back from running the call, handed to the LLM with <code>"role": "tool"</code>.</dd>
+  <dt>The loop</dt><dd>The server repeating model call, tool run, hand back, until the LLM answers or the server stops it.</dd>
   <dt>The wire</dt><dd>On the bench: every message that crossed, with its exact JSON.</dd>
   <dt>MCP server</dt><dd>A server that keeps tools next to the data and answers <code>tools/list</code> and <code>tools/call</code> for any app.</dd>
   <dt>MCP (Model Context Protocol)</dt><dd>The shared messages any app uses to find and call tools on any MCP server.</dd>
@@ -361,7 +361,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </details>
 </section>
 
-<div class="call"><p class="kick">Keep this</p><p>The model writes a request and stops; the server runs it. The tool card is the only thing the model knows about the tool, so write it against tests marked before the run. Move the card next to the data and any app can use it with one address: that is MCP.</p></div>
+<div class="call"><p class="kick">Keep this</p><p>The LLM writes a request and stops; the server runs it. The tool card is the only thing the LLM knows about the tool, so write it against tests marked before the run. Move the card next to the data and any app can use it with one address: that is MCP.</p></div>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
   <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">The Tool Bench</a></li>

@@ -1,12 +1,12 @@
 /* Retrieval Bench: Lecture 13. Started as a copy of the Lecture 11 Tool Bench (one bench, one wire, only the instruction
    changes) with three new parts: the scoreboard, the pile view (Text, Map, Prompt) and the meter.
    The bench: You talk only to the Server (/api/retrieve). The Server searches the Pile it holds (the twelve notes pages
-   cut into passages, api/_pile.mjs) and talks to the Model (GPT-OSS on Groq).
+   cut into passages, api/_pile.mjs) and talks to the LLM (GPT-OSS on Groq).
    The wire's promise is "every message that crossed":
-   - every hop to the server or the model shows the exact JSON that crossed;
+   - every hop to the server or the LLM shows the exact JSON that crossed;
    - a search is the server's own code running over the pile it holds: the wire shows what went in and what came out;
    - things that are not messages (your browser turning a question into numbers) show as dashed notes.
-   The scoreboard marks answers with plain rules (tap a question to read its rule). Nothing is marked by a model.
+   The scoreboard marks answers with plain rules (tap a question to read its rule). Nothing is marked by an LLM.
    Seven stations since the 20 Nov 2026 UX pass: Ask, By number, Paste it all, By its words, By its meaning (Q3),
    Nearest is not right (Q4, always the nearest 3), Let it search (Q5). Saved v1 state (six stations) is migrated.
    Every guess is answered (right, or what it was); the honest-miss switch appears only after Q4's first answer.
@@ -21,10 +21,10 @@ var NAMES = ['', 'Ask', 'By number', 'Paste it all', 'By its words', 'By its mea
 var N = 7;
 var TABS = [null, 'text', 'text', 'text', 'text', 'map', 'map', 'text'];   /* the pile view each station opens on; after that only the learner switches it */
 var ROUNDS = 6;   /* the server's loop limit, api/retrieve.mjs MAX.rounds */
-var NODE = { you: 'You', model: 'Model', server: 'Server', pile: 'Pile', groq: 'Groq' };
+var NODE = { you: 'You', model: 'LLM', server: 'Server', pile: 'Pile', groq: 'Groq' };
 var LANE = { 'server-you': ['server-you', 'btt', 'ttb'], 'you-server': ['server-you', 'ttb', 'btt'], 'model-server': ['model-server', 'rtl'], 'server-model': ['model-server', 'ltr'], 'server-pile': ['server-pile', 'rtl'], 'pile-server': ['server-pile', 'ltr'] };
 var FREE_TPM = 8000;   /* what Groq's own refusal said for a free key on 20 Nov 2026: "Limit 8000" */
-/* the five questions; each is marked by a rule anyone can check, never by a model */
+/* the five questions; each is marked by a rule anyone can check, never by an LLM */
 var RULES = {
   Q1: { kind: 'a lecture number', pass: 'it says databases', test: function (a) { return /databas/i.test(a); } },
   Q2: { kind: 'exact words', pass: 'it says Lecture 1', test: function (a) { return /\blecture\s*(1|one)\b/i.test(a); } },
@@ -123,11 +123,11 @@ function note(who, text) {
 function trip(title, sent, got) {
   var v = VISIT;
   var li = document.createElement('li'); li.className = 'w c';
-  li.innerHTML = '<span class="rt"><b class="n-you">You</b><i>→</i><b class="n-server">Server</b><i>→</i><b class="n-model">Model</b><i>→</i><b class="n-server">Server</b><i>→</i><b class="n-you">You</b></span>' +
-    '<span class="tt">' + esc(title) + '</span><details><summary>The messages, exactly</summary><pre>' + esc('Sent to the model:\n' + pretty(sent) + '\n\nThe model sent back:\n' + pretty(got)) + '</pre></details>';
+  li.innerHTML = '<span class="rt"><b class="n-you">You</b><i>→</i><b class="n-server">Server</b><i>→</i><b class="n-model">LLM</b><i>→</i><b class="n-server">Server</b><i>→</i><b class="n-you">You</b></span>' +
+    '<span class="tt">' + esc(title) + '</span><details><summary>The messages, exactly</summary><pre>' + esc('Sent to the LLM:\n' + pretty(sent) + '\n\nThe LLM sent back:\n' + pretty(got)) + '</pre></details>';
   $('#wire').appendChild(li); $('#empty').hidden = true; scrollWire();
   flash('model', 'server'); flash('server', 'you');
-  LOG.push('You -> Server -> Model -> Server -> You | ' + title + '\n    sent: ' + JSON.stringify(sent) + '\n    back: ' + JSON.stringify(got));
+  LOG.push('You -> Server -> LLM -> Server -> You | ' + title + '\n    sent: ' + JSON.stringify(sent) + '\n    back: ' + JSON.stringify(got));
   return sleep(260).then(function () { fresher(v); });
 }
 function clearWire() { $('#wire').innerHTML = ''; $('#empty').hidden = false; LOG = []; }
@@ -168,7 +168,7 @@ function keyGate(n, message) {
   ctx(message ? esc(message) : 'The free key you used on the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench" target="_blank" rel="noopener">Tool Bench</a>. Deleted it since? Make a new one in a minute: <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>, then Create API Key.');
   panel('<label class="lab" for="gk">Your Groq key</label>' +
     '<div class="ask"><input id="gk" type="password" placeholder="gsk_..." autocomplete="off" spellcheck="false"><button class="btn act" id="gkok">Use my key</button></div>' +
-    '<p class="url">Every message to the model on this bench runs on your key. It stays in this tab until you close it (a new tab asks again; your progress is kept), and rides to Groq through our server in a header. The server does not store or log it.</p>');
+    '<p class="url">Every message to the LLM on this bench runs on your key. It stays in this tab until you close it (a new tab asks again; your progress is kept), and rides to Groq through our server in a header. The server does not store or log it.</p>');
   var use = function () {
     var v = $('#gk').value.trim();
     if (!/^gsk_[A-Za-z0-9]{20,}$/.test(v)) return say('A Groq key starts with gsk_. Copy the whole key.');
@@ -202,7 +202,7 @@ function paintScore(flashId) {
   $$('.qq > button').forEach(function (b) { b.onclick = function () { var d = b.nextElementSibling, open = d.hidden; $$('.qd').forEach(function (x) { x.hidden = true; }); $$('.qq > button').forEach(function (x) { x.setAttribute('aria-expanded', 'false'); }); d.hidden = !open; b.setAttribute('aria-expanded', String(open)); }; });
 }
 
-/* ---------- the meter: what the model was sent, and what it cost at the price you typed ---------- */
+/* ---------- the meter: what the LLM was sent, and what it cost at the price you typed ---------- */
 var RUN = null;
 function meterStart() { RUN = { rounds: 0, inT: 0, outT: 0 }; paintMeter(); }
 function meterAdd(u) { if (!RUN) meterStart(); if (u) { RUN.rounds++; RUN.inT += u.prompt_tokens || 0; RUN.outT += u.completion_tokens || 0; } paintMeter(); }
@@ -214,8 +214,8 @@ function paintMeter(planned) {
       '<p><b>About ' + fmt(planned) + ' tokens</b> to send, before your question. The whole pile is about ' + fmt(whole) + '. The mark is a free key’s 8,000 a minute.</p>';
     return;
   }
-  if (RUN && RUN.refused) { m.innerHTML = '<div class="mbar"><i class="est" style="width:100%"></i><em style="left:' + Math.min(100, 100 * FREE_TPM / whole) + '%"></em></div><p><b>Refused: ' + fmt(RUN.refused) + ' tokens asked for</b>, 8,000 a minute allowed on a free key. The model read nothing and nothing was billed.</p>'; return; }
-  if (!RUN || !RUN.rounds) { m.innerHTML = '<div class="mbar"></div><p>Nothing sent to the model yet. The whole pile is about ' + fmt(whole) + ' tokens.</p>'; return; }
+  if (RUN && RUN.refused) { m.innerHTML = '<div class="mbar"><i class="est" style="width:100%"></i><em style="left:' + Math.min(100, 100 * FREE_TPM / whole) + '%"></em></div><p><b>Refused: ' + fmt(RUN.refused) + ' tokens asked for</b>, 8,000 a minute allowed on a free key. The LLM read nothing and nothing was billed.</p>'; return; }
+  if (!RUN || !RUN.rounds) { m.innerHTML = '<div class="mbar"></div><p>Nothing sent to the LLM yet. The whole pile is about ' + fmt(whole) + ' tokens.</p>'; return; }
   var cost = RUN.inT * S.price.in / 1e6 + RUN.outT * S.price.out / 1e6;
   m.innerHTML = '<div class="mbar"><i style="width:' + Math.min(100, 100 * RUN.inT / whole) + '%"></i></div>' +
     '<p><b>' + fmt(RUN.inT) + ' tokens in</b>, ' + fmt(RUN.outT) + ' out' + (RUN.rounds > 1 ? ', over ' + RUN.rounds + ' rounds' : '') + ' · ' + money(cost) + ' at $' + S.price.in.toFixed(2) + ' and $' + S.price.out.toFixed(2) + ' per million · the bar is the share of the whole pile (' + fmt(whole) + ')</p>';
@@ -263,8 +263,8 @@ function drawPile() {
   }
   if (V.tab === 'map') { drawMap(b); return; }
   /* prompt */
-  if (!V.prompt) { b.innerHTML = '<p class="pmeta">Nothing sent to the model yet. When something is, the exact text it read shows here.</p>'; return; }
-  b.innerHTML = '<p class="pmeta">The exact text the model was sent last' + (V.promptTok ? ', <b>' + fmt(V.promptTok) + ' tokens</b> by Groq’s count' : '') + '. <span class="key"><i class="kp"></i>from the pile</span></p><pre class="prompt">' + promptHtml(V) + '</pre>';
+  if (!V.prompt) { b.innerHTML = '<p class="pmeta">Nothing sent to the LLM yet. When something is, the exact text it read shows here.</p>'; return; }
+  b.innerHTML = '<p class="pmeta">The exact text the LLM was sent last' + (V.promptTok ? ', <b>' + fmt(V.promptTok) + ' tokens</b> by Groq’s count' : '') + '. <span class="key"><i class="kp"></i>from the pile</span></p><pre class="prompt">' + promptHtml(V) + '</pre>';
 }
 function promptHtml(V) {
   if (!V.parts) return esc(V.prompt);
@@ -375,13 +375,13 @@ function ask(content, opts) {
       var last = msgs[msgs.length - 1];
       return hop('server', 'model', opts.reqTitle || (last.role === 'tool' ? 'The conversation so far + the result' : '“' + clip(last.content, 80) + '”' + (opts.tools ? ' + the card' : '')), d.sent, { compact: opts.compact, fast: opts.fast })
         .then(function () {
-          if (d.refused) return hop('groq', 'server', 'Refused before the model read a word: ' + clip((d.raw.error && d.raw.error.message) || 'too large', 140), d.raw, { stop: true });
+          if (d.refused) return hop('groq', 'server', 'Refused before the LLM read a word: ' + clip((d.raw.error && d.raw.error.message) || 'too large', 140), d.raw, { stop: true });
           return hop('model', 'server', d.failed ? 'A tool call Groq could not read' : d.call ? 'A request: ' + d.call.name + '(' + JSON.stringify(d.call.arguments) + ')' : 'An answer: ' + clip(d.raw.content || '(empty)', 150), d.raw, { compact: opts.compact, fast: opts.fast, stop: !!d.call });
         })
         .then(function () { return d; });
     });
 }
-function answerOf(d) { return d.refused ? '' : d.failed ? '(the model wrote something Groq could not read)' : plain(d.raw.content) || '(no answer)'; }
+function answerOf(d) { return d.refused ? '' : d.failed ? '(the LLM wrote something Groq could not read)' : plain(d.raw.content) || '(no answer)'; }
 function guessBox(id, prompt, options) {
   var g = S.guess[id];
   return '<div class="guess"><p class="lab">' + esc(prompt) + ' <span>One tap, not scored.</span></p><div class="seg">' + options.map(function (o, i) {
@@ -408,7 +408,7 @@ function st1() {
   var t = T[1] || (T[1] = {});
   light([]); wnote('One line per question. Open a line to see the exact messages.');
   if (!t.ran) {
-    ins('Ask the model five questions about our course.', true);
+    ins('Ask the LLM five questions about our course.', true);
     ctx('Nothing from our notes is attached. Before you run it: how many will it get right?');
     panel(guessBox(1, 'How many of the five will pass?', G1) + '<div class="row"><button class="btn act" id="a"' + (S.guess[1] == null ? ' disabled' : '') + '>Ask all five</button></div>');
     bindGuess(1, st1);
@@ -420,7 +420,7 @@ function st1() {
           flash('you', 'server'); flash('server', 'model');
           return post(body).then(function (d) {
             meterAdd(d.usage);
-            var a = answerOf(d) || 'Refused before the model read it.', ok = mark(id, a); t.res.push({ id: id, a: a, ok: ok });
+            var a = answerOf(d) || 'Refused before the LLM read it.', ok = mark(id, a); t.res.push({ id: id, a: a, ok: ok });
             setPrompt([{ t: q }], d.usage && d.usage.prompt_tokens);
             return trip(id + ': “' + clip(q, 60) + '” → ' + clip(a, 110), d.sent, d.raw);
           });
@@ -433,7 +433,7 @@ function st1() {
   ins(n + ' of 5. Nothing went to the pile.', false);
   ctx(guessed(1, G1, n === 0 ? 0 : n <= 2 ? 1 : n <= 4 ? 2 : 3) + 'Each answer is marked by a rule. Tap a question on the scoreboard to read its rule.');
   panel('<ol class="five">' + t.res.map(function (r) { return '<li class="' + (r.ok ? 'pass' : 'fail') + '"><b>' + r.id + '</b> ' + esc(clip(r.a, 150)) + '</li>'; }).join('') + '</ol>');
-  after('<p>Read the route on each line of the wire: you, the server, the model, and back. <b>None went to the pile.</b> The model could only use what it learned before this course existed. Where it answered, it sounded just as sure when it was wrong.</p>');
+  after('<p>Read the route on each line of the wire: you, the server, the LLM, and back. <b>None went to the pile.</b> The LLM could only use what it learned before this course existed. Where it answered, it sounded just as sure when it was wrong.</p>');
   forward('Continue');
 }
 
@@ -443,7 +443,7 @@ function st2() {
   light([]); wnote('');
   if (!t.answer) {
     ins('Hand it the lecture number.', true);
-    ctx('The Lecture 12 move: give the model a tool card for a lookup. Q1 names its lecture, so the number is the key.');
+    ctx('The Lecture 12 move: give the LLM a tool card for a lookup. Q1 names its lecture, so the number is the key.');
     panel('<p class="q">“' + esc(q) + '”</p><div class="cardview"><span class="lab">The tool card</span><dl><dt>Name</dt><dd><code>' + LOOKUP.name + '</code></dd><dt>Use it when</dt><dd>' + esc(LOOKUP.description) + '</dd><dt>It needs</dt><dd>' + esc(LOOKUP.parameters.properties.number.description) + '</dd></dl></div>' +
       '<div class="row"><button class="btn act" id="a">Ask Q1 with the card</button></div>');
     $('#a').onclick = function () { act(this, function () {
@@ -460,7 +460,7 @@ function st2() {
               .then(function () {
                 var m2 = msgs.concat([{ role: 'assistant', content: d.raw.content || null, tool_calls: d.raw.tool_calls.slice(0, 1).map(function (c) { return { id: c.id, type: 'function', function: { name: c.function.name, arguments: c.function.arguments } }; }) },
                   { role: 'tool', tool_call_id: d.call.id, content: JSON.stringify(res) }]);
-                setPrompt([{ t: q + '\n\n(the model asked for lecture ' + num + ', and the server handed back:)\n' }, { t: JSON.stringify(res).slice(0, 4000) + (JSON.stringify(res).length > 4000 ? ' …' : ''), pile: true }]);
+                setPrompt([{ t: q + '\n\n(the LLM asked for lecture ' + num + ', and the server handed back:)\n' }, { t: JSON.stringify(res).slice(0, 4000) + (JSON.stringify(res).length > 4000 ? ' …' : ''), pile: true }]);
                 return ask(null, { messages: m2, tools: [LOOKUP], quiet: true });
               });
           }).then(function (d2) {
@@ -475,8 +475,8 @@ function st2() {
   ins(t.ok ? 'Q1 passes. One hop to the pile and back.' : 'One hop to the pile and back.', false);
   ctx('');
   panel(answerBox(q, t.answer, t.ok) + verdict('Q1', t.ok));
-  after('<p>The model asked for lecture ' + esc(t.num) + ', the server fetched those notes, the model read them. <b>The question carried its own key.</b></p>' +
-    '<p>Fetch the passage, add it to the prompt, let the model write: that is <b>retrieval-augmented generation</b>, or RAG. You just did it with a lookup. Q2 to Q5 name no lecture: “Which lecture teaches Verifier’s Law?” has no number to look up.</p>');
+  after('<p>The LLM asked for lecture ' + esc(t.num) + ', the server fetched those notes, the LLM read them. <b>The question carried its own key.</b></p>' +
+    '<p>Fetch the passage, add it to the prompt, let the LLM write: that is <b>retrieval-augmented generation</b>, or RAG. You just did it with a lookup. Q2 to Q5 name no lecture: “Which lecture teaches Verifier’s Law?” has no number to look up.</p>');
   forward('Continue');
 }
 
@@ -488,8 +488,8 @@ function st3() {
   var t = T[3] || (T[3] = { n: 1 }), q = P.Q.Q2.q;
   light([]); wnote('');
   var full = t.sent && !t.refused && t.lastN === 12;
-  ins(t.refused ? 'Refused. It fits the model, not your key.' : full ? 'All twelve went through.' : t.sent ? 'Sent. Now drag it to twelve.' : 'Paste one lecture, then all twelve.', !t.refused && !full);
-  ctx(t.refused ? guessed(3, G3, 1) : full ? guessed(3, G3, 0) : 'No searching: paste the notes in front of Q2 and let the model read them all. Drag to choose how many lectures go in.');
+  ins(t.refused ? 'Refused. It fits the LLM, not your key.' : full ? 'All twelve went through.' : t.sent ? 'Sent. Now drag it to twelve.' : 'Paste one lecture, then all twelve.', !t.refused && !full);
+  ctx(t.refused ? guessed(3, G3, 1) : full ? guessed(3, G3, 0) : 'No searching: paste the notes in front of Q2 and let the LLM read them all. Drag to choose how many lectures go in.');
   panel('<p class="q">“' + esc(q) + '”</p>' +
     '<label class="slide"><span>Lectures pasted: <b id="nl">' + t.n + '</b> <span id="nr">(' + lectRange(t.n) + ')</span></span><input type="range" id="sl" min="1" max="12" value="' + t.n + '"></label>' +
     '<p class="bill" id="bill"></p>' +
@@ -522,7 +522,7 @@ function st3() {
       return hop('server', 'you', clip(t.answer, 140)).then(function () { if (t.n >= 3) finish(3); st3(); });
     });
   }); };
-  var lesson = 'The model itself can read about 131,000 tokens, so it fits. But every question re-sends all of it, and pays for all of it, to use two paragraphs. And when it answers, nothing says which paragraph it used.</p><p class="big">Send only the passages that matter.</p>';
+  var lesson = 'The LLM itself can read about 131,000 tokens, so it fits. But every question re-sends all of it, and pays for all of it, to use two paragraphs. And when it answers, nothing says which paragraph it used.</p><p class="big">Send only the passages that matter.</p>';
   if (t.refused) {
     after('<p>Read Groq’s refusal on the wire: <b>' + (RUN && RUN.refused > 1 ? fmt(RUN.refused) : 'about 31,000') + ' tokens asked for, ' + fmt(FREE_TPM) + ' a minute allowed</b>. ' + lesson);
     forward('Continue');
@@ -545,7 +545,7 @@ function st4() {
     ins('Find Q2 by its words.', true);
     ctx('Like Ctrl+F across every passage: type words from the question and watch which passages light up.');
     panel('<p class="q">“' + esc(q2) + '”</p><div class="ask"><input id="w" maxlength="60" placeholder="Words to find" value="' + esc(t.w || '') + '"><button class="btn act" id="f">Find</button></div><div class="chips"><button type="button">Verifier</button><button type="button">Verifier’s Law</button></div>' +
-      (t.hits ? '<div class="row"><button class="btn act" id="h"' + (t.hits.length ? '' : ' disabled') + '>Hand the top ' + Math.min(3, t.hits.length) + ' to the model with Q2</button></div>' : ''));
+      (t.hits ? '<div class="row"><button class="btn act" id="h"' + (t.hits.length ? '' : ' disabled') + '>Hand the top ' + Math.min(3, t.hits.length) + ' to the LLM with Q2</button></div>' : ''));
     var find = function () { var w = $('#w').value.trim(); if (!w) return say('Type a word first.'); t.w = w; act($('#f'), function () {
       clearWire();
       return searchWords(w, 10).then(function (d) { t.hits = d.hits; t.total = d.total; t.lects = lectCount(d); light(d.hits, w, d.total); VIEWSTATE.pick = d.hits[0] && d.hits[0].id; drawPile(); st4(); });
@@ -608,8 +608,8 @@ function st5() {
     return;
   }
   if (t.p === 1) {
-    var label = function () { return 'Hand the top ' + S.k + ' to the model with Q3'; }, ks = kSlider(t.h3, label);
-    ins('Hand the nearest to the model.', true);
+    var label = function () { return 'Hand the top ' + S.k + ' to the LLM with Q3'; }, ks = kSlider(t.h3, label);
+    ins('Hand the nearest to the LLM.', true);
     ctx('Top hit: Lecture ' + t.h3[0].lecture + ', “' + esc(t.h3[0].section) + '”. It never says “making things up”.');
     panel('<p class="q">“' + esc(q3) + '”</p>' + nearList(t.h3) + ks.html + '<div class="row"><button class="btn act" id="h">' + label() + '</button></div>');
     ks.bind();
@@ -653,12 +653,12 @@ function st6() {
   if (t.p === 1) {
     ins('Hand them over. What will it say?', true);
     ctx('Nearest: Lecture ' + t.h4[0].lecture + ', “' + esc(t.h4[0].section) + '”, scored ' + t.h4[0].score.toFixed(2) + '. None of them is about the App Store. The map has no edge, so something is always nearest.');
-    panel('<p class="q">“' + esc(q4) + '”</p>' + nearList(t.h4, Q4K) + guessBox(6, 'What will the model say?', G6) + '<div class="row"><button class="btn act" id="h"' + (S.guess[6] == null ? ' disabled' : '') + '>Hand these ' + Q4K + ' to the model with Q4</button></div>');
+    panel('<p class="q">“' + esc(q4) + '”</p>' + nearList(t.h4, Q4K) + guessBox(6, 'What will the LLM say?', G6) + '<div class="row"><button class="btn act" id="h"' + (S.guess[6] == null ? ' disabled' : '') + '>Hand these ' + Q4K + ' to the LLM with Q4</button></div>');
     bindGuess(6, st6);
     $('#h').onclick = function () { act(this, function () { return runQ4(t); }); };
     return;
   }
-  /* p 2: an answer is in. The line that lets the model say no appears only now, after the first answer */
+  /* p 2: an answer is in. The line that lets the LLM say no appears only now, after the first answer */
   var ok = t.ok4, first = t.runs === 1;
   ins(ok ? (t.sentHonest ? 'Q4 passes. The right answer was a refusal.' : 'Q4 passes, this time without the line.') : 'A confident answer. None of its sources says it.', !ok);
   ctx((first ? guessed(6, G6, t.firstOk ? 0 : 1) : '') + (ok ? '' : t.sentHonest ? 'Even with the line it answered. It predicts: send again.' : 'Tap its sources to check them. Then turn the line on and send again.'));
@@ -668,7 +668,7 @@ function st6() {
   $('#h').onclick = function () { act(this, function () { return runQ4(t); }); };
   if (!ok) { after(''); forward(S.done[6] ? 'Continue' : ''); return; }
   finish(6);
-  after('<p><b>Nearest is not the same as relevant.</b> The search did what we built it to do, and the model did what we asked. The design had no way to say no. One line in the prompt gives it one: the <b>honest miss</b>.</p>' +
+  after('<p><b>Nearest is not the same as relevant.</b> The search did what we built it to do, and the LLM did what we asked. The design had no way to say no. One line in the prompt gives it one: the <b>honest miss</b>.</p>' +
     '<p>When an answer is wrong, open its sources first. The right passage but a wrong answer: fix the prompt. The wrong passage: fix the search.</p>');
   forward('Continue');
 }
@@ -685,16 +685,16 @@ function runQ4(t) {
   });
 }
 
-/* ---------- station 7: let the model search, as many times as it needs ---------- */
+/* ---------- station 7: let the LLM search, as many times as it needs ---------- */
 var G7 = ['Once', 'Twice', 'Three times or more'];
 var CARD = '<div class="cardview"><span class="lab">The tool card the server sends</span><dl><dt>Name</dt><dd><code>search_notes</code></dd><dt>Use it when</dt><dd>Searches the 100xEngineers Cohort 8 lecture notes (Lectures 1 to 12) for passages that contain the exact words you give. Returns up to 3 passages, each with its lecture number. Use 1 to 3 words exactly as they would appear in the notes. If nothing comes back, try other words.</dd><dt>It needs</dt><dd>The exact words to look for, 1 to 3 words.</dd></dl></div>';
 function st7() {
   var t = T[7] || (T[7] = {}), q5 = P.Q.Q5.q;
-  wnote('The server runs the loop: every search the model asks for, and every round with the model, up to ' + ROUNDS + ' rounds.');
+  wnote('The server runs the loop: every search the LLM asks for, and every round with the LLM, up to ' + ROUNDS + ' rounds.');
   if (!t.answer) {
-    ins('Let the model search for Q5 itself.', true);
-    ctx('The model gets a search tool. It decides what to search for, and how many times.');
-    panel('<p class="jog">From Lecture 10: even with the whole curriculum pasted in, the model still named Zapier, a tool the course never teaches. Q5 asks what fixed it.</p><p class="q">“' + esc(q5) + '”</p>' + CARD + guessBox(7, 'How many searches will the model ask for?', G7) + '<div class="row"><button class="btn act" id="a"' + (S.guess[7] == null ? ' disabled' : '') + '>Ask Q5, search card attached</button></div>');
+    ins('Let the LLM search for Q5 itself.', true);
+    ctx('The LLM gets a search tool. It decides what to search for, and how many times.');
+    panel('<p class="jog">From Lecture 10: even with the whole curriculum pasted in, the LLM still named Zapier, a tool the course never teaches. Q5 asks what fixed it.</p><p class="q">“' + esc(q5) + '”</p>' + CARD + guessBox(7, 'How many searches will the LLM ask for?', G7) + '<div class="row"><button class="btn act" id="a"' + (S.guess[7] == null ? ' disabled' : '') + '>Ask Q5, search card attached</button></div>');
     bindGuess(7, st7);
     $('#a').onclick = function () { act(this, function () {
       clearWire(); meterStart(); light([]);
@@ -703,7 +703,7 @@ function st7() {
         .then(function () { return post(body).catch(function (e) { return e.data && e.data.events ? playLoop(e.data.events).then(function () { throw e; }) : Promise.reject(e); }); })
         .then(function (d) {
           return playLoop(d.events).then(function () {
-            t.answer = d.failed ? '(the model wrote something Groq could not read)' : plain(d.answer) || '(no answer)'; t.searches = d.searches; t.ok = mark('Q5', t.answer);
+            t.answer = d.failed ? '(the LLM wrote something Groq could not read)' : plain(d.answer) || '(no answer)'; t.searches = d.searches; t.ok = mark('Q5', t.answer);
             return hop('server', 'you', clip(t.answer, 150));
           }).then(function () { if (t.ok) finish(7); st7(); });
         });
@@ -721,7 +721,7 @@ function st7() {
   after('<p>The meter counts every round: each one re-sends the whole conversation, passages included. <b>A path costs more than a lookup.</b> Use it only when the question hands you a path.</p>' +
     '<div class="ladder"><span class="lab">What each question handed you</span><ol>' +
     '<li><b>Q1</b> a key <i>→</i> look it up</li><li><b>Q2</b> exact words <i>→</i> keyword search</li><li><b>Q3</b> only a meaning <i>→</i> search by meaning</li>' +
-    '<li><b>Q4</b> nothing <i>→</i> let it say “not in the notes”</li><li><b>Q5</b> a path <i>→</i> let the model search in rounds</li></ol>' +
+    '<li><b>Q4</b> nothing <i>→</i> let it say “not in the notes”</li><li><b>Q5</b> a path <i>→</i> let the LLM search in rounds</li></ol>' +
     '<p>And before any of them, rule zero: if it all fits and the questions are few, paste it.</p></div>' +
     (all ? '' : '<p>Some scoreboard questions are still red. Go back to their station to turn them green.</p>') +
     '<p class="next"><b>Practice set 4:</b> climb the same ladder for your own project, on a nine-line design card. Submit it on the LMS by Thu 26 Nov.</p>' +
@@ -730,7 +730,7 @@ function st7() {
   $('#dl').onclick = download; bindOwn();
 }
 function ownQuestion() {
-  return '<details class="own"><summary>Optional: place your own question on the map</summary><p>Your browser loads the same small model the pile was built with, places the question, and the server finds the nearest passages. Nothing is sent to the model.</p><div class="ask"><input id="oq" maxlength="200" placeholder="A question about our course"><button class="btn act" id="og">Place it</button></div><p class="ost" id="ost" hidden></p><ol class="hitlist" id="ores"></ol></details>';
+  return '<details class="own"><summary>Optional: place your own question on the map</summary><p>Your browser loads the same small model the pile was built with, places the question, and the server finds the nearest passages. Nothing is sent to the LLM.</p><div class="ask"><input id="oq" maxlength="200" placeholder="A question about our course"><button class="btn act" id="og">Place it</button></div><p class="ost" id="ost" hidden></p><ol class="hitlist" id="ores"></ol></details>';
 }
 function bindOwn() {
   var fire = function () { var v = $('#oq').value.trim(); if (!v) return say('Type a question first.'); act($('#og'), function () {
@@ -749,7 +749,7 @@ function playLoop(events) {
       if (e.kind === 'note') return note('server', e.text);
       if (e.kind === 'model_req') {
         var last = e.body.messages[e.body.messages.length - 1];
-        setPrompt(e.body.messages.map(function (m) { return m.role === 'tool' ? { t: '\n[search result]\n' + m.content + '\n', pile: true } : m.role === 'user' ? { t: m.content + '\n' } : { t: '\n[the model asked: ' + (m.tool_calls ? m.tool_calls.map(function (c) { return c.function.name + ' ' + c.function.arguments; }).join(', ') : '') + ']\n' }; }), 0);
+        setPrompt(e.body.messages.map(function (m) { return m.role === 'tool' ? { t: '\n[search result]\n' + m.content + '\n', pile: true } : m.role === 'user' ? { t: m.content + '\n' } : { t: '\n[the LLM asked: ' + (m.tool_calls ? m.tool_calls.map(function (c) { return c.function.name + ' ' + c.function.arguments; }).join(', ') : '') + ']\n' }; }), 0);
         return hop('server', 'model', e.again ? 'The same request, sent again' : last.role === 'tool' ? 'The conversation so far + the search result + the card' : '“' + clip(last.content, 80) + '” + the card', e.body, { fast: true });
       }
       if (e.kind === 'model_res') {

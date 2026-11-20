@@ -1,8 +1,8 @@
 /* Tool Bench. Tokens from /c8/docs.css.
    One bench, four boxes, one wire. Only the instruction changes.
-   Violet = the model (predicts). Amber = the server and the sheet (both follow rules). Grey = you.
+   Violet = the LLM (predicts). Amber = the server and the sheet (both follow rules). Grey = you.
    Coral = the thing to do now. Continue is the only coral filled button once a step is done.
-   Layout: deterministic on the left (Sheet), the Server in the middle, probabilistic on the right (Model).
+   Layout: deterministic on the left (Sheet), the Server in the middle, probabilistic on the right (LLM).
    Frames: the bench and the action panel are the only framed boxes. The wire is an unframed timeline. */
 [hidden]{display:none!important}
 :root{--ink3:#666462;--bench-dot:color-mix(in srgb,var(--ink3) 22%,transparent)}
@@ -113,7 +113,7 @@ p{margin:0}
 .lab,.panel .lab{font:500 13px/1.3 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink3)}
 .panel .ans,.panel .truth{border-radius:12px;padding:12px 14px 13px;font-size:15px;line-height:1.55;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
 .panel .ans{background:var(--prob-soft)}
-.panel .ans::before{content:"The model said";display:block;font:600 12.5px var(--sans);color:var(--prob-ink);margin-bottom:3px}
+.panel .ans::before{content:"The LLM said";display:block;font:600 12.5px var(--sans);color:var(--prob-ink);margin-bottom:3px}
 .panel .truth{background:var(--det-soft)}
 .panel .truth::before{content:"The sheet says";display:block;font:600 12.5px var(--sans);color:var(--det-ink);margin-bottom:3px}
 .panel .url{font:12.5px/1.5 var(--mono);color:var(--ink2);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:9px 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

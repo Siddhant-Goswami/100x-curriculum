@@ -1,5 +1,5 @@
 /* Tool Bench: Lecture 11. One bench, one wire, five steps.
-   The bench: You talk only to the Server (/api/toolcall). The Server talks to the Model (GPT-OSS on Groq) and to the
+   The bench: You talk only to the Server (/api/toolcall). The Server talks to the LLM (GPT-OSS on Groq) and to the
    Sheet (the curriculum sheet, or the learner's own; from step 5, the sheet's own MCP server at /api/mcp).
    The wire's promise is "every message that crossed", so:
    - every hop shows the exact JSON that crossed (the server returns what it sent and what came back);
@@ -14,7 +14,7 @@ var API = '/api/toolcall', MCP = location.origin + '/api/mcp', KEY = 'c8.l11.ben
 var CUR = '1Kg6T-dJWaYx_JCPiRk3u0nBuAQcsCVRDPj1NFKP4WzM', CUR_LINK = 'https://docs.google.com/spreadsheets/d/' + CUR;
 var MODEL = 'openai/gpt-oss-120b';
 var NAMES = ['', 'Ask', 'Carry it by hand', 'Write the card', 'Switch the server on', 'Move the card'];
-var NODE = { you: 'You', model: 'Model', server: 'Server', sheet: 'Sheet' };
+var NODE = { you: 'You', model: 'LLM', server: 'Server', sheet: 'Sheet' };
 var LANE = { 'server-you': ['server-you', 'btt', 'ttb'], 'you-server': ['server-you', 'ttb', 'btt'], 'model-server': ['model-server', 'rtl'], 'server-model': ['model-server', 'ltr'], 'server-sheet': ['server-sheet', 'rtl'], 'sheet-server': ['server-sheet', 'ltr'] };
 var Q1 = 'When is Lecture 12 of 100xEngineers Cohort 8, and what is it about?';
 var GOOD = { name: 'get_lecture', when: 'Returns one lecture of the 100xEngineers Cohort 8 curriculum: its date, title, type and tools. Use it when someone asks about a specific lecture by number. Not for general questions.', needs: 'The lecture number, 1 to 19.' };
@@ -80,7 +80,7 @@ function toolOf(card) {
   var p = {}; p[argName()] = { type: S.src ? 'string' : 'integer', description: card.needs || '' };
   return { name: card.name, description: card.when || '', parameters: { type: 'object', properties: p, required: [argName()] } };
 }
-function assistantMsg(raw) {   /* the model's tool call, passed back the way the server sends it */
+function assistantMsg(raw) {   /* the LLM's tool call, passed back the way the server sends it */
   return { role: 'assistant', content: raw.content || null, tool_calls: (raw.tool_calls || []).slice(0, 1).map(function (c) { return { id: c.id, type: 'function', function: { name: c.function.name, arguments: c.function.arguments } }; }) };
 }
 
@@ -118,7 +118,7 @@ function wnote(text) { var n = $('#wnote'); n.textContent = text || ''; n.hidden
 
 function callText(c) { return c.name + '(' + (c.arguments && typeof c.arguments === 'object' ? Object.keys(c.arguments).map(function (k) { return k + ': ' + JSON.stringify(c.arguments[k]); }).join(', ') : String(c.arguments)) + ')'; }
 function clip(s, n) { s = plain(s).replace(/\s+/g, ' '); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
-var FAILED = 'A tool call Groq could not read (the model wrote it badly)';
+var FAILED = 'A tool call Groq could not read (the LLM wrote it badly)';
 function resTitle(r) { return r.failed ? FAILED : r.call ? 'A request: ' + callText(r.call) : 'An answer: ' + clip(r.raw.content || '(empty)', 160); }
 function reqTitle(sent) {
   var last = sent.messages[sent.messages.length - 1];
@@ -129,7 +129,7 @@ var RPC = {
   initialize: ['initialize: hello, which protocol version?', function (b) { return 'Hello back: protocol ' + (b && b.result ? b.result.protocolVersion : '?') + ', it has tools'; }],
   'notifications/initialized': ['initialized: ready (no reply expected)', function (b, st) { return st + ' Accepted, nothing in the body'; }],
   'tools/list': ['tools/list: what can you do?', function (b) { var t = b && b.result && b.result.tools; return t && t.length ? 'One tool: ' + t[0].name : 'No tools'; }],
-  'tools/call': [null, function (b) { return b && b.result && b.result.isError ? 'An error the model can read' : 'The result'; }]
+  'tools/call': [null, function (b) { return b && b.result && b.result.isError ? 'An error the LLM can read' : 'The result'; }]
 };
 /* plays back what the server did, hop by hop */
 function play(events, o) {
@@ -203,7 +203,7 @@ function keyGate(n, message) {
   ctx(message ? esc(message) : 'The free key you made in <a href="/c8/module-2/lecture-04-the-second-interface/playgrounds/request-builder" target="_blank" rel="noopener">Lecture 4</a>. Deleted it since? Make a new one in a minute: <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>, then Create API Key.');
   panel('<label class="lab" for="gk">Your Groq key</label>' +
     '<div class="ask"><input id="gk" type="password" placeholder="gsk_..." autocomplete="off" spellcheck="false"><button class="btn act" id="gkok">Use my key</button></div>' +
-    '<p class="url">Every message to the model on this bench runs on your key. It stays in this tab until you close it, and rides to Groq through our server in a header. The server does not store or log it.</p>');
+    '<p class="url">Every message to the LLM on this bench runs on your key. It stays in this tab until you close it, and rides to Groq through our server in a header. The server does not store or log it.</p>');
   var use = function () {
     var v = $('#gk').value.trim();
     if (!/^gsk_[A-Za-z0-9]{20,}$/.test(v)) return say('A Groq key starts with gsk_. Copy the whole key.');
@@ -226,7 +226,7 @@ function cardView(c) {
   return '<div class="cardview"><span class="lab">The tool card</span><dl><dt>Name</dt><dd><code>' + esc(c.name) + '</code></dd><dt>Use it when</dt><dd>' + esc(c.when) + '</dd><dt>It needs</dt><dd>' + esc(c.needs) + '</dd></dl></div>';
 }
 
-/* one round, by hand: you -> server -> model -> server, and the answer back to you unless the model asked for a tool */
+/* one round, by hand: you -> server -> model -> server, and the answer back to you unless the LLM asked for a tool */
 function ask(messages, tools, youTitle) {
   var body = chatBody(messages, tools);
   return (youTitle ? hop('you', 'server', youTitle, asSent(body)) : Promise.resolve())
@@ -243,12 +243,12 @@ function step1() {
   cardAt('', ''); wnote('');
   var t = T[1] || (T[1] = {});
   if (!t.answer) {
-    ins('Ask the model about Lecture 12.', true);
-    ctx('The model was trained before this course existed. Watch the wire.');
-    panel('<p class="q">“' + esc(Q1) + '”</p><div class="row"><button class="btn act" id="a">Ask the model</button></div>');
+    ins('Ask the LLM about Lecture 12.', true);
+    ctx('The LLM was trained before this course existed. Watch the wire.');
+    panel('<p class="q">“' + esc(Q1) + '”</p><div class="row"><button class="btn act" id="a">Ask the LLM</button></div>');
     $('#a').onclick = function () { act(this, function () {
       return ask([{ role: 'user', content: Q1 }], null, Q1).then(function (d) {
-        t.answer = d.failed ? '(the model wrote something Groq could not read)' : plain(d.raw.content) || '(no answer)';
+        t.answer = d.failed ? '(the LLM wrote something Groq could not read)' : plain(d.raw.content) || '(no answer)';
         return hop('server', 'you', clip(t.answer, 160));
       }).then(step1);
     }); };
@@ -257,7 +257,7 @@ function step1() {
   var head = '<p class="q">“' + esc(Q1) + '”</p><p class="ans">' + esc(t.answer) + '</p>';
   if (!t.judged) {
     ins('Check it against the sheet yourself.', true);
-    ctx('Same model and settings as the GroqCloud playground, with nothing added. Ask it there and you get the same kind of answer.');
+    ctx('Same LLM and settings as the GroqCloud playground, with nothing added. Ask it there and you get the same kind of answer.');
     panel(head + '<div class="check"><ol><li><a href="' + CUR_LINK + '" target="_blank" rel="noopener">Open the curriculum sheet</a> in a new tab.</li><li>Find the row that starts <b>12.</b> Its date is in the first column.</li></ol>' +
       '<div class="row"><button class="btn" data-j="right">It got it right</button><button class="btn" data-j="wrong">Wrong, or it didn’t know</button></div></div>');
     $$('[data-j]').forEach(function (b) { b.onclick = function () { t.judged = b.getAttribute('data-j'); finish(1); step1(); }; });
@@ -266,7 +266,7 @@ function step1() {
   ins('Nothing reached the sheet.', false);
   ctx('');
   panel(head);
-  after('<p>' + (t.judged === 'right' ? 'If it matched, it guessed: ' : '') + 'count the messages on the wire. Four crossed: you to the server, the server to the model, and back. <b>None went to the sheet.</b> Ask again and you may get the other kind of answer: it says it does not know, or it makes something up.</p>');
+  after('<p>' + (t.judged === 'right' ? 'If it matched, it guessed: ' : '') + 'count the messages on the wire. Four crossed: you to the server, the server to the LLM, and back. <b>None went to the sheet.</b> Ask again and you may get the other kind of answer: it says it does not know, or it makes something up.</p>');
   forward('Continue');
 }
 
@@ -278,12 +278,12 @@ function step2() {
   waitOn(t.p === 1 ? 'server' : '');
   if (t.p === 0) {
     ins('Ask again, this time with a tool card.', true);
-    ctx('The card tells the model one thing: there is a tool, and what it is for. The server sends it to the model along with your question.');
+    ctx('The card tells the LLM one thing: there is a tool, and what it is for. The server sends it to the LLM along with your question.');
     panel('<p class="q">“' + esc(Q1) + '”</p>' + cardView(GOOD) + '<div class="row"><button class="btn act" id="a">Ask again, with the card</button></div>');
     $('#a').onclick = function () { act(this, function () {
       t.base = [{ role: 'user', content: Q1 }];
       return ask(t.base, [tool], Q1 + ' (the server adds the card)').then(function (d) {
-        if (d.failed) { say('The model tried to ask for the tool but wrote it in a way Groq could not read. It predicts, so that can happen. Ask again.'); return; }
+        if (d.failed) { say('The LLM tried to ask for the tool but wrote it in a way Groq could not read. It predicts, so that can happen. Ask again.'); return; }
         if (!d.call) return hop('server', 'you', clip(d.raw.content, 160)).then(function () { say('This time it answered without asking for the tool. It predicts, so that can happen. Ask again.'); });
         t.call = d.call; t.raw = d.raw; t.p = 1; step2();
       });
@@ -293,8 +293,8 @@ function step2() {
   var n = t.call.arguments && t.call.arguments.number;
   if (t.p === 1) {
     ins('The request is waiting at the server. Run it.', true);
-    ctx('The model did not answer. It wrote a request and stopped. Nothing happens until someone runs it, and today that someone is you.');
-    panel('<p class="lab">The model asked for</p><p class="q"><code>' + esc(callText(t.call)) + '</code></p><div class="row"><button class="btn act" id="f">Fetch lecture ' + esc(n) + ' from the sheet</button></div>');
+    ctx('The LLM did not answer. It wrote a request and stopped. Nothing happens until someone runs it, and today that someone is you.');
+    panel('<p class="lab">The LLM asked for</p><p class="q"><code>' + esc(callText(t.call)) + '</code></p><div class="row"><button class="btn act" id="f">Fetch lecture ' + esc(n) + ' from the sheet</button></div>');
     $('#f').onclick = function () { act(this, function () {
       return post(API, { op: 'run', args: t.call.arguments }).then(function (d) {
         t.result = d.result;
@@ -305,13 +305,13 @@ function step2() {
   }
   if (t.p === 2) {
     waitOn('');
-    ins('Hand the row back to the model.', true);
-    ctx('The server has the row. The model still has nothing.');
+    ins('Hand the row back to the LLM.', true);
+    ctx('The server has the row. The LLM still has nothing.');
     panel('<p class="truth">' + esc(t.result.Date || '') + ' · ' + esc(t.result['Lecture title'] || t.result.error || '') + '</p><div class="row"><button class="btn act" id="h">Hand it back</button></div>');
     $('#h').onclick = function () { act(this, function () {
       var msgs = t.base.concat([assistantMsg(t.raw), { role: 'tool', tool_call_id: t.call.id, content: JSON.stringify(t.result) }]);   /* built fresh each press */
       return ask(msgs, [tool]).then(function (d) {
-        if (d.failed || d.call) { say('The model asked for the tool again instead of answering. In step 4 the server handles that on its own. Press again.'); return; }
+        if (d.failed || d.call) { say('The LLM asked for the tool again instead of answering. In step 4 the server handles that on its own. Press again.'); return; }
         t.answer = plain(d.raw.content) || '(no answer)';
         return hop('server', 'you', clip(t.answer, 160)).then(function () { t.p = 3; finish(2); step2(); });
       });
@@ -321,7 +321,7 @@ function step2() {
   ins('You just completed a tool call.', false);
   ctx('');
   panel('<p class="q">“' + esc(Q1) + '”</p><p class="ans">' + esc(t.answer) + '</p>');
-  after('<p class="big">The model touched the sheet zero times.</p><p>Read the wire top to bottom. The model wrote a request. <b>You</b> had the server fetch the sheet and hand the row back. The model turned the row into a sentence. This is the reverse call from Lecture 10: the model asks, the server acts.</p>');
+  after('<p class="big">The LLM touched the sheet zero times.</p><p>Read the wire top to bottom. The LLM wrote a request. <b>You</b> had the server fetch the sheet and hand the row back. The LLM turned the row into a sentence. This is the reverse call from Lecture 10: the LLM asks, the server acts.</p>');
   forward('Continue');
 }
 
@@ -330,15 +330,15 @@ function expected(x) { return x.exp === 'none' ? 'answer itself' : x.exp === 'ca
 function sig() { return JSON.stringify([S.card, S.tests]); }
 function step3() {
   cardAt('server', S.card.name);
-  wnote('Each test is one question your page sends through the server. To keep this short, the wire shows only what the server sends the model and what comes back.');
+  wnote('Each test is one question your page sends through the server. To keep this short, the wire shows only what the server sends the LLM and what comes back.');
   var t = T[3] || (T[3] = { res: [] }), own = !!S.src;
   var allPass = t.total && t.score === t.total && t.sig === sig();
   if (allPass) { ins('All ' + t.total + ' pass. Your words did that.', false); ctx(''); }
   else {
     ins(own ? 'Write five questions, mark what should happen, then write the card.' : 'First mark what should happen. Then write the card until all five pass.', true);
-    ctx(own ? 'The tool searches <b>' + esc(S.own.label) + '</b> (' + S.own.rows + ' rows) for the words the model sends. Write three questions it should be used for and two it should not.'
-      : S.card.when.trim() ? 'The model reads only the card. Change one thing, then run again.'
-      : 'The model reads only the card. This one is empty, so the model has no idea what <code>' + esc(S.card.name) + '</code> does. You decide what a pass is before you run anything.');
+    ctx(own ? 'The tool searches <b>' + esc(S.own.label) + '</b> (' + S.own.rows + ' rows) for the words the LLM sends. Write three questions it should be used for and two it should not.'
+      : S.card.when.trim() ? 'The LLM reads only the card. Change one thing, then run again.'
+      : 'The LLM reads only the card. This one is empty, so the LLM has no idea what <code>' + esc(S.card.name) + '</code> does. You decide what a pass is before you run anything.');
   }
   panel('<div class="tests">' + S.tests.map(function (x, i) {
       var r = t.res[i];
@@ -410,7 +410,7 @@ function step3() {
     });
   };
   if (S.done[3]) {
-    after(allPass ? '<p>Same model, same questions. The only thing that changed was your card. A tool description is an interface written in English, and the tests are how you know it works.</p>' : '');
+    after(allPass ? '<p>Same LLM, same questions. The only thing that changed was your card. A tool description is an interface written in English, and the tests are how you know it works.</p>' : '');
     forward('Continue');
   } else if (t.total && S.runs >= 2) {
     after('<p><b>Stuck?</b> Say what the tool returns, when to use it, and when not to (is it for any course, or only ours?). Then say exactly what the input is. Change one thing and run again.</p>' +
@@ -443,9 +443,9 @@ function bindAsk(run) {
   $$('.chips button').forEach(function (c) { c.onclick = function () { q.value = c.textContent; fire(); }; });
 }
 function outcome(d, t) {
-  if (d.failed) return say('The model asked for the tool but wrote the request so badly Groq could not read it. That happens; ask again.');
+  if (d.failed) return say('The LLM asked for the tool but wrote the request so badly Groq could not read it. That happens; ask again.');
   if (d.used) return;
-  say(t.ran ? 'No tool call this time: the model answered from what it already knows, or from the card itself.' : 'No tool call: the model answered without the sheet. Ask something only the sheet knows.');
+  say(t.ran ? 'No tool call this time: the LLM answered from what it already knows, or from the card itself.' : 'No tool call: the LLM answered without the sheet. Ask something only the sheet knows.');
 }
 function download() {
   var a = document.createElement('a');
@@ -516,7 +516,7 @@ function step5() {
   forward('');
   if (!t.ran) return after('');
   after('<div class="named"><span class="lab">What this is called</span><p class="big">MCP, the Model Context Protocol.</p>' +
-    '<p>Every MCP app does the same few things, whatever the tool: <b>initialize</b> (hello), <b>initialized</b> (ready), <b>tools/list</b> (what can you do?), then <b>tools/call</b> (run this) whenever the model asks. The tool and its card live with the data. A second app needs only the address.</p>' +
+    '<p>Every MCP app does the same few things, whatever the tool: <b>initialize</b> (hello), <b>initialized</b> (ready), <b>tools/list</b> (what can you do?), then <b>tools/call</b> (run this) whenever the LLM asks. The tool and its card live with the data. A second app needs only the address.</p>' +
     '<div class="urlrow"><code id="u">' + esc(mcpUrl()) + '</code><button class="btn" id="cp">Copy the address</button></div>' +
     '<div class="links"><p><b>Try it in a second app.</b> Copy the address, then open <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/second-app" target="_blank" rel="noopener">the second app</a>. It has never seen your card or your sheet: paste the address and ask it a question.</p></div>' +
     '<div class="row"><button class="btn" id="dl">Download the log</button></div>' + pyClient() + (own ? '' : pyServer()) + '</div>' +
@@ -547,7 +547,7 @@ function step5() {
 var csvUrl = 'https://docs.google.com/spreadsheets/d/' + CUR + '/gviz/tq?tqx=out:csv&headers=0';
 function pyTool(withNeeds) {
   return 'def get_lecture(number' + (withNeeds ? ': Annotated[int, Field(description=' + JSON.stringify(S.card.needs) + ')]' : ': int') + ') -> dict:\n' +
-  '    """The tool: plain code, no model."""\n' +
+  '    """The tool: plain code, no LLM."""\n' +
   '    for row in csv.reader(io.StringIO(requests.get(SHEET).text)):\n' +
   '        if row[1].startswith(f"{number}. "):\n' +
   '            return {"lecture": number, "Date": row[0], "Lecture title": row[1], "Type": row[2], "Tools": row[3]}\n' +
@@ -569,7 +569,7 @@ function pyLoop() {
     '    if not msg.get("tool_calls"):               # no request: this is the answer\n' +
     '        print("answer", msg["content"])\n' +
     '        break\n' +
-    '    call = msg["tool_calls"][0]                 # the model asked; the server acts\n' +
+    '    call = msg["tool_calls"][0]                 # the LLM asked; the server acts\n' +
     '    messages.append({"role": "assistant", "content": msg.get("content"), "tool_calls": [call]})\n' +
     '    args = json.loads(call["function"]["arguments"])\n' +
     '    result = get_lecture(**args)\n' +

@@ -5,8 +5,8 @@
      POST /api/retrieve {op:'lecture', number}           -> {result}                the Lecture 11 lookup: one lecture's notes by number
      POST /api/retrieve {op:'words', words, k}           -> {hits, total}           keyword search: passages containing these exact words
      POST /api/retrieve {op:'nearest', v, k}             -> {hits}                  search by meaning: passages whose 384 numbers are closest
-     POST /api/retrieve {op:'chat', request}             -> {sent, raw, usage, ...} one round with the model, exactly as sent
-     POST /api/retrieve {op:'loop', question}            -> {events, answer, ...}   the model with search_notes as a tool, the server running it
+     POST /api/retrieve {op:'chat', request}             -> {sent, raw, usage, ...} one round with the LLM, exactly as sent
+     POST /api/retrieve {op:'loop', question}            -> {events, answer, ...}   the LLM with search_notes as a tool, the server running it
 
    Same fidelity rules as /api/toolcall (Lecture 11), which this file copies rather than changes so the live Tool Bench is untouched:
    - The body sent to Groq is exactly the page's request: no hidden instruction, no setting, no token limit added.
@@ -59,7 +59,7 @@ function vector(v) {
 }
 const kOf = k => Math.max(1, Math.min(MAX.k, parseInt(k, 10) || 3));
 
-/* the tool the model gets in station 6 */
+/* the tool the LLM gets in station 6 */
 export const SEARCH_TOOL = {
   type: 'function', function: {
     name: 'search_notes',
@@ -102,7 +102,7 @@ function cleanRequest(r) {
   return out;
 }
 
-/* ---------- one round with the model: send exactly `sent`, return exactly what came back ---------- */
+/* ---------- one round with the LLM: send exactly `sent`, return exactly what came back ---------- */
 function waitWords(wait) {
   if (wait <= 90) return 'Your key hit its limit for this minute. Try again in ' + wait + ' seconds.';
   const m = Math.round(wait / 60);
@@ -114,25 +114,25 @@ async function round(key, sent) {
   try {
     res = await fetch(GROQ, { method: 'POST', signal: ctl.signal, headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' }, body: JSON.stringify(sent) });
     try { data = await res.json(); } catch (e) { /* not JSON: handled by status below */ }
-  } catch (e) { throw new Stop(504, { error: 'model_down', message: 'The model did not answer in time. Try again.' }); }
+  } catch (e) { throw new Stop(504, { error: 'model_down', message: 'The LLM did not answer in time. Try again.' }); }
   finally { clearTimeout(timer); }
   const ms = Date.now() - t0, err = data && data.error;
   console.log(JSON.stringify({ op: 'round', status: res.status, ms, tools: (sent.tools || []).length }));
   if (res.status === 401) throw new Stop(401, { error: 'need_key', message: 'Groq did not accept that key.' });
-  /* too big for the key's per-minute allowance: Groq refuses before the model reads anything. Station 3 shows this refusal. */
+  /* too big for the key's per-minute allowance: Groq refuses before the LLM reads anything. Station 3 shows this refusal. */
   if (res.status === 413 || (err && /request too large/i.test(err.message || ''))) {
     return { raw: { error: err || { message: 'Request too large' } }, status: res.status, refused: true, usage: null, call: null, failed: '', ms };
   }
   if (res.status === 429) { const wait = Math.ceil(+res.headers.get('retry-after') || 10); throw new Stop(429, { error: 'slow_down', message: waitWords(wait), wait }); }
   if (res.status === 400 && err && err.code === 'tool_use_failed') return { raw: { error: err }, status: 400, call: null, usage: null, failed: String(err.failed_generation || err.message || ''), ms };
-  if (res.status !== 200 || !data || !data.choices) throw new Stop(502, { error: 'model_down', message: 'The model returned an error. Try again.' });
+  if (res.status !== 200 || !data || !data.choices) throw new Stop(502, { error: 'model_down', message: 'The LLM returned an error. Try again.' });
   const raw = data.choices[0].message || {}, c = (raw.tool_calls || [])[0];
   let call = null;
   if (c) { let args = c.function && c.function.arguments; try { args = JSON.parse(args); } catch (x) { /* as written */ } call = { id: c.id, name: c.function && c.function.name, arguments: args }; }
   return { raw, status: 200, call, usage: data.usage || null, failed: '', ms };
 }
 
-/* ---------- the loop: the model asks for searches, the server runs them, up to MAX.rounds rounds ---------- */
+/* ---------- the loop: the LLM asks for searches, the server runs them, up to MAX.rounds rounds ---------- */
 async function loop(key, body) {
   const question = str(body.question, 400, 'The question').trim();
   if (!question) throw new Bad('Type a question first.');
@@ -163,7 +163,7 @@ async function loop(key, body) {
       let result;
       if (r.call.name !== 'search_notes') {
         result = { error: 'No tool called ' + r.call.name + '.' };
-        events.push({ kind: 'note', text: 'The model asked for a tool the server does not have, so the server answered with an error.' });
+        events.push({ kind: 'note', text: 'The LLM asked for a tool the server does not have, so the server answered with an error.' });
       } else {
         const w = r.call.arguments && typeof r.call.arguments === 'object' ? String(r.call.arguments.words || '') : '';
         const found = words(w.slice(0, 80), 3);

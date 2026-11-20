@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tool Bench | 100xEngineers</title>
-<meta name="description" content="Make your first tool call and your first MCP server on one bench: a model, a server, a sheet, and every message that crosses between them.">
+<meta name="description" content="Make your first tool call and your first MCP server on one bench: an LLM, a server, a sheet, and every message that crosses between them.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,8 +16,8 @@
 </head>
 <body data-page="l11-bench" data-noaarav>
 <!--
-  One bench that never changes: You, Model, Server, Sheet, and the wire that shows every real message.
-  The server is the hub: you only ever talk to it, and it talks to the model and to the sheet.
+  One bench that never changes: You, LLM, Server, Sheet, and the wire that shows every real message.
+  The server is the hub: you only ever talk to it, and it talks to the LLM and to the sheet.
   data-nolabel keeps questions, answers and a learner's own rows out of analytics replays (see /analytics.js).
   Only the instruction changes. The headline is the instruction; Continue appears once the step is done.
   Five steps: ask, carry it by hand, write the card, switch the server on, move the card (MCP).
@@ -42,14 +42,14 @@
   <p class="ctx" id="ctx" data-nolabel></p>
 
   <section class="bench" aria-label="The bench">
-    <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server talks to the sheet on its left and the model on its right.">
+    <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server talks to the sheet on its left and the LLM on its right.">
       <div class="node" data-n="you"><b>You</b><span>ask</span></div>
       <div class="lane v" data-l="server-you" aria-hidden="true"><i></i></div>
       <div class="node" data-n="sheet"><b id="sheetName">Sheet</b><span id="sheetSub">the data</span><em class="slot" data-slot="sheet"></em></div>
       <div class="lane h" data-l="server-sheet" aria-hidden="true"><i></i></div>
       <div class="node" data-n="server"><b>Server</b><span>follows rules</span><em class="slot" data-slot="server"></em></div>
       <div class="lane h" data-l="model-server" aria-hidden="true"><i></i></div>
-      <div class="node" data-n="model"><b>Model</b><span>predicts</span></div>
+      <div class="node" data-n="model"><b>LLM</b><span>predicts</span></div>
     </div>
 
     <div class="work" data-nolabel>

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Retrieval Bench | 100xEngineers</title>
-<meta name="description" content="Find the right passage in our own notes and hand it to the model: by lecture number, by its words, by its meaning, and by letting the model search. Five questions, every message on the wire.">
+<meta name="description" content="Find the right passage in our own notes and hand it to the LLM: by lecture number, by its words, by its meaning, and by letting the LLM search. Five questions, every message on the wire.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,7 @@
 <!--
   The Lecture 11 Tool Bench with three new parts: the scoreboard (five questions with known answers), the pile view
   (Text, Map, Prompt) and the meter. You talk only to the Server (/api/retrieve). The Server searches the Pile it holds
-  (the twelve notes pages, cut into passages) and talks to the Model. Seven stations. The action sits right under the
+  (the twelve notes pages, cut into passages) and talks to the LLM. Seven stations. The action sits right under the
   instruction; the scoreboard, the bench diagram and the wire share the right-hand rail (below the action on a phone).
   Only the instruction changes; Continue appears once a station is done. data-nolabel keeps questions and answers out of analytics replays.
 -->
@@ -64,14 +64,14 @@
 
     <aside class="rail" aria-label="What happened">
       <section class="board" id="score" aria-label="The scoreboard: five questions with known answers" data-nolabel></section>
-      <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server searches the pile on its left and talks to the model on its right.">
+      <div class="nodes" id="nodes" role="img" aria-label="You talk to the server. The server searches the pile on its left and talks to the LLM on its right.">
         <div class="node" data-n="you"><b>You</b><span>ask</span></div>
         <div class="lane v" data-l="server-you" aria-hidden="true"><i></i></div>
         <div class="node" data-n="pile"><b>Pile</b><span>12 notes pages</span></div>
         <div class="lane h" data-l="server-pile" aria-hidden="true"><i></i></div>
         <div class="node" data-n="server"><b>Server</b><span>follows rules</span></div>
         <div class="lane h" data-l="model-server" aria-hidden="true"><i></i></div>
-        <div class="node" data-n="model"><b>Model</b><span>predicts</span></div>
+        <div class="node" data-n="model"><b>LLM</b><span>predicts</span></div>
         <div class="meter" id="meter" aria-live="polite"></div>
       </div>
       <div class="wirebox" data-nolabel>
