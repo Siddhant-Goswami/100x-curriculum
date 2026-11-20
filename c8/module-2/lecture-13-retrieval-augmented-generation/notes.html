@@ -86,9 +86,9 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </table>
 <p>What the question gives you decides how you find the answer.</p>
 
-<section class="s" id="s01"><h2><span class="n">01</span>The closed book</h2>
+<section class="s" id="s01"><h2><span class="n">01</span>Look it up by its number</h2>
 <p>First, ask with nothing attached. The LLM gets it wrong. For Q1 it asked which course we meant. For Q2 it named a lecture at MIT. It sounded just as sure when it was wrong.</p>
-<p>Think of a smart student in a closed-book exam, on a book they have never read. You can open the book in two ways:</p>
+<p>It has never seen our notes. You can give them to it in two ways:</p>
 <ul class="pt">
   <li><b>Paste the notes</b> into the prompt.</li>
   <li><b>Give the LLM a tool</b> that fetches a page. You did this in <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Lecture 12</a>.</li>
@@ -130,39 +130,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>The tool fetches Lecture 6 by its number. The LLM gets the data, the instruction and the question in one prompt.</figcaption>
 </figure>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Closed book: a question goes to the LLM, and the answers come back wrong. Open book: 1, fetch the passage from the notes. 2, add it to the prompt beside the question. 3, the LLM writes an answer, with its source.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="f-card" x="30" y="105" width="110" height="56" rx="9"/>
-    <path class="arw" d="M146 133 H194" marker-end="url(#ah)"/>
-    <rect class="f-prob" x="200" y="90" width="120" height="86" rx="10"/>
-    <path class="dash" d="M365 40 V230"/>
-    <use href="#db" x="395" y="70" class="c-det"/>
-    <path class="arw c-det" d="M492 105 H528" marker-end="url(#ahd)"/>
-    <rect class="f-card" x="534" y="66" width="120" height="84" rx="9"/>
-    <path class="arw c-prob" d="M660 108 H682" marker-end="url(#ahv)"/>
-    <rect class="f-prob" x="688" y="66" width="62" height="84" rx="10"/>
-    <path class="arw" d="M719 156 V190" marker-end="url(#ah)"/>
-  </g>
-  <g class="tx">
-    <text x="175" y="40" class="m">Closed book</text>
-    <text x="85" y="139" class="xxs">question</text>
-    <text x="260" y="139" class="xxs c-prob">LLM</text>
-    <text x="260" y="214" class="xs c-act">wrong, and sure</text>
-    <text x="572" y="40" class="m">Open book</text>
-    <text x="440" y="165" class="xxs c-det">the notes</text>
-    <text x="510" y="94" class="xxxs c-det">1 fetch</text>
-    <text x="594" y="102" class="xxs">question</text>
-    <text x="594" y="126" class="xxs c-det">+ passage</text>
-    <text x="594" y="172" class="xxxs">2 add</text>
-    <text x="719" y="113" class="xxxs c-prob">LLM</text>
-    <text x="708" y="178" class="xxxs c-prob r">3 write</text>
-    <text x="750" y="214" class="xxs r">an answer, with its source</text>
-  </g>
-</svg>
-<figcaption>Three steps: fetch, add, write.</figcaption>
-</figure>
-<p>Those three steps have a name. Fetch is <b>retrieval</b>. Add to the prompt is <b>augmented</b>. Write is <b>generation</b>. Together: retrieval-augmented generation, or <b>RAG</b>.</p>
+<p>The tool fetches the page, the page is added to the prompt, and the LLM writes the answer. Fetch is <b>retrieval</b>. Add to the prompt is <b>augmented</b>. Write is <b>generation</b>. Together: retrieval-augmented generation, or <b>RAG</b>.</p>
 <p class="pull">You already built RAG in Lecture 12. Next: what if the question has no number in it?</p>
 </section>
 
