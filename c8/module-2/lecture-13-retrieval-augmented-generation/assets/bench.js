@@ -724,8 +724,7 @@ function st7() {
     '<li><b>Q4</b> nothing <i>→</i> let it say “not in the notes”</li><li><b>Q5</b> a path <i>→</i> let the LLM search in rounds</li></ol>' +
     '<p>And before any of them, rule zero: if it all fits and the questions are few, paste it.</p></div>' +
     (all ? '' : '<p>Some scoreboard questions are still red. Go back to their station to turn them green.</p>') +
-    '<p class="next"><b>Practice set 4:</b> climb the same ladder for your own project, on a nine-line design card. Submit it on the LMS by Thu 26 Nov.</p>' +
-    '<div class="row handoff"><a class="btn go" href="' + BASE + 'notes#s09">Fill your design card</a><button class="btn ghost" id="dl">Save the wire as a text file</button></div>' +
+    '<div class="row handoff"><button class="btn ghost" id="dl">Save the wire as a text file</button></div>' +
     ownQuestion());
   $('#dl').onclick = download; bindOwn();
 }

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lecture Notes: Retrieval-Augmented Generation | 100xEngineers</title>
-<meta name="description" content="Notes for Lecture 13, both tracks, with the whiteboard. Five questions about our own notes, and what each one hands you: a number, exact words, only a meaning, nothing, or a path. Paste it, look it up, search by words, search by meaning, or let the LLM search in rounds.">
+<meta name="description" content="Notes for Lecture 13, both tracks, with the whiteboard. The first two questions about our own notes: one has a lecture number, so look it up; one has exact words, so search for them. And when to just paste everything in.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -75,25 +75,27 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <div class="hero">
   <p class="kick">Lecture notes · Lecture 13 · 20 November 2026 · Both tracks</p>
   <h1>Find the right few paragraphs.</h1>
-  <p class="dek">Five questions about our own notes, and what each one hands you.</p>
+  <p class="dek">Two questions about our own notes, and how to find each answer.</p>
 </div>
 
-<p>The LLM has never read our notes. So we ask it five questions about our own course, and mark each answer with a rule anyone can check. Each question hands you something different, and that decides how you find the answer.</p>
+<p>The LLM has never read our course notes. So we ask it questions about our own course, and check each answer with a simple rule. So far we have done two:</p>
 <table class="dials">
-  <tr><th></th><th>The question</th><th>It hands you</th></tr>
-  <tr><td>Q1</td><td>What is Lecture 6 about?</td><td>A key: the lecture number</td></tr>
+  <tr><th></th><th>The question</th><th>What it gives you to search with</th></tr>
+  <tr><td>Q1</td><td>What is Lecture 6 about?</td><td>A number: the lecture number</td></tr>
   <tr><td>Q2</td><td>Which lecture teaches Verifier's Law?</td><td>Exact words</td></tr>
-  <tr><td>Q3</td><td>Why is the LLM making things up?</td><td>Only a meaning</td></tr>
-  <tr><td>Q4</td><td>Which lecture shows how to put our app on the App Store?</td><td>Nothing: it is not in the notes</td></tr>
-  <tr><td>Q5</td><td>Lecture 11 says the LLM "still named Zapier". In the lecture with the runs, the fix added three real UI builders to the data. Which three?</td><td>A path: two searches</td></tr>
 </table>
-<p>Every run below is on the <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">Retrieval Bench</a>, with GPT-OSS 120B on Groq. Bring your own Groq key and run them yourself.</p>
+<p>What the question gives you decides how you find the answer.</p>
 
 <section class="s" id="s01"><h2><span class="n">01</span>The closed book</h2>
-<p>Ask all five with nothing attached: <b>0 out of 5</b>. For Q1 it asked which course we meant. For Q2 it named a lecture at MIT. It sounded just as sure when it was wrong.</p>
-<p>A bright student, in a closed-book exam, on a book they never read. There are two ways to open the book: paste the notes in, or give the LLM a tool, the <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Lecture 12</a> move. Q1 carries a lecture number, so a tool can fetch Lecture 6 by its number. The LLM reads it and answers: databases. Q1 passes.</p>
+<p>First, ask with nothing attached. The LLM gets it wrong. For Q1 it asked which course we meant. For Q2 it named a lecture at MIT. It sounded just as sure when it was wrong.</p>
+<p>Think of a smart student in a closed-book exam, on a book they have never read. You can open the book in two ways:</p>
+<ul class="pt">
+  <li><b>Paste the notes</b> into the prompt.</li>
+  <li><b>Give the LLM a tool</b> that fetches a page. You did this in <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Lecture 12</a>.</li>
+</ul>
+<p>Q1 has a number in it: Lecture 6. So a tool can fetch Lecture 6 by its number. The LLM reads it and answers: databases. Q1 passes.</p>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Closed book: a question goes to the LLM, and 0 of 5 come back right. Open book: 1, fetch the passage from the notes. 2, add it to the prompt beside the question. 3, the LLM writes an answer, with its source.">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Closed book: a question goes to the LLM, and the answers come back wrong. Open book: 1, fetch the passage from the notes. 2, add it to the prompt beside the question. 3, the LLM writes an answer, with its source.">
   <g class="ln" filter="url(#wob)">
     <rect class="f-card" x="30" y="105" width="110" height="56" rx="9"/>
     <path class="arw" d="M146 133 H194" marker-end="url(#ah)"/>
@@ -110,7 +112,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="175" y="40" class="m">Closed book</text>
     <text x="85" y="139" class="xxs">question</text>
     <text x="260" y="139" class="xxs c-prob">LLM</text>
-    <text x="260" y="214" class="xs c-act">0 of 5 right</text>
+    <text x="260" y="214" class="xs c-act">wrong, and sure</text>
     <text x="572" y="40" class="m">Open book</text>
     <text x="440" y="165" class="xxs c-det">the notes</text>
     <text x="510" y="94" class="xxxs c-det">1 fetch</text>
@@ -122,21 +124,21 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <text x="750" y="214" class="xxs r">an answer, with its source</text>
   </g>
 </svg>
-<figcaption>Three verbs: fetch, add, write.</figcaption>
+<figcaption>Three steps: fetch, add, write.</figcaption>
 </figure>
-<p>Fetch the passage, add it to the prompt, let the LLM write. In that order the three verbs are a name: <b>retrieval</b>, <b>augmented</b>, <b>generation</b>. Retrieval-augmented generation, or RAG.</p>
-<p class="pull">You built RAG in Lecture 12. Today: what if the question carries no number?</p>
+<p>Those three steps have a name. Fetch is <b>retrieval</b>. Add to the prompt is <b>augmented</b>. Write is <b>generation</b>. Together: retrieval-augmented generation, or <b>RAG</b>.</p>
+<p class="pull">You already built RAG in Lecture 12. Next: what if the question has no number in it?</p>
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>Why not paste it all?</h2>
-<p>All twelve notes pages come to about <b>30,000 tokens</b>. The LLM can read about 131,000 at once. It fits. For twelve pages, pasting is a fair design: <a href="https://www.anthropic.com/news/contextual-retrieval" target="_blank" rel="noopener">Anthropic's own guidance</a> says a knowledge base under about 200,000 tokens can go straight into the prompt.</p>
-<p>So why not always paste? Pasting has three costs.</p>
+<p>All twelve notes pages add up to about <b>30,000 tokens</b>. The LLM can read about 131,000 at once, so they fit. For a small pile like ours, pasting is fine. <a href="https://www.anthropic.com/news/contextual-retrieval" target="_blank" rel="noopener">Anthropic's own guidance</a> says: under about 200,000 tokens, just put it in the prompt.</p>
+<p>So why not always paste? It has three costs.</p>
 <ul class="pt">
-  <li><b>The bill.</b> Every question sends all 30,000 tokens again, to use two paragraphs. At $0.15 per million input tokens, one question costs $0.0045, and a thousand a day for 30 days costs <b>$135</b>. Send only the two passages that matter, about 1,500 tokens: $6.75.</li>
-  <li><b>No receipt.</b> The answer does not say which page it came from. You cannot check what you cannot see (<a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s10">Lecture 11</a>).</li>
-  <li><b>The drift.</b> Answers get less reliable as the prompt grows, long before it is full. <a href="https://research.trychroma.com/context-rot" target="_blank" rel="noopener">Chroma tested 18 LLMs</a> in July 2025, and every one showed it.</li>
+  <li><b>You pay every time.</b> Each question sends all 30,000 tokens again, just to use two paragraphs. At $0.15 per million input tokens, 1,000 questions a day for 30 days costs <b>$135</b>. Send only the two passages that matter, about 1,500 tokens, and it costs $6.75.</li>
+  <li><b>No source.</b> The answer does not say which page it came from, so you cannot check it (<a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s10">Lecture 11</a>).</li>
+  <li><b>Longer prompt, worse answers.</b> Answers get less reliable as the prompt grows, even before it is full. <a href="https://research.trychroma.com/context-rot" target="_blank" rel="noopener">Chroma tested 18 LLMs</a> in July 2025, and all of them did this.</li>
 </ul>
-<p>On a free Groq key you meet a fourth cost first: Groq refuses the request before the LLM reads a word. The limit is 8,000 tokens a minute, and the request asks for 31,131.</p>
+<p>On a free Groq key, you hit a fourth problem first. The free limit is 8,000 tokens a minute. Pasting everything asks for 31,131, so Groq rejects the request before the LLM reads a word.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 220" role="img" aria-label="Two bars. All twelve notes pages, sent with every question: about 30,000 tokens. The two passages that matter: about 1,500 tokens. A dashed line marks a free key's 8,000 tokens a minute, far short of the long bar.">
   <g class="ln" filter="url(#wob)">
@@ -155,16 +157,15 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>Every question pays for the long bar. It needs the short one.</figcaption>
 </figure>
-<p class="pull">Rule zero: if it fits, the questions are few, and nobody needs a source, paste it.</p>
-<p>It is the first answer in any interview about RAG, and most people skip it. Past rule zero, the job is not to give the LLM everything. It is to give it the right few paragraphs. How do you find them?</p>
+<p class="pull">Rule zero: if it fits, the questions are few, and nobody needs the source, just paste it.</p>
+<p>Interviewers ask this first, and most people skip it. When pasting is not enough, the job changes. Do not give the LLM everything. Give it the right few paragraphs. How do you find them?</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Find it by its words</h2>
-<p>Q2: "Which lecture teaches Verifier's Law?" Press Ctrl+F across every passage and type <b>Verifier</b>: 24 passages light up, in 6 lectures. Finding is not enough. You also have to choose which ones to hand over. Type the exact words, <b>Verifier's Law</b>, and 2 passages remain, both in Lecture 1. Q2 passes.</p>
-<p>Ctrl+F reads the whole pile every time. That is fine for twelve pages, not for twelve million. A book solves this with the index at the back: a second copy of the book, sorted by word, built once (<a href="/c8/module-2/first-principles/02-how-a-machine-remembers/one-row-in-a-billion">course lesson 2.6</a>). Searching that copy is <b>keyword search</b>.</p>
-<p>Now Q3: "Why is the LLM making things up?" Search for <b>making things up</b>: 0 passages.</p>
+<p>Q2: "Which lecture teaches Verifier's Law?" No number this time. But it has exact words.</p>
+<p>Press Ctrl+F across all the passages and type <b>Verifier</b>: 24 passages light up, in 6 lectures. Too many to hand over. Type the full name, <b>Verifier's Law</b>: only 2 passages are left, both in Lecture 1. Hand those two to the LLM. Q2 passes.</p>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Two searches over the twelve lectures, one block per lecture. Verifier lights up blocks in six lectures: 24 passages. Making things up lights up nothing: 0 passages. Lecture 10 has the answer, but it says hallucination.">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="Two searches over the twelve lectures, one block per lecture. Verifier lights up blocks in six lectures: 24 passages. Verifier's Law lights up only Lecture 1: 2 passages.">
   <g class="ln" filter="url(#wob)">
     <rect class="f-card" x="30" y="40" width="220" height="44" rx="8"/>
     <path class="arw" d="M256 62 H292" marker-end="url(#ah)"/>
@@ -182,7 +183,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
     <rect class="f-card" x="597" y="44" width="22" height="36" rx="4"/>
     <rect class="f-card" x="30" y="132" width="220" height="44" rx="8"/>
     <path class="arw" d="M256 154 H292" marker-end="url(#ah)"/>
-    <rect class="f-card" x="300" y="136" width="22" height="36" rx="4"/>
+    <rect class="f-act" x="300" y="136" width="22" height="36" rx="4"/>
     <rect class="f-card" x="327" y="136" width="22" height="36" rx="4"/>
     <rect class="f-card" x="354" y="136" width="22" height="36" rx="4"/>
     <rect class="f-card" x="381" y="136" width="22" height="36" rx="4"/>
@@ -197,360 +198,43 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   </g>
   <g class="tx">
     <text x="140" y="67" class="mono">Verifier</text>
-    <text x="140" y="159" class="mono">making things up</text>
+    <text x="140" y="159" class="mono">Verifier's Law</text>
     <text x="311" y="100" class="xxxs c-mute">L1</text>
     <text x="608" y="100" class="xxxs c-mute">L12</text>
     <text x="632" y="60" class="xs l">24 passages</text>
     <text x="632" y="82" class="xxxs c-mute l">in 6 lectures</text>
-    <text x="632" y="160" class="xs c-act l">0 passages</text>
-    <text x="380" y="214" class="xxs c-mute">Lecture 10 has the answer. It says "hallucination".</text>
+    <text x="632" y="152" class="xs c-act l">2 passages</text>
+    <text x="632" y="174" class="xxxs c-mute l">both in Lecture 1</text>
   </g>
 </svg>
-<figcaption>Search by words is exact, fast, and blind to meaning.</figcaption>
+<figcaption>The more exact the words, the fewer passages come back.</figcaption>
 </figure>
-<p>Lecture 10 has a whole section on exactly this question. It never says "making things up". It says <b>hallucination</b>. You would find it anyway, because you know the two mean the same thing. Ctrl+F does not.</p>
-<p class="pull">Q1 handed us a number. Q2 handed us the exact words. Q3 hands us only a meaning.</p>
-</section>
-
-<section class="s" id="s04"><h2><span class="n">04</span>Find it by its meaning</h2>
-<p>How would a computer match "making things up" to "hallucination"? A list of synonyms, for every phrase in every language, never ends. Asking the LLM to read everything is pasting it all again. You have met the answer already in <a href="/c8/module-2/first-principles/05-attention-and-transformers/">course lesson 5.1</a>: a map, where words with close meanings sit close together.</p>
-<p>Do the same for passages. A small model reads each passage once and turns it into <b>384 numbers</b>: its position on a map of meaning. Then place the question on the same map, and take the passages nearest to it.</p>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="A map of dots. One cluster is about keys and tables, one about deploying, one about why LLMs hallucinate. The question, making things up, lands beside the hallucination cluster, and lines run to its three nearest passages.">
-  <g class="ln" filter="url(#wob)">
-    <circle class="f-card" cx="130" cy="82" r="7"/>
-    <circle class="f-card" cx="162" cy="104" r="7"/>
-    <circle class="f-card" cx="188" cy="76" r="7"/>
-    <circle class="f-card" cx="148" cy="126" r="7"/>
-    <circle class="f-card" cx="200" cy="112" r="7"/>
-    <circle class="f-card" cx="150" cy="214" r="7"/>
-    <circle class="f-card" cx="186" cy="244" r="7"/>
-    <circle class="f-card" cx="214" cy="212" r="7"/>
-    <circle class="f-card" cx="166" cy="262" r="7"/>
-    <circle class="f-card" cx="232" cy="248" r="7"/>
-    <circle class="f-card" cx="430" cy="150" r="7"/>
-    <circle class="f-act" cx="470" cy="182" r="7"/>
-    <circle class="f-act" cx="502" cy="156" r="7"/>
-    <circle class="f-card" cx="452" cy="206" r="7"/>
-    <circle class="f-act" cx="512" cy="196" r="7"/>
-    <path class="c-act thin" d="M566 116 L508 152"/>
-    <path class="c-act thin" d="M566 116 L517 189"/>
-    <path class="c-act thin" d="M566 116 L476 176"/>
-    <circle class="badge act" cx="566" cy="116" r="9"/>
-  </g>
-  <g class="tx">
-    <text x="165" y="52" class="xxs c-mute">keys and tables</text>
-    <text x="250" y="232" class="xxs c-mute l">deploying</text>
-    <text x="470" y="244" class="xxs c-mute">why LLMs hallucinate</text>
-    <text x="582" y="104" class="xxs c-act l">"making things up"</text>
-    <text x="582" y="126" class="xxxs c-act l">your question</text>
-  </g>
-</svg>
-<figcaption>The question shares no words with its neighbours. It sits near them by meaning.</figcaption>
-</figure>
-<p>On the bench, Q3's nearest passage is Lecture 10, "Why models hallucinate", scored 0.87, where 1 would be identical. Hand the nearest passages to the LLM with Q3 and it points to Lecture 10. Q3 passes.</p>
-<p>The 384 numbers are an <b>embedding</b>. One embedding per passage, not per word. How many nearest passages you take is <b>top-k</b>.</p>
-<p>What should one dot be: a whole lecture, a paragraph, or a sentence? A whole lecture covers ten ideas, so its dot lands between all of them and near none. A lone sentence says "it does this because of that", and nobody knows what "it" is. The middle is a <b>chunk</b>: the smallest piece that still makes sense alone. On the bench, a chunk is a passage of up to 170 words.</p>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Two rows. Once, before any question: notes pages, split into chunks, place each on the map, store. Every question: the question, place it on the map, take the nearest 3 from the store, the LLM writes the answer with its source. Rule steps are orange, model steps purple.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="f-card" x="20" y="60" width="120" height="50" rx="9"/>
-    <path class="arw" d="M146 85 H184" marker-end="url(#ah)"/>
-    <rect class="f-det" x="190" y="60" width="110" height="50" rx="9"/>
-    <path class="arw" d="M306 85 H344" marker-end="url(#ah)"/>
-    <rect class="f-prob" x="350" y="60" width="150" height="50" rx="9"/>
-    <path class="arw" d="M506 85 H544" marker-end="url(#ah)"/>
-    <rect class="f-det" x="550" y="60" width="110" height="50" rx="9"/>
-    <rect class="f-card" x="20" y="190" width="120" height="50" rx="9"/>
-    <path class="arw" d="M146 215 H184" marker-end="url(#ah)"/>
-    <rect class="f-prob" x="190" y="190" width="150" height="50" rx="9"/>
-    <path class="arw" d="M346 215 H384" marker-end="url(#ah)"/>
-    <rect class="f-det" x="390" y="190" width="110" height="50" rx="9"/>
-    <path class="arw" d="M506 215 H544" marker-end="url(#ah)"/>
-    <rect class="f-prob" x="550" y="190" width="100" height="50" rx="9"/>
-    <path class="arw" d="M656 215 H686" marker-end="url(#ah)"/>
-    <path class="arw dash ink" d="M600 116 L460 184" marker-end="url(#ah)"/>
-  </g>
-  <g class="tx">
-    <text x="20" y="42" class="m l">Once, before any question</text>
-    <text x="80" y="91" class="xxs">notes pages</text>
-    <text x="245" y="91" class="xxs c-det">split</text>
-    <text x="425" y="91" class="xxs c-prob">place on the map</text>
-    <text x="425" y="130" class="xxxs c-prob">a model, but same in, same out</text>
-    <text x="605" y="91" class="xxs c-det">store</text>
-    <text x="20" y="172" class="m l">Every question</text>
-    <text x="80" y="221" class="xxs">question</text>
-    <text x="265" y="221" class="xxs c-prob">place on the map</text>
-    <text x="445" y="221" class="xxs c-det">nearest 3</text>
-    <text x="600" y="221" class="xxs c-prob">LLM</text>
-    <text x="724" y="210" class="xxs">answer</text>
-    <text x="724" y="230" class="xxxs">+ source</text>
-    <text x="548" y="158" class="xxxs c-mute">read</text>
-    <text x="380" y="278" class="xxxs c-mute">orange: a rule, same in, same out · purple: a model</text>
-  </g>
-</svg>
-<figcaption>The two phases. Only the last step writes freely.</figcaption>
-</figure>
-<p>Which steps are rules, and which are a model's guess (<a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9</a>)? Placing on the map uses a model, yet the same text always lands in the same place. Only the last step, the LLM writing the answer, can surprise you.</p>
-</section>
-
-<section class="s" id="s05"><h2><span class="n">05</span>Similar is not correct</h2>
-<p>Q4: "Which lecture shows how to put our app on the App Store?" No notes page does. Search by meaning still returns three passages: Lecture 7's opening (the app's function moves to a rented machine, behind a URL), how the Lecture 4 notes are organised, and Lecture 8's opening (that API on Vercel learns to remember). None of them is about the App Store. The map has no edge, so something is always nearest.</p>
-<p>Hand those three to the LLM and it can answer anyway: <b>"Lecture 7"</b>, read off the deploy passage. Putting an app behind a URL is not putting it on the App Store.</p>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="The question, which lecture shows how to put our app on the App Store, goes to the three nearest passages: Lecture 7, deploying to a URL; Lecture 4, how the notes are organised; Lecture 8, the API on Vercel. The LLM reads them and says Lecture 7, read off the deploy passage. With the line that it may say not in the notes, it says not in the notes.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="f-card" x="20" y="95" width="150" height="70" rx="9"/>
-    <path class="arw" d="M176 130 H222" marker-end="url(#ah)"/>
-    <rect class="f-act" x="228" y="30" width="180" height="50" rx="8"/>
-    <rect class="f-card" x="228" y="105" width="180" height="50" rx="8"/>
-    <rect class="f-card" x="228" y="180" width="180" height="50" rx="8"/>
-    <path class="arw" d="M414 55 L462 110" marker-end="url(#ah)"/>
-    <path class="arw" d="M414 130 H462" marker-end="url(#ah)"/>
-    <path class="arw" d="M414 205 L462 150" marker-end="url(#ah)"/>
-    <rect class="f-prob" x="468" y="90" width="100" height="80" rx="10"/>
-    <path class="arw c-act" d="M574 110 L612 76" marker-end="url(#ahc)"/>
-    <path class="arw c-det" d="M574 150 L612 196" marker-end="url(#ahd)"/>
-  </g>
-  <g class="tx">
-    <text x="95" y="125" class="xxs">Put our app on</text>
-    <text x="95" y="147" class="xxs">the App Store?</text>
-    <text x="318" y="20" class="xxxs c-mute">the nearest 3</text>
-    <text x="318" y="61" class="xxs c-act">L7 · deploy to a URL</text>
-    <text x="318" y="136" class="xxs">L4 · notes contents</text>
-    <text x="318" y="211" class="xxs">L8 · the API on Vercel</text>
-    <text x="518" y="136" class="xxs c-prob">LLM</text>
-    <text x="618" y="72" class="xs c-act l">"Lecture 7."</text>
-    <text x="618" y="94" class="xxxs c-mute l">read off the deploy</text>
-    <text x="618" y="200" class="xs c-det l">"Not in</text>
-    <text x="618" y="222" class="xs c-det l">the notes."</text>
-    <text x="505" y="196" class="xxxs c-det">+ may say "not in the notes"</text>
-  </g>
-</svg>
-<figcaption>Nearest is not the same as relevant.</figcaption>
-</figure>
-<p>Which step failed? The search did what we built it to do. The LLM did what we asked. The design had no way to say no. Three fixes:</p>
-<ul class="pt">
-  <li><b>The honest miss.</b> Add one line to the prompt: "If the passages do not answer it, say it is not in the notes." With that line it says the notes do not cover it. Q4 passes, and the right answer was a refusal.</li>
-  <li><b>The receipt.</b> Show the passage beside the answer, so anyone can check it.</li>
-  <li><b>Check the passage, not the sentence.</b> A fluent answer proves nothing. Verify the record (<a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s10">Lecture 11</a>).</li>
-</ul>
-<p>When an answer is wrong, one of two things broke, and the receipt tells you which.</p>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Two failures. A: the right passage came back, and the answer is still wrong: fix the prompt. B: the wrong passage came back, and the answer repeats it faithfully: fix the search. Open the passages first.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="f-det" x="40" y="62" width="140" height="56" rx="9"/>
-    <path class="arw" d="M186 90 H214" marker-end="url(#ah)"/>
-    <rect class="f-act" x="220" y="62" width="130" height="56" rx="9"/>
-    <path class="dash" d="M380 30 V180"/>
-    <rect class="f-act" x="420" y="62" width="140" height="56" rx="9"/>
-    <path class="arw" d="M566 90 H594" marker-end="url(#ah)"/>
-    <rect class="f-act" x="600" y="62" width="130" height="56" rx="9"/>
-  </g>
-  <g class="tx">
-    <text x="110" y="48" class="xxxs c-mute">what came back</text>
-    <text x="285" y="48" class="xxxs c-mute">what it wrote</text>
-    <text x="490" y="48" class="xxxs c-mute">what came back</text>
-    <text x="665" y="48" class="xxxs c-mute">what it wrote</text>
-    <text x="110" y="96" class="xxs c-det">the right passage</text>
-    <text x="285" y="96" class="xxs c-act">a wrong answer</text>
-    <text x="490" y="96" class="xxs c-act">a wrong passage</text>
-    <text x="665" y="96" class="xxs c-act">repeats it</text>
-    <text x="195" y="152" class="m">A: fix the prompt</text>
-    <text x="575" y="152" class="m">B: fix the search</text>
-    <text x="575" y="174" class="xxxs c-mute">no prompt can save it</text>
-    <text x="380" y="216" class="m c-act">Open the passages first.</text>
-  </g>
-</svg>
-<figcaption>Found the wrong thing, or wrote the wrong thing.</figcaption>
-</figure>
-</section>
-
-<section class="s" id="s06"><h2><span class="n">06</span>The path</h2>
-<p>Q5: 'Lecture 11 says the LLM "still named Zapier". In the lecture with the runs, the fix added three real UI builders to the data. Which three?'</p>
-<p>The first search, <b>still named Zapier</b>, finds two passages: Lecture 11's recap and Lecture 10's table of runs. Neither names the fix. But Lecture 11 says "Lecture 10 has the runs". The second search, <b>UI builders</b>, finds the fix in another Lecture 10 section: <b>Lovable, Google AI Studio and Antigravity</b>.</p>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 270" role="img" aria-label="Search 1, still named Zapier, returns Lecture 11 and Lecture 10's runs: Lecture 10 has the runs, but no fix there. The LLM reads that and writes search 2, UI builders. It returns Lecture 10's fix: Lovable, Google AI Studio, Antigravity.">
-  <g class="ln" filter="url(#wob)">
-    <rect class="f-card" x="20" y="40" width="130" height="60" rx="9"/>
-    <path class="arw c-act" d="M156 70 H372" marker-end="url(#ahc)"/>
-    <rect class="f-card" x="378" y="30" width="240" height="80" rx="9"/>
-    <path class="arw c-prob" d="M420 116 Q300 150 176 196" marker-end="url(#ahv)"/>
-    <rect class="f-prob" x="20" y="180" width="150" height="60" rx="9"/>
-    <path class="arw c-act" d="M176 210 H372" marker-end="url(#ahc)"/>
-    <rect class="f-det" x="378" y="175" width="180" height="70" rx="9"/>
-    <path class="arw" d="M564 210 H598" marker-end="url(#ah)"/>
-  </g>
-  <g class="tx">
-    <text x="85" y="76" class="xs">Q5</text>
-    <text x="264" y="56" class="xxs c-act">search 1: "still named Zapier"</text>
-    <text x="498" y="62" class="xxs">Lecture 11 + Lecture 10's runs</text>
-    <text x="498" y="88" class="xxxs c-mute">"Lecture 10 has the runs"</text>
-    <text x="626" y="74" class="xxxs c-act l">no fix here</text>
-    <text x="95" y="206" class="xxs c-prob">LLM</text>
-    <text x="95" y="228" class="xxxs">writes search 2</text>
-    <text x="274" y="198" class="xxs c-act">search 2: "UI builders"</text>
-    <text x="468" y="206" class="xxs c-det">Lecture 10: the fix</text>
-    <text x="468" y="228" class="xxxs c-mute">a golden pair</text>
-    <text x="606" y="192" class="xxs l">Lovable,</text>
-    <text x="606" y="212" class="xxs l">Google AI Studio,</text>
-    <text x="606" y="232" class="xxs l">Antigravity</text>
-  </g>
-</svg>
-<figcaption>The second search depends on what the first one found.</figcaption>
-</figure>
-<p>Could our code write the second search before it reads the first result? No: code does not read. The LLM writes it. Search is one more tool on the <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes#s03">Lecture 12 loop</a>: the LLM asks, the server searches, the LLM reads the result and decides whether to search again. On the bench it passed 12 runs out of 12, with two to four searches each.</p>
-<p>The cost: every round sends the whole conversation again, passages included. More calls, more tokens, more waiting.</p>
-<p class="pull">Let the LLM search in rounds only when the question hands you a path.</p>
-</section>
-
-<section class="s" id="s07"><h2><span class="n">07</span>The ladder</h2>
-<p>The five questions were one question, asked five times: <b>what does the question hand you?</b> Read top to bottom, it is the decision you would make for a client. Three of the seven answers are: you do not need retrieval.</p>
-<figure class="sk">
-<svg class="wb" viewBox="0 0 760 400" role="img" aria-label="A ladder of seven rungs. Do you need retrieval at all: fits and few questions, paste it; behaviour or style, instructions and examples; counting records, a database query. What does the question hand you: a key, look it up; exact words, keyword search; only a meaning, search by meaning; a path, the LLM searches in rounds. Lower rungs cost more and are harder to check.">
-  <g class="ln" filter="url(#wob)">
-    <path d="M60 30 V380"/>
-    <path d="M110 30 V380"/>
-    <path class="c-det" d="M60 55 H110"/>
-    <path class="c-det" d="M60 100 H110"/>
-    <path class="c-det" d="M60 145 H110"/>
-    <path class="c-act" d="M60 210 H110"/>
-    <path class="c-act" d="M60 255 H110"/>
-    <path class="c-act" d="M60 300 H110"/>
-    <path class="c-act" d="M60 345 H110"/>
-    <path class="arw" d="M742 46 V362" marker-end="url(#ah)"/>
-  </g>
-  <g class="tx">
-    <text x="130" y="30" class="xxxs c-mute l">Do you need retrieval at all?</text>
-    <text x="130" y="61" class="xxs l">It fits, and the questions are few</text>
-    <text x="460" y="61" class="xs c-det l">Paste it.</text>
-    <text x="130" y="106" class="xxs l">It is behaviour, a style or a voice</text>
-    <text x="460" y="106" class="xs c-det l">Instructions and examples.</text>
-    <text x="130" y="151" class="xxs l">It is counting records</text>
-    <text x="460" y="151" class="xs c-det l">A database query.</text>
-    <text x="130" y="186" class="xxxs c-mute l">What does the question hand you?</text>
-    <text x="130" y="216" class="xxs l">A key, like a lecture number</text>
-    <text x="460" y="216" class="xs c-act l">Look it up.</text>
-    <text x="130" y="261" class="xxs l">Exact words</text>
-    <text x="460" y="261" class="xs c-act l">Keyword search.</text>
-    <text x="130" y="306" class="xxs l">Only a meaning</text>
-    <text x="460" y="306" class="xs c-act l">Search by meaning.</text>
-    <text x="130" y="351" class="xxs l">A path</text>
-    <text x="460" y="351" class="xs c-act l">The LLM searches in rounds.</text>
-    <text x="734" y="30" class="xxxs c-mute r">cheaper</text>
-    <text x="734" y="392" class="xxxs c-mute r">costlier, harder to check</text>
-  </g>
-</svg>
-<figcaption>Start at the top. Move down only when the cheaper rung fails on real questions.</figcaption>
-</figure>
-<p>Each rung costs more to build, and is harder to check, than the one above it. A lookup is right or wrong. A keyword hit can be read. A nearest passage is a guess you must test. An LLM searching in rounds is several guesses in a row. Most real systems use more than one rung: a support bot looks up the order by its number and searches the help articles by meaning, in the same answer.</p>
-<details class="words"><summary>Six situations, and the rung for each</summary>
-<table class="dials">
-  <tr><th>The situation</th><th>The rung</th><th>Why</th></tr>
-  <tr><td>A 20-page HR handbook, 30 questions a day</td><td>Paste</td><td>Rule zero</td></tr>
-  <tr><td>"How many orders shipped in October?"</td><td>Database</td><td>Counting is a query, not a search (<a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Lecture 6</a>)</td></tr>
-  <tr><td>"Where is order 4417?"</td><td>Key</td><td>The question carries the number</td></tr>
-  <tr><td>Lawyers looking for clause 14.2 across 50,000 contracts</td><td>Words</td><td>Exact strings, narrowed by client</td></tr>
-  <tr><td>Customers describing a problem in their own words, 5,000 help articles</td><td>Meaning</td><td>No shared words; usually mixed with keyword search</td></tr>
-  <tr><td>"Make the LLM write in our brand voice"</td><td>None</td><td>That is behaviour, not missing knowledge</td></tr>
-</table>
-</details>
-<blockquote class="q9">In an interview: "First I ask whether retrieval is needed at all: is it behaviour, does it fit, is it a database question. If it is needed, I ask what the question hands me: a key, exact words, a meaning, or a path. I start at the cheapest rung and only move down when it fails on real questions."</blockquote>
-</section>
-
-<section class="s" id="s08"><h2><span class="n">08</span>Read any retrieval diagram</h2>
-<p>A production diagram is the two-phase picture with more boxes. Ask four questions of every box:</p>
-<ol>
-  <li><b>Once, or for every question?</b> Which phase is it in?</li>
-  <li><b>Rule or model?</b> Same input, same output, or a guess?</li>
-  <li><b>Which rung does it serve?</b> Key, words, meaning, path, or is it a check?</li>
-  <li><b>If I delete it, which question on the scoreboard turns red?</b> If none, it is not needed yet.</li>
-</ol>
-<details class="words"><summary>The usual boxes, in our words</summary>
-<table class="dials">
-  <tr><th>On the diagram</th><th>In our words</th><th>Phase</th></tr>
-  <tr><td>Chunker, text splitter</td><td>Split into chunks</td><td>Once</td></tr>
-  <tr><td>Embedding model</td><td>Place on the map</td><td>Both</td></tr>
-  <tr><td>Vector store</td><td>The store: a second copy, read every question</td><td>Once, then read</td></tr>
-  <tr><td>BM25, keyword index</td><td>Keyword search</td><td>Every question</td></tr>
-  <tr><td>Metadata filter</td><td>Narrow the pile before searching</td><td>Every question</td></tr>
-  <tr><td>Hybrid search</td><td>Run both searches and merge the lists</td><td>Every question</td></tr>
-  <tr><td>Reranker</td><td>A slower, careful second look at the top 20</td><td>Every question</td></tr>
-  <tr><td>Citations, grounding check</td><td>The receipt and the honest miss</td><td>Every question</td></tr>
-</table>
-</details>
-<p>Question 4 turns reading into judgment. For our twelve pages, most boxes on a production diagram can go.</p>
-</section>
-
-<section class="s" id="s09"><h2><span class="n">09</span>Design it, defend it</h2>
-<p>A design is the two-phase picture plus nine lines, each with a reason. The right column is the course assistant from today:</p>
-<table class="dials">
-  <tr><th></th><th>Line to fill</th><th>The course assistant</th></tr>
-  <tr><td>1</td><td>Who asks, and one real question they ask</td><td>A learner: "Why is the LLM making things up?"</td></tr>
-  <tr><td>2</td><td>What documents, how many, how often they change</td><td>12 notes pages, about 30,000 tokens, two new pages a week</td></tr>
-  <tr><td>3</td><td>Rule zero: does it fit, and is pasting good enough?</td><td>It fits today, not once session transcripts are added. Learners need the source.</td></tr>
-  <tr><td>4</td><td>What do the questions hand you? Which rungs?</td><td>Sometimes a lecture number (key). Usually a meaning.</td></tr>
-  <tr><td>5</td><td>What is one chunk, and why that size?</td><td>A passage inside one section. It holds one idea and reads alone.</td></tr>
-  <tr><td>6</td><td>What goes in the prompt? What may the LLM refuse?</td><td>The question plus 3 passages. It may say "not in the notes".</td></tr>
-  <tr><td>7</td><td>What does the user see as the receipt?</td><td>The lecture number and the passage under the answer</td></tr>
-  <tr><td>8</td><td>Three questions with known answers, one absent from the documents</td><td>Q2, Q3 and Q4 from the scoreboard</td></tr>
-  <tr><td>9</td><td>What breaks first, and how will you notice?</td><td>A question that shares a word with the wrong lecture. The known-answer score drops.</td></tr>
-</table>
-<p>Lines 3, 8 and 9 are the ones a weak design leaves empty. Fill one card for your own project, or for one of these:</p>
-<ul class="pt">
-  <li><b>The clinic.</b> A 40-page patient handbook. Patients ask questions on WhatsApp, about 50 a day.</li>
-  <li><b>The shop.</b> 8,000 product pages and an orders table. Customers ask "where is my order?" and "which shoe suits flat feet?"</li>
-  <li><b>The law firm.</b> 50,000 contracts. Lawyers ask for clause 14.2 of a named contract, and "which contracts let the client leave early?"</li>
-</ul>
-<p>To defend a line, give four things: <b>the choice, the reason, the cost, and how you would test it.</b> A weak answer names a tool before a reason, never mentions a case where retrieval is not needed, and says "it works" without saying how that was checked.</p>
-<p><b>This card is Practice set 4.</b> Fill all nine lines and submit it on the LMS by Thu 26 Nov 2026.</p>
-<p class="copyrow"><button class="btn" type="button" id="copycard">Copy a blank card</button> <span id="copied" hidden>Copied. Paste it into a doc, fill all nine lines, and submit it on the LMS.</span></p>
-<script>
-(function () {
-  var card = 'Practice set 4: design card for ____ (your project, or the clinic, the shop, the law firm)\n\n' + [
-    'Who asks, and one real question they ask',
-    'What documents, how many, how often they change',
-    'Rule zero: does it fit, and is pasting good enough?',
-    'What do the questions hand you? Which rungs?',
-    'What is one chunk, and why that size?',
-    'What goes in the prompt? What may the LLM refuse?',
-    'What does the user see as the receipt?',
-    'Three questions with known answers, one absent from the documents',
-    'What breaks first, and how will you notice?'
-  ].map(function (l, i) { return (i + 1) + '. ' + l + '\n   '; }).join('\n') + '\n\nFor each line: the choice, the reason, the cost, and how you would test it.\n';
-  var b = document.getElementById('copycard'), done = document.getElementById('copied');
-  b.onclick = function () {
-    var ok = function () { done.hidden = false; };
-    if (navigator.clipboard) navigator.clipboard.writeText(card).then(ok, function () { done.hidden = false; done.textContent = 'Copy did not work here. Select the nine lines in the table above instead.'; });
-  };
-})();
-</script>
+<p>Ctrl+F reads every passage, every time. Fine for twelve pages. Far too slow for twelve million. Books solved this long ago with the index at the back: each word, and the pages it appears on. You build it once, and then every search is a quick lookup (<a href="/c8/module-2/first-principles/02-how-a-machine-remembers/one-row-in-a-billion">course lesson 2.6</a>). Searching this way is called <b>keyword search</b>.</p>
+<p class="pull">Q1 gave us a number, so we looked it up. Q2 gave us exact words, so we searched for them.</p>
 <details class="words"><summary>Words from this lecture</summary>
 <dl>
   <dt>Retrieval-augmented generation (RAG)</dt><dd>Fetch the passages that matter, add them to the prompt, let the LLM write.</dd>
-  <dt>Rule zero</dt><dd>If it fits, the questions are few, and nobody needs a source, paste it.</dd>
-  <dt>Keyword search</dt><dd>Find the passages that contain the exact words, using an index built once.</dd>
-  <dt>Embedding</dt><dd>A passage turned into a list of numbers: its position on a map of meaning.</dd>
-  <dt>Chunk</dt><dd>The smallest piece of a document that still makes sense alone.</dd>
-  <dt>Top-k</dt><dd>How many of the nearest passages you hand to the LLM.</dd>
-  <dt>Honest miss</dt><dd>The LLM is allowed to say the answer is not in the documents.</dd>
-  <dt>Receipt</dt><dd>The passage shown beside the answer, so anyone can check it.</dd>
+  <dt>Rule zero</dt><dd>If it fits, the questions are few, and nobody needs the source, just paste it.</dd>
+  <dt>Keyword search</dt><dd>Find the passages that contain the exact words, using an index you build once.</dd>
 </dl>
 </details>
 </section>
 
-<div class="call"><p class="kick">Keep this</p><p>Ask what the question hands you. If everything fits, paste it. Otherwise find the few passages that matter, hand them over with their source, and let the LLM say when the answer is not there.</p></div>
+<div class="call"><p class="kick">Keep this</p><p>If everything fits and the questions are few, paste it. If not, find the few passages that matter. A number in the question? Look it up. Exact words? Search for them.</p></div>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Now do the Retrieval Bench</h2>
+<p>Run Q1 and Q2 yourself, one step at a time: ask with nothing attached, fetch by number, paste it all, then search by words. Those are the first four stations. Bring the Groq key you used on the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a>, or make a new one at <a href="https://console.groq.com/keys" target="_blank" rel="noopener">console.groq.com/keys</a>.</p>
+<p><a class="btn" href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">Do the Retrieval Bench</a></p>
+</section>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
-  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">The Retrieval Bench: run all five questions yourself</a></li>
   <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Lecture 12 notes: one tool call, then an MCP server</a></li>
-  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s03">Lecture 10: why LLMs hallucinate</a></li>
-  <li><a href="/c8/module-2/first-principles/05-attention-and-transformers/">Course lesson 5.1: embeddings, a map of words</a></li>
+  <li><a href="/c8/module-2/first-principles/02-how-a-machine-remembers/one-row-in-a-billion">Course lesson 2.6: one row in a billion</a></li>
   <li><a href="https://www.anthropic.com/news/contextual-retrieval" target="_blank" rel="noopener">Anthropic: contextual retrieval</a></li>
   <li><a href="/#L13">Curriculum map</a></li>
 </ul></nav>
 
-<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>Next session: we make it fail on real documents, and repair it one level at a time.</small></p>
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>Next: what if the question does not use the exact words?</small></p>
   </main>
 </div>
 <footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 13: Retrieval-augmented generation · Both tracks</span><a href="/#L13">Curriculum map</a><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/">All Lecture 13 pages</a></div></footer>
