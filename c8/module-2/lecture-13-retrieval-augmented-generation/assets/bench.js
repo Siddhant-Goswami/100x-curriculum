@@ -186,8 +186,15 @@ function keyGate(n, message) {
 function keyBox(message) { groqKey = ''; try { sessionStorage.removeItem(KEYS); } catch (e) { /* ignore */ } keyGate(S.step, message); }
 
 /* ---------- the scoreboard ---------- */
-function mark(id, answer) {
-  var ok = RULES[id].test(plain(answer));
+/* a citation like [1] points to that passage's lecture, so the rule reads it as "Lecture N" */
+function cited(a, hits) {
+  if (!hits || !hits.length) return a;
+  return a.replace(/\[(\d+(?:\s*[,;]\s*\d+)*)\]/g, function (m, list) {
+    return m + list.split(/[,;]/).map(function (n) { var h = hits[+n - 1]; return h ? ' (Lecture ' + h.lecture + ')' : ''; }).join('');
+  });
+}
+function mark(id, answer, hits) {
+  var ok = RULES[id].test(cited(plain(answer), hits));
   S.score[id] = ok; S.answers[id] = clip(answer, 400); save(); paintScore(id);
   return ok;
 }
@@ -557,7 +564,7 @@ function st4() {
       meterStart(); setPrompt(parts, 0);
       return ask(content, { title: 'Q2 + the top ' + top.length + ' passages for “' + t.w + '”' }).then(function (d) {
         VIEWSTATE.promptTok = d.usage && d.usage.prompt_tokens; drawPile();
-        t.a2 = answerOf(d); t.ok2 = mark('Q2', t.a2); t.used = top;
+        t.a2 = answerOf(d); t.ok2 = mark('Q2', t.a2, top); t.used = top;
         return hop('server', 'you', clip(t.a2, 140)).then(function () { t.p = 1; st4(); });
       });
     }); };
@@ -618,7 +625,7 @@ function st5() {
       meterStart(); setPrompt(parts, 0);
       return ask(content, { title: 'Q3 + the ' + top.length + ' nearest passages' }).then(function (d) {
         VIEWSTATE.promptTok = d.usage && d.usage.prompt_tokens; drawPile();
-        t.a3 = answerOf(d); t.ok3 = mark('Q3', t.a3); t.used = top;
+        t.a3 = answerOf(d); t.ok3 = mark('Q3', t.a3, top); t.used = top;
         return hop('server', 'you', clip(t.a3, 140)).then(function () { t.p = 2; st5(); });
       });
     }); };
@@ -680,7 +687,7 @@ function runQ4(t) {
   clearWire(); meterStart(); setPrompt(parts, 0);
   return ask(content, { title: 'Q4 + the ' + top.length + ' nearest passages' + (t.honest ? ', line on' : '') }).then(function (d) {
     VIEWSTATE.promptTok = d.usage && d.usage.prompt_tokens; drawPile();
-    t.a4 = answerOf(d); t.ok4 = mark('Q4', t.a4); t.used = top; t.sentHonest = t.honest; t.runs = (t.runs || 0) + 1; if (t.runs === 1) t.firstOk = t.ok4;
+    t.a4 = answerOf(d); t.ok4 = mark('Q4', t.a4, top); t.used = top; t.sentHonest = t.honest; t.runs = (t.runs || 0) + 1; if (t.runs === 1) t.firstOk = t.ok4;
     return hop('server', 'you', clip(t.a4, 140)).then(function () { t.p = 2; st6(); });
   });
 }
