@@ -146,6 +146,9 @@ var GUIDE_LINKS = {
   l13Notes: '/c8/module-2/lecture-13-retrieval-augmented-generation/notes',  /* notes with the whiteboard sketches inline; /whiteboard redirects here */
   l13Bench: '/c8/module-2/lecture-13-retrieval-augmented-generation/bench',
   l13Practice: '/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s09',  /* Practice set 4 (the nine-line design card) is ON HOLD since 20 Nov 2026: the notes cover Q1 and Q2 only, s09 is gone; not linked from the card */  /* the Retrieval Bench: five questions about our notes, seven stations */
+  l14Hub: '/c8/module-2/lecture-14-building-rag-apps/',
+  l14Notes: '/c8/module-2/lecture-14-building-rag-apps/notes',  /* post-read of the 21 Nov code-track lecture: RAG Lab levels 1 to 4, whiteboard inline */
+  l14Lab: '/c8/module-2/lecture-14-building-rag-apps/lab',
   l11Checklist: '/c8/module-2/checklist/',  /* Before Lecture 11: everything from the probabilistic half so far, as ticks */
   groqPlay: 'https://console.groq.com/playground',
   l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
@@ -859,6 +862,11 @@ GUIDES.L13 = { all: {
   hub: {link:'l13Hub', title:'Open the Lecture 13 pages', sub:'The overview, the notes and the Retrieval Bench', more:[['l13Notes','Notes'],['l13Bench','Retrieval Bench']]}
 }};
 
+/* Lecture 14, code track: the overview, the notes and the RAG Lab. */
+GUIDES.L14 = { code: {
+  hub: {link:'l14Hub', title:'Open the Lecture 14 pages', sub:'The overview, the notes and the RAG Lab', more:[['l14Notes','Notes'],['l14Lab','RAG Lab']]}
+}};
+
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from
    that lecture's notes page. Keyed by stop id, then 'all' or a track. A lecture with no entry here
    (upcoming, or the no-code side of a practical) shows the sheet's plan instead. Keep each point to one line. */
@@ -958,5 +966,13 @@ var RECAP = {
       '"Which lecture teaches Verifier\'s Law?" has no number, so retrieval failed and the LLM guessed.',
       'Pasting it all works until about 128,000 tokens. Chunks fit, but every question pays for all of them.',
       'Label the chunks, then filter. To label well, know the domain; if the data has structure, let the LLM write SQL.'
+    ]}},
+  L14: { code: {
+    line: 'The token budget, not the window, decides how much you send. Find the few passages that matter by words or by meaning, and score every change on a golden set.',
+    points: [
+      'Our notes are 28,801 tokens. They fit the window, but a free Groq key takes 8,000 a minute.',
+      'Counting shared words found 5 of 10 questions. Making rare words count more found 6.',
+      'Search by meaning with gte-small (384 numbers a text) found 8, but lost two that words found.',
+      'Do you need a vector database? 183 passages fit in a 281 KB file. It depends on your data.'
     ]}}
 };

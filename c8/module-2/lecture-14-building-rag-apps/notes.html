@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Building RAG apps | 100xEngineers</title>
+<meta name="description" content="Notes for Lecture 14, code track, with the whiteboard. The RAG Lab levels 1 to 4 in Python on our own notes: the token budget, shared words, rare words, search by meaning with gte-small, and when you need a vector database.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l14-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L14">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 14 pages"><a href="/c8/module-2/lecture-14-building-rag-apps/">Overview</a><a href="/c8/module-2/lecture-14-building-rag-apps/notes">Notes</a><a href="/c8/module-2/lecture-14-building-rag-apps/lab">RAG Lab</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 14 · 21 November 2026 · Code track</p>
+  <h1>Find the passage, one line at a time.</h1>
+  <p class="dek">We counted the tokens, searched by shared words, made rare words count more, then searched by meaning, and scored every change on ten questions.</p>
+</div>
+
+<p>In <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Lecture 13</a> we derived RAG on the whiteboard: retrieve, augment, generate. Today you wrote the retrieve step in Python, one line at a time, in the RAG Lab. We did levels 1 to 4 together. Levels 5 to 9 are yours.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>The pile and the ten questions</h2>
+<p>The data is our own notes, Lectures 1 to 12, cut into 183 passages (the chunks from Lecture 13). Lecture 1 alone is 16 of them. The LLM is GPT-OSS 120B on Groq, and it has never read our notes. So for every question, your code has to find the passage that holds the answer and send it along with the question.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="A question, Which lecture teaches Verifier's Law, goes to your search, one line of Python. Your search reads the 183 passages and picks the best 3. Those 3 go to the LLM, GPT-OSS 120B, which writes the answer.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="80" width="170" height="90" rx="10"/>
+    <path class="arw" d="M196 125 H244" marker-end="url(#ah)"/>
+    <rect class="f-act" x="252" y="80" width="160" height="90" rx="10"/>
+    <rect class="f-det" x="252" y="200" width="160" height="40" rx="8"/>
+    <path class="arw c-det" d="M332 196 V178" marker-end="url(#ahd)"/>
+    <path class="arw" d="M418 125 H462" marker-end="url(#ah)"/>
+    <rect class="f-det" x="470" y="100" width="32" height="50" rx="4"/>
+    <rect class="f-det" x="510" y="100" width="32" height="50" rx="4"/>
+    <rect class="f-det" x="550" y="100" width="32" height="50" rx="4"/>
+    <path class="arw" d="M590 125 H622" marker-end="url(#ah)"/>
+    <rect class="f-prob" x="630" y="80" width="110" height="90" rx="12"/>
+  </g>
+  <g class="tx">
+    <text x="105" y="68" class="xxxs c-mute">the question</text>
+    <text x="105" y="118" class="xxxs">Which lecture teaches</text>
+    <text x="105" y="140" class="xxxs">Verifier's Law?</text>
+    <text x="332" y="120" class="xs c-act">your search</text>
+    <text x="332" y="146" class="xxxs">one line of Python</text>
+    <text x="332" y="225" class="xxs c-det">183 passages</text>
+    <text x="526" y="88" class="xxs">best 3</text>
+    <text x="685" y="122" class="xs c-prob">LLM</text>
+    <text x="685" y="146" class="xxxs">GPT-OSS 120B</text>
+    <text x="685" y="200" class="xxs">the answer</text>
+  </g>
+</svg>
+<figcaption>The LLM answers only from what reaches it. The part you write is the search in the middle.</figcaption>
+</figure>
+<p>How were the notes cut? A question from the chat. By paragraph: each notes paragraph was written to make sense on its own, so one paragraph can travel without the rest. Cutting by paragraph or by sentence is a common way to make chunks.</p>
+<p>There are ten questions, A to J, and for each one we know which passage holds the answer. A is the question from Lecture 13: "Which lecture teaches Verifier's Law?" Its answer sits in one of Lecture 1's 16 passages.</p>
+<p>Every level runs the same four steps. You guess. You change one marked line of Python. You see how many of the ten your code finds. Then you answer, aloud, a question that companies have asked in AI engineer interviews.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Paste all 183, and count</h2>
+<p>The first guess:</p>
+<blockquote class="q9">"You paste all 183 passages of our notes with one question. What comes back?"</blockquote>
+<p>The right answer, a wrong answer, or a refusal? Most of the room said a refusal. Right: Groq turns the request down. To see why, count the tokens. The chat asked: do we need a for loop? Yes.</p>
+<pre class="code">def total_tokens(passages):
+    total = 0
+    for p in passages:
+        total = total + p["tokens"]
+    return total</pre>
+<p>The notes come to 28,801 tokens. The context window of GPT-OSS 120B is about 128,000 tokens, so they fit. The window is not what stopped it. A free Groq key takes 8,000 tokens a minute, and one question with all 183 passages asks for 28,801.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="One bar is the context window, about 128,000 tokens. Our notes, 28,801 tokens, fill a small part of it. A dashed line near the start marks 8,000 tokens a minute, all a free Groq key takes. The notes run well past that line.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="40" y="80" width="680" height="36" rx="6"/>
+    <rect class="f-det" x="40" y="80" width="153" height="36" rx="6"/>
+    <path class="dash c-act" d="M82 62 V150"/>
+    <path class="dash ink" d="M720 62 V150"/>
+  </g>
+  <g class="tx">
+    <text x="720" y="50" class="xxs r">the context window: about 128,000 tokens</text>
+    <text x="205" y="104" class="xxs c-det l">our notes: 28,801 tokens</text>
+    <text x="60" y="174" class="xxs c-act l">a free Groq key: 8,000 tokens a minute</text>
+  </g>
+</svg>
+<figcaption>The notes fit the window four times over. They do not fit the key.</figcaption>
+</figure>
+<p>So the limit you hit first is how much one question may spend. That is its <b>token budget</b>. A paid key raises it, but every question still pays for every token you send.</p>
+<p class="pull">You do not reach for RAG only when the window is full. The budget decides.</p>
+<p>Asked at Cursor and at Moonshot AI (the company behind the Kimi LLM): "Context windows hold a million tokens now. Why build RAG?" Most answers in the chat said cost and speed. True, but anyone can look that up. Say what you hit: "My notes were 28,801 tokens and fit in the window, but my free key allows 8,000 a minute. So I send the few passages that matter." An answer from something you built is one you can show.</p>
+<p>So you send a few passages. Which few?</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Count the shared words</h2>
+<p>How do you know which passage answers "Which lecture teaches Verifier's Law?" Most of the chat said: search for the keywords. Then the next question: "verifier" is in many passages, so which one wins? One answer from the chat: the one where the words come up most.</p>
+<p>Start simpler and test it. Give each passage a score: how many different words it shares with the question. Send the top 3.</p>
+<pre class="code">def score_shared(question, passage):
+    q = set(words(question))           # the words in the question
+    p = set(words(passage["text"]))    # the words in the passage
+    return len(q &amp; p)                  # how many words are in both</pre>
+<p>It found 5 of the 10: A, E, F, G and I. It missed B ("Why is the model making things up?") and J ("What does CRUD stand for?"). Shared words work when people type the words your notes use. Most people do not.</p>
+<p>The ten questions with known answers are your <b>golden set</b>: ten golden pairs, the idea from <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10</a>. Count how often the right passage lands in the top 3, over the whole set: that is <b>recall at 3</b>. Here it is 5 of 10, or 50%. The 3 is how many passages you keep, called <b>top-k</b>. You pick k to fit your budget.</p>
+<p class="pull">Know the right answers first. Then count how often your search finds them.</p>
+<p>Asked at Google and at Meta: "How do you know your retrieval works?" The strong answers in the chat named the number. "I keep a small set of questions where I know which passage holds the answer. After every change I count how often that passage lands in the top 3. Counting shared words found 5 of 10. That is where I started."</p>
+<p>Why did B fail?</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Make rare words count more</h2>
+<p>Look at B: "Why is the model making things up?" It has no rare word in it. "Model" turns up all over the notes. So many passages share its words, and none of them is the answer.</p>
+<p>Should every shared word count the same? "lecture" is in 47 of the 183 passages. "law" is in 2. A match on "law" tells you far more. So give each shared word a weight that grows as the word gets rarer.</p>
+<pre class="code">def score_rare(question, passage):
+    q = set(words(question))
+    p = set(words(passage["text"]))
+    total = 0
+    for w in q &amp; p:
+        total += math.log(N / seen_in(w))   # was: total += 1
+    return total</pre>
+<p><code>seen_in(w)</code> is how many passages contain the word, and N is 183. "law" weighs log(183 / 2), about 4.5. "lecture" weighs log(183 / 47), about 1.4. The log keeps the weights small as the pile grows.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="Two bars out of 183 passages. The word lecture is in 47 of them, so it weighs about 1.4. The word law is in only 2, so it weighs about 4.5.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="120" y="60" width="340" height="32" rx="5"/>
+    <rect class="f-det" x="120" y="60" width="87" height="32" rx="5"/>
+    <rect class="f-card" x="120" y="130" width="340" height="32" rx="5"/>
+    <rect class="f-act" x="120" y="130" width="6" height="32" rx="2"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="32" class="mono">weight = log(N / seen_in(w)), N = 183</text>
+    <text x="108" y="82" class="xs r">"lecture"</text>
+    <text x="475" y="82" class="xxs l">in 47 of 183 · weight 1.4</text>
+    <text x="108" y="152" class="xs r">"law"</text>
+    <text x="475" y="152" class="xxs c-act l">in 2 of 183 · weight 4.5</text>
+  </g>
+</svg>
+<figcaption>The fewer passages a word is in, the more a match on it is worth.</figcaption>
+</figure>
+<p>The guess: 6, 8 or 10 of the 10? It found 6. J moved from place 41 to the top 3. B is still at place 27. This is the core of <b>BM25</b> (best match 25), the keyword search behind many search engines, and you wrote it in one line.</p>
+<p>Asked at Microsoft, Perplexity and Glean: "When is keyword search the right choice?" From the chat: when the question has the exact term. Say it fully: a name, a code, an error message. It needs no extra model, and you can explain every score. It fails when people use other words: "making things up" was at place 27.</p>
+<p>You could see why some questions worked and the rest did not, because you know these notes. On data you do not know, you cannot choose how to search it. The golden set comes first.</p>
+<p class="pull">Know your data before you choose how to search it.</p>
+<p>B, C, D and H share no rare word with their answer. How do you search by what a question means?</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Teach a machine what words mean</h2>
+<p>The question to the room: how does an LLM understand words? To a machine, "cat" and "dog" carry no meaning. It works only with numbers. So how can numbers hold meaning? The whiteboard started with houses.</p>
+<p>Plot houses by size and price. Houses of about 1,000 square feet bunch together at about the same price. A new 1,000 square foot house in the same city lands in that bunch, so you can guess its price. Two numbers place each house, and houses that are alike land close together.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Left: houses plotted by size and price. Most houses of about 1,000 square feet bunch together, and a new house lands inside the bunch. Right: texts plotted by meaning on axes the machine picks. Making things up lands close to hallucination. Tool call is far away.">
+  <g class="ln" filter="url(#wob)">
+    <path class="thin" d="M50 40 V250 H340"/>
+    <circle class="f-card" cx="170" cy="160" r="6"/>
+    <circle class="f-card" cx="185" cy="140" r="6"/>
+    <circle class="f-card" cx="205" cy="160" r="6"/>
+    <circle class="f-card" cx="212" cy="132" r="6"/>
+    <circle class="f-card" cx="178" cy="176" r="6"/>
+    <circle class="f-card" cx="222" cy="150" r="6"/>
+        <path class="dash ink" d="M195 250 V112"/>
+    <circle class="f-act" cx="195" cy="150" r="7"/>
+    <path class="thin" d="M430 40 V250 H720"/>
+    <circle class="f-card" cx="530" cy="100" r="6"/>
+    <circle class="f-act" cx="505" cy="130" r="7"/>
+    <circle class="f-card" cx="680" cy="225" r="6"/>
+    <circle class="f-card" cx="610" cy="76" r="6"/>
+    <circle class="f-card" cx="655" cy="130" r="6"/>
+    <circle class="f-card" cx="565" cy="212" r="6"/>
+    <circle class="f-card" cx="470" cy="200" r="6"/>
+    <path class="dash ink" d="M510 124 L525 106"/>
+    <path class="dash ink" d="M512 136 L673 220"/>
+  </g>
+  <g class="tx">
+    <text x="58" y="34" class="xxxs c-mute l">price</text>
+    <text x="340" y="272" class="xxxs c-mute r">size</text>
+    <text x="195" y="272" class="xxxs c-mute">1,000 sq ft</text>
+    <text x="232" y="104" class="xxxs c-act l">a new house lands here</text>
+    <text x="195" y="294" class="xxs">houses, by size and price</text>
+    <text x="575" y="30" class="xxxs c-mute">axes the machine picks</text>
+    <text x="542" y="96" class="xxs l">hallucination</text>
+    <text x="517" y="156" class="xxs c-act l">making things up</text>
+    <text x="666" y="232" class="xxs r">tool call</text>
+    <text x="496" y="112" class="xxxs c-mute r">close</text>
+    <text x="616" y="168" class="xxxs c-mute l">far</text>
+    <text x="575" y="294" class="xxs">texts, by meaning</text>
+  </g>
+</svg>
+<figcaption>Same trick on both sides: numbers place each thing, and things that are alike land close.</figcaption>
+</figure>
+<p>Do the same with text. Give each text numbers that place it, so texts with the same meaning land close together. "Making things up" lands near "hallucination", with no word in common, and far from "tool call". Two numbers are not enough to hold meaning, so the machine uses hundreds. The machine also picks what each number measures, and does it better than we could by hand.</p>
+<p>The list of numbers that places a text is its <b>embedding</b>. The program that makes it is an <b>embedding model</b>. Ranking passages by how close their embeddings sit to the question's is search by meaning.</p>
+<p>Which embedding model do you use?</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Pick the smallest model that works</h2>
+<p>A model's size is counted in parameters: the numbers it learned in training (see <a href="/c8/module-2/first-principles/04-what-is-learning/">course chapter 4</a>). The question to the room: a 1 billion, a 20 billion and a 200 billion parameter model all find the right passages. Which do you pick? The smallest. It does the same job faster and for less.</p>
+<p>Hugging Face lists embedding models by task and by downloads. Some are trained on one field: one model on the list has read biomedical papers, so it places medical words well. Claude can write the four lines that call one. Claude cannot tell you which one fits your data. Your golden set can.</p>
+<ol>
+  <li>Start with the smallest model.</li>
+  <li>Run the questions your keyword search missed (here B, C, D and H).</li>
+  <li>If it finds their passages, keep it. If not, try the next size up.</li>
+</ol>
+<p>We used gte-small: 33 million parameters, about 70 MB, small enough to run on a laptop or in a browser. GPT-OSS 120B has 120 billion. gte-small turns every passage into 384 numbers.</p>
+<pre class="code">pip install sentence-transformers
+
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer("thenlper/gte-small")
+numbers = model.encode("Why is the model making things up?", normalize_embeddings=True)
+print(len(numbers))   # 384</pre>
+<p>For B, its three closest passages were Lecture 10's "Why models hallucinate" (a closeness of 0.869, where 1 is the most) and two from Lecture 12. The first one holds the answer. You can judge that only because you know the notes.</p>
+<details class="acc"><summary>Does gte-small send our data to Hugging Face?</summary><div class="b"><p>No. It downloads once, about 70 MB, and runs on your own machine. Your text never leaves it.</p></div></details>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Score by meaning</h2>
+<p>The guess for this level was about F, "What goes wrong when two people save at the same moment?" By its words it was at place 1. By meaning: still at place 1, in the top 3, or outside it?</p>
+<p>First write the score. Two texts, two lists of 384 numbers. Multiply them pair by pair, then add up the 384 products.</p>
+<pre class="code">def closeness(a, b):
+    total = 0
+    for x, y in zip(a, b):
+        total += x * y
+    return total</pre>
+<p>The bigger the total, the closer the two meanings. gte-small scales every list so its overall size is 1 (that is <code>normalize_embeddings=True</code>). For lists scaled like that, this sum is the <b>cosine similarity</b>: how closely two embeddings point the same way.</p>
+<p>It found 8 of 10. B, C, D and H are found now. But F fell to place 10, outside the top 3, and J ("What does CRUD stand for?") fell to place 6. Both had been found by rare words.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="The ten questions A to J, three rows. Shared words found A, E, F, G and I: 5 of 10. Rare words found those and J: 6 of 10. Meaning found A, B, C, D, E, G, H and I: 8 of 10, but lost F and J.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="250" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="298" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="346" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="394" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="442" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="490" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="538" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="586" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="634" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="682" y="40" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="250" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="298" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="346" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="394" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="442" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="490" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="538" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-card" x="586" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="634" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="682" y="100" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="250" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="298" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="346" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="394" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="442" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-act" x="490" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="538" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="586" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-det" x="634" y="160" width="40" height="40" rx="6"/>
+    <rect class="f-act" x="682" y="160" width="40" height="40" rx="6"/>
+  </g>
+  <g class="tx">
+    <text x="486" y="26" class="xxxs c-mute">amber: the right passage is in the top 3</text>
+    <text x="235" y="60" class="xs r">shared words</text>
+    <text x="235" y="78" class="xxxs c-mute r">5 of 10</text>
+    <text x="235" y="120" class="xs r">rare words</text>
+    <text x="235" y="138" class="xxxs c-mute r">6 of 10</text>
+    <text x="235" y="180" class="xs r">meaning</text>
+    <text x="235" y="198" class="xxxs c-act r">8 of 10, lost F and J</text>
+    <text x="270" y="66" class="xxs">A</text><text x="318" y="66" class="xxs">B</text><text x="366" y="66" class="xxs">C</text><text x="414" y="66" class="xxs">D</text><text x="462" y="66" class="xxs">E</text><text x="510" y="66" class="xxs">F</text><text x="558" y="66" class="xxs">G</text><text x="606" y="66" class="xxs">H</text><text x="654" y="66" class="xxs">I</text><text x="702" y="66" class="xxs">J</text>
+    <text x="270" y="126" class="xxs">A</text><text x="318" y="126" class="xxs">B</text><text x="366" y="126" class="xxs">C</text><text x="414" y="126" class="xxs">D</text><text x="462" y="126" class="xxs">E</text><text x="510" y="126" class="xxs">F</text><text x="558" y="126" class="xxs">G</text><text x="606" y="126" class="xxs">H</text><text x="654" y="126" class="xxs">I</text><text x="702" y="126" class="xxs">J</text>
+    <text x="270" y="186" class="xxs">A</text><text x="318" y="186" class="xxs">B</text><text x="366" y="186" class="xxs">C</text><text x="414" y="186" class="xxs">D</text><text x="462" y="186" class="xxs">E</text><text x="510" y="186" class="xxs">F</text><text x="558" y="186" class="xxs">G</text><text x="606" y="186" class="xxs">H</text><text x="654" y="186" class="xxs">I</text><text x="702" y="186" class="xxs">J</text>
+  </g>
+</svg>
+<figcaption>Each search found a different set. Coral: the two that meaning lost and words had found.</figcaption>
+</figure>
+<p class="pull">Words find the exact term. Meaning finds other words for the same idea. Neither finds everything.</p>
+<details class="acc"><summary>Why cosine, and not the straight-line distance between the two points?</summary><div class="b"><p>A question from the chat. You can use either. gte-small scales every list to size 1, so both put the passages in the same order here. Cosine is the common default, not a law: on some data another measure does better.</p></div></details>
+<p>Tools that search millions of embeddings run this same sum. Do you need one?</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Do you need a vector database?</h2>
+<p>Asked at Cohere, and in many design meetings: "Do you need a vector database?" A <b>vector database</b> is one built to find the closest embeddings among millions, fast. Two answers in the chat said yes. The better answer: it depends, and you cannot say until you know the data and its golden set.</p>
+<p>It is two decisions. First, do you need embeddings at all? Keyword search found 5 of 10 here. If your users type the exact words, that may be enough. Second, where do the numbers live? 183 passages, each 384 numbers at 4 bytes a number, is about 281 KB. A plain file holds that, and sorting it takes no time. That is what the lab does.</p>
+<p>At 100 million passages the same numbers come to about 154 GB. Now you need a database that can find the closest ones without reading every row. Start with the Postgres you already have. Its pgvector add-on stores and searches these numbers, and Supabase (from <a href="/c8/module-2/lecture-08-end-to-end-mvp/notes">Lecture 8</a>) includes it. Move to a dedicated vector database only when a real limit says so: a file too big, a search too slow.</p>
+<p class="pull">The embedding is the numbers. A vector database is only where you keep them.</p>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Token budget</dt><dd>The most tokens one question may send. A free Groq key takes 8,000 a minute, so one question can never send more.</dd>
+  <dt>Golden set</dt><dd>Golden pairs: questions where you already know which passage holds the answer.</dd>
+  <dt>Recall at 3</dt><dd>How often the right passage lands in the top 3, over the golden set.</dd>
+  <dt>Top-k</dt><dd>How many passages you keep and send. Here k is 3.</dd>
+  <dt>BM25</dt><dd>Keyword search where rare shared words count more than common ones.</dd>
+  <dt>Embedding</dt><dd>A list of numbers that places a text, so texts that mean the same land close.</dd>
+  <dt>Embedding model</dt><dd>The program that turns text into an embedding. Ours is gte-small: 384 numbers.</dd>
+  <dt>Cosine similarity</dt><dd>Multiply two embeddings pair by pair and add up: the bigger, the closer the meaning.</dd>
+  <dt>Vector database</dt><dd>A database built to find the closest embeddings among millions, fast.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>Count the tokens first: the budget, not the window, decides how much you send. Then find the few passages that matter, by shared words, by rare words or by meaning, and score every change on a golden set. Each search found a different set of the ten (5, 6, then 8), and a file holds the numbers until it gets too big.</p></div>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Finish levels 5 to 9</h2>
+<p>Do levels 5 to 9 of the RAG Lab before the office hour on Tuesday 24 November. Level 5 joins the two ranked lists into one. Words found 6 and meaning found 8: will both together find 9, 10, or stay at 8? Write your guess down before you run it.</p>
+<p>Every level adds one function to the same file, rag.py. Download it at the end and run it on your laptop with your own Groq key, the one from the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Tool Bench</a>.</p>
+<p><a class="btn" href="/c8/module-2/lecture-14-building-rag-apps/lab">Open the RAG Lab</a></p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Lecture 13 notes: find the few chunks that matter</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">The Retrieval Bench: the same notes, five questions</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10: diagnose with a golden pair</a></li>
+  <li><a href="/c8/module-2/first-principles/05-attention-and-transformers/">Course lesson 5.1: embeddings, a map of words</a></li>
+  <li><a href="/#L14">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>Next: the office hour on Tuesday 24 November goes through levels 5 to 9.</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 14: Building RAG apps · Code track</span><a href="/#L14">Curriculum map</a><a href="/c8/module-2/lecture-14-building-rag-apps/">All Lecture 14 pages</a></div></footer>
+</body>
+</html>
