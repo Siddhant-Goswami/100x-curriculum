@@ -47,6 +47,7 @@ var LEVELS = [
     note: 'So a question can carry a few passages, never all 183.',
     name: 'The most one question may send is its <b>token budget</b>.',
     iq: 'Context windows hold a million tokens now. Why build RAG?',
+    asked: [{ at: 'Cursor', q: 'Long context windows keep getting cheaper. Why not drop retrieval and stuff the whole repo into context for every request?', s: 'gh' }, { at: 'Moonshot AI (Kimi)', q: 'For a long-context assistant, when is a 1M-token context window the right tool, and when should you use retrieval instead?', s: 'gh' }],
     ia: function () { return 'The window is not the limit I hit first. My notes are ' + num(INFO.tokens) + ' tokens and fit in any window, but every question would pay for all of them, and my key allows ' + num(FREE_TPM) + ' a minute. So I send the few passages that matter.'; } },
 
   { id: 'shared', seg: 'Shared words', rows: ['shared'],
@@ -58,6 +59,7 @@ var LEVELS = [
     note: 'Ten questions, and we know the right passage for each. Green: it landed in the top 3. Every word counts the same here, so "the" weighs as much as "forgets".',
     name: 'Ten questions with known answers are a <b>golden set</b>. "Found in the top 3" is <b>recall@3</b>.',
     iq: 'How do you know your retrieval works?',
+    asked: [{ at: 'Google', q: 'Evaluate retrieval precision and recall separately from generation quality.', s: 'gg' }, { at: 'Meta', via: 'PracHub', q: 'How would you measure whether adding retrieval improved an LLM product?', s: 'ss' }],
     ia: function () { return 'I keep a small set of questions where I know which passage holds the answer. After every change I count how often that passage lands in the top 3. Counting shared words found ' + found('shared') + ' of 10. That number is where I started.'; } },
 
   { id: 'rare', seg: 'Rare words', rows: ['shared', 'rare'],
@@ -70,6 +72,7 @@ var LEVELS = [
     note: function () { return 'B is still at place ' + rk('rare', 'B') + '. The question says "making things up". The notes say "hallucinate". Counting words cannot know those mean the same.'; },
     name: 'This is the core of <b>BM25</b>, the keyword search inside most search boxes.',
     iq: 'When is keyword search the right choice?',
+    asked: [{ at: 'Microsoft, Perplexity, Glean', q: 'How do you choose between a sparse retriever (BM25) and a dense retriever? When do you need both?', s: 'gh' }],
     ia: function () { return 'When the question carries the exact word: a name, a code, an error message. It needs no model, and I can explain every score. It fails when people use other words: "making things up" was at place ' + rk('rare', 'B') + '.'; } },
 
   { id: 'meaning', seg: 'Meaning', rows: ['rare', 'meaning'],
@@ -82,6 +85,7 @@ var LEVELS = [
     note: 'B and D are found now. F and J, which words found, are lost. Neither search wins every question.',
     name: 'The 384 numbers are an <b>embedding</b>. What you wrote is <b>cosine similarity</b>. A <b>vector database</b> does this same sort, made fast.',
     iq: 'Do you need a vector database?',
+    asked: [{ at: 'Cohere', q: 'An enterprise wants semantic search over ~100M documents but is balking at vector-index cost. Walk me through embedding compression options and the maths.', s: 'gh' }],
     ia: function () { return 'Not yet. 183 passages times 384 numbers times 4 bytes is ' + Math.round(INFO.bytes / 1000) + ' KB, and a plain sort is instant. At 100 million passages that is about 154 GB, and then I need an index that skips most of them.'; } },
 
   { id: 'merge', seg: 'Merge', rows: ['meaning', 'merged'],
@@ -94,6 +98,7 @@ var LEVELS = [
     note: function () { return 'B is at place ' + rk('meaning', 'B') + ' by meaning and ' + rk('rare', 'B') + ' by words. Merged, it lands at ' + rk('merged', 'B') + '.'; },
     name: 'This is <b>reciprocal rank fusion</b> (RRF). Using both searches is <b>hybrid search</b>.',
     iq: 'Is hybrid search always better?',
+    asked: [{ at: 'Glean', via: 'techinterview.org, 2026', q: 'Compare BM25 and dense retrieval. When does each win, and why is neither sufficient alone?', s: 'ss' }, { at: 'Google', q: 'Compare dense and sparse retrieval; build and tune a hybrid system for low latency.', s: 'gg' }],
     ia: function () { return 'It is the usual default, and I still measure. On my ten questions keyword found ' + found('rare') + ', meaning ' + found('meaning') + ' and the merge ' + found('merged') + ' in the top 3. The merge helped the exact-word questions and hurt the ones asked in other words.'; } },
 
   { id: 'pick', seg: 'Your call', rows: ['meaning', 'pick'],
@@ -106,6 +111,7 @@ var LEVELS = [
     again: 'Try for a better trade',
     name: 'How many passages you keep is <b>top-k</b>. Real systems fetch 50 to 100, then a slower model reorders them and keeps 5 to 10: a <b>reranker</b>.',
     iq: 'How do you choose top-k?',
+    asked: [{ at: 'Cohere', q: 'You have an embedding model and a reranker. Why sell both? Design the two-stage retrieval pipeline and tell me when the reranker earns its latency.', s: 'gh' }, { at: 'Amazon', via: 'PracHub', q: 'What is a reranker model, and where does it sit in the RAG stack?', s: 'ss' }],
     ia: function () { return 'I measure found against tokens. Three passages by meaning found ' + found('meaning') + ' of 10 at about ' + num(INFO.meaningTokens) + ' tokens. My choice found ' + S.pick.n + ' of 10 at about ' + num(S.pick.avg) + '. I stop adding passages when found stops rising.'; } },
 
   { id: 'prompt', seg: 'Not there', live: true,
@@ -120,6 +126,7 @@ var LEVELS = [
     note: function () { var lo = lowestReal(); return 'A cut-off cannot do this. The App Store question scores ' + INFO.top.X.toFixed(3) + '. Question ' + lo.id + ', which has an answer, scores ' + lo.top.toFixed(3) + '. One line in the instruction does.'; },
     name: 'Answering only from the passages is <b>grounding</b>. Naming the passage is a <b>citation</b>. Saying it is not there is <b>abstaining</b>.',
     iq: 'How do you stop it answering when the documents do not cover the question?',
+    asked: [{ at: 'Microsoft', via: 'Glassdoor, 2026', q: 'What are hallucinations, and how do you avoid them?', s: 'ss' }, { at: 'Anthropic, OpenAI, Cursor', q: 'How do you detect and measure hallucinations in a production RAG system?', s: 'gh' }],
     ia: function () { var lo = lowestReal(); return 'A closeness cut-off did not work: my question with no answer scored ' + INFO.top.X.toFixed(3) + ', above a real one at ' + lo.top.toFixed(3) + '. So the instruction gives the LLM a way out, every answer names its passage id, and I keep questions with no answer in my test set.'; } },
 
   { id: 'filter', seg: 'Filter',
@@ -136,6 +143,7 @@ var LEVELS = [
     note: 'Filter first. And telling the LLM "do not reveal Lecture 5" is not a filter: the text is still in the request.',
     name: 'A label on a passage is <b>metadata</b>. Filtering on it before the search is <b>pre-filtering</b>.',
     iq: 'Why not retrieve everything and tell the model to obey the access rules?',
+    asked: [{ at: 'OpenAI', via: 'PracHub', q: 'Why is it wrong to retrieve globally and tell the generator to obey access rules?', s: 'ss' }, { at: 'Microsoft, Databricks, Glean, Palantir', q: 'Design permission-aware retrieval: users must never see content they can\'t access in the source system.', s: 'gh' }],
     ia: function () { return 'The model is not a lock. Text in the prompt can be quoted back. Permission is checked in retrieval, before the search, so the prompt only ever holds what this user may see.'; } },
 
   { id: 'stage', seg: 'Which part failed', quiz: true,
@@ -146,6 +154,7 @@ var LEVELS = [
     ]; },
     opts: ['The search', 'The answer', 'It is not a search'],
     iq: 'Recall is 90% but the answers are bad. Where do you look?',
+    asked: [{ at: 'Cohere', q: 'A customer 10x\'d their indexed documents and reports answer quality "got noticeably worse." Drive the investigation.', s: 'gh' }, { at: 'Databricks', via: 'Dataford', q: 'Tell me about a time a RAG system lost customer trust. How did you diagnose and fix it?', s: 'ss' }],
     ia: function () { return 'Not at the search: the right passage is arriving. I look at what happens after it: how many passages I send, their order, and whether the prompt lets the LLM answer from outside them.'; } }
 ];
 var END = LEVELS.length;
@@ -411,13 +420,32 @@ function result(L) {
   forward();
 }
 
+/* where each interview question was reported. Wording as the source gives it; none of these lists links the original post. */
+var SRC = {
+  gh: { t: 'AI Engineering Interview Questions Company Wise', u: 'https://github.com/pallavi-shekhar/ai-engineering-interview-questions-company-wise' },
+  ss: { t: '50 RAG Interview Questions Reported From Real Loops', u: 'https://aiengineeringinsider.substack.com/p/50-rag-interview-questions-reported' },
+  gg: { t: 'Google AI, ML, RAG and Agentic-AI Interview Questions', u: 'https://aiengineeringinsider.substack.com/p/google-ai-ml-rag-and-agentic-ai-interview' }
+};
+var END_ASKED = [
+  { at: 'Apple', via: 'Glassdoor, 2026', q: 'What are your RAG projects? What is your most challenging work in GenAI or ML?', s: 'ss' },
+  { at: 'NVIDIA', via: 'Glassdoor', q: 'How would you improve the RAG system that you built before?', s: 'ss' }
+];
+function asked(list) {
+  if (!list) return '';
+  var used = [];
+  list.forEach(function (a) { if (used.indexOf(a.s) < 0) used.push(a.s); });
+  return '<div class="asked"><p class="ak">Asked in AI engineer interviews at</p>' +
+    list.map(function (a) { return '<p class="aq"><b>' + esc(a.at) + '</b>' + (a.via ? ' <span>(' + esc(a.via) + ')</span>' : '') + '<q>' + esc(a.q) + '</q></p>'; }).join('') +
+    '<p class="as">Reported by candidates. Source: ' + used.map(function (k) { return '<a href="' + SRC[k].u + '" target="_blank" rel="noopener">' + esc(SRC[k].t) + '</a>'; }).join(', ') + '</p></div>';
+}
+
 /* one interview question, answered aloud before the answer is shown */
 function say(L) {
   var seen = S.said[L.id];
   head(L.iq, !seen, 'An interview question. Answer it aloud, with your own numbers. Then compare.');
-  var show = function () { $('#stage').innerHTML = '<p class="answer">' + esc(txt(L.ia)) + '</p>'; forward(S.lv === END - 1 ? 'See your two-minute answer' : 'Next level'); };
+  var show = function () { $('#stage').innerHTML = asked(L.asked) + '<p class="answer">' + esc(txt(L.ia)) + '</p>'; forward(S.lv === END - 1 ? 'See your two-minute answer' : 'Next level'); };
   if (seen) return show();
-  $('#stage').innerHTML = '<button class="btn" id="show" type="button">I said it. Show an answer</button>';
+  $('#stage').innerHTML = asked(L.asked) + '<button class="btn" id="show" type="button">I said it. Show an answer</button>';
   $('#show').onclick = function () { S.said[L.id] = true; save(); $('#ins').className = ''; show(); };
 }
 
@@ -451,7 +479,7 @@ function theEnd() {
     'When an answer is wrong, I first check whether the right passage was found. That tells me which part to fix.'
   ];
   head('Say it in two minutes.', true, '"Walk me through your RAG project." These are your numbers. Read it aloud once, then say it without looking.');
-  $('#stage').innerHTML = '<ol class="defence">' + lines.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ol>' +
+  $('#stage').innerHTML = asked(END_ASKED) + '<ol class="defence">' + lines.map(function (l) { return '<li>' + esc(l) + '</li>'; }).join('') + '</ol>' +
     '<div class="runrow"><button class="btn primary" id="copy" type="button">Copy it</button><button class="btn quiet" id="over" type="button">Start again from level 1</button></div>';
   $('#copy').onclick = function () {
     var b = this, done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy it'; }, 1600); };
