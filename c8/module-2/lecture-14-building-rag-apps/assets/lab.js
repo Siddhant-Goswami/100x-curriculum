@@ -255,11 +255,48 @@ function render() {
   return oneCase(L, +b.slice(4));
 }
 
+/* the brief: a one-page sample of everything the learner will meet. Static, so it reads while Python loads.
+   The ten questions repeat _plan/lecture-14/questions.json (A and B are the Retrieval Bench's Q2 and Q3). */
+var L13 = '/c8/module-2/lecture-13-retrieval-augmented-generation/';
+var TEN = [
+  ['A', 'Which lecture teaches Verifier’s Law?', 1], ['B', 'Why is the model making things up?', 10],
+  ['C', 'What does the reply code 405 mean?', 4], ['D', 'My app forgets what the user told it yesterday. Why?', 6],
+  ['E', 'What is the difference between policy and enforcement?', 7], ['F', 'What goes wrong when two people save at the same moment?', 8],
+  ['G', 'How many requests per minute does Groq’s free tier allow?', 5], ['H', 'Where should the secret for the LLM live so that a user cannot steal it?', 7],
+  ['I', 'Who are the host, the client and the server?', 11], ['J', 'What does CRUD stand for?', 4]
+];
 function intro() {
-  head('Build the search behind RAG, one line at a time.', false, 'Nine short levels. Every level goes the same way:');
+  head('Build the search behind RAG, one line at a time.', false,
+    'In <a href="' + L13 + 'notes">Lecture 13</a>, the <a href="' + L13 + 'bench">Retrieval Bench</a> searched our notes for you. Here you write that search yourself, in Python, and score it.');
   $('#back').hidden = true;
-  $('#stage').innerHTML = '<ol class="brief"><li><b>Guess</b> what will happen.</li><li><b>Change one marked line</b> of Python and press Run.</li><li><b>See</b> how many of ten questions your search finds.</li><li><b>Say</b> one interview answer aloud.</li></ol>' +
-    '<p class="small">Python runs in this page. Nothing to install.</p>';
+  var codeLines = ['def score(question, passage):', '    q = set(words(question))           # the words in the question', '    p = set(words(passage["text"]))    # the words in the passage', '    return 0       # change this: how many words are in both?'];
+  var demo = 'AEFGI';
+  $('#stage').innerHTML =
+    '<section class="bs"><h2 class="bh">What you search</h2>' +
+      '<p>The same pile as the bench: the notes of Lectures 1 to 12, cut into 183 passages. Here is one.</p>' +
+      '<div class="psg"><p class="pm">Lecture 1 · What was actually missing · 137 tokens</p><p>… The Verifier’s Law: if you cannot write the verifier, you cannot build the system, and you cannot claim the capability.</p></div></section>' +
+
+    '<section class="bs"><h2 class="bh">The ten questions that keep score</h2>' +
+      '<p>For each one, we know which passage holds the answer. Your search gets a question right when that passage is in its top 3, the three passages that go to the LLM. A and B are Q2 and Q3 from the bench.</p>' +
+      '<ol class="ten">' + TEN.map(function (t) { return '<li><span class="tile">' + t[0] + '</span><span class="tqx">' + esc(t[1]) + '</span><span class="tlec">Lecture ' + t[2] + '</span></li>'; }).join('') + '</ol></section>' +
+
+    '<section class="bs"><h2 class="bh">Every level, four screens</h2>' +
+      '<ol class="bsteps">' +
+        '<li><h3>Guess</h3><p>Pick what you think will happen, before any code.</p>' +
+          '<div class="sample"><p class="sq">You paste all 183 passages of our notes with one question. What comes back?</p><div class="opts">' +
+          ['The right answer', 'A wrong answer', 'A refusal'].map(function (o, i) { return '<span class="opt"><kbd>' + (i + 1) + '</kbd>' + o + '</span>'; }).join('') + '</div></div></li>' +
+        '<li><h3>Change one marked line</h3><p>A Python function of a few lines. Change only the coral line, then press Run. Python runs in this page: nothing to install.</p>' +
+          '<div class="sample"><pre class="mcode">' + codeLines.map(function (l, i) { return '<span' + (i === 3 ? ' class="yl"' : '') + '><i>' + (i + 1) + '</i>' + esc(l) + '</span>'; }).join('') + '</pre>' +
+          '<div class="runrow"><span class="btn primary">Run</span><span class="btn quiet">Stuck? Show a hint (costs a star)</span></div></div></li>' +
+        '<li><h3>See the score</h3><p>Your code runs on all ten questions. Green: the right passage made your top 3. Then the idea you built gets its name.</p>' +
+          '<div class="sample"><div class="trow"><span class="tl">Example</span><div class="tt">' + TEN.map(function (t) { return '<span class="tile' + (demo.indexOf(t[0]) >= 0 ? ' ok' : '') + '">' + t[0] + '</span>'; }).join('') + '</div><span class="tn">' + demo.length + '</span></div></div></li>' +
+        '<li><h3>Say it aloud</h3><p>An interview question that companies have asked. Answer it aloud with your own numbers, then compare with ours.</p>' +
+          '<div class="sample"><p class="sq">' + esc(LEVELS[1].iq) + '</p>' + asked(LEVELS[1].asked) + '<span class="btn">I said it. Show an answer</span></div></li>' +
+      '</ol></section>' +
+
+    '<section class="bs"><h2 class="bh">At the end</h2>' +
+      '<p>Your two-minute answer to “Walk me through your RAG project”, filled in with your own numbers.</p></section>' +
+    '<p class="small">Level 7 sends one prompt to the LLM with your Groq key, the one from the Tool Bench. Stars: it works, no hint, 3 runs or fewer. Your progress saves in this browser.</p>';
   $('#fwd').innerHTML = '<button class="btn primary big" id="start" type="button"' + (ready ? '' : ' disabled') + '>' + (ready ? (S.done.count || S.guess.count ? 'Carry on' : 'Start') : 'Getting Python ready') + '</button>';
   $('#start').onclick = function () { S.started = true; save(); go(S.lv, S.beat); };
 }
