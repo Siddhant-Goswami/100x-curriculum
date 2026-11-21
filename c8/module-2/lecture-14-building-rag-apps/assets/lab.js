@@ -434,9 +434,10 @@ function asked(list) {
   if (!list) return '';
   var used = [];
   list.forEach(function (a) { if (used.indexOf(a.s) < 0) used.push(a.s); });
-  return '<div class="asked"><p class="ak">Asked in AI engineer interviews at</p>' +
+  /* collapsed by default: the summary names the companies, a click shows their questions and the source */
+  return '<details class="asked"><summary>Asked in AI engineer interviews at ' + list.map(function (a) { return '<b>' + esc(a.at) + '</b>'; }).join(', ') + '</summary>' +
     list.map(function (a) { return '<p class="aq"><b>' + esc(a.at) + '</b>' + (a.via ? ' <span>(' + esc(a.via) + ')</span>' : '') + '<q>' + esc(a.q) + '</q></p>'; }).join('') +
-    '<p class="as">Reported by candidates. Source: ' + used.map(function (k) { return '<a href="' + SRC[k].u + '" target="_blank" rel="noopener">' + esc(SRC[k].t) + '</a>'; }).join(', ') + '</p></div>';
+    '<p class="as">Reported by candidates. Source: ' + used.map(function (k) { return '<a href="' + SRC[k].u + '" target="_blank" rel="noopener">' + esc(SRC[k].t) + '</a>'; }).join(', ') + '</p></details>';
 }
 
 /* one interview question, answered aloud before the answer is shown */

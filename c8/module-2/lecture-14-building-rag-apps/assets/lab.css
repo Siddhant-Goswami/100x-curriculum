@@ -148,9 +148,14 @@ code{font:500 .88em var(--mono);background:var(--bg2);padding:1px 5px;border-rad
 .won a{color:var(--ink3)}
 
 /* ---------- where the interview question was asked ---------- */
-.asked{display:flex;flex-direction:column;gap:8px;max-width:62ch;padding:14px 16px;border:1px solid var(--line);border-radius:12px;margin-bottom:22px}
-.asked .ak{font:500 13px var(--sans);color:var(--ink3);margin:0}
-.asked .aq{font-size:15.5px;line-height:1.5;color:var(--ink);margin:0}
+.asked{max-width:62ch;padding:12px 16px;border:1px solid var(--line);border-radius:12px;margin-bottom:22px}
+.asked summary{font:400 14px/1.5 var(--sans);color:var(--ink2);cursor:pointer;list-style:none;padding-left:18px;position:relative}
+.asked summary::-webkit-details-marker{display:none}
+.asked summary::before{content:'';position:absolute;left:2px;top:.5em;border:5px solid transparent;border-left-color:var(--ink3);border-right:0;transition:transform .15s}
+.asked[open] summary::before{transform:rotate(90deg)}
+.asked summary b{color:var(--ink);font-weight:600}
+.asked[open] summary{margin-bottom:10px}
+.asked .aq{font-size:15.5px;line-height:1.5;color:var(--ink);margin:0 0 10px}
 .asked .aq b{font-weight:600}
 .asked .aq span{color:var(--ink3);font-size:13.5px}
 .asked .aq q{display:block;color:var(--ink2);margin-top:2px}
@@ -176,4 +181,4 @@ code{font:500 .88em var(--mono);background:var(--bg2);padding:1px 5px;border-rad
 /* ---------- the end ---------- */
 .defence{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:12px;font-size:17px;line-height:1.55;color:var(--ink);max-width:62ch}
 
-@media (prefers-reduced-motion:reduce){.btn,.opt,.tile{transition:none}.opt.wrong{animation:none}}
+@media (prefers-reduced-motion:reduce){.btn,.opt,.tile,.asked summary::before{transition:none}.opt.wrong{animation:none}}
