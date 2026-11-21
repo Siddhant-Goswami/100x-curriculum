@@ -1,0 +1,188 @@
+/* RAG Lab (Lecture 14). Tokens from /c8/docs.css; the bar and the instruction follow the benches.
+   Coral = the thing to do now. Green = found (top 3). Grey = not found. Only the editor and the reveal are framed. */
+[hidden]{display:none!important}
+:root{--ink3:#666462}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink3:#9A968E}}
+:root[data-theme="dark"]{--ink3:#9A968E}
+body{overflow-x:hidden}
+p{margin:0}
+
+/* ---------- bar ---------- */
+.bar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.bar .in{max-width:1180px;margin:0 auto;padding:12px 20px 8px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px}
+.bar .brand{font:600 13px var(--sans);letter-spacing:-.01em;color:var(--ink2);text-decoration:none;white-space:nowrap}
+.bar .brand b{color:var(--coral);margin:0 2px}
+.bar .brand span{color:var(--ink)}
+.bar .where{font:500 12.5px var(--sans);color:var(--ink3);white-space:nowrap;text-align:center;font-variant-numeric:tabular-nums}
+.bar .exit{justify-self:end;font:500 13px var(--sans);color:var(--ink3);text-decoration:none;padding:4px 10px;border-radius:8px}
+.bar .exit:hover{color:var(--ink);background:var(--bg2)}
+.segs{max-width:1180px;margin:0 auto;padding:0 20px 10px;display:flex;gap:6px}
+.segs a{flex:1;display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--ink3);font:500 12px var(--sans);pointer-events:none;min-width:0}
+.segs a.reach{pointer-events:auto}
+.segs a.reach:hover{color:var(--ink)}
+.segs a i{display:block;height:3px;border-radius:2px;background:var(--line)}
+.segs a.done i{background:var(--hum)}
+.segs a.on i{background:var(--coral)}
+.segs a.on{color:var(--ink)}
+.segs a span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.segs a em{font-style:normal;font-size:10px;letter-spacing:1px;color:var(--det);margin-left:2px}
+@media (max-width:860px){.segs a span{display:none}.bar .in{padding:10px 16px 8px}.segs{padding:0 16px 8px}}
+
+/* ---------- the instruction ---------- */
+.app{max-width:1180px;margin:0 auto;padding:32px 20px calc(96px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
+.app h1{font:600 clamp(24px,3.4vw,32px)/1.18 var(--sans);letter-spacing:-.03em;margin:0;color:var(--ink);text-wrap:balance;outline:none;max-width:40ch}
+.app h1.do{position:relative;padding-left:24px}
+.app h1.do::before{content:"";position:absolute;left:2px;top:.4em;width:10px;height:10px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 5px var(--coral-soft)}
+.ctx{font-size:16.5px;line-height:1.55;color:var(--ink2);max-width:66ch;margin-top:-8px;text-wrap:pretty}
+.app h1.do + .ctx{padding-left:24px}
+code{font:500 .88em var(--mono);background:var(--bg2);padding:1px 5px;border-radius:5px;color:var(--ink)}
+
+/* ---------- layout: work on the left, the scoreboard on the right ---------- */
+.work{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:28px;align-items:start;margin-top:6px}
+.side{display:flex;flex-direction:column;gap:16px;min-width:0}
+#stage{display:flex;flex-direction:column;gap:16px;min-width:0}
+.rail{position:sticky;top:84px;display:flex;flex-direction:column;gap:14px;min-width:0}
+@media (max-width:980px){.work{grid-template-columns:minmax(0,1fr)}.rail{position:static}}
+@media (max-width:640px){.app{padding:22px 16px calc(96px + env(safe-area-inset-bottom,0px));gap:16px}.app h1.do + .ctx{padding-left:0}}
+
+/* ---------- buttons, chips ---------- */
+.btn{font:600 14px var(--sans);border-radius:10px;padding:9px 16px;border:1px solid var(--line2);background:var(--card);color:var(--ink);cursor:pointer;transition:transform .12s var(--e-out),background .15s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.primary{background:var(--coral);border-color:var(--coral);color:#fff}
+.btn.primary:hover:not(:disabled){filter:brightness(1.05)}
+.btn.quiet{border-color:transparent;background:none;color:var(--ink3);font-weight:500;padding:9px 8px}
+.btn.quiet:hover{color:var(--ink)}
+.btn.big{padding:12px 22px;font-size:15px}
+.btn:focus-visible,.chip:focus-visible,.segs a:focus-visible{outline:2px solid var(--coral);outline-offset:2px}
+.runrow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.kbd{font:400 12px var(--sans);color:var(--ink3);margin-left:auto}
+@media (max-width:640px){.kbd{display:none}}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:500 14px var(--sans);padding:8px 14px;border-radius:999px;border:1px solid var(--line2);background:var(--card);color:var(--ink);cursor:pointer;transition:transform .12s var(--e-out)}
+.chip:hover:not(:disabled){border-color:var(--ink3)}
+.chip:active:not(:disabled){transform:scale(.96)}
+.chip:disabled{cursor:default;color:var(--ink3)}
+.chip.sel,.chip.sel:disabled{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.chip.right,.chip.right:disabled{background:var(--hum-soft);border-color:var(--hum);color:var(--hum-ink)}
+.chip.wrong{border-style:dashed;color:var(--ink3)}
+
+/* ---------- guess ---------- */
+.guess{display:flex;flex-direction:column;gap:10px}
+.gq{font-size:15.5px;line-height:1.5;color:var(--ink);max-width:60ch}
+.gn{font-size:13px;color:var(--ink3)}
+
+/* ---------- editor ---------- */
+.editor{display:flex;flex-direction:column;gap:12px;min-width:0}
+.editor.locked .cmwrap{opacity:.45}
+.cmwrap{border-radius:14px;overflow:hidden;border:1px solid var(--line2);background:var(--code-bg)}
+.CodeMirror{height:auto;font:400 14px/1.6 var(--mono);background:var(--code-bg);color:var(--code-ink);padding:10px 0}
+.CodeMirror-gutters{background:var(--code-bg);border-right:0}
+.CodeMirror-linenumber{color:#6b6862;padding:0 10px 0 12px}
+.CodeMirror-cursor{border-left:2px solid #fff}
+.CodeMirror-selected,.CodeMirror-focused .CodeMirror-selected{background:#3a3833}
+.cm-s-default .cm-comment{color:#9a968e;font-style:normal}
+.cm-s-default .cm-keyword{color:#F49A80}
+.cm-s-default .cm-string{color:#E8B44D}
+.cm-s-default .cm-number{color:#B3A1F5}
+.cm-s-default .cm-def{color:#6FCB92}
+.cm-s-default .cm-builtin{color:#B3A1F5}
+.cm-s-default .cm-variable,.cm-s-default .cm-variable-2,.cm-s-default .cm-property,.cm-s-default .cm-operator{color:var(--code-ink)}
+.hint{margin:0;font:400 13.5px/1.55 var(--mono);background:var(--det-soft);color:var(--det-ink);padding:12px 14px;border-radius:12px;white-space:pre-wrap}
+
+/* ---------- results ---------- */
+.out{display:flex;flex-direction:column;gap:10px}
+.out:empty{display:none}
+.err{font-size:14.5px;line-height:1.5;color:var(--coral-ink);background:var(--coral-soft);padding:10px 14px;border-radius:12px}
+.note{font-size:14px;color:var(--ink2)}
+.tests{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.tests li{display:flex;flex-direction:column;gap:2px;padding:9px 0 9px 14px;border-left:3px solid var(--line2);border-bottom:1px solid var(--line);font-size:14.5px;line-height:1.45;color:var(--ink)}
+.tests li:last-child{border-bottom:0}
+.tests li.ok{border-left-color:var(--hum)}
+.tests li.no{border-left-color:var(--coral)}
+.tests li em{font:400 13px var(--mono);color:var(--coral-ink);overflow-wrap:anywhere}
+.printed b{font:500 12.5px var(--sans);color:var(--ink3)}
+.printed pre,.ans pre{margin:4px 0 0;font:400 13px/1.5 var(--mono);background:var(--bg2);color:var(--ink);padding:10px 12px;border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:260px;overflow:auto}
+
+/* ---------- the reveal ---------- */
+.reveal{display:flex;flex-direction:column;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px 22px;animation:rise .35s var(--e-out)}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.reveal{animation:none}.btn,.chip{transition:none}}
+.won{font:600 15px var(--sans);color:var(--hum-ink)}
+.stars{color:var(--det);letter-spacing:2px;margin-right:6px}
+.verdict{font-size:14.5px;color:var(--ink2)}
+.verdict.ok{color:var(--hum-ink)}
+.what,.named{font-size:15.5px;line-height:1.6;color:var(--ink2);max-width:64ch}
+.what b,.named b{color:var(--ink);font-weight:600}
+.iv{border-top:1px solid var(--line);padding-top:12px}
+.iv summary{cursor:pointer;font-size:15px;line-height:1.5;color:var(--ink)}
+.iv p{font-size:15px;line-height:1.6;color:var(--ink2);margin-top:8px;max-width:64ch}
+.iv .say{font-size:13px;color:var(--ink3)}
+.forward{display:flex}
+.forward:empty{display:none}
+.backrow{font-size:13px}
+.backrow a{color:var(--ink3)}
+
+/* ---------- the live run (level 7) ---------- */
+.livebox{display:flex;flex-direction:column;gap:12px;border:1px solid var(--line);border-radius:16px;padding:18px 20px;background:var(--card);font-size:15px;line-height:1.5}
+.keyl{display:flex;flex-direction:column;gap:6px;font:500 13px var(--sans);color:var(--ink2)}
+.keyl input{font:400 14px var(--mono);padding:9px 12px;border-radius:10px;border:1px solid var(--line2);background:var(--bg);color:var(--ink);max-width:420px}
+.small{font-size:13px;color:var(--ink3)}
+.ans{border-left:3px solid var(--line2);padding:4px 0 4px 14px;margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.ans.ok{border-left-color:var(--hum)}
+.ans.no{border-left-color:var(--coral)}
+.ans .at span{font:500 12.5px var(--sans);color:var(--ink3);margin-left:6px}
+.ans.ok .at span{color:var(--hum-ink)}
+.ans.no .at span{color:var(--coral-ink)}
+.ans .aa{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--prob-ink)}
+.ans .rule,.ans summary{font-size:13px;color:var(--ink3)}
+.ans summary{cursor:pointer}
+
+/* ---------- the scoreboard ---------- */
+.board{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 16px 12px}
+.sh{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.sh b{font:600 15px var(--sans);color:var(--ink)}
+.sh span{font-size:13px;color:var(--ink3);line-height:1.4}
+.board .tw{border:0;border-radius:0;overflow:visible;background:none;margin:0}
+.board table{width:100%;border-collapse:collapse;font-size:13px}
+.board th,.board td{padding:7px 0 7px 8px;border:0;border-top:1px solid var(--line);text-align:left;vertical-align:top;background:none;letter-spacing:0;text-transform:none;font-weight:400}
+.board thead th{border-top:0;font:500 11.5px/1.25 var(--sans);color:var(--ink3);vertical-align:bottom}
+.board tbody th{font:600 12px var(--mono);color:var(--ink3);width:14px;padding-left:0}
+.board td.q{color:var(--ink2);line-height:1.4;font-weight:400}
+.board .r{text-align:right;font:500 12.5px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;width:46px}
+.board thead .r{font:500 11.5px/1.25 var(--sans)}
+.board td.r.ok{color:var(--hum-ink);font-weight:700}
+.board td.r.no{color:var(--ink3)}
+.board tr.sum td{font-weight:600;color:var(--ink)}
+.board tr.sum td.r{font-size:14px}
+/* narrow screens: the question takes its own line, the places sit under it */
+@media (max-width:640px){
+  .board tr{display:grid;grid-template-columns:18px repeat(var(--cols,1),minmax(0,1fr));border-top:1px solid var(--line)}
+  .board thead tr{border-top:0}
+  .board th,.board td{border-top:0}
+  .board td.q,.board th.q{grid-column:2/-1;padding-bottom:0}
+  .board thead th.q{display:none}
+  .board tbody th{grid-row:1/3}
+  .board .r{width:auto;text-align:left;grid-row:2}
+  .board thead .r{grid-row:1}
+  .board thead tr::before{content:"";grid-row:1}
+}
+.tok{font-size:13px;color:var(--ink2);margin-top:10px}
+.given{font-size:13.5px;color:var(--ink2);padding:0 4px}
+.given summary{cursor:pointer;font-weight:500;color:var(--ink3)}
+.given ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;line-height:1.5}
+
+/* ---------- name the stage ---------- */
+.cases{display:flex;flex-direction:column;gap:22px}
+.case{display:flex;flex-direction:column;gap:8px;padding-left:14px;border-left:3px solid var(--line2)}
+.case.solved{border-left-color:var(--hum)}
+.cq{font:600 16px/1.4 var(--sans);color:var(--ink)}
+.cf{font-size:15px;line-height:1.5;color:var(--ink2);max-width:60ch}
+.cw{font-size:14px;color:var(--ink2);min-height:1.4em}
+
+/* ---------- the end ---------- */
+.card2{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;display:flex;flex-direction:column;gap:16px}
+.defence{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:16px;line-height:1.55;color:var(--ink);max-width:66ch}
+.score{font:500 13px var(--sans);color:var(--ink3);margin-left:8px}
+.again{font-size:13px}
+.again a{color:var(--ink3)}

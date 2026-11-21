@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RAG Lab | 100xEngineers</title>
+<meta name="description" content="Build retrieval in Python, one small function at a time, on our own lecture notes. Ten questions with known answers keep the score.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-14-building-rag-apps/assets/lab.css?v=2">
+<script src="/c8/docs.js"></script>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l14-lab" data-noaarav>
+<!--
+  The Lecture 14 RAG Lab (code track). Nine levels. In most of them the learner finishes one small Python function,
+  which runs in the page (Pyodide, in assets/lab-worker.js) against checks on the 183 passages of the Retrieval Bench.
+  The scoreboard on the right is ten questions with known passages: a cell is the place of the right passage,
+  green when it is in the top 3. A column appears when its level is passed. Only level 7 talks to the LLM
+  (the learner's own Groq key, through /api/retrieve, exactly as on the bench).
+  The headline is the instruction. Continue appears once the level is passed. data-nolabel keeps code out of analytics replays.
+-->
+<header class="bar">
+  <div class="in">
+    <a class="brand" href="/" title="Back to the curriculum map">100x<b>·</b><span>RAG Lab</span></a>
+    <p class="where" id="where" aria-live="polite"></p>
+    <a class="exit" href="/">Exit</a>
+  </div>
+  <nav class="segs" id="segs" aria-label="Nine levels"></nav>
+</header>
+
+<main class="app" id="app">
+  <h1 id="ins" tabindex="-1">Getting Python ready.</h1>
+  <p class="ctx" id="ctx">This takes a few seconds the first time. Nothing to install.</p>
+
+  <section class="work">
+    <div class="side" data-nolabel>
+      <div id="stage"></div>
+      <div class="forward" id="fwd"></div>
+      <p class="backrow"><a href="#" id="back">Back</a></p>
+    </div>
+    <aside class="rail" aria-label="The scoreboard">
+      <section class="board" id="board" data-nolabel></section>
+      <details class="given" id="given">
+        <summary>What you are given</summary>
+        <ul>
+          <li><code>passages</code> a list of 183 passages. Each one is a dict: <code>"id"</code>, <code>"lecture"</code>, <code>"title"</code>, <code>"text"</code>, <code>"tokens"</code>, <code>"numbers"</code>.</li>
+          <li><code>N</code> the number of passages.</li>
+          <li><code>words(text)</code> the words of a text, lower case.</li>
+          <li><code>seen_in(word)</code> how many passages contain the word.</li>
+          <li><code>math</code> is imported. <code>print()</code> shows under your code.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="/c8/module-2/lecture-14-building-rag-apps/assets/lab.js?v=3"></script>
+</body>
+</html>

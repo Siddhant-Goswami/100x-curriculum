@@ -1,0 +1,14 @@
+[
+ {"id":"A","q":"Which lecture teaches Verifier's Law?","gold":["L1.s05.1","L1.s14.1"]},
+ {"id":"B","q":"Why is the model making things up?","gold":["L10.s03.1","L10.s04.1"]},
+ {"id":"C","q":"What does the reply code 405 mean?","gold":["L4.s02.2"]},
+ {"id":"D","q":"My app forgets what the user told it yesterday. Why?","gold":["L6.s04.1"]},
+ {"id":"E","q":"What is the difference between policy and enforcement?","gold":["L7.s07.2"]},
+ {"id":"F","q":"What goes wrong when two people save at the same moment?","gold":["L8.s06.1"]},
+ {"id":"G","q":"How many requests per minute does Groq's free tier allow?","gold":["L5.s09.1"]},
+ {"id":"H","q":"Where should the secret for the LLM live so that a user cannot steal it?","gold":["L7.s05.1","L7.s01.1","L7.s09.1"]},
+ {"id":"I","q":"Who are the host, the client and the server?","gold":["L11.s12.1"]},
+ {"id":"J","q":"What does CRUD stand for?","gold":["L4.s04.1"]},
+ {"id":"X","q":"Which lecture shows how to put our app on the App Store?","gold":[]},
+ {"id":"N","q":"How do I write an MCP server?","gold":["L12.s04.1","L12.s04.2"]}
+]
