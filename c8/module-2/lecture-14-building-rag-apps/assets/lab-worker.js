@@ -1,9 +1,12 @@
 /* RAG Lab worker: runs the learner's Python (Pyodide) off the page, so a loop that never ends can be stopped.
-   Messages in:  {type:'init', data:<lab-data.json text>}   -> {type:'ready', info}
-                 {type:'run', id, level, code}             -> {type:'result', id, result}
+   Messages in:  {type:'init', data:<lab-data.json text>}       -> {type:'ready', info}
+                 {type:'run', id, level, code, given}          -> {type:'result', id, result}
+   A run is rag.py as the learner sees it: the given head, the functions of the levels already done (given),
+   this level's code, the given tail. Then the level's checks, then (if they pass) a few lines run on the real data, shown as output.
    The Python below is the whole harness: the given helpers, the reference searches that fill the scoreboard,
    and one check per level. Every number the page shows comes from here, computed on the 183 passages. */
 importScripts('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js');
+importScripts('rag-file.js?v=1');   /* RAGFILE: the given parts of rag.py, the same text the page shows and downloads */
 
 const HARNESS = String.raw`
 import json, math, re, io, sys, traceback
@@ -102,14 +105,14 @@ def _c_count(ns, tests, extra):
 
 _TOY = {"text": "The lecture on Verifier's Law"}
 def _c_shared(ns, tests, extra):
-    f = _need(ns, "score")
+    f = _need(ns, "score_shared")
     _test(tests, "\"Which lecture teaches Verifier's Law?\" shares 3 words with \"The lecture on Verifier's Law\"", lambda: f("Which lecture teaches Verifier's Law?", _TOY), 3)
     _test(tests, "\"Deploy our app\" shares 0 words with it", lambda: f("Deploy our app", _TOY), 0)
     q = _Q["E"]; p = _BY["L7.s07.2"]
     _test(tests, "A real passage: question E against " + p["id"], lambda: f(q["q"], p), len(set(words(q["q"])) & set(words(p["text"]))))
 
 def _c_rare(ns, tests, extra):
-    f = _need(ns, "score")
+    f = _need(ns, "score_rare")
     q = _Q["A"]
     for pid in ("L1.s05.1", "L12.s03.2"):
         p = _BY[pid]
@@ -188,6 +191,38 @@ def _c_filter(ns, tests, extra):
 _CHECK = {"count": _c_count, "shared": _c_shared, "rare": _c_rare, "meaning": _c_meaning, "merge": _c_merge,
           "pick": _c_pick, "prompt": _c_prompt, "filter": _c_filter}
 
+# what each level prints after its checks pass: a few lines run on the real passages, shown like a Python prompt
+_DEMO = {
+    "count": ['len(passages)', 'passages[0]["tokens"]', 'total_tokens(passages)'],
+    "shared": ['q = get_question("E")', 'q["q"]', 'score_shared(q["q"], BY_ID["L7.s07.2"])', 'show(by_score(score_shared, q["q"]), q)', 'scoreboard()'],
+    "rare": ['seen_in("lecture"), seen_in("law")', 'q = get_question("B")', 'q["q"]', 'show(by_score(score_rare, q["q"]), q)', 'scoreboard()'],
+    "meaning": ['q = get_question("B")', '[round(x, 3) for x in q["numbers"][:6]]', 'len(q["numbers"])', 'round(closeness(q["numbers"], BY_ID["L10.s03.1"]["numbers"]), 3)', 'show(by_meaning(q["numbers"]), q)', 'scoreboard()'],
+    "merge": ['fuse(["a", "b", "c"], ["c", "a", "d"])', 'q = get_question("B")', 'show(fuse(by_score(score_rare, q["q"]), by_meaning(q["numbers"])), q)', 'scoreboard()'],
+    "pick": ['q = get_question("D")', 'sent = pick(by_score(score_rare, q["q"]), by_meaning(q["numbers"]))', 'show(sent, q, k=len(sent))', 'sum(BY_ID[i]["tokens"] for i in sent)', 'scoreboard()'],
+    "prompt": ['q = get_question("X")', 'top3 = [BY_ID[i] for i in by_meaning(q["numbers"])[:3]]', 'print(build_prompt(q["q"], top3))'],
+    "filter": ['q = get_question("G")', 'ranked = by_meaning(q["numbers"])', '[BY_ID[i]["lecture"] for i in ranked[:3]]', '[i for i in ranked[:3] if can_see(BY_ID[i], "no-code")]', 'mine = [p for p in passages if can_see(p, "no-code")]', 'show(by_meaning(q["numbers"], mine), q)'],
+}
+
+def _repl(lines, ns):
+    out = []
+    for src in lines:
+        buf = io.StringIO(); old = sys.stdout; sys.stdout = buf; shown = ""
+        try:
+            try:
+                code = compile(src, "<demo>", "eval")
+            except SyntaxError:
+                exec(compile(src, "<demo>", "exec"), ns)
+            else:
+                v = eval(code, ns)
+                if v is not None: shown = repr(v)
+        except Exception as e:
+            shown = type(e).__name__ + ": " + str(e)[:200]
+        finally:
+            sys.stdout = old
+        text = buf.getvalue() + (shown + "\n" if shown else "")
+        out.append({"in": src, "out": text[-3000:]})
+    return out
+
 def _where(e):
     if isinstance(e, SyntaxError) and e.filename == "your_code":
         return "Line " + str(e.lineno) + ": " + (e.msg or "the Python is not valid") + ". Check the brackets, the colon and the spaces at the start of the line."
@@ -196,18 +231,27 @@ def _where(e):
         if fr.filename == "your_code": line = fr.lineno
     return ("Line " + str(line) + ": " if line else "") + type(e).__name__ + ": " + str(e)[:200]
 
-def _run(level, code):
-    out = io.StringIO(); tests = []; extra = {}; err = ""
-    ns = {"words": words, "seen_in": seen_in, "math": math, "N": N, "passages": passages, "CODE_ONLY": list(CODE_ONLY), "__name__": "__main__"}
+# rag.py's given head runs once; every run starts from a copy of what it made
+_BASE = {"__name__": "rag"}
+exec(compile(_HEAD, "rag.py", "exec"), _BASE)
+
+def _run(level, code, given):
+    out = io.StringIO(); tests = []; extra = {}; err = ""; repl = []
+    ns = dict(_BASE)
     old = sys.stdout; sys.stdout = out
     try:
+        for pid, src in json.loads(given):
+            exec(compile(src, "level_" + pid, "exec"), ns)
         exec(compile(code, "your_code", "exec"), ns)
+        exec(compile(_TAIL, "rag.py", "exec"), ns)
         _CHECK[level](ns, tests, extra)
     except BaseException as e:
         err = _where(e)
     finally:
         sys.stdout = old
-    return json.dumps({"tests": tests, "out": out.getvalue()[-1500:], "error": err, "extra": extra})
+    if not err and tests and all(t["ok"] for t in tests):
+        repl = _repl(_DEMO.get(level, []), ns)
+    return json.dumps({"tests": tests, "out": out.getvalue()[-1500:], "error": err, "extra": extra, "repl": repl})
 `;
 
 let py = null;
@@ -216,12 +260,14 @@ self.onmessage = async function (ev) {
   try {
     if (m.type === 'init') {
       py = await loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/' });
+      py.FS.writeFile('lab-data.json', m.data);      // rag.py opens this file, as it would on a laptop
       py.globals.set('_DATA', m.data);
+      py.globals.set('_HEAD', self.RAGFILE.HEAD); py.globals.set('_TAIL', self.RAGFILE.TAIL);
       py.runPython(HARNESS);
       self.postMessage({ type: 'ready', info: JSON.parse(py.runPython('_info()')) });
     } else if (m.type === 'run') {
-      py.globals.set('_LEVEL', m.level); py.globals.set('_CODE', m.code);
-      self.postMessage({ type: 'result', id: m.id, result: JSON.parse(py.runPython('_run(_LEVEL, _CODE)')) });
+      py.globals.set('_LEVEL', m.level); py.globals.set('_CODE', m.code); py.globals.set('_GIVEN', JSON.stringify(m.given || []));
+      self.postMessage({ type: 'result', id: m.id, result: JSON.parse(py.runPython('_run(_LEVEL, _CODE, _GIVEN)')) });
     }
   } catch (e) {
     self.postMessage({ type: 'fail', id: m.id, message: String(e && e.message || e).slice(0, 300) });
