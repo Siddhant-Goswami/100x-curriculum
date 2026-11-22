@@ -145,7 +145,7 @@ D1: adopt      D2: wait      D3: ignore</code></pre></div>
   <li><b>Ignore.</b> It is noise.</li>
 </ul>
 <p>The three parts of the brief are a human choice. They work for our team. Change them if they do not work for you.</p>
-<p>In Claude Code this file is <code>CLAUDE.md</code>. In Codex or Hermes, name it <code>AGENTS.md</code>.</p>
+<p>In Claude Code this file is <code>CLAUDE.md</code>. In Codex or Hermes, name it <code>AGENTS.md</code>. (The repo's loop keeps one <code>CLAUDE.md</code> and hands it to whichever harness you run.)</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>Correct it by hand, round after round</h2>
@@ -275,13 +275,13 @@ Each round:
 <div class="call"><p class="kick">Keep this</p><p>An LLM can rewrite its own harness once two things are out of its reach: the labels, and the decision to keep a change. You supply the labels, from links old enough to judge, and you correct it by hand first. A second agent can then take over the correcting.</p></div>
 
 <section class="s" id="s11"><h2><span class="n">11</span>Your turn</h2>
-<p>Open Claude Code in an empty folder and paste this. It will fetch the repo and walk you through the hand-labelling part first.</p>
+<p>Open Claude Code, Codex or Hermes in an empty folder and paste this. It will fetch the repo and walk you through labelling by hand first.</p>
 <div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Clone https://github.com/Siddhant-Goswami/harness-engineering-2 and read its README.
 Run `python3 loop.py prepare` and show me the table. Then walk me through Part 1,
 one step at a time. Wait for me after each step. Do not label any link for me.</code></pre></div>
 <ul class="pt">
   <li><b>Part 1 works in any tool.</b> Labelling, the blank copy and the comparison need only a chat window.</li>
-  <li><b>Part 2 needs Claude Code today.</b> The loop calls it directly. A Codex version is coming, and Hermes is not tested yet.</li>
+  <li><b>Part 2 runs in any of the three.</b> Claude Code by default. Put <code>RUNNER=codex</code> or <code>RUNNER=hermes</code> in front of a command to switch. Only Hermes runs with no fence, so the loop's own checks are all that stop it.</li>
   <li><b>It runs before you bring anything.</b> The sample month is included. One full run on it cost us about $1.50.</li>
 </ul>
 <p><a class="btn" href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">Open the repo</a></p>
