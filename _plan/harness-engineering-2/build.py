@@ -19,7 +19,7 @@ swaps = [
     ('<a class="brand" href="/#L1">100x<b>·</b><span>C8 Module 2</span></a>',
      '<a class="brand" href="/harness-engineering-2/">100x<b>·</b><span>Masterclass</span></a>'),
     ('<nav aria-label="Lecture 1 pages"><a href="/c8/module-2/x/">Overview</a><a href="/c8/module-2/x/notes">Notes</a></nav>',
-     f'<nav aria-label="Session pages"><a href="/harness-engineering-2/">Notes</a><a href="{REPO}" target="_blank" rel="noopener">Repo</a></nav>'),
+     f'<nav aria-label="Session pages"><a href="/harness-engineering-2/" aria-current="page">Notes</a><a href="/harness-engineering-2/tutorial/">Tutorial</a><a href="{REPO}" target="_blank" rel="noopener">Repo</a></nav>'),
     ("Lecture notes · Lecture 1 · 22 November 2026 · Masterclass",
      "Session notes · Harness Engineering 2.0 · 22 November 2026"),
     ('<span>100xEngineers · Cohort 8 · Module 2 · Lecture 1: Harness Engineering 2.0 · Masterclass</span><a href="/#L1">Curriculum map</a><a href="/c8/module-2/x/">All Lecture 1 pages</a>',

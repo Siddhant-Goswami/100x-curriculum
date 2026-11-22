@@ -101,7 +101,7 @@
 
 <section class="s" id="s05"><h2><span class="n">05</span>Put the labels in one file</h2>
 <p>You do not have to collect the links by hand. Ask a tool that can use your browser to do it. This is the prompt we showed, tidied:</p>
-<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Open my bookmarks on X. For every post I saved in the last 60 days,
+<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Open my bookmarks on X. For every post I saved 30 to 60 days ago,
 write one row: date saved, who posted it, the topic in one line, the link.
 Give me a CSV with the columns: date, source, title, url, label.
 Leave the label column empty. Do not judge the posts.</code></pre></div>
@@ -275,16 +275,19 @@ Each round:
 <div class="call"><p class="kick">Keep this</p><p>An LLM can rewrite its own harness once two things are out of its reach: the labels, and the decision to keep a change. You supply the labels, from links old enough to judge, and you correct it by hand first. A second agent can then take over the correcting.</p></div>
 
 <section class="s" id="s11"><h2><span class="n">11</span>Your turn</h2>
-<p>Open Claude Code, Codex or Hermes in an empty folder and paste this. It will fetch the repo and walk you through labelling by hand first.</p>
-<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Clone https://github.com/Siddhant-Goswami/harness-engineering-2 and read its README.
-Run `python3 loop.py prepare` and show me the table. Then walk me through Part 1,
-one step at a time. Wait for me after each step. Do not label any link for me.</code></pre></div>
+<p>Clone the repo in your own terminal:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><code>git clone https://github.com/Siddhant-Goswami/harness-engineering-2
+cd harness-engineering-2</code></pre></div>
+<p>Then open Claude Code, Codex or Hermes in that folder and paste this. It walks you through labelling by hand first.</p>
+<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Read the README. Run `python3 loop.py prepare` and show me the table.
+Then walk me through Part 1, one step at a time. Wait for me after each step.
+Do not label any link for me.</code></pre></div>
 <ul class="pt">
   <li><b>Part 1 works in any tool.</b> Labelling, the blank copy and the comparison need only a chat window.</li>
   <li><b>Part 2 runs in any of the three.</b> Claude Code by default. Put <code>RUNNER=codex</code> or <code>RUNNER=hermes</code> in front of a command to switch. Only Hermes runs with no fence, so the loop's own checks are all that stop it.</li>
   <li><b>It runs before you bring anything.</b> The sample month is included. One full run on it cost us about $1.50.</li>
 </ul>
-<p><a class="btn" href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">Open the repo</a></p>
+<p><a class="btn" href="/harness-engineering-2/tutorial/">Step-by-step tutorial</a> <a class="btn" href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">Open the repo</a></p>
 </section>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>

@@ -1,0 +1,334 @@
+<p>This page takes you through <a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">the repo</a> from an empty laptop to the hidden week. Part 1 you do by hand. In Part 2 two agents and a few hundred lines of Python take over. The idea behind each step is in <a href="/harness-engineering-2/">the session notes</a>. This page is the how.</p>
+<p>We ran every step below on 22 November 2026, on the sample month that ships with the repo, once in each harness. The screenshots are those runs; tap any of them to open it full size. Your numbers will differ a little, because a model never writes the same brief twice.</p>
+
+<div class="hpick" id="hpick"><span class="lbl">Show steps for</span><div class="seg coral" role="group" aria-label="Your harness"><button type="button" data-pick="claude" aria-pressed="true">Claude Code</button><button type="button" data-pick="codex" aria-pressed="false">Codex</button><button type="button" data-pick="hermes" aria-pressed="false">Hermes</button></div></div>
+
+<figure class="route" aria-label="The route: set up in four steps, Part 1 by hand in six, Part 2 the loop in seven">
+  <div class="leg"><p class="lt">Set up</p><ol start="1">
+    <li><a href="#s01">What you need</a></li><li><a href="#s02">Install and log in</a></li><li><a href="#s03">Get the repo</a></li><li><a href="#s04">Open your harness</a></li></ol></div>
+  <div class="leg by"><p class="lt">Part 1 · by hand</p><ol start="5">
+    <li><a href="#s05">Get your saved links</a></li><li><a href="#s06">Label them yourself</a></li><li><a href="#s07">Make a blank copy</a></li><li><a href="#s08">A model labels it, blind</a></li><li><a href="#s09">Compare</a></li><li><a href="#s10">Write one rule</a></li></ol></div>
+  <div class="leg lp"><p class="lt">Part 2 · the loop</p><ol start="11">
+    <li><a href="#s11">Run the first agent</a></li><li><a href="#s12">Read its trace</a></li><li><a href="#s13">Record the baseline</a></li><li><a href="#s14">Run one round</a></li><li><a href="#s15">Read the optimizer</a></li><li><a href="#s16">More rounds</a></li><li><a href="#s17">Open the hidden week</a></li></ol></div>
+</figure>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What you need</h2>
+<table class="dials">
+  <tr><th>Thing</th><th>Why</th></tr>
+  <tr><td>Python 3.10 or newer</td><td>The loop, the scorer and the fetch tool are plain Python. Nothing to install with pip.</td></tr>
+  <tr><td>git</td><td>Every change the optimizer makes is a commit, and a reverted change is a revert.</td></tr>
+  <tr><td>One harness, logged in</td><td>Claude Code, Codex or Hermes. Part 1 needs only a chat window. Part 2 needs the harness.</td></tr>
+  <tr><td>About 15 minutes for Part 2</td><td>One brief takes 20 to 60 seconds and one round about a minute and a half. On the sample, a baseline and three rounds cost us about $1.50 in Claude Code.</td></tr>
+</table>
+<p>Check the first two, and your harness once it is installed:</p>
+<div data-h="claude"><pre data-code="terminal">python3 --version && git --version && claude --version</pre>
+<figure class="shot sm"><img data-shot="setup-claude" alt="Terminal: Python 3.12.10, git 2.50.1, Claude Code 2.1.330."></figure></div>
+<div data-h="codex"><pre data-code="terminal">python3 --version && git --version && codex --version</pre>
+<figure class="shot sm"><img data-shot="setup-codex" alt="Terminal: Python 3.12.10, git 2.50.1, codex-cli 0.163.0."></figure></div>
+<div data-h="hermes"><pre data-code="terminal">python3 --version && git --version && hermes --version</pre>
+<figure class="shot sm"><img data-shot="setup-hermes" alt="Terminal: Python 3.12.10, git 2.50.1, Hermes Agent v0.22.2 with its install directory."></figure></div>
+<p>Any Python from 3.10 up works. If <code>python3</code> is not found on Windows, try <code>python</code> or <code>py</code>.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Install and log in</h2>
+<div data-h="claude">
+<p><b>Install Claude Code.</b> On macOS, Linux or WSL:</p>
+<pre data-code="terminal">curl -fsSL https://claude.ai/install.sh | bash</pre>
+<p>On Windows PowerShell: <code>irm https://claude.ai/install.ps1 | iex</code>. Homebrew also works: <code>brew install --cask claude-code</code>.</p>
+<p><b>Log in.</b> Run <code>claude</code> once and follow the browser prompts. You need a paid Claude plan (Pro, Max, Team or Enterprise) or a Console account. The free plan does not include Claude Code.</p>
+<p><b>Models.</b> The loop uses <code>sonnet</code> for the briefing agent and <code>opus</code> for the optimizer. Change either for one command with <code>BRIEF_MODEL=haiku</code> or <code>OPT_MODEL=sonnet</code> in front of it.</p>
+</div>
+<div data-h="codex">
+<p><b>Install Codex.</b> Any one of these:</p>
+<pre data-code="terminal">npm install -g @openai/codex
+brew install --cask codex
+curl -fsSL https://chatgpt.com/codex/install.sh | sh</pre>
+<p><b>Log in.</b> Run <code>codex</code> and choose <b>Sign in with ChatGPT</b>. A Plus plan or above works. An API key works too.</p>
+<p><b>Models.</b> The loop uses your Codex default model for both agents, read from <code>~/.codex/config.toml</code>. Ours was GPT-6.1-Sol. To pick others: <code>BRIEF_MODEL=... OPT_MODEL=...</code> in front of a command.</p>
+</div>
+<div data-h="hermes">
+<p><b>Install Hermes Agent.</b> On Linux, macOS or WSL2:</p>
+<pre data-code="terminal">curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+source ~/.zshrc        # or ~/.bashrc</pre>
+<p><b>Pick a model.</b> Hermes is the one harness that does not come with a model. Choose a provider and a model:</p>
+<pre data-code="terminal">hermes model</pre>
+<p>The loop uses that default for both agents. A local model through Ollama works only while Ollama is running, and a small one may not keep to the brief's format. Every link it leaves out costs a point, so the scorer will tell you.</p>
+<p><b>What we used.</b> Our Hermes default was a local model, so for these runs we pointed Hermes at Claude Sonnet. These three lines apply to every <code>loop.py</code> command after them in that terminal:</p>
+<pre data-code="terminal">export HERMES_PROVIDER=anthropic
+export BRIEF_MODEL=claude-sonnet-5-5
+export OPT_MODEL=claude-sonnet-5-5</pre>
+</div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Get the repo</h2>
+<p>Clone it in your own terminal, not from inside the agent. Codex's sandbox has no network by default, so a clone from inside Codex fails.</p>
+<pre data-code="terminal">git clone https://github.com/Siddhant-Goswami/harness-engineering-2
+cd harness-engineering-2
+python3 loop.py prepare</pre>
+<figure class="shot"><img data-shot="clone" alt="Terminal: git clone, then python3 loop.py prepare prints a table of four weeks with 25 links each: 5 acted, 4 should have, 16 noise, 0 not labelled, 2 decisions. Week 4 is marked hidden."><figcaption><code>prepare</code> splits the month into four weeks. Week 4 stays hidden until the very end.</figcaption></figure>
+<p>Read the table one row at a time. Week 1 has 25 links. You acted on 5, wish you had acted on 4, and 16 were noise. You also made 2 decisions that week. The sample month is made up, products included, so every command works before you bring your own links.</p>
+<p>Here is what is in the folder, and who may change each part:</p>
+<div class="tree" role="list">
+  <div role="listitem"><code>harness/</code><span>The briefing agent's setup: <code>CLAUDE.md</code>, <code>sources.md</code>, <code>memory.md</code>, <code>tools/fetch.py</code></span><i class="who both">you and the optimizer</i></div>
+  <div role="listitem"><code>verifier/</code><span>Your labels, your decisions, and <code>score.py</code></span><i class="who you">you only</i></div>
+  <div role="listitem"><code>failures.md</code><span>The mistakes you saw yourself, tagged F1, F2...</span><i class="who you">you only</i></div>
+  <div role="listitem"><code>optimizer/</code><span>The second agent's instructions and its journal</span><i class="who you">you</i></div>
+  <div role="listitem"><code>loop.py</code><span>The nine steps. Two of them call a model</span><i class="who code">code</i></div>
+  <div role="listitem"><code>agents.py</code><span>Runs one agent in Claude Code, Codex or Hermes</span><i class="who code">code</i></div>
+  <div role="listitem"><code>traces/</code><span>Every run, every tool call and what came back</span><i class="who code">written by code</i></div>
+</div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Open your harness in the folder</h2>
+<p>Start your harness inside <code>harness-engineering-2</code> and paste the prompt below. It reads the README, runs <code>prepare</code>, and walks you through Part 1 one step at a time.</p>
+<pre data-code="copy and paste">Read the README. Run `python3 loop.py prepare` and show me the table.
+Then walk me through Part 1, one step at a time. Wait for me after each step.
+Do not label any link for me.</pre>
+<div data-h="claude">
+<pre data-code="terminal">claude</pre>
+<p>The first time in a folder, Claude Code asks whether you trust it. Pick <b>Yes, I trust this folder</b>.</p>
+<figure class="shot"><img data-shot="tui-claude-trust" alt="Claude Code's safety check: Accessing workspace ~/harness-engineering-2. Two choices, No exit, and Yes I trust this folder, which is selected."></figure>
+<figure class="shot"><img data-shot="tui-claude-typed" alt="Claude Code's start screen with the prompt pasted into the input box."><figcaption>Paste the prompt and press Enter.</figcaption></figure>
+<figure class="shot"><img data-shot="tui-claude-done" alt="Claude Code ran prepare, showed the four-week table, explained it is the sample month, then gave Part 1 step 1 with the bookmarks prompt and stopped to wait."><figcaption>It runs <code>prepare</code>, explains the table, gives you step 1 and waits. It even worked out the date window: 30 to 60 days before today.</figcaption></figure>
+</div>
+<div data-h="codex">
+<pre data-code="terminal">codex</pre>
+<p>If Codex offers an update first, either choice is fine. Then paste the prompt.</p>
+<figure class="shot"><img data-shot="tui-codex-typed" alt="Codex's start screen in ~/harness-engineering-2 with the prompt pasted into the input box."></figure>
+<figure class="shot"><img data-shot="tui-codex-done" alt="Codex ran python3 loop.py prepare, redrew the four-week table, and gave Part 1 step 1 with the bookmarks prompt, then waited."><figcaption>Codex runs <code>prepare</code>, redraws the table, gives step 1 and waits.</figcaption></figure>
+<p>If you skip the clone in step 03 and ask Codex to clone, the clone fails. Codex has no network inside its sandbox. That is why you clone first.</p>
+</div>
+<div data-h="hermes">
+<pre data-code="terminal">hermes</pre>
+<p>The first time, Hermes asks whether to share usage metrics. Any answer works. The status bar at the bottom shows which model it is using; check it is the one you picked.</p>
+<figure class="shot"><img data-shot="tui-hermes-typed" alt="Hermes Agent banner, a welcome line, a status bar showing claude-sonnet-5-5, and the prompt pasted into the input box."></figure>
+<figure class="shot"><img data-shot="tui-hermes-done" alt="Hermes read README.md, ran python3 loop.py prepare, showed the four-week table and gave Part 1 step 1 with the bookmarks prompt, then asked whether to use your own links or the sample."><figcaption>Hermes shows each tool call (read, $) as it goes, then the table and step 1.</figcaption></figure>
+</div>
+<p>You can carry on with the agent from here, or type the commands yourself. The rest of this page types them, so you can see each output.</p>
+</section>
+
+<p class="part">Part 1 · by hand</p>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Get your saved links</h2>
+<p>Use links you saved 30 to 60 days ago. Yesterday's links are no good yet: you cannot tell whether they helped. Give a tool that can use your browser this prompt:</p>
+<pre data-code="copy and paste">Open my bookmarks on X. For every post I saved 30 to 60 days ago, write one row:
+date saved, who posted it, the topic in one line, and the link.
+Give me a CSV with the columns: date, source, title, url, label.
+Leave the label column empty. Do not judge the posts.</pre>
+<p>Change the first line for Instagram, YouTube or Reddit saves, or your browser history. The file you want looks like this, with the last column empty:</p>
+<div class="csv" role="img" aria-label="A CSV with columns date, source, title, url and label. Three rows from the sample month, the label column empty.">
+  <div class="r h"><span>date</span><span>source</span><span>title</span><span>url</span><span class="lab">label</span></div>
+  <div class="r"><span>2026-10-19</span><span>Orchard Labs blog</span><span>Pricing update: cached input tokens billed at 10%</span><span>https://…</span><span class="lab empty"></span></div>
+  <div class="r"><span>2026-10-20</span><span>Kiln changelog</span><span>Kiln 2.4: script mode</span><span>https://…</span><span class="lab empty"></span></div>
+  <div class="r"><span>2026-10-21</span><span>Anvil security</span><span>Advisory: Anvil plugin sandbox escape, patch now</span><span>https://…</span><span class="lab empty"></span></div>
+</div>
+<p>Save it as <code>verifier/links.csv</code>, in place of the sample. Then run <code>python3 loop.py prepare</code> again. To follow this page first, keep the sample as it is.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Label every link yourself</h2>
+<p>Go down the file and fill the last column. This is the step no agent can do for you: it is your judgement going in.</p>
+<table class="dials labels">
+  <tr><th>Label</th><th>Means</th><th>Example from the sample</th></tr>
+  <tr><td><span class="chip sig">signal</span></td><td>You acted on it and it helped. <code>acted</code> means the same.</td><td>Kiln 2.4: script mode</td></tr>
+  <tr><td><span class="chip sh">should have</span></td><td>You did not act, and now wish you had. Optional.</td><td>We measured script mode on our nightly batch job: 78% fewer tokens</td></tr>
+  <tr><td><span class="chip no">noise</span></td><td>You never used it.</td><td>Advisory: Anvil plugin sandbox escape, patch now (the reader does not use Anvil)</td></tr>
+  <tr><td><span class="chip bl">empty</span></td><td>You cannot tell. The agent still sees the link; it is never scored.</td><td></td></tr>
+</table>
+<p>Optional, and worth skipping the first time: <code>verifier/decisions.csv</code>, one row per decision you made that month (<code>date, question, outcome, how_it_turned_out</code>, where the outcome is <code>adopt</code>, <code>wait</code> or <code>ignore</code>).</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Make a blank copy</h2>
+<pre data-code="terminal">python3 loop.py blank</pre>
+<figure class="shot"><img data-shot="p1-blank" alt="Terminal: 75 links, no labels: manual/links-blank.csv. Week four is left out so it stays hidden. Then the next two steps."><figcaption>Weeks 1 to 3 with the labels taken out. Week four is left out, so it stays hidden from you too.</figcaption></figure>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>A model labels it, blind</h2>
+<p>Give <code>manual/links-blank.csv</code> to a model with one line, and save its answer as <code>manual/links-model.csv</code>. Any chat window works: attach the file and send</p>
+<pre data-code="copy and paste">Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences.</pre>
+<p>Or do it from the terminal, in one line:</p>
+<div data-h="claude"><pre data-code="terminal">cat manual/links-blank.csv | claude -p "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences." > manual/links-model.csv</pre></div>
+<div data-h="codex"><pre data-code="terminal">codex exec --skip-git-repo-check -o manual/links-model.csv "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences." < manual/links-blank.csv</pre>
+<p><code>-o</code> saves only Codex's final answer, without its progress lines.</p></div>
+<div data-h="hermes"><pre data-code="terminal">hermes chat -Q -q "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences.
+
+$(cat manual/links-blank.csv)" > manual/links-model.csv</pre>
+<p><code>-Q</code> keeps the banner and tool lines out of the file. It uses your Hermes default model; add <code>--provider</code> and <code>-m</code> to pick another.</p></div>
+<p>Open the file and check it has 76 lines: the header and 75 links.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Compare</h2>
+<pre data-code="terminal">python3 loop.py compare manual/links-model.csv</pre>
+<div data-h="claude"><figure class="shot"><img data-shot="p1-compare-claude" alt="Terminal: agreed on 66 of 75 links (88%). Two links you acted on that the model called noise, Kiln 2.4.1 and Kiln 2.5.1. Seven noise links the model called signal, including Anvil 3.0 removes the legacy plugin API, the Quill DB advisory and the Anvil sandbox advisory."><figcaption>Claude Code, from the one-liner: 66 of 75.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="p1-compare-codex" alt="Terminal: agreed on 67 of 75 links (89%). Eight noise links the model called signal, including the Anvil and Quill DB advisories, a Gemstone price cut and a Gemstone outage postmortem."><figcaption>Codex, from the one-liner: 67 of 75.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="p1-compare-hermes" alt="Terminal: agreed on 71 of 75 links (95%). Four noise links the model called signal: Anvil 3.0 removes the legacy plugin API, the Quill DB advisory, the Anvil sandbox advisory and Anvil 3.1 skills support."><figcaption>Hermes, from the one-liner: 71 of 75.</figcaption></figure></div>
+<p>Do not stop at the percentage. Read the list and look for the mistake that repeats. In all three harnesses it was the same one: <b>Anvil</b> and <b>Quill DB</b>. Their posts sound urgent ("patch now", "removes the legacy API"), but this reader does not use either tool. A model that does not know the reader's stack calls loud news signal.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Write down the mistake, then one rule</h2>
+<p>First the mistake, in <code>failures.md</code>: what you saw, what you expected. Give it a tag.</p>
+<pre data-code="failures.md">## F1 · weeks 1 to 3
+Saw: the model called four links signal: advisories and removals for Anvil and Quill DB.
+Expected: urgent news about a tool I do not use is noise. I use Kiln, Orchard and Postgres with Vecstore.</pre>
+<p>Then one rule about that kind of link, in <code>harness/CLAUDE.md</code>, carrying the same tag. The tag is what stops the optimizer from deleting your rule later: it may reword a tagged rule, never remove it.</p>
+<pre data-code="harness/CLAUDE.md">The reader uses Kiln, Orchard and Postgres with Vecstore. Urgent news about any other
+tool (advisories, removals, "patch now") is noise to them, however loud the title. (F1)</pre>
+<figure class="shot"><img data-shot="p1-diff" alt="git diff: four lines added to failures.md under F1, and three lines added to harness/CLAUDE.md with the rule ending in (F1)."><figcaption><code>git diff</code> after both edits.</figcaption></figure>
+<p>Now go back to step 08. This time give the model your <code>CLAUDE.md</code> with the file, so it labels the way your rules say. We did this with Claude Sonnet:</p>
+<figure class="shot sm"><img data-shot="p1-compare2" alt="Terminal: agreed on 75 of 75 links (100%)."><figcaption>One rule took the same model from 95% to 100%.</figcaption></figure>
+<p>On the sample, one rule was enough, because the month was built around a few traps. On your own links expect several rounds. Stop when the disagreements stop teaching you anything. Then commit, so the loop starts from your rules:</p>
+<pre data-code="terminal">git commit -am "F1: urgent news about tools I do not use is noise"</pre>
+<div class="call"><p class="kick">What just happened</p><p>You were the optimizer. You read where the agent went wrong, named the pattern, and changed its setup by one rule. Part 2 hands that job to a second agent, and leaves you the two things it may not touch: the labels, and the decision to keep a change.</p></div>
+</section>
+
+<p class="part">Part 2 · the loop</p>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Run the first agent once</h2>
+<p>The briefing agent reads one week's links and writes a brief in three parts: <b>What changed</b>, <b>Who disagrees</b>, <b>What to do</b>. Open <code>harness/CLAUDE.md</code> and read its instructions first. Then run it on week 1:</p>
+<div data-h="claude"><pre data-code="terminal">python3 loop.py brief 1</pre></div>
+<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py brief 1</pre></div>
+<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py brief 1</pre></div>
+<p class="tip" data-h="codex hermes">Tired of typing the prefix? <code>export RUNNER=<span data-h="codex">codex</span><span data-h="hermes">hermes</span></code> once, and every command after it in that terminal uses it.</p>
+<div data-h="claude"><figure class="shot"><img data-shot="claude-brief" alt="The brief from Claude Code: What changed lists script mode in Kiln 2.4, a first measurement of it, the Vecstore advisory, the Quill DB advisory, the Kiln hook timeout and Orchard's 1 November deadlines, each citing link ids like [L005]. Who disagrees, What to do, then D1: adopt and D2: ignore. 17 seconds."><figcaption>17 seconds. Every claim cites a link id like <code>[L005]</code>; that is how the scorer finds it.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="codex-brief" alt="The brief from Codex, with the same three headings, link ids in brackets, and the two decision lines at the end. 27 seconds."><figcaption>27 seconds.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="hermes-brief" alt="The brief from Hermes, with the same three headings, link ids in brackets, and the two decision lines at the end. 61 seconds."><figcaption>61 seconds. The first Hermes run in the repo also sets up its own home in <code>.runner/</code>, which takes longer.</figcaption></figure></div>
+<p>Now score it against your labels:</p>
+<pre data-code="terminal">python3 verifier/score.py traces/try</pre>
+<div data-h="claude"><figure class="shot sm"><img data-shot="claude-score" alt="Score table: week 1, score 0.808, found 8 of 9, noise called important 3, decisions right 2 of 2."></figure></div>
+<div data-h="codex"><figure class="shot sm"><img data-shot="codex-score" alt="Score table: week 1, score 0.538, found 6 of 9, noise called important 2, decisions right 1 of 2."></figure></div>
+<div data-h="hermes"><figure class="shot sm"><img data-shot="hermes-score" alt="Score table: week 1, score 0.731, found 7 of 9, noise called important 3, decisions right 2 of 2."></figure></div>
+<p>The score is plain arithmetic, in <code>verifier/score.py</code>:</p>
+<pre data-code="the score">(links found + 2 x decisions right - 0.5 x noise called important)
+/ (links that mattered + 2 x decisions)</pre>
+<p><span data-h="claude">Claude Code's brief: (8 + 2×2 − 0.5×3) / (9 + 2×2) = 10.5 / 13 = 0.808.</span><span data-h="codex">Codex's brief: (6 + 2×1 − 0.5×2) / (9 + 2×2) = 7 / 13 = 0.538.</span><span data-h="hermes">Hermes's brief: (7 + 2×2 − 0.5×3) / (9 + 2×2) = 9.5 / 13 = 0.731.</span> A link counts as found when its id appears under <b>What changed</b> or <b>What to do</b>. Noise costs half a point, because the cheapest way to raise the score would be to cite everything.</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Read what it did</h2>
+<p>Every run leaves a trace: each tool call, and what came back. Read it before you trust the score.</p>
+<pre data-code="terminal">python3 loop.py trace traces/try/week-1.jsonl</pre>
+<div data-h="claude"><figure class="shot"><img data-shot="claude-tracebrief" alt="Trace from Claude Code: Bash cat inbox/week-1.csv, then python3 tools/fetch.py with a list of link ids, then the model's brief, then done: 5 model steps, tokens and cost in dollars."></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="codex-tracebrief" alt="Trace from Codex: Bash cat inbox/week-1.csv, then two fetch.py calls with ten and five link ids, then the brief, then done: 3 model steps, 70,400 tokens."></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="hermes-tracebrief" alt="Trace from Hermes: Read inbox/week-1.csv, then one fetch.py call with ten link ids, then the brief, then done: 2 model steps, 32,344 tokens."></figure></div>
+<p>Each <code>Bash:</code> or <code>Read:</code> line is one tool call. The <code>-&gt;</code> line under it is what came back. Look at the <code>fetch.py</code> line: the agent opened only some of the 25 links, the ones whose titles looked important. That habit is what the optimizer will go after.</p>
+<p>The three harnesses log in different formats. <code>agents.py</code> turns each into the same shape, so this command, the scorer and the optimizer read all three the same way. The tool's own log sits next to it as <code>*.raw.jsonl</code>.</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Record the baseline</h2>
+<p>A baseline is the score of your setup as it is now, before any agent changes it. Every later round is measured against it.</p>
+<div data-h="claude"><pre data-code="terminal">python3 loop.py baseline</pre><figure class="shot"><img data-shot="claude-baseline" alt="Baseline from Claude Code: writing 9 briefs, 3 per week. Week 1 0.744, week 2 0.705, week 3 0.82, each with a low-to-high range. Mean 0.756."></figure></div>
+<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py baseline</pre><figure class="shot"><img data-shot="codex-baseline" alt="Baseline from Codex: week 1 0.59, week 2 0.885, week 3 0.628. Mean 0.701."></figure></div>
+<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py baseline</pre><figure class="shot"><img data-shot="hermes-baseline" alt="Baseline from Hermes: week 1 0.641, week 2 0.744, week 3 0.705. Mean 0.697."></figure></div>
+<p>It writes nine briefs, three per week, all at once, in about 25 seconds. One brief is too small a sample: the same setup can score 0.46 and 0.89 on the same week. So each week's score is the mean of three runs, and <b>low to high</b> shows how far apart they were. For a steadier number, put <code>RUNS=5</code> in front.</p>
+<p>The baseline is saved in <code>scores.csv</code> and tagged <code>baseline</code> in git. Our Part 2 runs started from the repo's setup as shipped, without the F1 rule, so you can compare yours against them.</p>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>Run one round</h2>
+<p>One round is five steps. Two of them are a model; the rest is code you can read in <code>loop.py</code>.</p>
+<ol class="flow" aria-label="One round">
+  <li class="st-c"><b>Report</b><span>Code picks the worst week and lists every miss, with how many runs it happened in.</span></li>
+  <li class="st-m"><b>Propose</b><span>The optimizer reads the report and the traces, and makes one change to <code>harness/</code>, with a reason and a prediction.</span></li>
+  <li class="st-c"><b>Walls</b><span>Code checks the change stayed in <code>harness/</code>, left permissions alone and kept every tagged rule.</span></li>
+  <li class="st-m"><b>Brief again</b><span>Nine new briefs on the changed setup, scored the same way.</span></li>
+  <li class="st-c"><b>Keep or revert</b><span>Kept only if the mean rose by at least 0.02. Otherwise <code>git revert</code>.</span></li>
+</ol>
+<div data-h="claude"><pre data-code="terminal">python3 loop.py round</pre>
+<figure class="shot"><img data-shot="claude-round" alt="Round 1 in Claude Code. Change: a rule R1 to read every link before choosing. Predict: fixes nine missed links. Then three week-1 runs thrown away because Bash reached outside harness/, week 1 scores 0.0, weeks 2 and 3 score 0.41 with 15.3 noise called important. Mean 0.273. Reverted: 0.756 to 0.273."><figcaption>93 seconds. Reverted, for two reasons.</figcaption></figure>
+<p>Read it top to bottom. The optimizer saw the habit from step 12, the agent choosing links by title, and added a rule to read every link. Its prediction names the nine links that rule should fix.</p>
+<p>Two things went wrong. Reading every link made the agent cite nearly everything, so <b>noise called important</b> jumped from about 2 to 15. And in all three week-1 runs, the agent's first command looked one folder up (<code>cat ../inbox/week-1.csv || ls ..</code>). Claude Code's permissions blocked it, and the wall threw the run away anyway, scoring it zero. A run that looks outside its folder could have seen the labels, so it does not count. The loop reverted the change. That is the loop working.</p></div>
+<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py round</pre>
+<figure class="shot"><img data-shot="codex-round" alt="Round 1 in Codex. Change: one R1 coverage rule, because actionable links were fetched but omitted. Predict: fewer omissions of pricing, API deadlines and fixes. Week 1 0.731, week 2 0.872, week 3 0.885, all 9 of 9 found. Mean 0.829. Kept: 0.701 to 0.829."><figcaption>59 seconds. Kept: 0.701 to 0.829.</figcaption></figure>
+<p>Codex's optimizer found a different habit: the agent fetched the right links and then left them out of the brief. It added one rule about covering them. Found went to 9 of 9 in every week. Noise rose a little, from about 1 to 3, but the gain beat the 0.02 bar, so the change stayed as a commit.</p></div>
+<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py round</pre>
+<figure class="shot"><img data-shot="hermes-round" alt="Round 1 in Hermes. Change: in all 12 runs the agent fetched only 7 to 11 links chosen by title; added a rule to read every link. Week 1 0.423, week 2 0.423, week 3 0.461, all 9 of 9 found but 13.7 to 15 noise called important. Mean 0.436. Reverted: 0.697 to 0.436."><figcaption>50 seconds. Reverted: 0.697 to 0.436.</figcaption></figure>
+<p>Hermes's optimizer saw the same habit as Claude Code's: links chosen by title. Its fix, read every link, found all 9 links every week, but cited 14 noise links too, and noise costs half a point each. The score fell, so the code reverted it. Notice the agent never decided that itself.</p></div>
+</section>
+
+<section class="s" id="s15"><h2><span class="n">15</span>Read what the optimizer did</h2>
+<pre data-code="terminal">python3 loop.py trace traces/round-1/optimizer.jsonl</pre>
+<div data-h="claude"><figure class="shot"><img data-shot="claude-traceopt" alt="The end of Claude Code's optimizer trace: it reads the week 2 brief and inbox, greps the traces for fetch.py calls, says week 2's worst run never fetched L031, L033 or L050, reads fetch.py, then edits harness/CLAUDE.md to add the read-every-link rule. Done: 18 model steps, 271,630 tokens, $0.449."><figcaption>The end of the trace. 18 steps: it read the report, the briefs and the raw traces before it changed one file.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="codex-traceopt" alt="Codex's optimizer trace: it lists files, reads the report and journal, reads the setup, searches a trace for the missed ids, parses a trace with a small Python script, explains that the worst run fetched three links then left them out, edits harness/CLAUDE.md, checks its own git diff, and gives a reason and prediction. Done: 7 model steps."><figcaption>Codex works through the shell. It wrote a small Python script to pull the fetch calls out of a trace. Codex logs no text for its edits, so run <code>git show</code> on the round's commit to see the change.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="hermes-traceopt" alt="The end of Hermes's optimizer trace: it reads a brief from round 0, lists the tools folder, searches a raw trace, reads fetch.py, then edits harness/CLAUDE.md to add a rule to read every link in batches of about ten. Its summary says in all 12 runs the agent fetched only 7 to 11 links, chosen by title. Done: 13 model steps, 84,458 tokens."><figcaption>The end of the trace. Hermes's optimizer gets file tools only, no shell, and often makes several calls at once.</figcaption></figure></div>
+<p>The optimizer's instructions are in <code>optimizer/CLAUDE.md</code>. Read them once. It may change only files in <code>harness/</code>, one change per round, and it must give a reason and a prediction. <code>loop.py</code> writes both into <code>optimizer/journal.md</code>, so the next round can see what was tried.</p>
+</section>
+
+<section class="s" id="s16"><h2><span class="n">16</span>More rounds</h2>
+<div data-h="claude"><pre data-code="terminal">python3 loop.py run 2</pre>
+<figure class="shot"><img data-shot="claude-run2" alt="Two more rounds in Claude Code. Round 2 rewrote sources.md; six runs thrown away for reaching outside harness/; mean 0.333, reverted. Round 3 added a rule to read inbox/ from inside the folder and never use two dots, because every zero-scored run had done that; one run still thrown away; mean 0.765, reverted because 0.765 is less than 0.02 above 0.756. Status table lists rounds 0 to 3."><figcaption>Rounds 2 and 3. 280 seconds.</figcaption></figure>
+<p>This is the most useful screenshot on the page. Round 2 lost six runs to the same wall. In round 3, the optimizer read those traces and saw the pattern itself: every zero came from a run that looked one folder up. Its rule against that worked, but one run still slipped, and the mean rose only 0.009. That is under the 0.02 bar, so it was reverted too. Three rounds, nothing kept: in our Claude Code run, the setup the repo ships with stayed the best one.</p></div>
+<div data-h="codex"><p>We stopped Codex after one round and went straight to the hidden week. To run more:</p>
+<pre data-code="terminal">RUNNER=codex python3 loop.py run 3</pre></div>
+<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py run 2</pre>
+<figure class="shot"><img data-shot="hermes-run2" alt="Two more rounds in Hermes. Round 2 added a rule to fetch and list first-party vendor notices for products the reader uses and not cite dismissed links; mean 0.889, kept. Round 3 added a rule that guides and papers with measured results get a line under What changed; mean 0.94, kept. Status table lists rounds 0 to 3."><figcaption>Rounds 2 and 3. 139 seconds.</figcaption></figure>
+<p>Round 2 learned from round 1. Instead of "read everything", it named which links matter: first-party notices (changelogs, pricing, deprecations) for products the reader uses. That kept found high without the noise: 0.889, kept. Round 3 added measured guides and papers: 0.940, kept.</p></div>
+<p>Two commands show where you are:</p>
+<pre data-code="terminal">python3 loop.py status
+git log --oneline</pre>
+<div data-h="claude"><figure class="shot"><img data-shot="claude-gitlog2" alt="git log: baseline 0.756, then for each of rounds 1 to 3 a commit with the change and a commit reverting it, then week four opened."></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="codex-status" alt="Status: round 0 0.701 baseline, round 1 0.829 kept, with the change."></figure><figure class="shot"><img data-shot="codex-gitlog" alt="git log: baseline 0.701, round 1 change, round 1 kept 0.701 to 0.829."></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="hermes-gitlog" alt="git log, newest first: week four opened 0.577 to 0.731; round 3 kept 0.889 to 0.94; round 3 change; round 2 kept 0.697 to 0.889; round 2 change; round 1 reverted 0.697 to 0.436; round 1 change; baseline 0.697."></figure></div>
+<p>Every change is a commit and every revert is a commit, so <code>git show</code> on any round tells you exactly what the optimizer wrote. Do not edit files while <code>run</code> is going: the wall check in step 3 of the round will blame the optimizer for your edit and revert it.</p>
+</section>
+
+<section class="s" id="s17"><h2><span class="n">17</span>Open the hidden week</h2>
+<p>Weeks 1 to 3 are the weeks the loop could see. A rule that fits them might only fit them. Week 4 has never been shown to either agent, or to you. It runs once.</p>
+<div data-h="claude"><pre data-code="terminal">python3 loop.py final</pre><figure class="shot"><img data-shot="claude-final" alt="Final in Claude Code. Weeks 1 to 3: 0.756 before and after. Week 4: 0.564 (0.346 to 0.846) before, 0.551 (0.5 to 0.615) after. No change was kept, so there is nothing to test."></figure>
+<p>No change was kept, so both columns ran the same setup. The two week-4 numbers still differ, 0.564 and 0.551, and the three "before" runs ranged from 0.346 to 0.846. That spread is pure chance. Keep it in mind whenever a round "wins" by a few hundredths.</p></div>
+<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py final</pre><figure class="shot"><img data-shot="codex-final" alt="Final in Codex. Weeks 1 to 3: 0.701 before, 0.829 after. Week 4: 0.436 before, 0.731 after. Week four rose too."></figure>
+<p>The rule from round 1 helped on a week it never saw: 0.436 to 0.731. That is the result you want. The change captured something about how this reader decides, not something about weeks 1 to 3.</p></div>
+<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py final</pre><figure class="shot"><img data-shot="hermes-final" alt="Final in Hermes. Weeks 1 to 3: 0.697 before, 0.94 after. Week 4: 0.577 before, 0.731 after. Week four rose too."></figure>
+<p>Week 4 rose from 0.577 to 0.731. It rose less than weeks 1 to 3 did (0.697 to 0.940). Some of the gain was fitted to the weeks the loop could see, and some of it carried over. The hidden week is how you tell the two apart.</p></div>
+<p>All three of our runs side by side:</p>
+<div class="res" role="table" aria-label="Results from our three runs on the sample month">
+  <div class="rr h" role="row"><span role="columnheader">Harness</span><span role="columnheader">Rounds kept</span><span role="columnheader">Weeks 1 to 3</span><span role="columnheader">Week 4 (hidden)</span></div>
+  <div class="rr" role="row"><span role="cell">Claude Code</span><span role="cell">0 of 3</span><span role="cell"><i class="bar" style="--a:.756;--b:.756"></i>0.756 → 0.756</span><span role="cell"><i class="bar" style="--a:.564;--b:.551"></i>0.564 → 0.551</span></div>
+  <div class="rr" role="row"><span role="cell">Codex</span><span role="cell">1 of 1</span><span role="cell"><i class="bar" style="--a:.701;--b:.829"></i>0.701 → 0.829</span><span role="cell"><i class="bar" style="--a:.436;--b:.731"></i>0.436 → 0.731</span></div>
+  <div class="rr" role="row"><span role="cell">Hermes</span><span role="cell">2 of 3</span><span role="cell"><i class="bar" style="--a:.697;--b:.940"></i>0.697 → 0.940</span><span role="cell"><i class="bar" style="--a:.577;--b:.731"></i>0.577 → 0.731</span></div>
+</div>
+<p class="note">Do not rank the harnesses on this. Each ran once, with different models (Claude Code: Sonnet and Opus; Codex: GPT-6.1-Sol; Hermes: Sonnet), and each starts from its own baseline. Compare a harness with itself, before and after.</p>
+<p>Want a run with more rounds to read? The branch <code>sample-run</code> holds four rounds from before the session: 0.739 to 0.991 on weeks 1 to 3, and 0.666 to 0.949 on the hidden week.</p>
+<pre data-code="terminal">git log origin/sample-run --oneline
+git diff sample-baseline origin/sample-run -- harness</pre>
+</section>
+
+<section class="s" id="s18"><h2><span class="n">18</span>How the three harnesses differ</h2>
+<p>Everything except the two model steps is the same Python whichever harness you pick. The differences are in how each one is fenced while it runs:</p>
+<table class="dials">
+  <tr><th></th><th>Claude Code</th><th>Codex</th><th>Hermes</th></tr>
+  <tr><td>Fence while it runs</td><td>A permissions file: it may run only <code>python3 tools/*</code> and <code>python3 scratch/*</code>, and edit only in <code>scratch/</code></td><td>Its sandbox: writes only inside the folder, no network</td><td>None: it can run any command</td></tr>
+  <tr><td>Caught after, by code</td><td>The walls</td><td>The walls, and any setup file a brief changed is put back</td><td>The same as Codex</td></tr>
+  <tr><td>Your own settings</td><td>Not read</td><td>Not read: it gets its own home in <code>.runner/</code>, with your login only</td><td>Not read: its own home in <code>.runner/</code>, with your login and model only</td></tr>
+  <tr><td>Optimizer's tools</td><td>Read, search, edit files</td><td>Shell, inside its sandbox</td><td>File tools only</td></tr>
+  <tr><td>Cost in the trace</td><td>Dollars and tokens</td><td>Tokens</td><td>Tokens</td></tr>
+</table>
+<p>One file is the setup for all three. Claude Code reads <code>harness/CLAUDE.md</code> itself. For Codex and Hermes, <code>loop.py</code> puts the same file, with <code>sources.md</code> and <code>memory.md</code> filled in, at the top of the prompt. So a change the optimizer makes in one harness reaches whichever you run next.</p>
+<p>Run Hermes on this repo and nothing else you care about: nothing stops it while it runs, only the checks afterwards. Hermes normally asks a person before anyone edits a <code>CLAUDE.md</code>. The optimizer's whole job is that edit, so the home in <code>.runner/hermes-home</code> turns that one question off. Your <code>~/.hermes</code> is not changed.</p>
+</section>
+
+<section class="s" id="s19"><h2><span class="n">19</span>When something goes wrong</h2>
+<details class="acc"><summary>"run thrown away, Bash reached outside harness/"</summary><div class="b"><p>A wall. The briefing agent looked outside its folder: <code>..</code>, <code>verifier/</code>, <code>traces/</code> or <code>optimizer/</code>. Those runs score zero. Open the trace for that run with <code>loop.py trace</code> to see the command. A few are normal. If every run does it, the optimizer will see it in the next round's report, as ours did in round 3.</p></div></details>
+<details class="acc" data-h="codex"><summary>Codex: the clone fails, or a fetch fails</summary><div class="b"><p>Codex's sandbox has no network by default. Clone in your own terminal (step 03). The briefing agent's own runs get network turned on by <code>agents.py</code>, so <code>fetch.py</code> works inside the loop.</p></div></details>
+<details class="acc" data-h="codex"><summary>Codex: the optimizer's trace shows an edit with no text</summary><div class="b"><p>Codex does not log the text of file edits. Run <code>git show</code> on the round's commit, or <code>git diff baseline -- harness</code>.</p></div></details>
+<details class="acc" data-h="hermes"><summary>Hermes: it hangs, errors, or writes nothing</summary><div class="b"><p>Usually the model is not reachable. If your default is a local model, start Ollama first. Or pick a hosted model with <code>hermes model</code>, or set <code>HERMES_PROVIDER</code>, <code>BRIEF_MODEL</code> and <code>OPT_MODEL</code> as in step 02. Check the model in Hermes's status bar.</p></div></details>
+<details class="acc" data-h="hermes"><summary>Hermes: the first run is slow</summary><div class="b"><p>The first run in a clone sets up <code>.runner/hermes-home</code>. It took us from one to three minutes. Later runs take 20 to 60 seconds.</p></div></details>
+<details class="acc" data-h="claude"><summary>Claude Code: "not logged in", or a sign-in warning</summary><div class="b"><p>Run <code>claude</code> and log in again. The loop starts Claude Code without your own settings (<code>--setting-sources project</code>), but it uses your login.</p></div></details>
+<details class="acc"><summary>A round I expected to win was reverted</summary><div class="b"><p>A change has to beat the live score by 0.02 (<code>MIN_GAIN</code> in <code>loop.py</code>). Look at <b>low to high</b>: if the range is wider than the gain, the gain may be luck. Run with <code>RUNS=5</code> for a steadier number.</p></div></details>
+<details class="acc"><summary>"Week four is already open"</summary><div class="b"><p><code>final</code> runs once, on purpose. A second look is not a hidden week any more. To practise again, clone the repo into a new folder.</p></div></details>
+<details class="acc"><summary>A change I made by hand was reverted</summary><div class="b"><p>You edited a file while <code>run</code> was going. The wall check cannot tell your edit from the optimizer's. Stop the run, edit, commit, then start again.</p></div></details>
+</section>
+
+<section class="s" id="s20"><h2><span class="n">20</span>Bring your own month</h2>
+<ol class="steps">
+  <li>Replace <code>verifier/links.csv</code> with your labelled links. Keep the header row.</li>
+  <li>Replace <code>verifier/decisions.csv</code> with your decisions, or leave only its header row.</li>
+  <li>Delete <code>verifier/sample/</code>, <code>harness/sources.md</code> and <code>harness/cache/</code>.</li>
+  <li>Run <code>python3 loop.py prepare</code>. Days 22 onward become week four.</li>
+  <li>Do Part 1 at least three times round, then the loop: <code>run 5</code>, then <code>final</code>.</li>
+</ol>
+<p>Pages are fetched the first time the agent reads them and kept in <code>harness/cache/</code>, so a week reads the same on every run. Links behind a login, like X or LinkedIn, come back as the title only.</p>
+<div class="call"><p class="kick">Take home</p><p>Keep your <code>git log --oneline</code> and both scores, before and after. Then name one change you would never have written yourself, and one you would reject on review even though the score rose.</p></div>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/harness-engineering-2/">The session notes: why each step exists</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">The repo and its README</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2/tree/sample-run" target="_blank" rel="noopener">The finished four-round run, commit by commit</a></li>
+</ul></nav>

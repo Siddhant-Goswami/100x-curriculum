@@ -1,0 +1,194 @@
+{
+ "claude-baseline": {
+  "w": 801,
+  "h": 186
+ },
+ "claude-brief": {
+  "w": 895,
+  "h": 870
+ },
+ "claude-final": {
+  "w": 723,
+  "h": 204
+ },
+ "claude-gitlog": {
+  "w": 895,
+  "h": 168
+ },
+ "claude-gitlog2": {
+  "w": 895,
+  "h": 348
+ },
+ "claude-round": {
+  "w": 895,
+  "h": 420
+ },
+ "claude-run2": {
+  "w": 895,
+  "h": 996
+ },
+ "claude-score": {
+  "w": 652,
+  "h": 132
+ },
+ "claude-status": {
+  "w": 895,
+  "h": 150
+ },
+ "claude-tracebrief": {
+  "w": 895,
+  "h": 366
+ },
+ "claude-traceopt": {
+  "w": 895,
+  "h": 600
+ },
+ "clone": {
+  "w": 621,
+  "h": 222
+ },
+ "codex-baseline": {
+  "w": 801,
+  "h": 186
+ },
+ "codex-brief": {
+  "w": 895,
+  "h": 780
+ },
+ "codex-final": {
+  "w": 738,
+  "h": 204
+ },
+ "codex-gitlog": {
+  "w": 895,
+  "h": 150
+ },
+ "codex-round": {
+  "w": 895,
+  "h": 348
+ },
+ "codex-score": {
+  "w": 652,
+  "h": 132
+ },
+ "codex-status": {
+  "w": 895,
+  "h": 132
+ },
+ "codex-tracebrief": {
+  "w": 895,
+  "h": 420
+ },
+ "codex-traceopt": {
+  "w": 895,
+  "h": 870
+ },
+ "hermes-baseline": {
+  "w": 801,
+  "h": 186
+ },
+ "hermes-brief": {
+  "w": 895,
+  "h": 870
+ },
+ "hermes-final": {
+  "w": 738,
+  "h": 204
+ },
+ "hermes-gitlog": {
+  "w": 895,
+  "h": 330
+ },
+ "hermes-round": {
+  "w": 895,
+  "h": 366
+ },
+ "hermes-run2": {
+  "w": 895,
+  "h": 870
+ },
+ "hermes-score": {
+  "w": 652,
+  "h": 132
+ },
+ "hermes-status": {
+  "w": 895,
+  "h": 150
+ },
+ "hermes-tracebrief": {
+  "w": 895,
+  "h": 348
+ },
+ "hermes-traceopt": {
+  "w": 895,
+  "h": 690
+ },
+ "p1-blank": {
+  "w": 660,
+  "h": 168
+ },
+ "p1-compare-claude": {
+  "w": 660,
+  "h": 384
+ },
+ "p1-compare-codex": {
+  "w": 668,
+  "h": 330
+ },
+ "p1-compare-hermes": {
+  "w": 652,
+  "h": 258
+ },
+ "p1-compare": {
+  "w": 652,
+  "h": 258
+ },
+ "p1-compare2": {
+  "w": 535,
+  "h": 96
+ },
+ "p1-diff": {
+  "w": 871,
+  "h": 528
+ },
+ "setup-claude": {
+  "w": 535,
+  "h": 132
+ },
+ "setup-codex": {
+  "w": 535,
+  "h": 132
+ },
+ "setup-hermes": {
+  "w": 535,
+  "h": 222
+ },
+ "tui-claude-done": {
+  "w": 895,
+  "h": 906
+ },
+ "tui-claude-trust": {
+  "w": 895,
+  "h": 348
+ },
+ "tui-claude-typed": {
+  "w": 895,
+  "h": 204
+ },
+ "tui-codex-done": {
+  "w": 895,
+  "h": 744
+ },
+ "tui-codex-typed": {
+  "w": 895,
+  "h": 186
+ },
+ "tui-hermes-done": {
+  "w": 895,
+  "h": 852
+ },
+ "tui-hermes-typed": {
+  "w": 895,
+  "h": 312
+ }
+}

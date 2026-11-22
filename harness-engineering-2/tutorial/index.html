@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" data-h="claude">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Run the loop yourself: Harness Engineering 2.0 tutorial | 100xEngineers</title>
+<meta name="description" content="Step-by-step tutorial for the Harness Engineering 2.0 repo: install Claude Code, Codex or Hermes, label links by hand, compare with a model, then run the briefing agent, the optimizer and the hidden week. With real screenshots from each harness.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+/* ---------- tutorial: harness switch ---------- */
+html[data-h="claude"] [data-h]:not([data-h~="claude"]),
+html[data-h="codex"] [data-h]:not([data-h~="codex"]),
+html[data-h="hermes"] [data-h]:not([data-h~="hermes"]){display:none!important}
+body.read .hpick{position:sticky;top:52px;z-index:40;display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin:1.2em 0 1.4em;padding:8px 0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+body.read .hpick .lbl{font:500 13px var(--sans);color:var(--ink2)}
+body.read .hpick .seg{background:var(--card)}
+body.read .hpick .seg button{cursor:pointer;min-height:32px}
+@media (max-width:420px){body.read .hpick .seg button{padding:5px 10px}}
+body.read section.s{scroll-margin-top:110px}
+
+/* ---------- the route ---------- */
+body.read figure.route{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 2em}
+body.read .route .leg{border-top:3px solid var(--line2);padding-top:8px}
+body.read .route .leg.by{border-top-color:var(--coral)}
+body.read .route .leg.lp{border-top-color:var(--prob)}
+body.read .route .lt{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:0 0 6px}
+body.read .route ol{margin:0;padding:0 0 0 1.6em;font-size:14.5px;line-height:1.45}
+body.read .route li{padding:2px 0}
+body.read .route li::marker{color:var(--ink3);font-variant-numeric:tabular-nums}
+body.read .route a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line2)}
+body.read .route a:hover{border-bottom-color:var(--ink)}
+@media (max-width:640px){body.read figure.route{grid-template-columns:1fr}}
+
+body.read p.part{margin:2.6em 0 -.4em;font:600 12.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--coral-ink);display:flex;align-items:center;gap:10px}
+body.read p.part::after{content:"";flex:1;height:1px;background:var(--line2)}
+body.read p.tip,body.read p.note{font-size:15px;color:var(--ink2);border-left:2px solid var(--line2);padding-left:12px}
+
+/* ---------- screenshots ---------- */
+body.read figure.shot{margin:10px 0 20px}
+body.read figure.shot .zoom{display:inline-block;max-width:100%;border-radius:10px;line-height:0;box-shadow:0 1px 2px rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.08)}
+body.read figure.shot img{display:block;max-width:100%;height:auto;border-radius:10px}
+body.read figure.shot figcaption{font-size:14px;color:var(--ink3);margin-top:6px;line-height:1.5}
+@media (min-width:1060px){body.read figure.shot:has(img[width="895"]){margin-left:-88px;margin-right:-88px}
+  body.read figure.shot:has(img[width="895"]) figcaption{padding-left:88px;padding-right:88px}}
+
+/* ---------- the folder ---------- */
+body.read .tree{border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin:0 0 1.2em;overflow:hidden}
+body.read .tree>div{display:grid;grid-template-columns:120px 1fr auto;gap:4px 14px;align-items:baseline;padding:9px 14px;border-bottom:1px solid var(--line);font-size:15px;line-height:1.45}
+body.read .tree>div:last-child{border-bottom:0}
+body.read .tree code{font-size:13.5px}
+body.read .tree span{color:var(--ink2)}
+body.read .who{font:500 12px var(--sans);font-style:normal;padding:2px 8px;border-radius:999px;white-space:nowrap}
+body.read .who.you{background:var(--coral-soft);color:var(--coral-ink)}
+body.read .who.both{background:var(--prob-soft);color:var(--prob-ink)}
+body.read .who.code{background:var(--det-soft);color:var(--det-ink)}
+@media (max-width:560px){body.read .tree>div{grid-template-columns:1fr auto}body.read .tree span{grid-column:1/-1;grid-row:2}}
+
+/* ---------- the CSV ---------- */
+body.read .csv{font:12.5px/1.5 var(--mono);border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin:0 0 1.2em;overflow-x:auto}
+body.read .csv .r{display:grid;grid-template-columns:92px 150px minmax(240px,1fr) 70px 70px;border-bottom:1px solid var(--line);min-width:640px}
+body.read .csv .r:last-child{border-bottom:0}
+body.read .csv .r span{padding:6px 10px;border-right:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.read .csv .r span:last-child{border-right:0}
+body.read .csv .h span{color:var(--ink3);background:var(--bg2)}
+body.read .csv .lab{background:var(--coral-soft)}
+body.read .csv .h .lab{color:var(--coral-ink);background:var(--coral-soft)}
+
+/* ---------- labels ---------- */
+body.read .chip{display:inline-block;font:500 13px var(--sans);padding:2px 9px;border-radius:999px;white-space:nowrap}
+body.read .chip.sig{background:var(--hum-soft);color:var(--hum-ink)}
+body.read .chip.sh{background:var(--det-soft);color:var(--det-ink)}
+body.read .chip.no{background:var(--bg2);color:var(--ink2)}
+body.read .chip.bl{border:1px dashed var(--line2);color:var(--ink3)}
+body.read table.labels td:last-child{color:var(--ink2);font-size:14.5px}
+
+/* ---------- one round ---------- */
+body.read ol.flow{list-style:none;counter-reset:f;display:grid;grid-template-columns:repeat(5,1fr);gap:22px;margin:0 0 1.4em;padding:0}
+body.read ol.flow li{counter-increment:f;position:relative;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--det);border-radius:10px;padding:10px 11px 12px;font-size:13.5px;line-height:1.45}
+body.read ol.flow li.st-m{border-top-color:var(--prob)}
+body.read ol.flow li::before{content:counter(f) " · code";display:block;font:600 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--det-ink);margin-bottom:4px}
+body.read ol.flow li.st-m::before{content:counter(f) " · model";color:var(--prob-ink)}
+body.read ol.flow li b{display:block;font-weight:600;font-size:14.5px;margin-bottom:3px}
+body.read ol.flow li span{color:var(--ink2)}
+body.read ol.flow li:not(:last-child)::after{content:"";position:absolute;right:-16px;top:50%;width:10px;height:10px;border-top:1.5px solid var(--ink3);border-right:1.5px solid var(--ink3);transform:translateY(-50%) rotate(45deg)}
+@media (min-width:1060px){body.read ol.flow{margin-left:-88px;margin-right:-88px}}
+@media (max-width:860px){body.read ol.flow{grid-template-columns:1fr;gap:18px}
+  body.read ol.flow li:not(:last-child)::after{right:auto;left:22px;top:auto;bottom:-14px;transform:rotate(135deg)}}
+
+/* ---------- results ---------- */
+body.read .res{border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin:0 0 1em;font-size:14.5px}
+body.read .res .rr{display:grid;grid-template-columns:1.1fr .8fr 1.4fr 1.4fr;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:end}
+body.read .res .rr:last-child{border-bottom:0}
+body.read .res .h{color:var(--ink3);font-size:13px;align-items:center}
+body.read .res .rr span{font-variant-numeric:tabular-nums}
+body.read .res .bar{display:block;position:relative;height:8px;border-radius:4px;background:var(--bg2);margin:2px 0 5px}
+body.read .res .bar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(var(--b) * 100%);border-radius:4px;background:var(--coral)}
+body.read .res .bar::after{content:"";position:absolute;top:-3px;bottom:-3px;width:2px;left:calc(var(--a) * 100%);background:var(--ink);border-radius:1px}
+@media (max-width:560px){body.read .res .rr{grid-template-columns:1fr 1fr}body.read .res .h span:nth-child(n+3){display:none}}
+
+/* step numbers stay visible: the text refers to them */
+body.read section.s>h2 .n{display:inline-block;min-width:2.1em;font:500 13px var(--mono);color:var(--coral-ink);letter-spacing:.04em}
+
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="harness-2-tutorial" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/harness-engineering-2/">100x<b>·</b><span>Masterclass</span></a>
+  <nav aria-label="Session pages"><a href="/harness-engineering-2/">Notes</a><a href="/harness-engineering-2/tutorial/" aria-current="page">Tutorial</a><a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">Repo</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Tutorial · Harness Engineering 2.0 · Claude Code, Codex or Hermes</p>
+  <h1>Run the loop yourself.</h1>
+  <p class="dek">Every step of the Harness Engineering 2.0 repo, by hand and then with the loop, in Claude Code, Codex or Hermes. Every screenshot is from a real run on the sample month.</p>
+</div>
+
+<p>This page takes you through <a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">the repo</a> from an empty laptop to the hidden week. Part 1 you do by hand. In Part 2 two agents and a few hundred lines of Python take over. The idea behind each step is in <a href="/harness-engineering-2/">the session notes</a>. This page is the how.</p>
+<p>We ran every step below on 22 November 2026, on the sample month that ships with the repo, once in each harness. The screenshots are those runs; tap any of them to open it full size. Your numbers will differ a little, because a model never writes the same brief twice.</p>
+
+<div class="hpick" id="hpick"><span class="lbl">Show steps for</span><div class="seg coral" role="group" aria-label="Your harness"><button type="button" data-pick="claude" aria-pressed="true">Claude Code</button><button type="button" data-pick="codex" aria-pressed="false">Codex</button><button type="button" data-pick="hermes" aria-pressed="false">Hermes</button></div></div>
+
+<figure class="route" aria-label="The route: set up in four steps, Part 1 by hand in six, Part 2 the loop in seven">
+  <div class="leg"><p class="lt">Set up</p><ol start="1">
+    <li><a href="#s01">What you need</a></li><li><a href="#s02">Install and log in</a></li><li><a href="#s03">Get the repo</a></li><li><a href="#s04">Open your harness</a></li></ol></div>
+  <div class="leg by"><p class="lt">Part 1 · by hand</p><ol start="5">
+    <li><a href="#s05">Get your saved links</a></li><li><a href="#s06">Label them yourself</a></li><li><a href="#s07">Make a blank copy</a></li><li><a href="#s08">A model labels it, blind</a></li><li><a href="#s09">Compare</a></li><li><a href="#s10">Write one rule</a></li></ol></div>
+  <div class="leg lp"><p class="lt">Part 2 · the loop</p><ol start="11">
+    <li><a href="#s11">Run the first agent</a></li><li><a href="#s12">Read its trace</a></li><li><a href="#s13">Record the baseline</a></li><li><a href="#s14">Run one round</a></li><li><a href="#s15">Read the optimizer</a></li><li><a href="#s16">More rounds</a></li><li><a href="#s17">Open the hidden week</a></li></ol></div>
+</figure>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What you need</h2>
+<table class="dials">
+  <tr><th>Thing</th><th>Why</th></tr>
+  <tr><td>Python 3.10 or newer</td><td>The loop, the scorer and the fetch tool are plain Python. Nothing to install with pip.</td></tr>
+  <tr><td>git</td><td>Every change the optimizer makes is a commit, and a reverted change is a revert.</td></tr>
+  <tr><td>One harness, logged in</td><td>Claude Code, Codex or Hermes. Part 1 needs only a chat window. Part 2 needs the harness.</td></tr>
+  <tr><td>About 15 minutes for Part 2</td><td>One brief takes 20 to 60 seconds and one round about a minute and a half. On the sample, a baseline and three rounds cost us about $1.50 in Claude Code.</td></tr>
+</table>
+<p>Check the first two, and your harness once it is installed:</p>
+<div data-h="claude"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 --version &amp;&amp; git --version &amp;&amp; claude --version</code></div></pre></div>
+<figure class="shot sm"><a class="zoom" href="/harness-engineering-2/tutorial/img/setup-claude.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/setup-claude.webp" width="535" height="132" alt="Terminal: Python 3.12.10, git 2.50.1, Claude Code 2.1.330." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="codex"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 --version &amp;&amp; git --version &amp;&amp; codex --version</code></div></pre></div>
+<figure class="shot sm"><a class="zoom" href="/harness-engineering-2/tutorial/img/setup-codex.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/setup-codex.webp" width="535" height="132" alt="Terminal: Python 3.12.10, git 2.50.1, codex-cli 0.163.0." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="hermes"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 --version &amp;&amp; git --version &amp;&amp; hermes --version</code></div></pre></div>
+<figure class="shot sm"><a class="zoom" href="/harness-engineering-2/tutorial/img/setup-hermes.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/setup-hermes.webp" width="535" height="222" alt="Terminal: Python 3.12.10, git 2.50.1, Hermes Agent v0.22.2 with its install directory." loading="lazy" decoding="async"></a></figure></div>
+<p>Any Python from 3.10 up works. If <code>python3</code> is not found on Windows, try <code>python</code> or <code>py</code>.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Install and log in</h2>
+<div data-h="claude">
+<p><b>Install Claude Code.</b> On macOS, Linux or WSL:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>curl -fsSL https://claude.ai/install.sh | bash</code></div></pre></div>
+<p>On Windows PowerShell: <code>irm https://claude.ai/install.ps1 | iex</code>. Homebrew also works: <code>brew install --cask claude-code</code>.</p>
+<p><b>Log in.</b> Run <code>claude</code> once and follow the browser prompts. You need a paid Claude plan (Pro, Max, Team or Enterprise) or a Console account. The free plan does not include Claude Code.</p>
+<p><b>Models.</b> The loop uses <code>sonnet</code> for the briefing agent and <code>opus</code> for the optimizer. Change either for one command with <code>BRIEF_MODEL=haiku</code> or <code>OPT_MODEL=sonnet</code> in front of it.</p>
+</div>
+<div data-h="codex">
+<p><b>Install Codex.</b> Any one of these:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>npm install -g @openai/codex</code></div><div class="ln"><code>brew install --cask codex</code></div><div class="ln"><code>curl -fsSL https://chatgpt.com/codex/install.sh | sh</code></div></pre></div>
+<p><b>Log in.</b> Run <code>codex</code> and choose <b>Sign in with ChatGPT</b>. A Plus plan or above works. An API key works too.</p>
+<p><b>Models.</b> The loop uses your Codex default model for both agents, read from <code>~/.codex/config.toml</code>. Ours was GPT-6.1-Sol. To pick others: <code>BRIEF_MODEL=... OPT_MODEL=...</code> in front of a command.</p>
+</div>
+<div data-h="hermes">
+<p><b>Install Hermes Agent.</b> On Linux, macOS or WSL2:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash</code></div><div class="ln"><code>source ~/.zshrc        # or ~/.bashrc</code></div></pre></div>
+<p><b>Pick a model.</b> Hermes is the one harness that does not come with a model. Choose a provider and a model:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>hermes model</code></div></pre></div>
+<p>The loop uses that default for both agents. A local model through Ollama works only while Ollama is running, and a small one may not keep to the brief's format. Every link it leaves out costs a point, so the scorer will tell you.</p>
+<p><b>What we used.</b> Our Hermes default was a local model, so for these runs we pointed Hermes at Claude Sonnet. These three lines apply to every <code>loop.py</code> command after them in that terminal:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>export HERMES_PROVIDER=anthropic</code></div><div class="ln"><code>export BRIEF_MODEL=claude-sonnet-5-5</code></div><div class="ln"><code>export OPT_MODEL=claude-sonnet-5-5</code></div></pre></div>
+</div>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Get the repo</h2>
+<p>Clone it in your own terminal, not from inside the agent. Codex's sandbox has no network by default, so a clone from inside Codex fails.</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>git clone https://github.com/Siddhant-Goswami/harness-engineering-2</code></div><div class="ln"><code>cd harness-engineering-2</code></div><div class="ln"><code>python3 loop.py prepare</code></div></pre></div>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/clone.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/clone.webp" width="621" height="222" alt="Terminal: git clone, then python3 loop.py prepare prints a table of four weeks with 25 links each: 5 acted, 4 should have, 16 noise, 0 not labelled, 2 decisions. Week 4 is marked hidden." loading="lazy" decoding="async"></a><figcaption><code>prepare</code> splits the month into four weeks. Week 4 stays hidden until the very end.</figcaption></figure>
+<p>Read the table one row at a time. Week 1 has 25 links. You acted on 5, wish you had acted on 4, and 16 were noise. You also made 2 decisions that week. The sample month is made up, products included, so every command works before you bring your own links.</p>
+<p>Here is what is in the folder, and who may change each part:</p>
+<div class="tree" role="list">
+  <div role="listitem"><code>harness/</code><span>The briefing agent's setup: <code>CLAUDE.md</code>, <code>sources.md</code>, <code>memory.md</code>, <code>tools/fetch.py</code></span><i class="who both">you and the optimizer</i></div>
+  <div role="listitem"><code>verifier/</code><span>Your labels, your decisions, and <code>score.py</code></span><i class="who you">you only</i></div>
+  <div role="listitem"><code>failures.md</code><span>The mistakes you saw yourself, tagged F1, F2...</span><i class="who you">you only</i></div>
+  <div role="listitem"><code>optimizer/</code><span>The second agent's instructions and its journal</span><i class="who you">you</i></div>
+  <div role="listitem"><code>loop.py</code><span>The nine steps. Two of them call a model</span><i class="who code">code</i></div>
+  <div role="listitem"><code>agents.py</code><span>Runs one agent in Claude Code, Codex or Hermes</span><i class="who code">code</i></div>
+  <div role="listitem"><code>traces/</code><span>Every run, every tool call and what came back</span><i class="who code">written by code</i></div>
+</div>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Open your harness in the folder</h2>
+<p>Start your harness inside <code>harness-engineering-2</code> and paste the prompt below. It reads the README, runs <code>prepare</code>, and walks you through Part 1 one step at a time.</p>
+<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Read the README. Run `python3 loop.py prepare` and show me the table.</code></div><div class="ln"><code>Then walk me through Part 1, one step at a time. Wait for me after each step.</code></div><div class="ln"><code>Do not label any link for me.</code></div></pre></div>
+<div data-h="claude">
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>claude</code></div></pre></div>
+<p>The first time in a folder, Claude Code asks whether you trust it. Pick <b>Yes, I trust this folder</b>.</p>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/tui-claude-trust.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/tui-claude-trust.webp" width="895" height="348" alt="Claude Code's safety check: Accessing workspace ~/harness-engineering-2. Two choices, No exit, and Yes I trust this folder, which is selected." loading="lazy" decoding="async"></a></figure>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/tui-claude-typed.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/tui-claude-typed.webp" width="895" height="204" alt="Claude Code's start screen with the prompt pasted into the input box." loading="lazy" decoding="async"></a><figcaption>Paste the prompt and press Enter.</figcaption></figure>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/tui-claude-done.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/tui-claude-done.webp" width="895" height="906" alt="Claude Code ran prepare, showed the four-week table, explained it is the sample month, then gave Part 1 step 1 with the bookmarks prompt and stopped to wait." loading="lazy" decoding="async"></a><figcaption>It runs <code>prepare</code>, explains the table, gives you step 1 and waits. It even worked out the date window: 30 to 60 days before today.</figcaption></figure>
+</div>
+<div data-h="codex">
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>codex</code></div></pre></div>
+<p>If Codex offers an update first, either choice is fine. Then paste the prompt.</p>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/tui-codex-typed.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/tui-codex-typed.webp" width="895" height="186" alt="Codex's start screen in ~/harness-engineering-2 with the prompt pasted into the input box." loading="lazy" decoding="async"></a></figure>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/tui-codex-done.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/tui-codex-done.webp" width="895" height="744" alt="Codex ran python3 loop.py prepare, redrew the four-week table, and gave Part 1 step 1 with the bookmarks prompt, then waited." loading="lazy" decoding="async"></a><figcaption>Codex runs <code>prepare</code>, redraws the table, gives step 1 and waits.</figcaption></figure>
+<p>If you skip the clone in step 03 and ask Codex to clone, the clone fails. Codex has no network inside its sandbox. That is why you clone first.</p>
+</div>
+<div data-h="hermes">
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>hermes</code></div></pre></div>
+<p>The first time, Hermes asks whether to share usage metrics. Any answer works. The status bar at the bottom shows which model it is using; check it is the one you picked.</p>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/tui-hermes-typed.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/tui-hermes-typed.webp" width="895" height="312" alt="Hermes Agent banner, a welcome line, a status bar showing claude-sonnet-5-5, and the prompt pasted into the input box." loading="lazy" decoding="async"></a></figure>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/tui-hermes-done.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/tui-hermes-done.webp" width="895" height="852" alt="Hermes read README.md, ran python3 loop.py prepare, showed the four-week table and gave Part 1 step 1 with the bookmarks prompt, then asked whether to use your own links or the sample." loading="lazy" decoding="async"></a><figcaption>Hermes shows each tool call (read, $) as it goes, then the table and step 1.</figcaption></figure>
+</div>
+<p>You can carry on with the agent from here, or type the commands yourself. The rest of this page types them, so you can see each output.</p>
+</section>
+
+<p class="part">Part 1 · by hand</p>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Get your saved links</h2>
+<p>Use links you saved 30 to 60 days ago. Yesterday's links are no good yet: you cannot tell whether they helped. Give a tool that can use your browser this prompt:</p>
+<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Open my bookmarks on X. For every post I saved 30 to 60 days ago, write one row:</code></div><div class="ln"><code>date saved, who posted it, the topic in one line, and the link.</code></div><div class="ln"><code>Give me a CSV with the columns: date, source, title, url, label.</code></div><div class="ln"><code>Leave the label column empty. Do not judge the posts.</code></div></pre></div>
+<p>Change the first line for Instagram, YouTube or Reddit saves, or your browser history. The file you want looks like this, with the last column empty:</p>
+<div class="csv" role="img" aria-label="A CSV with columns date, source, title, url and label. Three rows from the sample month, the label column empty.">
+  <div class="r h"><span>date</span><span>source</span><span>title</span><span>url</span><span class="lab">label</span></div>
+  <div class="r"><span>2026-10-19</span><span>Orchard Labs blog</span><span>Pricing update: cached input tokens billed at 10%</span><span>https://…</span><span class="lab empty"></span></div>
+  <div class="r"><span>2026-10-20</span><span>Kiln changelog</span><span>Kiln 2.4: script mode</span><span>https://…</span><span class="lab empty"></span></div>
+  <div class="r"><span>2026-10-21</span><span>Anvil security</span><span>Advisory: Anvil plugin sandbox escape, patch now</span><span>https://…</span><span class="lab empty"></span></div>
+</div>
+<p>Save it as <code>verifier/links.csv</code>, in place of the sample. Then run <code>python3 loop.py prepare</code> again. To follow this page first, keep the sample as it is.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Label every link yourself</h2>
+<p>Go down the file and fill the last column. This is the step no agent can do for you: it is your judgement going in.</p>
+<table class="dials labels">
+  <tr><th>Label</th><th>Means</th><th>Example from the sample</th></tr>
+  <tr><td><span class="chip sig">signal</span></td><td>You acted on it and it helped. <code>acted</code> means the same.</td><td>Kiln 2.4: script mode</td></tr>
+  <tr><td><span class="chip sh">should have</span></td><td>You did not act, and now wish you had. Optional.</td><td>We measured script mode on our nightly batch job: 78% fewer tokens</td></tr>
+  <tr><td><span class="chip no">noise</span></td><td>You never used it.</td><td>Advisory: Anvil plugin sandbox escape, patch now (the reader does not use Anvil)</td></tr>
+  <tr><td><span class="chip bl">empty</span></td><td>You cannot tell. The agent still sees the link; it is never scored.</td><td></td></tr>
+</table>
+<p>Optional, and worth skipping the first time: <code>verifier/decisions.csv</code>, one row per decision you made that month (<code>date, question, outcome, how_it_turned_out</code>, where the outcome is <code>adopt</code>, <code>wait</code> or <code>ignore</code>).</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Make a blank copy</h2>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py blank</code></div></pre></div>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/p1-blank.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/p1-blank.webp" width="660" height="168" alt="Terminal: 75 links, no labels: manual/links-blank.csv. Week four is left out so it stays hidden. Then the next two steps." loading="lazy" decoding="async"></a><figcaption>Weeks 1 to 3 with the labels taken out. Week four is left out, so it stays hidden from you too.</figcaption></figure>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>A model labels it, blind</h2>
+<p>Give <code>manual/links-blank.csv</code> to a model with one line, and save its answer as <code>manual/links-model.csv</code>. Any chat window works: attach the file and send</p>
+<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences.</code></div></pre></div>
+<p>Or do it from the terminal, in one line:</p>
+<div data-h="claude"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>cat manual/links-blank.csv | claude -p "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences." &gt; manual/links-model.csv</code></div></pre></div></div>
+<div data-h="codex"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>codex exec --skip-git-repo-check -o manual/links-model.csv "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences." &lt; manual/links-blank.csv</code></div></pre></div>
+<p><code>-o</code> saves only Codex's final answer, without its progress lines.</p></div>
+<div data-h="hermes"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>hermes chat -Q -q "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences.</code></div><div class="ln"><code></code></div><div class="ln"><code>$(cat manual/links-blank.csv)" &gt; manual/links-model.csv</code></div></pre></div>
+<p><code>-Q</code> keeps the banner and tool lines out of the file. It uses your Hermes default model; add <code>--provider</code> and <code>-m</code> to pick another.</p></div>
+<p>Open the file and check it has 76 lines: the header and 75 links.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Compare</h2>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py compare manual/links-model.csv</code></div></pre></div>
+<div data-h="claude"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/p1-compare-claude.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/p1-compare-claude.webp" width="660" height="384" alt="Terminal: agreed on 66 of 75 links (88%). Two links you acted on that the model called noise, Kiln 2.4.1 and Kiln 2.5.1. Seven noise links the model called signal, including Anvil 3.0 removes the legacy plugin API, the Quill DB advisory and the Anvil sandbox advisory." loading="lazy" decoding="async"></a><figcaption>Claude Code, from the one-liner: 66 of 75.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/p1-compare-codex.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/p1-compare-codex.webp" width="668" height="330" alt="Terminal: agreed on 67 of 75 links (89%). Eight noise links the model called signal, including the Anvil and Quill DB advisories, a Gemstone price cut and a Gemstone outage postmortem." loading="lazy" decoding="async"></a><figcaption>Codex, from the one-liner: 67 of 75.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/p1-compare-hermes.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/p1-compare-hermes.webp" width="652" height="258" alt="Terminal: agreed on 71 of 75 links (95%). Four noise links the model called signal: Anvil 3.0 removes the legacy plugin API, the Quill DB advisory, the Anvil sandbox advisory and Anvil 3.1 skills support." loading="lazy" decoding="async"></a><figcaption>Hermes, from the one-liner: 71 of 75.</figcaption></figure></div>
+<p>Do not stop at the percentage. Read the list and look for the mistake that repeats. In all three harnesses it was the same one: <b>Anvil</b> and <b>Quill DB</b>. Their posts sound urgent ("patch now", "removes the legacy API"), but this reader does not use either tool. A model that does not know the reader's stack calls loud news signal.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Write down the mistake, then one rule</h2>
+<p>First the mistake, in <code>failures.md</code>: what you saw, what you expected. Give it a tag.</p>
+<div class="code"><div class="hd"><span>failures.md</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>## F1 · weeks 1 to 3</code></div><div class="ln"><code>Saw: the model called four links signal: advisories and removals for Anvil and Quill DB.</code></div><div class="ln"><code>Expected: urgent news about a tool I do not use is noise. I use Kiln, Orchard and Postgres with Vecstore.</code></div></pre></div>
+<p>Then one rule about that kind of link, in <code>harness/CLAUDE.md</code>, carrying the same tag. The tag is what stops the optimizer from deleting your rule later: it may reword a tagged rule, never remove it.</p>
+<div class="code"><div class="hd"><span>harness/CLAUDE.md</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>The reader uses Kiln, Orchard and Postgres with Vecstore. Urgent news about any other</code></div><div class="ln"><code>tool (advisories, removals, "patch now") is noise to them, however loud the title. (F1)</code></div></pre></div>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/p1-diff.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/p1-diff.webp" width="871" height="528" alt="git diff: four lines added to failures.md under F1, and three lines added to harness/CLAUDE.md with the rule ending in (F1)." loading="lazy" decoding="async"></a><figcaption><code>git diff</code> after both edits.</figcaption></figure>
+<p>Now go back to step 08. This time give the model your <code>CLAUDE.md</code> with the file, so it labels the way your rules say. We did this with Claude Sonnet:</p>
+<figure class="shot sm"><a class="zoom" href="/harness-engineering-2/tutorial/img/p1-compare2.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/p1-compare2.webp" width="535" height="96" alt="Terminal: agreed on 75 of 75 links (100%)." loading="lazy" decoding="async"></a><figcaption>One rule took the same model from 95% to 100%.</figcaption></figure>
+<p>On the sample, one rule was enough, because the month was built around a few traps. On your own links expect several rounds. Stop when the disagreements stop teaching you anything. Then commit, so the loop starts from your rules:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>git commit -am "F1: urgent news about tools I do not use is noise"</code></div></pre></div>
+<div class="call"><p class="kick">What just happened</p><p>You were the optimizer. You read where the agent went wrong, named the pattern, and changed its setup by one rule. Part 2 hands that job to a second agent, and leaves you the two things it may not touch: the labels, and the decision to keep a change.</p></div>
+</section>
+
+<p class="part">Part 2 · the loop</p>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Run the first agent once</h2>
+<p>The briefing agent reads one week's links and writes a brief in three parts: <b>What changed</b>, <b>Who disagrees</b>, <b>What to do</b>. Open <code>harness/CLAUDE.md</code> and read its instructions first. Then run it on week 1:</p>
+<div data-h="claude"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py brief 1</code></div></pre></div></div>
+<div data-h="codex"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=codex python3 loop.py brief 1</code></div></pre></div></div>
+<div data-h="hermes"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=hermes python3 loop.py brief 1</code></div></pre></div></div>
+<p class="tip" data-h="codex hermes">Tired of typing the prefix? <code>export RUNNER=<span data-h="codex">codex</span><span data-h="hermes">hermes</span></code> once, and every command after it in that terminal uses it.</p>
+<div data-h="claude"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-brief.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-brief.webp" width="895" height="870" alt="The brief from Claude Code: What changed lists script mode in Kiln 2.4, a first measurement of it, the Vecstore advisory, the Quill DB advisory, the Kiln hook timeout and Orchard's 1 November deadlines, each citing link ids like [L005]. Who disagrees, What to do, then D1: adopt and D2: ignore. 17 seconds." loading="lazy" decoding="async"></a><figcaption>17 seconds. Every claim cites a link id like <code>[L005]</code>; that is how the scorer finds it.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-brief.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-brief.webp" width="895" height="780" alt="The brief from Codex, with the same three headings, link ids in brackets, and the two decision lines at the end. 27 seconds." loading="lazy" decoding="async"></a><figcaption>27 seconds.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-brief.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-brief.webp" width="895" height="870" alt="The brief from Hermes, with the same three headings, link ids in brackets, and the two decision lines at the end. 61 seconds." loading="lazy" decoding="async"></a><figcaption>61 seconds. The first Hermes run in the repo also sets up its own home in <code>.runner/</code>, which takes longer.</figcaption></figure></div>
+<p>Now score it against your labels:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 verifier/score.py traces/try</code></div></pre></div>
+<div data-h="claude"><figure class="shot sm"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-score.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-score.webp" width="652" height="132" alt="Score table: week 1, score 0.808, found 8 of 9, noise called important 3, decisions right 2 of 2." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="codex"><figure class="shot sm"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-score.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-score.webp" width="652" height="132" alt="Score table: week 1, score 0.538, found 6 of 9, noise called important 2, decisions right 1 of 2." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="hermes"><figure class="shot sm"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-score.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-score.webp" width="652" height="132" alt="Score table: week 1, score 0.731, found 7 of 9, noise called important 3, decisions right 2 of 2." loading="lazy" decoding="async"></a></figure></div>
+<p>The score is plain arithmetic, in <code>verifier/score.py</code>:</p>
+<div class="code"><div class="hd"><span>the score</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>(links found + 2 x decisions right - 0.5 x noise called important)</code></div><div class="ln"><code>/ (links that mattered + 2 x decisions)</code></div></pre></div>
+<p><span data-h="claude">Claude Code's brief: (8 + 2×2 − 0.5×3) / (9 + 2×2) = 10.5 / 13 = 0.808.</span><span data-h="codex">Codex's brief: (6 + 2×1 − 0.5×2) / (9 + 2×2) = 7 / 13 = 0.538.</span><span data-h="hermes">Hermes's brief: (7 + 2×2 − 0.5×3) / (9 + 2×2) = 9.5 / 13 = 0.731.</span> A link counts as found when its id appears under <b>What changed</b> or <b>What to do</b>. Noise costs half a point, because the cheapest way to raise the score would be to cite everything.</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>Read what it did</h2>
+<p>Every run leaves a trace: each tool call, and what came back. Read it before you trust the score.</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py trace traces/try/week-1.jsonl</code></div></pre></div>
+<div data-h="claude"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-tracebrief.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-tracebrief.webp" width="895" height="366" alt="Trace from Claude Code: Bash cat inbox/week-1.csv, then python3 tools/fetch.py with a list of link ids, then the model's brief, then done: 5 model steps, tokens and cost in dollars." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="codex"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-tracebrief.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-tracebrief.webp" width="895" height="420" alt="Trace from Codex: Bash cat inbox/week-1.csv, then two fetch.py calls with ten and five link ids, then the brief, then done: 3 model steps, 70,400 tokens." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="hermes"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-tracebrief.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-tracebrief.webp" width="895" height="348" alt="Trace from Hermes: Read inbox/week-1.csv, then one fetch.py call with ten link ids, then the brief, then done: 2 model steps, 32,344 tokens." loading="lazy" decoding="async"></a></figure></div>
+<p>Each <code>Bash:</code> or <code>Read:</code> line is one tool call. The <code>-&gt;</code> line under it is what came back. Look at the <code>fetch.py</code> line: the agent opened only some of the 25 links, the ones whose titles looked important. That habit is what the optimizer will go after.</p>
+<p>The three harnesses log in different formats. <code>agents.py</code> turns each into the same shape, so this command, the scorer and the optimizer read all three the same way. The tool's own log sits next to it as <code>*.raw.jsonl</code>.</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Record the baseline</h2>
+<p>A baseline is the score of your setup as it is now, before any agent changes it. Every later round is measured against it.</p>
+<div data-h="claude"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py baseline</code></div></pre></div><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-baseline.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-baseline.webp" width="801" height="186" alt="Baseline from Claude Code: writing 9 briefs, 3 per week. Week 1 0.744, week 2 0.705, week 3 0.82, each with a low-to-high range. Mean 0.756." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="codex"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=codex python3 loop.py baseline</code></div></pre></div><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-baseline.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-baseline.webp" width="801" height="186" alt="Baseline from Codex: week 1 0.59, week 2 0.885, week 3 0.628. Mean 0.701." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="hermes"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=hermes python3 loop.py baseline</code></div></pre></div><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-baseline.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-baseline.webp" width="801" height="186" alt="Baseline from Hermes: week 1 0.641, week 2 0.744, week 3 0.705. Mean 0.697." loading="lazy" decoding="async"></a></figure></div>
+<p>It writes nine briefs, three per week, all at once, in about 25 seconds. One brief is too small a sample: the same setup can score 0.46 and 0.89 on the same week. So each week's score is the mean of three runs, and <b>low to high</b> shows how far apart they were. For a steadier number, put <code>RUNS=5</code> in front.</p>
+<p>The baseline is saved in <code>scores.csv</code> and tagged <code>baseline</code> in git. Our Part 2 runs started from the repo's setup as shipped, without the F1 rule, so you can compare yours against them.</p>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>Run one round</h2>
+<p>One round is five steps. Two of them are a model; the rest is code you can read in <code>loop.py</code>.</p>
+<ol class="flow" aria-label="One round">
+  <li class="st-c"><b>Report</b><span>Code picks the worst week and lists every miss, with how many runs it happened in.</span></li>
+  <li class="st-m"><b>Propose</b><span>The optimizer reads the report and the traces, and makes one change to <code>harness/</code>, with a reason and a prediction.</span></li>
+  <li class="st-c"><b>Walls</b><span>Code checks the change stayed in <code>harness/</code>, left permissions alone and kept every tagged rule.</span></li>
+  <li class="st-m"><b>Brief again</b><span>Nine new briefs on the changed setup, scored the same way.</span></li>
+  <li class="st-c"><b>Keep or revert</b><span>Kept only if the mean rose by at least 0.02. Otherwise <code>git revert</code>.</span></li>
+</ol>
+<div data-h="claude"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py round</code></div></pre></div>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-round.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-round.webp" width="895" height="420" alt="Round 1 in Claude Code. Change: a rule R1 to read every link before choosing. Predict: fixes nine missed links. Then three week-1 runs thrown away because Bash reached outside harness/, week 1 scores 0.0, weeks 2 and 3 score 0.41 with 15.3 noise called important. Mean 0.273. Reverted: 0.756 to 0.273." loading="lazy" decoding="async"></a><figcaption>93 seconds. Reverted, for two reasons.</figcaption></figure>
+<p>Read it top to bottom. The optimizer saw the habit from step 12, the agent choosing links by title, and added a rule to read every link. Its prediction names the nine links that rule should fix.</p>
+<p>Two things went wrong. Reading every link made the agent cite nearly everything, so <b>noise called important</b> jumped from about 2 to 15. And in all three week-1 runs, the agent's first command looked one folder up (<code>cat ../inbox/week-1.csv || ls ..</code>). Claude Code's permissions blocked it, and the wall threw the run away anyway, scoring it zero. A run that looks outside its folder could have seen the labels, so it does not count. The loop reverted the change. That is the loop working.</p></div>
+<div data-h="codex"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=codex python3 loop.py round</code></div></pre></div>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-round.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-round.webp" width="895" height="348" alt="Round 1 in Codex. Change: one R1 coverage rule, because actionable links were fetched but omitted. Predict: fewer omissions of pricing, API deadlines and fixes. Week 1 0.731, week 2 0.872, week 3 0.885, all 9 of 9 found. Mean 0.829. Kept: 0.701 to 0.829." loading="lazy" decoding="async"></a><figcaption>59 seconds. Kept: 0.701 to 0.829.</figcaption></figure>
+<p>Codex's optimizer found a different habit: the agent fetched the right links and then left them out of the brief. It added one rule about covering them. Found went to 9 of 9 in every week. Noise rose a little, from about 1 to 3, but the gain beat the 0.02 bar, so the change stayed as a commit.</p></div>
+<div data-h="hermes"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=hermes python3 loop.py round</code></div></pre></div>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-round.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-round.webp" width="895" height="366" alt="Round 1 in Hermes. Change: in all 12 runs the agent fetched only 7 to 11 links chosen by title; added a rule to read every link. Week 1 0.423, week 2 0.423, week 3 0.461, all 9 of 9 found but 13.7 to 15 noise called important. Mean 0.436. Reverted: 0.697 to 0.436." loading="lazy" decoding="async"></a><figcaption>50 seconds. Reverted: 0.697 to 0.436.</figcaption></figure>
+<p>Hermes's optimizer saw the same habit as Claude Code's: links chosen by title. Its fix, read every link, found all 9 links every week, but cited 14 noise links too, and noise costs half a point each. The score fell, so the code reverted it. Notice the agent never decided that itself.</p></div>
+</section>
+
+<section class="s" id="s15"><h2><span class="n">15</span>Read what the optimizer did</h2>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py trace traces/round-1/optimizer.jsonl</code></div></pre></div>
+<div data-h="claude"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-traceopt.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-traceopt.webp" width="895" height="600" alt="The end of Claude Code's optimizer trace: it reads the week 2 brief and inbox, greps the traces for fetch.py calls, says week 2's worst run never fetched L031, L033 or L050, reads fetch.py, then edits harness/CLAUDE.md to add the read-every-link rule. Done: 18 model steps, 271,630 tokens, $0.449." loading="lazy" decoding="async"></a><figcaption>The end of the trace. 18 steps: it read the report, the briefs and the raw traces before it changed one file.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-traceopt.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-traceopt.webp" width="895" height="870" alt="Codex's optimizer trace: it lists files, reads the report and journal, reads the setup, searches a trace for the missed ids, parses a trace with a small Python script, explains that the worst run fetched three links then left them out, edits harness/CLAUDE.md, checks its own git diff, and gives a reason and prediction. Done: 7 model steps." loading="lazy" decoding="async"></a><figcaption>Codex works through the shell. It wrote a small Python script to pull the fetch calls out of a trace. Codex logs no text for its edits, so run <code>git show</code> on the round's commit to see the change.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-traceopt.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-traceopt.webp" width="895" height="690" alt="The end of Hermes's optimizer trace: it reads a brief from round 0, lists the tools folder, searches a raw trace, reads fetch.py, then edits harness/CLAUDE.md to add a rule to read every link in batches of about ten. Its summary says in all 12 runs the agent fetched only 7 to 11 links, chosen by title. Done: 13 model steps, 84,458 tokens." loading="lazy" decoding="async"></a><figcaption>The end of the trace. Hermes's optimizer gets file tools only, no shell, and often makes several calls at once.</figcaption></figure></div>
+<p>The optimizer's instructions are in <code>optimizer/CLAUDE.md</code>. Read them once. It may change only files in <code>harness/</code>, one change per round, and it must give a reason and a prediction. <code>loop.py</code> writes both into <code>optimizer/journal.md</code>, so the next round can see what was tried.</p>
+</section>
+
+<section class="s" id="s16"><h2><span class="n">16</span>More rounds</h2>
+<div data-h="claude"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py run 2</code></div></pre></div>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-run2.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-run2.webp" width="895" height="996" alt="Two more rounds in Claude Code. Round 2 rewrote sources.md; six runs thrown away for reaching outside harness/; mean 0.333, reverted. Round 3 added a rule to read inbox/ from inside the folder and never use two dots, because every zero-scored run had done that; one run still thrown away; mean 0.765, reverted because 0.765 is less than 0.02 above 0.756. Status table lists rounds 0 to 3." loading="lazy" decoding="async"></a><figcaption>Rounds 2 and 3. 280 seconds.</figcaption></figure>
+<p>This is the most useful screenshot on the page. Round 2 lost six runs to the same wall. In round 3, the optimizer read those traces and saw the pattern itself: every zero came from a run that looked one folder up. Its rule against that worked, but one run still slipped, and the mean rose only 0.009. That is under the 0.02 bar, so it was reverted too. Three rounds, nothing kept: in our Claude Code run, the setup the repo ships with stayed the best one.</p></div>
+<div data-h="codex"><p>We stopped Codex after one round and went straight to the hidden week. To run more:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=codex python3 loop.py run 3</code></div></pre></div></div>
+<div data-h="hermes"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=hermes python3 loop.py run 2</code></div></pre></div>
+<figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-run2.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-run2.webp" width="895" height="870" alt="Two more rounds in Hermes. Round 2 added a rule to fetch and list first-party vendor notices for products the reader uses and not cite dismissed links; mean 0.889, kept. Round 3 added a rule that guides and papers with measured results get a line under What changed; mean 0.94, kept. Status table lists rounds 0 to 3." loading="lazy" decoding="async"></a><figcaption>Rounds 2 and 3. 139 seconds.</figcaption></figure>
+<p>Round 2 learned from round 1. Instead of "read everything", it named which links matter: first-party notices (changelogs, pricing, deprecations) for products the reader uses. That kept found high without the noise: 0.889, kept. Round 3 added measured guides and papers: 0.940, kept.</p></div>
+<p>Two commands show where you are:</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py status</code></div><div class="ln"><code>git log --oneline</code></div></pre></div>
+<div data-h="claude"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-gitlog2.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-gitlog2.webp" width="895" height="348" alt="git log: baseline 0.756, then for each of rounds 1 to 3 a commit with the change and a commit reverting it, then week four opened." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="codex"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-status.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-status.webp" width="895" height="132" alt="Status: round 0 0.701 baseline, round 1 0.829 kept, with the change." loading="lazy" decoding="async"></a></figure><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-gitlog.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-gitlog.webp" width="895" height="150" alt="git log: baseline 0.701, round 1 change, round 1 kept 0.701 to 0.829." loading="lazy" decoding="async"></a></figure></div>
+<div data-h="hermes"><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-gitlog.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-gitlog.webp" width="895" height="330" alt="git log, newest first: week four opened 0.577 to 0.731; round 3 kept 0.889 to 0.94; round 3 change; round 2 kept 0.697 to 0.889; round 2 change; round 1 reverted 0.697 to 0.436; round 1 change; baseline 0.697." loading="lazy" decoding="async"></a></figure></div>
+<p>Every change is a commit and every revert is a commit, so <code>git show</code> on any round tells you exactly what the optimizer wrote. Do not edit files while <code>run</code> is going: the wall check in step 3 of the round will blame the optimizer for your edit and revert it.</p>
+</section>
+
+<section class="s" id="s17"><h2><span class="n">17</span>Open the hidden week</h2>
+<p>Weeks 1 to 3 are the weeks the loop could see. A rule that fits them might only fit them. Week 4 has never been shown to either agent, or to you. It runs once.</p>
+<div data-h="claude"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>python3 loop.py final</code></div></pre></div><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/claude-final.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/claude-final.webp" width="723" height="204" alt="Final in Claude Code. Weeks 1 to 3: 0.756 before and after. Week 4: 0.564 (0.346 to 0.846) before, 0.551 (0.5 to 0.615) after. No change was kept, so there is nothing to test." loading="lazy" decoding="async"></a></figure>
+<p>No change was kept, so both columns ran the same setup. The two week-4 numbers still differ, 0.564 and 0.551, and the three "before" runs ranged from 0.346 to 0.846. That spread is pure chance. Keep it in mind whenever a round "wins" by a few hundredths.</p></div>
+<div data-h="codex"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=codex python3 loop.py final</code></div></pre></div><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/codex-final.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/codex-final.webp" width="738" height="204" alt="Final in Codex. Weeks 1 to 3: 0.701 before, 0.829 after. Week 4: 0.436 before, 0.731 after. Week four rose too." loading="lazy" decoding="async"></a></figure>
+<p>The rule from round 1 helped on a week it never saw: 0.436 to 0.731. That is the result you want. The change captured something about how this reader decides, not something about weeks 1 to 3.</p></div>
+<div data-h="hermes"><div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>RUNNER=hermes python3 loop.py final</code></div></pre></div><figure class="shot"><a class="zoom" href="/harness-engineering-2/tutorial/img/hermes-final.webp" target="_blank" rel="noopener" aria-label="Open full size"><img src="/harness-engineering-2/tutorial/img/hermes-final.webp" width="738" height="204" alt="Final in Hermes. Weeks 1 to 3: 0.697 before, 0.94 after. Week 4: 0.577 before, 0.731 after. Week four rose too." loading="lazy" decoding="async"></a></figure>
+<p>Week 4 rose from 0.577 to 0.731. It rose less than weeks 1 to 3 did (0.697 to 0.940). Some of the gain was fitted to the weeks the loop could see, and some of it carried over. The hidden week is how you tell the two apart.</p></div>
+<p>All three of our runs side by side:</p>
+<div class="res" role="table" aria-label="Results from our three runs on the sample month">
+  <div class="rr h" role="row"><span role="columnheader">Harness</span><span role="columnheader">Rounds kept</span><span role="columnheader">Weeks 1 to 3</span><span role="columnheader">Week 4 (hidden)</span></div>
+  <div class="rr" role="row"><span role="cell">Claude Code</span><span role="cell">0 of 3</span><span role="cell"><i class="bar" style="--a:.756;--b:.756"></i>0.756 → 0.756</span><span role="cell"><i class="bar" style="--a:.564;--b:.551"></i>0.564 → 0.551</span></div>
+  <div class="rr" role="row"><span role="cell">Codex</span><span role="cell">1 of 1</span><span role="cell"><i class="bar" style="--a:.701;--b:.829"></i>0.701 → 0.829</span><span role="cell"><i class="bar" style="--a:.436;--b:.731"></i>0.436 → 0.731</span></div>
+  <div class="rr" role="row"><span role="cell">Hermes</span><span role="cell">2 of 3</span><span role="cell"><i class="bar" style="--a:.697;--b:.940"></i>0.697 → 0.940</span><span role="cell"><i class="bar" style="--a:.577;--b:.731"></i>0.577 → 0.731</span></div>
+</div>
+<p class="note">Do not rank the harnesses on this. Each ran once, with different models (Claude Code: Sonnet and Opus; Codex: GPT-6.1-Sol; Hermes: Sonnet), and each starts from its own baseline. Compare a harness with itself, before and after.</p>
+<p>Want a run with more rounds to read? The branch <code>sample-run</code> holds four rounds from before the session: 0.739 to 0.991 on weeks 1 to 3, and 0.666 to 0.949 on the hidden week.</p>
+<div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>git log origin/sample-run --oneline</code></div><div class="ln"><code>git diff sample-baseline origin/sample-run -- harness</code></div></pre></div>
+</section>
+
+<section class="s" id="s18"><h2><span class="n">18</span>How the three harnesses differ</h2>
+<p>Everything except the two model steps is the same Python whichever harness you pick. The differences are in how each one is fenced while it runs:</p>
+<table class="dials">
+  <tr><th></th><th>Claude Code</th><th>Codex</th><th>Hermes</th></tr>
+  <tr><td>Fence while it runs</td><td>A permissions file: it may run only <code>python3 tools/*</code> and <code>python3 scratch/*</code>, and edit only in <code>scratch/</code></td><td>Its sandbox: writes only inside the folder, no network</td><td>None: it can run any command</td></tr>
+  <tr><td>Caught after, by code</td><td>The walls</td><td>The walls, and any setup file a brief changed is put back</td><td>The same as Codex</td></tr>
+  <tr><td>Your own settings</td><td>Not read</td><td>Not read: it gets its own home in <code>.runner/</code>, with your login only</td><td>Not read: its own home in <code>.runner/</code>, with your login and model only</td></tr>
+  <tr><td>Optimizer's tools</td><td>Read, search, edit files</td><td>Shell, inside its sandbox</td><td>File tools only</td></tr>
+  <tr><td>Cost in the trace</td><td>Dollars and tokens</td><td>Tokens</td><td>Tokens</td></tr>
+</table>
+<p>One file is the setup for all three. Claude Code reads <code>harness/CLAUDE.md</code> itself. For Codex and Hermes, <code>loop.py</code> puts the same file, with <code>sources.md</code> and <code>memory.md</code> filled in, at the top of the prompt. So a change the optimizer makes in one harness reaches whichever you run next.</p>
+<p>Run Hermes on this repo and nothing else you care about: nothing stops it while it runs, only the checks afterwards. Hermes normally asks a person before anyone edits a <code>CLAUDE.md</code>. The optimizer's whole job is that edit, so the home in <code>.runner/hermes-home</code> turns that one question off. Your <code>~/.hermes</code> is not changed.</p>
+</section>
+
+<section class="s" id="s19"><h2><span class="n">19</span>When something goes wrong</h2>
+<details class="acc"><summary>"run thrown away, Bash reached outside harness/"</summary><div class="b"><p>A wall. The briefing agent looked outside its folder: <code>..</code>, <code>verifier/</code>, <code>traces/</code> or <code>optimizer/</code>. Those runs score zero. Open the trace for that run with <code>loop.py trace</code> to see the command. A few are normal. If every run does it, the optimizer will see it in the next round's report, as ours did in round 3.</p></div></details>
+<details class="acc" data-h="codex"><summary>Codex: the clone fails, or a fetch fails</summary><div class="b"><p>Codex's sandbox has no network by default. Clone in your own terminal (step 03). The briefing agent's own runs get network turned on by <code>agents.py</code>, so <code>fetch.py</code> works inside the loop.</p></div></details>
+<details class="acc" data-h="codex"><summary>Codex: the optimizer's trace shows an edit with no text</summary><div class="b"><p>Codex does not log the text of file edits. Run <code>git show</code> on the round's commit, or <code>git diff baseline -- harness</code>.</p></div></details>
+<details class="acc" data-h="hermes"><summary>Hermes: it hangs, errors, or writes nothing</summary><div class="b"><p>Usually the model is not reachable. If your default is a local model, start Ollama first. Or pick a hosted model with <code>hermes model</code>, or set <code>HERMES_PROVIDER</code>, <code>BRIEF_MODEL</code> and <code>OPT_MODEL</code> as in step 02. Check the model in Hermes's status bar.</p></div></details>
+<details class="acc" data-h="hermes"><summary>Hermes: the first run is slow</summary><div class="b"><p>The first run in a clone sets up <code>.runner/hermes-home</code>. It took us from one to three minutes. Later runs take 20 to 60 seconds.</p></div></details>
+<details class="acc" data-h="claude"><summary>Claude Code: "not logged in", or a sign-in warning</summary><div class="b"><p>Run <code>claude</code> and log in again. The loop starts Claude Code without your own settings (<code>--setting-sources project</code>), but it uses your login.</p></div></details>
+<details class="acc"><summary>A round I expected to win was reverted</summary><div class="b"><p>A change has to beat the live score by 0.02 (<code>MIN_GAIN</code> in <code>loop.py</code>). Look at <b>low to high</b>: if the range is wider than the gain, the gain may be luck. Run with <code>RUNS=5</code> for a steadier number.</p></div></details>
+<details class="acc"><summary>"Week four is already open"</summary><div class="b"><p><code>final</code> runs once, on purpose. A second look is not a hidden week any more. To practise again, clone the repo into a new folder.</p></div></details>
+<details class="acc"><summary>A change I made by hand was reverted</summary><div class="b"><p>You edited a file while <code>run</code> was going. The wall check cannot tell your edit from the optimizer's. Stop the run, edit, commit, then start again.</p></div></details>
+</section>
+
+<section class="s" id="s20"><h2><span class="n">20</span>Bring your own month</h2>
+<ol class="steps">
+  <li>Replace <code>verifier/links.csv</code> with your labelled links. Keep the header row.</li>
+  <li>Replace <code>verifier/decisions.csv</code> with your decisions, or leave only its header row.</li>
+  <li>Delete <code>verifier/sample/</code>, <code>harness/sources.md</code> and <code>harness/cache/</code>.</li>
+  <li>Run <code>python3 loop.py prepare</code>. Days 22 onward become week four.</li>
+  <li>Do Part 1 at least three times round, then the loop: <code>run 5</code>, then <code>final</code>.</li>
+</ol>
+<p>Pages are fetched the first time the agent reads them and kept in <code>harness/cache/</code>, so a week reads the same on every run. Links behind a login, like X or LinkedIn, come back as the title only.</p>
+<div class="call"><p class="kick">Take home</p><p>Keep your <code>git log --oneline</code> and both scores, before and after. Then name one change you would never have written yourself, and one you would reject on review even though the score rose.</p></div>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/harness-engineering-2/">The session notes: why each step exists</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">The repo and its README</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2/tree/sample-run" target="_blank" rel="noopener">The finished four-round run, commit by commit</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Masterclass · Harness Engineering 2.0</span><a href="/harness-engineering-2/">Session notes</a><a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">The repo</a></div></footer>
+<script>
+(function () {
+  var KEY = 'he2-harness', root = document.documentElement, ok = { claude: 1, codex: 1, hermes: 1 };
+  function set(h) {
+    if (!ok[h]) return;
+    root.setAttribute('data-h', h);
+    var bs = document.querySelectorAll('[data-pick]');
+    for (var i = 0; i < bs.length; i++) bs[i].setAttribute('aria-pressed', bs[i].getAttribute('data-pick') === h ? 'true' : 'false');
+  }
+  // the section at the top of the screen, so switching does not move the reader
+  function anchor() {
+    var ss = document.querySelectorAll('section.s, p.part, figure.route'), a = null;
+    for (var i = 0; i < ss.length; i++) { if (ss[i].getBoundingClientRect().top <= 140) a = ss[i]; else break; }
+    return a;
+  }
+  var q = null, saved = null;
+  try { q = new URLSearchParams(location.search).get('h'); } catch (e) {}
+  try { saved = localStorage.getItem(KEY); } catch (e) {}
+  set(ok[q] ? q : ok[saved] ? saved : 'claude');
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-pick]');
+    if (!b) return;
+    var h = b.getAttribute('data-pick'), a = anchor(), t = a && a.getBoundingClientRect().top;
+    set(h);
+    if (a) window.scrollBy(0, a.getBoundingClientRect().top - t);
+    try { localStorage.setItem(KEY, h); } catch (e) {}
+    try { var u = new URL(location.href); u.searchParams.set('h', h); history.replaceState(null, '', u); } catch (e) {}
+    try { window.posthog && window.posthog.capture('tutorial_harness', { harness: h }); } catch (e) {}
+  });
+})();
+
+</script>
+</body>
+</html>

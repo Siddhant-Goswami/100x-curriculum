@@ -1,0 +1,92 @@
+/* ---------- tutorial: harness switch ---------- */
+html[data-h="claude"] [data-h]:not([data-h~="claude"]),
+html[data-h="codex"] [data-h]:not([data-h~="codex"]),
+html[data-h="hermes"] [data-h]:not([data-h~="hermes"]){display:none!important}
+body.read .hpick{position:sticky;top:52px;z-index:40;display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;margin:1.2em 0 1.4em;padding:8px 0;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+body.read .hpick .lbl{font:500 13px var(--sans);color:var(--ink2)}
+body.read .hpick .seg{background:var(--card)}
+body.read .hpick .seg button{cursor:pointer;min-height:32px}
+@media (max-width:420px){body.read .hpick .seg button{padding:5px 10px}}
+body.read section.s{scroll-margin-top:110px}
+
+/* ---------- the route ---------- */
+body.read figure.route{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 2em}
+body.read .route .leg{border-top:3px solid var(--line2);padding-top:8px}
+body.read .route .leg.by{border-top-color:var(--coral)}
+body.read .route .leg.lp{border-top-color:var(--prob)}
+body.read .route .lt{font:600 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:0 0 6px}
+body.read .route ol{margin:0;padding:0 0 0 1.6em;font-size:14.5px;line-height:1.45}
+body.read .route li{padding:2px 0}
+body.read .route li::marker{color:var(--ink3);font-variant-numeric:tabular-nums}
+body.read .route a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line2)}
+body.read .route a:hover{border-bottom-color:var(--ink)}
+@media (max-width:640px){body.read figure.route{grid-template-columns:1fr}}
+
+body.read p.part{margin:2.6em 0 -.4em;font:600 12.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--coral-ink);display:flex;align-items:center;gap:10px}
+body.read p.part::after{content:"";flex:1;height:1px;background:var(--line2)}
+body.read p.tip,body.read p.note{font-size:15px;color:var(--ink2);border-left:2px solid var(--line2);padding-left:12px}
+
+/* ---------- screenshots ---------- */
+body.read figure.shot{margin:10px 0 20px}
+body.read figure.shot .zoom{display:inline-block;max-width:100%;border-radius:10px;line-height:0;box-shadow:0 1px 2px rgba(0,0,0,.08),0 6px 20px rgba(0,0,0,.08)}
+body.read figure.shot img{display:block;max-width:100%;height:auto;border-radius:10px}
+body.read figure.shot figcaption{font-size:14px;color:var(--ink3);margin-top:6px;line-height:1.5}
+@media (min-width:1060px){body.read figure.shot:has(img[width="895"]){margin-left:-88px;margin-right:-88px}
+  body.read figure.shot:has(img[width="895"]) figcaption{padding-left:88px;padding-right:88px}}
+
+/* ---------- the folder ---------- */
+body.read .tree{border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin:0 0 1.2em;overflow:hidden}
+body.read .tree>div{display:grid;grid-template-columns:120px 1fr auto;gap:4px 14px;align-items:baseline;padding:9px 14px;border-bottom:1px solid var(--line);font-size:15px;line-height:1.45}
+body.read .tree>div:last-child{border-bottom:0}
+body.read .tree code{font-size:13.5px}
+body.read .tree span{color:var(--ink2)}
+body.read .who{font:500 12px var(--sans);font-style:normal;padding:2px 8px;border-radius:999px;white-space:nowrap}
+body.read .who.you{background:var(--coral-soft);color:var(--coral-ink)}
+body.read .who.both{background:var(--prob-soft);color:var(--prob-ink)}
+body.read .who.code{background:var(--det-soft);color:var(--det-ink)}
+@media (max-width:560px){body.read .tree>div{grid-template-columns:1fr auto}body.read .tree span{grid-column:1/-1;grid-row:2}}
+
+/* ---------- the CSV ---------- */
+body.read .csv{font:12.5px/1.5 var(--mono);border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin:0 0 1.2em;overflow-x:auto}
+body.read .csv .r{display:grid;grid-template-columns:92px 150px minmax(240px,1fr) 70px 70px;border-bottom:1px solid var(--line);min-width:640px}
+body.read .csv .r:last-child{border-bottom:0}
+body.read .csv .r span{padding:6px 10px;border-right:1px solid var(--line);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.read .csv .r span:last-child{border-right:0}
+body.read .csv .h span{color:var(--ink3);background:var(--bg2)}
+body.read .csv .lab{background:var(--coral-soft)}
+body.read .csv .h .lab{color:var(--coral-ink);background:var(--coral-soft)}
+
+/* ---------- labels ---------- */
+body.read .chip{display:inline-block;font:500 13px var(--sans);padding:2px 9px;border-radius:999px;white-space:nowrap}
+body.read .chip.sig{background:var(--hum-soft);color:var(--hum-ink)}
+body.read .chip.sh{background:var(--det-soft);color:var(--det-ink)}
+body.read .chip.no{background:var(--bg2);color:var(--ink2)}
+body.read .chip.bl{border:1px dashed var(--line2);color:var(--ink3)}
+body.read table.labels td:last-child{color:var(--ink2);font-size:14.5px}
+
+/* ---------- one round ---------- */
+body.read ol.flow{list-style:none;counter-reset:f;display:grid;grid-template-columns:repeat(5,1fr);gap:22px;margin:0 0 1.4em;padding:0}
+body.read ol.flow li{counter-increment:f;position:relative;background:var(--card);border:1px solid var(--line);border-top:3px solid var(--det);border-radius:10px;padding:10px 11px 12px;font-size:13.5px;line-height:1.45}
+body.read ol.flow li.st-m{border-top-color:var(--prob)}
+body.read ol.flow li::before{content:counter(f) " · code";display:block;font:600 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--det-ink);margin-bottom:4px}
+body.read ol.flow li.st-m::before{content:counter(f) " · model";color:var(--prob-ink)}
+body.read ol.flow li b{display:block;font-weight:600;font-size:14.5px;margin-bottom:3px}
+body.read ol.flow li span{color:var(--ink2)}
+body.read ol.flow li:not(:last-child)::after{content:"";position:absolute;right:-16px;top:50%;width:10px;height:10px;border-top:1.5px solid var(--ink3);border-right:1.5px solid var(--ink3);transform:translateY(-50%) rotate(45deg)}
+@media (min-width:1060px){body.read ol.flow{margin-left:-88px;margin-right:-88px}}
+@media (max-width:860px){body.read ol.flow{grid-template-columns:1fr;gap:18px}
+  body.read ol.flow li:not(:last-child)::after{right:auto;left:22px;top:auto;bottom:-14px;transform:rotate(135deg)}}
+
+/* ---------- results ---------- */
+body.read .res{border:1px solid var(--line);border-radius:var(--r);background:var(--card);margin:0 0 1em;font-size:14.5px}
+body.read .res .rr{display:grid;grid-template-columns:1.1fr .8fr 1.4fr 1.4fr;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);align-items:end}
+body.read .res .rr:last-child{border-bottom:0}
+body.read .res .h{color:var(--ink3);font-size:13px;align-items:center}
+body.read .res .rr span{font-variant-numeric:tabular-nums}
+body.read .res .bar{display:block;position:relative;height:8px;border-radius:4px;background:var(--bg2);margin:2px 0 5px}
+body.read .res .bar::before{content:"";position:absolute;left:0;top:0;bottom:0;width:calc(var(--b) * 100%);border-radius:4px;background:var(--coral)}
+body.read .res .bar::after{content:"";position:absolute;top:-3px;bottom:-3px;width:2px;left:calc(var(--a) * 100%);background:var(--ink);border-radius:1px}
+@media (max-width:560px){body.read .res .rr{grid-template-columns:1fr 1fr}body.read .res .h span:nth-child(n+3){display:none}}
+
+/* step numbers stay visible: the text refers to them */
+body.read section.s>h2 .n{display:inline-block;min-width:2.1em;font:500 13px var(--mono);color:var(--coral-ink);letter-spacing:.04em}
