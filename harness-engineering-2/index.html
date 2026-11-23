@@ -170,8 +170,9 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <table class="dials">
   <tr><th>Label</th><th>Meaning</th><th>Example</th></tr>
   <tr><td><b>Signal</b></td><td>You acted on it and it helped.</td><td>A post on cutting tool costs. We used it a week later.</td></tr>
+  <tr><td>Should have</td><td>You did not act, and now wish you had. Optional.</td><td>A thread with real measurements you skipped.</td></tr>
   <tr><td><b>Noise</b></td><td>You never used it.</td><td>"Harness is dead" threads.</td></tr>
-  <tr><td>Not sure</td><td>You cannot tell yet.</td><td>Leave it blank.</td></tr>
+  <tr><td>Not sure</td><td>You cannot tell yet.</td><td>Leave it blank. It is never scored.</td></tr>
 </table>
 <p>In our own saves, fewer than 15 in every 100 links were signal. The agent's job is to flip that: most of what reaches you should be something you use.</p>
 <p>Do not hand this step to an LLM. It knows what is useful in general, not what was useful to you.</p>
@@ -181,7 +182,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 
 <section class="s" id="s05"><h2><span class="n">05</span>Put the labels in one file</h2>
 <p>Let a tool that can use your browser collect the links. This is the prompt we showed:</p>
-<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Open my bookmarks on X. For every post I saved 30 to 60 days ago,</code></div><div class="ln"><code>write one row: date saved, who posted it, the topic in one line, the link.</code></div><div class="ln"><code>Give me a CSV with the columns: date, source, title, url, label.</code></div><div class="ln"><code>Leave the label column empty. Do not judge the posts.</code></div></pre></div>
+<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Open my bookmarks on X. For every post I saved 30 to 60 days ago,</code></div><div class="ln"><code>write one row: date saved, who posted it, the topic in one line, and the link.</code></div><div class="ln"><code>Give me a CSV with the columns: date, source, title, url, label.</code></div><div class="ln"><code>Leave the label column empty. Do not judge the posts.</code></div></pre></div>
 <p>It collects; it does not label. You fill the label column yourself, row by row. That is where your judgement goes in.</p>
 <p>Your labelled file plus a rule for scoring against it: that is the verifier.</p>
 <p>Optional: a second file of <b>decisions</b> you faced that month, and how each turned out. Skip it on your first try.</p>
@@ -200,11 +201,12 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <p>Treat these numbers as a start. Change them once you see your own results.</p>
 </section>
 
-<section class="s" id="s07"><h2><span class="n">07</span>Fifteen lines for the first agent</h2>
-<p>Do not build a harness. Use one that exists (Claude Code, Codex, or Hermes if you want open source) and spend your time on its instructions. Ours are about 15 lines:</p>
-<div class="code"><pre><div class="ln"><code>You write a short weekly brief for one reader,</code></div><div class="ln"><code>from the links they saved that week.</code></div><div class="ln"><code></code></div><div class="ln"><code>Write the brief in three parts:</code></div><div class="ln"><code>## What changed</code></div><div class="ln"><code>## Who disagrees</code></div><div class="ln"><code>## What to do</code></div><div class="ln"><code></code></div><div class="ln"><code>Cite every link you mention by its id, like [L014].</code></div><div class="ln"><code></code></div><div class="ln"><code>For each decision, end with one line:</code></div><div class="ln"><code>D1: adopt      D2: wait      D3: ignore</code></div></pre></div>
+<section class="s" id="s07"><h2><span class="n">07</span>One short file for the first agent</h2>
+<p>Do not build a harness. Use one that exists (Claude Code, Codex, or Hermes if you want open source) and spend your time on its instructions. The core of ours:</p>
+<div class="code"><pre><div class="ln"><code>You write a short weekly brief for one reader,</code></div><div class="ln"><code>from the links they saved that week.</code></div><div class="ln"><code></code></div><div class="ln"><code>Write the brief in three parts, with these exact headings:</code></div><div class="ln"><code>## What changed</code></div><div class="ln"><code>## Who disagrees</code></div><div class="ln"><code>## What to do</code></div><div class="ln"><code></code></div><div class="ln"><code>Cite every link you mention by its id in square brackets, like [L014].</code></div><div class="ln"><code></code></div><div class="ln"><code>If the prompt asks about decisions, end with one line per decision:</code></div><div class="ln"><code>D1: adopt      D2: wait      D3: ignore</code></div><div class="ln"><code></code></div><div class="ln"><code>Work only in this folder.</code></div></pre></div>
 <p>Adopt means act now. Wait means decide later. Ignore means it is noise.</p>
-<p>The three parts suit our team. Change them if they do not suit you. In Claude Code this file is <code>CLAUDE.md</code>; in Codex or Hermes, <code>AGENTS.md</code>.</p>
+<p>The last line matters. Your labels sit one folder up, so a run that looks above its own folder scores zero.</p>
+<p>The three parts suit our team. Change them if they do not suit you. The file is <code>harness/CLAUDE.md</code>, and the loop hands the same file to Codex and Hermes. Using Codex by hand? Copy it to <code>AGENTS.md</code>.</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>Correct it by hand, round after round</h2>
@@ -244,7 +246,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 
 <section class="s" id="s09"><h2><span class="n">09</span>Hand the correcting to a second agent</h2>
 <p>Yes: a second agent, with its own instruction file. No new tool needed. We call it the <b>optimizer</b>. Its only job is to improve the first agent's setup.</p>
-<div class="code"><pre><div class="ln"><code>You improve another agent's setup. That agent writes a weekly</code></div><div class="ln"><code>brief for one reader. You never write a brief and you never</code></div><div class="ln"><code>score one. Plain code does the scoring.</code></div><div class="ln"><code></code></div><div class="ln"><code>Each round:</code></div><div class="ln"><code>1. Read the report.</code></div><div class="ln"><code>2. Open the raw trace of the worst week. Find where the miss happened.</code></div><div class="ln"><code>3. Read the journal, so you do not repeat a change that was undone.</code></div><div class="ln"><code>4. Make ONE change, small enough to review in a minute.</code></div><div class="ln"><code>5. End with: REASON (what you changed) and PREDICT (what it should fix).</code></div></pre></div>
+<div class="code"><pre><div class="ln"><code>You improve another agent's setup. That agent writes a weekly</code></div><div class="ln"><code>brief for one reader. You never write a brief and you never</code></div><div class="ln"><code>score one. Plain code does the scoring.</code></div><div class="ln"><code></code></div><div class="ln"><code>Each round:</code></div><div class="ln"><code>1. Read the report.</code></div><div class="ln"><code>2. Open the raw trace of the worst week. Find where the miss happened.</code></div><div class="ln"><code>3. Read the journal, so you do not repeat a change that was reverted.</code></div><div class="ln"><code>4. Make ONE change, small enough that a person can review it in a minute.</code></div><div class="ln"><code>5. End with two lines:</code></div><div class="ln"><code>   REASON: what you changed and why</code></div><div class="ln"><code>   PREDICT: which misses this should fix</code></div></pre></div>
 <p>A <b>trace</b> is the log of one run: every step the first agent took, and what came back. The optimizer reads it the way you read the output in section 08.</p>
 <p>So the second agent does the job you did by hand. This works for any task where you can state the goal, say what success is, and check it.</p>
 <details class="acc"><summary>From the Q&amp;A: "I am a designer. How does this help me?"</summary><div class="b"><p>The tools and rules change. The loop does not: you still set the goal, define success, and show how you correct the output.</p></div></details>

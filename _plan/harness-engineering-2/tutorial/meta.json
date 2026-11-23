@@ -6,6 +6,6 @@
   "date": "22 November 2026",
   "track": "Masterclass",
   "h1": "Run the loop yourself.",
-  "dek": "Every step of the Harness Engineering 2.0 repo, by hand and then with the loop, in Claude Code, Codex or Hermes. Every screenshot is from a real run on the sample month.",
+  "dek": "Every command in the repo, by hand and then with the loop, in Claude Code, Codex or Hermes.",
   "description": "Step-by-step tutorial for the Harness Engineering 2.0 repo: install Claude Code, Codex or Hermes, label links by hand, compare with a model, then run the briefing agent, the optimizer and the hidden week. With real screenshots from each harness."
 }
