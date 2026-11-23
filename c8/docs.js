@@ -15,8 +15,9 @@
 
   document.addEventListener('DOMContentLoaded',function(){
     /* nav current */
-    var norm=function(p){return p.replace(/\.html$/,'').replace(/\/index$/,'/').split('/').pop()};var here=norm(location.pathname);
-    $$('.top nav a').forEach(function(a){if(norm(a.getAttribute('href'))===here)a.setAttribute('aria-current','page')});
+    // the whole path, not its last part: '/x/' and '/x/tutorial/' both end in '' and used to match each other
+    var norm=function(p){var u=new URL(p,location.href);if(u.origin!==location.origin)return null;return u.pathname.replace(/\.html$/,'').replace(/\/index$/,'').replace(/\/$/,'')||'/'};var here=norm(location.href);
+    $$('.top nav a').forEach(function(a){var h=a.getAttribute('href')||'';if(h.charAt(0)!=='#'&&norm(h)===here)a.setAttribute('aria-current','page')});
 
     /* theme button */
     var tb=$('#theme'); themeIcon();
