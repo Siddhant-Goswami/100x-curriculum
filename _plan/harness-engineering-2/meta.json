@@ -6,6 +6,6 @@
   "date": "22 November 2026",
   "track": "Masterclass",
   "h1": "Teach it how you judge.",
-  "dek": "We asked what stops a loop from rewriting its own harness, graded 30-day-old links by hand, and handed that job to a second agent.",
+  "dek": "We asked what stops a loop from rewriting its own harness, graded old links by hand, then handed the grading to a second agent.",
   "description": "Notes from the Harness Engineering 2.0 masterclass, 22 November 2026: the verifier you write by hand, the first agent, the rounds of correction, and the second agent that takes them over. With the repo."
 }

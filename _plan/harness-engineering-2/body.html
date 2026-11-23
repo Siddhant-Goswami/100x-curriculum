@@ -1,8 +1,8 @@
-<p>Harness Engineering 101 ended with a loop: you write a goal, and an LLM writes the prompts. This session asked what comes after that. Most of it was work you do by hand, before any code runs.</p>
-<p>The code is in <a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">the repo</a>. Section 11 tells you how to start.</p>
+<p>The first session ended with a loop: you write the goal, and an LLM writes the prompts. This session asked what comes next. Most of the answer is work you do by hand.</p>
+<p>All the code is in <a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">the repo</a>.</p>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Three levels, in five minutes</h2>
-<p>We started with a recap, for anyone who missed the first session.</p>
+<p>We started with a recap.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 190" role="img" aria-label="Three boxes in a row joined by arrows. The first says Prompt, 2023 to 2024, you write the words. The second says Context, 2024 to 2025, tools and skills. The third says Harness, late 2025 onward, the system around the LLM.">
   <g class="ln" filter="url(#wob)">
@@ -24,20 +24,19 @@
     <text x="630" y="128" class="xxs">the system around the LLM</text>
   </g>
 </svg>
-<figcaption>Each level kept the one before it and added a layer around the LLM.</figcaption>
+<figcaption>Each level kept the one before it and added a layer.</figcaption>
 </figure>
 <ul class="pt">
-  <li><b>Level 1, the prompt.</b> In 2023 and 2024 the skill was writing better prompts.</li>
-  <li><b>Level 2, the context.</b> What an LLM could read grew from about 8,000 tokens to over 1 million. So we connected tools to it (MCP) and wrote a one-page file on how to use each tool (a skill).</li>
-  <li><b>Level 3, the harness.</b> From late 2025, an LLM could hold one task for hours. The system around it now decides what it may touch and where it runs.</li>
+  <li><b>Prompt.</b> You got better results by writing better words.</li>
+  <li><b>Context.</b> LLMs could read far more text, so we gave them tools, plus a short note on how to use each one.</li>
+  <li><b>Harness.</b> LLMs could stay on one task for hours. Now the system around the LLM matters most: what it may touch, and where it runs.</li>
 </ul>
-<p>The picture we used was a horse. It has its own power. To get from A to B over a long distance, you need a <b>harness</b>.</p>
-<p>Claude Code is one harness. We opened it in an earlier session and found nothing fancy inside. It can read, write and edit files, search them, run commands, search the web, start other agents, ask you a question, and connect to tools. Around those sit the rules and the permissions.</p>
-<p>But at every level you were still the one checking the output.</p>
+<p>Think of a horse. It is strong on its own, but to pull a cart a long way it needs a <b>harness</b>. Claude Code is one harness for an LLM: it reads and edits files, runs commands and searches the web, inside rules and permissions you set.</p>
+<p>But at every level, you were still the one checking the output.</p>
 </section>
 
 <section class="s" id="s02"><h2><span class="n">02</span>What stops it rewriting the harness?</h2>
-<p>The fix from the first session was a loop. You stop writing prompts. You write three things once, and an LLM writes the prompts against them.</p>
+<p>The first session's fix was a loop. You write three things once, and an LLM writes the prompts against them.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 250" role="img" aria-label="A card on the left lists what you write once: the goal, what success is, and the verifier. An arrow leads to an LLM that writes each prompt, then to the harness that does the work. A return arrow carries the verifier's score back to the LLM.">
   <g class="ln" filter="url(#wob)">
@@ -61,72 +60,67 @@
     <text x="510" y="234" class="xxs c-det">the verifier's score comes back</text>
   </g>
 </svg>
-<figcaption>You moved out of the prompt. You are still in the three things on the left.</figcaption>
+<figcaption>You left the prompt. You still own the three things on the left.</figcaption>
 </figure>
-<p>A <b>verifier</b> is the way you check an output against what you call success. Then came the question for the session.</p>
+<p>The third thing is your way of checking an output. We call it the <b>verifier</b>. Then came the question for the session.</p>
 <blockquote class="q9">"The loop already rewrites its prompts against your verifier. What stops it from rewriting the harness?"</blockquote>
-<p>The chat answered: permissions, access, guardrails, and "if the harness breaks, the system breaks".</p>
-<p>All of those are real. A loop that is scored by one check will find the cheapest way to pass that check. So the answer is two decisions, and both are yours.</p>
+<p>The chat said: permissions, guardrails. True, but there is a catch. A loop scored by one check will find the cheapest way to pass that check. So two questions are yours to answer.</p>
 <ul class="pt">
-  <li><b>What may it touch?</b> It may change the harness. It may never open the verifier.</li>
-  <li><b>Who decides a change stays?</b> Plain code and your labels decide. The LLM that made the change does not.</li>
+  <li><b>What may it touch?</b> The harness, yes. The verifier, never.</li>
+  <li><b>Who decides a change stays?</b> Plain code and your labels. Not the LLM that made the change.</li>
 </ul>
-<p class="pull">This is a problem of decisions before it is a problem of permissions.</p>
-<p>So the first thing to build is the verifier. And a good verifier starts with a question about time.</p>
+<p class="pull">It is a problem of decisions before it is a problem of permissions.</p>
+<p>So build the verifier first. It starts with a question about time.</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>When can you grade a brief?</h2>
-<p>The example for the session was an agent our team uses. It reads the links you saved this week and writes a <b>brief</b> in three parts: what changed, who disagrees, and what to do.</p>
-<p>We asked the room: you receive this brief today. When is the right time to grade it? Today, in 3 days, in 7, in 30?</p>
-<p>Grade it today and you will fail. On the day news reaches you, everything feels important. You cannot yet know whether it helped.</p>
-<p>Now open your saved folder and look at what you saved 30 days ago. You can tell at once which posts you used and which you never opened again.</p>
+<p>Our example: an agent that reads the links you saved this week and writes a short report: what changed, who disagrees, and what to do. We call it a <b>brief</b>.</p>
+<p>You get the brief today. When should you grade it: today, in 3 days, in 7, or in 30?</p>
+<p>Not today. On the day you save something, it all feels important. Now look at what you saved 30 days ago. You can tell at once which ones you used.</p>
 <p class="pull">The first report is not the truth. It is one likely signal.</p>
-<p>So the verifier is built from old links. 7 days works. 30 days is the threshold we use.</p>
+<p>So the verifier is built from old links. 7 days works; we use 30.</p>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Label five of your own links</h2>
-<p>We did this live. A link you acted on is <b>signal</b>. A link you never used is <b>noise</b>. Open the saved folder of the platform you use most (X, Instagram, YouTube, Reddit, or your browser history). Take links from last month and give each one a label.</p>
+<p>We did this live. Open the saved folder you use most (X, YouTube, Reddit, or your browser history). Take links from last month and label each one.</p>
 <table class="dials">
-  <tr><th>Label</th><th>Meaning</th><th>From the session</th></tr>
-  <tr><td>Signal</td><td>You acted on it and it helped.</td><td>Cloudflare's post on code mode. It went into one of our tools a week later and cut its cost.</td></tr>
-  <tr><td>Noise</td><td>You never used it.</td><td>"Harness is dead" threads. Acting on them would have cancelled this session.</td></tr>
-  <tr><td>Not sure yet</td><td>You did not act and cannot tell.</td><td>Leave it unlabelled for now.</td></tr>
+  <tr><th>Label</th><th>Meaning</th><th>Example</th></tr>
+  <tr><td><b>Signal</b></td><td>You acted on it and it helped.</td><td>A post on cutting tool costs. We used it a week later.</td></tr>
+  <tr><td><b>Noise</b></td><td>You never used it.</td><td>"Harness is dead" threads.</td></tr>
+  <tr><td>Not sure</td><td>You cannot tell yet.</td><td>Leave it blank.</td></tr>
 </table>
-<p>In our own saves, fewer than 15 of every 100 links were signal. One person in the chat counted 10.</p>
-<p>The goal of the agent is to turn that ratio around: most of what reaches you is something you will use.</p>
-<p>Do not hand this step to an LLM. An LLM can say what is useful in general. It cannot say what was useful to you, because it has not lived your month.</p>
-<details class="acc"><summary>From the chat: "How do I check whether I acted on it?"</summary><div class="b"><p>Ask what you did afterwards. "I read it, and used it in the next lecture" is acted. "I saved it and it felt important" is not.</p></div></details>
-<details class="acc"><summary>From the chat: "I do not save anything."</summary><div class="b"><p>Use your browser history. It lists the links you opened, which works just as well.</p></div></details>
+<p>In our own saves, fewer than 15 in every 100 links were signal. The agent's job is to flip that: most of what reaches you should be something you use.</p>
+<p>Do not hand this step to an LLM. It knows what is useful in general, not what was useful to you.</p>
+<details class="acc"><summary>From the chat: "How do I know if I acted on it?"</summary><div class="b"><p>Ask what you did next. "I used it in my next lecture" is acted. "I saved it and it felt important" is not.</p></div></details>
+<details class="acc"><summary>From the chat: "I don't save anything."</summary><div class="b"><p>Use your browser history. It works just as well.</p></div></details>
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Put the labels in one file</h2>
-<p>You do not have to collect the links by hand. Ask a tool that can use your browser to do it. This is the prompt we showed, tidied:</p>
+<p>Let a tool that can use your browser collect the links. This is the prompt we showed:</p>
 <div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Open my bookmarks on X. For every post I saved 30 to 60 days ago,
 write one row: date saved, who posted it, the topic in one line, the link.
 Give me a CSV with the columns: date, source, title, url, label.
 Leave the label column empty. Do not judge the posts.</code></pre></div>
-<p>Notice what the prompt leaves out. It does not ask for labels. Then you go through the file row by row and fill the last column yourself. It is tiring, and it is where your judgement goes in.</p>
-<p>That file of labelled examples, plus a rule for scoring against it, is the verifier. Some people call it an eval. We kept to "verifier".</p>
-<p>There is an optional second file for <b>decisions</b>: something you had to decide that month, and how it turned out. Skip it on your first try.</p>
+<p>It collects; it does not label. You fill the label column yourself, row by row. That is where your judgement goes in.</p>
+<p>Your labelled file plus a rule for scoring against it: that is the verifier.</p>
+<p>Optional: a second file of <b>decisions</b> you faced that month, and how each turned out. Skip it on your first try.</p>
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>Score with three numbers</h2>
-<p>How do you turn a brief into a number? We started with three rules.</p>
+<p>How do you turn a brief into a number? Three rules.</p>
 <table class="dials">
-  <tr><th>The brief did this</th><th>Points</th></tr>
+  <tr><th>The brief</th><th>Points</th></tr>
   <tr><td>Included a link that mattered</td><td>+1</td></tr>
   <tr><td>Called a decision right</td><td>+2</td></tr>
   <tr><td>Called a noise link important</td><td>-0.5</td></tr>
 </table>
-<p>The week on the slide: the brief found 7 of the 9 links that mattered. It called both decisions right. It called 3 noise links important.</p>
-<p>So it earned 7 + 4 - 1.5 = 9.5 points, out of a possible 9 + 4 = 13. That is 0.73.</p>
-<p>Why the penalty? Without it, the cheapest way to find every link that matters is to include every link.</p>
-<p>These three numbers are a starting template. Change them once you have seen your own results.</p>
+<p>One week: the brief found 7 of the 9 links that mattered, got both decisions right, and pushed 3 noise links. That is 7 + 4 - 1.5 = 9.5 out of 13, or 0.73.</p>
+<p>Why the penalty? Without it, the easiest way to find every good link is to include every link.</p>
+<p>Treat these numbers as a start. Change them once you see your own results.</p>
 </section>
 
 <section class="s" id="s07"><h2><span class="n">07</span>Fifteen lines for the first agent</h2>
-<p>Do not build a harness. Take one that exists: Claude Code, Codex, or Hermes if you want open source. Then spend your time on what it cannot do for you.</p>
-<p>We opened the first agent's instruction file on screen. It is about 15 lines.</p>
+<p>Do not build a harness. Use one that exists (Claude Code, Codex, or Hermes if you want open source) and spend your time on its instructions. Ours are about 15 lines:</p>
 <div class="code"><pre><code>You write a short weekly brief for one reader,
 from the links they saved that week.
 
@@ -139,17 +133,12 @@ Cite every link you mention by its id, like [L014].
 
 For each decision, end with one line:
 D1: adopt      D2: wait      D3: ignore</code></pre></div>
-<ul class="pt">
-  <li><b>Adopt.</b> Act on it now.</li>
-  <li><b>Wait.</b> Let it settle, then decide.</li>
-  <li><b>Ignore.</b> It is noise.</li>
-</ul>
-<p>The three parts of the brief are a human choice. They work for our team. Change them if they do not work for you.</p>
-<p>In Claude Code this file is <code>CLAUDE.md</code>. In Codex or Hermes, name it <code>AGENTS.md</code>. (The repo's loop keeps one <code>CLAUDE.md</code> and hands it to whichever harness you run.)</p>
+<p>Adopt means act now. Wait means decide later. Ignore means it is noise.</p>
+<p>The three parts suit our team. Change them if they do not suit you. In Claude Code this file is <code>CLAUDE.md</code>; in Codex or Hermes, <code>AGENTS.md</code>.</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>Correct it by hand, round after round</h2>
-<p>Now test the agent on the past. Give it the same old links with your labels removed. Ask it to label each one. Then put its answers next to yours.</p>
+<p>Now test the agent on the past. Give it the same old links with your labels removed, ask it to label them, and compare.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 285" role="img" aria-label="Your labels and the LLM's labels for the same links both go into a comparison. The comparison produces what the LLM got wrong, written by you. A dashed arrow carries that note back to the LLM for the next run.">
   <g class="ln" filter="url(#wob)">
@@ -174,19 +163,17 @@ D1: adopt      D2: wait      D3: ignore</code></pre></div>
     <text x="385" y="276" class="xxs c-mute">the next run reads it</text>
   </g>
 </svg>
-<figcaption>One round. The coral box is the only part that has to be you.</figcaption>
+<figcaption>One round. Only the coral box has to be you.</figcaption>
 </figure>
-<p>Where it disagrees with you, write down what it missed and what to do next time. Give that note back and run again. On the whiteboard these were "the learning after run 1", "after run 2", and so on.</p>
-<p>The second run makes fewer mistakes, and some new ones. Write those down too.</p>
-<p>Finding a mistake is the easy half. Another LLM could do it. Saying how to do better next time is the half that stays human.</p>
-<p>How many rounds? For our team it took 23 before we trusted 95 of every 100 labels. For you it may be 3 or 10. Stop when you are satisfied.</p>
-<p class="pull">You cannot write down a judgement you have not made. So look at the output first.</p>
-<p>Those notes, in order, are a record of how you teach. What could read them?</p>
+<p>Where it disagrees, write what it missed and what to do next time. Give it that note and run again. Each run makes fewer mistakes, and some new ones. Write those down too.</p>
+<p>Spotting a mistake is the easy half; another LLM could do it. Saying how to do better is the half that stays yours.</p>
+<p>How many rounds? We needed 23 before we trusted 95 in every 100 labels. You may need 3 or 10. Stop when you are satisfied.</p>
+<p class="pull">You cannot write down a judgement you have not made. Look at the output first.</p>
+<p>Those notes, in order, record how you teach. Could something else read them?</p>
 </section>
 
 <section class="s" id="s09"><h2><span class="n">09</span>Hand the correcting to a second agent</h2>
-<p>You do not need a new tool for this. You start a new session with a second instruction file. We called this agent the <b>optimizer</b>.</p>
-<p>Its only job is to improve the first agent's setup. This is the start of its file:</p>
+<p>Yes: a second agent, with its own instruction file. No new tool needed. We call it the <b>optimizer</b>. Its only job is to improve the first agent's setup.</p>
 <div class="code"><pre><code>You improve another agent's setup. That agent writes a weekly
 brief for one reader. You never write a brief and you never
 score one. Plain code does the scoring.
@@ -197,14 +184,14 @@ Each round:
 3. Read the journal, so you do not repeat a change that was undone.
 4. Make ONE change, small enough to review in a minute.
 5. End with: REASON (what you changed) and PREDICT (what it should fix).</code></pre></div>
-<p>A <b>trace</b> is the full log of one run: every step the first agent took and what came back. The optimizer reads it the way you read the output in section 08.</p>
-<p>So the second agent does the job you were doing by hand. The idea does not depend on the task. Any work where you can state the goal, state success and check it can take the same shape.</p>
-<details class="acc"><summary>From the Q&amp;A: "I am a designer. How does this help me?"</summary><div class="b"><p>The tools, the place it runs and the rules change. The loop does not. You still define the goal, define success, and show how you correct the output.</p></div></details>
-<details class="acc"><summary>From the Q&amp;A: who should a company hire for this?</summary><div class="b"><p>Hire for the judgement, then teach the harness. Our best verifiers were written by people who design education programmes and do not write code.</p></div></details>
+<p>A <b>trace</b> is the log of one run: every step the first agent took, and what came back. The optimizer reads it the way you read the output in section 08.</p>
+<p>So the second agent does the job you did by hand. This works for any task where you can state the goal, say what success is, and check it.</p>
+<details class="acc"><summary>From the Q&amp;A: "I am a designer. How does this help me?"</summary><div class="b"><p>The tools and rules change. The loop does not: you still set the goal, define success, and show how you correct the output.</p></div></details>
+<details class="acc"><summary>From the Q&amp;A: who should a company hire for this?</summary><div class="b"><p>Hire for judgement, then teach the harness. Our best verifiers were written by people who design courses and do not code.</p></div></details>
 </section>
 
 <section class="s" id="s10"><h2><span class="n">10</span>The loop: both agents together</h2>
-<p>Now put the two agents together. The repo has a full recorded run on a made-up sample month of 100 links, so you can follow every round. Here it is.</p>
+<p>Now run both agents together. The repo has a full recorded run on a made-up month of 100 links.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 300" role="img" aria-label="The optimizer makes one change to the briefing agent. The briefing agent writes briefs, plain code scores them, and if the score rose the change is kept, otherwise it is undone. Then the next round starts. A box at the bottom holds your labels and week four, which neither agent can open.">
   <g class="ln" filter="url(#wob)">
@@ -235,62 +222,62 @@ Each round:
 <figcaption>Two boxes are an LLM. Everything that decides is plain code.</figcaption>
 </figure>
 <table class="dials">
-  <tr><th>Round</th><th>The change</th><th>Score</th><th>Verdict</th></tr>
+  <tr><th>Round</th><th>The change</th><th>Score</th><th></th></tr>
   <tr><td>Start</td><td>The 15-line file</td><td>0.739</td><td></td></tr>
-  <tr><td>1</td><td>Fetch every link before writing</td><td>0.504</td><td>Undone</td></tr>
+  <tr><td>1</td><td>Read every link before writing</td><td>0.504</td><td>Undone</td></tr>
   <tr><td>2</td><td>Name the tools this reader uses</td><td>0.932</td><td>Kept</td></tr>
-  <tr><td>3</td><td>A measured finding counts as news</td><td>0.966</td><td>Kept</td></tr>
-  <tr><td>4</td><td>Cite the changelog, not the recap</td><td>0.991</td><td>Kept</td></tr>
+  <tr><td>3</td><td>A measured result counts as news</td><td>0.966</td><td>Kept</td></tr>
+  <tr><td>4</td><td>Cite the original, not the recap</td><td>0.991</td><td>Kept</td></tr>
 </table>
-<p>Round 1 is the one to look at. Reading every link sounded sensible. The agent then cited everything, the noise penalty hit, and code undid the change. Nobody had to argue with it.</p>
-<p>That is the answer to the question in section 02. The optimizer may rewrite the harness because it cannot reach the labels, and because it does not decide what stays.</p>
-<p>One more check. The loop only ever saw weeks 1 to 3. Week 4 stayed closed until the end, then was scored once.</p>
+<p>Look at round 1. Reading every link sounded sensible, but the agent then cited everything, the noise penalty hit, and code undid the change. Nobody had to argue.</p>
+<p>That answers section 02. The optimizer may rewrite the harness because it cannot see your labels and does not decide what stays.</p>
+<p>One more check. The loop only saw weeks 1 to 3. Week 4 stayed hidden until the end, then was scored once.</p>
 <table class="dials">
-  <tr><th></th><th>Before</th><th>After 4 rounds</th></tr>
+  <tr><th></th><th>Before</th><th>After</th></tr>
   <tr><td>Weeks 1 to 3</td><td>0.739</td><td>0.991</td></tr>
   <tr><td>Week 4, hidden</td><td>0.666</td><td>0.949</td></tr>
 </table>
-<p>If week 4 had not moved, the loop would have memorised your past month. It rose too, so the rules it wrote are about how this reader decides.</p>
-<p>This three-minute video shows the same run.</p>
+<p>Week 4 rose too. So the loop learned how this reader decides, and that carried over to a week it never saw.</p>
+<p>The same run, in three minutes:</p>
 <video controls preload="metadata" style="width:100%;border-radius:10px;margin:0 0 1.2em" src="/harness-engineering-2/the-loop.mp4"></video>
-<p>The sample is small and made up, including the product names in it. Your own month will be messier, and a single run can score very differently from the next. The repo averages three runs per week for that reason.</p>
+<p>The sample is small and made up. Your own month will be messier, and two runs can score quite differently, so the repo averages three runs per week.</p>
 
 <p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
-<details class="acc"><summary>A friend labels the links they saved yesterday. What is wrong with that?</summary><div class="b"><p>They cannot yet know which ones helped. Everything saved yesterday still feels important. Use links from about 30 days ago.</p></div></details>
-<details class="acc"><summary>You remove the -0.5 penalty. What will the optimizer's first good idea be?</summary><div class="b"><p>Include every link. That finds all the links that matter and costs nothing. It is what round 1 did, and the penalty is why it was undone.</p></div></details>
-<details class="acc"><summary>The score on weeks 1 to 3 rises and week 4 does not move. What happened?</summary><div class="b"><p>The changes fitted the weeks the loop could see. They did not capture how you decide. Do not trust them on new links.</p></div></details>
+<details class="acc"><summary>A friend labels the links they saved yesterday. What is wrong?</summary><div class="b"><p>They cannot know yet which ones helped. Use links from about 30 days ago.</p></div></details>
+<details class="acc"><summary>You remove the -0.5 penalty. What will the optimizer try first?</summary><div class="b"><p>Include every link. It finds all the good ones and costs nothing. That is round 1, and the penalty is why it was undone.</p></div></details>
+<details class="acc"><summary>Weeks 1 to 3 rise and week 4 does not move. What happened?</summary><div class="b"><p>The changes fit the weeks the loop could see, not how you decide. Do not trust them on new links.</p></div></details>
 <details class="words"><summary>Words from this session</summary>
 <dl>
   <dt>Harness</dt><dd>The system around an LLM: its tools, where it runs, and its rules.</dd>
-  <dt>Verifier</dt><dd>How you check an output against what you call success. Here: your labelled links and a scoring rule.</dd>
+  <dt>Verifier</dt><dd>Your way of checking an output. Here: your labelled links and a scoring rule.</dd>
   <dt>Brief</dt><dd>What the first agent writes from a week of links: what changed, who disagrees, what to do.</dd>
-  <dt>Signal and noise</dt><dd>A link you acted on, and a link you never used.</dd>
-  <dt>Decision</dt><dd>Something you had to decide that month, and how it turned out: adopt, wait or ignore.</dd>
-  <dt>Trace</dt><dd>The full log of one run: every step the agent took and what came back.</dd>
+  <dt>Signal</dt><dd>A link you acted on and that helped.</dd>
+  <dt>Noise</dt><dd>A link you never used.</dd>
+  <dt>Decision</dt><dd>Something you had to decide that month: adopt, wait or ignore.</dd>
+  <dt>Trace</dt><dd>The log of one run: every step the agent took and what came back.</dd>
   <dt>Optimizer</dt><dd>A second agent whose only job is to improve the first agent's setup.</dd>
 </dl>
 </details>
 </section>
 
-<div class="call"><p class="kick">Keep this</p><p>An LLM can rewrite its own harness once two things are out of its reach: the labels, and the decision to keep a change. You supply the labels, from links old enough to judge, and you correct it by hand first. A second agent can then take over the correcting.</p></div>
+<div class="call"><p class="kick">Keep this</p><p>Label links old enough to judge, and correct the agent by hand first. Then a second agent can take over the correcting, as long as it cannot see your labels or decide which changes stay.</p></div>
 
 <section class="s" id="s11"><h2><span class="n">11</span>Your turn</h2>
 <p>Clone the repo in your own terminal:</p>
 <div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><code>git clone https://github.com/Siddhant-Goswami/harness-engineering-2
 cd harness-engineering-2</code></pre></div>
-<p>Then open Claude Code, Codex or Hermes in that folder and paste this. It walks you through labelling by hand first.</p>
+<p>Open Claude Code, Codex or Hermes in that folder and paste this:</p>
 <div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Read the README. Run `python3 loop.py prepare` and show me the table.
 Then walk me through Part 1, one step at a time. Wait for me after each step.
 Do not label any link for me.</code></pre></div>
 <ul class="pt">
-  <li><b>Part 1 works in any tool.</b> Labelling, the blank copy and the comparison need only a chat window.</li>
-  <li><b>Part 2 runs in any of the three.</b> Claude Code by default. Put <code>RUNNER=codex</code> or <code>RUNNER=hermes</code> in front of a command to switch. Only Hermes runs with no fence, so the loop's own checks are all that stop it.</li>
-  <li><b>It runs before you bring anything.</b> The sample month is included. One full run on it cost us about $1.50.</li>
+  <li><b>Part 1 is by hand.</b> You label, the LLM labels, you compare.</li>
+  <li><b>Part 2 is the loop.</b> It runs on the sample month, so you need nothing of your own. A full run cost us about $1.50.</li>
 </ul>
-<p><a class="btn" href="/harness-engineering-2/tutorial/">Step-by-step tutorial</a> <a class="btn" href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">Open the repo</a></p>
+<p><a class="btn" href="/harness-engineering-2/tutorial/">Step-by-step tutorial</a> or <a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">open the repo</a></p>
 </section>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
-  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2#part-1-by-hand" target="_blank" rel="noopener">Part 1 in the README: label, blank copy, compare</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2#part-1-by-hand" target="_blank" rel="noopener">Part 1 in the README</a></li>
   <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2/tree/sample-run" target="_blank" rel="noopener">The finished run, commit by commit</a></li>
 </ul></nav>
