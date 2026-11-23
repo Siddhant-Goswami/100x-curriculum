@@ -288,6 +288,83 @@ cd harness-engineering-2</code></pre></div>
 <p>Open Claude Code, Codex or Hermes in that folder and paste this:</p>
 <div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Read the README. Run `python3 loop.py next` and do what it says, one step at a time.
 Wait for me after each step. Do not label any link for me.</code></pre></div>
+<p>Or let your agent do all of it, clone included. Open your harness in the folder where you keep your projects and paste this instead. It reads the repo, runs every step, and stops only where your judgement is needed: which month, your labels, each rule, the go for Part 2, and the hidden week.</p>
+<div class="code"><div class="hd"><span>copy and paste: the whole run</span><button class="cp" type="button">Copy</button></div><pre><code>Set up and run the Harness Engineering 2.0 repo for me, from the clone to
+the hidden week. You do the work. Stop only where a step needs my judgement:
+the five points listed below.
+
+GET THE REPO
+- If this folder has loop.py and README.md, you are already in it. Else, if a
+  folder called harness-engineering-2 is here, go into it. Else clone it and
+  go into it:
+  git clone https://github.com/Siddhant-Goswami/harness-engineering-2
+- If the clone fails (Codex's sandbox has no network), stop. Tell me to run
+  that line in my own terminal, then to open you again inside the new folder.
+- Check that python3 is 3.10 or newer and that git is installed. If not, say
+  how to fix it.
+
+READ IT BEFORE YOU RUN IT
+- Read README.md, all of it. It is the source of truth: where it and this
+  prompt disagree, follow the README.
+- Read harness/CLAUDE.md (the briefing agent), optimizer/CLAUDE.md (the
+  optimizer), the top of verifier/score.py (the score) and failures.md.
+- Run `python3 loop.py next`. It looks at the folder and says which step we
+  are on and the one command to run. Run it after every step, and whenever you
+  are unsure.
+- Then tell me in five lines what this system does and what you will do first.
+
+HOW TO RUN THE COMMANDS
+- Claude Code: run loop.py as written. Codex: put RUNNER=codex in front of
+  every loop.py command. Hermes: put RUNNER=hermes in front.
+- baseline, round and final call a model many times and take minutes. Give
+  each one a timeout of 10 minutes, or run it in the background and wait for
+  it to finish. When `next` says `run N`, run `python3 loop.py round` N times
+  instead, and tell me each result.
+- If a command fails because of your sandbox, a permission or a timeout, do
+  not work around it. Give me the exact command to run in my own terminal,
+  wait, then read what it wrote.
+- If anything else fails, read "When something goes wrong" in the README, then
+  run `python3 loop.py next`.
+
+STOP AND ASK ME HERE, AND ONLY HERE
+1. Which month.
+   (a) The made-up sample, already labelled: about $1.50 with Claude Code.
+   (b) The real month in examples/x-bookmarks.csv, already labelled: about
+       $7. Load it with:
+       python3 loop.py import examples/x-bookmarks.csv --all
+   (c) My own saved links: give me the browser prompt from README Part 1
+       step 1, wait for the path to my CSV, import it, show me the table and
+       point out every line that starts with `!`.
+2. My labels, own links only. Tell me to run `python3 loop.py label` in my own
+   terminal, and wait until I say I am done.
+3. Every rule. After each `compare`, show me how many links we agreed on, the
+   two lines under the percentage, and the disagreements. Propose the mistake
+   that repeats as the next F entry for failures.md, and one rule ending in
+   its tag, like (F1), for harness/CLAUDE.md under "What matters to this
+   reader". Write them only after I approve or rewrite them. Then blank, the
+   model and compare again. At least three times round; ask me each time
+   whether to go on.
+4. Before Part 2. Commit with `git add -A` and `git commit`, tell me roughly
+   what Part 2 will cost, and wait for my go before `baseline`.
+5. Before `final`. It opens week four once, and that cannot be undone. Show me
+   `git log --oneline` and `python3 loop.py status` first. Never add
+   `--anyway` unless I ask.
+Between these points, keep going: run the step, show me the lines of output
+that matter, say what they mean in two sentences, and move on.
+
+NEVER
+- Label a link, guess a label for me, or edit the label column.
+- Open verifier/links.csv yourself: week four's labels are in it, and they
+  stay hidden until final. Rules come from weeks 1 to 3 only.
+- Edit anything in verifier/ or harness/.claude/settings.json.
+- Edit any file in the repo while baseline, round or final is running. Notes
+  go in notes/.
+- Change the harness yourself in Part 2. There, only the optimizer changes it.
+
+AT THE END
+Show me both scores and the "of which" line under them, and list the changes
+that were kept. Then ask me the take-home questions at the end of the README,
+one at a time. Do not answer them for me.</code></pre></div>
 <ul class="pt">
   <li><b>Part 1 is by hand.</b> You label, the LLM labels, you compare.</li>
   <li><b>Part 2 is the loop.</b> It runs on the sample month, so you need nothing of your own. <code>python3 loop.py import examples/x-bookmarks.csv --all</code> loads the real month instead. A full run costs about $1.50 on the sample, and about $7 on the real month.</li>

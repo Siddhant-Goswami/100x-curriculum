@@ -12,6 +12,88 @@
     <li><a href="#s09">Run the first agent</a></li><li><a href="#s10">Record the baseline</a></li><li><a href="#s11">Let the optimizer work</a></li><li><a href="#s12">Open the hidden week</a></li></ol></div>
 </figure>
 
+<section class="s" id="agent"><h2>Or let your agent run all of it</h2>
+<p>The steps below are the long way: one command at a time, so you see every output. The short way: install your harness and log in (step 01), open it in the folder where you keep your projects, and paste this. It works the same in Claude Code, Codex and Hermes.</p>
+<pre data-code="copy and paste">Set up and run the Harness Engineering 2.0 repo for me, from the clone to
+the hidden week. You do the work. Stop only where a step needs my judgement:
+the five points listed below.
+
+GET THE REPO
+- If this folder has loop.py and README.md, you are already in it. Else, if a
+  folder called harness-engineering-2 is here, go into it. Else clone it and
+  go into it:
+  git clone https://github.com/Siddhant-Goswami/harness-engineering-2
+- If the clone fails (Codex's sandbox has no network), stop. Tell me to run
+  that line in my own terminal, then to open you again inside the new folder.
+- Check that python3 is 3.10 or newer and that git is installed. If not, say
+  how to fix it.
+
+READ IT BEFORE YOU RUN IT
+- Read README.md, all of it. It is the source of truth: where it and this
+  prompt disagree, follow the README.
+- Read harness/CLAUDE.md (the briefing agent), optimizer/CLAUDE.md (the
+  optimizer), the top of verifier/score.py (the score) and failures.md.
+- Run `python3 loop.py next`. It looks at the folder and says which step we
+  are on and the one command to run. Run it after every step, and whenever you
+  are unsure.
+- Then tell me in five lines what this system does and what you will do first.
+
+HOW TO RUN THE COMMANDS
+- Claude Code: run loop.py as written. Codex: put RUNNER=codex in front of
+  every loop.py command. Hermes: put RUNNER=hermes in front.
+- baseline, round and final call a model many times and take minutes. Give
+  each one a timeout of 10 minutes, or run it in the background and wait for
+  it to finish. When `next` says `run N`, run `python3 loop.py round` N times
+  instead, and tell me each result.
+- If a command fails because of your sandbox, a permission or a timeout, do
+  not work around it. Give me the exact command to run in my own terminal,
+  wait, then read what it wrote.
+- If anything else fails, read "When something goes wrong" in the README, then
+  run `python3 loop.py next`.
+
+STOP AND ASK ME HERE, AND ONLY HERE
+1. Which month.
+   (a) The made-up sample, already labelled: about $1.50 with Claude Code.
+   (b) The real month in examples/x-bookmarks.csv, already labelled: about
+       $7. Load it with:
+       python3 loop.py import examples/x-bookmarks.csv --all
+   (c) My own saved links: give me the browser prompt from README Part 1
+       step 1, wait for the path to my CSV, import it, show me the table and
+       point out every line that starts with `!`.
+2. My labels, own links only. Tell me to run `python3 loop.py label` in my own
+   terminal, and wait until I say I am done.
+3. Every rule. After each `compare`, show me how many links we agreed on, the
+   two lines under the percentage, and the disagreements. Propose the mistake
+   that repeats as the next F entry for failures.md, and one rule ending in
+   its tag, like (F1), for harness/CLAUDE.md under "What matters to this
+   reader". Write them only after I approve or rewrite them. Then blank, the
+   model and compare again. At least three times round; ask me each time
+   whether to go on.
+4. Before Part 2. Commit with `git add -A` and `git commit`, tell me roughly
+   what Part 2 will cost, and wait for my go before `baseline`.
+5. Before `final`. It opens week four once, and that cannot be undone. Show me
+   `git log --oneline` and `python3 loop.py status` first. Never add
+   `--anyway` unless I ask.
+Between these points, keep going: run the step, show me the lines of output
+that matter, say what they mean in two sentences, and move on.
+
+NEVER
+- Label a link, guess a label for me, or edit the label column.
+- Open verifier/links.csv yourself: week four's labels are in it, and they
+  stay hidden until final. Rules come from weeks 1 to 3 only.
+- Edit anything in verifier/ or harness/.claude/settings.json.
+- Edit any file in the repo while baseline, round or final is running. Notes
+  go in notes/.
+- Change the harness yourself in Part 2. There, only the optimizer changes it.
+
+AT THE END
+Show me both scores and the "of which" line under them, and list the changes
+that were kept. Then ask me the take-home questions at the end of the README,
+one at a time. Do not answer them for me.</pre>
+<p>Your agent clones the repo, reads the README and both agents' instructions, and runs every step. It stops for you at five points: which month to use, your labels, each rule, the go for Part 2, and the one look at the hidden week. If its sandbox blocks a step, it hands you the command to run in your own terminal.</p>
+<p class="tip">Keep this page open beside it. The screenshots below show what each step should print, so you can tell when something looks wrong.</p>
+</section>
+
 <section class="s" id="s01"><h2><span class="n">01</span>Install</h2>
 <p>You need Python 3.10 or newer and git. Part 1 needs only a chat window. Part 2 needs one harness, logged in. With Claude Code it costs about $1.50 on the sample month, and about $7 on a real month of 100 or so X posts.</p>
 <div data-h="claude">
@@ -56,7 +138,7 @@ Wait for me after each step. Do not label any link for me.</pre>
 <figure class="shot"><img data-shot="tui-claude-done" alt="Claude Code ran three shell commands: it read the README and ran loop.py next, ran prepare, then ran next again. It showed the four-week table, said this is the sample month and it labelled nothing, named the next step (python3 loop.py blank), and asked whether to go on with the sample or import your own bookmarks."><figcaption>It runs <code>next</code>, then <code>prepare</code>, names the next step and waits.</figcaption></figure></div>
 <div data-h="codex"><figure class="shot"><img data-shot="tui-codex-done" alt="Codex read the README, ran python3 loop.py next, which said to run prepare, ran python3 loop.py prepare, said the sample month is now split into four weeks with no labels changed, and waited."><figcaption>It runs <code>next</code>, then <code>prepare</code>, and waits.</figcaption></figure></div>
 <div data-h="hermes"><figure class="shot"><img data-shot="tui-hermes-done" alt="Hermes read README.md and ran python3 loop.py next. It said this is the sample month, already labelled, that the next command is python3 loop.py prepare, and asked: should I run it?"><figcaption>It runs <code>next</code> and asks before running <code>prepare</code>. Say yes.</figcaption></figure></div>
-<p>Carry on with the agent, or type the commands yourself. This page types them, so you can see each output.</p>
+<p>Carry on with the agent, or type the commands yourself. This page types them, so you can see each output. To hand over everything, clone included, use <a href="#agent">the longer prompt</a> instead.</p>
 <p>Lost at any point? <code>python3 loop.py next</code> looks at the folder and tells you which step you are on, and the one command to run:</p>
 <figure class="shot"><img data-shot="p1-next" alt="Terminal: python3 loop.py next says you are on the made-up sample month, already labelled, and how to import your own links. You are at Part 1, step 5. Next: python3 loop.py blank, then run the command it prints."><figcaption>After <code>prepare</code> on the sample month. The step numbers are the README's.</figcaption></figure>
 </section>
