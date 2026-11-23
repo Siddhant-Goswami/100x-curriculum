@@ -97,7 +97,7 @@
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Put the labels in one file</h2>
-<p>Let a tool that can use your browser collect the links. This is the prompt, as it is in the repo now:</p>
+<p>Let a tool that can use your browser collect the links. This is the prompt:</p>
 <div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><code>Open my bookmarks on X. For every post I saved 30 to 60 days ago, write one row:
 the date, who posted it, the post's first line, the link, and the full text of the post
 (with any post it quotes). Give me a CSV with the columns: date, source, title, url, text.
@@ -137,10 +137,10 @@ Leave out the links that don't, even in a "skip these" line.
 If the prompt asks about decisions, end with one line per decision:
 D1: adopt      D2: wait      D3: ignore
 
-Work only in this folder.</code></pre></div>
+You start in this folder. Never write `..`, `cd` or an absolute path.
+Run one command per shell call.</code></pre></div>
 <p>Adopt means act now. Wait means decide later. Ignore means it is noise.</p>
-<p>The last line matters. Your labels sit one folder up, so a run that looks above its own folder scores zero.</p>
-<p>The citing line changed after the session. On a real month of X bookmarks, the agent ended every brief with "skip these: [L007] [L009] ...". The scorer counts every id in a brief as "this matters", so a brief that found every link worth reading still scored below zero.</p>
+<p>The last lines matter. Your labels sit one folder up, so a run that looks above its own folder scores zero. Without them, an agent on a real month explored first (<code>ls ..</code>), was refused, and often wrote nothing.</p>
 <p>The three parts suit our team. Change them if they do not suit you. The file is <code>harness/CLAUDE.md</code>, and the loop hands the same file to Codex and Hermes. Using Codex by hand? Copy it to <code>AGENTS.md</code>.</p>
 </section>
 
@@ -173,6 +173,15 @@ Work only in this folder.</code></pre></div>
 <figcaption>One round. Only the coral box has to be you.</figcaption>
 </figure>
 <p>Where it disagrees, write what it missed and what to do next time. Give it that note and run again. Each run makes fewer mistakes, and some new ones. Write those down too.</p>
+<p>Here is a real month, which ships with the repo: 109 X bookmarks, 76 of them in weeks 1 to 3, 13 of those signal. Each round adds one rule, then a model labels the same links blind again:</p>
+<table class="dials">
+  <tr><th>Round</th><th>The rule added</th><th>Signal found</th><th>Noise called signal</th></tr>
+  <tr><td>1</td><td>None yet</td><td>13 of 13</td><td>15 of 63</td></tr>
+  <tr><td>2</td><td>F1: a demo of what a model can make (a video, a design) is noise</td><td>10 of 13</td><td>4</td></tr>
+  <tr><td>3</td><td>F2: a hype repost of someone else's work is noise</td><td>10 of 13</td><td>1</td></tr>
+  <tr><td>4</td><td>F3: a tool for your own agent setup is signal, whatever it is shown on</td><td>13 of 13</td><td>4</td></tr>
+</table>
+<p>F1 fixed its 15 and threw out three links the reader had used. F3 brought them back and let a few demos in again. A rule moves the line everywhere, not only where you aimed it.</p>
 <p>Spotting a mistake is the easy half; another LLM could do it. Saying how to do better is the half that stays yours.</p>
 <p>How many rounds? We needed 23 before we trusted 95 in every 100 labels. You may need 3 or 10. Stop when you are satisfied.</p>
 <p class="pull">You cannot write down a judgement you have not made. Look at the output first.</p>
@@ -200,7 +209,7 @@ Each round:
 </section>
 
 <section class="s" id="s10"><h2><span class="n">10</span>The loop: both agents together</h2>
-<p>Now run both agents together. The repo has a full recorded run on a made-up month of 100 links.</p>
+<p>Now run both agents together. Here is a full run on the real month from section 08, in Claude Code, starting from the three rules written by hand.</p>
 <figure class="sk">
 <svg class="wb" viewBox="0 0 760 300" role="img" aria-label="The optimizer makes one change to the briefing agent. The briefing agent writes briefs, plain code scores them, and if the score rose the change is kept, otherwise it is undone. Then the next round starts. A box at the bottom holds your labels and week four, which neither agent can open.">
   <g class="ln" filter="url(#wob)">
@@ -232,29 +241,27 @@ Each round:
 </figure>
 <table class="dials">
   <tr><th>Round</th><th>The change</th><th>Score</th><th></th></tr>
-  <tr><td>Start</td><td>The 15-line file</td><td>0.739</td><td></td></tr>
-  <tr><td>1</td><td>Read every link before writing</td><td>0.504</td><td>Undone</td></tr>
-  <tr><td>2</td><td>Name the tools this reader uses</td><td>0.932</td><td>Kept</td></tr>
-  <tr><td>3</td><td>A measured result counts as news</td><td>0.966</td><td>Kept</td></tr>
-  <tr><td>4</td><td>Cite the original, not the recap</td><td>0.991</td><td>Kept</td></tr>
+  <tr><td>Start</td><td>The setup with F1 to F3</td><td>0.752</td><td></td></tr>
+  <tr><td>1</td><td>News about a model itself is noise</td><td>0.855</td><td>Kept</td></tr>
+  <tr><td>2</td><td>A product launch is not a setup tool</td><td>0.938</td><td>Kept</td></tr>
+  <tr><td>3</td><td>A teaser with an attached article counts if the article is the author's</td><td>0.919</td><td>Undone</td></tr>
+  <tr><td>4</td><td>The same, but not for comment on someone else's result</td><td>0.911</td><td>Undone</td></tr>
+  <tr><td>5</td><td>Judge a post by the author's own words, not what it attaches</td><td>0.986</td><td>Kept</td></tr>
 </table>
-<p>Look at round 1. Reading every link sounded sensible, but the agent then cited everything, the noise penalty hit, and code undid the change. Nobody had to argue.</p>
+<p>Look at rounds 3 and 4. Both tried to rescue short posts that attach an article, and both scored lower, so code undid them. Round 5 found the better line: judge a post by what its author says. Nobody had to argue.</p>
 <p>That answers section 02. The optimizer may rewrite the harness because it cannot see your labels and does not decide what stays.</p>
 <p>One more check. The loop only saw weeks 1 to 3. Week 4 stayed hidden until the end, then was scored once.</p>
 <table class="dials">
   <tr><th></th><th>Before</th><th>After</th></tr>
-  <tr><td>Weeks 1 to 3</td><td>0.739</td><td>0.991</td></tr>
-  <tr><td>Week 4, hidden</td><td>0.666</td><td>0.949</td></tr>
+  <tr><td>Weeks 1 to 3</td><td>0.752</td><td>0.986</td></tr>
+  <tr><td>Week 4, hidden</td><td>0.796</td><td>0.852</td></tr>
 </table>
-<p>Week 4 rose too. So the loop learned how this reader decides, and that carried over to a week it never saw.</p>
-<p>Check how it rose before you believe it. When we ran the loop on a real month of X bookmarks, week 4 rose from 0.48 to 0.80. But the new setup found no more of what mattered: all of the rise was noise it stopped citing. It learned what to leave out of a brief, not how the reader decides. <code>final</code> now prints both numbers under the scores, so you can tell.</p>
-<p>The same run, in three minutes:</p>
-<video controls preload="metadata" style="width:100%;border-radius:10px;margin:0 0 1.2em" src="/harness-engineering-2/the-loop.mp4"></video>
-<p>The sample is small and made up. Your own month will be messier, and two runs can score quite differently, so the repo averages three runs per week.</p>
+<p>Week 4 rose, but less than weeks 1 to 3. Read how: the new setup found 8.3 of 9 links that mattered instead of 8.0, and cited a little less noise. Part of what the loop learned carried over to a week it never saw; part only fit the weeks it could see. <code>final</code> prints both numbers under the scores, so you can tell which.</p>
+<p>A month is a small sample, and two runs can score quite differently, so the repo averages three runs per week.</p>
 
 <p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
 <details class="acc"><summary>A friend labels the links they saved yesterday. What is wrong?</summary><div class="b"><p>They cannot know yet which ones helped. Use links from about 30 days ago.</p></div></details>
-<details class="acc"><summary>You remove the -0.5 penalty. What will the optimizer try first?</summary><div class="b"><p>Include every link. It finds all the good ones and costs nothing. That is round 1, and the penalty is why it was undone.</p></div></details>
+<details class="acc"><summary>You remove the -0.5 penalty. What will the optimizer try first?</summary><div class="b"><p>Include every link. It finds all the good ones and costs nothing. The penalty is what makes that lose.</p></div></details>
 <details class="acc"><summary>Weeks 1 to 3 rise and week 4 does not move. What happened?</summary><div class="b"><p>The changes fit the weeks the loop could see, not how you decide. Do not trust them on new links.</p></div></details>
 <details class="acc"><summary>Week 4 rises, but the links it found stay the same and only the noise falls. What did the loop learn?</summary><div class="b"><p>What to leave out of a brief. Useful, but it is about writing, not about what you value.</p></div></details>
 <details class="words"><summary>Words from this session</summary>
@@ -282,7 +289,7 @@ cd harness-engineering-2</code></pre></div>
 Wait for me after each step. Do not label any link for me.</code></pre></div>
 <ul class="pt">
   <li><b>Part 1 is by hand.</b> You label, the LLM labels, you compare.</li>
-  <li><b>Part 2 is the loop.</b> It runs on the sample month, so you need nothing of your own. A full run cost us about $1.50 on the sample, and about $6.50 on a real month of 109 X posts.</li>
+  <li><b>Part 2 is the loop.</b> It runs on the sample month, so you need nothing of your own. <code>python3 loop.py import examples/x-bookmarks.csv --all</code> loads the real month instead. A full run costs about $1.50 on the sample, and about $7 on the real month.</li>
   <li><b>Lost?</b> <code>python3 loop.py next</code> tells you which step you are on and the one command to run.</li>
 </ul>
 <p><a class="btn" href="/harness-engineering-2/tutorial/">Step-by-step tutorial</a> or <a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">open the repo</a></p>
@@ -290,6 +297,5 @@ Wait for me after each step. Do not label any link for me.</code></pre></div>
 
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
   <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2#part-1-by-hand" target="_blank" rel="noopener">Part 1 in the README</a></li>
-  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2/tree/sample-run" target="_blank" rel="noopener">The finished run, commit by commit</a></li>
-  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2/tree/student-run-real-bookmarks" target="_blank" rel="noopener">A run on a real month of X bookmarks, with a journal of every step</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2/tree/real-month" target="_blank" rel="noopener">The real-month run, commit by commit, with every trace</a></li>
 </ul></nav>

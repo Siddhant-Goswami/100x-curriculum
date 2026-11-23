@@ -5,19 +5,19 @@
  },
  "claude-brief": {
   "w": 895,
-  "h": 744
+  "h": 708
  },
  "claude-final": {
-  "w": 845,
-  "h": 222
+  "w": 895,
+  "h": 240
  },
  "claude-round": {
   "w": 895,
-  "h": 510
+  "h": 366
  },
  "claude-run2": {
   "w": 895,
-  "h": 924
+  "h": 834
  },
  "claude-score": {
   "w": 650,
@@ -25,11 +25,11 @@
  },
  "claude-tracebrief": {
   "w": 895,
-  "h": 474
+  "h": 276
  },
  "claude-traceopt": {
   "w": 895,
-  "h": 780
+  "h": 816
  },
  "clone": {
   "w": 814,
@@ -41,7 +41,7 @@
  },
  "codex-brief": {
   "w": 895,
-  "h": 816
+  "h": 762
  },
  "codex-final": {
   "w": 845,
@@ -52,7 +52,7 @@
   "h": 348
  },
  "codex-run2": {
-  "w": 712,
+  "w": 728,
   "h": 114
  },
  "codex-score": {
@@ -61,11 +61,11 @@
  },
  "codex-tracebrief": {
   "w": 895,
-  "h": 348
+  "h": 276
  },
  "codex-traceopt": {
   "w": 895,
-  "h": 708
+  "h": 690
  },
  "hermes-baseline": {
   "w": 798,
@@ -73,7 +73,7 @@
  },
  "hermes-brief": {
   "w": 895,
-  "h": 726
+  "h": 834
  },
  "hermes-final": {
   "w": 845,
@@ -84,8 +84,8 @@
   "h": 348
  },
  "hermes-run2": {
-  "w": 895,
-  "h": 816
+  "w": 712,
+  "h": 114
  },
  "hermes-score": {
   "w": 650,
@@ -93,11 +93,11 @@
  },
  "hermes-tracebrief": {
   "w": 895,
-  "h": 348
+  "h": 276
  },
  "hermes-traceopt": {
   "w": 895,
-  "h": 816
+  "h": 798
  },
  "own-import": {
   "w": 895,
