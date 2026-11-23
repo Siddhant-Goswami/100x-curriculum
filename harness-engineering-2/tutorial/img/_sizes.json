@@ -1,119 +1,95 @@
 {
  "claude-baseline": {
-  "w": 801,
+  "w": 798,
   "h": 186
  },
  "claude-brief": {
   "w": 895,
-  "h": 870
+  "h": 744
  },
  "claude-final": {
-  "w": 723,
-  "h": 204
- },
- "claude-gitlog": {
-  "w": 895,
-  "h": 168
- },
- "claude-gitlog2": {
-  "w": 895,
-  "h": 348
+  "w": 845,
+  "h": 222
  },
  "claude-round": {
   "w": 895,
-  "h": 420
+  "h": 510
  },
  "claude-run2": {
   "w": 895,
-  "h": 996
+  "h": 924
  },
  "claude-score": {
-  "w": 652,
+  "w": 650,
   "h": 132
- },
- "claude-status": {
-  "w": 895,
-  "h": 150
  },
  "claude-tracebrief": {
   "w": 895,
-  "h": 366
+  "h": 474
  },
  "claude-traceopt": {
   "w": 895,
-  "h": 600
+  "h": 780
  },
  "clone": {
-  "w": 621,
+  "w": 814,
   "h": 222
  },
  "codex-baseline": {
-  "w": 801,
+  "w": 798,
   "h": 186
  },
  "codex-brief": {
   "w": 895,
-  "h": 780
+  "h": 816
  },
  "codex-final": {
-  "w": 738,
-  "h": 204
- },
- "codex-gitlog": {
-  "w": 895,
-  "h": 150
+  "w": 845,
+  "h": 222
  },
  "codex-round": {
   "w": 895,
   "h": 348
  },
- "codex-score": {
-  "w": 652,
-  "h": 132
+ "codex-run2": {
+  "w": 712,
+  "h": 114
  },
- "codex-status": {
-  "w": 895,
+ "codex-score": {
+  "w": 650,
   "h": 132
  },
  "codex-tracebrief": {
   "w": 895,
-  "h": 420
+  "h": 348
  },
  "codex-traceopt": {
   "w": 895,
-  "h": 870
+  "h": 708
  },
  "hermes-baseline": {
-  "w": 801,
+  "w": 798,
   "h": 186
  },
  "hermes-brief": {
   "w": 895,
-  "h": 870
+  "h": 726
  },
  "hermes-final": {
-  "w": 738,
-  "h": 204
- },
- "hermes-gitlog": {
-  "w": 895,
-  "h": 330
+  "w": 845,
+  "h": 222
  },
  "hermes-round": {
   "w": 895,
-  "h": 366
+  "h": 348
  },
  "hermes-run2": {
   "w": 895,
-  "h": 870
+  "h": 816
  },
  "hermes-score": {
-  "w": 652,
+  "w": 650,
   "h": 132
- },
- "hermes-status": {
-  "w": 895,
-  "h": 150
  },
  "hermes-tracebrief": {
   "w": 895,
@@ -121,74 +97,58 @@
  },
  "hermes-traceopt": {
   "w": 895,
-  "h": 690
+  "h": 816
+ },
+ "own-import": {
+  "w": 895,
+  "h": 366
+ },
+ "own-label": {
+  "w": 603,
+  "h": 564
  },
  "p1-blank": {
-  "w": 660,
-  "h": 168
+  "w": 736,
+  "h": 258
  },
  "p1-compare-claude": {
-  "w": 660,
+  "w": 876,
   "h": 384
  },
  "p1-compare-codex": {
-  "w": 668,
-  "h": 330
+  "w": 876,
+  "h": 150
  },
  "p1-compare-hermes": {
-  "w": 652,
-  "h": 258
+  "w": 876,
+  "h": 348
  },
- "p1-compare": {
-  "w": 652,
-  "h": 258
+ "p1-compare2-claude": {
+  "w": 876,
+  "h": 276
  },
- "p1-compare2": {
-  "w": 535,
-  "h": 96
+ "p1-compare2-codex": {
+  "w": 876,
+  "h": 150
  },
- "p1-diff": {
-  "w": 871,
-  "h": 528
+ "p1-compare2-hermes": {
+  "w": 876,
+  "h": 150
  },
- "setup-claude": {
-  "w": 535,
-  "h": 132
- },
- "setup-codex": {
-  "w": 535,
-  "h": 132
- },
- "setup-hermes": {
-  "w": 535,
-  "h": 222
+ "p1-next": {
+  "w": 681,
+  "h": 240
  },
  "tui-claude-done": {
   "w": 895,
-  "h": 906
- },
- "tui-claude-trust": {
-  "w": 895,
-  "h": 348
- },
- "tui-claude-typed": {
-  "w": 895,
-  "h": 204
+  "h": 610
  },
  "tui-codex-done": {
   "w": 895,
-  "h": 744
- },
- "tui-codex-typed": {
-  "w": 895,
-  "h": 186
+  "h": 618
  },
  "tui-hermes-done": {
   "w": 895,
-  "h": 852
- },
- "tui-hermes-typed": {
-  "w": 895,
-  "h": 312
+  "h": 402
  }
 }

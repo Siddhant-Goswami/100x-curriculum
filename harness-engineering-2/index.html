@@ -181,9 +181,10 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Put the labels in one file</h2>
-<p>Let a tool that can use your browser collect the links. This is the prompt we showed:</p>
-<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Open my bookmarks on X. For every post I saved 30 to 60 days ago,</code></div><div class="ln"><code>write one row: date saved, who posted it, the topic in one line, and the link.</code></div><div class="ln"><code>Give me a CSV with the columns: date, source, title, url, label.</code></div><div class="ln"><code>Leave the label column empty. Do not judge the posts.</code></div></pre></div>
-<p>It collects; it does not label. You fill the label column yourself, row by row. That is where your judgement goes in.</p>
+<p>Let a tool that can use your browser collect the links. This is the prompt, as it is in the repo now:</p>
+<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Open my bookmarks on X. For every post I saved 30 to 60 days ago, write one row:</code></div><div class="ln"><code>the date, who posted it, the post's first line, the link, and the full text of the post</code></div><div class="ln"><code>(with any post it quotes). Give me a CSV with the columns: date, source, title, url, text.</code></div><div class="ln"><code>Do not judge the posts.</code></div></pre></div>
+<p>Why the text? A post on X sits behind a login, so an agent that opens the link sees nothing. With the text in the file, it reads the post itself.</p>
+<p>It collects; it does not label. Two commands take it from there. <code>python3 loop.py import</code> reads the file, whatever its columns are called. <code>python3 loop.py label</code> shows you each link and asks for one key: signal, should have or noise. That is where your judgement goes in.</p>
 <p>Your labelled file plus a rule for scoring against it: that is the verifier.</p>
 <p>Optional: a second file of <b>decisions</b> you faced that month, and how each turned out. Skip it on your first try.</p>
 </section>
@@ -203,9 +204,10 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 
 <section class="s" id="s07"><h2><span class="n">07</span>One short file for the first agent</h2>
 <p>Do not build a harness. Use one that exists (Claude Code, Codex, or Hermes if you want open source) and spend your time on its instructions. The core of ours:</p>
-<div class="code"><pre><div class="ln"><code>You write a short weekly brief for one reader,</code></div><div class="ln"><code>from the links they saved that week.</code></div><div class="ln"><code></code></div><div class="ln"><code>Write the brief in three parts, with these exact headings:</code></div><div class="ln"><code>## What changed</code></div><div class="ln"><code>## Who disagrees</code></div><div class="ln"><code>## What to do</code></div><div class="ln"><code></code></div><div class="ln"><code>Cite every link you mention by its id in square brackets, like [L014].</code></div><div class="ln"><code></code></div><div class="ln"><code>If the prompt asks about decisions, end with one line per decision:</code></div><div class="ln"><code>D1: adopt      D2: wait      D3: ignore</code></div><div class="ln"><code></code></div><div class="ln"><code>Work only in this folder.</code></div></pre></div>
+<div class="code"><pre><div class="ln"><code>You write a short weekly brief for one reader,</code></div><div class="ln"><code>from the links they saved that week.</code></div><div class="ln"><code></code></div><div class="ln"><code>Write the brief in three parts, with these exact headings:</code></div><div class="ln"><code>## What changed</code></div><div class="ln"><code>## Who disagrees</code></div><div class="ln"><code>## What to do</code></div><div class="ln"><code></code></div><div class="ln"><code>Cite a link by its id in square brackets, like [L014], when it matters.</code></div><div class="ln"><code>Leave out the links that don't, even in a "skip these" line.</code></div><div class="ln"><code></code></div><div class="ln"><code>If the prompt asks about decisions, end with one line per decision:</code></div><div class="ln"><code>D1: adopt      D2: wait      D3: ignore</code></div><div class="ln"><code></code></div><div class="ln"><code>Work only in this folder.</code></div></pre></div>
 <p>Adopt means act now. Wait means decide later. Ignore means it is noise.</p>
 <p>The last line matters. Your labels sit one folder up, so a run that looks above its own folder scores zero.</p>
+<p>The citing line changed after the session. On a real month of X bookmarks, the agent ended every brief with "skip these: [L007] [L009] ...". The scorer counts every id in a brief as "this matters", so a brief that found every link worth reading still scored below zero.</p>
 <p>The three parts suit our team. Change them if they do not suit you. The file is <code>harness/CLAUDE.md</code>, and the loop hands the same file to Codex and Hermes. Using Codex by hand? Copy it to <code>AGENTS.md</code>.</p>
 </section>
 
@@ -301,6 +303,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   <tr><td>Week 4, hidden</td><td>0.666</td><td>0.949</td></tr>
 </table>
 <p>Week 4 rose too. So the loop learned how this reader decides, and that carried over to a week it never saw.</p>
+<p>Check how it rose before you believe it. When we ran the loop on a real month of X bookmarks, week 4 rose from 0.48 to 0.80. But the new setup found no more of what mattered: all of the rise was noise it stopped citing. It learned what to leave out of a brief, not how the reader decides. <code>final</code> now prints both numbers under the scores, so you can tell.</p>
 <p>The same run, in three minutes:</p>
 <video controls preload="metadata" style="width:100%;border-radius:10px;margin:0 0 1.2em" src="/harness-engineering-2/the-loop.mp4"></video>
 <p>The sample is small and made up. Your own month will be messier, and two runs can score quite differently, so the repo averages three runs per week.</p>
@@ -309,6 +312,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <details class="acc"><summary>A friend labels the links they saved yesterday. What is wrong?</summary><div class="b"><p>They cannot know yet which ones helped. Use links from about 30 days ago.</p></div></details>
 <details class="acc"><summary>You remove the -0.5 penalty. What will the optimizer try first?</summary><div class="b"><p>Include every link. It finds all the good ones and costs nothing. That is round 1, and the penalty is why it was undone.</p></div></details>
 <details class="acc"><summary>Weeks 1 to 3 rise and week 4 does not move. What happened?</summary><div class="b"><p>The changes fit the weeks the loop could see, not how you decide. Do not trust them on new links.</p></div></details>
+<details class="acc"><summary>Week 4 rises, but the links it found stay the same and only the noise falls. What did the loop learn?</summary><div class="b"><p>What to leave out of a brief. Useful, but it is about writing, not about what you value.</p></div></details>
 <details class="words"><summary>Words from this session</summary>
 <dl>
   <dt>Harness</dt><dd>The system around an LLM: its tools, where it runs, and its rules.</dd>
@@ -329,10 +333,11 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <p>Clone the repo in your own terminal:</p>
 <div class="code"><div class="hd"><span>terminal</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>git clone https://github.com/Siddhant-Goswami/harness-engineering-2</code></div><div class="ln"><code>cd harness-engineering-2</code></div></pre></div>
 <p>Open Claude Code, Codex or Hermes in that folder and paste this:</p>
-<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Read the README. Run `python3 loop.py prepare` and show me the table.</code></div><div class="ln"><code>Then walk me through Part 1, one step at a time. Wait for me after each step.</code></div><div class="ln"><code>Do not label any link for me.</code></div></pre></div>
+<div class="code"><div class="hd"><span>copy and paste</span><button class="cp" type="button">Copy</button></div><pre><div class="ln"><code>Read the README. Run `python3 loop.py next` and do what it says, one step at a time.</code></div><div class="ln"><code>Wait for me after each step. Do not label any link for me.</code></div></pre></div>
 <ul class="pt">
   <li><b>Part 1 is by hand.</b> You label, the LLM labels, you compare.</li>
-  <li><b>Part 2 is the loop.</b> It runs on the sample month, so you need nothing of your own. A full run cost us about $1.50.</li>
+  <li><b>Part 2 is the loop.</b> It runs on the sample month, so you need nothing of your own. A full run cost us about $1.50 on the sample, and about $6.50 on a real month of 109 X posts.</li>
+  <li><b>Lost?</b> <code>python3 loop.py next</code> tells you which step you are on and the one command to run.</li>
 </ul>
 <p><a class="btn" href="/harness-engineering-2/tutorial/">Step-by-step tutorial</a> or <a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">open the repo</a></p>
 </section>
@@ -340,6 +345,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
   <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2#part-1-by-hand" target="_blank" rel="noopener">Part 1 in the README</a></li>
   <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2/tree/sample-run" target="_blank" rel="noopener">The finished run, commit by commit</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/harness-engineering-2/tree/student-run-real-bookmarks" target="_blank" rel="noopener">A run on a real month of X bookmarks, with a journal of every step</a></li>
 </ul></nav>
 
 <p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>

@@ -1,5 +1,5 @@
 <p>This page walks through <a href="https://github.com/Siddhant-Goswami/harness-engineering-2" target="_blank" rel="noopener">the repo</a>, one command at a time. Part 1 you do by hand. In Part 2 two agents and plain Python take over. The why behind each step is in <a href="/harness-engineering-2/">the session notes</a>.</p>
-<p>The screenshots are real runs on the sample month, once in each harness. Your numbers will differ a little: a model never writes the same brief twice.</p>
+<p>The screenshots are real runs on the sample month, once in each harness, with the repo as it was on 23 November 2026. Your numbers will differ a little: a model never writes the same brief twice.</p>
 
 <div class="hpick" id="hpick"><span class="lbl">Show steps for</span><div class="seg coral" role="group" aria-label="Your harness"><button type="button" data-pick="claude" aria-pressed="true">Claude Code</button><button type="button" data-pick="codex" aria-pressed="false">Codex</button><button type="button" data-pick="hermes" aria-pressed="false">Hermes</button></div></div>
 
@@ -13,7 +13,7 @@
 </figure>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Install</h2>
-<p>You need Python 3.10 or newer and git. Part 1 needs only a chat window. Part 2 needs one harness, logged in, and costs about $1.50 on the sample month with Claude Code.</p>
+<p>You need Python 3.10 or newer and git. Part 1 needs only a chat window. Part 2 needs one harness, logged in. With Claude Code it costs about $1.50 on the sample month, and about $6.50 on a real month of 100 or so X posts.</p>
 <div data-h="claude">
 <pre data-code="terminal">curl -fsSL https://claude.ai/install.sh | bash
 claude</pre>
@@ -44,20 +44,21 @@ export OPT_MODEL=claude-sonnet-5-5</pre>
 <pre data-code="terminal">git clone https://github.com/Siddhant-Goswami/harness-engineering-2
 cd harness-engineering-2
 python3 loop.py prepare</pre>
-<figure class="shot"><img data-shot="clone" alt="Terminal: git clone, then python3 loop.py prepare prints a table of four weeks with 25 links each: 5 acted, 4 should have, 16 noise, 0 not labelled, 2 decisions. Week 4 is marked hidden."><figcaption>Four weeks of 25 links. Week 4 stays hidden until the very end.</figcaption></figure>
+<figure class="shot"><img data-shot="clone" alt="Terminal: git clone, then python3 loop.py prepare prints a table of four weeks, each with its dates and 25 links: 5 acted, 4 should have, 16 noise, 0 not labelled, 2 decisions. Week 4 is marked hidden."><figcaption>Four weeks of 25 links, with the dates each covers. Week 4 stays hidden until the very end.</figcaption></figure>
 <p>This is the sample month: 100 made-up links, products included, so every command works before you bring your own.</p>
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Open your harness</h2>
 <p>Start it inside the folder (<code><span data-h="claude">claude</span><span data-h="codex">codex</span><span data-h="hermes">hermes</span></code>) and paste this:</p>
-<pre data-code="copy and paste">Read the README. Run `python3 loop.py prepare` and show me the table.
-Then walk me through Part 1, one step at a time. Wait for me after each step.
-Do not label any link for me.</pre>
+<pre data-code="copy and paste">Read the README. Run `python3 loop.py next` and do what it says, one step at a time.
+Wait for me after each step. Do not label any link for me.</pre>
 <div data-h="claude"><p>If Claude Code asks whether you trust the folder, pick <b>Yes</b>.</p>
-<figure class="shot"><img data-shot="tui-claude-done" alt="Claude Code ran prepare, showed the four-week table, explained it is the sample month, then gave Part 1 step 1 with the bookmarks prompt and stopped to wait."><figcaption>It runs <code>prepare</code>, gives you step 1 and waits.</figcaption></figure></div>
-<div data-h="codex"><figure class="shot"><img data-shot="tui-codex-done" alt="Codex ran python3 loop.py prepare, redrew the four-week table, and gave Part 1 step 1 with the bookmarks prompt, then waited."><figcaption>It runs <code>prepare</code>, gives you step 1 and waits.</figcaption></figure></div>
-<div data-h="hermes"><figure class="shot"><img data-shot="tui-hermes-done" alt="Hermes read README.md, ran python3 loop.py prepare, showed the four-week table and gave Part 1 step 1 with the bookmarks prompt, then asked whether to use your own links or the sample."><figcaption>It runs <code>prepare</code>, gives you step 1 and waits. Check the model in the status bar.</figcaption></figure></div>
+<figure class="shot"><img data-shot="tui-claude-done" alt="Claude Code ran three shell commands: it read the README and ran loop.py next, ran prepare, then ran next again. It showed the four-week table, said this is the sample month and it labelled nothing, named the next step (python3 loop.py blank), and asked whether to go on with the sample or import your own bookmarks."><figcaption>It runs <code>next</code>, then <code>prepare</code>, names the next step and waits.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="tui-codex-done" alt="Codex read the README, ran python3 loop.py next, which said to run prepare, ran python3 loop.py prepare, said the sample month is now split into four weeks with no labels changed, and waited."><figcaption>It runs <code>next</code>, then <code>prepare</code>, and waits.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="tui-hermes-done" alt="Hermes read README.md and ran python3 loop.py next. It said this is the sample month, already labelled, that the next command is python3 loop.py prepare, and asked: should I run it?"><figcaption>It runs <code>next</code> and asks before running <code>prepare</code>. Say yes.</figcaption></figure></div>
 <p>Carry on with the agent, or type the commands yourself. This page types them, so you can see each output.</p>
+<p>Lost at any point? <code>python3 loop.py next</code> looks at the folder and tells you which step you are on, and the one command to run:</p>
+<figure class="shot"><img data-shot="p1-next" alt="Terminal: python3 loop.py next says you are on the made-up sample month, already labelled, and how to import your own links. You are at Part 1, step 5. Next: python3 loop.py blank, then run the command it prints."><figcaption>After <code>prepare</code> on the sample month. The step numbers are the README's.</figcaption></figure>
 </section>
 
 <p class="part">Part 1 · by hand</p>
@@ -65,48 +66,53 @@ Do not label any link for me.</pre>
 <section class="s" id="s04"><h2><span class="n">04</span>Get your saved links</h2>
 <p>Use links from 30 to 60 days ago. Yesterday's are no good yet: you cannot tell whether they helped. Give a tool that can use your browser this prompt:</p>
 <pre data-code="copy and paste">Open my bookmarks on X. For every post I saved 30 to 60 days ago, write one row:
-date saved, who posted it, the topic in one line, and the link.
-Give me a CSV with the columns: date, source, title, url, label.
-Leave the label column empty. Do not judge the posts.</pre>
-<p>Swap X for Instagram, YouTube, Reddit or your browser history. You get a file like this:</p>
-<div class="csv" role="img" aria-label="A CSV with columns date, source, title, url and label. Three rows from the sample month, the label column empty.">
-  <div class="r h"><span>date</span><span>source</span><span>title</span><span>url</span><span class="lab">label</span></div>
-  <div class="r"><span>2026-10-19</span><span>Orchard Labs blog</span><span>Pricing update: cached input tokens billed at 10%</span><span>https://…</span><span class="lab empty"></span></div>
-  <div class="r"><span>2026-10-20</span><span>Kiln changelog</span><span>Kiln 2.4: script mode</span><span>https://…</span><span class="lab empty"></span></div>
-  <div class="r"><span>2026-10-21</span><span>Anvil security</span><span>Advisory: Anvil plugin sandbox escape, patch now</span><span>https://…</span><span class="lab empty"></span></div>
+the date, who posted it, the post's first line, the link, and the full text of the post
+(with any post it quotes). Give me a CSV with the columns: date, source, title, url, text.
+Do not judge the posts.</pre>
+<p>Swap X for Instagram, YouTube, Reddit or your browser history. X does not show when you saved a post, so the post's own date is fine. You get a file like this:</p>
+<div class="csv" role="img" aria-label="A CSV with columns date, source, title, url and text. Three rows from the sample month.">
+  <div class="r h"><span>date</span><span>source</span><span>title</span><span>url</span><span>text</span></div>
+  <div class="r"><span>2026-10-19</span><span>Orchard Labs blog</span><span>Pricing update: cached input tokens billed at 10%</span><span>https://…</span><span>From 1 November, cached input tokens…</span></div>
+  <div class="r"><span>2026-10-20</span><span>Kiln changelog</span><span>Kiln 2.4: script mode</span><span>https://…</span><span>The agent writes one script…</span></div>
+  <div class="r"><span>2026-10-21</span><span>Anvil security</span><span>Advisory: Anvil plugin sandbox escape, patch now</span><span>https://…</span><span>A plugin can escape…</span></div>
 </div>
+<p>Why the text? A post on X sits behind a login, so an agent that opens the link sees nothing. With the text in the file, it reads the post itself. The columns do not have to match: <code>import</code> reads most exports as they are.</p>
 <p>To follow this page first, keep the sample. Your own file comes in <a href="#s14">step 14</a>.</p>
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Label every link yourself</h2>
-<p>Fill the last column. No agent can do this step for you: it is your judgement going in.</p>
+<p>No agent can do this step for you: it is your judgement going in. On your own links, run this in your own terminal, not through the agent. It shows each link with its text and asks for one key:</p>
+<pre data-code="terminal">python3 loop.py label</pre>
 <table class="dials labels">
-  <tr><th>Label</th><th>Means</th><th>Example from the sample</th></tr>
-  <tr><td><span class="chip sig">signal</span></td><td>You acted on it and it helped.</td><td>Kiln 2.4: script mode</td></tr>
-  <tr><td><span class="chip sh">should have</span></td><td>You did not act, and now wish you had. Optional.</td><td>We measured script mode on our nightly batch job: 78% fewer tokens</td></tr>
-  <tr><td><span class="chip no">noise</span></td><td>You never used it.</td><td>Advisory: Anvil plugin sandbox escape (the reader does not use Anvil)</td></tr>
-  <tr><td><span class="chip bl">empty</span></td><td>You cannot tell. Never scored.</td><td></td></tr>
+  <tr><th>Key and label</th><th>Means</th><th>Example from the sample</th></tr>
+  <tr><td><code>s</code> <span class="chip sig">signal</span></td><td>You acted on it and it helped.</td><td>Kiln 2.4: script mode</td></tr>
+  <tr><td><code>h</code> <span class="chip sh">should have</span></td><td>You did not act, and now wish you had. Optional.</td><td>We measured script mode on our nightly batch job: 78% fewer tokens</td></tr>
+  <tr><td><code>n</code> <span class="chip no">noise</span></td><td>You never used it.</td><td>Advisory: Anvil plugin sandbox escape (the reader does not use Anvil)</td></tr>
+  <tr><td>Enter <span class="chip bl">empty</span></td><td>You cannot tell. Never scored.</td><td></td></tr>
 </table>
+<p>Every answer is saved at once. <code>q</code> stops; run it again to carry on. The sample month is already labelled, so skip this for now.</p>
 <p>Optional, and worth skipping the first time: your decisions that month in <code>verifier/decisions.csv</code> (<code>date, question, outcome, how_it_turned_out</code>, where the outcome is <code>adopt</code>, <code>wait</code> or <code>ignore</code>).</p>
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>A model labels them, blind</h2>
 <pre data-code="terminal">python3 loop.py blank</pre>
-<p>That writes <code>manual/links-blank.csv</code>: weeks 1 to 3 with the labels removed. Give it to any model with one line, and save the answer as <code>manual/links-model.csv</code>. From the terminal:</p>
-<div data-h="claude"><pre data-code="terminal">cat manual/links-blank.csv | claude -p "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences." > manual/links-model.csv</pre></div>
-<div data-h="codex"><pre data-code="terminal">codex exec --skip-git-repo-check -o manual/links-model.csv "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences." < manual/links-blank.csv</pre></div>
-<div data-h="hermes"><pre data-code="terminal">hermes chat -Q -q "Fill the label column with signal or noise. Reply with the CSV only, header included, no code fences.
-
-$(cat manual/links-blank.csv)" > manual/links-model.csv</pre></div>
-<p>Or attach the file in any chat window and send the same line.</p>
+<figure class="shot"><img data-shot="p1-blank" alt="Terminal: python3 loop.py blank writes 75 links with no labels to manual/links-blank.csv and the same as a prompt to manual/prompt.txt, leaves week four out, then prints the commands for Claude Code and Codex, or says to paste the prompt into any chat, and then to run compare."><figcaption>It writes the prompt for you, and prints the next commands.</figcaption></figure>
+<p><code>manual/prompt.txt</code> is weeks 1 to 3 with the labels removed, plus the ask: guess signal or noise for each link. Hand it to a model and save the answer as <code>manual/links-model.csv</code>:</p>
+<div data-h="claude"><pre data-code="terminal">claude -p < manual/prompt.txt > manual/links-model.csv</pre></div>
+<div data-h="codex"><pre data-code="terminal">codex exec -o manual/links-model.csv < manual/prompt.txt</pre></div>
+<div data-h="hermes"><pre data-code="terminal">hermes chat -Q -q "$(cat manual/prompt.txt)" > manual/links-model.csv</pre>
+<p class="tip">That uses your Hermes default model. We added <code>--provider anthropic -m claude-sonnet-5-5</code>, to match step 01.</p></div>
+<p>Or paste <code>manual/prompt.txt</code> into any chat window and save the reply. The model sees what you saw in your list: the source and the title. If your titles are only each post's first line, <code>python3 loop.py blank --text</code> gives it the start of each post too.</p>
 </section>
 
 <section class="s" id="s07"><h2><span class="n">07</span>Compare</h2>
 <pre data-code="terminal">python3 loop.py compare manual/links-model.csv</pre>
-<div data-h="claude"><figure class="shot"><img data-shot="p1-compare-claude" alt="Terminal: agreed on 66 of 75 links (88%). Two links you acted on that the model called noise, Kiln 2.4.1 and Kiln 2.5.1. Seven noise links the model called signal, including Anvil 3.0 removes the legacy plugin API, the Quill DB advisory and the Anvil sandbox advisory."><figcaption>66 of 75.</figcaption></figure></div>
-<div data-h="codex"><figure class="shot"><img data-shot="p1-compare-codex" alt="Terminal: agreed on 67 of 75 links (89%). Eight noise links the model called signal, including the Anvil and Quill DB advisories, a Gemstone price cut and a Gemstone outage postmortem."><figcaption>67 of 75.</figcaption></figure></div>
-<div data-h="hermes"><figure class="shot"><img data-shot="p1-compare-hermes" alt="Terminal: agreed on 71 of 75 links (95%). Four noise links the model called signal: Anvil 3.0 removes the legacy plugin API, the Quill DB advisory, the Anvil sandbox advisory and Anvil 3.1 skills support."><figcaption>71 of 75.</figcaption></figure></div>
-<p>Skip the percentage. Read the list for the mistake that repeats. Here it was <b>Anvil</b> and <b>Quill DB</b>: their posts sound urgent, but this reader uses neither tool.</p>
+<div data-h="claude"><figure class="shot"><img data-shot="p1-compare-claude" alt="Terminal: agreed on 69 of 75 links (92%). Your signal links: it found 25 of 27. Your noise links: it called 4 of 48 signal. A model that said noise to everything would agree on 64%. Missed: Kiln 2.4.1 and Kiln 2.5.1. Called signal: Anvil 3.0 removes the legacy plugin API, the Quill DB advisory, the Anvil sandbox advisory and the Gemstone v1 deprecation."><figcaption>69 of 75. Four noise links called signal.</figcaption></figure>
+<p>Read the two lines under the percentage, not the percentage: 48 of the 75 links are noise, so a model that said "noise" every time would already agree on 64%. Then read the list for the mistake that repeats. Here it was <b>Anvil</b> and <b>Quill DB</b>: their posts sound urgent, but this reader uses neither tool.</p></div>
+<div data-h="codex"><figure class="shot"><img data-shot="p1-compare-codex" alt="Terminal: agreed on 75 of 75 links (100%). Your signal links: it found 27 of 27. Your noise links: it called 0 of 48 signal."><figcaption>75 of 75, from the titles alone.</figcaption></figure>
+<p>Codex agreed on every link. Its session log shows no tool calls: it did not open the labels, it guessed from the titles. The sample's titles are made up and tidy; your own will not be. In Claude Code and Hermes the same file gave two different mistakes: urgent news about tools this reader does not use (<b>Anvil</b>, <b>Quill DB</b>) called signal, and dull titles from the tools they do use ("Kiln 2.4.1", "Vecstore 0.7.3") called noise. Step 08 writes one rule for both.</p></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="p1-compare-hermes" alt="Terminal: agreed on 69 of 75 links (92%). Your signal links: it found 21 of 27. Your noise links: it called 0 of 48 signal. Missed: Orchard API changelog 14 October, the Vecstore corruption advisory, Kiln 2.4.1, the Orchard 3 deprecation, Kiln 2.5.1 and Vecstore 0.7.3."><figcaption>69 of 75. Six links you acted on called noise.</figcaption></figure>
+<p>Read the two lines under the percentage, not the percentage: 48 of the 75 links are noise, so a model that said "noise" every time would already agree on 64%. Then read the list for the mistake that repeats. Here every miss is about a tool this reader uses, under a dull title: "Kiln 2.4.1", "Vecstore 0.7.3". The model does not know which tools are theirs.</p></div>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>Write down the mistake, then one rule</h2>
@@ -114,13 +120,16 @@ $(cat manual/links-blank.csv)" > manual/links-model.csv</pre></div>
 <pre data-code="failures.md">## F1 · weeks 1 to 3
 Saw: the model called four links signal: advisories and removals for Anvil and Quill DB.
 Expected: urgent news about a tool I do not use is noise. I use Kiln, Orchard and Postgres with Vecstore.</pre>
-<p>One rule about that kind of link goes in <code>harness/CLAUDE.md</code>, with the same tag. A tagged rule can be reworded later, never deleted.</p>
+<p>One rule about that kind of link goes in <code>harness/CLAUDE.md</code>, under <b>What matters to this reader</b>, with the same tag. A tagged rule can be reworded later, never deleted.</p>
 <pre data-code="harness/CLAUDE.md">The reader uses Kiln, Orchard and Postgres with Vecstore. Urgent news about any other
 tool (advisories, removals, "patch now") is noise to them, however loud the title. (F1)</pre>
-<p>Go back to step 06, and this time give the model your <code>CLAUDE.md</code> with the file:</p>
-<figure class="shot sm"><img data-shot="p1-compare2" alt="Terminal: agreed on 75 of 75 links (100%)."><figcaption>One rule: 95% to 100%.</figcaption></figure>
-<p>On your own links, expect several rounds. Stop when the disagreements stop teaching you anything. Then commit:</p>
-<pre data-code="terminal">git commit -am "F1: urgent news about tools I do not use is noise"</pre>
+<p>Naming the reader's tools fixes both kinds of mistake from step 07. Go back to step 06: <code>blank</code> puts every tagged rule into <code>manual/prompt.txt</code> by itself, so the model now judges with it.</p>
+<div data-h="claude"><figure class="shot sm"><img data-shot="p1-compare2-claude" alt="Terminal: agreed on 73 of 75 links (97%). It found 25 of 27 signal links and called 0 of 48 noise links signal. Still missed: Kiln 2.4.1 and Kiln 2.5.1."><figcaption>One rule: no noise called signal. Two bare version numbers still missed.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot sm"><img data-shot="p1-compare2-codex" alt="Terminal: agreed on 75 of 75 links (100%). It found 27 of 27 and called 0 of 48 signal."><figcaption>Still 75 of 75.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot sm"><img data-shot="p1-compare2-hermes" alt="Terminal: agreed on 75 of 75 links (100%). It found 27 of 27 and called 0 of 48 signal."><figcaption>One rule: 69 to 75 of 75.</figcaption></figure></div>
+<p>On your own links, expect several rounds, and expect each rule to move the model's line everywhere, not only on the links you wrote it for. Stop when the disagreements stop teaching you anything. Then commit everything, new files included:</p>
+<pre data-code="terminal">git add -A
+git commit -m "F1: urgent news about tools I do not use is noise"</pre>
 <div class="call"><p class="kick">What just happened</p><p>You were the optimizer. Part 2 hands that job to a second agent, and leaves you the labels and the decision to keep a change.</p></div>
 </section>
 
@@ -132,30 +141,30 @@ tool (advisories, removals, "patch now") is noise to them, however loud the titl
 <div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py brief 1</pre></div>
 <div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py brief 1</pre></div>
 <p class="tip" data-h="codex hermes">Run <code>export RUNNER=<span data-h="codex">codex</span><span data-h="hermes">hermes</span></code> once and drop the prefix from every command after it.</p>
-<div data-h="claude"><figure class="shot"><img data-shot="claude-brief" alt="The brief from Claude Code: What changed lists script mode in Kiln 2.4, a first measurement of it, the Vecstore advisory, the Quill DB advisory, the Kiln hook timeout and Orchard's 1 November deadlines, each citing link ids like [L005]. Who disagrees, What to do, then D1: adopt and D2: ignore. 17 seconds."><figcaption>Every claim cites a link id like <code>[L005]</code>. That is how the scorer finds it.</figcaption></figure></div>
-<div data-h="codex"><figure class="shot"><img data-shot="codex-brief" alt="The brief from Codex, with the same three headings, link ids in brackets, and the two decision lines at the end. 27 seconds."><figcaption>Every claim cites a link id. That is how the scorer finds it.</figcaption></figure></div>
-<div data-h="hermes"><figure class="shot"><img data-shot="hermes-brief" alt="The brief from Hermes, with the same three headings, link ids in brackets, and the two decision lines at the end. 61 seconds."><figcaption>The first Hermes run sets up its own home in <code>.runner/</code>, so it is slower.</figcaption></figure></div>
+<div data-h="claude"><figure class="shot"><img data-shot="claude-brief" alt="The brief from Claude Code. What changed: Kiln 2.4 script mode, Tidewater's measurement of it, the Vecstore and Quill DB advisories, the Kiln hook timeout and Orchard's 1 November changes, each citing link ids like [L005]. Who disagrees, then What to do, then D1: adopt and D2: ignore. 24 seconds."><figcaption>Every claim cites a link id like <code>[L005]</code>. That is how the scorer finds it.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="codex-brief" alt="The brief from Codex, with the same three headings, link ids in brackets, and the two decision lines at the end. 20 seconds."><figcaption>Every claim cites a link id. That is how the scorer finds it.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="hermes-brief" alt="The brief from Hermes, with the same three headings, link ids in brackets, and the two decision lines at the end. 173 seconds."><figcaption>The first Hermes run sets up its own home in <code>.runner/</code>, so it is slower.</figcaption></figure></div>
 <p>Score it against your labels:</p>
 <pre data-code="terminal">python3 verifier/score.py traces/try</pre>
-<div data-h="claude"><figure class="shot sm"><img data-shot="claude-score" alt="Score table: week 1, score 0.808, found 8 of 9, noise called important 3, decisions right 2 of 2."></figure></div>
-<div data-h="codex"><figure class="shot sm"><img data-shot="codex-score" alt="Score table: week 1, score 0.538, found 6 of 9, noise called important 2, decisions right 1 of 2."></figure></div>
-<div data-h="hermes"><figure class="shot sm"><img data-shot="hermes-score" alt="Score table: week 1, score 0.731, found 7 of 9, noise called important 3, decisions right 2 of 2."></figure></div>
+<div data-h="claude"><figure class="shot sm"><img data-shot="claude-score" alt="Score table: week 1, score 0.808, found 7 of 9, noise called important 1, decisions right 2 of 2."></figure></div>
+<div data-h="codex"><figure class="shot sm"><img data-shot="codex-score" alt="Score table: week 1, score 0.769, found 6 of 9, noise called important 0, decisions right 2 of 2."></figure></div>
+<div data-h="hermes"><figure class="shot sm"><img data-shot="hermes-score" alt="Score table: week 1, score 0.846, found 7 of 9, noise called important 0, decisions right 2 of 2."></figure></div>
 <pre data-code="the score">(links found + 2 x decisions right - 0.5 x noise called important)
 / (links that mattered + 2 x decisions)</pre>
-<p><span data-h="claude">Here: (8 + 4 − 1.5) / 13 = 0.808.</span><span data-h="codex">Here: (6 + 2 − 1) / 13 = 0.538.</span><span data-h="hermes">Here: (7 + 4 − 1.5) / 13 = 0.731.</span> Noise costs half a point, or citing everything would win.</p>
+<p><span data-h="claude">Here: (7 + 4 − 0.5) / 13 = 0.808.</span><span data-h="codex">Here: (6 + 4 − 0) / 13 = 0.769.</span><span data-h="hermes">Here: (7 + 4 − 0) / 13 = 0.846.</span> Noise costs half a point, or citing everything would win. Any id under <b>What changed</b> or <b>What to do</b> counts, even in a "skip these" line, so a brief that lists what it skipped can score below zero. Ids under <b>Who disagrees</b> are not scored either way.</p>
 <p>Now read what it did. The trace is every tool call and what came back:</p>
 <pre data-code="terminal">python3 loop.py trace traces/try/week-1.jsonl</pre>
-<div data-h="claude"><figure class="shot"><img data-shot="claude-tracebrief" alt="Trace from Claude Code: Bash cat inbox/week-1.csv, then python3 tools/fetch.py with a list of link ids, then the model's brief, then done: 5 model steps, tokens and cost in dollars."></figure></div>
-<div data-h="codex"><figure class="shot"><img data-shot="codex-tracebrief" alt="Trace from Codex: Bash cat inbox/week-1.csv, then two fetch.py calls with ten and five link ids, then the brief, then done: 3 model steps, 70,400 tokens."></figure></div>
-<div data-h="hermes"><figure class="shot"><img data-shot="hermes-tracebrief" alt="Trace from Hermes: Read inbox/week-1.csv, then one fetch.py call with ten link ids, then the brief, then done: 2 model steps, 32,344 tokens."></figure></div>
-<p>Look at the <code>fetch.py</code> line. The agent opened only some of the 25 links, the ones whose titles looked important. That habit is what the optimizer will go after.</p>
+<div data-h="claude"><figure class="shot"><img data-shot="claude-tracebrief" alt="Trace from Claude Code: it reads inbox/week-1.csv, then runs python3 tools/fetch.py with eleven link ids, then writes the brief. Done: 4 model steps, 57,254 tokens, $0.081."></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="codex-tracebrief" alt="Trace from Codex: it reads inbox/week-1.csv, then runs python3 tools/fetch.py with twelve link ids, then writes the brief. Done: 2 model steps, 52,165 tokens."></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="hermes-tracebrief" alt="Trace from Hermes: it reads inbox/week-1.csv, then runs python3 tools/fetch.py with thirteen link ids, then writes the brief. Done: 2 model steps, 32,664 tokens."></figure></div>
+<p>Look at the <code>fetch.py</code> line. The agent opened only <span data-h="claude">11</span><span data-h="codex">12</span><span data-h="hermes">13</span> of the 25 links, the ones whose titles looked important. Remember that habit.</p>
 </section>
 
 <section class="s" id="s10"><h2><span class="n">10</span>Record the baseline</h2>
-<p>The score of your setup before any agent changes it. Every round is measured against it.</p>
-<div data-h="claude"><pre data-code="terminal">python3 loop.py baseline</pre><figure class="shot"><img data-shot="claude-baseline" alt="Baseline from Claude Code: writing 9 briefs, 3 per week. Week 1 0.744, week 2 0.705, week 3 0.82, each with a low-to-high range. Mean 0.756."></figure></div>
-<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py baseline</pre><figure class="shot"><img data-shot="codex-baseline" alt="Baseline from Codex: week 1 0.59, week 2 0.885, week 3 0.628. Mean 0.701."></figure></div>
-<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py baseline</pre><figure class="shot"><img data-shot="hermes-baseline" alt="Baseline from Hermes: week 1 0.641, week 2 0.744, week 3 0.705. Mean 0.697."></figure></div>
+<p>The score of your setup before any agent changes it. Every round is measured against it. It must be a commit, so step 08's commit comes first.</p>
+<div data-h="claude"><pre data-code="terminal">python3 loop.py baseline</pre><figure class="shot"><img data-shot="claude-baseline" alt="Baseline from Claude Code: writing 9 briefs, 3 per week. Week 1 0.846, week 2 0.897, week 3 0.769, each with a low-to-high range. Mean 0.837."></figure></div>
+<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py baseline</pre><figure class="shot"><img data-shot="codex-baseline" alt="Baseline from Codex: week 1 0.769, week 2 0.949, week 3 0.923. Mean 0.88."></figure></div>
+<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py baseline</pre><figure class="shot"><img data-shot="hermes-baseline" alt="Baseline from Hermes: week 1 0.82, week 2 0.897, week 3 0.846. Mean 0.854."></figure></div>
 <p>Each week is written three times and the score is the mean. One brief is too small a sample: the same setup scored 0.46 and 0.89 on one week. <b>Low to high</b> shows the spread.</p>
 </section>
 
@@ -169,62 +178,73 @@ tool (advisories, removals, "patch now") is noise to them, however loud the titl
   <li class="st-c"><b>Keep or revert</b><span>Kept only if the mean rose by 0.02 or more.</span></li>
 </ol>
 <div data-h="claude"><pre data-code="terminal">python3 loop.py round</pre>
-<figure class="shot"><img data-shot="claude-round" alt="Round 1 in Claude Code. Change: a rule R1 to read every link before choosing. Predict: fixes nine missed links. Then three week-1 runs thrown away because Bash reached outside harness/, week 1 scores 0.0, weeks 2 and 3 score 0.41 with 15.3 noise called important. Mean 0.273. Reverted: 0.756 to 0.273."><figcaption>Reverted: 0.756 to 0.273.</figcaption></figure>
-<p>The optimizer saw the habit from step 09 and added a rule: read every link. Then the agent cited nearly everything, and noise jumped from about 2 to 15. Worse, every week-1 run looked one folder up, so the wall scored them zero. Code reverted the change. That is the loop working.</p></div>
+<figure class="shot"><img data-shot="claude-round" alt="Round 1 in Claude Code. Change: a rule R1 that guides and studies showing a technique with measured results count as signal. Predict: fixes L017, L024, L028 and L062. Then 8 of 9 runs thrown away because Bash reached outside harness/. Week 1 0.333, weeks 2 and 3 0.0. Mean 0.111. Reverted: 0.837 to 0.111."><figcaption>Reverted: 0.837 to 0.111.</figcaption></figure>
+<p>The optimizer found a real habit: the agent read guides and studies with measured results, then left them out. But with the new rule, 8 of 9 runs looked one folder up, so the wall scored them zero. Code reverted the change. That is the loop working.</p></div>
 <div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py round</pre>
-<figure class="shot"><img data-shot="codex-round" alt="Round 1 in Codex. Change: one R1 coverage rule, because actionable links were fetched but omitted. Predict: fewer omissions of pricing, API deadlines and fixes. Week 1 0.731, week 2 0.872, week 3 0.885, all 9 of 9 found. Mean 0.829. Kept: 0.701 to 0.829."><figcaption>Kept: 0.701 to 0.829.</figcaption></figure>
-<p>Codex's optimizer found a different habit: the agent read the right links, then left them out. One rule fixed it: 9 of 9 found every week.</p></div>
+<figure class="shot"><img data-shot="codex-round" alt="Round 1 in Codex. Change: one R1 rule, because fetched, evidence-backed setup improvements were omitted across several weeks. Predict: fewer omissions of tool-description evals, raw-trace debugging, hook measurements, independent graders and citation checks. Weeks 1, 2 and 3 all 1.0, 9 of 9 found. Mean 1.0. Kept: 0.88 to 1.0."><figcaption>Kept: 0.88 to 1.0.</figcaption></figure>
+<p>The agent read guides and studies with measured results, then left them out. One rule fixed it: 9 of 9 found in every run of every week.</p></div>
 <div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py round</pre>
-<figure class="shot"><img data-shot="hermes-round" alt="Round 1 in Hermes. Change: in all 12 runs the agent fetched only 7 to 11 links chosen by title; added a rule to read every link. Week 1 0.423, week 2 0.423, week 3 0.461, all 9 of 9 found but 13.7 to 15 noise called important. Mean 0.436. Reverted: 0.697 to 0.436."><figcaption>Reverted: 0.697 to 0.436.</figcaption></figure>
-<p>The optimizer saw the habit from step 09 and added: read every link. All 9 links were found, but so were 14 noise links. The score fell, so code reverted it. The agent never decided that itself.</p></div>
-<p>See what the optimizer read before it changed anything:</p>
+<figure class="shot"><img data-shot="hermes-round" alt="Round 1 in Hermes. Change: an R1 rule that agent-building guides, preprints and data threads that ship their evidence belong in What to do, because the agent fetched them and dropped them in 5 of 7 misses. Week 1 1.0, week 2 1.0, week 3 0.923. Mean 0.974. Kept: 0.854 to 0.974."><figcaption>Kept: 0.854 to 0.974.</figcaption></figure>
+<p>The agent fetched guides and studies with real evidence, then dropped them. One rule fixed most of it.</p></div>
+<p>All three optimizers found the same first habit: links with measured results, read and then left out. That is one of the sample's traps, "a thread with real measurements". See what the optimizer read before it changed anything:</p>
 <pre data-code="terminal">python3 loop.py trace traces/round-1/optimizer.jsonl</pre>
-<div data-h="claude"><figure class="shot"><img data-shot="claude-traceopt" alt="The end of Claude Code's optimizer trace: it reads the week 2 brief and inbox, greps the traces for fetch.py calls, says week 2's worst run never fetched L031, L033 or L050, reads fetch.py, then edits harness/CLAUDE.md to add the read-every-link rule. Done: 18 model steps, 271,630 tokens, $0.449."><figcaption>18 steps of reading before one edit.</figcaption></figure></div>
-<div data-h="codex"><figure class="shot"><img data-shot="codex-traceopt" alt="Codex's optimizer trace: it lists files, reads the report and journal, reads the setup, searches a trace for the missed ids, parses a trace with a small Python script, explains that the worst run fetched three links then left them out, edits harness/CLAUDE.md, checks its own git diff, and gives a reason and prediction. Done: 7 model steps."><figcaption>Codex logs no text for edits. <code>git show</code> on the round's commit shows the change.</figcaption></figure></div>
-<div data-h="hermes"><figure class="shot"><img data-shot="hermes-traceopt" alt="The end of Hermes's optimizer trace: it reads a brief from round 0, lists the tools folder, searches a raw trace, reads fetch.py, then edits harness/CLAUDE.md to add a rule to read every link in batches of about ten. Its summary says in all 12 runs the agent fetched only 7 to 11 links, chosen by title. Done: 13 model steps, 84,458 tokens."><figcaption>13 steps of reading before one edit.</figcaption></figure></div>
+<div data-h="claude"><figure class="shot"><img data-shot="claude-traceopt" alt="The end of Claude Code's optimizer trace: it greps the traces for decisions and for the missed links L017 and L024, reads a week-1 brief, says the agent fetched L017 and L024, read their measured results and still left them out, then edits harness/CLAUDE.md to add rule R1 under What matters to this reader. Done: 23 model steps, 454,346 tokens, $0.560."><figcaption>23 steps of reading before one edit.</figcaption></figure></div>
+<div data-h="codex"><figure class="shot"><img data-shot="codex-traceopt" alt="Codex's optimizer trace: it reads the report and the journal, reads the setup and searches the traces for the missed links, parses two traces with a small Python script, says the agent fetched the missed guides and studies and then left them out, edits harness/CLAUDE.md, checks its own git diff, and gives a reason and a prediction. Done: 5 model steps, 119,209 tokens."><figcaption>Codex logs no text for edits. <code>git show</code> on the round's commit shows the change.</figcaption></figure></div>
+<div data-h="hermes"><figure class="shot"><img data-shot="hermes-traceopt" alt="The end of Hermes's optimizer trace: it reads the report, the journal and the setup, reads a week-1 brief and its trace, reads fetch.py, checks the saved pages, then edits harness/CLAUDE.md to add rule R1. Done: 19 model steps, 148,957 tokens."><figcaption>19 steps of reading before one edit.</figcaption></figure></div>
 <p>Then more rounds:</p>
 <div data-h="claude"><pre data-code="terminal">python3 loop.py run 2</pre>
-<figure class="shot"><img data-shot="claude-run2" alt="Two more rounds in Claude Code. Round 2 rewrote sources.md; six runs thrown away for reaching outside harness/; mean 0.333, reverted. Round 3 added a rule to read inbox/ from inside the folder and never use two dots, because every zero-scored run had done that; one run still thrown away; mean 0.765, reverted because 0.765 is less than 0.02 above 0.756. Status table lists rounds 0 to 3."><figcaption>Rounds 2 and 3: both reverted.</figcaption></figure>
-<p>In round 3 the optimizer spotted the pattern itself: every zero came from a run that looked one folder up. Its fix helped, but only by 0.009, under the 0.02 bar. Nothing was kept: the setup as shipped stayed the best.</p></div>
-<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py run 2</pre><p>We stopped Codex after one round.</p></div>
+<figure class="shot"><img data-shot="claude-run2" alt="Two more rounds in Claude Code. Round 2 added R2, exact in-folder paths and the one allowed shell command, because in round 1 8 of 9 runs looked above the folder after ls and cat were refused. Mean 0.94, kept. Round 3 added R3, fetch every link from the makers of the reader's tools; five runs thrown away; mean 0.436, reverted. Status table lists rounds 0 to 3."><figcaption>Round 2 kept, round 3 reverted.</figcaption></figure>
+<p>Round 2 learned from round 1. The optimizer read the thrown-away runs and found why: they reached for <code>ls</code> and <code>cat</code>, were refused, and looked one folder up. It wrote down the exact paths and the one command allowed. No run was thrown away, and week 1 found 9 of 9: 0.837 to 0.94, kept. Round 3 asked the agent to fetch more, and five runs strayed again: reverted.</p></div>
+<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py run 2</pre>
+<figure class="shot sm"><img data-shot="codex-run2" alt="Terminal: the live score is 1.0: no change can beat it by 0.02, so another round cannot be kept. Open the hidden week: python3 loop.py final."><figcaption>At 1.0 there is nothing left to win.</figcaption></figure>
+<p>A change is kept only if it beats the live score by 0.02, and nothing beats 1.0. So the loop stops and sends you to the hidden week. Before this check existed, our Codex run spent a round anyway: 1.0 to 0.863, reverted.</p></div>
 <div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py run 2</pre>
-<figure class="shot"><img data-shot="hermes-run2" alt="Two more rounds in Hermes. Round 2 added a rule to fetch and list first-party vendor notices for products the reader uses and not cite dismissed links; mean 0.889, kept. Round 3 added a rule that guides and papers with measured results get a line under What changed; mean 0.94, kept. Status table lists rounds 0 to 3."><figcaption>Rounds 2 and 3: both kept.</figcaption></figure>
-<p>Round 2 learned from round 1. Not "read everything", but which links matter: changelogs, pricing and deprecations for tools the reader uses. 0.889, kept. Round 3 added measured results: 0.940, kept.</p></div>
-<p>Every change and every revert is a commit, so <code>git log --oneline</code> is the history and <code>python3 loop.py status</code> the scores. Do not edit files while <code>run</code> is going: the walls will blame the optimizer and revert your edit.</p>
+<figure class="shot"><img data-shot="hermes-run2" alt="Two more rounds in Hermes. Round 2 added a line to memory.md: status-page fix notices for the reader's tools go under What changed. Mean 0.991, reverted. Round 3 put the same rule in CLAUDE.md. Mean 0.992, reverted. Status table lists rounds 0 to 3."><figcaption>Rounds 2 and 3: both reverted, though both scored higher.</figcaption></figure>
+<p>Look at the numbers. Rounds 2 and 3 scored 0.991 and 0.992, above the live 0.974, and both were reverted: neither rose by 0.02. That bar is on purpose. A rise smaller than the run-to-run spread may be luck, and kept luck makes the hidden week look worse than it is.</p></div>
+<p>Every change and every revert is a commit, so <code>git log --oneline</code> is the history and <code>python3 loop.py status</code> the scores. Do not edit files in the repo while <code>run</code> is going: the walls blame the optimizer for any change and revert it. Keep notes in <code>notes/</code>, which git ignores.</p>
 </section>
 
 <section class="s" id="s12"><h2><span class="n">12</span>Open the hidden week</h2>
-<p>A rule that fits weeks 1 to 3 might only fit them. Week 4 has never been shown to either agent. It runs once.</p>
-<div data-h="claude"><pre data-code="terminal">python3 loop.py final</pre><figure class="shot"><img data-shot="claude-final" alt="Final in Claude Code. Weeks 1 to 3: 0.756 before and after. Week 4: 0.564 (0.346 to 0.846) before, 0.551 (0.5 to 0.615) after. No change was kept, so there is nothing to test."></figure>
-<p>No change was kept, so both columns ran the same setup, and still scored 0.564 and 0.551. That gap is chance. Remember it when a round "wins" by a few hundredths.</p></div>
-<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py final</pre><figure class="shot"><img data-shot="codex-final" alt="Final in Codex. Weeks 1 to 3: 0.701 before, 0.829 after. Week 4: 0.436 before, 0.731 after. Week four rose too."></figure>
-<p>Week 4 rose too: 0.436 to 0.731. The rule captured how this reader decides, not something about weeks 1 to 3.</p></div>
-<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py final</pre><figure class="shot"><img data-shot="hermes-final" alt="Final in Hermes. Weeks 1 to 3: 0.697 before, 0.94 after. Week 4: 0.577 before, 0.731 after. Week four rose too."></figure>
-<p>Week 4 rose, 0.577 to 0.731, but less than weeks 1 to 3. Part of the gain carried over; part only fit the weeks the loop could see.</p></div>
+<p>A rule that fits weeks 1 to 3 might only fit them. Week 4 has never been shown to either agent. It runs once, and only after a round has been kept: with nothing kept there is nothing to test.</p>
+<div data-h="claude"><pre data-code="terminal">python3 loop.py final</pre><figure class="shot"><img data-shot="claude-final" alt="Final in Claude Code. Weeks 1 to 3: 0.837 before, 0.94 after. Week 4: 0.603 (0.5 to 0.654) before, 0.68 (0.654 to 0.731) after. Of which: 5.0 of 9 found and 1.0 noise cited before, 5.3 of 9 found and 1.0 noise cited after. Week four rose too. It found more of what mattered."></figure>
+<p>Week 4 rose, 0.603 to 0.68, much less than weeks 1 to 3. Read the <b>of which</b> line: it found 5.3 of 9 links instead of 5.0, with the same noise. The kept rule was about where the agent may look, so a small gain on new links is about what you would expect.</p></div>
+<div data-h="codex"><pre data-code="terminal">RUNNER=codex python3 loop.py final</pre><figure class="shot"><img data-shot="codex-final" alt="Final in Codex. Weeks 1 to 3: 0.88 before, 1.0 after. Week 4: 0.692 (0.577 to 0.769) before, 0.885 (0.808 to 0.962) after. Of which: 6.0 of 9 found and 0.7 noise cited before, 8.7 of 9 found and 1.0 noise cited after. Week four rose too. It found more of what mattered."></figure>
+<p>Week 4 rose, 0.692 to 0.885, and the <b>of which</b> line says why: 8.7 of 9 links found instead of 6.0, for a little more noise. Weeks 1 to 3 reached 1.0 and week 4 did not: part of the gain carried over, part fit only the weeks the loop could see.</p></div>
+<div data-h="hermes"><pre data-code="terminal">RUNNER=hermes python3 loop.py final</pre><figure class="shot"><img data-shot="hermes-final" alt="Final in Hermes. Weeks 1 to 3: 0.854 before, 0.974 after. Week 4: 0.68 (0.654 to 0.731) before, 0.962 after. Of which: 5.3 of 9 found before, 9.0 of 9 after, 1.0 noise cited on both. Week four rose too. It found more of what mattered."></figure>
+<p>Week 4 rose, 0.68 to 0.962, and the <b>of which</b> line says why: 9 of 9 links found instead of 5.3, with the same noise. The rule about evidence-backed guides carried over to a week the loop never saw.</p></div>
+<p>Always read the <b>of which</b> line before the verdict. If "found" stays the same and only "noise cited" falls, the setup learned what to leave out of a brief, not more about what you value. On a real month of X bookmarks, that was the whole of the rise.</p>
 <p>Do not compare scores across harnesses. Each starts from its own baseline: compare its before and after.</p>
-<p>For a longer run to read, the branch <code>sample-run</code> has four rounds: 0.739 to 0.991 on weeks 1 to 3, 0.666 to 0.949 on the hidden week.</p>
+<p>For a longer run to read, the branch <code>sample-run</code> has four rounds: 0.739 to 0.991 on weeks 1 to 3, 0.666 to 0.949 on the hidden week. It was recorded before the repo told the agent to leave skipped links out, so your baseline will start higher than its 0.739.</p>
 <pre data-code="terminal">git log origin/sample-run --oneline
 git diff sample-baseline origin/sample-run -- harness</pre>
 </section>
 
 <section class="s" id="s13"><h2><span class="n">13</span>When something goes wrong</h2>
-<details class="acc"><summary>"run thrown away, Bash reached outside harness/"</summary><div class="b"><p>The briefing agent looked outside its folder, so the run scores zero. <code>loop.py trace</code> on that run shows the command. A few are normal; if every run does it, the next round's report shows the optimizer.</p></div></details>
+<details class="acc"><summary>"run thrown away, Bash reached outside harness/"</summary><div class="b"><p>The briefing agent looked outside its folder, so the run scores zero. <code>loop.py trace</code> on that run shows the command. A few are normal; if every run does it, the next round's report shows the optimizer, as in Claude Code's round 2 above.</p></div></details>
+<details class="acc"><summary>A score below zero</summary><div class="b"><p>The brief cited more noise than it found signal. Every id under <b>What changed</b> or <b>What to do</b> counts as "this matters", even in a "skip these" line.</p></div></details>
 <details class="acc"><summary>A round I expected to win was reverted</summary><div class="b"><p>It has to beat the live score by 0.02. If <b>low to high</b> is wider than the gain, the gain may be luck. <code>RUNS=5</code> in front gives a steadier number.</p></div></details>
-<details class="acc"><summary>A change I made by hand was reverted</summary><div class="b"><p>You edited a file while <code>run</code> was going. Stop, edit, commit, start again.</p></div></details>
+<details class="acc"><summary>"The live score is 1.0: no change can beat it"</summary><div class="b"><p>Nothing is left to win on weeks 1 to 3. Read the kept changes with <code>git log --oneline</code>, then open the hidden week.</p></div></details>
+<details class="acc"><summary>"No change has been kept yet"</summary><div class="b"><p><code>final</code> waits until a round is kept, so it does not spend your one look comparing a setup with itself. Run more rounds. To open it anyway: <code>python3 loop.py final --anyway</code>.</p></div></details>
+<details class="acc"><summary>A change I made by hand was reverted</summary><div class="b"><p>You edited a file while <code>run</code> was going. Stop, edit, commit, start again. Keep notes in <code>notes/</code>: git ignores that folder.</p></div></details>
+<details class="acc"><summary>"Commit your work first"</summary><div class="b"><p><code>git add -A</code>, then <code>git commit -m "..."</code>. <code>git commit -am</code> leaves out files you created.</p></div></details>
+<details class="acc"><summary><code>compare</code>: "No row ... has an id"</summary><div class="b"><p>The model replied with something other than a CSV: a question, a summary or a refusal. Open <code>manual/links-model.csv</code> to see, then run step 06 again.</p></div></details>
+<details class="acc"><summary><code>label</code>: "No keyboard here"</summary><div class="b"><p>An agent ran it. Run <code>python3 loop.py label</code> in your own terminal.</p></div></details>
 <details class="acc"><summary>"Week four is already open"</summary><div class="b"><p><code>final</code> runs once, on purpose. To practise again, clone into a new folder.</p></div></details>
-<details class="acc" data-h="claude"><summary>Claude Code: "not logged in"</summary><div class="b"><p>Run <code>claude</code> and log in again. The loop skips your own settings but uses your login.</p></div></details>
+<details class="acc" data-h="claude"><summary>Claude Code: "not logged in", or "this sign-in can end at any time"</summary><div class="b"><p>Run <code>claude auth login</code>, before a long <code>run</code> so it does not stop halfway. The loop skips your own settings but uses your login.</p></div></details>
 <details class="acc" data-h="codex"><summary>Codex: the clone or a fetch fails</summary><div class="b"><p>Clone in your own terminal (step 02). Inside the loop, <code>agents.py</code> turns network on for the briefing agent, so <code>fetch.py</code> works.</p></div></details>
 <details class="acc" data-h="hermes"><summary>Hermes: it hangs or writes nothing</summary><div class="b"><p>The model is usually not reachable. Start Ollama for a local model, or set a hosted one as in step 01. The first run in a clone also takes one to three minutes to set up.</p></div></details>
 </section>
 
 <section class="s" id="s14"><h2><span class="n">14</span>Bring your own month</h2>
-<ol class="steps">
-  <li>Replace <code>verifier/links.csv</code> with your labelled links. It needs no <code>text</code> column.</li>
-  <li>Replace <code>verifier/decisions.csv</code> with your decisions, or leave only its header row.</li>
-  <li>Delete <code>harness/sources.md</code> and <code>harness/cache/</code>.</li>
-  <li>Run <code>python3 loop.py prepare</code>. Days 22 onward become week four.</li>
-</ol>
-<p>Pages are fetched the first time the agent reads them, then kept, so a week reads the same on every run. Links behind a login (X, LinkedIn) come back as the title only.</p>
+<p>Save your export from step 04 anywhere and bring it in:</p>
+<pre data-code="terminal">python3 loop.py import ~/Downloads/your-bookmarks.csv</pre>
+<figure class="shot"><img data-shot="own-import" alt="Terminal: python3 loop.py import on a real X bookmarks export. Kept 109 of 251 links, saved from 2026-09-25 to 2026-10-24, 30 to 60 days ago. Dates come from the Published at UTC column, which stands in for the save date. 109 of 109 links carry their page text. The sample month is replaced, and git checkout -- verifier harness brings it back. Then the four-week table with nothing labelled, and: no labels yet, next run python3 loop.py label."><figcaption>A real export: 251 X bookmarks with their own column names, 109 of them from 30 to 60 days ago.</figcaption></figure>
+<p>It finds the link, date and text columns whatever they are called, keeps the links from 30 to 60 days ago, and replaces the sample month. To pick the window yourself, add <code>--from 2026-09-24 --to 2026-10-24</code>, or <code>--all</code>. Lines that start with <code>!</code> are worth a second look: a week with almost no links you acted on gives a jumpy score, and an old outlier date can push most of your links into the hidden week.</p>
+<p>Then label, in your own terminal:</p>
+<pre data-code="terminal">python3 loop.py label</pre>
+<figure class="shot"><img data-shot="own-label" alt="Terminal: python3 loop.py label. 109 links to label, with the keys: s signal, h should have, n noise, Enter not sure, b back, q save and stop. The first link: L001, week 1, X @SullyOmarr, its title, link and post text, answered n. Then the next link begins."><figcaption>One key per link, saved at once.</figcaption></figure>
+<p>From here the steps are the same, from step 06. Use <code>blank --text</code> if your titles are only each post's first line. <code>python3 loop.py next</code> always says where you are. Your labels live in <code>verifier/links.csv</code>, which is committed in your clone: if your fork is public, so are your bookmarks.</p>
+<p>The branch <code>student-run-real-bookmarks</code> holds a run on one real month of X bookmarks, with a journal of every step and where it got confusing.</p>
 <div class="call"><p class="kick">Take home</p><p>Do Part 1 at least three times round. Then <code>run 5</code> and <code>final</code>. Keep <code>git log --oneline</code> and both scores. Name one change you would never have written yourself, and one you would reject even though the score rose.</p></div>
 </section>
 
