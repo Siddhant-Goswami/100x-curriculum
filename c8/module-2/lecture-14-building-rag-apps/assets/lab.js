@@ -13,7 +13,7 @@
 var BASE = '/c8/module-2/lecture-14-building-rag-apps/assets/', V = '?v=5';
 var API = '/api/retrieve', MODEL = 'openai/gpt-oss-120b', KEYS = 'c8.l11.key', STORE = 'c8.l14.lab3';
 var CODE_DIR = '/c8/module-2/lecture-14-building-rag-apps/code/';
-var GH = 'https://github.com/Siddhant-Goswami/100x-curriculum/tree/main/c8/module-2/lecture-14-building-rag-apps/code';
+var GH = 'https://github.com/Siddhant-Goswami/C8-RAG/tree/main/module3_build_the_search';
 var HF = 'https://huggingface.co/thenlper/gte-small';
 var TF = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.6', EMBED = 'Xenova/gte-small';   /* the bench's model, in the browser */
 var RF = window.RAGFILE, PART = {}; RF.PARTS.forEach(function (p) { PART[p.id] = p; });
@@ -668,7 +668,7 @@ function embedScreen(L) {
       '<pre class="sh"><span class="pr">$ </span>pip install sentence-transformers</pre>' +
       '<pre class="lcode cm-s-default">' + hl('from sentence_transformers import SentenceTransformer\n\nmodel = SentenceTransformer("thenlper/gte-small")       # downloads once, about 70 MB\nnumbers = model.encode("Why is the model making things up?", normalize_embeddings=True)\nprint(len(numbers), numbers[:8])') + '</pre>' +
       '<p>It prints <code>384</code> and the first eight numbers: <code>-0.040 0.009 0.040 -0.027 …</code>. This page runs an 8-bit copy of the same model, so the two agree to about two decimals.</p>' +
-      '<p class="files">The full script: <a href="' + CODE_DIR + 'embed.py" download>download embed.py</a> · <a href="' + GH + '/embed.py" target="_blank" rel="noopener">see it on GitHub</a>. Run <code>python embed.py "any sentence"</code>.</p></details>';
+      '<p class="files">The full script: <a href="' + CODE_DIR + 'embed.py" download>download embed.py</a>. Run <code>python embed.py "any sentence"</code>.</p></details>';
   var go1 = function () {
     var text = $('#etext').value.trim(); if (!text) return;
     var b = $('#ego'); b.disabled = true;
@@ -815,7 +815,7 @@ function theEnd() {
     '<section class="bs endfile"><h2 class="bh">Your rag.py</h2><p>Every function you wrote, in one file with the given parts. It runs on your laptop.</p>' +
       '<pre class="sh"><span class="pr">$ </span>python rag.py\n<span class="pc"># the scoreboard of every search you built</span>\n<span class="pr">$ </span>pip install sentence-transformers\n<span class="pr">$ </span>export GROQ_API_KEY=gsk_...\n<span class="pr">$ </span>python rag.py "Why is the model making things up?"\n<span class="pc"># search, pick, prompt, and the LLM\u2019s answer</span></pre>' +
       '<div class="runrow"><button class="btn primary" id="fdl" type="button">Download rag.py</button><button class="btn" id="fsee" type="button">See the whole file</button>' +
-      '<a class="btn quiet" href="' + CODE_DIR + 'embed.py" download>embed.py</a><a class="btn quiet" href="' + GH + '" target="_blank" rel="noopener">Both files on GitHub</a></div><div class="fview" id="fview" hidden></div></section>';
+      '<a class="btn quiet" href="' + CODE_DIR + 'embed.py" download>embed.py</a><a class="btn quiet" href="' + GH + '" target="_blank" rel="noopener">The repository on GitHub</a></div><div class="fview" id="fview" hidden></div></section>';
   $('#copy').onclick = function () {
     var b = this, done = function () { b.textContent = 'Copied'; setTimeout(function () { b.textContent = 'Copy it'; }, 1600); };
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(lines.join('\n')).then(done, function () { b.textContent = 'Select the text and copy it'; });
