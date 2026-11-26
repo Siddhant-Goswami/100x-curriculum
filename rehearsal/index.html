@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rehearsal Room | 100xEngineers</title>
+<meta name="description" content="Practise a Socratic lesson on a small simulated class, then see what was in each student's head.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<style>
+[hidden]{display:none!important}
+main{max-width:760px;margin:0 auto;padding:28px 16px 96px}
+.top .in{max-width:760px}
+.top .meta{margin-left:auto;font:500 12px var(--mono);color:var(--ink2)}
+h1{font:500 28px/1.2 var(--sans);letter-spacing:-.02em;margin:0 0 8px}
+h1.do::before{content:"";display:inline-block;width:.42em;height:.42em;border-radius:50%;background:var(--coral);margin-right:.4em;vertical-align:.14em}
+.ctx{color:var(--ink2);margin:0 0 22px;max-width:60ch}
+h2{font:500 12px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin:34px 0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
+.err{color:var(--coral-ink);font-size:14px;margin:10px 0 0;min-height:1.4em}
+input[type=text],input[type=password],textarea{width:100%;border:1px solid var(--line2);background:var(--card);border-radius:10px;padding:11px 13px;font:16px/1.45 var(--sans);color:var(--ink)}
+textarea{resize:vertical}
+input:focus,textarea:focus{outline:2px solid var(--coral);outline-offset:1px;border-color:transparent}
+label.f{display:block;font:500 13px var(--sans);color:var(--ink2);margin:14px 0 6px}
+.btn[disabled]{opacity:.4;cursor:default}
+.link{border:0;background:none;padding:0;color:var(--ink2);font:500 14px var(--sans);text-decoration:underline;text-underline-offset:3px}
+.link:hover{color:var(--ink)}
+
+/* pick a lesson */
+.pick{display:grid;gap:10px}
+.pick button{text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:block;width:100%}
+.pick button:hover{border-color:var(--line2)}
+.pick button[aria-pressed=true]{border-color:var(--coral);box-shadow:0 0 0 1px var(--coral)}
+.pick b{display:block;font:500 17px/1.3 var(--sans)}
+.pick small{display:block;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:4px}
+.pick span{display:block;color:var(--ink2);font-size:14.5px;margin-top:4px}
+.keyrow{display:flex;gap:8px}
+.keyrow input{flex:1}
+
+/* the room */
+.goal{border-left:3px solid var(--coral);padding:2px 0 2px 14px;margin:0 0 18px}
+.goal small{display:block;font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3)}
+.seats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 0 16px}
+.seat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:13px;line-height:1.35;color:var(--ink2)}
+.seat b{display:block;color:var(--ink);font:500 14.5px var(--sans)}
+.seat i{display:block;font:500 11px var(--mono);font-style:normal;color:var(--ink3);margin-top:5px}
+.seat.on{border-color:var(--ink3)}
+@media (max-width:620px){.seats{grid-template-columns:repeat(2,1fr)}}
+.chat{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
+.msg{max-width:86%;padding:10px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);line-height:1.5}
+.msg b{display:block;font:500 12px var(--mono);color:var(--ink3);margin-bottom:2px}
+.msg.you{align-self:flex-end;background:var(--bg2)}
+.msg.none{align-self:center;background:none;border:0;color:var(--ink3);font-size:14px;padding:2px}
+.msg.scene{max-width:100%;background:none;border-style:dashed;color:var(--ink2)}
+.say{position:sticky;bottom:0;background:var(--bg);padding:10px 0 14px;border-top:1px solid var(--line)}
+.say .row{display:flex;gap:8px;align-items:flex-end}
+.say textarea{flex:1;min-height:52px;max-height:180px}
+.say .under{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px;color:var(--ink3)}
+.dots::after{content:"";animation:dots 1.2s steps(4) infinite}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+/* guess */
+.guess{display:grid;gap:8px}
+.guess .g{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px}
+.guess .g div{flex:1;min-width:0}
+.guess .g b{font-weight:500}
+.guess .g small{display:block;color:var(--ink2);font-size:13px}
+.yn{border:1px solid var(--line2);background:var(--card);border-radius:8px;padding:7px 13px;font:500 13.5px var(--sans);color:var(--ink2)}
+.yn[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* debrief */
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.nums div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+.nums b{display:block;font:500 28px/1.1 var(--sans);letter-spacing:-.02em}
+.nums span{display:block;color:var(--ink2);font-size:13.5px;margin-top:4px;line-height:1.35}
+@media (max-width:620px){.nums{grid-template-columns:1fr}}
+.stu{margin:0 0 12px}
+.stu .hd{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin-bottom:10px}
+.stu .hd b{font:500 18px var(--sans)}
+.stu .hd small{color:var(--ink2);font-size:13.5px}
+.chip{font:500 11.5px var(--mono);border-radius:999px;padding:2px 9px;border:1px solid var(--line2);color:var(--ink2);white-space:nowrap}
+.chip.ok{background:var(--hum-soft);border-color:transparent;color:var(--hum-ink)}
+.chip.no{background:var(--coral-soft);border-color:transparent;color:var(--coral-ink)}
+.stu .hd .chip:first-of-type{margin-left:auto}
+.bar{display:grid;grid-template-columns:1fr 150px 76px;gap:10px;align-items:center;font-size:13.5px;line-height:1.35;margin:6px 0;color:var(--ink2)}
+.bar .t{position:relative;height:8px;border-radius:4px;background:var(--bg2)}
+.bar .t i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--ink3)}
+.bar .t i.was{background:none;border-right:2px solid var(--ink);border-radius:0;z-index:1}
+.bar .t i.up{background:var(--hum)}
+.bar em{font:500 12px var(--mono);font-style:normal;color:var(--ink);text-align:right}
+@media (max-width:620px){.bar{grid-template-columns:1fr 90px 70px}}
+.bel{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);font-size:14.5px;line-height:1.5}
+.bel p{margin:0 0 6px}
+.bel .k{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-right:6px}
+.bel q{quotes:none;font-style:italic}
+.tl{width:100%;border-collapse:collapse;font-size:14px;line-height:1.4}
+.tl td{vertical-align:top;padding:9px 8px;border-top:1px solid var(--line)}
+.tl td:first-child{font:500 12px var(--mono);color:var(--ink3);width:26px;padding-left:0}
+.tl .mv{font:500 12px var(--mono);white-space:nowrap}
+.tl .mv.q{color:var(--hum-ink)}.tl .mv.t{color:var(--coral-ink)}
+.tl small{display:block;color:var(--ink2);margin-top:3px}
+.next{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.next li{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:11px 14px;line-height:1.5}
+.next li b{font:500 12px var(--mono);color:var(--ink3);margin-right:8px}
+.fine{color:var(--ink3);font-size:13px;line-height:1.5;margin-top:28px;max-width:66ch}
+details.rules{margin-top:14px;font-size:14px;color:var(--ink2)}
+details.rules summary{cursor:pointer;color:var(--ink)}
+details.rules li{margin:3px 0}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="/rehearsal/">100x<b>·</b><span>Rehearsal Room</span></a>
+  <span class="meta" id="meta"></span>
+</div></header>
+<main>
+
+<!-- 1. pick -->
+<section id="s-pick">
+  <h1 class="do">Pick a lesson to rehearse</h1>
+  <p class="ctx">You teach four simulated students for up to 12 turns. Each one walks in with a wrong belief you cannot see. At the end you find out what was in their heads.</p>
+  <div class="pick" id="lessons"></div>
+  <div id="own" hidden>
+    <label class="f" for="o-topic">Topic</label>
+    <input type="text" id="o-topic" maxlength="120" placeholder="Why a database and not a spreadsheet">
+    <label class="f" for="o-goal">What should the class be able to say at the end? One sentence.</label>
+    <input type="text" id="o-goal" maxlength="240" placeholder="A spreadsheet lets two people overwrite each other; a database does not.">
+    <label class="f" for="o-notes">Your notes or lesson plan (optional, pasted)</label>
+    <textarea id="o-notes" rows="5" maxlength="5000"></textarea>
+  </div>
+  <div id="keybox" hidden>
+    <label class="f" for="key">Your Groq key. It stays in this tab and is sent only with your own requests.</label>
+    <div class="keyrow"><input type="password" id="key" placeholder="gsk_..." autocomplete="off"></div>
+  </div>
+  <p class="err" id="e-pick" role="alert"></p>
+  <div class="btnrow"><button class="btn" id="go" disabled>Start the lesson</button><button class="link" id="rekey" hidden>Change key</button></div>
+</section>
+
+<!-- 2. room -->
+<section id="s-room" hidden>
+  <div class="goal"><small>By the end, the class can say</small><span id="goal"></span></div>
+  <div class="seats" id="seats"></div>
+  <div class="chat" id="chat" aria-live="polite"></div>
+  <div class="say">
+    <div class="row"><textarea id="say" maxlength="700" placeholder="Say it to the class. Use a name to call on someone."></textarea><button class="btn" id="send">Send</button></div>
+    <div class="under"><span id="e-room" class="err" role="alert" style="margin:0"></span><button class="link" id="end">End the lesson</button></div>
+  </div>
+</section>
+
+<!-- 3. guess -->
+<section id="s-guess" hidden>
+  <h1 class="do">Before you look: who could explain it to a friend tomorrow?</h1>
+  <p class="ctx" id="g-goal"></p>
+  <div class="guess" id="guess"></div>
+  <p class="err" id="e-guess" role="alert"></p>
+  <div class="btnrow"><button class="btn" id="reveal" disabled>Show me the room</button></div>
+</section>
+
+<!-- 4. debrief -->
+<section id="s-debrief" hidden>
+  <h1>Here is what was in the room</h1>
+  <p class="ctx" id="d-ctx"></p>
+  <div class="nums" id="nums"></div>
+  <h2>Each student</h2>
+  <div id="students"></div>
+  <h2>Try this on the next run</h2>
+  <ul class="next" id="next"></ul>
+  <h2>Turn by turn</h2>
+  <table class="tl" id="turns"></table>
+  <div class="btnrow" style="margin-top:28px"><button class="btn" id="again">Run it again</button><button class="btn ghost" id="other">Pick another lesson</button><button class="btn ghost" id="dl">Download the log</button></div>
+  <details class="rules"><summary>How the numbers move</summary>
+    <ul>
+      <li>A student gains most when they say the idea in their own words (+0.30), half that when partly right, and little when they only hear it from you (+0.06) or from a classmate (+0.05).</li>
+      <li>The three ideas are a chain. A question is in reach when the earlier ideas are at least 0.4 and this one is under 0.8. Out of reach, the gain is cut to a third or less.</li>
+      <li>A wrong belief loses 0.35 of its strength when the student notices the problem themselves, 0.15 when you put a case to them and they answer, 0.04 when you just state the right answer.</li>
+      <li>While a belief is stronger than 0.5, the idea it blocks cannot pass 0.45.</li>
+      <li>"Could explain it" means the last idea is 0.7 or more and no belief is stronger than 0.5.</li>
+    </ul>
+  </details>
+  <p class="fine">These students are simulated by an LLM. The numbers are a model of learning, not a measurement of it, and the weights above are our own choices. Use a run to practise and to compare two ways of teaching the same lesson. Do not use it to grade a person. The design follows AgentSchool (<a href="https://arxiv.org/abs/2605.30144">arXiv 2605.30144</a>), which gives each simulated student a state: what they know, what they wrongly believe, and how strongly.</p>
+</section>
+
+</main>
+<script>
+(function () {
+  var API = '/api/rehearse', $ = function (id) { return document.getElementById(id); };
+  var S = { key: '', lessons: [], cast: [], turns: 12, pick: '', room: null, busy: false, guesses: {}, result: null };
+  try { S.key = sessionStorage.getItem('rehearsal.key') || sessionStorage.getItem('c8.l11.key') || ''; } catch (e) { /* asked again */ }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function show(id) { ['s-pick', 's-room', 's-guess', 's-debrief'].forEach(function (s) { $(s).hidden = s !== id; }); window.scrollTo(0, 0); }
+  function who(id) { return S.cast.filter(function (c) { return c.id === id; })[0] || { name: id, about: '' }; }
+  function call(body) {
+    return fetch(API, { method: 'POST', headers: { 'content-type': 'application/json', 'x-groq-key': S.key }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok) { var e = new Error(d.message || 'Something went wrong. Try again.'); e.code = d.error; throw e; } return d; }); },
+        function () { throw new Error('No connection. Try again.'); });
+  }
+
+  /* ---------- 1. pick ---------- */
+  function drawLessons() {
+    var h = S.lessons.map(function (l) {
+      return '<button type="button" data-id="' + esc(l.id) + '" aria-pressed="' + (S.pick === l.id) + '"><small>' + esc(l.from) + '</small><b>' + esc(l.title) + '</b><span>' + esc(l.scene) + '</span></button>';
+    }).join('');
+    h += '<button type="button" data-id="own" aria-pressed="' + (S.pick === 'own') + '"><small>Your own</small><b>A lesson you are about to teach</b><span>Give the topic and the goal. The class walks in with the wrong beliefs beginners usually hold about it.</span></button>';
+    $('lessons').innerHTML = h;
+    $('own').hidden = S.pick !== 'own';
+    $('keybox').hidden = !!S.key; $('rekey').hidden = !S.key;
+    ready();
+  }
+  function ready() {
+    var k = S.key || $('key').value.trim(), ok = !!S.pick && /^gsk_[A-Za-z0-9]{20,}$/.test(k);
+    if (S.pick === 'own') ok = ok && $('o-topic').value.trim().length > 2 && $('o-goal').value.trim().length > 9;
+    $('go').disabled = !ok || S.busy;
+  }
+  $('lessons').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; S.pick = b.getAttribute('data-id'); drawLessons(); });
+  ['key', 'o-topic', 'o-goal'].forEach(function (id) { $(id).addEventListener('input', ready); });
+  $('rekey').addEventListener('click', function () { S.key = ''; try { sessionStorage.removeItem('rehearsal.key'); } catch (e) { /* ignore */ } drawLessons(); $('key').focus(); });
+  $('go').addEventListener('click', start);
+  function start() {
+    if (!S.key) S.key = $('key').value.trim();
+    S.busy = true; ready(); $('e-pick').textContent = ''; $('go').textContent = S.pick === 'own' ? 'Drafting the class' : 'Starting';
+    $('go').classList.add('dots');
+    var body = S.pick === 'own' ? { op: 'start', custom: { topic: $('o-topic').value, goal: $('o-goal').value, notes: $('o-notes').value } } : { op: 'start', lesson: S.pick };
+    call({ op: 'key' }).then(function () { try { sessionStorage.setItem('rehearsal.key', S.key); } catch (e) { /* memory only */ } return call(body); })
+      .then(function (d) { S.room = d.room; S.guesses = {}; S.result = null; openRoom(); })
+      .catch(function (e) { if (e.code === 'need_key') { S.key = ''; drawLessons(); } $('e-pick').textContent = e.message; })
+      .then(function () { S.busy = false; $('go').textContent = 'Start the lesson'; $('go').classList.remove('dots'); ready(); });
+  }
+
+  /* ---------- 2. the room ---------- */
+  function seats() {
+    $('seats').innerHTML = S.room.students.map(function (s) {
+      var c = who(s.id);
+      return '<div class="seat' + (s.spoke ? ' on' : '') + '"><b>' + esc(c.name) + '</b>' + esc(c.about) + '<i>' + (s.spoke ? 'spoke ' + s.spoke + (s.spoke === 1 ? ' time' : ' times') : 'has not spoken') + '</i></div>';
+    }).join('');
+    $('meta').textContent = 'Turn ' + Math.min(S.room.turn + 1, S.turns) + ' of ' + S.turns;
+  }
+  function bubble(cls, name, text) {
+    var d = document.createElement('div'); d.className = 'msg ' + cls;
+    d.innerHTML = (name ? '<b>' + esc(name) + '</b>' : '') + esc(text);
+    $('chat').appendChild(d); d.scrollIntoView({ block: 'nearest' }); return d;
+  }
+  function openRoom() {
+    show('s-room'); $('goal').textContent = S.room.lesson.goal; $('chat').innerHTML = ''; $('e-room').textContent = '';
+    bubble('scene', 'On the screen', S.room.lesson.scene);
+    seats(); $('say').value = ''; $('say').disabled = false; $('send').disabled = false; $('say').focus();
+  }
+  function send() {
+    var text = $('say').value.trim();
+    if (S.busy || text.length < 2) return;
+    S.busy = true; $('send').disabled = true; $('e-room').textContent = '';
+    bubble('you', 'You', text); $('say').value = '';
+    var wait = bubble('none dots', '', 'The class is thinking');
+    call({ op: 'turn', room: S.room, say: text }).then(function (d) {
+      wait.remove(); S.room = d.room;
+      if (!d.replies.length) bubble('none', '', 'Nobody answers.');
+      d.replies.forEach(function (r) { bubble('', who(r.who).name, r.text); });
+      seats();
+      if (S.room.turn >= S.turns) { $('say').disabled = true; $('say').placeholder = 'That was the last turn.'; $('end').textContent = 'See how it went'; }
+    }).catch(function (e) {
+      wait.remove(); $('chat').lastChild.remove(); $('say').value = text; $('e-room').textContent = e.message;
+      if (e.code === 'need_key') { S.key = ''; }
+    }).then(function () { S.busy = false; $('send').disabled = S.room.turn >= S.turns; if (!$('say').disabled) $('say').focus(); });
+  }
+  $('send').addEventListener('click', send);
+  $('say').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+  $('end').addEventListener('click', function () {
+    if (S.busy) return;
+    if (!S.room.log.length) { $('e-room').textContent = 'Teach at least one turn first.'; return; }
+    openGuess();
+  });
+
+  /* ---------- 3. guess before the reveal ---------- */
+  function openGuess() {
+    show('s-guess'); $('meta').textContent = ''; $('g-goal').textContent = 'The goal was: ' + S.room.lesson.goal;
+    $('guess').innerHTML = S.room.students.map(function (s) {
+      var c = who(s.id);
+      return '<div class="g" data-id="' + s.id + '"><div><b>' + esc(c.name) + '</b><small>' + (s.spoke ? 'Spoke ' + s.spoke + (s.spoke === 1 ? ' time' : ' times') : 'Did not speak') + '</small></div>' +
+        '<button type="button" class="yn" data-v="1" aria-pressed="false">Could explain it</button><button type="button" class="yn" data-v="0" aria-pressed="false">Not yet</button></div>';
+    }).join('');
+    $('reveal').disabled = true; $('e-guess').textContent = '';
+  }
+  $('guess').addEventListener('click', function (e) {
+    var b = e.target.closest('.yn'); if (!b) return;
+    var row = b.parentNode; S.guesses[row.getAttribute('data-id')] = b.getAttribute('data-v') === '1';
+    [].forEach.call(row.querySelectorAll('.yn'), function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    $('reveal').disabled = Object.keys(S.guesses).length < S.room.students.length;
+  });
+  $('reveal').addEventListener('click', function () {
+    if (S.busy) return; S.busy = true; $('reveal').disabled = true; $('reveal').textContent = 'Opening the room'; $('reveal').classList.add('dots'); $('e-guess').textContent = '';
+    call({ op: 'debrief', room: S.room, guesses: S.guesses }).then(function (d) { S.result = d; drawDebrief(d); })
+      .catch(function (e) { $('e-guess').textContent = e.message; $('reveal').disabled = false; })
+      .then(function () { S.busy = false; $('reveal').textContent = 'Show me the room'; $('reveal').classList.remove('dots'); });
+  });
+
+  /* ---------- 4. debrief ---------- */
+  var MOVE = { open_question: ['Open question', 'q'], hint: ['Hint', 'q'], challenge: ['Tested a belief', 'q'], leading_question: ['Leading question', 't'],
+    check_question: ['"Is that clear?"', 't'], tell: ['Told the answer', 't'], example: ['Gave a case', ''], manage: ['Other', ''] };
+  var SAID = { own_words: 'in their own words', partial: 'partly right', wrong: 'wrong', agreed_only: 'only agreed' };
+  var FIT = { reach: '', easy: 'too easy for them', far: 'out of reach for them' };
+  function pct(v) { return Math.round(v * 100); }
+  function drawDebrief(d) {
+    show('s-debrief');
+    var st = d.stats, right = d.students.filter(function (s) { return s.guess === s.can; }).length;
+    $('d-ctx').textContent = 'You read ' + right + ' of ' + d.students.length + ' students correctly.';
+    $('nums').innerHTML =
+      '<div><b>' + st.can + ' of ' + d.students.length + '</b><span>could explain the goal to a friend</span></div>' +
+      '<div><b>' + st.share + '%</b><span>of the words spoken were yours</span></div>' +
+      '<div><b>' + st.asked + ' and ' + st.told + '</b><span>turns that made them think, and turns where you told the answer' + (st.checks ? '. ' + st.checks + ' "is that clear?"' : '') + '</span></div>';
+    $('students').innerHTML = d.students.map(function (s) {
+      var g = s.guess == null ? '' : '<span class="chip">You guessed: ' + (s.guess ? 'could' : 'not yet') + '</span>';
+      var h = '<div class="card stu"><div class="hd"><b>' + esc(s.name) + '</b><small>' + esc(s.about) + ' Spoke ' + s.spoke + (s.spoke === 1 ? ' time.' : ' times.') + '</small>' + g +
+        '<span class="chip ' + (s.can ? 'ok' : 'no') + '">' + (s.can ? 'Could explain it' : 'Not yet') + '</span></div>';
+      d.lesson.concepts.forEach(function (c, i) {
+        var a = s.m0[i], b = s.m[i];
+        h += '<div class="bar"><span>' + esc(c) + '</span><span class="t"><i class="' + (b > a ? 'up' : '') + '" style="width:' + pct(b) + '%"></i><i class="was" style="width:' + pct(a) + '%"></i></span><em>' + pct(a) + ' to ' + pct(b) + '</em></div>';
+      });
+      if (s.mis) {
+        var m = s.mis;
+        h += '<div class="bel"><p><span class="k">Walked in believing</span><q>' + esc(m.belief) + '</q></p>' +
+          '<p><span class="k">Strength</span>' + pct(m.p0) + ' to ' + pct(m.p) + '. ' + (m.seen ? 'First said aloud on turn ' + m.seen + '.' : 'Never said aloud, so you had no way to hear it.') + '</p>' +
+          (m.p > 0.25 ? '<p><span class="k">A question that shakes it</span>' + esc(m.breaker) + '</p>' : '') + '</div>';
+      } else h += '<div class="bel"><p><span class="k">No wrong belief</span>Close to the goal from the start. The question is whether you asked.</p></div>';
+      if (s.exit) h += '<div class="bel"><p><span class="k">Tomorrow, to a friend</span><q>' + esc(s.exit) + '</q></p></div>';
+      return h + '</div>';
+    }).join('');
+    $('next').innerHTML = d.next.length ? d.next.map(function (n) { return '<li><b>' + (n.turn ? 'Turn ' + n.turn : 'Next run') + '</b>' + esc(n.try) + '</li>'; }).join('') : '<li>No suggestions came back this time. The numbers above still stand.</li>';
+    $('turns').innerHTML = d.turns.map(function (t) {
+      var mv = MOVE[t.move] || MOVE.manage;
+      var back = t.replies.map(function (r) { var e = t.ev[r.who] || {}; return who(r.who).name + ' ' + (SAID[e.said] || 'spoke') + (e.voiced ? ', said the belief' : '') + (e.shaken ? ', started to doubt it' : '') + (FIT[e.fit] ? ' (' + FIT[e.fit] + ')' : ''); }).join('. ');
+      return '<tr><td>' + t.n + '</td><td><span class="mv ' + mv[1] + '">' + mv[0] + '</span></td><td>' + esc(t.say) + '<small>' + (back ? esc(back) + '.' : 'Nobody answered.') + '</small></td></tr>';
+    }).join('');
+  }
+  $('again').addEventListener('click', function () { show('s-pick'); if (S.pick !== 'own') start(); });
+  $('other').addEventListener('click', function () { S.pick = ''; show('s-pick'); drawLessons(); });
+  $('dl').addEventListener('click', function () {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify({ at: new Date().toISOString(), guesses: S.guesses, result: S.result }, null, 2)], { type: 'application/json' }));
+    a.download = 'rehearsal-' + (S.room.lesson.id || 'lesson') + '-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '') + '.json'; a.click();
+  });
+
+  call({ op: 'lessons' }).then(function (d) { S.lessons = d.lessons; S.cast = d.cast; S.turns = d.turns; drawLessons(); })
+    .catch(function (e) { $('e-pick').textContent = e.message; });
+})();
+</script>
+</body>
+</html>
