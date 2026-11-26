@@ -1,0 +1,82 @@
+[
+ {
+  "id": "A",
+  "q": "Which lecture teaches Verifier's Law?",
+  "needs": "notes",
+  "want": "Lecture 1",
+  "right": "\\blecture\\s*(1|one)\\b(?!\\d)",
+  "wrongIf": ""
+ },
+ {
+  "id": "B",
+  "q": "With the full curriculum pasted in, what did the model score out of 10?",
+  "needs": "notes",
+  "want": "7",
+  "right": "\\b(7|seven)\\b",
+  "wrongIf": ""
+ },
+ {
+  "id": "C",
+  "q": "In our notes, whose app forgets what he typed the day before?",
+  "needs": "notes",
+  "want": "Aarav's",
+  "right": "\\ba+rav\\b",
+  "wrongIf": ""
+ },
+ {
+  "id": "D",
+  "q": "How many requests per minute does Groq's free tier allow?",
+  "needs": "notes",
+  "want": "30",
+  "right": "\\b(30|thirty)\\b",
+  "wrongIf": ""
+ },
+ {
+  "id": "E",
+  "q": "What does CRUD stand for?",
+  "needs": "nothing",
+  "want": "Create, Read, Update, Delete",
+  "right": "create[\\s\\S]*read[\\s\\S]*update[\\s\\S]*delete",
+  "wrongIf": ""
+ },
+ {
+  "id": "F",
+  "q": "What date is Lecture 17?",
+  "needs": "sheet",
+  "want": "Fri 4 Dec 2026",
+  "right": "\\b0?4(th)?\\s*(dec|december)|(dec|december)\\s*0?4\\b",
+  "wrongIf": ""
+ },
+ {
+  "id": "G",
+  "q": "What is Lecture 18 about?",
+  "needs": "sheet",
+  "want": "Data preparation",
+  "right": "data\\s*prep",
+  "wrongIf": ""
+ },
+ {
+  "id": "H",
+  "q": "Which lecture did I say I was stuck on?",
+  "needs": "note",
+  "want": "Lecture 6",
+  "right": "\\b(lecture\\s*)?(6|six)\\b",
+  "wrongIf": ""
+ },
+ {
+  "id": "I",
+  "q": "What date was the lecture I said I was stuck on?",
+  "needs": "note + sheet",
+  "want": "Sat 10 Oct 2026",
+  "right": "\\b10(th)?\\s*(oct|october)|(oct|october)\\s*10\\b",
+  "wrongIf": ""
+ },
+ {
+  "id": "X",
+  "q": "Which lecture shows how to put our app on the App Store?",
+  "needs": "not there",
+  "want": "It is not in the notes",
+  "right": "",
+  "wrongIf": ""
+ }
+]

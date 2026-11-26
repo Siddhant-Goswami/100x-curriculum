@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Your harness card | 100xEngineers</title>
+<meta name="description" content="Cohort 8 Module 2, Lecture 16. Draw what surrounds the model in a system you built, fill five lines, break it once, and add one box that catches the failure.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .hcard{border:1.5px dashed var(--line2);border-radius:14px;padding:18px 20px;margin:18px 0;font:13.5px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+body.read .legend{display:flex;flex-wrap:wrap;gap:8px 18px;margin:12px 0;padding:0;list-style:none;font-size:14.5px}
+body.read .legend li{display:flex;align-items:center;gap:8px}
+body.read .legend i{width:14px;height:14px;border-radius:4px;display:block}
+body.read .legend .d{background:var(--det)} body.read .legend .p{background:var(--prob)} body.read .legend .h{background:var(--ink3)}
+body.read svg.g{display:block;width:100%;max-width:640px;height:auto;margin:16px 0}
+body.read svg.g text{font:500 13px var(--sans);fill:var(--ink)}
+body.read svg.g .s{font-weight:400;font-size:11.5px;fill:var(--ink2)}
+body.read svg.g .ln{stroke:var(--ink3);stroke-width:1.5;fill:none}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l16-card" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L16">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 16 pages"><a href="/c8/module-2/lecture-16-deriving-harness-engineering/">Overview</a><a href="/c8/module-2/lecture-16-deriving-harness-engineering/bench">Harness Bench</a><a href="/c8/module-2/lecture-16-deriving-harness-engineering/card">Harness card</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Practice set · After Lecture 16 · Both tracks</p>
+  <h1>Your harness card</h1>
+  <p class="dek">Draw what surrounds the model in a system you built. Break it once. Add one box that catches the failure.</p>
+  <div class="meta"><span>On your own, about 45 minutes. Finish it before Lecture 17, Fri 4 Dec.</span></div>
+</div>
+
+<div class="call"><p class="kick">Done equals</p><p>One drawing, five lines, one failure you reproduced, and the same three questions scored before and after you added a box.</p></div>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Pick one system</h2>
+<p>Anything you built in this module that has a model inside it: your Lecture 8 app, your hackathon build, your tool call from Lecture 12, your search from Lecture 14, or your second brain from Lecture 15. One is enough.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Draw it</h2>
+<p>Draw every box between the question going in and the answer coming out. Paper is fine. Give each box one of three colours.</p>
+<ul class="legend">
+  <li><i class="d"></i>Follows rules: your code, a search, a database, a tool</li>
+  <li><i class="p"></i>Predicts: the model</li>
+  <li><i class="h"></i>A person: you, your user, a reviewer</li>
+</ul>
+<p>This is the system on the <a href="/c8/module-2/lecture-16-deriving-harness-engineering/bench">Harness Bench</a>, drawn the same way.</p>
+<svg class="g" viewBox="0 0 640 196" role="img" aria-label="You ask. The server searches the notes and adds a saved note, then sends the message to the LLM. The LLM can ask the server to run the sheet tool. The server checks the answer by rule, a second call to the LLM checks it by judgment, and the answer goes to you or to a person.">
+  <defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="var(--ink3)" stroke-width="1.4"/></marker></defs>
+  <g>
+    <rect x="2" y="60" width="74" height="46" rx="10" fill="var(--bg2)" stroke="var(--line2)"/><text x="39" y="88" text-anchor="middle">You</text>
+    <rect x="104" y="20" width="118" height="46" rx="10" fill="var(--det-soft)" stroke="var(--det)"/><text x="163" y="40" text-anchor="middle">Search</text><text class="s" x="163" y="56" text-anchor="middle">3 passages</text>
+    <rect x="104" y="100" width="118" height="46" rx="10" fill="var(--det-soft)" stroke="var(--det)"/><text x="163" y="120" text-anchor="middle">Saved note</text><text class="s" x="163" y="136" text-anchor="middle">from Monday</text>
+    <rect x="252" y="60" width="92" height="46" rx="10" fill="var(--prob-soft)" stroke="var(--prob)"/><text x="298" y="88" text-anchor="middle">LLM</text>
+    <rect x="240" y="146" width="116" height="46" rx="10" fill="var(--det-soft)" stroke="var(--det)"/><text x="298" y="166" text-anchor="middle">Sheet tool</text><text class="s" x="298" y="182" text-anchor="middle">the server runs it</text>
+    <rect x="374" y="60" width="92" height="46" rx="10" fill="var(--det-soft)" stroke="var(--det)"/><text x="420" y="80" text-anchor="middle">Check</text><text class="s" x="420" y="96" text-anchor="middle">by rule</text>
+    <rect x="484" y="60" width="92" height="46" rx="10" fill="var(--prob-soft)" stroke="var(--prob)"/><text x="530" y="80" text-anchor="middle">Check</text><text class="s" x="530" y="96" text-anchor="middle">by judgment</text>
+    <rect x="596" y="20" width="42" height="46" rx="10" fill="var(--bg2)" stroke="var(--line2)"/><text x="617" y="48" text-anchor="middle">You</text>
+    <rect x="584" y="100" width="54" height="46" rx="10" fill="var(--bg2)" stroke="var(--line2)"/><text class="s" x="611" y="120" text-anchor="middle">A</text><text class="s" x="611" y="134" text-anchor="middle">person</text>
+  </g>
+  <g class="ln" marker-end="url(#ah)">
+    <path d="M76 76 L102 48"/><path d="M76 90 L102 118"/><path d="M222 48 L250 76"/><path d="M222 118 L250 92"/>
+    <path d="M290 106 L290 144"/><path d="M306 144 L306 108"/>
+    <path d="M344 83 L372 83"/><path d="M466 83 L482 83"/><path d="M576 74 L594 50"/><path d="M576 92 L586 104"/>
+    <path d="M420 60 C420 30 320 30 306 58" stroke-dasharray="4 4"/>
+  </g>
+  <text class="s" x="366" y="24" text-anchor="middle">failed: send it back once</text>
+</svg>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Fill five lines</h2>
+<p>One line each. "Nothing" is an honest answer, and usually the most useful one.</p>
+<div class="hcard" id="blank">HARNESS CARD
+System:
+Model:
+
+Reads      What does the model read on every call?
+Asks       What can it ask your server to do?
+Remembers  What does the system keep between calls, and where?
+Checks     What checks the answer before it leaves? A rule, judgment, or nothing?
+Record     Where can you see what crossed, afterwards?
+
+Three questions with known answers:
+1.
+2.
+3.
+
+Before:    of 3 right. The failure:
+Box added:
+After:     of 3 right.</div>
+<p><button class="btn ghost" id="copy" type="button">Copy a blank card</button></p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Break it once</h2>
+<ul>
+  <li>Write three questions whose right answers you already know. Make one of them something your system should refuse or cannot know.</li>
+  <li>Run all three. Write down how many came back right.</li>
+  <li>Keep one answer that was not right and still reached the user. Paste it on the card.</li>
+</ul>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Add one box</h2>
+<p>Look at your five lines. The failure usually sits on the line where you wrote "nothing". Add one box there, draw it on your picture in its colour, and run the same three questions again.</p>
+<p>If the score does not move, say so on the card. A box that does not move the score has not earned its place yet.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Share it</h2>
+<p>Share the drawing and the filled card. We go through them in the office hour.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-16-deriving-harness-engineering/bench">The Harness Bench</a></li>
+  <li><a href="/c8/module-2/lecture-01-orientation/notes#s05">Lecture 1: the Verifier's Law</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes#s06">Lecture 10: diagnose with a golden pair</a></li>
+  <li><a href="/#L16">Curriculum map</a></li>
+</ul></nav>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 16: your harness card</span><a href="/#L16">Curriculum map</a></div></footer>
+<script>
+document.getElementById('copy').addEventListener('click', function () {
+  var b = this, t = document.getElementById('blank').textContent;
+  (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(function () { b.textContent = 'Copied'; }, function () { b.textContent = 'Select the card and copy it'; });
+  setTimeout(function () { b.textContent = 'Copy a blank card'; }, 2400);
+});
+</script>
+</body>
+</html>

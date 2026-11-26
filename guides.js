@@ -149,6 +149,9 @@ var GUIDE_LINKS = {
   l14Hub: '/c8/module-2/lecture-14-building-rag-apps/',
   l14Notes: '/c8/module-2/lecture-14-building-rag-apps/notes',  /* post-read of the 21 Nov code-track lecture: RAG Lab levels 1 to 4, whiteboard inline */
   l14Lab: '/c8/module-2/lecture-14-building-rag-apps/lab',
+  l16Hub: '/c8/module-2/lecture-16-deriving-harness-engineering/',
+  l16Bench: '/c8/module-2/lecture-16-deriving-harness-engineering/bench',  /* replays recorded real-model runs (assets/runs.json, built by _plan/lecture-16/record.mjs); calls no model */
+  l16Card: '/c8/module-2/lecture-16-deriving-harness-engineering/card',
   l11Checklist: '/c8/module-2/checklist/',  /* Before Lecture 11: everything from the probabilistic half so far, as ticks */
   groqPlay: 'https://console.groq.com/playground',
   l02Bridge: '/c8/module-2/lecture-02-what-is-an-interface/notes#s05',
@@ -865,6 +868,11 @@ GUIDES.L13 = { all: {
 /* Lecture 14, code track: the overview, the notes and the RAG Lab. */
 GUIDES.L14 = { code: {
   hub: {link:'l14Hub', title:'Open the Lecture 14 pages', sub:'The overview, the notes and the RAG Lab', more:[['l14Notes','Notes'],['l14Lab','RAG Lab']]}
+}};
+
+/* Lecture 16, both tracks: the overview, the Harness Bench and the harness card. Notes follow the lecture. */
+GUIDES.L16 = { all: {
+  hub: {link:'l16Hub', title:'Open the Lecture 16 pages', sub:'The overview, the Harness Bench and the harness card', more:[['l16Bench','Harness Bench'],['l16Card','Harness card']]}
 }};
 
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from

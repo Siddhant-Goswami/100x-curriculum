@@ -1,0 +1,93 @@
+/* Harness Bench. Sits on top of the Lecture 11 bench.css (bar, steps, headline, panel, buttons).
+   Amber = the server and everything that follows rules. Violet = the LLM. Grey = you.
+   Green, red and grey marks belong to the questions only. Coral = the thing to do now. */
+.hb{display:grid;grid-template-columns:minmax(0,1fr);gap:22px;align-items:start}
+@media (min-width:920px){.hb{grid-template-columns:minmax(0,1fr) 300px;gap:32px}.hb-rail{position:sticky;top:96px}}
+.hb-main{display:flex;flex-direction:column;gap:20px;min-width:0}
+.ctx a{color:inherit;text-decoration-color:var(--line2)}
+.ctx a:hover{color:var(--ink)}
+
+/* the panel */
+.panel .q{font-size:19px}
+.nums{gap:6px}
+.nums button{min-width:44px;min-height:44px;text-align:center;font:500 15px var(--sans);font-variant-numeric:tabular-nums;justify-content:center}
+.moved{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14.5px}
+.moved b,.qs-head p b{font-weight:500}
+b.right{color:var(--hum-ink)} b.wrong{color:var(--coral-ink)} b.held{color:var(--ink3)}
+
+/* the questions: one list, a hairline between rows */
+.qs-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.qs h2{font:600 15px var(--sans);letter-spacing:-.01em;margin:0;color:var(--ink)}
+.qs-head p{display:flex;gap:14px;font:500 13.5px var(--sans);font-variant-numeric:tabular-nums}
+.qs ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.q{border-bottom:1px solid var(--line)}
+.q-row{width:100%;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 4px;background:none;border:0;text-align:left;cursor:pointer;border-radius:8px}
+.q-row:disabled{cursor:default}
+.q-row:not(:disabled):hover{background:color-mix(in srgb,var(--ink) 4%,transparent)}
+.q-id{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font:600 13px var(--sans);background:var(--bg2);color:var(--ink3);transition:background .2s,color .2s}
+.q-text{font-size:15.5px;line-height:1.4;color:var(--ink);text-wrap:pretty}
+.q-mark{font:500 13px var(--sans);color:var(--ink3);white-space:nowrap}
+.q.right .q-id{background:var(--hum-soft);color:var(--hum-ink)} .q.right .q-mark{color:var(--hum-ink)}
+.q.wrong .q-id{background:var(--coral-soft);color:var(--coral-ink)} .q.wrong .q-mark{color:var(--coral-ink)}
+.q.held .q-id{background:var(--bg2);color:var(--ink2);box-shadow:inset 0 0 0 1.5px var(--line2)}
+.q.right .q-id,.q.wrong .q-id,.q.held .q-id{animation:pop .3s var(--e-out)}
+@keyframes pop{from{transform:scale(.7)}to{transform:none}}
+.rec-note{font-size:12.5px;line-height:1.5;color:var(--ink3);margin-top:10px}
+
+/* a question's record: who did what, in order */
+.rec{margin:2px 0 16px 42px;padding-left:16px;border-left:1.5px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.rec-want{font-size:14px;color:var(--ink2)} .rec-want b{color:var(--ink);font-weight:500}
+.rw{position:relative;font-size:14.5px;line-height:1.5;min-width:0}
+.rw::before{content:"";position:absolute;left:-21.5px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--ink3);box-shadow:0 0 0 3px var(--bg)}
+.rw.server::before{background:var(--det)} .rw.model::before{background:var(--prob)}
+.rw-t{font:600 13px var(--sans);color:var(--ink3);margin-bottom:2px}
+.rw.server .rw-t{color:var(--det-ink)} .rw.model .rw-t{color:var(--prob-ink)}
+.rw p{margin:0;overflow-wrap:anywhere} .rw p.say{white-space:pre-wrap}
+.rw p.ok{color:var(--hum-ink)} .rw p.bad{color:var(--coral-ink)}
+.rw ul{margin:0;padding:0;list-style:none} .rw li{font-size:14px;color:var(--ink2)}
+.rw code{font-size:12.5px}
+.rw details summary{cursor:pointer;font:500 13px var(--sans);color:var(--ink3);list-style:none;display:inline-block;padding:2px 0}
+.rw details summary::-webkit-details-marker{display:none}
+.rw details summary::before{content:"+ "} .rw details[open] summary::before{content:"− "}
+.rw details summary:hover{color:var(--ink)}
+.rw pre{margin:6px 0 0;padding:12px 14px;border-radius:10px;background:var(--code-bg);color:var(--code-ink);font:12.5px/1.55 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;max-height:340px;overflow:auto}
+@media (max-width:640px){.rec{margin-left:12px}}
+
+/* the boxes around the model */
+.graph{display:flex;flex-direction:column;align-items:stretch;padding:18px;border:1px solid var(--line);border-radius:18px;
+  background-color:var(--card);background-image:radial-gradient(var(--bench-dot) 1px,transparent 1.2px);background-size:16px 16px;background-position:8px 8px}
+.g-title{font:600 13px var(--sans);color:var(--ink3);margin-bottom:12px}
+.gn{display:flex;flex-direction:column;gap:1px;padding:10px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--card);text-align:left;min-width:0;position:relative;font:inherit;width:100%}
+.gn b{font:600 14.5px/1.3 var(--sans);letter-spacing:-.01em;color:var(--ink)}
+.gn span{font:400 12.5px/1.4 var(--sans);color:var(--ink3)}
+.gn.model{background:var(--prob-soft);border-color:color-mix(in srgb,var(--prob) 38%,transparent)} .gn.model b{color:var(--prob-ink)}
+.gn.part.on{background:var(--det-soft);border-color:color-mix(in srgb,var(--det) 45%,transparent)} .gn.part.on b{color:var(--det-ink)}
+.gn.part.checks.on{background:linear-gradient(100deg,var(--det-soft) 55%,var(--prob-soft))}
+.gn.part.off{border-style:dashed;background:transparent} .gn.part.off b{color:var(--ink3);font-weight:500}
+.gn.part{padding-right:54px}
+.gn.part.new{animation:wait 1.4s ease-in-out 3}
+button.gn.part{cursor:pointer;transition:border-color .15s}
+button.gn.part:hover{border-color:var(--ink3)}
+.sw{position:absolute;right:12px;top:50%;margin-top:-10px;width:34px;height:20px;border-radius:10px;background:var(--line2);transition:background .2s}
+.sw i{position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:var(--card);box-shadow:0 1px 2px rgba(0,0,0,.2);transition:transform .2s var(--e-out)}
+.gn.part.on .sw{background:var(--det)} .gn.part.on .sw i{transform:translateX(14px)}
+.ar{display:block;width:1.5px;height:16px;background:var(--line2);margin:0 auto;position:relative}
+.ar::after{content:"";position:absolute;left:-3.25px;bottom:0;width:6px;height:6px;border-right:1.5px solid var(--line2);border-bottom:1.5px solid var(--line2);transform:rotate(45deg)}
+.g-server{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:14px;border:1px solid color-mix(in srgb,var(--det) 30%,transparent)}
+.g-server>p{font:600 13px var(--sans);color:var(--det-ink)} .g-server>p small{font-weight:400;color:var(--ink3);font-size:12.5px;margin-left:4px}
+.g-pair{display:flex;flex-direction:column;gap:0}
+.ar2{display:block;width:1.5px;height:12px;margin:0 auto;background:repeating-linear-gradient(var(--line2) 0 3px,transparent 3px 6px)}
+.cost{margin-top:12px;padding:0 4px;font-size:13.5px;color:var(--ink3);display:flex;flex-direction:column;gap:2px}
+.cost b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.gn.part.new,.q .q-id{animation:none}}
+
+/* the last step: what each part earns */
+.earn{width:100%;border-collapse:collapse;font-size:14.5px;font-variant-numeric:tabular-nums}
+.earn th,.earn td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line);text-align:right;font-weight:400}
+.earn th:first-child{text-align:left;color:var(--ink)}
+.earn thead th{font:500 12.5px var(--sans);color:var(--ink3)}
+.earn tr.all th,.earn tr.all td{font-weight:500;color:var(--ink)}
+.earn tbody tr:last-child th,.earn tbody tr:last-child td{border-bottom:0}
+.earn th,.earn thead th{font-family:var(--sans);text-transform:none;letter-spacing:0;background:none}
+.earn tbody th{font-size:14.5px;font-weight:400}
+.earn tr.all th{font-weight:500}
