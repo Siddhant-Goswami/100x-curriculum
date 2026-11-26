@@ -57,6 +57,21 @@ body.read table.parts td:first-child{white-space:nowrap;font-weight:500}
 <p>Draw what surrounds the model in the system you brought, break it once, and add one box that catches the failure.</p>
 <p><a class="btn ghost" href="/c8/module-2/lecture-16-deriving-harness-engineering/card">Fill your harness card</a></p>
 
+<div class="when"><p class="kick">05</p><h2>The tools you build with have the same five parts</h2></div>
+<p>Claude Code, Codex and Pi each put a model inside a program that writes code. Their makers all call that program a harness. Read each one through the five lines of your card.</p>
+<table class="parts">
+  <thead><tr><th></th><th>Claude Code</th><th>Codex</th><th>Pi</th></tr></thead>
+  <tbody>
+    <tr><td>Reads</td><td><code>CLAUDE.md</code> files from four places: your organisation, you, the project, your local copy. A long conversation is cut down to a summary.</td><td><code>AGENTS.md</code> files, joined from your home folder down to the folder you are in. A long conversation is replaced by a shorter one.</td><td>A very small prompt, plus <code>AGENTS.md</code> files from the folder and its parents. A long conversation is summarised.</td></tr>
+    <tr><td>Asks</td><td>Read, edit, search, run commands. More through MCP.</td><td>Run shell commands and edit files. More through MCP.</td><td>Four tools: read, bash, edit, write. MCP is built in.</td></tr>
+    <tr><td>Remembers</td><td>Notes it writes to a <code>MEMORY.md</code> file. The first 200 lines load in every new session.</td><td>The <code>AGENTS.md</code> that lives in your repository. Saved memories exist and are off by default.</td><td>Nothing built in. You add it.</td></tr>
+    <tr><td>Checks</td><td>Hooks: your own code runs after a tool or before it stops, and can block it. It asks you before edits and commands.</td><td>A sandbox sets what it can touch. An approval rule sets when it must stop and ask you.</td><td>No approval step by default. You add it.</td></tr>
+    <tr><td>Record</td><td>Every session is saved as a file and can be resumed.</td><td>Every session is saved as a file and can be resumed.</td><td>Every session is saved as a tree, so you can go back and branch.</td></tr>
+  </tbody>
+</table>
+<p>Three teams, the same five lines, different choices. The line where they differ most is Checks.</p>
+<p class="small">Checked on 27 Nov 2026 against each maker's own pages: <a href="https://code.claude.com/docs/en/how-claude-code-works" target="_blank" rel="noopener">How Claude Code works</a>, its <a href="https://code.claude.com/docs/en/memory" target="_blank" rel="noopener">memory</a> and <a href="https://code.claude.com/docs/en/hooks" target="_blank" rel="noopener">hooks</a> pages; OpenAI's <a href="https://openai.com/index/unrolling-the-codex-agent-loop/" target="_blank" rel="noopener">post on the Codex loop</a>, its <a href="https://openai.com/index/harness-engineering/" target="_blank" rel="noopener">harness engineering post</a> and the <a href="https://learn.chatgpt.com/docs/sandboxing" target="_blank" rel="noopener">Codex sandboxing page</a>; and <a href="https://pi.dev" target="_blank" rel="noopener">pi.dev</a> with <a href="https://github.com/earendil-works/pi/blob/main/packages/coding-agent/README.md" target="_blank" rel="noopener">Pi's README</a>. These tools change often.</p>
+
 <p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>The notes for this lecture arrive after it.</small></p>
   </main>
 </div>
