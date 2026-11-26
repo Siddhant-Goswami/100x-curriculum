@@ -216,7 +216,7 @@
     else if (t.matches('button.gn.part')) { var c = current().split(''), k = SW.indexOf(t.dataset.k); c[k] = c[k] === '1' ? '0' : '1'; S.sw = c.join(''); save(); draw(); }
   });
 
-  fetch(BASE + 'assets/runs.json?v=2').then(function (r) { return r.json(); }).then(function (d) {
+  fetch(BASE + 'assets/runs.json?v=3').then(function (r) { return r.json(); }).then(function (d) {
     D = d;
     var h = parseInt(location.hash.slice(1), 10);
     if (h >= 1 && h <= STEPS.length) S.step = h - 1;
