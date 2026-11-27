@@ -14,6 +14,7 @@
     remembers: { box: 'Your own files', sub: 'me.md, told.md, now.md, read first' },
     checks: { box: 'Checks', sub: 'a rule, then a second reader' }
   };
+  var UPTO = +(document.body.getAttribute('data-upto') || 0);
   var STEPS = [
     { seg: 'Bare', on: [], h1: 'Ask the bare model the questions',
       ctx: 'Nothing is switched on. The model gets each question and nothing else.' },
@@ -33,14 +34,21 @@
       ctx: 'Three things to carry to your own brain.' }
   ];
   /* Lecture 15 shows the first steps of this same bench: data-upto="3" on the body stops after the brain, before anything gets tomorrow's name. */
-  var UPTO = +(document.body.getAttribute('data-upto') || 0);
   if (UPTO) STEPS = STEPS.slice(0, UPTO).concat([{ seg: 'What you found', on: STEPS[UPTO - 1].on, h1: 'What you just found', end: true, sub: true, ctx: 'Three things to carry into your own brain.' }]);
   var SHORT = { reads: 'Search', asks: 'The brain', remembers: 'Your files', checks: 'Checks' };
   var GROUP = { bench: 'One fact, one page', across: 'Across lectures', stale: 'Dates that have passed', 'about me': 'About the person asking', 'not known': 'Not in the course' };
-  var KEY = 'c8.l16.bench2', D = null, REC = {}, S = load();
+  /* each page keeps its own place; the full bench starts where Lecture 15's three steps ended */
+  var KEY = UPTO ? 'c8.l15.bench' : 'c8.l16.bench3', FROM = 'c8.l15.bench', D = null, REC = {}, S = load();
   var $ = function (id) { return document.getElementById(id); };
   function fresh() { return { v: 2, step: 0, ran: {}, guess: {}, sw: null, tried: {} }; }
-  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.v === 2) { s.tried = s.tried || {}; return s; } } catch (e) { /* fresh */ } return fresh(); }
+  function load() {
+    try {
+      var s = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (s && s.v === 2) { s.tried = s.tried || {}; s.ran = s.ran || {}; s.guess = s.guess || {}; return s; }
+      if (!UPTO) { var p = JSON.parse(localStorage.getItem(FROM) || 'null'); if (p && p.v === 2 && p.ran && p.ran[2]) { var f = fresh(); f.ran = { 0: p.ran[0], 1: p.ran[1], 2: p.ran[2] }; f.guess = p.guess || {}; f.step = 3; return f; } }
+    } catch (e) { /* fresh */ }
+    return fresh();
+  }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* private mode */ } }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function cfg(on) { return SW.map(function (k) { return on.indexOf(k) >= 0 ? '1' : '0'; }).join(''); }
@@ -313,7 +321,8 @@
     D = d; N = d.questions.length;
     var h = parseInt(location.hash.slice(1), 10);
     if (h >= 1 && h <= STEPS.length) S.step = h - 1;
+    if (!(S.step >= 0 && S.step < STEPS.length)) S.step = 0;
     if (STEPS[S.step].free && !S.sw) S.sw = '1111';
     draw();
-  }).catch(function () { $('ins').textContent = 'The recorded runs did not load. Refresh the page.'; });
+  }).catch(function (e) { if (window.console) console.error(e); $('ins').textContent = 'The recorded runs did not load. Refresh the page.'; });
 })();
