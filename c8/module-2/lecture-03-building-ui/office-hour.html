@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Office Hour: When Software Stops Waiting for a Click | 100xEngineers</title>
+<meta name="description" content="Recap of the Thursday 1 Oct 2026 office hour, after Lecture 3. Questions from the room about Stitch, picking the right LLM for a job and why apps still take time to ship, and the session&#x27;s topic: what an interface is for when software no longer waits to be clicked.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l03-office-hour" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L3">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 3 pages"><a href="/c8/module-2/lecture-03-building-ui/">Overview</a><a href="/c8/module-2/lecture-03-building-ui/notes">Notes</a><a href="/c8/module-2/lecture-03-building-ui/office-hour">Office hour</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Office hour · Thu 1 Oct 2026 · After Lecture 3 · Both tracks</p>
+  <h1>When software stops waiting for a click</h1>
+  <p class="dek">Questions on Stitch and on picking the right LLM, then one idea: what an interface is for once you can say what you want.</p>
+</div>
+
+<p>Missed the office hour? This is what mattered from it. It stands on <a href="/c8/module-2/lecture-02-what-is-an-interface/notes">Lecture 2</a>, where an interface was the bridge between two systems, and <a href="/c8/module-2/lecture-03-building-ui/notes">Lecture 3</a>, where you built one.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Three questions about Stitch</h2>
+<p>The room had tried Stitch, Google's design tool, since the last session. Three questions came back.</p>
+<ul class="pt">
+  <li><b>"Can I make an iPhone app?"</b> Yes. AI Studio writes the app so that it opens in Xcode, Apple's app-building tool, on a Mac. Xcode makes the build file, and the App Store needs a paid Apple developer account. The next session covers it.</li>
+  <li><b>"I am not happy with the designs Stitch gives me."</b> Sketch the screen on paper and photograph it. Upload the photo with style references from Dribbble or Pinterest.</li>
+  <li><b>"Why Stitch and not another tool?"</b> Because it is one path: Stitch for the design, AI Studio for the app, Antigravity for the finished product.</li>
+</ul>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>A nail does not need a bulldozer</h2>
+<p>Someone asked whether the biggest LLM could edit video. It can, the instructor said, but that is "like hitting a nail with a bulldozer". A few seconds of footage could eat a month of credits.</p>
+<p>Then a harder case from the room. Three years of customer emails, most with a PDF or an Excel file attached. The goal: AI reads them all and learns how customers ask for things. "A cloth to keep the mouse on" means a mousepad. The coding tool used up its limit in hours, before it had read one week of mail.</p>
+<blockquote class="q9">"I don't know which model I have to use."</blockquote>
+<p>The instructor's answer: the trouble is how the job is split, not which LLM does it. A big LLM charges for every click: open the list, open the email, open the file. So split the job.</p>
+<table class="dials">
+  <tr><th>Part of the job</th><th>What does it</th></tr>
+  <tr><td>Open each email, download the file</td><td><b>Plain automation</b>: a script that repeats the same clicks (Selenium is one). No LLM, so no credits.</td></tr>
+  <tr><td>Get the text out of a clear PDF</td><td>Software that turns a picture of text into text (optical character recognition, OCR).</td></tr>
+  <tr><td>Read a PDF that is not clear text</td><td>An LLM that reads images.</td></tr>
+  <tr><td>Sort each request into a category</td><td>A small, fast LLM that only picks from a short list. It reads; it does not take actions.</td></tr>
+</table>
+<p>How do you judge which LLM a task needs? No fixed rule: you experiment. Ask what kind of thinking the task needs (text, maths, pictures). About 90% of the instructor's own live products still run fine on GPT 3.5, an old, cheap LLM.</p>
+<p class="pull">Split the job first. Then give each part the smallest tool that does it.</p>
+<details class="acc"><summary>From the room: which problems in AI are still open to build on?</summary><div class="b"><p>The labs spend billions to build the intelligence, but the public cannot do much with it raw. Someone has to turn it into things people can use. That is this room: the most value is in applying the intelligence, not in building it.</p></div></details>
+</section>
+
+
+<section class="s" id="s03"><h2><span class="n">03</span>One table, booked two ways</h2>
+<p>The session's topic opened with two screens side by side. Both book a restaurant table.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 260" role="img" aria-label="Two ways to book the same table. On the left, you click: search, then filter, then a Book button. On the right, you say it: one sentence, Table for 4 at 8 this evening, and the software does the rest. Both end at the same result, a table booked.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="50" width="300" height="150" rx="10"/>
+    <rect class="f-det" x="52" y="100" width="76" height="40" rx="8"/>
+    <rect class="f-det" x="142" y="100" width="76" height="40" rx="8"/>
+    <rect class="f-det" x="232" y="100" width="76" height="40" rx="8"/>
+    <path class="arw" d="M130 120 H140" />
+    <path class="arw" d="M220 120 H230" />
+    <rect class="f-card" x="430" y="50" width="300" height="150" rx="10"/>
+    <rect class="f-act" x="452" y="96" width="256" height="48" rx="22"/>
+    <path class="arw" d="M180 204 V228" marker-end="url(#ah)"/>
+    <path class="arw" d="M580 204 V228" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="36" class="m c-ink">You click</text>
+    <text x="580" y="36" class="m c-ink">You say it</text>
+    <text x="90" y="126" class="xxs c-det">search</text>
+    <text x="180" y="126" class="xxs c-det">filter</text>
+    <text x="270" y="126" class="xxs c-det">book</text>
+    <text x="180" y="176" class="xxs c-mute">every step is yours</text>
+    <text x="580" y="126" class="xs c-act">"Table for 4 at 8"</text>
+    <text x="580" y="176" class="xxs c-mute">the software does the steps</text>
+    <text x="180" y="250" class="xs">table booked</text>
+    <text x="580" y="250" class="xs">table booked</text>
+  </g>
+</svg>
+<figcaption>Same result on both sides. Only the right side had nothing to click.</figcaption>
+</figure>
+<p>The instructor asked the room:</p>
+<blockquote class="q9">"What if the computer understood what we wanted? Would we still need an interface?"</blockquote>
+<p>The chat split between yes and no. The verdict was yes, but for a different job. Say you want to set a budget with a price slider, or see the options ranked, or look at the pictures before anything is booked. Each of those needs a screen. The interface appears where you want to steer.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Three products for one goal</h2>
+<p>The same goal, a table tonight, can be built as three different products. What changes is who does the steps.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Three boxes for one goal. Operate: you choose and you click. Consult: you say what you need, the software does the work and you have the final say. Delegate: you give the instruction and the software does it. An arrow under the boxes runs from you do more, on the left, to it does more, on the right.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="40" width="210" height="130" rx="10"/>
+    <rect class="f-card" x="275" y="40" width="210" height="130" rx="10"/>
+    <rect class="f-act" x="520" y="40" width="210" height="130" rx="10"/>
+    <path class="arw" d="M60 212 H700" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="135" y="82" class="m c-ink">operate</text>
+    <text x="135" y="114" class="xs">you choose,</text>
+    <text x="135" y="140" class="xs">you click</text>
+    <text x="380" y="82" class="m c-ink">consult</text>
+    <text x="380" y="114" class="xs">it does the work,</text>
+    <text x="380" y="140" class="xs">you have the final say</text>
+    <text x="625" y="82" class="m c-act">delegate</text>
+    <text x="625" y="114" class="xs">you say it,</text>
+    <text x="625" y="140" class="xs">it does it</text>
+    <text x="60" y="240" class="xxs c-mute l">you do more</text>
+    <text x="700" y="240" class="xxs c-mute r">it does more</text>
+  </g>
+</svg>
+<figcaption>One goal, three products. Move right and the software takes more of the steps.</figcaption>
+</figure>
+<p>In the first you choose everything and click: <b>operate</b>. In the second the software does the work and you give the final yes: <b>consult</b>. In the third you say it and it is done: <b>delegate</b>.</p>
+<p>Which one is the future? The instructor's answer: a mix of all three, moving towards the third over time.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>What may it do without asking?</h2>
+<p>Design used to start from one question: what should happen when the user clicks? The instructor swapped it: what should happen when the user does not have to click?</p>
+<p>So you draw the limits before you build:</p>
+<ol>
+  <li>What can it do without asking?</li>
+  <li>What needs your confirmation?</li>
+  <li>What must never happen unless you say so?</li>
+  <li>What does it do when it is unsure?</li>
+</ol>
+<p>The slide then ran the dinner through six checks.</p>
+<table class="dials">
+  <tr><th>The check</th><th>For the dinner</th></tr>
+  <tr><td>What do you want?</td><td>Dinner for 4. Any open table will not do.</td></tr>
+  <tr><td>What is it allowed to do?</td><td>It may reserve. It may not pay: a human pays.</td></tr>
+  <tr><td>Can you follow what it did?</td><td>It allowed for traffic and moved the booking to a later slot.</td></tr>
+  <tr><td>Is the step the right size?</td><td>It drafts the email first. It does not send it straight away.</td></tr>
+  <tr><td>Can you undo it?</td><td>Any change it made can be reversed.</td></tr>
+  <tr><td>Is there a record?</td><td>It logs what it did and takes your feedback, so the same mistake is not repeated.</td></tr>
+</table>
+<p>The instructor called the fifth check, undo, "a superpower".</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Why good apps still take time</h2>
+<p>The last question from the room: if AI can build anything, why do the apps we use still take so long to ship updates? Wispr Flow's note-taker, for one, came to Mac first and Windows later.</p>
+<p>The instructor's answer: putting up a building has become quick. The architect's job, deciding what to build, still takes time. Working out what the user wants is the slow part, and AI is poor at it.</p>
+<blockquote class="q9">"AI can do a million things, but that million things is noise."</blockquote>
+<p>What changed for him since these tools arrived? He barely writes code now. He works out the logic and how the parts fit. So the exact wording of code matters less, and the principles matter more: is it efficient, is it reliable, does it do what you meant?</p>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Plain automation</dt><dd>A script that repeats the same steps the same way each time. No LLM in it.</dd>
+  <dt>Operate</dt><dd>You choose everything and press the buttons yourself.</dd>
+  <dt>Consult</dt><dd>You say what you need, the software does the work, and you give the final yes.</dd>
+  <dt>Delegate</dt><dd>You give the instruction and the software does the whole task.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>When software can act on what you say, the interface does not vanish. It moves to the places where the user wants to steer, confirm or undo. Split every job, and give each part the smallest tool that does it.</p></div>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Your turn: your product, no screen</h2>
+<p>Take the product you are building. How would it behave with no screen, if it already knew what your user wanted? Answer the four questions in section 05 for it. Then mark where your user would still want to steer. Those are the screens you need.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-02-what-is-an-interface/notes">Lecture 2 notes: what an interface is</a></li>
+  <li><a href="/c8/module-2/lecture-03-building-ui/notes">Lecture 3 notes: building UI</a></li>
+  <li><a href="/c8/module-2/lecture-03-building-ui/practice-set">Lecture 3 practice set</a></li>
+  <li><a href="/#L3">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Office hour, 1 Oct 2026</span><a href="/#L3">Curriculum map</a><a href="/c8/module-2/lecture-03-building-ui/">All Lecture 3 pages</a></div></footer>
+</body>
+</html>

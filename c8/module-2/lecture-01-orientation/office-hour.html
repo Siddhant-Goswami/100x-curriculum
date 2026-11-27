@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Office Hour: Tools change. The foundation stays. | 100xEngineers</title>
+<meta name="description" content="Recap of the Tuesday 22 Sep 2026 office hour, after Lecture 1. How office hours run, what a world model is, the order of the no-code track, the room&#x27;s questions, and a first look at the second brain: what you know, written down as files an LLM can read.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l01-office-hour" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L1">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 1 pages"><a href="/c8/module-2/lecture-01-orientation/">Overview</a><a href="/c8/module-2/lecture-01-orientation/notes">Notes</a><a href="/c8/module-2/lecture-01-orientation/office-hour">Office hour</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Office hour · Tue 22 Sep 2026 · After Lecture 1 · Both tracks</p>
+  <h1>Tools change. The foundation stays.</h1>
+  <p class="dek">How office hours run, one topic in depth (world models), the road ahead, and the room's questions, with a first look at the second brain.</p>
+</div>
+
+<p>Missed the office hour? This is what mattered from it, in about five minutes. It came three days after <a href="/c8/module-2/lecture-01-orientation/notes">Lecture 1</a>, led by the instructor who takes the no-code track.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>How these office hours run</h2>
+<p>The instructor opened by asking who had started <a href="/c8/module-2/what-to-build/assignment-1">First Proof</a>, the brief from week 0. Several had, and one learner shared their start. Then he laid out the plan for every office hour.</p>
+<ol>
+  <li><b>A weekly update.</b> New releases and research from the week in AI.</li>
+  <li><b>A progress check.</b> Where you are with the current work.</li>
+  <li><b>One topic in depth.</b> About half an hour on where a field is heading and what it opens up for you.</li>
+  <li><b>An open floor.</b> Your questions on the Friday and Saturday lectures.</li>
+</ol>
+<p>Why spend time on research news? Because what is in research today reaches the market in about three to six months. You hear it early, so you can plan around it.</p>
+<p>Office hours are planned for Tuesdays and Thursdays at 8:30. The room asked for more discussion between learners, so the instructor will try sharing the topic a couple of days ahead.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>An LLM predicts the next word</h2>
+<p>This week's topic started from your phone. When you type a message, the keyboard offers three words that could come next. An LLM does the same job at a far larger scale. It has read a huge amount of text, and it predicts the next word.</p>
+<p>Done at that scale, next-word prediction looks like intelligence. So where does it stop?</p>
+<p>The instructor held up his phone. You know that if you press on it hard enough, it breaks. An LLM can say so too, because it has read the sentence. But it knows the answer without knowing the cause, so it writes well and still slips on actions in the real world.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>A world model predicts what happens next</h2>
+<p>Something that acts in the world needs a different prediction: if I do this, what happens? The slide showed a person, a table and a glass.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="Two halves. On the left, an LLM: you type a few words and it offers three candidate next words, asking which word comes next. On the right, a world model with a glass on a table: the hand waits and the glass stays, the hand pushes and the glass slides, the hand tips it and the glass falls. It asks what happens next.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-prob" x="40" y="58" width="280" height="54" rx="10"/>
+    <rect class="f-card" x="50" y="132" width="80" height="40" rx="10"/>
+    <rect class="f-card" x="140" y="132" width="80" height="40" rx="10"/>
+    <rect class="f-card" x="230" y="132" width="80" height="40" rx="10"/>
+    <path class="dash ink" d="M375 30 V220"/>
+    <path class="arw" d="M532 80 H592" marker-end="url(#ah)"/>
+    <path class="arw" d="M532 125 H592" marker-end="url(#ah)"/>
+    <path class="arw" d="M532 170 H592" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="40" class="m c-prob">LLM</text>
+    <text x="180" y="91" class="xs">you type a few words</text>
+    <text x="90" y="158" class="xxs">word?</text>
+    <text x="180" y="158" class="xxs">word?</text>
+    <text x="270" y="158" class="xxs">word?</text>
+    <text x="180" y="212" class="xs c-prob">which word comes next?</text>
+    <text x="570" y="40" class="m c-ink">world model</text>
+    <text x="410" y="86" class="xs l">hand waits</text>
+    <text x="606" y="86" class="xs l">glass stays</text>
+    <text x="410" y="131" class="xs l">hand pushes</text>
+    <text x="606" y="131" class="xs l">glass slides</text>
+    <text x="410" y="176" class="xs l">hand tips it</text>
+    <text x="606" y="176" class="xs l">glass falls</text>
+    <text x="570" y="212" class="xs c-act">what happens next?</text>
+  </g>
+</svg>
+<figcaption>Same habit, a different question: the next word on the left, the next event on the right.</figcaption>
+</figure>
+<p>A system that learns this from watching the world carries a small simulation inside it. The simulation says how things behave, and how they change when you act. That is a <b>world model</b>.</p>
+<p>One example was Genie, from Google. You type "a rainy Tokyo street at night" and walk into it. Underneath, it draws each next video frame from your key presses. Robots and self-driving cars are trained on the same idea.</p>
+<p>Then the instructor asked: what if the simulation is wrong? A simulation is not reality. His verdict: world models are early, and they will add to what AI systems can do.</p>
+<details class="acc"><summary>From the room: "I haven't got the actual concept of AGI"</summary><div class="b"><p>Artificial general intelligence (AGI) has no single definition. Treat it as a yardstick that every company measures in its own way. Tests (hard exams, coding, using a computer) check how much of a person's work an AI can do. When an AI nears the top of those tests, people start using the word.</p></div></details>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The road ahead on the no-code track</h2>
+<p>Someone asked: "Will we be using any of these tools in our cohort work?" Maybe some, the instructor said. But every week brings a new one.</p>
+<p class="pull">The curriculum is the foundation: a way of thinking that lets you pick up whatever arrives next.</p>
+<p>Then he showed the order of the no-code track.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 260" role="img" aria-label="The no-code track in order, as nine boxes joined by arrows: design, backend on Antigravity, database, MVP, a visual builder, MCP and RAG, a second brain (highlighted), joining the parts up, then production apps with security audits.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="18" y="40" width="124" height="70" rx="10"/>
+    <rect class="f-card" x="168" y="40" width="124" height="70" rx="10"/>
+    <rect class="f-card" x="318" y="40" width="124" height="70" rx="10"/>
+    <rect class="f-card" x="468" y="40" width="124" height="70" rx="10"/>
+    <rect class="f-card" x="618" y="40" width="124" height="70" rx="10"/>
+    <path class="arw" d="M145 75 H162" marker-end="url(#ah)"/>
+    <path class="arw" d="M295 75 H312" marker-end="url(#ah)"/>
+    <path class="arw" d="M445 75 H462" marker-end="url(#ah)"/>
+    <path class="arw" d="M595 75 H612" marker-end="url(#ah)"/>
+    <path class="arw" d="M680 114 V135 H155 V152" marker-end="url(#ah)"/>
+    <rect class="f-card" x="93" y="160" width="124" height="70" rx="10"/>
+    <rect class="f-act" x="243" y="160" width="124" height="70" rx="10"/>
+    <rect class="f-card" x="393" y="160" width="124" height="70" rx="10"/>
+    <rect class="f-card" x="543" y="160" width="124" height="70" rx="10"/>
+    <path class="arw" d="M220 195 H237" marker-end="url(#ah)"/>
+    <path class="arw" d="M370 195 H387" marker-end="url(#ah)"/>
+    <path class="arw" d="M520 195 H537" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="80" y="81" class="xs">design</text>
+    <text x="230" y="70" class="xs">backend</text>
+    <text x="230" y="92" class="xxs c-mute">on Antigravity</text>
+    <text x="380" y="81" class="xs">database</text>
+    <text x="530" y="81" class="xs">MVP</text>
+    <text x="680" y="81" class="xs">visual builder</text>
+    <text x="155" y="201" class="xs">MCP, RAG</text>
+    <text x="305" y="201" class="xs c-act">second brain</text>
+    <text x="455" y="201" class="xs">joining it up</text>
+    <text x="605" y="190" class="xs">production apps</text>
+    <text x="605" y="212" class="xxs c-mute">security audits</text>
+  </g>
+</svg>
+<figcaption>The order shown on the slide. The highlighted box comes back in section 05.</figcaption>
+</figure>
+<p>You start with design. Where design alone runs out, you add a backend with Antigravity, then a database, then a first working version (an MVP). The later boxes are names for now, and each gets its own lecture.</p>
+<p>The track is built for people who know a line of work from the inside. What counts is how well you understand the problem. The instructor's own goal for the room: apps that earn real money.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>"How do you codify that domain knowledge?"</h2>
+<p>This question came from the room. A learner building an app for a field they know well wants to direct the AI, not do every step themselves. But the AI does not have what they know. How does that knowledge get in?</p>
+<p>Lecture 1 met the same wall: the editors' judgment <a href="/c8/module-2/lecture-01-orientation/notes#s05">had no written form</a>. The instructor's answer was a preview. You take what you actually understand and write it down as files an LLM can read: plain text files (Markdown files) and skills. The course calls that set of files a <b>second brain</b>.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 210" role="img" aria-label="Three boxes joined by arrows. What you know, in your head. Written down as files, your second brain, highlighted. An LLM that reads those files.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="50" width="190" height="110" rx="10"/>
+    <rect class="f-act" x="285" y="50" width="190" height="110" rx="10"/>
+    <rect class="f-prob" x="540" y="50" width="190" height="110" rx="10"/>
+    <path class="arw" d="M226 105 H277" marker-end="url(#ah)"/>
+    <path class="arw" d="M481 105 H532" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="125" y="96" class="m c-ink">what you know</text>
+    <text x="125" y="126" class="xs c-mute">in your head</text>
+    <text x="380" y="96" class="m c-act">second brain</text>
+    <text x="380" y="126" class="xs">written down as files</text>
+    <text x="635" y="96" class="m c-prob">LLM</text>
+    <text x="635" y="126" class="xs">reads the files</text>
+    <text x="380" y="192" class="xs c-mute">it grows as you add sources and structure</text>
+  </g>
+</svg>
+<figcaption>A second brain is what you know, written down where an LLM can read it.</figcaption>
+</figure>
+<p>Another learner had already started one: a notes folder with an inbox, a page about themselves and a folder per project. It worked, though their tools did not yet read from it every time.</p>
+<p>The instructor said two things about it:</p>
+<ul class="pt">
+  <li><b>There is a structured way to do it.</b> The method is how you collect your sources and arrange them. It gets its own lecture, about a month from this session, and stands on the lectures before it.</li>
+  <li><b>It keeps changing.</b> A second brain on day one cannot be compared with the same one after you have collected more and given it structure.</li>
+</ul>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>From the Q&amp;A</h2>
+<ul class="pt">
+  <li><b>"Could you include payment gateways?"</b> Yes, briefly. It comes up when the room reaches a limit of Google AI Studio, and it is shown once for everyone.</li>
+  <li><b>"How will we learn how to get users for the things we build?"</b> That comes closer to the build. It covers how to pitch and how to set up a sales funnel.</li>
+  <li><b>"Can I come to you with feedback on the lectures?"</b> Yes. Use this measure: an office hour takes one hour of your weekday, and it should be worth that hour.</li>
+</ul>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>World model</dt><dd>A simulation inside an AI system of how things behave, and how they change when you act.</dd>
+  <dt>Second brain</dt><dd>What you know, written down as files an LLM can read.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>New tools arrive every week; the course gives you the foundation to pick them up. An LLM predicts the next word, and a world model predicts what happens next. What only you can add is what you know, written down as files an LLM can read: your second brain.</p></div>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Your turn: keep going on First Proof</h2>
+<p>Open the brief and do the next step you have not done yet.</p>
+<p><a class="btn" href="/c8/module-2/what-to-build/assignment-1">Open First Proof</a></p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-01-orientation/notes">Lecture 1 notes: the verifier is the job</a></li>
+  <li><a href="/c8/module-2/lecture-15-building-a-second-brain/">Lecture 15: building a second brain</a></li>
+  <li><a href="/#L1">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 1: Office hour, 22 September · Both tracks</span><a href="/#L1">Curriculum map</a><a href="/c8/module-2/lecture-01-orientation/">All Lecture 1 pages</a></div></footer>
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Building RAG apps | 100xEngineers</title>
+<meta name="description" content="Notes for Lecture 14, no-code track, with sketches: the seven stations of the Retrieval Bench, what changes when the data is a company&#x27;s documents (chunks cut by meaning, labels, filters, versions, counting tokens), and a question-answering app over a car manual built with Antigravity, Supabase and Groq.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l14-notes-no-code" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L14">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 14 pages"><a href="/c8/module-2/lecture-14-building-rag-apps/">Overview</a><a href="/c8/module-2/lecture-14-building-rag-apps/notes-no-code">Notes (no-code)</a><a href="/c8/module-2/lecture-14-building-rag-apps/notes">Notes (code)</a><a href="/c8/module-2/lecture-14-building-rag-apps/lab">RAG Lab</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 14 · 21 November 2026 · No-code track</p>
+  <h1>From one right answer to a dependable app.</h1>
+  <p class="dek">We walked the Retrieval Bench, moved from one demo answer to a company's documents, then built an app that answers from a car manual.</p>
+</div>
+
+<p>In <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Lecture 13</a> we derived RAG on the whiteboard: retrieve, augment, generate. Today we ran it on the Retrieval Bench and asked what changes when the data belongs to a real company. Then we built an app with prompts alone.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Is RAG only for big data?</h2>
+<p>The first question came from the room:</p>
+<blockquote class="q9">"Are RAG systems only useful for very large databases, or can they increase accuracy for small datasets?"</blockquote>
+<p>RAG began because data did not fit the context window. Then cost mattered: you pay for every token you send. Today it mostly lets an LLM answer from private data it was never trained on. So the choice depends on your data:</p>
+<ul class="pt">
+  <li><b>Small data, and the bill is fine.</b> Paste it in. RAG is one more thing to keep working.</li>
+  <li><b>Live data, such as records pulled from a company's customer system.</b> A plain tool call fits better.</li>
+  <li><b>Large or private documents.</b> This is where RAG pays for itself.</li>
+</ul>
+<details class="acc"><summary>From the chat: can one app use both RAG and tool calling?</summary><div class="b"><p>Yes. For a single question you pick one, based on what the user asked.</p></div></details>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Seven stations on the Retrieval Bench</h2>
+<p>We did the <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">Retrieval Bench</a> together. The data is our notes for Lectures 1 to 12, cut into 183 chunks of up to 170 words (the bench calls them passages). Five questions, Q1 to Q5, sit on a scoreboard.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="The seven stations of the Retrieval Bench in a row, with what each one did to the scoreboard. Ask: 0 of 5. By number: question 1 passes. Paste it all: refused. By its words: question 2 passes. By its meaning: question 3 passes. Nearest is not right: question 4 fails with a confident answer. Let it search: question 5 passes after a second search.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="10" y="60" width="96" height="70" rx="8"/>
+    <rect class="f-det" x="117" y="60" width="96" height="70" rx="8"/>
+    <rect class="f-card" x="224" y="60" width="96" height="70" rx="8"/>
+    <rect class="f-det" x="331" y="60" width="96" height="70" rx="8"/>
+    <rect class="f-det" x="438" y="60" width="96" height="70" rx="8"/>
+    <rect class="f-act" x="545" y="60" width="96" height="70" rx="8"/>
+    <rect class="f-det" x="652" y="60" width="96" height="70" rx="8"/>
+    <circle class="badge" cx="58" cy="36" r="11"/>
+    <circle class="badge" cx="165" cy="36" r="11"/>
+    <circle class="badge" cx="272" cy="36" r="11"/>
+    <circle class="badge" cx="379" cy="36" r="11"/>
+    <circle class="badge" cx="486" cy="36" r="11"/>
+    <circle class="badge" cx="593" cy="36" r="11"/>
+    <circle class="badge" cx="700" cy="36" r="11"/>
+  </g>
+  <g class="tx">
+    <text x="58" y="41" class="bn">1</text><text x="165" y="41" class="bn">2</text><text x="272" y="41" class="bn">3</text><text x="379" y="41" class="bn">4</text><text x="486" y="41" class="bn">5</text><text x="593" y="41" class="bn">6</text><text x="700" y="41" class="bn">7</text>
+    <text x="58" y="101" class="xxs">Ask</text>
+    <text x="165" y="92" class="xxs">By</text><text x="165" y="112" class="xxs">number</text>
+    <text x="272" y="92" class="xxs">Paste</text><text x="272" y="112" class="xxs">it all</text>
+    <text x="379" y="92" class="xxs">By its</text><text x="379" y="112" class="xxs">words</text>
+    <text x="486" y="92" class="xxs">By its</text><text x="486" y="112" class="xxs">meaning</text>
+    <text x="593" y="92" class="xxs">Nearest is</text><text x="593" y="112" class="xxs">not right</text>
+    <text x="700" y="92" class="xxs">Let it</text><text x="700" y="112" class="xxs">search</text>
+    <text x="58" y="158" class="xxxs c-mute">0 of 5</text>
+    <text x="165" y="158" class="xxxs c-det">Q1 passes</text>
+    <text x="272" y="158" class="xxxs c-mute">refused</text>
+    <text x="379" y="158" class="xxxs c-det">Q2 passes</text>
+    <text x="486" y="158" class="xxxs c-det">Q3 passes</text>
+    <text x="593" y="158" class="xxxs c-act">Q4 fails,</text><text x="593" y="176" class="xxxs c-act">sounding sure</text>
+    <text x="700" y="158" class="xxxs c-det">Q5 passes,</text><text x="700" y="176" class="xxxs c-det">second search</text>
+    <text x="380" y="214" class="xxs c-mute">each station changes one thing about how the server finds the chunks</text>
+  </g>
+</svg>
+<figcaption>Each way of searching won one more question. Station 6 is the warning: a close chunk is not always the right one.</figcaption>
+</figure>
+<p>Stations 1 to 3 replay Lecture 13. With no data, the LLM asked which course we meant. With a lecture number in the question, the server fetched that lecture. Pasting everything was refused: about 30,000 tokens asked for, and a free Groq key takes 8,000 a minute. The last four stations were new:</p>
+<ul class="pt">
+  <li><b>4 By its words.</b> "Verifier's Law" is in two chunks, both from Lecture 1. "Making things up" is in none.</li>
+  <li><b>5 By its meaning.</b> The nearest chunk is Lecture 10, on why LLMs hallucinate. No shared word.</li>
+  <li><b>6 Nearest is not right.</b> The closest chunk did not hold the answer. The LLM answered anyway, and was marked wrong.</li>
+  <li><b>7 Let it search.</b> Q5 asks which three UI builders a fix added. The first search found the topic. The LLM searched again for "UI builder" and named them: Lovable, AI Studio, Antigravity.</li>
+</ul>
+<p>At station 4 the instructor asked: do zero matching chunks prove the answer is missing? No. Only those exact words are missing.</p>
+<p>How does station 5 search by meaning? A small program turns each chunk, and the question, into a list of 384 numbers. Texts that mean the same get numbers that sit close together. That list is an <b>embedding</b>. The server ranks the chunks by closeness and hands the LLM the top 3. How many it hands over is called <b>top-k</b>, and here k is 3.</p>
+<p>Station 7 costs more: every extra search adds tokens and waiting. So search again only when the first result points at the topic but lacks the detail.</p>
+<p class="pull">Choose the simplest way of searching that finds enough evidence.</p>
+<details class="acc"><summary>From the chat: where does gte-small come from?</summary><div class="b"><p>gte-small is the small program that makes the embeddings on the bench. It is its own small embedding model and runs in your browser. Groq does not supply it: Groq serves the LLM.</p></div></details>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>A demo is one question</h2>
+<p>Your app answers one question correctly in a demo. Is it ready for a company? The instructor put it this way: what could go wrong if 500 employees start using it tomorrow?</p>
+<p>The running example was a helper for a company's human resources (HR) team. It holds six documents: the employee handbook, three policies (annual leave, maternity leave, attendance), the salary structure and the expense policy. An employee asks: "How many annual leaves am I entitled to?"</p>
+<p>A demo tests one document, one question, one answer. A company brings the rest. The same question comes in many wordings. A policy changes. Some documents are not for everyone. Some questions have no answer in the documents.</p>
+<p>So we set four goals: accuracy, efficiency, cost and reliability. Reliability means the app still behaves when a document is old or the answer is missing.</p>
+<p>The goals pull against each other: send less and you may drop the one condition that mattered. So keep a fixed set of test questions, and check the answers after every change.</p>
+<p class="pull">A RAG answer is only as dependable as the source, the choice of chunks, and how the LLM uses them.</p>
+<p>What makes an answer one you would trust? The chat said: an answer and where it came from. The full list: a direct answer, any condition or exception that matters, and the source. Showing the source (the document, and the page or section) is a <b>citation</b>.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Follow one question through the app</h2>
+<p>The LLM does not read every file each time. The retrieve step chooses what reaches it. So when an answer is wrong, where do you look? Split one request into its stages:</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Six stages in two rows. Top row: 1, the question arrives. 2, the app picks filters from the question. 3, the search returns candidate chunks, marked as the place to look first. Bottom row: 4, the app selects the evidence. 5, the LLM writes the answer. 6, the app shows the answer with its citation.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="50" width="190" height="80" rx="10"/>
+    <rect class="f-det" x="285" y="50" width="190" height="80" rx="10"/>
+    <rect class="f-act" x="540" y="50" width="190" height="80" rx="10"/>
+    <path class="arw" d="M226 90 H277" marker-end="url(#ah)"/>
+    <path class="arw" d="M481 90 H532" marker-end="url(#ah)"/>
+    <path class="arw" d="M635 136 V160 H125 V182" marker-end="url(#ah)"/>
+    <rect class="f-det" x="30" y="190" width="190" height="80" rx="10"/>
+    <rect class="f-prob" x="285" y="190" width="190" height="80" rx="10"/>
+    <rect class="f-card" x="540" y="190" width="190" height="80" rx="10"/>
+    <path class="arw" d="M226 230 H277" marker-end="url(#ah)"/>
+    <path class="arw c-prob" d="M481 230 H532" marker-end="url(#ahv)"/>
+    <circle class="badge" cx="48" cy="50" r="11"/><circle class="badge" cx="303" cy="50" r="11"/><circle class="badge act" cx="558" cy="50" r="11"/>
+    <circle class="badge" cx="48" cy="190" r="11"/><circle class="badge" cx="303" cy="190" r="11"/><circle class="badge" cx="558" cy="190" r="11"/>
+  </g>
+  <g class="tx">
+    <text x="48" y="55" class="bn">1</text><text x="303" y="55" class="bn">2</text><text x="558" y="55" class="bn">3</text>
+    <text x="48" y="195" class="bn">4</text><text x="303" y="195" class="bn">5</text><text x="558" y="195" class="bn">6</text>
+    <text x="125" y="96" class="xs">the question arrives</text>
+    <text x="380" y="86" class="xs c-det">the app picks filters</text><text x="380" y="108" class="xxxs">from the question</text>
+    <text x="635" y="86" class="xs c-act">the search returns</text><text x="635" y="108" class="xxxs c-act">candidate chunks</text>
+    <text x="635" y="30" class="xxs c-act">look here first</text>
+    <text x="125" y="226" class="xs c-det">the app selects</text><text x="125" y="248" class="xxxs">the evidence</text>
+    <text x="380" y="226" class="xs c-prob">the LLM writes</text><text x="380" y="248" class="xxxs">from question + evidence</text>
+    <text x="635" y="226" class="xs">the answer,</text><text x="635" y="248" class="xxxs">with its citation</text>
+  </g>
+</svg>
+<figcaption>Each stage can fail in its own way. A smooth answer at stage 6 does not prove stage 3 found the right chunks.</figcaption>
+</figure>
+<p>Two cases from the slides show why stage 3 comes first.</p>
+<p>The search returns 20 chunks for a simple leave question. You read them, and only 3 helped. The other 17 take up tokens and pull the LLM's attention away. Sort what came back into three groups: answers the question, adds a condition that matters, unrelated. Then find out why the search returned the unrelated ones.</p>
+<p>An employee asks, "When is my salary credited?" The search returns chunks from the annual leave policy. "Salary", "annual" and "leave" appear together in many documents, so closeness of meaning alone ranked the wrong one high. The mistake happened before the LLM wrote a word.</p>
+<p class="pull">Before you change the LLM, read what was retrieved.</p>
+<p>Fetching more is not fetching better. How do you make the search return fewer, better chunks?</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Two versions of one policy</h2>
+<p>The company updates its leave policy. Someone uploads the new file. The old file stays in the database. What does the search return now? Both. The app may quote the old rule, or mix the two.</p>
+<p>Uploading a new file does not retire the old one. It takes four steps. Identify the new version. Mark the previous one inactive. Process the new file. Check that the search uses the version you meant.</p>
+<p>Keep two dates for every document: the day it was uploaded and the day it takes effect. A policy uploaded today can start next month.</p>
+<p>A citation helps here too. When an answer is wrong, it shows where to look: the source, the chunk the search fetched, or the LLM's reading of it. And if the documents do not hold the answer, the app says it cannot confirm the rule and points to the right team.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Cut chunks where the meaning ends</h2>
+<p>How big should a chunk be? Take one sentence from a leave policy: "This applies only after probation." Cut the document every so many characters. That sentence can land in a different chunk from the rule it limits. The search finds the rule and never sees the condition.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Left: a leave policy cut by a count of characters. The leave rule is in chunk 1 and the sentence This applies only after probation is alone in chunk 2. Right: the same text cut by meaning. The rule and its condition sit in one chunk.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="30" y="70" width="300" height="56" rx="8"/>
+    <rect class="f-act" x="30" y="150" width="300" height="56" rx="8"/>
+    <path class="dash c-act" d="M20 138 H340"/>
+    <rect class="f-det" x="430" y="70" width="300" height="136" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="40" class="xs">cut by a count</text>
+    <text x="580" y="40" class="xs">cut by meaning</text>
+    <text x="180" y="94" class="xxxs c-mute">chunk 1</text>
+    <text x="180" y="114" class="xxs">the leave rule</text>
+    <text x="180" y="174" class="xxxs c-act">chunk 2</text>
+    <text x="180" y="194" class="xxs c-act">"This applies only after probation."</text>
+    <text x="580" y="100" class="xxxs c-mute">one chunk</text>
+    <text x="580" y="134" class="xxs">the leave rule</text>
+    <text x="580" y="164" class="xxs">"This applies only after probation."</text>
+    <text x="180" y="234" class="xxxs c-mute">the condition lost its rule</text>
+    <text x="580" y="234" class="xxxs c-mute">the chunk makes sense alone</text>
+  </g>
+</svg>
+<figcaption>A chunk should make sense with nothing else beside it.</figcaption>
+</figure>
+<p>Too small, and the meaning is incomplete. Too large, and one chunk carries several unrelated topics. So cut where the meaning ends: headings, lists, tables and paragraph breaks show you where. A rule, its condition and its exception stay together.</p>
+<p>The slide gave three sizes to start from:</p>
+<table class="dials">
+  <tr><th>Chunk size</th><th>Repeated from the chunk before</th></tr>
+  <tr><td>200 tokens</td><td>20 tokens</td></tr>
+  <tr><td>500 tokens</td><td>50 tokens</td></tr>
+  <tr><td>1,000 tokens</td><td>100 tokens</td></tr>
+</table>
+<p>The repeated part is the <b>overlap</b>. It keeps an idea that sits on a boundary from being cut in half. Too much of it and the same evidence comes back several times.</p>
+<p>These are starting points to test. Keep the documents and the test questions the same and change only the size. Then compare which chunks came back and how good the answers were.</p>
+<p class="pull">Chunking is a design choice: keep the meaning whole, keep the search precise.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Label the document, label the chunk</h2>
+<p>Six HR files in one unlabelled pile all look alike to a search. Which one is current? Who may read it? The text of a policy does not say. So you write those things down when you upload the file, as the labels from <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s06">Lecture 13</a>. The usual name for these labels is <b>metadata</b>.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Left: a document card with its labels. Name: Annual leave policy 2026. Department: HR. Category: leave. Effective date. Version: 3. Access group. Document ID. Right: a chunk card with its labels. Chunk ID, page number, section, and the document ID. An arrow from the chunk's document ID points back to the document card.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="30" y="50" width="310" height="220" rx="10"/>
+    <rect class="f-card" x="470" y="80" width="260" height="160" rx="10"/>
+    <path class="arw c-act" d="M462 212 H348" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="185" y="34" class="xs c-det">the document (the folder)</text>
+    <text x="600" y="64" class="xs">one chunk (a page in it)</text>
+    <text x="50" y="82" class="xxs l">name: Annual leave policy 2026</text>
+    <text x="50" y="108" class="xxs l">department: HR</text>
+    <text x="50" y="134" class="xxs l">category: leave</text>
+    <text x="50" y="160" class="xxs l">effective date</text>
+    <text x="50" y="186" class="xxs l">version: 3</text>
+    <text x="50" y="212" class="xxs l">access group</text>
+    <text x="50" y="238" class="xxs c-act l">document ID</text>
+    <text x="490" y="112" class="xxs l">chunk ID</text>
+    <text x="490" y="138" class="xxs l">page number</text>
+    <text x="490" y="164" class="xxs l">section heading</text>
+    <text x="490" y="216" class="xxs c-act l">document ID</text>
+    <text x="405" y="196" class="xxxs c-act">points back</text>
+  </g>
+</svg>
+<figcaption>The document ID ties every chunk to its file, so you can cite the page and remove an old version in one go.</figcaption>
+</figure>
+<p>Now the labels can narrow the search before it ranks anything. That is a <b>filter</b>, the Amazon idea from Lecture 13.</p>
+<ul class="pt">
+  <li><b>By topic.</b> "What is the maternity leave policy?" searches only HR documents in the leave category. "How do I claim a travel expense?" goes to finance.</li>
+  <li><b>By version.</b> Only the active version is searched.</li>
+  <li><b>By access.</b> The database checks who is asking before it returns a chunk.</li>
+</ul>
+<p>A prompt line such as "do not reveal confidential information" protects nothing. Once a restricted chunk has reached the LLM, the boundary is crossed. The database or the app has to enforce access.</p>
+<p>Two cautions. A filter that is too narrow hides the right document. And write each label one way: "HR" in one file and "Human Resources" in another become two categories.</p>
+<p>The last setting is top-k from the bench. Too few chunks can miss evidence. Too many add noise and tokens. You find your number by reading the chunks that come back for your test questions.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Count what you pay for</h2>
+<p>What are you paying for on every question? Tokens in and tokens out. Four things make up the tokens in: the instruction, the conversation so far, the retrieved chunks and the question. The answer is the tokens out.</p>
+<p>So measure before you tune. Run your test questions once and write down five things: tokens in, chunks retrieved, time to answer, answer right or wrong, citation right or wrong. That is your baseline. Change one setting, run the same questions, and compare.</p>
+<p>Two ways to stop repeating work came up:</p>
+<ul class="pt">
+  <li><b>Prepare a summary ahead of time.</b> One summary of all the leave documents can answer a general leave question quickly.</li>
+  <li><b>Reuse an answer.</b> When many people ask the same thing, store the answer and serve it again. The stored copy is a <b>cache</b>.</li>
+</ul>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Build it: a car manual you can question</h2>
+<p>A car's owner manual runs to about 114 pages. In an emergency nobody reads 114 pages. The instructor showed a finished app first. Asked what to do about a leak, it answered from the manual and cited its source. No code was written for it. Every step was a prompt in Antigravity, the IDE from <a href="/c8/module-2/lecture-03-building-ui/notes">Lecture 3</a>.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="Two rows. Top row, done once: the car manual, a PDF of about 114 pages, is cut into chunks with page labels, and the chunks and their embeddings are stored in Supabase with pgvector. Bottom row, on every question: you ask the app, the app searches Supabase for the top chunks, sends them with the question to the LLM on Groq, and shows the answer with its page.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="50" width="150" height="76" rx="8"/>
+    <path class="arw" d="M186 88 H232" marker-end="url(#ah)"/>
+    <rect class="f-det" x="240" y="50" width="190" height="76" rx="8"/>
+    <path class="arw c-det" d="M436 88 H592" marker-end="url(#ahd)"/>
+    <use href="#db" x="600" y="48" class="c-det"/>
+    <use href="#person" x="40" y="166" class="ink"/>
+    <path class="arw" d="M104 232 H232" marker-end="url(#ah)"/>
+    <rect class="f-det" x="240" y="194" width="190" height="76" rx="8"/>
+    <path class="arw c-det" d="M400 188 C 440 150, 570 160, 640 128" marker-end="url(#ahd)"/>
+    <path class="arw c-prob" d="M436 232 H592" marker-end="url(#ahv)"/>
+    <rect class="f-prob" x="600" y="194" width="130" height="76" rx="12"/>
+  </g>
+  <g class="tx">
+    <text x="30" y="32" class="xxxs c-mute l">once: load the manual</text>
+    <text x="105" y="84" class="xs">the manual</text><text x="105" y="106" class="xxxs">PDF, about 114 pages</text>
+    <text x="335" y="84" class="xs c-det">cut into chunks</text><text x="335" y="106" class="xxxs">each with its page</text>
+    <text x="514" y="76" class="xxxs c-det">chunks +</text><text x="514" y="110" class="xxxs c-det">embeddings</text>
+    <text x="645" y="32" class="xxs c-det">Supabase, with pgvector</text>
+    <text x="110" y="176" class="xxxs c-mute l">every question</text>
+    <text x="168" y="220" class="xxxs">question</text>
+    <text x="335" y="228" class="xs c-det">the app</text><text x="335" y="250" class="xxxs">search, then add</text>
+    <text x="540" y="180" class="xxxs c-det">top chunks</text>
+    <text x="514" y="220" class="xxxs c-prob">question + chunks</text>
+    <text x="665" y="228" class="xs c-prob">LLM on Groq</text><text x="665" y="250" class="xxxs">answer + page</text>
+    <text x="380" y="320" class="xxs c-mute">Supabase keeps the chunks. Groq serves the LLM. Antigravity writes the app.</text>
+  </g>
+</svg>
+<figcaption>Two jobs: load the document once, then answer every question from the few chunks that match.</figcaption>
+</figure>
+<p>You need Antigravity, a Supabase account, a Groq key and the manual as a PDF. The exact prompts are in the step-by-step guide shared in the session. Each step says what its prompt asks for.</p>
+<ol>
+  <li><b>Ask for the plan.</b> Paste the first prompt. Antigravity proposes how it will build the app, as a flow chart. It shows how the PDF is cut, which labels each chunk gets and how the search works. It takes 5 to 10 minutes, depending on the LLM you picked.</li>
+  <li><b>Read the plan and approve.</b> Read enough to guess what each part does. When it asks to run npm, allow it: npm downloads the ready-made parts the app is built from.</li>
+  <li><b>Ask it to use pgvector.</b> pgvector is an add-on for Postgres, the database inside Supabase. It lets the database store embeddings and find the closest ones. Antigravity updates the plan and writes the tables as SQL.</li>
+  <li><b>Give it the manual.</b> This is the PDF the app will answer from.</li>
+  <li><b>Connect the two services.</b> Paste the second prompt. Sign in to Supabase and run the SQL from step 3 there. Supabase stores the chunks and their embeddings. Groq serves the LLM. The prompt for making the embeddings can go in with this step or after it.</li>
+  <li><b>Load the document.</b> The next prompt makes the app cut, label and store the PDF by itself.</li>
+  <li><b>Build the question and answer page.</b> The last prompt builds the chat page and the flow in the sketch. Open the app on localhost and ask it something from the manual.</li>
+</ol>
+<p>Troubles the room hit:</p>
+<table class="dials">
+  <tr><th>Trouble</th><th>Fix</th></tr>
+  <tr><td>Your flow chart looks different</td><td>Fine. The plan varies with the LLM. Approve it, or ask for changes.</td></tr>
+  <tr><td>It stops and waits</td><td>It needs another approval from you.</td></tr>
+  <tr><td>"This site can't be reached" on localhost</td><td>The app is not running. Check the terminal: <code>npm run dev</code> should still be running there.</td></tr>
+  <tr><td>A step takes very long</td><td>Some LLMs are slow at this. Let it finish before the next prompt.</td></tr>
+</table>
+<p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
+<details class="acc"><summary>The search returns 20 chunks for a leave question and the answer is right. A friend says the search is fine. What would you check?</summary><div class="b"><p>Read the 20. In the slide's case only 3 helped. The other 17 cost tokens and pull the LLM's attention away.</p></div></details>
+<details class="acc"><summary>HR uploads the new leave policy. The next day the app quotes the old rule. What went wrong, and what fixes it?</summary><div class="b"><p>The old file is still in the database, so both versions are searched. Mark the old version inactive and filter on the active one.</p></div></details>
+<details class="acc"><summary>You add "never reveal salary data" to the prompt. Is salary data now safe?</summary><div class="b"><p>No. If the search can fetch a salary chunk, it has already reached the LLM. The database or the app must check who is asking before it returns the chunk.</p></div></details>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Embedding</dt><dd>A list of numbers that places a text, so texts that mean the same land close.</dd>
+  <dt>Top-k</dt><dd>How many chunks the search hands to the LLM. On the bench, 3.</dd>
+  <dt>Citation</dt><dd>Where an answer came from: the document, and the page or section.</dd>
+  <dt>Overlap</dt><dd>The few tokens repeated from one chunk into the next.</dd>
+  <dt>Metadata</dt><dd>The labels on a document or a chunk: category, version, dates, who may read it.</dd>
+  <dt>Filter</dt><dd>Using the labels to narrow which chunks are searched at all.</dd>
+  <dt>Cache</dt><dd>A stored answer to a question people ask often.</dd>
+  <dt>pgvector</dt><dd>An add-on for Postgres that stores embeddings and finds the closest ones.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>One right answer is a demo. A dependable RAG app cuts chunks by meaning, labels every document and chunk, filters before it searches, and shows its source. When an answer is wrong, read what was retrieved first, then count tokens and compare against a fixed set of questions.</p></div>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Your turn: your own documents</h2>
+<p>Finish the car manual app first, so you have seen every step work once. Then run the same steps on documents of your own: a long PDF, your lecture notes, HR policies.</p>
+<p>Before you call it done, write a few questions whose answers you know. Ask them. For each one, check the answer and check that the cited source really says it. That is your fixed set for every change you make later.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Lecture 13 notes: find the few chunks that matter</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">The Retrieval Bench: do the seven stations again and read each message on the wire</a></li>
+  <li><a href="/c8/module-2/lecture-08-end-to-end-mvp/notes#s07">Lecture 8 notes: Postgres, rented from Supabase</a></li>
+  <li><a href="/c8/module-2/lecture-03-building-ui/notes">Lecture 3 notes: building UI in an IDE</a></li>
+  <li><a href="/#L14">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 14: Building RAG apps · No-code track</span><a href="/#L14">Curriculum map</a><a href="/c8/module-2/lecture-14-building-rag-apps/">All Lecture 14 pages</a></div></footer>
+</body>
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: End to end MVP build and deploy | 100xEngineers</title>
+<meta name="description" content="Notes for Lecture 8, no-code track: logins and row rules in Supabase, the four things an app does to a row, then Git, GitHub and Vercel to put the app on a public address, with the sketches from the slides.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l08-notes-no-code" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L8">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 8 pages"><a href="/c8/module-2/lecture-08-end-to-end-mvp/">Overview</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/notes-no-code">Notes (no-code)</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/notes">Notes (code)</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 8 · 17 October 2026 · No-code track</p>
+  <h1>From localhost to a live link.</h1>
+  <p class="dek">We proved the app really reads and writes Supabase, then put it online with Git, GitHub and Vercel, and tested the live link.</p>
+</div>
+
+<p>In <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes-no-code">Lecture 7</a> you connected a to-do app in Antigravity to Supabase. We opened with the check for that: add a task on localhost, refresh Supabase, and the task is a new row. Today we did the same for the salon app, then gave it an address anyone can open.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Who you are, and what you may touch</h2>
+<p>Take an app that manages appointments. You type your email and password and click Sign in. Supabase checks them, and if they are right, you are logged in. Does that mean you can now see everyone's appointments?</p>
+<p>No. Two different questions are being asked. "Who are you?" is <b>authentication</b>. "What are you allowed to do?" is <b>authorization</b>.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="A person signs in with email and password. Supabase checks who they are: that is authentication. Then a table of appointments: the row that belongs to this user is open, and two rows that belong to other users are closed. Deciding which rows this user may touch is authorization.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="30" y="70" width="60" height="110"/>
+    <path class="arw" d="M110 125 H178" marker-end="url(#ah)"/>
+    <rect class="f-det" x="186" y="80" width="190" height="90" rx="10"/>
+    <path class="arw c-det" d="M382 125 H450" marker-end="url(#ahd)"/>
+    <rect class="f-card" x="458" y="60" width="282" height="40" rx="6"/>
+    <rect class="f-act" x="458" y="106" width="282" height="40" rx="6"/>
+    <rect class="f-card" x="458" y="152" width="282" height="40" rx="6"/>
+  </g>
+  <g class="tx">
+    <text x="144" y="110" class="xxxs">email +</text>
+    <text x="144" y="150" class="xxxs">password</text>
+    <text x="281" y="68" class="xxs c-det">Supabase</text>
+    <text x="281" y="120" class="xs c-det">Who are you?</text>
+    <text x="281" y="146" class="xxxs">authentication</text>
+    <text x="599" y="46" class="xxs">the appointments table</text>
+    <text x="599" y="85" class="xxxs c-mute">another user's row: closed</text>
+    <text x="599" y="131" class="xxs c-act">your row: open</text>
+    <text x="599" y="177" class="xxxs c-mute">another user's row: closed</text>
+    <text x="599" y="222" class="xxs">What may you touch? authorization</text>
+  </g>
+</svg>
+<figcaption>Logging in answers the first question only. The rule on each row answers the second.</figcaption>
+</figure>
+<p>Supabase answers the second question with rules on the rows of a table. For example: a user may read or change only the appointments that carry their own user ID. That is <b>row level security</b> (RLS). Each rule is a <b>policy</b>. The slide set it up in four steps:</p>
+<ol>
+  <li>Turn on login for the project.</li>
+  <li>Turn on RLS for each table that needs it.</li>
+  <li>Write the policies: who can read, who can change.</li>
+  <li>Test with two different user accounts.</li>
+</ol>
+<p class="pull">Turning RLS on is not enough. You also have to write the policies.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Connect the salon app, keep the design</h2>
+<p>Why Supabase at all? The older way is to write each back end part yourself (the database, the login, the file uploads) and look after it. Supabase rents you those parts ready-made, on a Postgres database. You still decide the tables and the permissions.</p>
+<p>When do you move off it? The instructor's rule of thumb: Supabase is enough up to about 10,000 daily active users. Past that it gets expensive compared with running your own.</p>
+<p>The salon booking app needs four tables: customers, stylists, services and appointments. Why four and not one? Each table holds one kind of thing. The appointments table joins them by storing three IDs: which customer, which stylist, which service. It adds the time and the status.</p>
+<p>Make a new Supabase project for this app. The slide's prompt for Antigravity asked for four things:</p>
+<ul class="pt">
+  <li><b>Use the existing design.</b></li>
+  <li><b>Connect to my Supabase project.</b></li>
+  <li><b>Work with the four tables:</b> customers, stylists, services, appointments.</li>
+  <li><b>Implement the functionality without redesigning the interface.</b></li>
+</ul>
+<p>Why the last line? Coding tools sometimes change your front end to make the back end easier.</p>
+<p>Antigravity will ask for two things from the API keys page in Supabase: the project URL and the <b>publishable key</b>. Both are made to sit in the front end. The secret key on that page (the service role key) skips your policies. Never put it in front-end code.</p>
+<p>Start with one screen and one table. If a request fails, write the missing policy. Do not switch RLS off.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Four things you can do to a row</h2>
+<p>Asha books a signature haircut with Maya on Thursday at 4 PM. What should happen when she clicks Book? The app asks Supabase to add a row. Supabase checks the permissions and saves it. Only then does the app say it worked.</p>
+<ul class="pt">
+  <li><b>Create.</b> Booking adds a new row to appointments.</li>
+  <li><b>Read.</b> Opening the appointments page fetches the rows and shows them.</li>
+  <li><b>Update.</b> Asha moves to Friday at 11 AM. The app changes the row that exists.</li>
+  <li><b>Delete.</b> Asha cancels.</li>
+</ul>
+<p>Together these four are called <b>CRUD</b>. After each one, open the table in Supabase and look at the row.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Two cards for the same appointment. Before: appointment 2041, Asha, signature haircut with Maya, Thursday 4 PM. After: appointment 2041, Asha, signature haircut with Maya, Friday 11 AM. The ID is the same on both cards. Only the time changed.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="40" y="50" width="280" height="150" rx="10"/>
+    <path class="arw" d="M330 125 H430" marker-end="url(#ah)"/>
+    <rect class="f-card" x="440" y="50" width="280" height="150" rx="10"/>
+    <rect class="f-act" x="462" y="150" width="236" height="36" rx="6"/>
+  </g>
+  <g class="tx">
+    <text x="180" y="36" class="xxs c-mute">before</text>
+    <text x="580" y="36" class="xxs c-mute">after</text>
+    <text x="380" y="108" class="xxs">update</text>
+    <text x="180" y="84" class="mono">appointment 2041</text>
+    <text x="180" y="112" class="xxs">Asha</text>
+    <text x="180" y="140" class="xxxs">signature haircut, Maya</text>
+    <text x="180" y="174" class="xxs">Thursday, 4 PM</text>
+    <text x="580" y="84" class="mono">appointment 2041</text>
+    <text x="580" y="112" class="xxs">Asha</text>
+    <text x="580" y="140" class="xxxs">signature haircut, Maya</text>
+    <text x="580" y="174" class="xxs c-act">Friday, 11 AM</text>
+  </g>
+</svg>
+<figcaption>Same ID, 2041, before and after. If rescheduling made a new row, Asha would have two bookings.</figcaption>
+</figure>
+<p>Cancelling has two versions. A hard delete removes the row for good. Most real apps keep the row and change its status from booked to cancelled, so the salon keeps its history. That is a <b>soft delete</b>: the user sees "cancel", and the database does an update. Either way, ask the user to confirm first.</p>
+<p class="pull">What the user sees and what the database does are not always the same.</p>
+<p>Which one did your app do? Open the browser's inspect mode, go to the Network tab, and click the button. The request shows a delete or an update.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Is the screen telling the truth?</h2>
+<p>The screen shows Asha's appointment. Is it coming from the database, or is it text typed into the page? Coding tools sometimes write the data straight into the interface. Two tests settle it.</p>
+<ol>
+  <li><b>App to table.</b> Change something in the app. Check the row changed in Supabase.</li>
+  <li><b>Table to app.</b> Insert a row by hand in Supabase. The instructor added one called "testing appointment". It should appear in the app.</li>
+</ol>
+<p>Then refresh the page. If the appointment is still there, it lives in the database and not in the page's short memory.</p>
+<p>Fetching takes a moment. If the screen says nothing, people think the app is broken and click again, which sends the request twice. The slide had four messages:</p>
+<table class="dials">
+  <tr><th>What happened</th><th>What the user sees</th></tr>
+  <tr><td>The request has started</td><td>"Loading appointments", over grey placeholder cards</td></tr>
+  <tr><td>It worked, and there are no rows</td><td>"No appointments yet" (an empty state, not an error)</td></tr>
+  <tr><td>Supabase confirmed the save</td><td>A message that the appointment is saved</td></tr>
+  <tr><td>The save failed</td><td>"Could not save your appointment. Please try again."</td></tr>
+</table>
+<p>The last message leaves out the technical error and says what to do next. Ask Antigravity to add the placeholder cards and the empty state.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Localhost is only your laptop</h2>
+<p>Everything works on your laptop. How do you share it with someone in another city? The address localhost:3000 means "this computer", so it opens for nobody else. The same app at an address like yourapp.vercel.app opens anywhere. It looks the same; only where it runs has changed. Putting it there is called <b>deploying</b>.</p>
+<p>Five tools do it, each with one job. Antigravity changes the code. Git records each change. GitHub keeps the code online. Vercel puts the app on a public address. Supabase keeps the data.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Two paths. Top path, the code: Antigravity on your laptop, then Git, then GitHub, then Vercel, which produces the live address. Bottom path, the data: a user opens the live app, and the live app reads and writes Supabase directly. A booking never passes through GitHub.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="20" y="50" width="140" height="64" rx="10"/>
+    <path class="arw c-det" d="M166 82 H204" marker-end="url(#ahd)"/>
+    <rect class="f-det" x="212" y="50" width="110" height="64" rx="10"/>
+    <path class="arw c-det" d="M328 82 H366" marker-end="url(#ahd)"/>
+    <rect class="f-det" x="374" y="50" width="130" height="64" rx="10"/>
+    <path class="arw c-det" d="M510 82 H548" marker-end="url(#ahd)"/>
+    <rect class="f-act" x="556" y="50" width="184" height="64" rx="10"/>
+    <path class="arw" d="M648 120 V178" marker-end="url(#ah)"/>
+    <use href="#person" x="40" y="186" width="44" height="84"/>
+    <path class="arw" d="M100 226 H440" marker-end="url(#ah)"/>
+    <rect class="f-card" x="448" y="188" width="150" height="76" rx="10"/>
+    <path class="arw c-det" d="M604 226 H650" marker-end="url(#ahd)" marker-start="url(#ahd)"/>
+    <use class="c-det" href="#db" x="660" y="192" width="80" height="62"/>
+  </g>
+  <g class="tx">
+    <text x="24" y="34" class="xxs c-mute l">1 the code, when you change the app</text>
+    <text x="90" y="88" class="xxs c-det">Antigravity</text>
+    <text x="267" y="88" class="xxs c-det">Git</text>
+    <text x="439" y="88" class="xxs c-det">GitHub</text>
+    <text x="648" y="78" class="xxs c-act">Vercel</text>
+    <text x="648" y="100" class="xxxs">gives the live address</text>
+    <text x="24" y="170" class="xxs c-mute l">2 the data, every time a user clicks</text>
+    <text x="270" y="212" class="xxxs">books an appointment</text>
+    <text x="523" y="222" class="xxs">the live app</text>
+    <text x="523" y="244" class="xxxs">on Vercel</text>
+    <text x="700" y="284" class="xxs c-det">Supabase</text>
+  </g>
+</svg>
+<figcaption>Code travels the top path only when you change the app. A customer's booking takes the bottom path and never touches GitHub.</figcaption>
+</figure>
+<p class="pull">GitHub stores the code. Vercel runs the app. Supabase stores the data.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Final, final new, final fixed</h2>
+<p>On Tuesday you save a folder called Final. On Wednesday, Final New. On Thursday, Final Fixed. Which one is running on the internet? From the folder names, nobody can say.</p>
+<p><b>Git</b> solves this. It keeps one project folder, called a <b>repository</b>, with a history of checkpoints inside it. Each checkpoint is a <b>commit</b>: a set of changes plus a short message. If something breaks later, you go back to a checkpoint.</p>
+<p>Git runs on your computer, even offline. GitHub is a website that keeps a copy of the repository online, where teammates and Vercel can reach it. Git is the history book; GitHub is the library it sits in.</p>
+<p>Saving a file is not a commit, and a commit is not on GitHub until you <b>push</b> it. Three steps in the terminal:</p>
+<ol>
+  <li><code>git status</code> shows which files changed.</li>
+  <li><code>git add</code> picks the changes, and <code>git commit</code> records them with a message.</li>
+  <li><code>git push</code> sends the commits to GitHub.</li>
+</ol>
+<p class="pull">Commit records the change. Push uploads it. Deploy publishes it.</p>
+<p>What should not go to GitHub? The room said it at once: keys and passwords. The slide added node_modules, the folder of ready-made code your project installs, because it can be made again. A file called <b>.gitignore</b> lists what Git must leave out.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Inspect first, then push</h2>
+<p>Before changing anything, we asked Antigravity to look at the project and report. The prompt asked for:</p>
+<ul class="pt">
+  <li><b>How the project is made.</b> The framework (the kit the app is made with) and the language.</li>
+  <li><b>What it needs to run.</b> The settings it reads, such as the Supabase URL.</li>
+  <li><b>Whether Git is ready.</b> Is it set up, and does .gitignore leave out secrets?</li>
+  <li><b>Two limits.</b> Do not redesign the UI. Do not change the database tables.</li>
+</ul>
+<p>Check the report against the real files.</p>
+<p>Then sign up at GitHub and create a repository. Private is fine: a private repository can still be deployed as a public app. If GitHub offers to add a .gitignore, say yes. Copy the repository's URL.</p>
+<p>In the terminal, run <code>git status</code> and <code>git remote -v</code>. The first says whether Git is tracking the project. The second says whether it is already linked to a repository online. Do only the step that is missing. If the online repository already has commits, never force a push over them.</p>
+<p>After the push, open the repository on GitHub and look. Your pages are there. There is a .gitignore. There is no .env file with real values, and no secret key in any file.</p>
+<p>Found a secret key up there? Deleting it in a later commit does not erase it from the history. Make a new key in Supabase so the old one stops working.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Build it, then hand it to Vercel</h2>
+<p>Code on GitHub is not a live site. First the ready-made code gets installed. Then a <b>build</b> turns the code into the files a browser is served. Vercel does both, but try them on your laptop first, so you are not pushing and hoping:</p>
+<ol>
+  <li><code>npm install</code> installs that ready-made code.</li>
+  <li><code>npm run build</code> runs the build command written in the project's package.json file.</li>
+</ol>
+<p>Projects differ, so read the scripts in your own package.json. If the build fails, read the first meaningful error, make the smallest fix, and build again.</p>
+<p>Then Vercel:</p>
+<ol>
+  <li>Go to <a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a> and choose Continue with GitHub.</li>
+  <li>Import the repository you pushed.</li>
+  <li>Check what Vercel detected: the framework, the build command and the output folder (often <code>dist</code>). If your app sits in a subfolder, set the root directory.</li>
+  <li>Deploy. Vercel builds the app and gives you a public URL.</li>
+</ol>
+<p>If the build fails on Vercel, it is usually a setting, not the code. After this, every push to GitHub makes Vercel build and publish again by itself.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>A live link is not a working product</h2>
+<p>The page loads at the new address. But the appointments do not load, and nothing saves. The code is the same as on your laptop. What is different?</p>
+<p>On your laptop, the app reads the Supabase URL and the publishable key from a file called .env. That file stayed on your laptop, as it should: .gitignore kept it off GitHub. So Vercel never got those values. Values kept outside the code like this are <b>environment variables</b>.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="Three boxes. Left: your laptop, where the app reads the Supabase URL and key from the .env file. Middle: GitHub, which holds the same code but no .env file. Right: Vercel, where the two values have to be typed in again under Environment Variables, followed by a redeploy.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="20" y="60" width="210" height="130" rx="10"/>
+    <path class="arw" d="M236 125 H272" marker-end="url(#ah)"/>
+    <rect class="f-card" x="280" y="60" width="200" height="130" rx="10"/>
+    <path class="arw" d="M486 125 H522" marker-end="url(#ah)"/>
+    <rect class="f-act" x="530" y="60" width="210" height="130" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="125" y="44" class="xxs c-det">your laptop</text>
+    <text x="125" y="100" class="xxs">same code</text>
+    <text x="125" y="134" class="mono">.env</text>
+    <text x="125" y="160" class="xxxs">URL + key are here</text>
+    <text x="380" y="44" class="xxs">GitHub</text>
+    <text x="380" y="100" class="xxs">same code</text>
+    <text x="380" y="140" class="xxxs c-mute">no .env (left out</text>
+    <text x="380" y="160" class="xxxs c-mute">on purpose)</text>
+    <text x="635" y="44" class="xxs c-act">Vercel</text>
+    <text x="635" y="100" class="xxs">same code</text>
+    <text x="635" y="134" class="xxxs c-act">type the URL + key in,</text>
+    <text x="635" y="156" class="xxxs c-act">then redeploy</text>
+    <text x="380" y="222" class="xxs">Same code, different settings, different behaviour.</text>
+  </g>
+</svg>
+<figcaption>The push carries the code, not the .env file. Vercel needs the two values typed in.</figcaption>
+</figure>
+<ol>
+  <li>In Vercel, open the project and go to Environment Variables.</li>
+  <li>Add the Supabase project URL and the publishable key. The names must match what the code expects, letter for letter (for example <code>VITE_SUPABASE_URL</code>).</li>
+  <li>Choose the Production environment, and save.</li>
+  <li>Redeploy. The values are baked in when the app is built, so saving alone changes nothing on the live site.</li>
+</ol>
+<p>If something still breaks, find where before you ask the coding tool to change any code.</p>
+<p>It can fail in four places. The build: an error in the code. The Vercel settings. While running: a click throws an error. The back end: data does not load or save.</p>
+<p>Then run both tests from section 04 on the live link. Create an appointment and find the row in Supabase. Edit the row in Supabase and see it in the app.</p>
+<p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
+<details class="acc"><summary>You hid the Edit button from other users. A friend says Asha's appointment is now safe. What is wrong with that?</summary><div class="b"><p>Hiding a button is not security. Someone can still send a request straight to the database. The database has to refuse it: RLS on, and a policy that lets a user change only their own rows.</p></div></details>
+<details class="acc"><summary>Asha moves her haircut from Thursday to Friday. Afterwards the table has two rows for her. Which of the four actions did the app use, and which should it have used?</summary><div class="b"><p>It used create. Update changes the existing row and keeps the same ID (2041 in the example).</p></div></details>
+<details class="acc"><summary>Your app saves appointments on localhost. On the Vercel link the page loads but nothing saves. Where do you look first?</summary><div class="b"><p>At the environment variables in Vercel. The .env file never left your laptop. Add the URL and the publishable key with the exact names the code uses, then redeploy.</p></div></details>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Authentication</dt><dd>Checking who you are, usually with an email and password.</dd>
+  <dt>Authorization</dt><dd>Deciding what you are allowed to see or change once you are logged in.</dd>
+  <dt>Row level security (RLS)</dt><dd>Rules in Supabase that say which rows of a table each user may read or change.</dd>
+  <dt>CRUD</dt><dd>The four things an app does to a row: create, read, update, delete.</dd>
+  <dt>Deploy</dt><dd>Put the app on a public address so other people can open it.</dd>
+  <dt>Repository</dt><dd>The project folder with its history of changes.</dd>
+  <dt>Commit</dt><dd>A checkpoint: a set of changes saved in the history with a message.</dd>
+  <dt>Push</dt><dd>Send your commits from your computer to GitHub.</dd>
+  <dt>Build</dt><dd>Turn the project's code into the files a browser is served.</dd>
+  <dt>Environment variable</dt><dd>A value the app needs, such as the Supabase URL, kept outside the code.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>GitHub stores the code, Vercel runs the app, Supabase stores the data. Commit, push, deploy, then add the Supabase URL and publishable key in Vercel and redeploy. A live link counts only when a row made on it shows up in Supabase.</p></div>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Your turn: ship it, then the hackathon</h2>
+<p>Deploy the salon app or your own, tonight. Send the link to one person who did not build it and ask them to book an appointment. Then check the row in Supabase.</p>
+<p>The lecture closed on the hackathon page. Pick one problem and build it solo; AI tools are allowed. Start on paper, deploy with login and RLS, and keep real evidence. It closes on Tuesday 20 October at 9 PM.</p>
+<p><a class="btn" href="/c8/module-2/hackathon/">Open the hackathon page</a></p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes-no-code">Lecture 7 notes (no-code): connect the app to Supabase</a></li>
+  <li><a href="/c8/module-2/lecture-08-end-to-end-mvp/notes">Lecture 8 notes (code track)</a></li>
+  <li><a href="/#L8">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 8: End to end MVP build and deploy · No-code track</span><a href="/#L8">Curriculum map</a><a href="/c8/module-2/lecture-08-end-to-end-mvp/">All Lecture 8 pages</a></div></footer>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Office Hour: Your RAG app, part by part. | 100xEngineers</title>
+<meta name="description" content="Recap of the Tuesday 24 November 2026 office hour, after Lecture 14, both tracks. What Groq, gte-small and Supabase with pgvector each do in the RAG app, why build RAG when a chat app reads a file directly, why an off-topic question still returned sources, and what was said about the second brain in Lecture 15.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l14-office-hour" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L14">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 14 pages"><a href="/c8/module-2/lecture-14-building-rag-apps/">Overview</a><a href="/c8/module-2/lecture-14-building-rag-apps/notes">Notes</a><a href="/c8/module-2/lecture-14-building-rag-apps/office-hour">Office hour</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Office hour · Tue 24 Nov 2026 · After Lecture 14 · Both tracks</p>
+  <h1>Your RAG app, part by part.</h1>
+  <p class="dek">The room's doubts about the RAG app: what each part does, why build it at all, and why an off-topic question still came back with sources.</p>
+</div>
+
+<p>Missed the office hour? This is what the room asked, and the answers. In <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Lecture 13</a> you derived RAG. In the 21 November practical you built a RAG app: it answers questions about a Porsche manual and cites the pages.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>How did it cut my manual?</h2>
+<p>Someone's app worked and cited the right pages. But in Supabase they could not see how the manual had been split. How did the app cut it into chunks?</p>
+<p>The prompt from the practical asks for cuts by meaning: a chunk ends where a sentence and its context end. To see what your own build did, ask the coding tool that wrote it (Antigravity, for most of the room).</p>
+<p>Is there one right chunk size? No. Some manuals need two sections read together. With 10 or 15 documents, page 1 of one may connect to a page deep in another. So load a document you know well, and try sizes until the answers hold up.</p>
+<p class="pull">There is no rule of thumb for chunks. Test on a document you know.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Is RAG right for my research papers?</h2>
+<p>Someone wants each hard research paper turned into a simpler version: a newsletter, a blog, plain notes. Is RAG the right way?</p>
+<p>The instructor asked back: can ChatGPT or Gemini not do that the moment you upload the file? RAG simplifies nothing. It cuts the text into chunks, indexes them, and hands the right ones to the LLM when a question comes.</p>
+<p>A paper is 50 or 100 pages at most. That fits inside the context window, so there is nothing to search for. Finding patterns across a huge pile of papers is a different job.</p>
+<p class="pull">Ask first why RAG exists. Then ask whether your case has that problem.</p>
+<p>Lecture 13 gave the reason: <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s04">the data stops fitting, or costs too much to paste</a>.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>A method, or a system?</h2>
+<p>The same learner had a longer aim. Keep every paper, so that later the app can say: this paper matters for the project you are on now.</p>
+<p>The instructor said that fits the coming lecture better. It is about a <b>second brain</b>, where you draw on your own past know-how.</p>
+<p>The learner guessed how the two relate: RAG is a method, and a second brain is a system. The instructor did not rule on it. He said a second brain is "more to do with your memory", and that you can decide better after the session. Hold the guess until Lecture 15.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>What each part does</h2>
+<p>From the room: "Why does Groq exist?" And in the practical's chat, some people thought gte-small came from Groq. So here is each part by its job.</p>
+<ul class="pt">
+  <li><b>Groq serves the LLM.</b> Groq is a company that runs LLMs on its own chips, built for speed. It hosts a few open LLMs, ones anyone may download (GPT-OSS is one). Its free key needs no credit card. It is not Grok, the chatbot on X.</li>
+  <li><b>gte-small turns text into numbers.</b> It is a small program of its own, listed on Hugging Face, and has nothing to do with Groq. It turns each chunk into a list of numbers that places its meaning.</li>
+  <li><b>Supabase stores them.</b> Supabase hosts a Postgres database. <b>pgvector</b> is an extension you switch on inside Postgres, not a second database. With it, Postgres can store each list of numbers beside the chunk's text and page number, and find the lists closest to a question's.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Two rows through the same parts. Top row, done once: the manual's chunks go into gte-small, which turns them into numbers, and the numbers are stored in Supabase, which is Postgres with pgvector. Bottom row, done for every question: the question goes into the same gte-small, Supabase finds the closest chunks, and those chunks go with the question to the LLM on Groq, which writes the answer with its sources.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="15" y="76" width="100" height="48" rx="8"/>
+    <rect class="f-card" x="15" y="181" width="100" height="48" rx="8"/>
+    <rect class="f-det" x="150" y="50" width="140" height="200" rx="10"/>
+    <rect class="f-det" x="390" y="50" width="150" height="200" rx="10"/>
+    <rect class="f-prob" x="625" y="165" width="120" height="80" rx="10"/>
+    <path class="arw" d="M119 100 H144" marker-end="url(#ah)"/>
+    <path class="arw" d="M119 205 H144" marker-end="url(#ah)"/>
+    <path class="arw c-det" d="M296 100 H384" marker-end="url(#ahd)"/>
+    <path class="arw c-det" d="M296 205 H384" marker-end="url(#ahd)"/>
+    <path class="arw c-prob" d="M546 205 H619" marker-end="url(#ahv)"/>
+  </g>
+  <g class="tx">
+    <text x="65" y="66" class="xxs c-mute">once</text>
+    <text x="65" y="106" class="xs">chunks</text>
+    <text x="65" y="171" class="xxs c-mute">every time</text>
+    <text x="65" y="211" class="xs">question</text>
+    <text x="220" y="38" class="m c-det">gte-small</text>
+    <text x="220" y="146" class="xxs">turns text</text>
+    <text x="220" y="166" class="xxs">into numbers</text>
+    <text x="465" y="38" class="m c-det">Supabase</text>
+    <text x="465" y="136" class="xxs">Postgres</text>
+    <text x="465" y="156" class="xxs">+ pgvector:</text>
+    <text x="465" y="176" class="xxs">stores, searches</text>
+    <text x="340" y="88" class="xxs c-det">numbers</text>
+    <text x="340" y="193" class="xxs c-det">numbers</text>
+    <text x="583" y="193" class="xxs c-prob">chunks</text>
+    <text x="685" y="153" class="xs c-prob">LLM on Groq</text>
+    <text x="685" y="200" class="xxs">writes the</text>
+    <text x="685" y="220" class="xxs">answer</text>
+    <text x="685" y="272" class="xxs c-mute">with its sources</text>
+  </g>
+</svg>
+<figcaption>Three parts, three jobs. The same gte-small handles the chunks once and every question after.</figcaption>
+</figure>
+<p>When you ask a question, the same gte-small turns it into numbers. pgvector finds the closest chunks. The server sends them, with the question, to the LLM on Groq, which answers and cites the pages.</p>
+<p>Does pgvector do the chunking? No. It cuts nothing and converts nothing. It stores and it searches.</p>
+<details class="acc"><summary>Can I run the LLM without Groq?</summary><div class="b"><p>Yes. Ollama is a program that runs open LLMs on your own machine. Several open LLMs carry the Apache 2.0 licence, which allows commercial use.</p></div></details>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Why build it at all?</h2>
+<p>Someone had uploaded their car's manuals to Claude and asked questions there. It felt more interactive. So why build the app?</p>
+<p>The instructor agreed with the facts. RAG came about when context windows were small. Today's LLMs can read a document of about 1,400 to 1,500 pages and cite from it. Not quite as well as RAG, he said, but well enough. The companies that make LLMs are racing to make RAG unnecessary.</p>
+<p>"So this matters when my data is much bigger?" Yes, and for one more reason. An app needs its own way to store its files and find the right part of them. If that lives inside one company's LLM, your app depends on that LLM. If it is yours, you can swap the LLM and keep everything else.</p>
+<p class="pull">The LLM can be swapped. The storing and the finding stay yours.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Best biryani, with sources</h2>
+<p>One learner asked the Porsche app: "Where is the best biryani?" It answered, and listed sources from the manual, one about battery coding. Typing only "biryani" gave the same sources. Why?</p>
+<ul class="pt">
+  <li><b>The search always hands something back.</b> It returns a set number of chunks, called <b>top-k</b> (the instructor guessed 6 to 8 for this build). It returns the k closest even when none is close, so here they are still car chunks.</li>
+  <li><b>Nothing told the LLM to stay on the manual.</b> The manual is added context, and the LLM underneath still knows about food. The fix is a rule in the instruction, called a <b>guardrail</b>: answer only questions about the manual.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 190" role="img" aria-label="The question Where is the best biryani goes into the search. The search always returns its top k chunks, so it returns the closest chunks it has, and none of them is about food. They still show up as sources.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-act" x="20" y="50" width="200" height="80" rx="10"/>
+    <rect class="f-det" x="300" y="50" width="160" height="80" rx="10"/>
+    <rect class="f-card" x="540" y="50" width="200" height="80" rx="10"/>
+    <path class="arw" d="M226 90 H294" marker-end="url(#ah)"/>
+    <path class="arw c-det" d="M466 90 H534" marker-end="url(#ahd)"/>
+  </g>
+  <g class="tx">
+    <text x="120" y="84" class="xs c-act">"Where is the</text>
+    <text x="120" y="108" class="xs c-act">best biryani?"</text>
+    <text x="380" y="38" class="m c-det">the search</text>
+    <text x="380" y="84" class="xxs">always returns</text>
+    <text x="380" y="106" class="xxs">its top k</text>
+    <text x="640" y="84" class="xxs">the closest chunks</text>
+    <text x="640" y="106" class="xxs">none about food</text>
+    <text x="640" y="162" class="xxs c-mute">shown as sources anyway</text>
+  </g>
+</svg>
+<figcaption>Closest does not mean close. The search has no way to say "nothing here".</figcaption>
+</figure>
+<p>Another learner's app found the right answer to a test question but buried it in too much text. Three fixes:</p>
+<ul class="pt">
+  <li><b>Lower top-k.</b> The answer gets shorter, but you can lose chunks that belong together (tyre pressure monitoring and fuel efficiency, in the instructor's example).</li>
+  <li><b>Add one more step.</b> Ask the LLM to pick the exact answer out of what the search returned.</li>
+  <li><b>Sharpen the question first.</b> Add precision and context to what the user typed before the search runs.</li>
+</ul>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>Groq serves the LLM, gte-small turns text into numbers, and Supabase stores and searches them with pgvector. A chat app can read one file for you. An app you build keeps its own storing and finding, so you can swap the LLM. The search always returns its closest chunks, so an off-topic question still gets sources until you add a rule.</p></div>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Before Lecture 15</h2>
+<p>Build the Porsche app and run the test questions shared with the practical. You find a system's limits only by building it.</p>
+<p>Then bring the guess from section 03. Lecture 15 starts from the search you built and asks what search still cannot find. A separate office hour will take up how to choose the tools you build with.</p>
+<p><a class="btn" href="/c8/module-2/lecture-15-building-a-second-brain/">Open Lecture 15</a></p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-15-building-a-second-brain/">Lecture 15: building a second brain</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Lecture 13 notes: find the few chunks that matter</a></li>
+  <li><a href="/c8/module-2/lecture-14-building-rag-apps/notes">Lecture 14 notes (code track): search by words and by meaning</a></li>
+  <li><a href="/#L14">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>Next: Lecture 15, building a second brain.</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 14: Office hour, 24 November · Both tracks</span><a href="/#L14">Curriculum map</a><a href="/c8/module-2/lecture-14-building-rag-apps/">All Lecture 14 pages</a></div></footer>
+</body>
+</html>

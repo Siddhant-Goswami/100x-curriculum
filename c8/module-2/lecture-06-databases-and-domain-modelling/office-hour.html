@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Office Hour: Write the Logic Before the Code | 100xEngineers</title>
+<meta name="description" content="Recap of the Thursday 15 Oct 2026 office hour, after Lecture 6, both tracks. How to write the steps of a feature in plain English before asking an LLM for code, and the room&#x27;s questions on keys, tables, security and when to start building.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l06-office-hour" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L6">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 6 pages"><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">Overview</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Notes</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/office-hour">Office hour</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Office hour · Thu 15 Oct 2026 · After Lecture 6 · Both tracks</p>
+  <h1>Write the logic before the code.</h1>
+  <p class="dek">We wrote a login, a cup of coffee and a shopping cart as plain steps, then took your questions on keys, tables and security.</p>
+</div>
+
+<p>By <a href="/c8/module-2/lecture-05-building-apis/notes">Lecture 5</a> your app could call an API, and in <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Lecture 6</a> you decided what it should store. This office hour practised the step before any prompt: writing down what a feature must do, in order.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What happens when you click Log in?</h2>
+<p>The instructor opened with a login page and one question for the chat:</p>
+<blockquote class="q9">"What happens when someone clicks the login button?"</blockquote>
+<p>The chat answered in single words: an API call, the server, check the email and password. One answer was closer: check the id and password, and if they do not match, throw an error.</p>
+<p>The instructor's version had four steps, in order:</p>
+<ol>
+  <li>Check the email has the right form: an @ sign, and an ending such as .com.</li>
+  <li>Send the email and password to be checked.</li>
+  <li>If they are wrong, show an error.</li>
+  <li>If they are right, open the dashboard.</li>
+</ol>
+<p>Nothing here is code. It is the thinking you do before you ask an LLM for code, in either track.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Black coffee, in three moves</h2>
+<p>To show the moves, the instructor wrote out something everyone can do: make black coffee.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Three cards. Sequence: boil water, add coffee grounds, pour hot water, wait 3 minutes, serve. Selection: if the water is not boiling, keep heating, else add the coffee grounds. Repetition: stir until the sugar is dissolved.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="50" width="225" height="220" rx="10"/>
+    <rect class="f-card" x="268" y="50" width="225" height="220" rx="10"/>
+    <rect class="f-card" x="516" y="50" width="225" height="220" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="132" y="36" class="m">Sequence</text>
+    <text x="380" y="36" class="m">Selection</text>
+    <text x="628" y="36" class="m">Repetition</text>
+    <text x="36" y="88" class="xxs l">1 boil water</text>
+    <text x="36" y="122" class="xxs l">2 add coffee grounds</text>
+    <text x="36" y="156" class="xxs l">3 pour hot water over</text>
+    <text x="36" y="190" class="xxs l">4 wait 3 minutes</text>
+    <text x="36" y="224" class="xxs l">5 serve</text>
+    <text x="284" y="88" class="xxs l">if water is not boiling</text>
+    <text x="304" y="122" class="xxs l">keep heating</text>
+    <text x="284" y="156" class="xxs l">else</text>
+    <text x="304" y="190" class="xxs l">add coffee grounds</text>
+    <text x="532" y="88" class="xxs l">until sugar is dissolved</text>
+    <text x="552" y="122" class="xxs l">stir</text>
+    <text x="132" y="256" class="xxs">do this, then that</text>
+    <text x="380" y="256" class="xxs">choose a path</text>
+    <text x="628" y="256" class="xxs">do it again</text>
+  </g>
+</svg>
+<figcaption>One cup of coffee, written as the three moves every program is made of.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Do this, then that.</b> Boil water, add coffee grounds, pour, wait 3 minutes, serve. This is <b>sequence</b>.</li>
+  <li><b>Choose a path.</b> If the water is not boiling, keep heating. Else, add the grounds. This is <b>selection</b>.</li>
+  <li><b>Do it again.</b> Stir until the sugar is dissolved. This is <b>repetition</b>.</li>
+</ul>
+<p>Steps written this way, in plain English with no programming language, are called <b>pseudocode</b>. You met one line of it in <a href="/c8/module-2/lecture-05-building-apis/notes#s04">Lecture 5</a>.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>One rule, said two ways</h2>
+<p>Take a rule in plain English: if a student's marks are 35 or more, show pass, otherwise fail. As pseudocode it becomes:</p>
+<pre class="code">if marks >= 35
+    display "Pass"
+else
+    display "Fail"</pre>
+<p>Give those four lines to an LLM and it can write them in any programming language. What the pseudocode adds over the paragraph is precision: nothing is left for the LLM to guess.</p>
+<p>Then the chat was asked what happens when you click Add to cart. The answers came as scraps: the stock goes down by one, a message appears, go to the cart page. The instructor sorted any feature into four parts.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 210" role="img" aria-label="Four boxes joined by arrows, for the Add to cart button. Input: price and quantity. Process: price times quantity. Decision, highlighted: does a discount apply? Output: the final amount.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="60" width="150" height="100" rx="10"/>
+    <rect class="f-det" x="210" y="60" width="150" height="100" rx="10"/>
+    <rect class="f-act" x="400" y="60" width="150" height="100" rx="10"/>
+    <rect class="f-card" x="590" y="60" width="150" height="100" rx="10"/>
+    <path class="arw" d="M174 110 H204" marker-end="url(#ah)"/>
+    <path class="arw" d="M364 110 H394" marker-end="url(#ah)"/>
+    <path class="arw" d="M554 110 H584" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="95" y="44" class="m">Input</text>
+    <text x="285" y="44" class="m c-det">Process</text>
+    <text x="475" y="44" class="m c-act">Decision</text>
+    <text x="665" y="44" class="m">Output</text>
+    <text x="95" y="104" class="xxs">price,</text>
+    <text x="95" y="128" class="xxs">quantity</text>
+    <text x="285" y="116" class="xxs">price × quantity</text>
+    <text x="475" y="104" class="xxs">does a discount</text>
+    <text x="475" y="128" class="xxs">apply?</text>
+    <text x="665" y="116" class="xxs">final amount</text>
+    <text x="380" y="194" class="xxs">Add to cart, in four parts</text>
+  </g>
+</svg>
+<figcaption>What comes in, what is done with it, what must be decided, what comes out.</figcaption>
+</figure>
+<p>Order matters too. "Calculate the percentage, get the marks, show the result" is broken: step 1 needs what step 2 fetches. Get the marks first.</p>
+<p>And write every "if not". What if the cart is empty at checkout? What if a required field is blank? What if the user is not allowed to use this feature?</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Three levels of asking</h2>
+<p>The last example: the school office adds a student. The app checks the details, saves the student to the database, and updates the list. The instructor showed three ways to ask an LLM for it.</p>
+<ul class="pt">
+  <li><b>Level 1.</b> "Build a student management app." Most people start here.</li>
+  <li><b>Level 2.</b> Name the feature and the tools, then list what must be handled. Check the name and email. Save valid records to Supabase. Handle database errors. Update the list only after a successful save.</li>
+  <li><b>Level 3.</b> Write the steps yourself:</li>
+</ul>
+<pre class="code">get name and email
+if name is empty
+    show name error
+else if email is invalid
+    show email error
+else
+    save student to database
+    if save succeeds
+        update student list
+        show success message
+    else
+        show save error</pre>
+<p>Repetition has its own line. To show the list: "for each student in the student list, display the student's name". It stops when the list ends.</p>
+<p>Before you build any feature, answer three questions, then write the answers as steps.</p>
+<ol>
+  <li>What information enters the system?</li>
+  <li>What decision must it take?</li>
+  <li>What should happen when it succeeds, and when it fails?</li>
+</ol>
+<p>It works in reverse as well. Handed code someone else wrote, ask an LLM to turn it into pseudocode, read that, and change the steps.</p>
+<p class="pull">The LLM can write the code. The steps are yours.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>From the Q&amp;A</h2>
+<ul class="pt">
+  <li><b>"I want a backend so my key lives there. How do I design the address for a chat?"</b> The next two lectures build exactly this. In <a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes#s07">Lecture 7</a> the function sits behind one address on your server, and the Groq key stays there.</li>
+  <li><b>"How do I decide which tables my own app needs?"</b> Go back to the part of <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s09">Lecture 6</a> that confused you and rewatch it. Then paste the transcript into an LLM and keep asking until you can say it in your own words. Databases come back in Lecture 7, on Supabase.</li>
+  <li><b>"Clients ask if an app I built with an LLM is secure. What do I say?"</b> The same basic protections apply whether you typed the code or an LLM did. Nothing is impossible to break; you make it harder to break.</li>
+  <li><b>How much protection is enough?</b> Ask how sensitive the data is and what someone gains by getting in. Add barriers until getting in costs more than it is worth, and stop there: you do not bring an elephant to break a needle.</li>
+  <li><b>"If code is written in minutes, why do big companies still take so long to ship?"</b> Writing got faster; the rest did not. People still have to read what the LLM wrote, test it, and answer for it. A fix can work and still be wrong for the business, for example if it multiplies the server cost. If you never touch the code, you stay at a prototype. Pseudocode is how you touch it without knowing a programming language.</li>
+  <li><b>"My plan is written. When do I start building?"</b> Now. The plan is refined enough; the rest you fix while building. Both tracks are at the same point: an app that talks to an API. Next comes the database on Supabase, then deployment.</li>
+</ul>
+<details class="words"><summary>Words from this office hour</summary>
+<dl>
+  <dt>Sequence</dt><dd>Steps done one after another, in a fixed order.</dd>
+  <dt>Selection</dt><dd>A step that picks one path or another: if this, do that, else do the other.</dd>
+  <dt>Repetition</dt><dd>A step done again and again until something is true, or once for each item in a list.</dd>
+  <dt>Pseudocode</dt><dd>The steps of a feature written in plain English, in order, with no programming language.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>Before you ask an LLM for code, write the steps in plain English. Say what comes in, what must be decided, and what happens when it works and when it fails. Every feature is sequence, selection and repetition. The more exact your steps, the less the LLM has to guess.</p></div>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Your turn: three to write</h2>
+<p>The instructor asked everyone for pseudocode for three features. Write each one before you open any tool.</p>
+<ol>
+  <li>A login page.</li>
+  <li>Add to cart on a shopping site.</li>
+  <li>Registering a student.</li>
+</ol>
+<p>Then do the same for the next feature of your own app, and paste those steps into Antigravity as the prompt.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-05-building-apis/notes">Lecture 5 notes: building APIs</a></li>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Lecture 6 notes: databases and domain modelling</a></li>
+  <li><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Lecture 7 notes: connect the backend to the database</a></li>
+  <li><a href="/#L6">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 6: Office hour, 15 October · Both tracks</span><a href="/#L6">Curriculum map</a><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/">All Lecture 6 pages</a></div></footer>
+</body>
+</html>

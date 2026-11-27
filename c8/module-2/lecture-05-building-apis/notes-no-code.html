@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Building APIs and backend | 100xEngineers</title>
+<meta name="description" content="Notes for Lecture 5, no-code track: export a Google AI Studio prototype into Antigravity, get a map of the project, write pseudocode, keep keys in the backend, and call Groq and Replicate.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l05-notes-no-code" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L5">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 5 pages"><a href="/c8/module-2/lecture-05-building-apis/">Overview</a><a href="/c8/module-2/lecture-05-building-apis/notes-no-code">Notes (no-code)</a><a href="/c8/module-2/lecture-05-building-apis/notes">Notes (code)</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 5 · 9 October 2026 · No-code track</p>
+  <h1>Open the project. Read before you approve.</h1>
+  <p class="dek">We moved the app into Antigravity, mapped its files, directed the code in plain English, and called two outside services.</p>
+</div>
+
+<p>In <a href="/c8/module-2/lecture-03-building-ui/notes-no-code">Lecture 3</a> you turned Stitch screens into an app you can click, in Google AI Studio. In <a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Lecture 4</a> you learned how one machine asks another for work: the API. Today we opened that app's code in Antigravity and connected it to outside services.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What the app is still missing</h2>
+<p>We began with the route so far, on the Magic Mirror app: a customer uploads a photo, picks a hairstyle and sees the new look. The PRD became screen flows. Stitch drew every screen. AI Studio made the screens clickable.</p>
+<blockquote class="q9">"Are we done with it? What was missing after Google AI Studio?"</blockquote>
+<p>The chat answered fast: a backend, somewhere to store data, the rules of the business. All correct. An app you can click through, with none of that underneath, is a <b>prototype</b>. The instructor listed what it cannot answer yet:</p>
+<ul class="pt">
+  <li><b>Users.</b> What happens when hundreds of people use it, and each needs an account?</li>
+  <li><b>Keys.</b> Where do your Gemini or OpenAI keys sit, safely?</li>
+  <li><b>Failure.</b> What does the app do when an API fails?</li>
+</ul>
+<p>AI Studio is built for speed. It can reach the layers underneath, but not easily, and you soon run out of things you can change.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Four boxes in a row. ChatGPT or Claude gives the idea and the PRD. Stitch gives drawings of every screen. Google AI Studio gives a prototype you can click. A dashed line marks where AI Studio gets uncomfortable. Past the line, Antigravity gives a product you control.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="70" width="160" height="80" rx="10"/>
+    <rect class="f-card" x="210" y="70" width="160" height="80" rx="10"/>
+    <rect class="f-card" x="400" y="70" width="160" height="80" rx="10"/>
+    <rect class="f-act" x="596" y="70" width="150" height="80" rx="10"/>
+    <path class="arw" d="M184 110 H204" marker-end="url(#ah)"/>
+    <path class="arw" d="M374 110 H394" marker-end="url(#ah)"/>
+    <path class="arw" d="M564 110 H590" marker-end="url(#ah)"/>
+    <path class="dash ink" d="M578 36 V180"/>
+  </g>
+  <g class="tx">
+    <text x="100" y="56" class="xxs">ChatGPT or Claude</text>
+    <text x="290" y="56" class="xxs">Stitch</text>
+    <text x="470" y="56" class="xxs">Google AI Studio</text>
+    <text x="671" y="56" class="xxs c-act">Antigravity</text>
+    <text x="100" y="105" class="xxs">the idea,</text>
+    <text x="100" y="128" class="xxs">the PRD</text>
+    <text x="290" y="105" class="xxs">drawings of</text>
+    <text x="290" y="128" class="xxs">every screen</text>
+    <text x="480" y="105" class="xxs">a prototype</text>
+    <text x="480" y="128" class="xxs">you can click</text>
+    <text x="671" y="105" class="xxs">a product</text>
+    <text x="671" y="128" class="xxs">you control</text>
+    <text x="578" y="206" class="xxs">where AI Studio gets uncomfortable</text>
+  </g>
+</svg>
+<figcaption>Each tool has an edge. You move to the next one when you hit it, and not before.</figcaption>
+</figure>
+<p>The instructor's own habit: take the prototype as far as AI Studio allows, then move. Plenty of ideas never need to. When you want finer control, where do you go?</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Move the project into Antigravity</h2>
+<p>In AI Studio you describe and it builds. <a href="https://antigravity.google" target="_blank" rel="noopener">Antigravity</a>, also from Google, lets you open every file and see every change, with an LLM in a chat beside them. An app like that is an <b>IDE</b> (integrated development environment). The room did the move together.</p>
+<ol>
+  <li>In <a href="https://aistudio.google.com" target="_blank" rel="noopener">AI Studio</a>, click Code, next to Preview. You see the project's files.</li>
+  <li>Click Export. Three choices: push to GitHub, download as a zip, export to Antigravity.</li>
+  <li>Choose Export to Antigravity, then Export.</li>
+  <li>In the window that appears, click Open in Antigravity. The project loads, with your AI Studio chat.</li>
+</ol>
+<p>Three troubles came up, each with a fix.</p>
+<table class="dials">
+  <tr><th>The trouble</th><th>The fix</th></tr>
+  <tr><td>An error during export</td><td>Paste the error into the AI Studio chat and ask it to fix that part.</td></tr>
+  <tr><td>You land in a chat screen with no files</td><td>Antigravity also has a chat-only app. Click Open IDE at its top right, or install "Antigravity IDE standalone" from the downloads page.</td></tr>
+  <tr><td>Export still fails (AI Studio is still being tested)</td><td>Go through GitHub.</td></tr>
+</table>
+<p>GitHub is a website that keeps a copy of a project's files. One project there is a <b>repository</b>. In AI Studio, choose the GitHub option, create a new repository and push (upload) your files. On GitHub, open the Code menu, pick HTTPS and copy the link. In the IDE, open a new window, click Clone Repository and paste it. To <b>clone</b> is to download a copy.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Two routes from Google AI Studio to the Antigravity IDE. The direct route, Export to Antigravity, carries the code and the chat history. The fallback goes down to GitHub with a push and up to Antigravity with a clone, and carries the code only.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="70" width="180" height="80" rx="10"/>
+    <rect class="f-det" x="560" y="70" width="180" height="80" rx="10"/>
+    <rect class="f-card" x="300" y="200" width="160" height="60" rx="10"/>
+    <path class="arw c-act" d="M206 110 H552" marker-end="url(#ahc)"/>
+    <path class="arw" d="M110 156 V230 H292" marker-end="url(#ah)"/>
+    <path class="arw" d="M468 230 H650 V158" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="110" y="116" class="xs">Google AI Studio</text>
+    <text x="650" y="116" class="xs c-det">Antigravity IDE</text>
+    <text x="380" y="88" class="xs c-act">Export to Antigravity</text>
+    <text x="380" y="138" class="xxs">code + chat history</text>
+    <text x="380" y="236" class="xs">GitHub</text>
+    <text x="200" y="212" class="xxs">push</text>
+    <text x="560" y="212" class="xxs">clone</text>
+    <text x="380" y="282" class="xxs">the fallback: code only, no chat</text>
+  </g>
+</svg>
+<figcaption>Both routes bring every file. Only the direct export brings the chat that shaped the app.</figcaption>
+</figure>
+<p>Someone asked about later changes. Edit in AI Studio again and you must push and clone again. So finish there first, then move once. The files are open. What do you do first?</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Ask for a map before you change anything</h2>
+<p>You do not start building. You ask what is there. The IDE has the list of files on the left, the open file in the middle and the chat on the right. Start a new conversation, paste the prompt, pick an LLM and send. The instructor recommended Claude Sonnet, because it reads a project carefully.</p>
+<p>The prompt was shared in the session's chat. It asks the LLM to analyse the project and explain its structure. That means what connects to what, and how one user action flows through the files.</p>
+<p>The reply is a file at the bottom of the chat. Click it to open. The instructor's listed things like these (yours will differ):</p>
+<table class="dials">
+  <tr><th>In the project</th><th>What it is</th></tr>
+  <tr><td>Screens</td><td>One file for each step the user sees.</td></tr>
+  <tr><td>Components</td><td>Reusable parts of a screen, such as a button.</td></tr>
+  <tr><td>Data and services</td><td>What is stored, and the calls to outside APIs such as Gemini.</td></tr>
+  <tr><td>The main flow</td><td>The barber starts a session: which file runs, where it goes next.</td></tr>
+</table>
+<p>You do not need to read the code itself. Aim to know 60 to 70% of what sits where. Why? The instructor's example: you ask for the main buttons to be red. The LLM may decide every button on every screen counts. If you know which component holds your button, you name that file and only that file changes.</p>
+<p class="pull">An open-ended request lets the LLM guess. A request that names the file does not.</p>
+<p>Run the same prompt on any project you open. But the files are still code. How do you read them?</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Read the code as plain English</h2>
+<p>In the same chat, the instructor asked the LLM to explain one part of the app: the part that asks Gemini for style advice. Then he added the line he uses all the time:</p>
+<blockquote class="q9">"Write everything in pseudocode, and explain in plain English in maximum one para."</blockquote>
+<p>What came back had no programming language in it. It read like instructions. If the API key is blank, return this message. Otherwise send this prompt ("You are a master barber", with gaps for the customer's details) and return the reply.</p>
+<p>That is <b>pseudocode</b>: a program's logic in plain English, step by step, with "if this happens, then do that". It will not run. You read the code as pseudocode and you ask for changes in pseudocode. The LLM writes the real code.</p>
+<p class="pull">The clearer your logic in plain English, the less the LLM has to guess.</p>
+<p>A tip: LLMs answer simple questions at length. Ask for one or two lines, then ask about the part you did not follow. Now you can read a change. Should you accept it?</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Read, predict, question, then approve</h2>
+<p>When you ask for a change, Antigravity plans it first. It lists the components it will rework and the API calls it will add. Then it waits for you.</p>
+<p>The instructor's line: your job is to evaluate the AI before you approve it. Read the steps it lists. Predict which parts of your app the change will touch. Ask why it chose this way. Then approve or reject, and test what it built.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 236" role="img" aria-label="A loop of six steps. The coding tool proposes a change. You read the plan. You predict what will change and question it. You approve or reject. The tool builds. You test it. Then the loop starts again for the next change.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-prob" x="8" y="60" width="104" height="76" rx="10"/>
+    <rect class="f-card" x="136" y="60" width="104" height="76" rx="10"/>
+    <rect class="f-card" x="264" y="60" width="104" height="76" rx="10"/>
+    <rect class="f-act" x="392" y="60" width="104" height="76" rx="10"/>
+    <rect class="f-prob" x="520" y="60" width="104" height="76" rx="10"/>
+    <rect class="f-card" x="648" y="60" width="104" height="76" rx="10"/>
+    <path class="arw" d="M115 98 H131" marker-end="url(#ah)"/>
+    <path class="arw" d="M243 98 H259" marker-end="url(#ah)"/>
+    <path class="arw" d="M371 98 H387" marker-end="url(#ah)"/>
+    <path class="arw" d="M499 98 H515" marker-end="url(#ah)"/>
+    <path class="arw" d="M627 98 H643" marker-end="url(#ah)"/>
+    <path class="arw" d="M700 142 V186 H60 V144" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="60" y="94" class="xxs c-prob">the tool</text>
+    <text x="60" y="116" class="xxs c-prob">proposes</text>
+    <text x="188" y="94" class="xxs">you read</text>
+    <text x="188" y="116" class="xxs">the plan</text>
+    <text x="316" y="94" class="xxs">you predict</text>
+    <text x="316" y="116" class="xxs">and question</text>
+    <text x="444" y="94" class="xxs">approve</text>
+    <text x="444" y="116" class="xxs">or reject</text>
+    <text x="572" y="94" class="xxs c-prob">the tool</text>
+    <text x="572" y="116" class="xxs c-prob">builds</text>
+    <text x="700" y="94" class="xxs">you test</text>
+    <text x="700" y="116" class="xxs">it</text>
+    <text x="380" y="214" class="xxs">then the next change</text>
+  </g>
+</svg>
+<figcaption>The tool writes at two points. Every other step is yours.</figcaption>
+</figure>
+<p>Skip the reading and the tool adds code nobody asked for. The instructor's picture: to add 2 and 2, it writes a whole thesis.</p>
+<p>To predict what a change will touch, you need the parts every app is made of. What are they?</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>The screen, the worker and the memory</h2>
+<p>Every project comes down to three parts. One is the screen, in the browser or on the phone. One is the backend from Lecture 4, which does the work. One remembers.</p>
+<blockquote class="q9">"Which of these do you think the user can see?"</blockquote>
+<p>The room got it at once: only the screen. That part is the <b>front end</b>: the pages, the buttons, and the API requests they send. The backend holds the rules of the business, the calls to outside services and the secret keys. The part that remembers is the <b>database</b>.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 262" role="img" aria-label="A person looks at the front end, the screen with its buttons and pages. The front end and the backend talk through an API. The backend does the work and holds the keys. Behind it sits the database, the memory. The user sees only the front end. The logic, the keys and the data are hidden from the user.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" transform="translate(20 90) scale(.6)"/>
+    <rect class="f-card" x="100" y="80" width="170" height="100" rx="10"/>
+    <rect class="f-det" x="330" y="80" width="170" height="100" rx="10"/>
+    <use href="#db" x="590" y="95" class="c-det"/>
+    <path class="arw" d="M62 130 H92" marker-end="url(#ah)"/>
+    <path class="arw" d="M276 114 H322" marker-end="url(#ah)"/>
+    <path class="arw" d="M324 152 H278" marker-end="url(#ah)"/>
+    <path class="arw c-det" d="M506 130 H580" marker-end="url(#ahd)"/>
+    <path class="dash ink" d="M20 208 H270"/>
+    <path class="dash ink" d="M330 208 H690"/>
+  </g>
+  <g class="tx">
+    <text x="185" y="64" class="xs">front end</text>
+    <text x="415" y="64" class="xs c-det">backend</text>
+    <text x="635" y="64" class="xs c-det">database</text>
+    <text x="185" y="124" class="xxs">the screen</text>
+    <text x="185" y="148" class="xxs">buttons, pages</text>
+    <text x="415" y="124" class="xxs">does the work</text>
+    <text x="415" y="148" class="xxs c-act">holds the keys</text>
+    <text x="300" y="94" class="xxs">API</text>
+    <text x="635" y="194" class="xxs">the memory</text>
+    <text x="145" y="238" class="xxs">the user sees only this</text>
+    <text x="510" y="238" class="xxs">hidden from the user: logic, keys, data</text>
+  </g>
+</svg>
+<figcaption>Anything on the left, a curious user can open and read. So nothing secret goes there.</figcaption>
+</figure>
+<p class="pull">Never trust the browser with your secrets.</p>
+<p>The instructor called this the most common mistake of people who build by prompt alone: the API key ends up in the front end. Which toolkit each part is written with matters less. Describe your app and your expected users, and ask the coding tool which fits.</p>
+<p>So where exactly do the keys go?</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Where the keys go, and five rules</h2>
+<p>Most projects made for the browser share a layout: screens in a components folder, requests in a services folder, secret keys in one file. The ending of a file's name tells you its kind.</p>
+<table class="dials">
+  <tr><th>Ending</th><th>What is inside</th></tr>
+  <tr><td>.tsx</td><td>A screen or a component.</td></tr>
+  <tr><td>.ts, .js</td><td>Code for the logic.</td></tr>
+  <tr><td>.json</td><td>Data. package.json is the project's shopping list.</td></tr>
+  <tr><td>.css</td><td>Styling.</td></tr>
+  <tr><td>.env</td><td>The secret keys.</td></tr>
+</table>
+<blockquote class="q9">"Which of these should you never commit to Git?"</blockquote>
+<p>(Git is the system GitHub runs on. To commit is to save files into it.) One of you answered at once: the <b>.env</b> file. Push it and you have published your keys. Even to a private repository? Still no: automatic steps that run on your code can end up showing them.</p>
+<p>Then the five rules the instructor gives his coding tool:</p>
+<ul class="pt">
+  <li><b>Small components.</b> Do not let one grow complicated.</li>
+  <li><b>Reusable functions.</b> A function is a named piece of code. Sending a file to the backend is written once and used many times.</li>
+  <li><b>Clear names.</b> Each function and button says what it does.</li>
+  <li><b>Screens apart from logic.</b> The front end shows. The backend decides.</li>
+  <li><b>No repeats.</b> The same steps never appear twice.</li>
+</ul>
+<p>You know the parts. How do you follow one click through them?</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Trace one click, with Groq</h2>
+<p>Do not guess what a button does. Trace it. The user taps, a function runs, and it sends an API request to your backend. The backend calls an outside service, and the screen shows the reply. When the result surprises you, the instructor asks: What did I expect? What happened? Where did the two part ways? What evidence do I have? How should it change?</p>
+<p>We tried it on a small page, a hairstyle recommender that calls Groq (the company that runs LLMs fast, from Lecture 4). The instructor shared it as a zip in the session's chat. Unzip it and open index.html.</p>
+<ol>
+  <li><b>Click with no key.</b> An error: the Groq API key is missing.</li>
+  <li><b>Make a key.</b> Sign in at <a href="https://groq.com" target="_blank" rel="noopener">Groq</a>, open API keys and create one. It is shown once, so save it. Paste it into the page.</li>
+  <li><b>Fill the form.</b> Face shape, hair type, hair length and the style you want. The instructor chose straight, medium, "effortless flow".</li>
+  <li><b>Click Find my style.</b> The LLM replies with JSON: a style name, a match score, a reason and styling tips. The page shows it as tidy cards.</li>
+  <li><b>Read the right side.</b> It shows what the click sent: the header with your key, the body with your choices. Then the response.</li>
+  <li><b>Break it.</b> Leave a field out and the reply is a bad request that names the missing field.</li>
+</ol>
+<p>So the form is the package from Lecture 4, filled in by clicks. Text is one kind of reply. What about a picture?</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>An image API, left for you to wire</h2>
+<p>The Magic Mirror has to return a picture: this customer, with that hairstyle. For that the room opened <a href="https://replicate.com" target="_blank" rel="noopener">Replicate</a>, a site that offers many image generators through one API. You pay as you use it.</p>
+<p>Search for GPT Image, OpenAI's image generator. Its page shows what goes in: your OpenAI key, the two images (the customer's photo and the hairstyle) and a prompt. The API tab shows the same request written out, ready to copy.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 226" role="img" aria-label="Four boxes in a row. The front end collects a photo, a hairstyle and a description. It sends them to the backend, which builds the request and adds the key. The backend calls Replicate, the image API. Replicate calls OpenAI's GPT Image, which makes the picture. The picture travels back the same way, and the front end shows loading, then the image, or the failure.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="5" y="80" width="150" height="80" rx="10"/>
+    <rect class="f-det" x="205" y="80" width="150" height="80" rx="10"/>
+    <rect class="f-det" x="405" y="80" width="150" height="80" rx="10"/>
+    <rect class="f-prob" x="605" y="80" width="150" height="80" rx="10"/>
+    <path class="arw" d="M159 104 H199" marker-end="url(#ah)"/>
+    <path class="arw" d="M359 104 H399" marker-end="url(#ah)"/>
+    <path class="arw" d="M559 104 H599" marker-end="url(#ah)"/>
+    <path class="arw" d="M601 140 H561" marker-end="url(#ah)"/>
+    <path class="arw" d="M401 140 H361" marker-end="url(#ah)"/>
+    <path class="arw" d="M201 140 H161" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="80" y="64" class="xs">front end</text>
+    <text x="280" y="64" class="xs c-det">backend</text>
+    <text x="480" y="64" class="xs c-det">Replicate</text>
+    <text x="680" y="64" class="xs c-prob">GPT Image</text>
+    <text x="80" y="114" class="xxxs">photo, hairstyle,</text>
+    <text x="80" y="136" class="xxxs">description</text>
+    <text x="280" y="114" class="xxxs">builds the request,</text>
+    <text x="280" y="136" class="xxxs c-act">adds the key</text>
+    <text x="480" y="114" class="xxxs">the image API,</text>
+    <text x="480" y="136" class="xxxs">pay as you use</text>
+    <text x="680" y="114" class="xxxs">makes the</text>
+    <text x="680" y="136" class="xxxs">picture</text>
+    <text x="5" y="200" class="xxs l">the front end shows loading, then the image, or the failure</text>
+  </g>
+</svg>
+<figcaption>Top arrows carry the request, bottom arrows the picture. The key joins at the backend and never reaches the screen.</figcaption>
+</figure>
+<p>The instructor stopped there on purpose, so the wiring is yours. Someone asked what exactly to carry across. Copy the generator's name from its Replicate page. In Antigravity, describe the whole flow and ask the tool to connect it to your project. Read what it does while it works.</p>
+<p>When the tool says the feature is complete, do you believe it? Test first:</p>
+<ul class="pt">
+  <li><b>Failure.</b> What shows when the API fails, or no image comes back?</li>
+  <li><b>Storage.</b> Where is the key kept? Where is the image kept? Can another user open it?</li>
+  <li><b>Impatience.</b> What happens on a double click, or after a 10 second wait?</li>
+</ul>
+<p class="pull">The AI writes the code. You direct, judge and debug.</p>
+
+<p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
+<details class="acc"><summary>Export to Antigravity failed, so you went through GitHub. What reached Antigravity, and what did not?</summary><div class="b"><p>Every file arrived. The AI Studio chat did not.</p></div></details>
+<details class="acc"><summary>A friend pastes the Replicate key into the screen's code, "because it works". What is wrong?</summary><div class="b"><p>The front end is the one part a user can open and read. The key belongs in the backend, in the .env file, and that file never goes to GitHub.</p></div></details>
+<details class="acc"><summary>You ask for the main button to be red. The tool proposes changes to twelve files. What do you do before you approve?</summary><div class="b"><p>Find the component that holds that button in your map. You predicted one file, so question the plan. Then name the file in your request.</p></div></details>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Prototype</dt><dd>An app you can click through, with no backend underneath yet.</dd>
+  <dt>IDE</dt><dd>The app where you open a project's files and work on them.</dd>
+  <dt>Repository</dt><dd>One project's files, kept on GitHub.</dd>
+  <dt>Clone</dt><dd>To download a copy of a repository.</dd>
+  <dt>Pseudocode</dt><dd>A program's logic in plain English, step by step. It does not run.</dd>
+  <dt>Front end</dt><dd>The part of an app the user sees and can open: the screens.</dd>
+  <dt>Database</dt><dd>The part of an app that remembers: where data is stored.</dd>
+  <dt>.env</dt><dd>The file that holds a project's secret keys. Never pushed to GitHub.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>A prototype becomes a product when you open its files and take control. Ask for a map of the project first. Read and request changes in plain English, read each plan before you approve it, and keep every key in the backend.</p></div>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Your turn: wire the image API</h2>
+<p>Do it on the Magic Mirror app or on your own. Sign up on Replicate and pick an image generator. Before you prompt, write the flow in order: the input, the steps, the APIs, what is stored, the output. Then ask Antigravity to build it, and run the loop from section 05 on every change.</p>
+<p>List each place you get stuck, and bring the list to the office hour.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-03-building-ui/notes-no-code">Lecture 3 notes (no-code): from Stitch to Google AI Studio</a></li>
+  <li><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/notes">Lecture 4 notes: the API, the second interface</a></li>
+  <li><a href="/c8/module-2/lecture-04-the-second-interface/post-lecture/key-safety">Lecture 4: keeping a key safe</a></li>
+  <li><a href="/#L5">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 5: Building APIs and backend · No-code track</span><a href="/#L5">Curriculum map</a><a href="/c8/module-2/lecture-05-building-apis/">All Lecture 5 pages</a></div></footer>
+</body>
+</html>

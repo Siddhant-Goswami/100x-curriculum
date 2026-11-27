@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: PRD to UI design to frontend app | 100xEngineers</title>
+<meta name="description" content="Notes for Lecture 3, no-code track, with the whiteboard: product thinking, the flow before the screens, a PRD and a design file from a Claude skill, screens in Google Stitch and a working Android front end from Google AI Studio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l03-notes-no-code" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L3">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 3 pages"><a href="/c8/module-2/lecture-03-building-ui/">Overview</a><a href="/c8/module-2/lecture-03-building-ui/notes-no-code">Notes (no-code)</a><a href="/c8/module-2/lecture-03-building-ui/notes">Notes (code)</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 3 · 26 September 2026 · No-code track</p>
+  <h1>Decide what it does, then draw it.</h1>
+  <p class="dek">We took one salon's problem from four questions to a flow, two files, screens in Stitch and an Android app on a phone.</p>
+</div>
+
+<p>In <a href="/c8/module-2/lecture-02-what-is-an-interface/notes">Lecture 2</a> the screen was the first interface: where a person meets your product. In <a href="/c8/module-2/what-to-build/assignment-1">First Proof</a> you tested whether your idea is worth building. Today we took one idea all the way to a screen you can tap, and wrote no code.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>A haircut nobody sees before the cut</h2>
+<p>We kept one example all session, a real project: a boutique salon with several branches and no software at all.</p>
+<p>Every client walks in with a reference: a film star, a photo from Pinterest, a saved reel. You say one thing, the barber understands another, and you find out when the haircut is finished. Hair does not grow back overnight, so there is no trial and error.</p>
+<p>So the gap is one sentence: nobody sees the result before the cut. The proposed product closes it.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="Six steps in a row. The client brings a reference photo, takes a selfie, and the app makes a preview of the style on the client's own face. The barber and the client look at the preview together, then the haircut happens, then the result is compared with the preview.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="15" y="70" width="105" height="90" rx="10"/>
+    <rect class="f-card" x="140" y="70" width="105" height="90" rx="10"/>
+    <rect class="f-prob" x="265" y="70" width="105" height="90" rx="10"/>
+    <rect class="f-act" x="390" y="70" width="105" height="90" rx="10"/>
+    <rect class="f-card" x="515" y="70" width="105" height="90" rx="10"/>
+    <rect class="f-card" x="640" y="70" width="105" height="90" rx="10"/>
+    <path class="arw" d="M122 115 H136" marker-end="url(#ah)"/>
+    <path class="arw" d="M247 115 H261" marker-end="url(#ah)"/>
+    <path class="arw" d="M372 115 H386" marker-end="url(#ah)"/>
+    <path class="arw" d="M497 115 H511" marker-end="url(#ah)"/>
+    <path class="arw" d="M622 115 H636" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="67" y="110" class="xxs">reference</text>
+    <text x="67" y="132" class="xxxs">a photo you like</text>
+    <text x="192" y="110" class="xxs">selfie</text>
+    <text x="192" y="132" class="xxxs">your own face</text>
+    <text x="317" y="110" class="xxs c-prob">preview</text>
+    <text x="317" y="132" class="xxxs">the style on you</text>
+    <text x="442" y="110" class="xxs c-act">barber</text>
+    <text x="442" y="132" class="xxxs">looks with you</text>
+    <text x="567" y="110" class="xxs">haircut</text>
+    <text x="567" y="132" class="xxxs">the first cut</text>
+    <text x="692" y="110" class="xxs">compare</text>
+    <text x="692" y="132" class="xxxs">result and preview</text>
+    <text x="442" y="190" class="xxs c-act">both see it before the first cut</text>
+  </g>
+</svg>
+<figcaption>The preview and the talk with the barber sit before the haircut. That is the whole product.</figcaption>
+</figure>
+<p>The instructor had already put the idea through the First Proof skill, over two hours of talking with Claude. It left two files and some open risks. Will the barber use it? Will the preview look real enough to trust?</p>
+<p>What should you settle before you open a design tool?</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Four questions before any screen</h2>
+<p>The room answered four questions in the chat, about this salon.</p>
+<table class="dials">
+  <tr><th>The question</th><th>What the room said</th></tr>
+  <tr><td>Who is the user?</td><td>People who need a haircut. Sharper: anxious people.</td></tr>
+  <tr><td>What problem are we solving?</td><td>What you expect against what you get. Not appointments.</td></tr>
+  <tr><td>What is the most important moment?</td><td>The moment the barber makes the first cut.</td></tr>
+  <tr><td>What would make it a success?</td><td>An accurate preview and a satisfied client.</td></tr>
+</table>
+<p>The slide then sorted the work into four boxes.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Four boxes in a row joined by arrows. Problem space: the gap, the user, the guess, the open risks. Product decisions: the moment, the barber's role, what we will not build. Solution space: the experience. Screens come last.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="15" y="50" width="170" height="130" rx="10"/>
+    <rect class="f-act" x="205" y="50" width="170" height="130" rx="10"/>
+    <rect class="f-card" x="395" y="50" width="170" height="130" rx="10"/>
+    <rect class="f-det" x="585" y="50" width="160" height="130" rx="10"/>
+    <path class="arw" d="M187 115 H201" marker-end="url(#ah)"/>
+    <path class="arw" d="M377 115 H391" marker-end="url(#ah)"/>
+    <path class="arw" d="M567 115 H581" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="100" y="82" class="xs">problem space</text>
+    <text x="100" y="110" class="xxxs">the gap, the user</text>
+    <text x="100" y="132" class="xxxs">our guess</text>
+    <text x="100" y="154" class="xxxs">the open risks</text>
+    <text x="290" y="82" class="xs c-act">product decisions</text>
+    <text x="290" y="110" class="xxxs">the moment</text>
+    <text x="290" y="132" class="xxxs">the barber's role</text>
+    <text x="290" y="154" class="xxxs">what we will not build</text>
+    <text x="480" y="82" class="xs">solution space</text>
+    <text x="480" y="120" class="xxxs">the experience</text>
+    <text x="665" y="82" class="xs c-det">screens</text>
+    <text x="665" y="120" class="xxxs">only now</text>
+    <text x="380" y="212" class="xxs c-mute">left to right, never the other way</text>
+  </g>
+</svg>
+<figcaption>Screens are the last box. Three boxes of thinking come first.</figcaption>
+</figure>
+<p>Working through the first three boxes before the fourth has a name: <b>product thinking</b>.</p>
+<p class="pull">Decide what deserves to exist before you decide what it looks like.</p>
+<p>The product is used by people. Which people?</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>Who touches it, and where</h2>
+<p>We listed everyone who touches the product: the client, the barber, the receptionist, the salon manager, the owner, marketing.</p>
+<blockquote class="q9">"If the salon launches this tomorrow, whose behaviour changes the most?"</blockquote>
+<p>The barber's and the client's. And if the barber ignores the preview, nothing else matters. So the barber has to be inside the flow, not after it.</p>
+<p>For each person we wrote three things: what they need, what they do, and where they meet the product. That place is a <b>touchpoint</b>. For the barber: needs the reference photo, cuts to match it, meets the product at the chair.</p>
+<p>Where should it live: a website, a phone app, WhatsApp, a screen in the salon? The instructor chose a website that also works like an app on a phone. People find a style at home and bring it to the salon, so it must work in both places. WhatsApp came second: a long chat buries the details the barber needs.</p>
+<p>We know who and where. What happens, step by step?</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The flow first, then the screens</h2>
+<p>The instructor showed a first rough screen for the salon and asked what was wrong with it. The chat: no images, too much text, too many buttons, no idea which one to press.</p>
+<p>The button that tells you the one thing to do next is the call to action, or <b>CTA</b>. That screen had many buttons and no CTA. Nothing looked more important than anything else: it had no hierarchy.</p>
+<p>Better colours would not save it, because the trouble is in what happens. What happens to the user, step by step, is the <b>UX</b> (user experience). What it looks like is the UI.</p>
+<p class="pull">A good UI cannot rescue a broken experience.</p>
+<p>So we wrote the flow first. You discover a style, select it, take a selfie and generate the preview. Then you review it with the barber, who knows your hair type. Then the flow became screens.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="Six screens in order: Home, Style, Camera, Preview, Booking, Profile. Below them, four states every screen can be in: loading, empty, error and success.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="40" width="100" height="130" rx="12"/>
+    <rect class="f-card" x="144" y="40" width="100" height="130" rx="12"/>
+    <rect class="f-card" x="268" y="40" width="100" height="130" rx="12"/>
+    <rect class="f-prob" x="392" y="40" width="100" height="130" rx="12"/>
+    <rect class="f-card" x="516" y="40" width="100" height="130" rx="12"/>
+    <rect class="f-card" x="640" y="40" width="100" height="130" rx="12"/>
+    <path class="arw" d="M122 105 H140" marker-end="url(#ah)"/>
+    <path class="arw" d="M246 105 H264" marker-end="url(#ah)"/>
+    <path class="arw" d="M370 105 H388" marker-end="url(#ah)"/>
+    <path class="arw" d="M494 105 H512" marker-end="url(#ah)"/>
+    <path class="arw" d="M618 105 H636" marker-end="url(#ah)"/>
+    <rect class="f-act" x="110" y="222" width="120" height="44" rx="8"/>
+    <rect class="f-act" x="250" y="222" width="120" height="44" rx="8"/>
+    <rect class="f-act" x="390" y="222" width="120" height="44" rx="8"/>
+    <rect class="f-act" x="530" y="222" width="120" height="44" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="70" y="96" class="xxs">Home</text>
+    <text x="70" y="120" class="xxxs">look around</text>
+    <text x="194" y="96" class="xxs">Style</text>
+    <text x="194" y="120" class="xxxs">pick or upload</text>
+    <text x="318" y="96" class="xxs">Camera</text>
+    <text x="318" y="120" class="xxxs">the selfie</text>
+    <text x="442" y="96" class="xxs c-prob">Preview</text>
+    <text x="442" y="120" class="xxxs">the style on you</text>
+    <text x="566" y="96" class="xxs">Booking</text>
+    <text x="566" y="120" class="xxxs">with the barber</text>
+    <text x="690" y="96" class="xxs">Profile</text>
+    <text x="690" y="120" class="xxxs">past visits</text>
+    <text x="380" y="206" class="xxs c-act">and for each screen, four states</text>
+    <text x="170" y="250" class="xxs">loading</text>
+    <text x="310" y="250" class="xxs">empty</text>
+    <text x="450" y="250" class="xxs">error</text>
+    <text x="590" y="250" class="xxs">success</text>
+  </g>
+</svg>
+<figcaption>The screens fall out of the flow. The four states underneath are the part people forget.</figcaption>
+</figure>
+<p>A screen is not one picture. It looks different while the AI is working, when there is nothing to show, when something fails, and when it works. Each is a <b>state</b>. What does the client see if the image never comes back?</p>
+<p class="pull">A confident wrong preview is worse than showing nothing.</p>
+<p>You now know what each screen must do. How do you tell an AI tool what it should look like?</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Learn the names of what you see</h2>
+<p>In words, so you need the words. We went through a design handbook in two passes.</p>
+<p>First, looks. The slide had 13 popular styles, each with a name, and the room matched them to apps. The one called material is Google's. Glass is Apple today. Neo-brutalist is Gumroad. Which is right depends on your users and the apps they open every day. For this salon the room settled on premium and minimal.</p>
+<p>Second, parts. Every screen is built from named parts: a search bar, a primary button, a card, a toggle, a bottom navigation bar. Each one is a <b>component</b>. The handbook lists about 40 to 45 common ones.</p>
+<p>Why learn the names? Because "swap the radio buttons for a toggle" gets you exactly that, and "make it nicer" gets you anything.</p>
+<p class="pull">The more exact your words, the more the result is yours.</p>
+<p>To practise, name the components in WhatsApp next time you open it. On a website, the Inspect tool from <a href="/c8/module-2/lecture-02-what-is-an-interface/notes#s10">Lecture 2</a> shows what the developers called each part.</p>
+<p>Also choose phone or laptop. A phone is touched and held upright; a laptop is wide and driven by keyboard and pointer. One interface made for both usually fits neither.</p>
+<p>That is a lot to remember each time you prompt. Where do you keep it?</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Write it into two files</h2>
+<p>You keep it in files a tool can read. First the room answered five questions for the salon. Who are the users? What are they trying to do? What should happen? What are the constraints? What should it feel like?</p>
+<p>The first file holds what the product must do. It is the product requirements document, or <b>PRD</b>. You do not write it by hand. A second Claude skill, Discovery to PRD, does it with you:</p>
+<ol>
+  <li>You give it your two First Proof files.</li>
+  <li>It fills the 14 sections of a PRD from them.</li>
+  <li>It asks you only about the real gaps: what is missing or half covered.</li>
+  <li>It asks for the look: the logo, the colour palette and reference pictures.</li>
+  <li>It hands back two files: the PRD and a second file named <b>design.md</b>.</li>
+</ol>
+<p>design.md holds the users, the flows, the screens, the components, the states and the look. It is sections 01 to 05, written down once.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Your two First Proof files go into a Claude skill, which asks about the gaps and returns two files, the PRD and design.md. Both go into Stitch, which draws the screens. The screens go to AI Studio, which makes a working app.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="15" y="70" width="130" height="90" rx="10"/>
+    <rect class="f-prob" x="170" y="70" width="130" height="90" rx="10"/>
+    <rect class="f-act" x="325" y="62" width="120" height="44" rx="6"/>
+    <rect class="f-act" x="325" y="124" width="120" height="44" rx="6"/>
+    <rect class="f-det" x="470" y="70" width="125" height="90" rx="10"/>
+    <rect class="f-det" x="620" y="70" width="125" height="90" rx="10"/>
+    <path class="arw" d="M147 115 H166" marker-end="url(#ah)"/>
+    <path class="arw" d="M302 115 H321" marker-end="url(#ah)"/>
+    <path class="arw" d="M447 115 H466" marker-end="url(#ah)"/>
+    <path class="arw" d="M597 115 H616" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="80" y="108" class="xxs">First Proof</text>
+    <text x="80" y="132" class="xxxs">your two files</text>
+    <text x="235" y="108" class="xxs c-prob">Claude skill</text>
+    <text x="235" y="132" class="xxxs">asks about the gaps</text>
+    <text x="385" y="90" class="xxs c-act">the PRD</text>
+    <text x="385" y="152" class="xxs c-act">design.md</text>
+    <text x="532" y="108" class="xxs c-det">Stitch</text>
+    <text x="532" y="132" class="xxxs">draws the screens</text>
+    <text x="682" y="108" class="xxs c-det">AI Studio</text>
+    <text x="682" y="132" class="xxxs">makes them work</text>
+    <text x="385" y="204" class="xxs c-mute">the two files travel with you to every tool</text>
+  </g>
+</svg>
+<figcaption>Everything left of the two files is thinking. Everything right of them is a tool reading that thinking.</figcaption>
+</figure>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Stitch draws the screens</h2>
+<p><a href="https://stitch.withgoogle.com" target="_blank" rel="noopener">Stitch</a> is Google's tool that draws app screens from a description. It is a test version, so expect rough edges. The room followed along with the instructor's two salon files.</p>
+<ol>
+  <li>Open Stitch and choose App, not Website.</li>
+  <li>Click the paint palette button, choose "Start with your design", and upload design.md.</li>
+  <li>Upload the logo, and paste the address of the brand's website so Stitch can pick up its look.</li>
+  <li>Click Continue. Back on the main screen, paste the whole PRD into the box and click Generate.</li>
+  <li>Copy section 14 of the PRD (the screens, with the user flow), paste it into the chat box at the bottom, and generate again.</li>
+</ol>
+<p><b>The trouble the room hit.</b> Someone got only three screens. That is normal after step 4. Section 14 of the salon's PRD lists seven, and step 5 brings the rest. If it still stops at three, ask it to redo the step.</p>
+<p>Then we tried the shortcut. No files: one spoken paragraph, straight into Stitch.</p>
+<blockquote class="q9">"I'm building an app for a salon that helps me generate hairstyles even before the barber does the haircut. I give a reference style that I like, and also my selfie..."</blockquote>
+<p>It drew screens, but they did not look like the salon. With no design.md, Stitch never picked up the brand. Same tool, same idea: the files were the difference.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>The first output is never the design</h2>
+<p>The instructor put up Stitch's first screens and asked again: what is wrong? The chat answered in the new words. A lot of text. Too many CTAs. No visual hierarchy.</p>
+<p>Then he fed those words back to Stitch, in three ways.</p>
+<ul class="pt">
+  <li><b>By voice.</b> Stitch has a mode you can talk to. He said: "Reduce the amount of text. Make it minimal. Focus on visual hierarchy, focus on CTA. Follow the brand guidelines." It changed only a couple of screens, so he went back to typing.</li>
+  <li><b>By text, on many screens.</b> Select every screen that has the problem and type once: "Reduce the amount of text, have a clear CTA."</li>
+  <li><b>By pointing.</b> Select one area of one screen, choose edit with AI, and say what you want: "it needs to be center aligned".</li>
+</ul>
+<p>His prepared version of the salon app took about five rounds like this. One click also makes a web version of a screen, or its empty state. That is what a screen shows with nothing in it yet, like WhatsApp with no chats.</p>
+<p>To review your own screens, ask four things. Is the hierarchy right? Is the CTA clear? Does each screen lead to the next? Does it look like the brand? Then name three things to keep, three to change and one to remove, and type them in.</p>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>AI Studio makes the screens work</h2>
+<p>Stitch gives you pictures of screens. <a href="https://aistudio.google.com" target="_blank" rel="noopener">Google AI Studio</a> turns them into screens you can tap through: the <b>front end</b> of the app.</p>
+<ol>
+  <li>In Stitch, select all your screens and export them as a zip file. Inside is design.md, and for every screen a picture and its code.</li>
+  <li>In AI Studio, choose the "Build an Android app" option before you type anything. Skip it and you get a web app.</li>
+  <li>Paste section 14 of the PRD again, with one line above it: "Create an Android mobile app to do this."</li>
+  <li>Attach the picture of each screen from the zip, and design.md.</li>
+  <li>Click Build and wait. Ours took 5 to 10 minutes; one learner's took 15.</li>
+</ol>
+<p><b>Why the zip?</b> Stitch has a button that sends screens straight to AI Studio. For most of the room it carried only one screen. If that happens, use the zip.</p>
+<p><b>No Install button?</b> Then you built a web app. Typing "Android app" in the prompt is not enough. Start again with the option picked, because the two kinds of app are written in different code.</p>
+<p>To put the app on an Android phone, turn on developer mode. On the instructor's Samsung: Settings, About phone, Software information, then tap "Build number" 10 to 15 times. Open Developer options, switch on USB debugging, and connect the phone to your laptop by cable. In AI Studio click "Install on your device" and allow it on the phone.</p>
+<p>It ran. He took a selfie, got three looks, picked one and reached "Ready to cut". That is the flow from section 04, on a phone.</p>
+<p>A change is one more prompt. He took a screenshot of the last screen inside AI Studio and typed one line. "I want confetti when he clicks on the button start next chair session." He installed again, and there was confetti.</p>
+<p>Even a change that small takes minutes in an Android app, and spends your free credits.</p>
+<p class="pull">Change the design in Stitch. Come to AI Studio when you are happy with it.</p>
+
+<p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
+<details class="acc"><summary>You give Stitch one spoken paragraph about the salon and no files. What will be missing from the screens?</summary><div class="b"><p>The brand. Without design.md, Stitch never picked up the salon's look. The files are how your decisions reach the tool.</p></div></details>
+<details class="acc"><summary>A friend wants to polish the colours in AI Studio, "because that is the real app". What is wrong with that?</summary><div class="b"><p>Every change to the Android app takes minutes and spends credits. Settle the design in Stitch first.</p></div></details>
+<details class="acc"><summary>The client takes a selfie and the preview never comes back. Which part of the plan covers that?</summary><div class="b"><p>The states. Decide the loading and error states in advance. Showing nothing beats a confident wrong preview.</p></div></details>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Product thinking</dt><dd>Deciding what deserves to exist before deciding what it looks like.</dd>
+  <dt>Touchpoint</dt><dd>The place where a person meets your product: a phone, a chat, a screen in the shop.</dd>
+  <dt>UX</dt><dd>User experience. What happens to the user, step by step.</dd>
+  <dt>CTA</dt><dd>Call to action. The one button that tells the user what to do next.</dd>
+  <dt>State</dt><dd>One of the ways a screen can look: loading, empty, error or success.</dd>
+  <dt>Component</dt><dd>A named part of a screen, such as a search bar, a card or a toggle.</dd>
+  <dt>PRD</dt><dd>Product requirements document. One file that says what the product must do. Ours has 14 sections.</dd>
+  <dt>design.md</dt><dd>One file that says how the product should look and behave, written so a design tool can read it.</dd>
+  <dt>Front end</dt><dd>The part of an app the user sees and taps.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>Decide what happens before what it looks like: the user, the moment that matters, the flow, the screens and their states. Write those decisions into two files, a PRD and design.md, and Stitch draws screens that are yours. Fix the design in Stitch, then let AI Studio make it work.</p></div>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Your turn: your idea, as far as AI Studio</h2>
+<p>Do tonight what the room did, with your own idea from First Proof.</p>
+<ol>
+  <li>Run the Discovery to PRD skill in Claude with your two First Proof files.</li>
+  <li>Generate your screens in Stitch, then keep three things, change three and remove one.</li>
+  <li>Build it in AI Studio and take a screenshot of it running.</li>
+</ol>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-02-what-is-an-interface/notes">Lecture 2 notes: the first interface</a></li>
+  <li><a href="/c8/module-2/what-to-build/assignment-1">First Proof: the files this lecture starts from</a></li>
+  <li><a href="/c8/module-2/lecture-03-building-ui/notes">The same day on the code track</a></li>
+  <li><a href="/#L3">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>Next: the app leaves AI Studio and goes into Antigravity.</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 3: PRD to UI design to frontend app · No-code track</span><a href="/#L3">Curriculum map</a><a href="/c8/module-2/lecture-03-building-ui/">All Lecture 3 pages</a></div></footer>
+</body>
+</html>

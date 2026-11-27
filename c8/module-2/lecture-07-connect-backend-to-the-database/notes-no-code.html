@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Connect backend to the database | 100xEngineers</title>
+<meta name="description" content="Notes for Lecture 7, no-code track, with the whiteboard: the parts of a full app as a restaurant, why a prototype forgets, four tables for a salon, and the steps to connect an Antigravity app to Supabase.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l07-notes-no-code" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L7">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 7 pages"><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">Overview</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes-no-code">Notes (no-code)</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/notes">Notes (code)</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 7 · 16 October 2026 · No-code track</p>
+  <h1>Make the app remember.</h1>
+  <p class="dek">We named the parts of a full app, watched a booking vanish on refresh, and connected a to-do app to Supabase.</p>
+</div>
+
+<p>In <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Lecture 6</a> you worked out what an app should store and drew it as tables. Today that drawing became a real database. First we named the parts of a full app. Then you connected an app to Supabase with your own hands.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Learn the names, skip the code</h2>
+<p>Antigravity writes the code. So what is left for you to know? The name of each part and why it exists. With the names you can ask the coding tool for a change, and follow what it says back.</p>
+<p>Each part was added when the one before it hit a wall.</p>
+<ul class="pt">
+  <li><b>HTML, 1990s.</b> Pages that only show information.</li>
+  <li><b>JavaScript.</b> Code in the browser, so a page can respond to a click.</li>
+  <li><b>Node.js and Express.</b> Node.js lets JavaScript run on the server too. Express manages the requests coming in.</li>
+  <li><b>React, 2013.</b> Started at Facebook. Before React, one new like meant loading the whole page again. Now only the counter changes.</li>
+</ul>
+<p>Add a database called MongoDB and you have four parts: MongoDB, Express, React, Node.js. Their first letters give the name <b>MERN stack</b>. The side you see is the <b>front end</b>. The side on the server is the <b>back end</b>.</p>
+<p class="pull">You do not need to write the code. You need the names and what each one does.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The app as a restaurant</h2>
+<p>To make the names stick, we walked through a restaurant.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Four boxes in a row. The dining area is React, where the customer orders. The traffic controller is Express, which sends each order to the right cook. The kitchen is Node.js, which does the work. The storeroom is the database. Arrows carry the order to the right along the top and the result back to the left along the bottom.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="70" width="150" height="100" rx="10"/>
+    <rect class="f-det" x="215" y="70" width="150" height="100" rx="10"/>
+    <rect class="f-det" x="410" y="70" width="150" height="100" rx="10"/>
+    <rect class="f-det" x="605" y="70" width="135" height="100" rx="10"/>
+    <path class="arw" d="M176 100 H207" marker-end="url(#ah)"/>
+    <path class="arw" d="M371 100 H402" marker-end="url(#ah)"/>
+    <path class="arw" d="M566 100 H597" marker-end="url(#ah)"/>
+    <path class="arw c-det" d="M599 145 H568" marker-end="url(#ahd)"/>
+    <path class="arw c-det" d="M404 145 H373" marker-end="url(#ahd)"/>
+    <path class="arw c-det" d="M209 145 H178" marker-end="url(#ahd)"/>
+  </g>
+  <g class="tx">
+    <text x="95" y="52" class="xxs">the dining area</text>
+    <text x="290" y="52" class="xxs">the traffic controller</text>
+    <text x="485" y="52" class="xxs">the kitchen</text>
+    <text x="672" y="52" class="xxs">the storeroom</text>
+    <text x="95" y="116" class="xs">React</text>
+    <text x="95" y="142" class="xxxs">what you see</text>
+    <text x="290" y="116" class="xs c-det">Express</text>
+    <text x="290" y="142" class="xxxs">who gets the order</text>
+    <text x="485" y="116" class="xs c-det">Node.js</text>
+    <text x="485" y="142" class="xxxs">does the work</text>
+    <text x="672" y="116" class="xs c-det">database</text>
+    <text x="672" y="142" class="xxxs">keeps everything</text>
+    <text x="380" y="208" class="xxxs c-mute">the order goes right along the top; the result comes back along the bottom</text>
+  </g>
+</svg>
+<figcaption>Front end on the left, back end and database on the right. Every order makes the full round trip.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>HTML is the building, CSS the interior design.</b> Walls and layout, then colours and style.</li>
+  <li><b>JavaScript is the staff, React the floor manager.</b> They take orders and keep the dining room running.</li>
+  <li><b>An API is the order slip.</b> The waiter carries it to the kitchen.</li>
+  <li><b>Express is the traffic controller.</b> In a kitchen with many cuisines, it sends a Chinese order to the Chinese chef.</li>
+  <li><b>Node.js is the kitchen.</b> The work on the order happens here.</li>
+  <li><b>The database is the storeroom.</b> Menu, customers and order history, kept safe and in order.</li>
+</ul>
+<p>React builds a screen from small reusable blocks, like Lego. A like button is one block. You write it once and use it everywhere. Each block is a <b>component</b>.</p>
+<p>The instructions you hand a component, like a special request given to the waiter, are its <b>props</b>. What is true right now, like which table is occupied, is its <b>state</b>. When the state changes, React redraws that one component.</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The waiter who forgot the table</h2>
+<p>A waiter writes down an order: pasta, quantity 2. The kitchen cooks it. Where does the food go? Nobody knows, because the waiter never wrote the table number.</p>
+<p>Plain JavaScript is that waiter. It is flexible, so a mistake shows up only when the app is already running.</p>
+<p>The fix is a rulebook on top of JavaScript. It checks that every required detail is there, and of the right kind, before the code runs. That rulebook is <b>TypeScript</b>. Its files end in <code>.ts</code>, or <code>.tsx</code> for React components.</p>
+<p class="pull">Ask your coding tool for TypeScript. It catches the missing table number before the food is cooked.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>One click, all the way round</h2>
+<p>Now run all the parts in one flow. In a to-do app, you type an item and click add. What happens?</p>
+<p>React sends a request to Express. Express hands it to the right back-end code, and Node.js runs it: it checks, for example, that the item is not empty. The database stores the item and answers: stored, or failed. The answer travels back the same way, and React updates the screen.</p>
+<p>An app does four things to its data, and each has its own kind of request.</p>
+<table class="dials">
+  <tr><th>In the to-do app</th><th>The action</th><th>The request</th></tr>
+  <tr><td>Add an item</td><td>Create</td><td>POST</td></tr>
+  <tr><td>Show the list</td><td>Read</td><td>GET</td></tr>
+  <tr><td>Mark it done, or edit it</td><td>Update</td><td>PUT</td></tr>
+  <tr><td>Remove it</td><td>Delete</td><td>DELETE</td></tr>
+</table>
+<p>Create, read, update, delete: <b>CRUD</b>.</p>
+<details class="acc"><summary>From the chat: the screen changed, but did it save?</summary><div class="b"><p>Click a like and the button changes at once. In the same moment the app sends the request to the back end. If the back end fails, the button goes back to how it was. A small message pops up in a corner to say so: a <b>toast message</b>.</p></div></details>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>Where the files live</h2>
+<p>Open any project Antigravity has built and you see folders. Which folder holds what? The instructor showed a standard layout. You can ask your coding tool to follow it.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 280" role="img" aria-label="Two cards. The client folder is the front end: components for buttons and checkboxes, pages for whole screens, services for the API calls, assets for images, icons and fonts, and App and main, where it starts. The server folder is the back end: routes for the addresses, controllers for the logic, models for the shape of the data, middleware for login and errors, and server.js, where it starts.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="50" width="335" height="210" rx="10"/>
+    <rect class="f-det" x="395" y="50" width="335" height="210" rx="10"/>
+  </g>
+  <g class="tx">
+    <text x="197" y="36" class="xs">client: the front end</text>
+    <text x="562" y="36" class="xs c-det">server: the back end</text>
+    <text x="50" y="88" class="mono l">components/</text><text x="190" y="88" class="xxxs l">buttons, checkboxes</text>
+    <text x="50" y="124" class="mono l">pages/</text><text x="190" y="124" class="xxxs l">whole screens</text>
+    <text x="50" y="160" class="mono l">services/</text><text x="190" y="160" class="xxxs l">the API calls</text>
+    <text x="50" y="196" class="mono l">assets/</text><text x="190" y="196" class="xxxs l">images, icons, fonts</text>
+    <text x="50" y="232" class="mono l">App, main</text><text x="190" y="232" class="xxxs l">where it starts</text>
+    <text x="415" y="88" class="mono l">routes/</text><text x="555" y="88" class="xxxs l">the addresses</text>
+    <text x="415" y="124" class="mono l">controllers/</text><text x="555" y="124" class="xxxs l">the logic</text>
+    <text x="415" y="160" class="mono l">models/</text><text x="555" y="160" class="xxxs l">the shape of the data</text>
+    <text x="415" y="196" class="mono l">middleware/</text><text x="555" y="196" class="xxxs l">login, errors</text>
+    <text x="415" y="232" class="mono l">server.js</text><text x="555" y="232" class="xxxs l">where it starts</text>
+  </g>
+</svg>
+<figcaption>Two folders, one per side. There is no database folder.</figcaption>
+</figure>
+<p>From the chat: does the database get a folder too? No. The <code>models</code> folder only describes the shape of the data. The database itself is created later, and it lives somewhere else.</p>
+<details class="acc"><summary>From the chat: what is the DOM?</summary><div class="b"><p>DOM stands for document object model. The browser turns a plain HTML page into a tree: header, body, every button. Each item on the tree can then be changed on its own, without loading the page again.</p></div></details>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Refresh, and the booking is gone</h2>
+<p>Back to the salon booking app you have been building since Lecture 3. On screen it says "appointment saved": Asha has booked a signature haircut with the stylist Maya, Thursday at 4 pm.</p>
+<blockquote class="q9">"What happens as soon as she refreshes the page?"</blockquote>
+<p>One answer from the chat: it should stay. Others: it is gone. It is gone. The prototype kept the booking only in the page's temporary memory, and a refresh wipes that.</p>
+<p class="pull">A beautiful UI is not the product. The product remembers.</p>
+<p>So what should happen when Asha clicks Book?</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 260" role="img" aria-label="Six steps. On the left, the app: step 1, Asha clicks Book; step 2, the form collects the details. Step 3, the app sends a request to the database on the right. Step 4, the database saves the appointment. Step 5, the database sends back a response: saved, or failed. Step 6, the screen shows the result.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="60" width="250" height="170" rx="10"/>
+    <rect class="f-det" x="510" y="60" width="220" height="170" rx="10"/>
+    <path class="arw" d="M288 105 H502" marker-end="url(#ah)"/>
+    <path class="arw c-act" d="M502 185 H288" marker-end="url(#ahc)"/>
+    <circle class="badge" cx="54" cy="96" r="11"/>
+    <circle class="badge" cx="54" cy="141" r="11"/>
+    <circle class="badge" cx="54" cy="194" r="11"/>
+    <circle class="badge" cx="395" cy="105" r="11"/>
+    <circle class="badge" cx="534" cy="145" r="11"/>
+    <circle class="badge act" cx="395" cy="185" r="11"/>
+  </g>
+  <g class="tx">
+    <text x="155" y="44" class="xs">the app</text>
+    <text x="620" y="44" class="xs c-det">the database</text>
+    <text x="54" y="100" class="bn">1</text><text x="74" y="101" class="xxxs l">Asha clicks Book</text>
+    <text x="54" y="145" class="bn">2</text><text x="74" y="146" class="xxxs l">the form collects the details</text>
+    <text x="54" y="198" class="bn">6</text><text x="74" y="199" class="xxxs l">the screen shows the result</text>
+    <text x="395" y="109" class="bn">3</text><text x="395" y="84" class="xxxs">the app sends a request</text>
+    <text x="534" y="149" class="bn">4</text><text x="554" y="150" class="xxxs l">saves the appointment</text>
+    <text x="395" y="189" class="bn">5</text><text x="395" y="216" class="xxxs c-act">the response: saved, or failed</text>
+  </g>
+</svg>
+<figcaption>The screen may say "saved" only after step 5 comes back.</figcaption>
+</figure>
+<p>Does the click itself mean the appointment is booked? No. The click only starts the trip. The database writes a new entry, like a line in the salon's permanent register, and reports back.</p>
+<p>The UI does not get to claim "saved" because someone clicked a button. It shows what the database said. When Asha refreshes, or opens the app on another device, the app fetches the appointment back.</p>
+<p>What exactly does the database need to hold?</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Four lists the salon keeps</h2>
+<p>Today the salon's receptionist keeps a paper register: who is coming, for which service, with which stylist, at what time.</p>
+<blockquote class="q9">"What information must the app remember?"</blockquote>
+<p>The chat's answers: customer name, stylist name, time, appointments. That gives four things: customers, stylists, services, appointments. In <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s09">Lecture 6</a> you called each one an entity. Each entity becomes a table.</p>
+<p class="pull">A table is a list. A row is one record. A column is one kind of information.</p>
+<p>Asha is one row in the customers table. If Kabir joins tomorrow, he is one more row in the same table.</p>
+<p>Now suppose two customers are both called Asha. How does the salon know which one booked? The chat said: mobile number, or an ID. A phone number can change. So every row gets an ID that never changes. That is the primary key from <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s10">Lecture 6</a>.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="Three tables on top: customers with id, name and phone; stylists with id, name and speciality; services with id, name and price. An arrow from each points down to a fourth table, appointments, which holds its own id, a customer id, a stylist id, a service id and the time.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="40" y="30" width="180" height="104" rx="10"/>
+    <rect class="f-det" x="290" y="30" width="180" height="104" rx="10"/>
+    <rect class="f-det" x="540" y="30" width="180" height="104" rx="10"/>
+    <rect class="f-act" x="150" y="212" width="460" height="82" rx="10"/>
+    <path class="arw" d="M130 142 L246 204" marker-end="url(#ah)"/>
+    <path class="arw" d="M380 142 V204" marker-end="url(#ah)"/>
+    <path class="arw" d="M630 142 L514 204" marker-end="url(#ah)"/>
+  </g>
+  <g class="tx">
+    <text x="130" y="60" class="xs c-det">customers</text>
+    <text x="130" y="88" class="mono">id</text>
+    <text x="130" y="114" class="xxxs">name, phone</text>
+    <text x="380" y="60" class="xs c-det">stylists</text>
+    <text x="380" y="88" class="mono">id</text>
+    <text x="380" y="114" class="xxxs">name, speciality</text>
+    <text x="630" y="60" class="xs c-det">services</text>
+    <text x="630" y="88" class="mono">id</text>
+    <text x="630" y="114" class="xxxs">name, price</text>
+    <text x="380" y="242" class="xs c-act">appointments</text>
+    <text x="380" y="272" class="mono">id  customer_id  stylist_id  service_id  time</text>
+  </g>
+</svg>
+<figcaption>An appointment stores three IDs and a time. It copies no names.</figcaption>
+</figure>
+<p>Asha will have many appointments over time, so they cannot sit inside her customer row. They go in the appointments table. An appointment row does not copy Asha's name or Maya's name. It stores their IDs, so it still points at the right Asha when her details change. An ID that points at a row in another table is the foreign key from Lecture 6.</p>
+<p>Then you took five minutes to fill in the four tables yourself, on paper or in a sheet.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Connect a to-do app to Supabase</h2>
+<p>The design is on paper. Supabase is the tool that holds the tables: your app's data home. A database takes its instructions in SQL. You write none by hand: Antigravity writes it, and you paste it. We practised on a fresh to-do app. You can do this tonight.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 220" role="img" aria-label="Two boxes. On the left, Antigravity, where your to-do app is built. On the right, Supabase, which holds the table. An arrow from Supabase to Antigravity carries the project URL and the key. An arrow from Antigravity to Supabase carries the SQL that makes the table.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="30" y="60" width="220" height="120" rx="10"/>
+    <rect class="f-det" x="510" y="60" width="220" height="120" rx="10"/>
+    <path class="arw c-act" d="M502 95 H258" marker-end="url(#ahc)"/>
+    <path class="arw c-det" d="M258 150 H502" marker-end="url(#ahd)"/>
+  </g>
+  <g class="tx">
+    <text x="140" y="44" class="xs">Antigravity</text>
+    <text x="620" y="44" class="xs c-det">Supabase</text>
+    <text x="140" y="116" class="xxs">your to-do app</text>
+    <text x="140" y="142" class="xxxs">screens, buttons, forms</text>
+    <text x="620" y="116" class="xxs c-det">the table</text>
+    <text x="620" y="142" class="xxxs">where the rows live</text>
+    <text x="380" y="82" class="xxxs c-act">project URL + key</text>
+    <text x="380" y="172" class="xxxs c-det">SQL that makes the table</text>
+  </g>
+</svg>
+<figcaption>Two copy-pastes connect them: the URL and key go one way, the SQL goes the other.</figcaption>
+</figure>
+<ol>
+  <li><b>Sign up at Supabase.</b> A pop-up asks you to create an organisation. Give it any name and choose the free plan.</li>
+  <li><b>Open Antigravity in a new folder.</b> Make a folder, open it, and click "Yes, I trust the authors".</li>
+  <li><b>Paste the to-do app prompt and send it.</b> It asks for a to-do app connected to Supabase (the exact prompt is in the doc shared in the session). Gemini Flash is good enough for this.</li>
+  <li><b>Accept the changes.</b> Antigravity creates the files and asks you to accept them. It takes a while.</li>
+  <li><b>Give it your Supabase details.</b> Antigravity stops and asks for your project URL and key. In Supabase, open your project, then Project settings, then API keys. Copy what it asks for and paste it into the chat.</li>
+  <li><b>Run the SQL.</b> Antigravity hands you SQL that makes the table. Copy it into the SQL editor in Supabase and click Run.</li>
+  <li><b>See the table.</b> Open the Table editor in Supabase and refresh. The to-do table is there.</li>
+  <li><b>Open the app.</b> Antigravity gives you a link that starts with <code>localhost</code>: the app is running on your own computer. Click it.</li>
+</ol>
+<p>Treat the secret key on that Supabase page like your Groq key. Never post it or put it on a public page.</p>
+<p>The troubles the room hit:</p>
+<table class="dials">
+  <tr><th>The trouble</th><th>The fix</th></tr>
+  <tr><td>Antigravity is still running and has asked nothing</td><td>Wait. It asks when the files are done.</td></tr>
+  <tr><td>It asks for the project URL and you cannot find it</td><td>Project settings, then API keys. If it says "Data API", copy the URL from that page.</td></tr>
+  <tr><td>Run says the table already exists</td><td>The table was made earlier. Open the Table editor and refresh.</td></tr>
+  <tr><td>It says done, but you see no app</td><td>Open the <code>localhost</code> link in your browser.</td></tr>
+  <tr><td>An error in the terminal</td><td>Copy the error, paste it back to the coding tool, and ask it to explain.</td></tr>
+  <tr><td>Too many permission pop-ups</td><td>"Always proceed" switches them off. Use it only on a computer with nothing sensitive on it.</td></tr>
+</table>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>Prove it is connected</h2>
+<p>The screen alone proves nothing. So the instructor tested from both sides.</p>
+<ol>
+  <li>He added an item, "Testing one", in the app. In the Supabase table, a new row appeared, with <code>completed</code> set to false.</li>
+  <li>He ticked the checkbox in the app. A toast message (the small pop-up) appeared. After a refresh, the row in Supabase said true.</li>
+  <li>He changed true back to false inside Supabase and refreshed the app. The checkbox was empty again.</li>
+</ol>
+<p>The data moves both ways, so the two are connected.</p>
+<p>Then he opened the browser's console, which lists every request the page sends. He added an item: POST. He edited one: PUT. He deleted one: DELETE. He refreshed the page and the list loaded: GET.</p>
+<details class="acc"><summary>From the chat: is the database the same for every project?</summary><div class="b"><p>No. The slides used MongoDB as the storeroom. Supabase uses a different one, called Postgres, and only that one. Postgres understands SQL, which is why step 6 was a block of SQL.</p></div></details>
+<p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
+<details class="acc"><summary>Asha books in the prototype and sees "appointment saved". She refreshes. What does she see, and why?</summary><div class="b"><p>No appointment. The prototype kept it only in the page's temporary memory. Nothing was sent to a database, so there is nothing to fetch back.</p></div></details>
+<details class="acc"><summary>A friend writes Asha's name and phone number into every appointment row. What goes wrong?</summary><div class="b"><p>With two Ashas you cannot tell whose appointment it is. And when a phone number changes, every old row is wrong. Store the customer's ID in the appointment row instead.</p></div></details>
+<details class="acc"><summary>You tick a to-do in your app. Which request goes out, and how do you check it reached Supabase?</summary><div class="b"><p>An update, so PUT. Open the table in Supabase and refresh: <code>completed</code> should now say true.</p></div></details>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Front end</dt><dd>The side of the app you see and click, running in your browser.</dd>
+  <dt>Back end</dt><dd>The side on the server that does the work on each request.</dd>
+  <dt>MERN stack</dt><dd>MongoDB (the database), Express (the traffic controller), React (the screen) and Node.js (the kitchen), used together.</dd>
+  <dt>Component</dt><dd>One reusable block of the screen, like a like button.</dd>
+  <dt>State</dt><dd>What is true about a component right now, like liked or not liked.</dd>
+  <dt>Props</dt><dd>The instructions you hand a component.</dd>
+  <dt>TypeScript</dt><dd>JavaScript with a rulebook that checks the details before the code runs.</dd>
+  <dt>CRUD</dt><dd>Create, read, update, delete: the four things an app does to its data.</dd>
+  <dt>Toast message</dt><dd>A small message that pops up in a corner to say what happened.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>A screen that says "saved" has saved nothing until a database says so. List what the app must remember, give each thing a table and each row an ID, then let Antigravity connect the app to Supabase. Check the table, not the screen.</p></div>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Your turn: connect your salon app</h2>
+<p>First finish the to-do app from section 08, and test it the way section 09 does. Then open your salon booking app in Antigravity and type:</p>
+<blockquote class="q9">"Connect my app to Supabase."</blockquote>
+<p>Follow the instructions it gives: the same URL, key and SQL steps. Then book an appointment, refresh, and look for the row in Supabase.</p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">Lecture 6 notes: databases and domain modelling</a></li>
+  <li><a href="/c8/module-2/lecture-05-building-apis/notes-no-code">Lecture 5 notes (no-code): building APIs</a></li>
+  <li><a href="https://supabase.com">Supabase</a></li>
+  <li><a href="/#L7">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>Next: a closer look inside Supabase, then your app goes live on Vercel.</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 7: Connect backend to the database · No-code track</span><a href="/#L7">Curriculum map</a><a href="/c8/module-2/lecture-07-connect-backend-to-the-database/">All Lecture 7 pages</a></div></footer>
+</body>
+</html>

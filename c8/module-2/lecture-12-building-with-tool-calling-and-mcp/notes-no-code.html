@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: Building with tool calling and MCP | 100xEngineers</title>
+<meta name="description" content="Notes for Lecture 12, no-code track, with the whiteboard: one job per tool, the card as a contract, which calls wait, who holds the brakes, and the Google Sheets connection in Antigravity step by step.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l12-notes-no-code" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L12">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 12 pages"><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/">Overview</a><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes-no-code">Notes (no-code)</a><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Notes (code)</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 12 · 14 November 2026 · No-code track</p>
+  <h1>Design the tools first. Then connect one.</h1>
+  <p class="dek">We designed an AI employee's eight tools and its limits, then connected a Google Sheet in Antigravity and changed it by asking.</p>
+</div>
+
+<p><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Lecture 11</a> followed Priya's shop, Northwind Goods, from a pasted prompt to a tool call to MCP. Today we designed the tools before touching anything: what each one does, what it may be asked, and who says stop. Then we connected a real Google Sheet in Antigravity.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>What Antigravity does with your task</h2>
+<p>What happens after you give Antigravity a task in plain English? It breaks the task into steps, then works through them in a cycle: plan, write, run, test, fix. So it does more than hand you an answer. It works on your project.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="You give Antigravity a task in plain English. Inside Antigravity a cycle runs: plan, write, run, test, fix. Three things sit under it: the LLM, which does the thinking, a browser, and MCP connections to outside services. Two things come out: artifacts, which are the plans and screenshots, and the workspace, which holds your project files.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="24" y="70"/>
+    <path class="arw" d="M96 120 H168" marker-end="url(#ah)"/>
+    <rect class="f-card" x="176" y="50" width="360" height="130" rx="12"/>
+    <path class="arw" d="M252 128 H276" marker-end="url(#ah)"/>
+    <path class="arw" d="M322 128 H346" marker-end="url(#ah)"/>
+    <path class="arw" d="M386 128 H410" marker-end="url(#ah)"/>
+    <path class="arw" d="M452 128 H476" marker-end="url(#ah)"/>
+    <path class="arw" d="M500 142 C500 172 220 172 220 142" marker-end="url(#ah)"/>
+    <rect class="f-prob" x="176" y="214" width="104" height="50" rx="10"/>
+    <rect class="f-card" x="304" y="214" width="104" height="50" rx="10"/>
+    <rect class="f-det" x="432" y="214" width="104" height="50" rx="10"/>
+    <path class="arw" d="M228 210 V188" marker-end="url(#ah)"/>
+    <path class="arw" d="M356 210 V188" marker-end="url(#ah)"/>
+    <path class="arw" d="M484 210 V188" marker-end="url(#ah)"/>
+    <path class="arw" d="M542 95 H606" marker-end="url(#ah)"/>
+    <path class="arw" d="M542 150 H606" marker-end="url(#ah)"/>
+    <rect class="f-card" x="614" y="70" width="126" height="46" rx="8"/>
+    <rect class="f-det" x="614" y="128" width="126" height="46" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="50" y="222" class="xs">you</text>
+    <text x="132" y="108" class="xxxs c-mute">a task</text>
+    <text x="356" y="38" class="m">Antigravity</text>
+    <text x="356" y="84" class="xxxs c-mute">breaks the task into steps, then:</text>
+    <text x="224" y="133" class="xxs">plan</text>
+    <text x="299" y="133" class="xxs">write</text>
+    <text x="366" y="133" class="xxs">run</text>
+    <text x="431" y="133" class="xxs">test</text>
+    <text x="500" y="133" class="xxs">fix</text>
+    <text x="228" y="245" class="xs c-prob">LLM</text>
+    <text x="356" y="245" class="xs">browser</text>
+    <text x="484" y="245" class="xs c-det">MCP</text>
+    <text x="228" y="286" class="xxxs c-mute">the thinking</text>
+    <text x="356" y="286" class="xxxs c-mute">opens and tests pages</text>
+    <text x="484" y="286" class="xxxs c-mute">outside services</text>
+    <text x="677" y="98" class="xxs">artifacts</text>
+    <text x="677" y="156" class="xxs c-det">workspace</text>
+    <text x="677" y="58" class="xxxs c-mute">what comes out</text>
+  </g>
+</svg>
+<figcaption>The LLM supplies the thinking. The browser and the MCP connections are how Antigravity reaches outside your project.</figcaption>
+</figure>
+<p>The LLM can be Gemini, Claude or GPT. MCP connections reach outside services such as Google Sheets, Slack and Gmail. The plans and screenshots Antigravity makes along the way are its <b>artifacts</b>. Your project files are the <b>workspace</b>.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>Hire an AI employee. What may it do?</h2>
+<p>Priya is going on leave. She wants an AI employee to run Northwind Goods while she is away. It would need Google Sheets for orders, customers and products, Gmail, Slack for her team, a database, and payments.</p>
+<blockquote class="q9">"If you are hiring this AI employee, would you give it access to everything?"</blockquote>
+<p>The room wrote five things they would hand over, and starred one it must never do without permission. From the chat: replying to emails, staff attendance. The stars went to payments and personal data.</p>
+<p>The instructor's five: read customer orders, check stock, find customer details, draft customer emails, prepare the daily sales report. Four only read, and the fifth is a draft. Paying money out is different, because someone could talk the LLM into it.</p>
+<p class="pull">Giving the LLM tools makes it useful. Giving it unlimited access makes it dangerous.</p>
+<p>So which tools, and with which limits?</p>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>One request, eight tools</h2>
+<p>Priya's request for the day:</p>
+<blockquote class="q9">"Find my top three customers this month, find out what they purchased, and prepare a personalised follow-up email for each."</blockquote>
+<p>Which data does this need? Does one step need another's result? Should the email go out by itself, or should Priya see a draft first? You wrote the steps in order, and most of the room got them right.</p>
+<p>Then the toolbox. You would not give a new employee one giant button that does everything. Ours has eight tools:</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 290" role="img" aria-label="The toolbox of eight tools in three groups. Four reading tools: get orders, get customers, get products, get inventory. One calculating tool: calculate revenue, which leaves cancelled orders out. Three email tools: search emails, draft email and send email. Send email is marked as the one that cannot be taken back.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="20" y="60" width="180" height="40" rx="8"/>
+    <rect class="f-det" x="20" y="112" width="180" height="40" rx="8"/>
+    <rect class="f-det" x="20" y="164" width="180" height="40" rx="8"/>
+    <rect class="f-det" x="20" y="216" width="180" height="40" rx="8"/>
+    <rect class="f-det" x="280" y="60" width="200" height="40" rx="8"/>
+    <rect class="f-det" x="560" y="60" width="180" height="40" rx="8"/>
+    <rect class="f-det" x="560" y="112" width="180" height="40" rx="8"/>
+    <rect class="f-act" x="560" y="164" width="180" height="40" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="110" y="40" class="m">read</text>
+    <text x="380" y="40" class="m">calculate</text>
+    <text x="650" y="40" class="m">email</text>
+    <text x="110" y="85" class="mono">get_orders</text>
+    <text x="110" y="137" class="mono">get_customers</text>
+    <text x="110" y="189" class="mono">get_products</text>
+    <text x="110" y="241" class="mono">get_inventory</text>
+    <text x="380" y="85" class="mono">calculate_revenue</text>
+    <text x="380" y="126" class="xxxs c-mute">cancelled orders left out</text>
+    <text x="650" y="85" class="mono">search_emails</text>
+    <text x="650" y="137" class="mono">draft_email</text>
+    <text x="650" y="189" class="mono">send_email</text>
+    <text x="650" y="230" class="xxs c-act">cannot be taken back</text>
+  </g>
+</svg>
+<figcaption>Drafting and sending are two tools on purpose. You can delete a bad draft. You cannot unsend a bad email.</figcaption>
+</figure>
+<p><code>calculate_revenue</code> is there so the LLM never does the sums itself. Then five questions: which tool?</p>
+<table class="dials">
+  <tr><th>Priya asks</th><th>The tool</th></tr>
+  <tr><td>How many pending orders do we have?</td><td><code>get_orders</code> with status pending. The app counts the rows.</td></tr>
+  <tr><td>Which customers spent more than 10,000?</td><td>Three steps: <code>get_orders</code>, then <code>calculate_revenue</code>, then <code>get_customers</code>.</td></tr>
+  <tr><td>Do we have enough kettles in stock?</td><td><code>get_inventory</code>, but first ask Priya what "enough" means. The LLM must not guess.</td></tr>
+  <tr><td>Draft a thank-you email.</td><td><code>draft_email</code>. Nothing leaves the app; the LLM can write the draft itself.</td></tr>
+  <tr><td>Send it.</td><td><code>send_email</code>. A separate permission: it acts outside the app.</td></tr>
+</table>
+<p>That is four kinds of work: reading, calculating, drafting, acting. Keep them apart.</p>
+<p class="pull">One tool, one job.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>The card is a contract</h2>
+<p>What does a tool called <code>do_everything</code> do? Or <code>process_data</code>? Nobody can tell, and neither can the LLM. Compare <code>get_pending_orders</code>. A good name says the action, the thing it acts on, and what comes out.</p>
+<p>The name is the first line of the card (the <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s08">tool schema</a> of Lecture 11). Today we read the whole card as a contract between the LLM and your app.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 310" role="img" aria-label="The card for get orders, drawn as a contract with seven lines. Name: get orders. Description: what it does and when to use it. What to pass in: status and customer id. Allowed values: pending, delivered or cancelled. What comes back: order id, customer, product, amount, status. Errors: sheet missing, or a status that is not allowed. Permission: read only.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="90" y="16" width="580" height="280" rx="12"/>
+    <path class="dash ink" d="M250 34 V280"/>
+  </g>
+  <g class="tx">
+    <text x="236" y="52" class="xxs c-mute r">name</text>
+    <text x="268" y="52" class="mono l">get_orders</text>
+    <text x="236" y="90" class="xxs c-mute r">description</text>
+    <text x="268" y="90" class="xxs l">what it does and when to use it</text>
+    <text x="236" y="128" class="xxs c-mute r">what to pass in</text>
+    <text x="268" y="128" class="mono l">status, customer_id</text>
+    <text x="236" y="166" class="xxs c-mute r">allowed values</text>
+    <text x="268" y="166" class="xxs l">pending, delivered or cancelled</text>
+    <text x="236" y="204" class="xxs c-mute r">what comes back</text>
+    <text x="268" y="204" class="xxs l">order ID, customer, product, amount, status</text>
+    <text x="236" y="242" class="xxs c-mute r">errors</text>
+    <text x="268" y="242" class="xxs l">sheet missing, status not allowed</text>
+    <text x="236" y="280" class="xxs c-mute r">permission</text>
+    <text x="268" y="280" class="xxs c-act l">read only: no updates, no emails</text>
+  </g>
+</svg>
+<figcaption>A tool is more than a function name: the card says what goes in, what comes out, and what is not allowed.</figcaption>
+</figure>
+<p>Our card had three more rules. Status takes only its three <b>allowed values</b>. Each input is a <b>required field</b>, so it must be present. <code>customer_id</code> may be empty (<code>null</code>), which means every customer's orders. And no extra fields. Two requests arrived. Which one passes?</p>
+<table class="dials">
+  <tr><th>Request</th><th>Verdict</th></tr>
+  <tr><td>A: status is "pending", and nothing else</td><td>Rejected. <code>customer_id</code> is missing. It had to be there, even if empty.</td></tr>
+  <tr><td>B: status is "maybe pending", a field called <code>customer</code> holding the number 12345, and one extra field</td><td>Rejected, for four reasons. The status is not allowed and the field name is wrong. The value is a number where text was expected. The extra field is not on the card.</td></tr>
+</table>
+<p>Is a request that passes the card always right? No. A <code>customer_id</code> can have the right shape and belong to nobody, so the server still checks it against the real data.</p>
+<p class="pull">The card checks the shape of a request. The server checks whether it is true.</p>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>The description picks the tool</h2>
+<p>With eight tools, how does the LLM decide which one to use? It reads each card's description. Suppose the description is just "Get orders". Is that for stock? For products? It does not say.</p>
+<p>The better one said three things. What the tool does: it retrieves orders from the Northwind store. When to use it: someone asks about an order's status, ID, customer or amount. When not to: a general product question. Write it as you would for a new employee.</p>
+<p>Now give the LLM ten tools and one question:</p>
+<blockquote class="q9">"Which customers have placed orders but have not received their delivery?"</blockquote>
+<p>Is that <code>get_orders</code>, <code>get_customers</code> or <code>get_delivery_status</code>? The tools overlap, and "not received" is unclear: still being packed, or shipped? If no tool knows the delivery status, the LLM should say so and not guess.</p>
+<p class="pull">More tools do not make the LLM smarter. A small, clear set does.</p>
+<p>You then fixed a bad card: a tool named <code>lookup</code>, described as "Look up things in the shop", with one free-text input. You gave it a clear name, a description and exact inputs. Then a test. "How many kettles are pending?" should pick your tool. "Draft a thank-you note to Mira" should not. "Should I tell Kavya about her apron?" could mean an order, stock or an email, so the LLM should ask.</p>
+<p>Must the LLM always choose? If Priya is already on the orders page, the app knows she means orders. Sending, paying and deleting follow the app's rules too.</p>
+<p class="pull">If a rule can make the decision, let the rule decide. If it needs understanding, let the LLM decide.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Which calls wait, which run together</h2>
+<p>Back to Priya's request. Can one tool do it all? No. It takes four calls, and each one needs the result of the one before. Calls like this run <b>in sequence</b>.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="Top row, in sequence: get orders for this month, then get customers, then calculate revenue, then draft email. Each arrow carries the result into the next step. Bottom row, in parallel: one question splits into three calls that run together, total orders, stock and customer count, because none of them needs another's result.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="20" y="50" width="150" height="46" rx="8"/>
+    <path class="arw c-det" d="M176 73 H206" marker-end="url(#ahd)"/>
+    <rect class="f-det" x="214" y="50" width="150" height="46" rx="8"/>
+    <path class="arw c-det" d="M370 73 H400" marker-end="url(#ahd)"/>
+    <rect class="f-det" x="408" y="50" width="160" height="46" rx="8"/>
+    <path class="arw c-det" d="M574 73 H604" marker-end="url(#ahd)"/>
+    <rect class="f-det" x="612" y="50" width="130" height="46" rx="8"/>
+    <rect class="f-card" x="20" y="208" width="150" height="46" rx="8"/>
+    <path class="arw" d="M176 222 C230 200 250 180 300 180" marker-end="url(#ah)"/>
+    <path class="arw" d="M176 231 H300" marker-end="url(#ah)"/>
+    <path class="arw" d="M176 240 C230 262 250 282 300 282" marker-end="url(#ah)"/>
+    <rect class="f-det" x="308" y="160" width="170" height="38" rx="8"/>
+    <rect class="f-det" x="308" y="212" width="170" height="38" rx="8"/>
+    <rect class="f-det" x="308" y="264" width="170" height="30" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="20" y="32" class="xs l">in sequence: each step waits for the one before</text>
+    <text x="95" y="78" class="mono">get_orders</text>
+    <text x="289" y="78" class="mono">get_customers</text>
+    <text x="488" y="78" class="mono">calculate_revenue</text>
+    <text x="677" y="78" class="mono">draft_email</text>
+    <text x="95" y="118" class="xxxs c-mute">this month</text>
+    <text x="289" y="118" class="xxxs c-mute">who bought</text>
+    <text x="488" y="118" class="xxxs c-mute">top three spenders</text>
+    <text x="677" y="118" class="xxxs c-mute">three drafts</text>
+    <text x="20" y="150" class="xs l">in parallel: nothing waits</text>
+    <text x="95" y="236" class="xxs">three questions</text>
+    <text x="393" y="184" class="xxs">total orders</text>
+    <text x="393" y="236" class="xxs">stock</text>
+    <text x="393" y="284" class="xxs">customer count</text>
+    <text x="500" y="236" class="xxs c-mute l">all three at once</text>
+  </g>
+</svg>
+<figcaption>Ask of every call: does it need another call's result? If yes, it waits.</figcaption>
+</figure>
+<p>If step one fetches the wrong month, every step after it is wrong.</p>
+<p>The opposite case: Priya asks for the total orders, the stock and the customer count. None needs another's result, so the three calls go out together, <b>in parallel</b>. That saves waiting.</p>
+<p>Then you sorted six operations.</p>
+<table class="dials">
+  <tr><th>Operation</th><th>When it can run</th></tr>
+  <tr><td>Fetch customer details</td><td>Together, if you already have the customer IDs. If not, it waits.</td></tr>
+  <tr><td>Check order status</td><td>The same: together, if you have the order IDs.</td></tr>
+  <tr><td>Retrieve product inventory</td><td>Together. Stock does not depend on the customer.</td></tr>
+  <tr><td>Calculate order revenue</td><td>After the orders are fetched.</td></tr>
+  <tr><td>Pay money back to a customer</td><td>Only after checking the order and the shop's rules, and with a person's approval.</td></tr>
+  <tr><td>Generate the report</td><td>Last. It needs every other result.</td></tr>
+</table>
+<p class="pull">Find what depends on what before you run anything.</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Your app holds the brakes</h2>
+<p>Priya asks how many orders are pending. The tool returns 1043, 1045 and 1047. The LLM should now answer. Suppose it calls the same tool again, with the same inputs, and then again. It is stuck, repeating one step and getting nowhere: an <b>infinite loop</b>. A call can also run twice, or be retried after it already worked.</p>
+<blockquote class="q9">"Where should we put the brakes? Should we ask the AI to stop, or should our application control it?"</blockquote>
+<p>The app. It limits the number of tool calls, the time and the retries. Say the same tool is called three times with the same inputs. The app stops the run and tells the LLM to use the results it already has. Now picture a payment repeating.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="The LLM writes a request and passes it to your app. Your app is a gate with four checks: is the request valid, is it allowed, is a limit reached, does it need approval. Only then does the request go on to the services, Sheets and Gmail. A request to send an email stops at the gate until Priya says yes.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-prob" x="20" y="80" width="130" height="90" rx="12"/>
+    <path class="arw c-prob" d="M156 125 H252" marker-end="url(#ahv)"/>
+    <rect class="f-det" x="260" y="40" width="250" height="180" rx="12"/>
+    <path class="arw c-det" d="M516 100 H612" marker-end="url(#ahd)"/>
+    <path class="dash c-act" d="M516 170 H600"/>
+    <path class="c-act" d="M600 158 V182"/>
+    <rect class="f-det" x="620" y="70" width="120" height="60" rx="8"/>
+  </g>
+  <g class="tx">
+    <text x="85" y="122" class="xs c-prob">LLM</text>
+    <text x="85" y="146" class="xxxs">asks</text>
+    <text x="204" y="112" class="xxxs c-prob">a request</text>
+    <text x="385" y="28" class="m c-det">your app</text>
+    <text x="285" y="78" class="xxs l">is the request valid?</text>
+    <text x="285" y="112" class="xxs l">is it allowed?</text>
+    <text x="285" y="146" class="xxs l">is a limit reached?</text>
+    <text x="285" y="180" class="xxs l">does it need approval?</text>
+    <text x="680" y="96" class="xxs c-det">Sheets,</text>
+    <text x="680" y="116" class="xxs c-det">Gmail</text>
+    <text x="640" y="166" class="xxs c-act l">send_email</text>
+    <text x="640" y="186" class="xxxs c-act l">waits for Priya</text>
+  </g>
+</svg>
+<figcaption>Every request passes through the deterministic side before it touches a service.</figcaption>
+</figure>
+<p>So the deterministic side of your app runs the whole exchange. It has five jobs: keep a log, check permissions, limit retries, collect approvals, and cap how long a run may go. The LLM never holds your keys.</p>
+<p class="pull">The LLM decides what it wants to do. Your app decides whether it is allowed.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Connect Google Sheets in Antigravity</h2>
+<p>Priya now wants the same AI employee in her desktop assistant and in one more app. Three apps, four services each: twelve connections to build and maintain. <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes#s11">Lecture 11</a> gave the fix: build each connection once, as an MCP server, and every app reaches it the same way. One for Google Sheets already exists, so you only connect it.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 240" role="img" aria-label="You type a question into Antigravity. Inside Antigravity the LLM writes a request. The request crosses the wire to the Google Sheets MCP server. The server runs it against your Google Sheet and sends the rows back along the same path.">
+  <g class="ln" filter="url(#wob)">
+    <use href="#person" x="20" y="50"/>
+    <path class="arw" d="M90 110 H132" marker-end="url(#ah)"/>
+    <rect class="f-card" x="140" y="50" width="200" height="130" rx="12"/>
+    <rect class="f-prob" x="160" y="100" width="160" height="60" rx="10"/>
+    <path class="arw c-act" d="M346 100 H452" marker-end="url(#ahc)"/>
+    <path class="arw c-det" d="M452 140 H350" marker-end="url(#ahd)"/>
+    <rect class="f-det" x="460" y="50" width="150" height="130" rx="12"/>
+    <path class="arw c-det" d="M616 115 H650" marker-end="url(#ahd)"/>
+    <use href="#db" x="660" y="80"/>
+  </g>
+  <g class="tx">
+    <text x="46" y="204" class="xs">you</text>
+    <text x="240" y="80" class="xs">Antigravity</text>
+    <text x="240" y="126" class="xs c-prob">LLM</text>
+    <text x="240" y="148" class="xxxs">asks</text>
+    <text x="400" y="88" class="xxs c-act">the wire</text>
+    <text x="400" y="162" class="xxxs c-det">rows come back</text>
+    <text x="535" y="98" class="xs c-det">Sheets</text>
+    <text x="535" y="122" class="xs c-det">MCP server</text>
+    <text x="535" y="150" class="xxxs">runs it</text>
+    <text x="705" y="176" class="xxs c-det">your sheet</text>
+  </g>
+</svg>
+<figcaption>The same chain as Lecture 11. The LLM asks, the server runs it, and the sheet is touched only by the server.</figcaption>
+</figure>
+<p>What your hands do, in order:</p>
+<ol>
+  <li><b>Install the right Antigravity.</b> The download page offers two: an app, and the coding tool (labelled IDE). Take the coding tool. Setup takes at least ten minutes.</li>
+  <li><b>Open a new window</b> on a new folder. The instructor used Gemini Flash as the LLM.</li>
+  <li><b>Ask for the connection.</b> Antigravity calls a connection a "plugin" on its screens, so the prompt uses that word. Type: <code>install Google Sheets plugin</code></li>
+  <li><b>Sign in with Google</b> when it asks, once, and click Allow. A message then confirms that Google Sheets is installed and configured.</li>
+  <li><b>Make your own copy</b> of the shared order sheet (the link was shared in the session). Do not work in the shared one.</li>
+  <li><b>Share your copy.</b> Give editor access to the email you are signed in with in Antigravity, or set the link so anyone with it can edit.</li>
+  <li><b>Paste the sheet link</b> into the Antigravity chat. It fetches the sheet through the server.</li>
+  <li><b>See what the server offers.</b> Ask: <code>List all the actions that you can do with Google Sheets MCP.</code></li>
+  <li><b>Ask the shop's questions.</b> "Who are the top customers?" "What is the highest sold product?" The second answer was kettles. The cancelled order was left out.</li>
+</ol>
+<p>Then one step further. The instructor asked Antigravity for a page that edits the sheet (his words, roughly):</p>
+<blockquote class="q9">"Create a simple HTML file that modifies the fields on the sheet, so I can add and edit an existing sales record through MCP."</blockquote>
+<p>Antigravity built one page and opened it on his own computer, at an address that starts with localhost. He added a mug set order for 123 rupees, marked pending, and clicked Save Record. The row appeared in the Google Sheet, with the next order number, 1051, filled in for him. He changed another order's value to 12,900, and the sheet changed. The sheet had become the database of a small shop app.</p>
+<table class="dials">
+  <tr><th>Trouble in the room</th><th>The fix</th></tr>
+  <tr><td>The steps did not match the screen</td><td>The wrong download. Take the coding tool, not the app.</td></tr>
+  <tr><td>An error when adding the connection</td><td>Uninstall the Google Sheets connection and install it again. Several people hit this, and the reinstall cleared it.</td></tr>
+  <tr><td>Antigravity could not open the sheet</td><td>The Google sign-in was skipped, or the sheet was not shared with the signed-in email.</td></tr>
+</table>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>What the server did for you</h2>
+<p>You typed English and a sheet changed. Who did what? The LLM inside Antigravity read the server's cards and wrote a request. Antigravity carried it over the wire. The server validated it, called the Sheets API with the access you allowed, and sent the rows back. The LLM never touched the sheet.</p>
+<p>A server can offer three kinds of things:</p>
+<ul class="pt">
+  <li><b>Tools are actions.</b> Search for an order, update a status.</li>
+  <li><b>Resources are information</b> the app can read: a return policy, a product catalogue.</li>
+  <li><b>Prompts are reusable instructions,</b> such as a template for summarising a support conversation.</li>
+</ul>
+<p>A server can run in two places. A <b>local server</b> runs on your own machine. A <b>remote server</b> runs somewhere else and is reached over the web, with a sign-in. Today's Google Sheets server is remote.</p>
+<p>To find more servers, start at the <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">official MCP site</a> or <a href="https://www.pulsemcp.com/" target="_blank" rel="noopener">PulseMCP</a>.</p>
+<details class="acc"><summary>From the chat: do I need to build my own MCP server?</summary><div class="b"><p>Only if you want other AI apps to use your service without your interface. Not every service needs one.</p></div></details>
+<p><b>Check yourself.</b> Answer each one aloud before you open it.</p>
+<details class="acc"><summary>The LLM sends get_orders with status "pending" and nothing else. The card says both fields are required. What happens, and what should it have sent?</summary><div class="b"><p>It is rejected, because <code>customer_id</code> is missing. For every customer's orders, send <code>customer_id</code> with an empty value (<code>null</code>).</p></div></details>
+<details class="acc"><summary>A friend says: connect every tool you can find, and the AI employee gets smarter. What is wrong with that?</summary><div class="b"><p>More tools means more overlap and more wrong picks. The LLM chooses by reading descriptions, so a small, clear set works better.</p></div></details>
+<details class="acc"><summary>Priya asks for thank-you emails to her top three customers. Which calls wait, and who presses send?</summary><div class="b"><p>All four wait: orders, then customers, then revenue, then the drafts. The LLM only drafts. Sending is a separate tool, and the app holds it until Priya approves.</p></div></details>
+<details class="words"><summary>Words from this lecture</summary>
+<dl>
+  <dt>Artifacts</dt><dd>What Antigravity makes to show its work: plans, screenshots, recordings.</dd>
+  <dt>Workspace</dt><dd>The folder that holds your project's files.</dd>
+  <dt>Required field</dt><dd>A field that must be present in a request, even when its value is empty.</dd>
+  <dt>Allowed values</dt><dd>The only values a field may take. For status: pending, delivered or cancelled.</dd>
+  <dt>In sequence</dt><dd>Calls made one after the other, because each needs the result of the one before.</dd>
+  <dt>In parallel</dt><dd>Calls made together, because none needs another's result.</dd>
+  <dt>Infinite loop</dt><dd>The LLM repeating the same call with the same inputs and getting nowhere.</dd>
+  <dt>Local server</dt><dd>An MCP server that runs on your own machine.</dd>
+  <dt>Remote server</dt><dd>An MCP server that runs elsewhere and is reached over the web.</dd>
+</dl>
+</details>
+</section>
+
+<div class="call"><p class="kick">Keep this</p><p>Give each tool one job, and a card that says exactly what may be asked. The LLM asks; your app decides whether it is allowed, in what order, and when to stop. Connecting an MCP server takes minutes. Deciding what it may do is the real work.</p></div>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Your turn</h2>
+<p>Do section 08 tonight on your own copy of the sheet: connect, list the actions, ask two questions, then change one row by asking. Check each answer against the sheet.</p>
+<p>Then open the Tool Bench with your own Groq key. It shows every message that crosses the wire, which Antigravity keeps out of sight.</p>
+<p><a class="btn" href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench">Open the Tool Bench</a></p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">Lecture 11 notes: the LLM asks, the server acts</a></li>
+  <li><a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10 notes: where function calling comes from</a></li>
+  <li><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes">Lecture 12, code track: the same idea in two Python files</a></li>
+  <li><a href="https://antigravity.google/" target="_blank" rel="noopener">Antigravity</a></li>
+  <li><a href="/#L12">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.</p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 12: Building with tool calling and MCP · No-code track</span><a href="/#L12">Curriculum map</a><a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/">All Lecture 12 pages</a></div></footer>
+</body>
+</html>

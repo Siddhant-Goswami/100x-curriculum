@@ -149,6 +149,16 @@ var GUIDE_LINKS = {
   l14Hub: '/c8/module-2/lecture-14-building-rag-apps/',
   l14Notes: '/c8/module-2/lecture-14-building-rag-apps/notes',  /* post-read of the 21 Nov code-track lecture: RAG Lab levels 1 to 4, whiteboard inline */
   l14Lab: '/c8/module-2/lecture-14-building-rag-apps/lab',
+  l03NotesNoCode: '/c8/module-2/lecture-03-building-ui/notes-no-code',  /* no-code track post-read of the 26 Sep practical */
+  l05NotesNoCode: '/c8/module-2/lecture-05-building-apis/notes-no-code',  /* no-code track post-read of the 9 Oct practical */
+  l07NotesNoCode: '/c8/module-2/lecture-07-connect-backend-to-the-database/notes-no-code',  /* no-code track post-read of the 16 Oct practical */
+  l08NotesNoCode: '/c8/module-2/lecture-08-end-to-end-mvp/notes-no-code',  /* no-code track post-read of the 17 Oct practical */
+  l12NotesNoCode: '/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/notes-no-code',  /* no-code track post-read of the 14 Nov practical */
+  l14NotesNoCode: '/c8/module-2/lecture-14-building-rag-apps/notes-no-code',  /* no-code track post-read of the 21 Nov practical */
+  l01OfficeHour: '/c8/module-2/lecture-01-orientation/office-hour',  /* recap of the 22 Sep office hour */
+  l03OfficeHour: '/c8/module-2/lecture-03-building-ui/office-hour',  /* recap of the 1 Oct office hour */
+  l06OfficeHour: '/c8/module-2/lecture-06-databases-and-domain-modelling/office-hour',  /* recap of the 15 Oct office hour */
+  l14OfficeHour: '/c8/module-2/lecture-14-building-rag-apps/office-hour',  /* recap of the 24 Nov office hour */
   l15Hub: '/c8/module-2/lecture-15-building-a-second-brain/',
   l15Brief: '/c8/module-2/lecture-15-building-a-second-brain/your-brain',  /* the practice set started in the lecture; template repo Siddhant-Goswami/my-brain, zip in assets/ */
   l15Bench: '/c8/module-2/lecture-15-building-a-second-brain/bench',  /* the first three steps of the Lecture 16 bench (same script and runs, data-upto="3") */
@@ -214,7 +224,7 @@ var CHAT_TEMPLATE = [
 var GUIDES = {};
 
 GUIDES.L3 = { code: {
-  hub: {link:'l03Hub', title:'Open the Lecture 3 pages', sub:'The notes with the whiteboard, and the practice set', more:[['l03Notes','Notes'],['l03Practice','Practice set']]},
+  hub: {link:'l03Hub', title:'Open the Lecture 3 pages', sub:'The notes with the whiteboard, and the practice set', more:[['l03Notes','Notes'],['l03Practice','Practice set'],['l03OfficeHour','Office hour, 1 Oct']]},
   name: 'Spec first, then forty lines',
   sub: 'Office hour companion · 1 October 2026',
   keep: 'Implementation is the last step. Write the spec (North Star, observation, hypothesis, one user, golden input and output pairs, a verifier) before you open an editor. Once the spec exists, the first version of your app is a template: the golden input and golden output pasted in as text, a four-line function that returns one or the other, and a chat interface Gradio gives you for free. Intelligence comes next week. The interface does not care where the answer comes from.',
@@ -529,7 +539,7 @@ GUIDES.L5 = { code: {
 /* Lecture 6 · Databases and domain modelling · combined session (10 October 2026).
    Source: the lecture transcript, the Modelling Lab (forked from the C7 memory-lab) and the Lecture 6 row of the sheet. */
 GUIDES.L6 = { all: {
-  hub: {link:'l06Hub', title:'Open the Lecture 6 pages', sub:'The Modelling Lab, practice set, notes and troubleshooting', more:[['l06Lab','The Modelling Lab'],['l06Practice','Practice set'],['l06Notes','Notes']]},
+  hub: {link:'l06Hub', title:'Open the Lecture 6 pages', sub:'The Modelling Lab, practice set, notes and troubleshooting', more:[['l06Lab','The Modelling Lab'],['l06Practice','Practice set'],['l06Notes','Notes'],['l06OfficeHour','Office hour, 15 Oct']]},
   name: 'What is worth storing?',
   sub: 'After the lecture · 10 October 2026',
   deadline: 'Practice set',
@@ -871,7 +881,7 @@ GUIDES.L13 = { all: {
 
 /* Lecture 14, code track: the overview, the notes and the RAG Lab. */
 GUIDES.L14 = { code: {
-  hub: {link:'l14Hub', title:'Open the Lecture 14 pages', sub:'The overview, the notes and the RAG Lab', more:[['l14Notes','Notes'],['l14Lab','RAG Lab']]}
+  hub: {link:'l14Hub', title:'Open the Lecture 14 pages', sub:'The overview, the notes and the RAG Lab', more:[['l14Notes','Notes'],['l14Lab','RAG Lab'],['l14OfficeHour','Office hour, 24 Nov']]}
 }};
 
 /* Lecture 15, both tracks: the overview, the Your brain brief and the 100x brain. Notes follow the lecture. */
@@ -883,6 +893,26 @@ GUIDES.L15 = { all: {
 GUIDES.L16 = { all: {
   hub: {link:'l16Hub', title:'Open the Lecture 16 pages', sub:'The overview, the Harness Bench and the harness card', more:[['l16Bench','Harness Bench'],['l16Card','Harness card']]}
 }};
+
+/* No-code side of the separate practicals: each card opens that track's own notes page (notes-no-code, beside the code notes). */
+GUIDES.L3.nocode = {
+  hub: {link:'l03NotesNoCode', title:'Open the Lecture 3 notes', sub:'No-code track: Decide what it does, then draw it', more:[['l03OfficeHour','Office hour, 1 Oct']]}
+};
+GUIDES.L5.nocode = {
+  hub: {link:'l05NotesNoCode', title:'Open the Lecture 5 notes', sub:'No-code track: Open the project, read before you approve', more:[]}
+};
+GUIDES.L7.nocode = {
+  hub: {link:'l07NotesNoCode', title:'Open the Lecture 7 notes', sub:'No-code track: Make the app remember', more:[]}
+};
+GUIDES.L8.nocode = {
+  hub: {link:'l08NotesNoCode', title:'Open the Lecture 8 notes', sub:'No-code track: From localhost to a live link', more:[]}
+};
+GUIDES.L12.nocode = {
+  hub: {link:'l12NotesNoCode', title:'Open the Lecture 12 notes', sub:'No-code track: Design the tools first, then connect one', more:[['l11Bench','Tool Bench']]}
+};
+GUIDES.L14.nocode = {
+  hub: {link:'l14NotesNoCode', title:'Open the Lecture 14 notes', sub:'No-code track: From one right answer to a dependable app', more:[['l13Bench','Retrieval Bench'],['l14OfficeHour','Office hour, 24 Nov']]}
+};
 
 /* What the map card shows for a lecture that has happened: one line and four key points, taken from
    that lecture's notes page. Keyed by stop id, then 'all' or a track. A lecture with no entry here
@@ -993,3 +1023,59 @@ var RECAP = {
       'Do you need a vector database? 183 passages fit in a 281 KB file. It depends on your data.'
     ]}}
 };
+
+/* No-code recaps for the separate practicals, from each notes-no-code page. */
+RECAP.L3 = RECAP.L3 || {};
+RECAP.L3.nocode = {
+  line: "Decide what happens before what it looks like, write it into a PRD and design.md, let Stitch draw the screens, then let AI Studio make them work.",
+  points: [
+    "One salon problem: nobody sees the haircut before the cut.",
+    "Flow first, then screens, and four states for every screen.",
+    "A Claude skill turns your First Proof files into a PRD and design.md.",
+    "Stitch draws the screens; AI Studio makes them an Android app on your phone."
+  ]};
+RECAP.L5 = RECAP.L5 || {};
+RECAP.L5.nocode = {
+  line: "A prototype becomes a product when you open its files in Antigravity, ask for a map first, read each plan before you approve it, and keep every key in the backend.",
+  points: [
+    "AI Studio gives a prototype; export it to Antigravity to take control of the files.",
+    "Ask for a map of the project, then read and change the code as plain English.",
+    "Read, predict, question, then approve. Keys live in the backend, never the front end.",
+    "Trace one click on Groq, then wire an image API yourself."
+  ]};
+RECAP.L7 = RECAP.L7 || {};
+RECAP.L7.nocode = {
+  line: "A screen that says \"saved\" has saved nothing until a database says so. Check the table, not the screen.",
+  points: [
+    "Know the name of each part of a full app; Antigravity writes the code.",
+    "A prototype forgets a booking on refresh, because nothing was sent to a database.",
+    "The salon needs four tables, and appointments store IDs, not names.",
+    "Connect a to-do app to Supabase with a URL, a key and pasted SQL, then test from both sides."
+  ]};
+RECAP.L8 = RECAP.L8 || {};
+RECAP.L8.nocode = {
+  line: "GitHub stores the code, Vercel runs the app and Supabase stores the data. A live link counts only when a row made on it shows up in Supabase.",
+  points: [
+    "Logging in says who you are; row level security says which rows you may touch.",
+    "Create, read, update, delete: check every one in the Supabase table, not on the screen.",
+    "Commit records the change, push uploads it to GitHub, Vercel deploys it.",
+    "Add the Supabase URL and publishable key in Vercel, redeploy, then test the live link."
+  ]};
+RECAP.L12 = RECAP.L12 || {};
+RECAP.L12.nocode = {
+  line: "Give each tool one job and a card that says exactly what may be asked. The LLM asks; your app decides whether it is allowed, in what order, and when to stop.",
+  points: [
+    "An AI employee gets one tool per job; drafting and sending are separate.",
+    "The card checks a request's shape; the server checks whether it is true.",
+    "Calls that need another's result wait; the rest run together.",
+    "Connect Google Sheets in Antigravity, then change the sheet by asking."
+  ]};
+RECAP.L14 = RECAP.L14 || {};
+RECAP.L14.nocode = {
+  line: "One right answer is a demo. A dependable RAG app cuts chunks by meaning, labels them, filters before it searches, shows its source, and is checked against a fixed set of questions.",
+  points: [
+    "On the Retrieval Bench each way of searching wins one more question, and the nearest chunk is not always right.",
+    "When an answer is wrong, read what was retrieved before changing the LLM.",
+    "Cut chunks where the meaning ends, label them, then filter by topic, version and access.",
+    "Build it with prompts: Antigravity writes the app, Supabase keeps the chunks, Groq serves the LLM."
+  ]};
