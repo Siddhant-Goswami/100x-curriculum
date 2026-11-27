@@ -97,3 +97,24 @@ button.gn.part:hover{border-color:var(--ink3)}
 .q.none .q-id{background:var(--bg2);color:var(--ink2);box-shadow:inset 0 0 0 1.5px var(--line2);animation:pop .3s var(--e-out)}
 .q-id{font-size:12px}
 .nums button{min-width:40px}
+
+/* the last three steps: buttons that switch a part, what was found, the takeaways */
+.togs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.tog{font:500 14.5px/1.2 var(--sans);text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--det);background:var(--card);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;gap:3px}
+.tog small{font:500 12px var(--sans);color:var(--det)}
+.tog.off{border-style:dashed;border-color:var(--line2);color:var(--ink3)} .tog.off small{color:var(--ink3)}
+.tog:hover{border-color:var(--ink3)}
+@media (max-width:640px){.togs{grid-template-columns:repeat(2,1fr)}}
+.moved span{color:var(--ink3)}
+.earn tr.todo td{color:var(--ink3);text-align:right;font-size:13.5px}
+.earn tr.now th,.earn tr.now td{font-weight:500;color:var(--ink)}
+.found{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:15px;color:var(--ink2)}
+.ladder{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;font-size:14.5px;font-variant-numeric:tabular-nums}
+.ladder li{display:grid;grid-template-columns:130px 1fr 24px 110px;gap:10px;align-items:center}
+.ladder span{color:var(--ink)} .ladder em{font-style:normal;font-weight:500;color:var(--ink);text-align:right}
+.ladder i{height:8px;border-radius:4px;background:var(--line);overflow:hidden} .ladder i b{display:block;height:100%;background:var(--det);border-radius:4px}
+.ladder small{font-size:12.5px;color:var(--ink3)}
+@media (max-width:640px){.ladder li{grid-template-columns:104px 1fr 22px}.ladder small{grid-column:1/-1;margin-top:-4px}}
+.take{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15.5px;line-height:1.5;color:var(--ink2)}
+.take b{font-weight:600;color:var(--ink)}
+.take.plain{gap:4px;color:var(--ink)}

@@ -5,7 +5,7 @@
    Every number in the copy is counted from the recorded runs, so a new recording never leaves the words wrong. */
 (function () {
   'use strict';
-  var BASE = '/c8/module-2/lecture-16-deriving-harness-engineering/', V = '?v=4';
+  var BASE = '/c8/module-2/lecture-16-deriving-harness-engineering/', V = '?v=6';
   var L13 = '/c8/module-2/lecture-13-retrieval-augmented-generation/notes', L15 = '/c8/module-2/lecture-15-building-a-second-brain/', L6 = '/c8/module-2/lecture-06-databases-and-domain-modelling/notes';
   var SW = ['reads', 'asks', 'remembers', 'checks'];
   var PART = {
@@ -16,7 +16,7 @@
   };
   var STEPS = [
     { seg: 'Bare', on: [], h1: 'Ask the bare model the questions',
-      ctx: 'Nothing is switched on. The model gets each question and nothing else, the way the Groq playground sends it.' },
+      ctx: 'Nothing is switched on. The model gets each question and nothing else.' },
     { seg: 'Search', on: ['reads'], h1: 'Give it something to read',
       ctx: 'Before each question, the server searches the course pages by meaning and puts the three closest passages in the message. That was <a href="' + L13 + '">Lecture 13</a>.' },
     { seg: 'The brain', on: ['reads', 'asks'], h1: 'Let it ask the brain',
@@ -25,16 +25,19 @@
       ctx: 'The brain knows the course. It knows nothing about the person asking. Three small files of theirs now go in first: who they are, what they told it, and today\'s date. That is <a href="' + L6 + '">memory.txt</a>, grown up.' },
     { seg: 'Checks', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Check every answer before it leaves',
       ctx: 'The answer must name its source and quote it. Code checks the quote is really there. Then a second, separate call reads the quote and says yes or no. One retry. After that the question goes to a person.' },
-    { seg: 'The record', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Open a question and read what crossed', record: true,
-      ctx: 'Every message is kept. Tap any question to see what the server sent, what the model asked for, what it said, and which check passed or failed.' },
-    { seg: 'Switch one off', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Switch one part off and watch the score', free: true,
-      ctx: 'The switches are yours now. A part earns its place only if the score drops when it is off.' }
+    { seg: 'The record', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Read what crossed', record: true,
+      ctx: 'Every message is kept: what the server sent, what the model asked for, what it said, and which check passed or failed. The record is how you find out why.' },
+    { seg: 'Switch one off', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Switch each part off, one at a time', free: true,
+      ctx: 'A part earns its place only if the score drops when it is off. Use the four buttons below.' },
+    { seg: 'Its name', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'What you just found', end: true,
+      ctx: 'Three things to carry to your own brain.' }
   ];
+  var SHORT = { reads: 'Search', asks: 'The brain', remembers: 'Your files', checks: 'Checks' };
   var GROUP = { bench: 'One fact, one page', across: 'Across lectures', stale: 'Dates that have passed', 'about me': 'About the person asking', 'not known': 'Not in the course' };
   var KEY = 'c8.l16.bench2', D = null, REC = {}, S = load();
   var $ = function (id) { return document.getElementById(id); };
-  function fresh() { return { v: 2, step: 0, ran: {}, guess: {}, sw: null }; }
-  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.v === 2) return s; } catch (e) { /* fresh */ } return fresh(); }
+  function fresh() { return { v: 2, step: 0, ran: {}, guess: {}, sw: null, tried: {} }; }
+  function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.v === 2) { s.tried = s.tried || {}; return s; } } catch (e) { /* fresh */ } return fresh(); }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* private mode */ } }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function cfg(on) { return SW.map(function (k) { return on.indexOf(k) >= 0 ? '1' : '0'; }).join(''); }
@@ -47,7 +50,7 @@
   }
   var open = null, timer = null, N = 0;
   function current() { var st = STEPS[S.step]; return st.free ? (S.sw || cfg(st.on)) : cfg(st.on); }
-  function ranHere() { var st = STEPS[S.step]; return st.free || st.record || !!S.ran[S.step]; }
+  function ranHere() { var st = STEPS[S.step]; return st.free || st.record || st.end || !!S.ran[S.step]; }
   function noneWord(c) { return c[3] === '1' ? 'held back' : 'no answer'; }
 
   /* ---------- the bar ---------- */
@@ -61,7 +64,7 @@
   /* ---------- the boxes around the model ---------- */
   function graph() {
     var c = current(), st = STEPS[S.step], free = !!st.free;
-    var newest = st.on.length && !free && !st.record ? st.on[st.on.length - 1] : '';
+    var newest = st.on.length && !free && !st.record && !st.end ? st.on[st.on.length - 1] : '';
     function part(k) {
       var on = c[SW.indexOf(k)] === '1', p = PART[k];
       return '<' + (free ? 'button type="button"' : 'div') + ' class="gn part ' + k + (on ? ' on' : ' off') + (k === newest ? ' new' : '') + '" data-k="' + k + '"' + (free ? ' aria-pressed="' + on + '"' : '') + '>' +
@@ -102,7 +105,7 @@
   function record(q, c, sum) {
     var rec = REC[c];
     if (!rec) {
-      if (rec !== null) { REC[c] = null; fetch(BASE + 'assets/runs/' + c + '.json' + V).then(function (r) { return r.json(); }).then(function (d) { REC[c] = d; list(); }).catch(function () { delete REC[c]; }); }
+      if (rec !== null) { REC[c] = null; fetch(BASE + 'assets/runs/' + c + '.json' + V).then(function (r) { return r.json(); }).then(function (d) { REC[c] = d; list(); if (STEPS[S.step].record) panel(); }).catch(function () { delete REC[c]; }); }
       return '<div class="rec"><p class="rec-want">Opening the record…</p></div>';
     }
     var x = rec.cells[q.id]; if (!x) return '';
@@ -133,12 +136,29 @@
     var st = STEPS[S.step], c = current(), n = count(c), h = '';
     var prev = S.step > 0 ? cfg(STEPS[S.step - 1].on) : null;
     if (st.free) return freePanel();
+    if (st.end) return endPanel();
     if (st.record) {
       var worst = D.questions.filter(function (q) { return ((D.cells[c] || {})[q.id] || {}).mark !== 'right'; });
-      h = '<p class="q">' + (worst.length ? 'With everything on, ' + worst.length + ' of ' + N + ' ' + (worst.length === 1 ? 'is' : 'are') + ' still not right: ' + worst.map(function (q) { return q.id; }).join(', ') + '. Open one and find the line where it went wrong.'
-        : 'With everything on, all ' + N + ' are right. Open any question and follow one answer from the question to the check.') + '</p>' +
-        '<p class="lab">Ask of every line: is it a rule, the model, or a person?</p>' +
-        '<div class="row"><button class="btn go" id="next">Continue</button></div>';
+      var w = worst[0], rec = REC[c], x = w && open === w.id && rec ? rec.cells[w.id] : null;
+      if (!w) {
+        h = '<p class="q">With everything on, all ' + N + ' are right. Tap any question below and follow one answer from the question to the check.</p>';
+      } else if (!x) {
+        var wm = D.cells[c][w.id].mark;
+        h = '<p class="q">With everything on, ' + (worst.length === 1 ? 'one question is' : worst.length + ' questions are') + ' still not right. ' + w.id + ' was ' + (wm === 'wrong' ? 'answered wrong' : 'held back') + '. Find out why.</p>' +
+          '<div class="row"><button class="btn go" id="openw" data-q="' + w.id + '">Open the record for ' + w.id + '</button></div>';
+        $('panel').innerHTML = h; return;
+      } else {
+        var ck = x.ev.filter(function (e) { return e.k === 'check'; });
+        var rp = ck.filter(function (e) { return e.by === 'rule' && e.ok; }).length, rf = ck.filter(function (e) { return e.by === 'rule' && !e.ok; }).length;
+        var jf = ck.filter(function (e) { return e.by !== 'rule' && !e.ok; }).length;
+        h = '<p class="q">Read ' + w.id + ' below, from the top. Compare what the LLM said with the right answer.</p><ul class="found">' +
+          (rp ? '<li>The rule passed ' + (rp === 1 ? 'once' : rp + ' times') + ': the quote is in the source, word for word.</li>' : '') +
+          (rf ? '<li>The rule failed ' + (rf === 1 ? 'once' : rf + ' times') + '.</li>' : '') +
+          (jf ? '<li>The second reader said no ' + (jf === 1 ? 'once' : jf + ' times') + ': the quote did not cover the whole answer.</li>' : '') +
+          (x.held ? '<li>Two tries failed, so nothing was sent. It goes to a person.</li>' : '') + '</ul>' +
+          '<p class="lab">A check does not know the right answer. It tests only what you told it to test. So a check can stop a right answer, and you have to measure it like any other part.</p>';
+      }
+      h += '<div class="row"><button class="btn go" id="next">Continue</button></div>';
       $('panel').innerHTML = h; return;
     }
     if (!S.ran[S.step]) {
@@ -155,7 +175,7 @@
         var g = S.guess[S.step], before = count(prev);
         if (g != null) h += '<p class="lab">You guessed ' + g + '. ' + (g === n.right ? 'Right.' : 'It was ' + n.right + '.') + '</p>';
         h += changes(prev, c);
-        if (c[3] === '1' && n.right < before.right) h += '<p class="lab">The checks cost ' + (before.right - n.right) + ' right ' + (before.right - n.right === 1 ? 'answer' : 'answers') + ' here' + (before.wrong > n.wrong ? ' and stopped ' + (before.wrong - n.wrong) + ' wrong ' + (before.wrong - n.wrong === 1 ? 'one' : 'ones') + '.' : ' and stopped nothing, because nothing else failed.') + ' Step 7 shows what they are for.</p>';
+        if (c[3] === '1' && n.right < before.right) h += '<p class="lab">The checks cost ' + (before.right - n.right) + ' right ' + (before.right - n.right === 1 ? 'answer' : 'answers') + ' here' + (before.wrong > n.wrong ? ' and stopped ' + (before.wrong - n.wrong) + ' wrong ' + (before.wrong - n.wrong === 1 ? 'one' : 'ones') + '.' : ' and stopped nothing, because nothing else failed.') + ' The next step shows why.</p>';
       } else h += '<p class="lab">Same model for every step from here. Only what is around it changes.</p>';
       h += '<div class="row"><button class="btn go" id="next">Continue</button></div>';
     }
@@ -174,19 +194,61 @@
     if (down.length) bits.push('<b class="wrong">Now wrong: ' + down.join(', ') + '</b>');
     return '<p class="moved">' + (bits.join(' ') || 'No question changed.') + '</p>';
   }
+  function offCfg(k) { var i = SW.indexOf(k); return '1111'.slice(0, i) + '0' + '1111'.slice(i + 1); }
   function freePanel() {
     var full = '1111', nf = count(full), c = current(), n = count(c);
-    var rows = SW.map(function (k, i) {
-      var off = full.slice(0, i) + '0' + full.slice(i + 1), m = count(off);
-      if (!m.full) return '<tr><th>' + PART[k].box + '</th><td colspan="3">not recorded yet</td></tr>';
-      return '<tr><th>' + PART[k].box + '</th><td>' + m.right + '</td><td>' + m.wrong + '</td><td>' + (m.tokens - nf.tokens > 0 ? '+' : '') + num(m.tokens - nf.tokens) + '</td></tr>';
+    var tried = SW.filter(function (k) { return S.tried[k]; }).length, single = SW.filter(function (k) { return offCfg(k) === c; })[0];
+    var btns = SW.map(function (k) {
+      var on = c[SW.indexOf(k)] === '1';
+      return '<button type="button" class="tog' + (on ? '' : ' off') + '" data-k="' + k + '" aria-pressed="' + !on + '">' + SHORT[k] + '<small>' + (on ? 'on' : 'off') + '</small></button>';
     }).join('');
+    var rows = SW.map(function (k) {
+      var m = count(offCfg(k));
+      if (!m.full) return '<tr><th>' + SHORT[k] + ' off</th><td colspan="3">not recorded yet</td></tr>';
+      if (!S.tried[k]) return '<tr class="todo"><th>' + SHORT[k] + ' off</th><td colspan="3">switch it off to see</td></tr>';
+      return '<tr' + (single === k ? ' class="now"' : '') + '><th>' + SHORT[k] + ' off</th><td>' + m.right + '</td><td>' + m.wrong + '</td><td>' + m.none + '</td></tr>';
+    }).join('');
+    var line = c === full ? 'Everything is on: ' + tallyLine(nf, full) + ' Tap a part to switch it off.'
+      : !n.full ? 'This combination was not recorded. Switch one part back on.'
+      : (single ? SHORT[single] + ' off: ' : 'Now: ') + tallyLine(n, c);
     $('panel').innerHTML =
-      (!n.full ? '<p class="q">This combination was not recorded. Switch one box back.</p>' : '<p class="q">Now: ' + tallyLine(n, c) + '</p>') +
-      '<p class="lab">Tap a box on the right to switch it. Try your own files off, then the checks off as well, and open question H each time.</p>' +
-      '<table class="earn"><thead><tr><th>With this one off</th><th>Right</th><th>Wrong, sent</th><th>Tokens</th></tr></thead><tbody>' +
-      '<tr class="all"><th>Everything on</th><td>' + nf.right + '</td><td>' + nf.wrong + '</td><td>' + num(nf.tokens) + '</td></tr>' + rows + '</tbody></table>' +
-      '<div class="named"><p class="lab">Its name</p><p class="big">The harness</p><p>The model was the same in every run. Everything you switched on and off sits around it: what it reads, what it can ask for, what the system remembers, what checks the answer, and the record of what crossed. Arranging those parts is harness engineering.</p></div>' +
+      '<p class="q">' + line + '</p>' +
+      '<div class="togs" role="group" aria-label="Switch a part on or off">' + btns + '</div>' +
+      (c !== full && n.full ? changes(full, c).replace('<p class="moved">', '<p class="moved"><span>Against everything on:</span> ') : '') +
+      '<table class="earn"><thead><tr><th>Setting</th><th>Right</th><th>Wrong, sent</th><th>No answer</th></tr></thead><tbody>' +
+      '<tr class="all"><th>Everything on</th><td>' + nf.right + '</td><td>' + nf.wrong + '</td><td>' + nf.none + '</td></tr>' + rows + '</tbody></table>' +
+      '<p class="lab">' + (tried < SW.length ? tried + ' of ' + SW.length + ' tried. Switch one back on before you try the next.' : 'All four tried. The part with the biggest drop does the most work.') + '</p>' +
+      '<div class="row"><button class="btn ' + (tried === SW.length ? 'go' : 'ghost') + '" id="next">' + (tried === SW.length ? 'See what you found' : 'Skip to what you found') + '</button>' + (c !== full ? '<button class="btn ghost" id="allon">Everything on</button>' : '') + '</div>';
+  }
+  /* the last step: what the learner found, counted from the runs, then the name, then the card */
+  function endPanel() {
+    var path = [['0000', 'Nothing around it'], ['1000', 'Search'], ['1100', 'The brain'], ['1110', 'Your files'], ['1111', 'Checks']];
+    var ns = path.map(function (p) { return count(p[0]); });
+    var ladder = path.map(function (p, i) {
+      var m = ns[i], note = [];
+      if (m.wrong) note.push(m.wrong + ' wrong sent');
+      if (p[0][3] === '1' && m.none) note.push(m.none + ' held back');
+      return '<li><span>' + (i ? '+ ' : '') + p[1] + '</span><i><b style="width:' + Math.round(100 * m.right / N) + '%"></b></i><em>' + m.right + '</em><small>' + note.join(', ') + '</small></li>';
+    }).join('');
+    function gained(a, b) {
+      var g = [];
+      D.questions.forEach(function (q) { if (D.cells[a][q.id].mark !== 'right' && D.cells[b][q.id].mark === 'right') { var l = ({ bench: 'single facts', across: 'questions across lectures', stale: 'dates that have passed', 'about me': 'questions about the person asking' })[q.group] || q.group; if (g.indexOf(l) < 0) g.push(l); } });
+      return g.length > 1 ? g.slice(0, -1).join(', ') + ' and ' + g[g.length - 1] : g.join('');
+    }
+    var gb = gained('1000', '1100'), gf = gained('1100', '1110'), best = Math.max.apply(null, ns.map(function (m) { return m.right; }));
+    var costs = [];
+    if (ns[1].wrong > ns[0].wrong) costs.push('Search on its own sent ' + ns[1].wrong + ' wrong ' + (ns[1].wrong === 1 ? 'answer' : 'answers') + '.');
+    if (ns[4].right < ns[3].right) costs.push('The checks held back ' + (ns[3].right - ns[4].right) + ' right ' + (ns[3].right - ns[4].right === 1 ? 'answer' : 'answers') + '.');
+    $('panel').innerHTML =
+      '<ol class="ladder">' + ladder + '</ol>' +
+      '<ol class="take">' +
+      '<li><b>The model never changed.</b> The score went from ' + ns[0].right + ' to ' + best + ' of ' + N + ' because of what you put around it.</li>' +
+      '<li><b>Each part fixes its own kind of question.</b>' + (gb.length ? ' The brain fixed ' + gb + '.' : '') + (gf.length ? ' Your files fixed the ' + gf + '.' : '') + ' When an answer is wrong, ask which part was missing.</li>' +
+      '<li><b>A part can cost as well as help.</b> ' + costs.join(' ') + ' So you never assume. You switch it off, count, and read the record.</li>' +
+      '</ol>' +
+      '<div class="named"><p class="lab">Its name</p><p class="big">The harness</p><p>Everything around the model: what it reads, what it can ask for, what the system remembers, what checks the answer, and the record of what crossed. Arranging those parts, and measuring each one, is harness engineering.</p></div>' +
+      '<p class="q">Now the same three moves on your own brain.</p>' +
+      '<ol class="take plain"><li>Draw the five parts around its model.</li><li>Find one answer it got wrong.</li><li>Add the one part that catches it.</li></ol>' +
       '<div class="row"><a class="btn go" href="' + BASE + 'card">Fill your harness card</a><button class="btn ghost" id="again">Start again</button></div>';
   }
 
@@ -198,7 +260,7 @@
     $('ctx').innerHTML = st.ctx;
     bar(); graph(); list(reveal); if (reveal == null) panel();
   }
-  function go(i) { clearInterval(timer); S.step = Math.max(0, Math.min(STEPS.length - 1, i)); open = null; if (STEPS[S.step].free && !S.sw) S.sw = '1111'; save(); draw(); window.scrollTo({ top: 0, behavior: 'smooth' }); $('ins').focus({ preventScroll: true }); }
+  function go(i) { clearInterval(timer); S.step = Math.max(0, Math.min(STEPS.length - 1, i)); open = null; if (STEPS[S.step].free) S.sw = '1111'; save(); draw(); window.scrollTo({ top: 0, behavior: 'smooth' }); $('ins').focus({ preventScroll: true }); }
   function run() {
     S.ran[S.step] = true; save();
     var i = 0, still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -209,15 +271,17 @@
   }
 
   document.addEventListener('click', function (e) {
-    var t = e.target.closest('[data-g],#run,#next,#again,.q-row,.segs a,.gn.part');
+    var t = e.target.closest('[data-g],#run,#next,#again,#openw,#allon,.q-row,.segs a,.gn.part,.tog');
     if (!t) return;
     if (t.matches('[data-g]')) { S.guess[S.step] = +t.dataset.g; save(); panel(); }
     else if (t.id === 'run') run();
     else if (t.id === 'next') go(S.step + 1);
     else if (t.id === 'again') { S = fresh(); save(); go(0); }
     else if (t.matches('.segs a')) { e.preventDefault(); go(+t.dataset.s); }
-    else if (t.matches('.q-row')) { var id = t.parentNode.dataset.q; open = open === id ? null : id; list(); }
-    else if (t.matches('button.gn.part')) { var c = current().split(''), k = SW.indexOf(t.dataset.k); c[k] = c[k] === '1' ? '0' : '1'; S.sw = c.join(''); save(); draw(); }
+    else if (t.id === 'allon') { S.sw = '1111'; save(); draw(); }
+    else if (t.id === 'openw') { open = t.dataset.q; list(); panel(); var li = document.querySelector('.q[data-q="' + open + '"]'); if (li) li.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    else if (t.matches('.q-row')) { var id = t.parentNode.dataset.q; open = open === id ? null : id; list(); if (STEPS[S.step].record) panel(); }
+    else if (t.matches('button.gn.part,.tog')) { var c = current().split(''), k = SW.indexOf(t.dataset.k); c[k] = c[k] === '1' ? '0' : '1'; S.sw = c.join(''); SW.forEach(function (p) { if (offCfg(p) === S.sw) S.tried[p] = true; }); save(); draw(); }
   });
 
   fetch(BASE + 'assets/runs/index.json' + V).then(function (r) { return r.json(); }).then(function (d) {
