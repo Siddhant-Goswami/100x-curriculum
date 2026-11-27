@@ -173,9 +173,9 @@ details.rules li{margin:3px 0}
   <div class="btnrow" style="margin-top:28px"><button class="btn" id="again">Run it again</button><button class="btn ghost" id="other">Pick another lesson</button><button class="btn ghost" id="dl">Download the log</button></div>
   <details class="rules"><summary>How the numbers move</summary>
     <ul>
-      <li>A student gains most when they say the idea in their own words (+0.30), half that when partly right, and little when they only hear it from you (+0.06) or from a classmate (+0.05).</li>
+      <li>A student gains most when they say the idea in their own words (+0.30), half that when partly right, and little when they only hear it from you (+0.06) or from a classmate (+0.05). Hearing alone never lifts an idea past 0.6.</li>
       <li>The three ideas are a chain. A question is in reach when the earlier ideas are at least 0.4 and this one is under 0.8. Out of reach, the gain is cut to a third or less.</li>
-      <li>A wrong belief loses 0.35 of its strength when the student notices the problem themselves, 0.15 when you put a case to them and they answer, 0.04 when you just state the right answer.</li>
+      <li>A wrong belief loses 0.35 of its strength when the student notices the problem themselves, 0.15 when you put a case to them and they answer, 0.04 when you just state the right answer, and telling never takes it below 0.55.</li>
       <li>While a belief is stronger than 0.5, the idea it blocks cannot pass 0.45.</li>
       <li>"Could explain it" means the last idea is 0.7 or more and no belief is stronger than 0.5.</li>
     </ul>
@@ -308,7 +308,7 @@ details.rules li{margin:3px 0}
     $('nums').innerHTML =
       '<div><b>' + st.can + ' of ' + d.students.length + '</b><span>could explain the goal to a friend</span></div>' +
       '<div><b>' + st.share + '%</b><span>of the words spoken were yours</span></div>' +
-      '<div><b>' + st.asked + ' and ' + st.told + '</b><span>turns that made them think, and turns where you told the answer' + (st.checks ? '. ' + st.checks + ' "is that clear?"' : '') + '</span></div>';
+      '<div><b>' + st.asked + ' and ' + st.told + '</b><span>turns that made them think, and turns where you stated an answer' + (st.checks ? '. ' + st.checks + ' "is that clear?"' : '') + '</span></div>';
     $('students').innerHTML = d.students.map(function (s) {
       var g = s.guess == null ? '' : '<span class="chip">You guessed: ' + (s.guess ? 'could' : 'not yet') + '</span>';
       var h = '<div class="card stu"><div class="hd"><b>' + esc(s.name) + '</b><small>' + esc(s.about) + ' Spoke ' + s.spoke + (s.spoke === 1 ? ' time.' : ' times.') + '</small>' + g +

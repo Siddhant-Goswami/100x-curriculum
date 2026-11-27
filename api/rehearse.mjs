@@ -21,7 +21,7 @@
 
 const GROQ = process.env.GROQ_URL || 'https://api.groq.com/openai/v1/chat/completions';
 const MODELS = process.env.GROQ_MODELS_URL || 'https://api.groq.com/openai/v1/models';
-const MODEL = 'openai/gpt-oss-120b';
+const MODEL = process.env.REHEARSE_MODEL || 'openai/gpt-oss-120b';
 const KEY_RE = /^gsk_[A-Za-z0-9]{20,}$/;
 const TURNS = 12;
 const MAX = { say: 700, reply: 500, topic: 120, goal: 240, notes: 5000, text: 320 };
@@ -147,7 +147,7 @@ const MOVES = ['open_question', 'leading_question', 'check_question', 'tell', 'h
 const SAID = ['own_words', 'partial', 'wrong', 'agreed_only', 'silent'];
 const FIT = ['reach', 'easy', 'far'];
 const idx = a => (Array.isArray(a) ? a : []).map(n => +n).filter(n => n === 0 || n === 1 || n === 2).filter((n, i, l) => l.indexOf(n) === i);
-const ids = a => (Array.isArray(a) ? a : []).map(String).filter(s => WHO[s]).filter((n, i, l) => l.indexOf(n) === i);
+const ids = a => (Array.isArray(a) ? a : []).map(x => String(x).toLowerCase().trim()).filter(s => WHO[s]).filter((n, i, l) => l.indexOf(n) === i);
 
 /* ---------- Groq: one JSON answer ---------- */
 function waitWords(wait) {
@@ -155,8 +155,12 @@ function waitWords(wait) {
   const m = Math.round(wait / 60);
   return 'Your key hit its limit for today. It frees up in about ' + (m < 90 ? m + ' minutes' : Math.round(m / 60) + ' hours') + '.';
 }
+/* the class only writes; the observer and the debrief judge, so they get the default amount of thinking.
+   A free Groq key has 8,000 tokens a minute and 200,000 a day for this LLM, and thinking is most of what a turn spends. */
 async function ask(key, what, system, user, temperature) {
   const sent = { model: MODEL, temperature, response_format: { type: 'json_object' }, messages: [{ role: 'system', content: system }, { role: 'user', content: user }] };
+  if (what === 'class' || what === 'custom') sent.reasoning_effort = 'low';
+  let waited = 0;
   for (let attempt = 0; attempt < 2; attempt++) {
     const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 40000), t0 = Date.now();
     let res, data = null;
@@ -167,7 +171,12 @@ async function ask(key, what, system, user, temperature) {
     finally { clearTimeout(timer); }
     console.log(JSON.stringify({ op: what, status: res.status, ms: Date.now() - t0, attempt }));
     if (res.status === 401) throw new Stop(401, { error: 'need_key', message: 'Groq did not accept that key.' });
-    if (res.status === 429) { const wait = Math.ceil(+res.headers.get('retry-after') || 10); throw new Stop(429, { error: 'slow_down', message: waitWords(wait), wait }); }
+    if (res.status === 429) {
+      const wait = Math.ceil(+res.headers.get('retry-after') || 10);
+      /* the per-minute limit clears in seconds: wait it out here, so a turn is not thrown away after the class has answered */
+      if (wait <= 30 && waited < 3) { waited++; attempt--; await new Promise(r => setTimeout(r, wait * 1000 + 500)); continue; }
+      throw new Stop(429, { error: 'slow_down', message: waitWords(wait), wait });
+    }
     if (res.status === 200 && data && data.choices) {
       const text = String((data.choices[0].message || {}).content || ''), a = text.indexOf('{'), b = text.lastIndexOf('}');
       try { return JSON.parse(text.slice(a, b + 1)); } catch (e) { /* malformed: one more try */ }
@@ -195,12 +204,19 @@ Style: spoken, plain, 1 to 3 short sentences each. No lists. No textbook definit
 
 Answer with JSON only: {"replies":[{"who":"<student id>","text":"<what they say>"}]}. The list may be empty.`;
 
+/* the thresholds are applied here and handed over in words, because a small LLM follows a sentence better than a number */
+function stance(x) {
+  const n = x.c + 1;
+  if (x.p > RULE.strong) return 'HOLDS IT. When idea ' + n + ' comes up, this student says this belief and defends it. They do not give the correct account of idea ' + n + ', even right after hearing it; they nod or argue instead. Only a case their belief cannot explain makes them hesitate.';
+  if (x.p > 0.2) return 'WAVERING. Half lets go: "I thought... but then...". May reach the correct account of idea ' + n + ' if asked to work it out.';
+  return 'LET GO. No longer believes it.';
+}
 function notebook(room) {
   return room.students.map(s => {
     const c = WHO[s.id];
     return { id: s.id, name: c.name, about: c.about, voice: c.voice, talkative: c.talk, times_spoken: s.spoke,
-      knows: room.lesson.concepts.map((t, i) => ({ idea: i + 1, level: s.m[i] })),
-      belief: s.mis ? { text: s.mis.belief, about_idea: s.mis.c + 1, strength: s.mis.p } : null };
+      knows: room.lesson.concepts.map((t, i) => ({ idea: i + 1, level: s.m[i], can: s.m[i] < 0.4 ? 'cannot explain it: guesses, asks or stays vague' : s.m[i] <= 0.7 ? 'half right, in rough words, with a gap' : 'can explain it plainly' })),
+      belief: s.mis ? { text: s.mis.belief, about_idea: s.mis.c + 1, strength: s.mis.p, stance: stance(s.mis) } : null };
   });
 }
 function transcript(room, last) {
@@ -239,16 +255,16 @@ Return:
    If a message both explains and then asks, label it by what the students were left to do.
  "concepts": the ideas (numbers 1 to 3) this message works on; [] if none,
  "told": the ideas (numbers) whose answer the instructor stated outright in this message; [] if none,
- "cases": ids of students whose wrong belief this message tests with a case or question the belief cannot explain; [] if none,
+ "cases": ids of students whose wrong belief this message tests by asking a question or posing a case that the belief cannot explain. Stating the correct fact, however clearly, is not a case; [] if none,
  "students": one entry per student who spoke: {
-   "who": id,
+   "who": the student id exactly as given, lowercase,
    "said": "own_words" (states the idea correctly in their own words, not repeating the instructor) | "partial" (partly right or right with a gap) | "wrong" (states something incorrect) | "agreed_only" (yes, ok, makes sense, or repeats the instructor),
-   "concept": the idea number their reply is about, or 0,
+   "concepts": the idea numbers their reply is about; a reply that walks through the whole chain lists all of them; [] if none,
    "voiced": true if they stated their wrong belief out loud this turn,
    "shaken": true only if they themselves noticed a problem with their own belief this turn (hesitated, contradicted it, or revised it)
  }
 }
-Be strict about "own_words": repeating or agreeing does not count. Json only.`;
+Be strict about "own_words": repeating or agreeing does not count, and a reply that states the student's wrong belief is "wrong" with "voiced": true, however fluent it sounds. Json only.`;
 
 function observerUser(room, say, replies) {
   return 'Ideas:\n' + room.lesson.concepts.map((c, i) => (i + 1) + '. ' + c).join('\n') +
@@ -265,9 +281,11 @@ function observerUser(room, say, replies) {
    too far   = an earlier idea is still under 0.4
    This is a step version of the paper's reach score (a bell curve around mastery plus help). */
 export const RULE = {
-  own: 0.30, partial: 0.15, told: 0.06, peer: 0.05,          /* mastery gained: said it themselves, half said it, heard the instructor, heard a classmate */
+  own: 0.30, partial: 0.15, told: 0.06, peer: 0.05, heard: 0.6, /* listening alone never lifts an idea past `heard` */
+           /* mastery gained: said it themselves, half said it, heard the instructor, heard a classmate */
   fit: { reach: 1, easy: 0.2, far: 0.3 },                     /* multiplier on what the student works out */
-  shaken: 0.35, caseSpoke: 0.15, caseSilent: 0.05, toldBelief: 0.04, /* belief strength lost */
+  shaken: 0.35, caseSpoke: 0.15, caseSilent: 0.05, toldBelief: 0.04, toldFloor: 0.55, /* being told never weakens a belief below `toldFloor` */
+  /* belief strength lost */
   capStrong: 0.45, capWeak: 0.7, strong: 0.5, weak: 0.25,     /* a held belief caps mastery of the idea it blocks */
   can: 0.7                                                    /* "could explain it": last idea at 0.7 or more and no belief over 0.5 */
 };
@@ -281,30 +299,36 @@ export function can(s) { return s.m[2] >= RULE.can && !(s.mis && s.mis.p > RULE.
 export function apply(room, say, replies, lab) {
   const n = room.turn + 1, told = idx((lab.told || []).map(x => x - 1)), cases = ids(lab.cases);
   const by = {};
-  (Array.isArray(lab.students) ? lab.students : []).forEach(e => { if (e && WHO[e.who] && replies.some(r => r.who === e.who)) by[e.who] = e; });
-  const work = idx((lab.concepts || []).map(x => x - 1).concat(Object.keys(by).map(k => (by[k].concept | 0) - 1)).concat(told));
+  (Array.isArray(lab.students) ? lab.students : []).forEach(e => { const w = String((e && e.who) || '').toLowerCase().trim(); if (WHO[w] && replies.some(r => r.who === w)) by[w] = e; }); /* the LLM sometimes writes the name, not the id */
+  const about = e => idx((Array.isArray(e.concepts) ? e.concepts : [e.concept]).map(x => (x | 0) - 1));
+  const work = idx((lab.concepts || []).map(x => x - 1).concat(...Object.keys(by).map(k => about(by[k]))).concat(told));
   const ev = {};
   room.students.forEach(s => {
-    const e = by[s.id], said = e && SAID.includes(e.said) && e.said !== 'silent' ? e.said : (replies.some(r => r.who === s.id) ? 'agreed_only' : 'silent');
-    const on = e ? (e.concept | 0) - 1 : -1, r = WHO[s.id].rate;
-    const main = on >= 0 && on <= 2 ? on : (work.length ? work[0] : -1);
-    ev[s.id] = { said, fit: main >= 0 ? fit(s, main) : '', voiced: !!(e && e.voiced && s.mis), shaken: !!(e && e.shaken && s.mis) };
+    const e = by[s.id], r = WHO[s.id].rate;
+    let on = e ? about(e) : [];
+    let said = e && SAID.includes(e.said) && e.said !== 'silent' ? e.said : (replies.some(r => r.who === s.id) ? 'agreed_only' : 'silent');
+    /* two guards on the observer: restating what the instructor has just told is agreeing, and a belief is only 'said aloud' in a wrong or half-right answer */
+    on = on.filter(c => !told.includes(c));
+    if (said === 'own_words' && e && about(e).length && !on.length) said = 'agreed_only';
+    const main = on.length ? Math.max(...on) : (work.length ? work[0] : -1);
+    ev[s.id] = { said, fit: main >= 0 ? fit(s, main) : '', voiced: !!(e && e.voiced && s.mis && (said === 'wrong' || said === 'partial')), shaken: !!(e && e.shaken && s.mis) };
     if (said !== 'silent') s.spoke++;
     const before = s.m.slice();
     work.forEach(c => {
       const k = RULE.fit[fit({ m: before }, c)];
-      let gain = 0;
-      if (c === on && said === 'own_words') gain += RULE.own * k;
-      else if (c === on && said === 'partial') gain += RULE.partial * k;
-      if (told.includes(c)) gain += RULE.told;
-      else if (!(c === on && (said === 'own_words' || said === 'partial')) && Object.keys(by).some(w => w !== s.id && by[w].said === 'own_words' && (by[w].concept | 0) - 1 === c)) gain += RULE.peer * k;
-      s.m[c] = clip(before[c] + gain * r);
+      const did = on.includes(c) && (said === 'own_words' || said === 'partial');
+      let work = 0, heard = 0;
+      if (did) work = (said === 'own_words' ? RULE.own : RULE.partial) * k;
+      if (told.includes(c)) heard = RULE.told;
+      else if (!did && Object.keys(by).some(w => w !== s.id && by[w].said === 'own_words' && about(by[w]).includes(c))) heard = RULE.peer * k;
+      const listened = Math.max(before[c], Math.min(before[c] + heard * r, RULE.heard));
+      s.m[c] = clip(listened + work * r);
     });
     if (s.mis) {
       let drop = 0;
       if (ev[s.id].shaken) drop = RULE.shaken;
       else if (cases.includes(s.id)) drop = said === 'silent' ? RULE.caseSilent : RULE.caseSpoke;
-      else if (told.includes(s.mis.c)) drop = RULE.toldBelief;
+      else if (told.includes(s.mis.c)) drop = Math.max(0, Math.min(RULE.toldBelief, s.mis.p - RULE.toldFloor));
       s.mis.p = clip(s.mis.p - drop);
       if (ev[s.id].voiced && !s.mis.seen) s.mis.seen = n;
       const cap = s.mis.p > RULE.strong ? RULE.capStrong : s.mis.p > RULE.weak ? RULE.capWeak : 1;
@@ -329,9 +353,9 @@ async function turn(key, room, say) {
 /* ---------- the debrief: counts in code, two things from the LLM ---------- */
 const DEBRIEF_SYS = `A new instructor has just practised a short lesson with four simulated students. You get the goal, the labelled turns, and each student's state at the end. Write two things, as json.
 
-1. "exit": for each of the four students, one or two spoken sentences: what this student would say tomorrow if a friend asked them about the lesson's goal. It must match their final state exactly: a student whose last idea is under 0.4, or who still holds a belief with strength over 0.5, gets it wrong or vague in their own way and may repeat that belief. Do not flatter.
+1. "exit": for each of the four students, one or two spoken sentences: what this student would say tomorrow if a friend asked them about the lesson's goal. It must match their final state exactly. If "could_explain_the_goal" is true, they say the goal correctly in their own rough words. If it is false: a student whose belief is marked HOLDS IT repeats that belief; one marked WAVERING is unsure and says so; one who has LET GO, or has no belief, gets part of it and leaves a gap. Do not flatter.
 
-2. "next": exactly three things to try on the next run. Each names a turn number and is concrete: quote a few of the instructor's words from that turn, then give the question the instructor could have asked instead, written out in full. Prefer: a turn where the answer was told when a question was in reach; a belief that was never heard or never tested (use its "breaker"); a student who never spoke. Plain words, no jargon, no praise, no summary. At most 45 words each.
+2. "next": exactly three things to try on the next run. Each names a turn number and is concrete: quote at most eight of the instructor's words from that turn, say in a few words what it left untested, then give the question the instructor could have asked instead, written out in full and different from the one they asked. Prefer: a turn where the answer was told when a question was in reach; a belief that was never heard or never tested (use its "breaker"); a student who never spoke. Plain words, no jargon, no praise, no summary. At most 45 words each.
 
 Json only: {"exit":[{"who":"<id>","text":"..."}],"next":[{"turn":<number>,"try":"..."}]}`;
 
@@ -346,7 +370,7 @@ function stats(room) {
   });
   const q = (moves.open_question || 0) + (moves.hint || 0) + (moves.challenge || 0);
   return { turns: room.log.length, share: you + they ? Math.round(100 * you / (you + they)) : 0, moves, said,
-    asked: q, told: moves.tell || 0, checks: moves.check_question || 0, leading: moves.leading_question || 0,
+    asked: q, told: room.log.filter(t => t.told.length).length, checks: moves.check_question || 0, leading: moves.leading_question || 0,
     quiet: room.students.filter(s => !s.spoke).map(s => s.id), can: room.students.filter(can).length };
 }
 async function debrief(key, room, guesses) {
@@ -354,8 +378,8 @@ async function debrief(key, room, guesses) {
   const brief = {
     goal: room.lesson.goal, ideas: room.lesson.concepts,
     turns: room.log.map(t => ({ turn: t.n, instructor: t.say, move: t.move, replies: t.replies.map(r => ({ who: r.who, text: r.text, said: t.ev[r.who].said })) })),
-    students: room.students.map(s => ({ id: s.id, name: WHO[s.id].name, times_spoken: s.spoke, knows_at_end: s.m,
-      belief: s.mis ? { text: s.mis.belief, strength_start: s.mis.p0, strength_end: s.mis.p, first_said_on_turn: s.mis.seen || null, breaker: s.mis.breaker } : null }))
+    students: room.students.map(s => ({ id: s.id, name: WHO[s.id].name, times_spoken: s.spoke, knows_at_end: s.m, could_explain_the_goal: can(s),
+      belief: s.mis ? { text: s.mis.belief, strength_start: s.mis.p0, strength_end: s.mis.p, first_said_on_turn: s.mis.seen || null, at_end: stance(s.mis).split('.')[0], breaker: s.mis.breaker } : null }))
   };
   let w = { exit: [], next: [] };
   try { w = await ask(key, 'debrief', DEBRIEF_SYS, JSON.stringify(brief), 0.4); }
