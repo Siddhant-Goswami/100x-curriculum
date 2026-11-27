@@ -103,7 +103,7 @@ footer{font:12.5px var(--mono);color:var(--ink3)}
   <p class="dek">The lecture keeps its six blocks. One thing changes: tonight each learner carries the files to the LLM and back themselves. No tool that opens folders, no install, no subscription.</p>
   <div class="call">
     <p class="kick">Where things stand</p>
-    <p><b>The edits are made and live</b> (27 Nov, evening): the template and its zip, the brief, the overview and the 100x brain's README. Section 03 lists each one. Still open: the Lecture 16 touches and the plan doc.</p>
+    <p><b>The edits are made and live</b> (27 Nov, evening): the template and its zip, the brief, the overview and the 100x brain's README. Section 03 lists each one. Both plan docs and the Lecture 16 card carry the change too. Still open, and yours: one rehearsal, and ten wiki pages waiting for your name (section 04).</p>
   </div>
   <nav class="toc" aria-label="Contents">
     <a href="#idea">01 The idea</a><a href="#lecture">02 Lecture changes</a><a href="#resources">03 Resource changes</a><a href="#prep">04 Before you start</a><a href="#show">05 Run of show</a><a href="#script">06 The script</a><a href="#wrong">07 If it goes wrong</a><a href="#after">08 After tonight</a>
@@ -130,7 +130,7 @@ footer{font:12.5px var(--mono);color:var(--ink3)}
     <tr><td>Index, then one page</td><td>Given the 100x brain's index and the scoreboard question, it asked for <code>wiki/threads/scoreboards.md</code> and answered from it. One slip: it invented a "baseline search, 3 of 10" row from the words "recall at 3"</td></tr>
     <tr><td>Rules pasted first</td><td>It asked for <code>me.md</code>, <code>now.md</code> and <code>index.md</code> in all five chats</td></tr>
     <tr><td>New chat, nothing pasted</td><td>It did not know the fact</td></tr>
-    <tr><td>New chat, files pasted</td><td>It asked for <code>wiki/told.md</code> from the index, answered "Lecture 4" and named the file. "What is my manager's name?" came back "not known"</td></tr>
+    <tr><td>New chat, files pasted</td><td>It asked for <code>wiki/told.md</code> from the index, answered with the test fact ("Lecture 4") and named the file. "What is my manager's name?" came back "not known"</td></tr>
     <tr><td>Save a fact</td><td>It asked for the date, then gave the exact line for <code>wiki/told.md</code> and one for <code>log.md</code></td></tr>
     <tr><td>Is this worth my time?</td><td>Yes, with the North Star quoted and one line of the source quoted</td></tr>
     <tr><td>Take in a source (Haiku)</td><td>It returned the page, the index line and the log line as text, each with its file</td></tr>
@@ -179,8 +179,8 @@ footer{font:12.5px var(--mono);color:var(--ink3)}
     <tr><td class="k">Lecture 15 overview</td><td>"Bring tonight" names any chat with an LLM, not four tools. Section 02 leads with "read it by hand", then the address. A copy box for the block 4 message</td><td><span class="pill s">Done</span></td></tr>
     <tr><td class="k">100x brain repo</td><td>README, "Ask": a by-hand way (paste the index, then the page it names), and its size line corrected to 136 pages. Sources, wiki, index, scores: no change</td><td><span class="pill s">Done</span></td></tr>
     <tr><td class="k">The brain's address, Brain Bench, Lecture 16 bench</td><td>No change</td><td><span class="pill s">Stays</span></td></tr>
-    <tr><td class="k">Lecture 16 plan and card</td><td>Block 1 gains one question: "Who carried the files last night?" The card's "Asks" line can read "it asks me for a file by its path". A tool enters only after the name arrives</td><td><span class="pill m">Tomorrow morning</span></td></tr>
-    <tr><td class="k">Lecture 15 plan doc</td><td>Its lecture table replaced by the run of show on this page</td><td><span class="pill m">Can wait</span></td></tr>
+    <tr><td class="k">Lecture 16 plan and card</td><td>The plan doc has two new paragraphs: block 1 gains the question "Who carried the files last night?", and block 5 reads the card through what they did by hand. On the card page, Reads and Asks now say "pasted by you, or read by your tool". A tool enters only after the name arrives</td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">Lecture 15 plan doc</td><td>Lecture table, block details, closing line and the assignment table replaced with the by-hand version. Build status has a paragraph on the redesign and the brain's new size</td><td><span class="pill s">Done</span></td></tr>
   </table></div>
 
   <h3>The brief, step 02 (in class), before and after</h3>
@@ -246,7 +246,7 @@ In a tool: its address is `https://100x-curriculum.vercel.app/api/brain`, with t
   <ul>
     <li><b>Two different chat apps, each on a new chat.</b> Tell the fact in the first. Ask for it back in the second. That shows the memory is the file and moves with you.</li>
     <li><b>Turn each app's own memory off</b>, or use its temporary chat.</li>
-    <li><b>Do not rely on your Groq account tonight.</b> Its free allowance for today (200,000 tokens) was used up this afternoon by the bench recording and by my tests, which took about 30,000. It refills over a rolling 24 hours. Learners have their own accounts and are fine.</li>
+    <li><b>Check your Groq account before you rely on it.</b> Its free allowance (200,000 tokens over a rolling 24 hours) ran out this afternoon, from the bench recording and about 30,000 tokens of my tests. A small call went through again this evening, so some has refilled; I cannot see how much. Learners have their own accounts and are fine.</li>
     <li><b>If a learner uses the Groq playground for block 4:</b> the index plus one page is close to the free limit of 8,000 tokens a minute. A wait of one minute between the two messages avoids it.</li>
   </ul>
   <h3>Tabs, in the order you need them</h3>
@@ -256,7 +256,7 @@ In a tool: its address is `https://100x-curriculum.vercel.app/api/brain`, with t
     <li><a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/wiki/threads/scoreboards.md">100x brain: the scoreboards page</a></li>
     <li><a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/index.md">100x brain: index.md</a> and <a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/log.md">log.md</a></li>
     <li><a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/wiki/threads/where-sources-disagree.md">100x brain: where sources disagree</a></li>
-    <li>The curriculum sheet, code-track tab, on the Lecture 13 row</li>
+    <li>The curriculum sheet, code-track tab, on the Lecture 13 row. The copy the brain took in says Status: Planned. Look at the live row before the session: if someone has corrected it, show the bench's recorded answer and skip the sheet</li>
     <li><a href="https://100x-curriculum.vercel.app/c8/module-2/lecture-15-building-a-second-brain/your-brain">Your brain brief</a></li>
     <li>The two chat apps</li>
   </ol>
@@ -268,6 +268,8 @@ In a tool: its address is `https://100x-curriculum.vercel.app/api/brain`, with t
     <li>A second folder for block 5 whose <code>wiki/told.md</code> holds the planted line (copy box in block 5).</li>
     <li>A note holding the three copy boxes from the script, ready to paste into the session chat.</li>
   </ul>
+  <h3>Ten pages without your name</h3>
+  <p>The brain grew to 136 wiki pages this afternoon. The ten newest (six no-code lecture pages and four office-hour pages) have an empty <code>approved_by</code> line. Block 3 says a person approves each page, so either read them before the session, or keep the tour on the scoreboards page and use an unapproved one if the room finds it: "Nobody has put a name on this one yet. Would you trust it the same?"</p>
 </section>
 
 <section id="show">
@@ -288,7 +290,7 @@ In a tool: its address is `https://100x-curriculum.vercel.app/api/brain`, with t
 <section id="script">
   <p class="num">06</p>
   <h2>The script</h2>
-  <p>Lines marked Say and Ask are the words. Lines marked Do are for you. "Listen for" is what you wait for before moving on. Numbers on the bench are from its recorded runs (Claude Haiku, one run a question); check them at rehearsal.</p>
+  <p>Lines marked Say and Ask are the words. Lines marked Do are for you. "Listen for" is what you wait for before moving on. Numbers on the bench are read from its recorded runs (Claude Haiku, one run a question, recorded 27 Nov). I re-read them this evening and they have not changed.</p>
 
   <!-- BLOCK 1 -->
   <div class="blk" id="b1">
@@ -336,7 +338,7 @@ In a tool: its address is `https://100x-curriculum.vercel.app/api/brain`, with t
       <div class="ln do"><span class="tag">Do</span><div>Click the link at the end of the line "No context: 1." It lands on that section of the Lecture 10 notes, in <code>raw/</code>.</div></div>
       <div class="ln say"><span class="tag">Say</span><div><p>Every line ends with the place it came from. No source, no line.</p></div></div>
       <div class="ln ask"><span class="tag">Ask</span><div><p>Two. Who wrote this page?</p></div></div>
-      <div class="ln do"><span class="tag">Do</span><div>Scroll to the top. Read out: "written by Claude Opus 5.5", "approved by Siddhant, 2026-11-27".</div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Scroll to the top. Read out: "written by Claude Opus 5.5", "approved by Siddhant, 2026-11-27". Stay on this page for the three questions; ten newer pages have no approval yet (section 04).</div></div>
       <div class="ln say"><span class="tag">Say</span><div><p>An LLM wrote it. A person read it and put his name on it. Two names, two different jobs.</p></div></div>
       <div class="ln ask"><span class="tag">Ask</span><div><p>Three. Next week the notes change. What happens to this page?</p></div></div>
       <div class="ln do"><span class="tag">Do</span><div>Open <code>raw/</code>, then <code>log.md</code>.</div></div>
@@ -371,8 +373,8 @@ Do not answer yet. Tell me the one page you want me to open, by its path. I will
       <div class="ln ask"><span class="tag">Ask</span><div><p>How many pages did you carry?</p><p>In Lecture 10, the LLM asked for something and a server ran it. Who was the server just now?</p></div></div>
       <div class="ln hear"><span class="tag">Listen for</span><div>"One." Then: "Me."</div></div>
       <div class="ln land"><span class="tag">Land</span><div><p>It asked. You fetched. It answered from a page someone wrote earlier.</p></div></div>
-      <div class="ln do"><span class="tag">Do</span><div>Brain Bench, step 3, "The brain". Take a guess from the room, run it: 14 right, 1 wrong, 3 unanswered. Open the scoreboard question and read what crossed: it read the index, opened the scoreboards page, then three of the sources.</div></div>
-      <div class="ln say"><span class="tag">Say</span><div><p>Same thing, with software doing the carrying. It opened four pages where you opened one, and it never got tired.</p><p>The LLM asks, that was Lecture 10. Through one address, Lecture 11. For the few pages that matter, Lecture 13. What comes back was written earlier and kept. You just did all of it with copy and paste.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Brain Bench, step 3, "The brain". Take a guess from the room, run it: 14 right, 1 wrong, 3 unanswered. Open the scoreboard question and read what crossed: it read the index, opened the scoreboards page, then went into three of the sources to check them. Ten requests in all. The one wrong answer is the golden pair question: it named two lectures and missed the golden set in Lecture 14.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Same thing, with software doing the carrying. It made ten requests where you made two, and it never got tired.</p><p>The LLM asks, that was Lecture 10. Through one address, Lecture 11. For the few pages that matter, Lecture 13. What comes back was written earlier and kept. You just did all of it with copy and paste.</p></div></div>
       <div class="ln ask"><span class="tag">Ask</span><div><p>Three questions are still unanswered. Look at the list. Which three?</p></div></div>
       <div class="ln hear"><span class="tag">Listen for</span><div>The group "About the person asking": which lecture did I say I was stuck on, what is my North Star, what date was that lecture.</div></div>
       <div class="ln say"><span class="tag">Say</span><div><p>Hold that thought for twenty minutes.</p></div></div>
@@ -386,11 +388,11 @@ Do not answer yet. Tell me the one page you want me to open, by its path. I will
     <div class="lines">
       <div class="ln say"><span class="tag">Say</span><div><p>Writing things down fixes one problem and opens three new ones. I will show you three wrong answers. In each one the LLM did exactly what it should. Find what went wrong.</p></div></div>
       <div class="sub">One: a date that has passed</div>
-      <div class="ln do"><span class="tag">Do</span><div>Show the sheet, Lecture 13 row. Status: "Planned". Then say what search answered in the score run: "Lecture 13 has not yet been taught."</div></div>
-      <div class="ln ask"><span class="tag">Ask</span><div><p>We held Lecture 13 a week ago. The LLM read the sheet correctly. What went wrong?</p></div></div>
-      <div class="ln hear"><span class="tag">Listen for</span><div>"Nobody updated the sheet." "It was true when it was written."</div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Brain Bench, back to step 2, "Search". Under "Dates that have passed", open "Has Lecture 13 been taught?" Read its answer aloud: the checklist says "Finish the rest before Lecture 13", which "suggests it's still ahead of you".</div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>We held Lecture 13 a week ago. The LLM read that checklist correctly. What went wrong?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"The checklist was written before the lecture." "It was true when it was written."</div></div>
       <div class="ln ask"><span class="tag">Ask</span><div><p>Write me the rule that would have stopped it. A few words.</p></div></div>
-      <div class="ln do"><span class="tag">Do</span><div>Board, in their words. You want something like: <b>Date it.</b> Then show the brain's own rule on the "where sources disagree" page: a lecture that has notes has been taught, whatever the Status says.</div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Board, in their words. You want something like: <b>Date it.</b> Then the same question on step 3, "The brain": "Yes, Fri 20 Nov 2026", and it adds that the sheet's Status still says Planned. Show the sheet row, then the brain's rule on the "where sources disagree" page: a lecture that has notes has been taught, whatever the Status says.</div></div>
       <div class="sub">Two: two sources that disagree</div>
       <div class="ln do"><span class="tag">Do</span><div>Same page, under "Dates". Read both: the code-track tick list says "Saturday 17 to Monday 19 October". The sheet says "Ends Tuesday, 20 October 2026, 9:00 PM IST".</div></div>
       <div class="ln ask"><span class="tag">Ask</span><div><p>Both are our own pages. Which one should the brain say? And what is the rule?</p></div></div>
@@ -432,8 +434,8 @@ One line per fact, with the date. Newest first.
       <div class="ln say"><span class="tag">Say</span><div><p>It asked. Go and fetch. Paste all three into one message and send.</p><p>Now tell it one true thing about you that you want back next week. Type it like this.</p></div></div>
       <div class="ln do"><span class="tag">Do</span><div>Paste into the session chat:
         <div class="copy"><div class="bar"><span>The save sentence</span><button type="button" data-copy="m6">Copy</button></div>
-<pre id="m6">Today is 27 Nov 2026. Save this in wiki/told.md: I am stuck on Lecture 4, the six parts of a request.</pre></div>
-        Tell them to swap in their own fact after the colon.
+<pre id="m6">Today is 27 Nov 2026. Save this in wiki/told.md: I am stuck on Lecture 6, keys and pointers.</pre></div>
+        Tell them to swap in their own fact after the colon. Yours is the fact the Lecture 16 bench uses, so tomorrow its "Your files" step returns the answer the room saw come back tonight.
       </div></div>
       <div class="ln ask"><span class="tag">Ask</span><div><p>Did it save it?</p><p>Where is that line right now? So who saves it?</p></div></div>
       <div class="ln hear"><span class="tag">Listen for</span><div>"No, it gave me a line." "In the chat." "Me."</div></div>
@@ -510,14 +512,14 @@ One line per fact, with the date. Newest first.
   <p class="num">08</p>
   <h2>After tonight</h2>
   <ul>
-    <li><b>Lecture 16, block 1.</b> After the brain answers the scoreboard question, ask: "Who carried the files last night?" The answer is the thing that lecture names.</li>
+    <li><b>Lecture 16, block 1.</b> After the board has its answers, ask: "Who carried the files last night?" The answer is the thing that lecture names. This is in the Lecture 16 plan doc now.</li>
     <li><b>The card.</b> Their "Asks" line is real now: "it asks me for a file by its path". Their "Record" line is <code>log.md</code>.</li>
     <li><b>A tool, for those who want one.</b> After the name arrives: open the same folder in Antigravity on its free plan. Nothing in the folder changes. Scheduled runs live there. I have not tested the template in Antigravity.</li>
     <li><b>The week.</b> One thing a day, by hand: paste it, ask "Is this worth my time?", write one line in <code>log.md</code>. On Fri 4 Dec, ask for the fact from tonight.</li>
   </ul>
 </section>
 
-<footer>Draft for Siddhant · written Fri 27 Nov 2026 · file: _plan/lecture-15/facilitator-guide.html</footer>
+<footer>For Siddhant · Fri 27 Nov 2026, data re-read this evening · file: _plan/lecture-15/facilitator-guide.html</footer>
 </div>
 
 <script>
