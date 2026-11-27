@@ -161,6 +161,7 @@ var GUIDE_LINKS = {
   l14OfficeHour: '/c8/module-2/lecture-14-building-rag-apps/office-hour',  /* recap of the 24 Nov office hour */
   l15Hub: '/c8/module-2/lecture-15-building-a-second-brain/',
   l15Brief: '/c8/module-2/lecture-15-building-a-second-brain/your-brain',  /* the practice set started in the lecture; template repo Siddhant-Goswami/my-brain, zip in assets/ */
+  l15Notes: '/c8/module-2/lecture-15-building-a-second-brain/notes',  /* post-read of the 27 Nov lecture, the instructor's own copy, whiteboard inline */
   l15Bench: '/c8/module-2/lecture-15-building-a-second-brain/bench',  /* the first three steps of the Lecture 16 bench (same script and runs, data-upto="3") */
   l15Brain: 'https://github.com/Siddhant-Goswami/100x-brain',  /* the 100x brain: raw/ sources, wiki/ pages, served at /api/brain (api/_brain.mjs packed by its tools/pack.py) */
   l16Hub: '/c8/module-2/lecture-16-deriving-harness-engineering/',
@@ -887,12 +888,13 @@ GUIDES.L14 = { code: {
 /* Lectures held back (27 Nov): the map card shows Coming soon even on or after the day, and the overview, brief and
    Lecture 16 pages redirect to the map (vercel.json). Only the Brain Bench is open. To bring them back: delete COMING_SOON
    and the five redirects, and restore the two hubs kept in the comments below. */
-var COMING_SOON = {L15:1, L16:1};
+var COMING_SOON = {L16:1};
 
-/* Lecture 15, both tracks: only the Brain Bench for now.
+/* Lecture 15, both tracks: the notes (28 Nov) and the Brain Bench. The overview and the Your brain brief stay held back
+   (their redirects are still in vercel.json), because the lecture did not run the by-hand brief.
    Full hub: {link:'l15Hub', title:'Open the Lecture 15 pages', sub:'The overview, the Brain Bench and the Your brain brief', more:[['l15Bench','Brain Bench'],['l15Brief','Your brain'],['l15Brain','The 100x brain']]} */
 GUIDES.L15 = { all: {
-  hub: {link:'l15Bench', title:'Open the Brain Bench', sub:'One LLM, eighteen questions about our course, asked three ways', more:[]}
+  hub: {link:'l15Notes', title:'Open the Lecture 15 notes', sub:'From search to understanding, with the whiteboard', more:[['l15Bench','Brain Bench'],['l15Brain','The 100x brain']]}
 }};
 
 /* Lecture 16, both tracks: the overview, the Harness Bench and the harness card. Notes follow the lecture. */
@@ -1026,6 +1028,14 @@ var RECAP = {
       'Counting shared words found 5 of 10 questions. Making rare words count more found 6.',
       'Search by meaning with gte-small (384 numbers a text) found 8, but lost two that words found.',
       'Do you need a vector database? 183 passages fit in a 281 KB file. It depends on your data.'
+    ]}},
+  L15: { all: {
+    line: 'RAG is search: it finds what is already written and never changes the source. Some answers live in a head as judgment, so you capture the reasoning and let a second brain synthesize it and get corrected.',
+    points: [
+      'Tool call or RAG? Count the tokens, price input and output, and compare with your budget.',
+      '"How much do I understand acceleration?" has no source to search. The answer is only in a head.',
+      'Four steps to capture a judgment: frequent queries, sort by verifiable, reasoning trace, rubric.',
+      'Same 18 questions: the LLM alone got 3, with search 5 and 3 wrong, with the 100x brain 15.'
     ]}}
 };
 

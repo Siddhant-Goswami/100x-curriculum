@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lecture Notes: LLM memory: building a second brain | 100xEngineers</title>
+<meta name="description" content="Post-read notes for Lecture 15, both tracks, with the whiteboard: why RAG is search, the questions that have no source, four steps to capture a judgment, and the 100x brain scoring 3, 5, then 15 of 18.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-04-the-second-interface/assets/l04.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-05-building-apis/assets/l05.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-06-databases-and-domain-modelling/assets/l06.css">
+<script src="/c8/docs.js"></script>
+<style>
+body.read .pt{list-style:none;padding:0;margin:0 0 1em}
+body.read .pt li{padding:5px 0 5px 22px;position:relative}
+body.read .pt li::before{content:"";position:absolute;left:4px;top:15px;width:6px;height:6px;border-radius:50%;background:var(--ink3)}
+body.read .pt b{font-weight:500}
+body.read table.dials{width:100%;border-collapse:collapse;font-size:15px;margin:0 0 1.2em}
+body.read table.dials th,body.read table.dials td{text-align:left;padding:7px 10px 7px 0;border-bottom:1px solid var(--line);vertical-align:top}
+body.read table.dials th{font-weight:500;color:var(--ink2)}
+body.read table.dials td:first-child{white-space:nowrap}
+body.read blockquote.q9{margin:8px 0 14px;padding:0 0 0 14px;border-left:2px solid var(--line2);font-size:17px}
+/* the sketches, inline in the notes */
+body.read figure.sk{margin:10px 0 18px}
+body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
+.wb .ln .c-act{stroke:var(--coral)}
+.wb .ln .c-det{stroke:var(--det)}.wb .ln .c-prob{stroke:var(--prob)}
+.wb .ln .thin{stroke-width:1.8}
+.wb .ln .f-act{fill:var(--coral-soft);stroke:var(--coral)}
+.wb .ln .f-det{fill:var(--det-soft);stroke:var(--det)}
+.wb .ln .f-prob{fill:var(--prob-soft);stroke:var(--prob)}
+.wb .ln .f-card{fill:var(--bg2)}
+.wb .ln .dash.ink{stroke:var(--ink3)}
+.wb .ln .dash.c-act{stroke:var(--coral)}
+.wb .ln .badge{fill:var(--ink);stroke:none}.wb .ln .badge.act{fill:var(--coral)}
+.wb .tx .bn{font-family:var(--sans);font-size:13px;font-weight:600;fill:var(--bg2)}
+.wb .tx .xs{font-size:19px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxs{font-size:16.5px;font-weight:500;fill:var(--ink2)}
+.wb .tx .xxxs{font-size:14px;font-weight:500;fill:var(--ink2)}
+.wb .tx .mono{font-family:var(--mono);font-size:14px;font-weight:500;fill:var(--ink)}
+.wb .tx .l{text-anchor:start}.wb .tx .r{text-anchor:end}
+.wb .tx .c-act{fill:var(--coral-ink)}.wb .tx .c-det{fill:var(--det-ink)}.wb .tx .c-prob{fill:var(--prob-ink)}
+.wb .tx .c-mute{fill:var(--ink3)}.wb .tx .c-ink{fill:var(--ink)}
+</style>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l15-notes" class="read">
+<header class="top"><div class="in">
+  <a class="brand" href="/#L15">100x<b>·</b><span>C8 Module 2</span></a>
+  <nav aria-label="Lecture 15 pages"><a href="/c8/module-2/lecture-15-building-a-second-brain/notes">Notes</a><a href="/c8/module-2/lecture-15-building-a-second-brain/bench">Brain Bench</a></nav>
+  <button id="theme" class="tbtn" type="button" aria-label="Toggle dark mode"></button>
+</div></header>
+
+<!-- shared sketch defs: wobble filter, arrowheads, and the drawn objects the sketches reuse -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency=".02" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--ink2)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--coral)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--det)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" style="stroke:var(--prob)" stroke-width="1.6" stroke-linecap="round"/></marker>
+    <symbol id="person" style="overflow:visible">
+      <circle cx="26" cy="15" r="15" vector-effect="non-scaling-stroke"/>
+      <path d="M26 30 V88 M2 58 L26 46 L50 58 M7 128 L26 88 L45 128" vector-effect="non-scaling-stroke"/>
+    </symbol>
+    <symbol id="db" style="overflow:visible">
+      <ellipse cx="45" cy="10" rx="45" ry="10" vector-effect="non-scaling-stroke"/>
+      <path d="M0 10 V60 A45 10 0 0 0 90 60 V10 M0 35 A45 10 0 0 0 90 35" vector-effect="non-scaling-stroke"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <main>
+<details class="mtoc"><summary>Contents</summary><div class="l" id="mtoc"></div></details>
+<div class="hero">
+  <p class="kick">Lecture notes · Lecture 15 · 27 November 2026 · Both tracks</p>
+  <h1>From Search to Understanding</h1>
+  <p class="dek">From retrieving the relevant chunk to building intuition for a second brain</p>
+</div>
+
+<div class="call"><p class="kick">The one thing to keep</p><p>Giving an LLM the relevant tools, data and retrieval algorithm is still not enough.</p><p>RAG is search: it finds what is already written and never changes the source.</p><p>Some questions have no source to search, because the answer lives in a human brain as judgment. To answer those you have to capture the reasoning behind the judgment, and let a second brain synthesize it, get corrected, and evolve over time.</p></div>
+
+<p><b>How to read these notes.</b> This session stood on the <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">last combined RAG lecture</a>. If tool calling, chunking, vector embeddings or the three steps of retrieval, augmentation and generation feel shaky, reread those notes first. The first three sections are a recap that ends in a decision framework. <a href="#s04">Sections 4 to 8</a> are the derivation. <a href="#s09">Sections 9 to 13</a> test it live on the cohort's own questions. Read once end to end, then come back to the four steps in <a href="#s08">Section 8</a> and the <a href="#s15">Action Block</a>.</p>
+
+<section class="s" id="s01"><h2><span class="n">01</span>Where We Left Off: Everything Boils Down to Context</h2>
+<p>We started from the journey of the probabilistic context week. An LLM is a probabilistic model, and handing it a raw API does not help, so we derived an interface: a server that takes the API call and speaks a common language, JSON. That was <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/notes">tool calling</a>, and it connects any LLM with any tool that can be exposed via an API.</p>
+<p>Then we tested it with one question: which track should I choose?</p>
+<p>With no tool, the model invented new tracks. With the relevant context about tracks, the answer improved but still hallucinated. With more context on the curriculum it hallucinated less, but still guessed about the no-code curriculum, because only the code and combined curriculum had been uploaded. (The full run is in the <a href="/c8/module-2/lecture-10-tool-calling-and-mcp/notes">Lecture 10 notes</a>.)</p>
+<p>The lesson from weeks of experiments: everything boils down to whether you can provide the relevant context to the LLM in the most efficient manner. If you cannot, the model will guess, because predicting the next token is what it always does.</p>
+</section>
+
+<section class="s" id="s02"><h2><span class="n">02</span>The Existential Question: Why Not Paste Everything?</h2>
+<p>Context windows are big. Why study retrieval, chunking, semantic search and embeddings at all? Why not throw all the tool's data into the context window every time?</p>
+<p>This is the existential question of the whole series. If you cannot answer it in an interview, or in front of a client, you will have a hard time justifying the solution you build.</p>
+<p>The first answer from chat was the token limit. True, but not always: in most of our lectures we never hit the limit and still applied retrieval. So there are two limits, not one.</p>
+<ul class="pt">
+  <li><b>The context window is the hard limit.</b> If the data does not fit, no tool can save you. The model just throws a 400 error: please reduce the length of the messages.</li>
+  <li><b>Cost is the limit you hit first.</b> Even with a 1 million token window, a model charging 10 dollars per million tokens, filled 10 times a day, is 100 dollars a day for 10 queries. You get the answer, but at what cost?</li>
+</ul>
+</section>
+
+<section class="s" id="s03"><h2><span class="n">03</span>The Decision Framework: Count, Price, Budget</h2>
+<p>This is how to decide when a plain tool call is enough and when to graduate to RAG.</p>
+<ol>
+  <li><b>Count the tokens.</b> The token is the unit. In the <a href="https://platform.openai.com/tokenizer" target="_blank" rel="noopener">OpenAI tokenizer</a>, a five word sample sentence came to 5 tokens, but "unbelievable" alone became 3. A word is not always a token.</li>
+  <li><b>Get the pricing, input and output separately.</b> Outside a $20 subscription you pay per token: Fable 5.2 charges $8 per million input tokens and $40 per million output tokens.</li>
+  <li><b>Estimate both sides.</b> Everything you paste or a tool sends in is input: this is what you pay for augmentation. A 1 million token curriculum costs 8 dollars to send. The answer ("Lecture 11", 3 tokens) is charged as output.</li>
+  <li><b>Set a budget and compare.</b> In the hypothetical, 1 million input plus 1 million output tokens is 8 plus 40, so 48 dollars. If your budget is 20 dollars, plain tool calling is out, even though everything fits.</li>
+</ol>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 214" role="img" aria-label="One bar for the bill. Input, 1 million tokens at 8 dollars, is a short piece. Output, 1 million tokens at 40 dollars, is a long piece. Together 48 dollars. A dashed line marks the budget at 20 dollars, and the bar runs far past it.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="60" y="78" width="96" height="44" rx="6"/>
+    <rect class="f-prob" x="156" y="78" width="480" height="44" rx="6"/>
+    <path class="dash c-act" d="M300 54 V160"/>
+  </g>
+  <g class="tx">
+    <text x="60" y="34" class="xs l">1 million tokens in, 1 million tokens out</text>
+    <text x="108" y="106" class="xs c-det">$8</text>
+    <text x="440" y="106" class="xs c-prob">$40</text>
+    <text x="648" y="106" class="xs l">= $48</text>
+    <text x="108" y="146" class="xxxs c-mute">input</text>
+    <text x="440" y="146" class="xxxs c-mute">output</text>
+    <text x="300" y="184" class="xxs c-act">your budget: $20</text>
+  </g>
+</svg>
+<figcaption>Everything fits the window. The bill still crosses the budget.</figcaption>
+</figure>
+<p><b>When to graduate from tool call to RAG</b></p>
+<p class="pull">When the tokens you need to retrieve exceed your budget or exceed your context window. If neither is true, keep the tool, let it paste the data, and move on. Every RAG technique is one optimization: find the most relevant &amp; efficient chunk of data in a prompt.</p>
+</section>
+
+<section class="s" id="s04"><h2><span class="n">04</span>Breaking the Physics Book</h2>
+<p>We went back to the <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes#s06">physics book analogy</a>: my NCERT physics book from high school, handed to the LLM with its index. Ask about acceleration, it finds the page number, opens the page, pulls the relevant part, and puts it in the augmentation. Assume it has every best practice from the RAG lecture: <a href="/c8/module-2/lecture-14-building-rag-apps/notes">keyword search, vector search</a>, the index.</p>
+<p>The challenge to the room: give me one query that this still cannot answer.</p>
+<p>The first answers were “explain the theory of relativity, outside knowledge (Abhishek), unrelated topics”. All real problems, and all the same problems. Add a chapter, add one more book, and they are solved. These problems can be easily fixed by pointing at a source that exists.</p>
+<p>Then Akash's query broke it:</p>
+<blockquote class="q9">"How much do I understand acceleration?"</blockquote>
+</section>
+
+<section class="s" id="s05"><h2><span class="n">05</span>The Question With No API</h2>
+<p>We ran it on the same model we used for the track question. The pattern was familiar: a quick self-check framework, a few ways we could assess it together. But it also said it is hard for anyone, including the model, to gauge how well you grasp a topic.</p>
+<p>So is this still a missing context problem? Can it be solved by pointing the LLM at an API or a source that exists in the world right now? Acceleration is in the book. How much I understand acceleration is only in my head. Even I myself don’t know how much I understand it.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 250" role="img" aria-label="Two kinds of question. On the left, questions whose answer is in a source that exists: what is acceleration, explain relativity, something outside the book. The fix is to add a chapter, a book or an API. On the right, one question whose answer is only in a head: how much do I understand acceleration. There is no page to open.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="30" y="50" width="330" height="180" rx="12"/>
+    <rect class="f-card" x="50" y="76" width="70" height="92" rx="4"/>
+    <path class="thin" d="M62 94 H108 M62 108 H108 M62 122 H100 M62 136 H108 M62 150 H94"/>
+    <rect class="f-act" x="400" y="50" width="330" height="180" rx="12"/>
+    <use href="#person" transform="translate(424 84) scale(.85)"/>
+  </g>
+  <g class="tx">
+    <text x="195" y="38" class="m c-det">In a source that exists</text>
+    <text x="565" y="38" class="m c-act">Only in a head</text>
+    <text x="136" y="98" class="xxs l">What is acceleration?</text>
+    <text x="136" y="126" class="xxs l">Explain relativity</text>
+    <text x="136" y="154" class="xxs l">Something outside the book</text>
+    <text x="195" y="208" class="xxxs">fix: add a chapter, a book, an API</text>
+    <text x="500" y="112" class="xs l">"How much do I</text>
+    <text x="500" y="136" class="xs l">understand acceleration?"</text>
+    <text x="500" y="176" class="xxs c-act l">no page to open</text>
+    <text x="500" y="200" class="xxxs l">not a search problem</text>
+  </g>
+</svg>
+<figcaption>The left side is missing context. The right side has no source to point at.</figcaption>
+</figure>
+<p>The verdict came as an observation you can challenge rather than a smooth derivation: this is not a search problem. It is a problem of understanding the human brain.</p>
+</section>
+
+<section class="s" id="s06"><h2><span class="n">06</span>Why This Is the Unsolved Half</h2>
+<p>Understanding a human goes deep. What beliefs and assumptions do they carry, why do they think the way they do? That is the mix of everything they have lived, and it is what human memory is. It also depends on how self-aware the human is.</p>
+<p>Why does this matter for builders? Searching and retrieving context for LLMs from an existing data source is something the industry has been solving for almost four and a half years, with plenty of tried and tested solutions. Second-category problems are underexplored, and they are one of the biggest things blocking AI adoption. Consultants call it change management.</p>
+<p>So this is your first territory for solving a real world research problem: what is still inside your head, or an expert’s, that has not been documented anywhere?</p>
+</section>
+
+<section class="s" id="s07"><h2><span class="n">07</span>Charu's Leave Desk: Judgment Lives in the Expert's Head</h2>
+<p>Charu brought a real case from Q&amp;A. She is building a RAG chatbot for leave management. Some of it is rules: check the vacation tracker, and if four people on the team are already off, the leave is not approved. But then someone asks, can I take off on this particular day, or can I shift my leave to another day. No document defines that. You have to look at live data, shifts and availability, and she could not put these questions in her <a href="/c8/module-2/lecture-14-building-rag-apps/notes#s01">golden dataset</a>.</p>
+<p>This is the same category. The data does not exist anywhere in the world. It is in the head of whoever approves leaves. The goal becomes: how do we extract that judgment from an expert's head and document it, so the LLM can make the same call?</p>
+<ul class="pt">
+  <li><b>Start with the most frequent queries.</b> Can I take off on Diwali? On Christmas?</li>
+  <li><b>Ask the expert for two things.</b> How they reason, and what the answer is. "This Christmas two projects are running and three people are already on leave, so no." That reasoning is exactly what you capture. Start with 10 to 15 sets.</li>
+  <li><b>Test on a new query.</b> Same reasoning data, but now the question is about 25th January. Ask the expert, ask the LLM, and compare the two outputs.</li>
+  <li><b>Chase the disagreement.</b> If they match, you may be going in the right direction. If not, find where the two disagree and capture more of what the human brain has to close the gap.</li>
+</ul>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="A new query, leave on 25 January, goes to the expert and to the LLM. The LLM also holds 10 to 15 reasoning traces captured from the expert. The two answers meet in one box: compare. If they match, keep going. If they differ, capture more of the expert's reasoning.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M330 40 L200 64" marker-end="url(#ah)"/>
+    <path class="arw" d="M430 40 L560 64" marker-end="url(#ah)"/>
+    <rect class="f-card" x="60" y="70" width="200" height="90" rx="12"/>
+    <rect class="f-prob" x="500" y="70" width="200" height="90" rx="12"/>
+    <path class="arw c-det" d="M268 115 H492" marker-end="url(#ahd)"/>
+    <path class="arw c-act" d="M160 168 V234 H242" marker-end="url(#ahc)"/>
+    <path class="arw c-act" d="M600 168 V234 H518" marker-end="url(#ahc)"/>
+    <rect class="f-act" x="250" y="206" width="260" height="56" rx="12"/>
+  </g>
+  <g class="tx">
+    <text x="380" y="28" class="xs">New query: leave on 25 January?</text>
+    <text x="160" y="110" class="xs">the expert</text>
+    <text x="160" y="136" class="xxxs c-mute">reasons, then answers</text>
+    <text x="600" y="110" class="xs c-prob">LLM</text>
+    <text x="600" y="136" class="xxxs c-mute">same question</text>
+    <text x="380" y="104" class="xxxs c-det">10 to 15 reasoning traces</text>
+    <text x="380" y="240" class="xs c-act">compare the two answers</text>
+    <text x="380" y="288" class="xxs">match: keep going · differ: capture more of the expert's reasoning</text>
+  </g>
+</svg>
+<figcaption>The expert's reasoning goes in first. A new query shows whether the LLM now makes the same call.</figcaption>
+</figure>
+<p><b>The codifiability rule</b></p>
+<p class="pull">Codification of a judgment is directly proportional to the verifiability of the task.</p>
+</section>
+
+<section class="s" id="s08"><h2><span class="n">08</span>Four Steps to Capture a Judgment</h2>
+<p>On the whiteboard this became a process.</p>
+<ol>
+  <li><b>List the frequently asked queries, with input and output.</b> Document every query, including the ones you cannot answer, and group them by frequency (FAQs).</li>
+  <li><b>Sort by how verifiable they are.</b> Three kinds, as the room recalled: rule-based, judgment-based, and not verifiable. (They come from the Verifier's Law in <a href="/c8/module-2/lecture-01-orientation/notes">Lecture 1</a>.)</li>
+  <li><b>Capture the reasoning which led to the judgment.</b> Show the expert the query and trace exactly how they got to the answer. This <b>reasoning trace</b> is the raw material.</li>
+  <li><b>Compress the traces into a rubric.</b> Give 10 or 20 traces to an LLM and it finds the pattern. LLMs are really good at compressing reasoning into patterns and rubrics.</li>
+</ol>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 200" role="img" aria-label="Four boxes in a row. One: frequent queries, with input and output, grouped by frequency. Two: sort them into rule, judgment and not verifiable. Three: the reasoning trace, how the expert got to the answer. Four: the rubric, which an LLM compresses out of 10 or 20 traces.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="20" y="50" width="160" height="116" rx="12"/>
+    <rect class="f-card" x="206" y="50" width="160" height="116" rx="12"/>
+    <rect class="f-act" x="392" y="50" width="160" height="116" rx="12"/>
+    <rect class="f-prob" x="578" y="50" width="160" height="116" rx="12"/>
+    <path class="arw" d="M183 108 H200" marker-end="url(#ah)"/>
+    <path class="arw" d="M369 108 H386" marker-end="url(#ah)"/>
+    <path class="arw" d="M555 108 H572" marker-end="url(#ah)"/>
+    <circle class="badge" cx="38" cy="50" r="11"/>
+    <circle class="badge" cx="224" cy="50" r="11"/>
+    <circle class="badge act" cx="410" cy="50" r="11"/>
+    <circle class="badge" cx="596" cy="50" r="11"/>
+  </g>
+  <g class="tx">
+    <text x="38" y="54" class="bn">1</text>
+    <text x="224" y="54" class="bn">2</text>
+    <text x="410" y="54" class="bn">3</text>
+    <text x="596" y="54" class="bn">4</text>
+    <text x="100" y="96" class="xs">frequent queries</text>
+    <text x="100" y="122" class="xxxs c-mute">input and output,</text>
+    <text x="100" y="140" class="xxxs c-mute">grouped by frequency</text>
+    <text x="286" y="96" class="xs">sort</text>
+    <text x="286" y="122" class="xxxs c-mute">rule · judgment ·</text>
+    <text x="286" y="140" class="xxxs c-mute">not verifiable</text>
+    <text x="472" y="96" class="xs c-act">reasoning trace</text>
+    <text x="472" y="122" class="xxxs c-mute">how the expert got</text>
+    <text x="472" y="140" class="xxxs c-mute">to the answer</text>
+    <text x="658" y="96" class="xs c-prob">rubric</text>
+    <text x="658" y="122" class="xxxs c-mute">an LLM compresses</text>
+    <text x="658" y="140" class="xxxs c-mute">10 or 20 traces</text>
+  </g>
+</svg>
+<figcaption>The reasoning trace is the raw material. The rubric is what an LLM compresses out of many of them.</figcaption>
+</figure>
+<table class="dials">
+  <tr><th>Type</th><th>In Charu's leave desk</th></tr>
+  <tr><td>Rule-based</td><td>The headcount rule from the vacation tracker. Approve or reject immediately, no human needed.</td></tr>
+  <tr><td>Judgment-based</td><td>Leave on 20th December, just before the holidays, when an important project must finish first. No rule says so; next year the answer may differ. The manager's reasoning trace is what you capture.</td></tr>
+  <tr><td>Not verifiable</td><td>Something tragic happened in the family, and the leave is given to show the company cares. Even the person deciding may not be able to write down why.</td></tr>
+</table>
+</section>
+
+<section class="s" id="s09"><h2><span class="n">09</span>BrainBench, Round One: The LLM Alone</h2>
+<p>We tested our principles on a real problem: I do not have the bandwidth to answer every query from the cohort. Step 1 was done already: 18 frequently asked questions with ideal answers I can verify as the domain expert (some of the data is still synthetic).</p>
+<p>First run: the LLM only, no external data. It got 3 out of 18, using 16,896 tokens across the 18 calls.</p>
+</section>
+
+<section class="s" id="s10"><h2><span class="n">10</span>Round Two: Give It Search, and It Gets Confidently Wrong</h2>
+<p>Next we gave it the tool from the <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/bench">retrieval bench</a>, this time with similarity search included. Before pressing enter, the room guessed how many of 18 it would now get right: the most popular guess was 13.</p>
+<p>It got 5 out of 18 correct and 3 answers were wrong. With the LLM alone and an instruction not to respond when it does not know, we had zero hallucinated answers. With search, we got three.</p>
+<p>Wrong one:</p>
+<blockquote class="q9">"Which lecture teaches Verifier's Law?"</blockquote>
+<p>It found a checklist from a practice set, the <a href="/c8/module-2/lecture-09-llms-from-first-principles/notes">Lecture 9 notes</a> and the <a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Lecture 13 notes</a>, and answered Lecture 9, because those notes have a section revisiting the rule. The ideal answer is <a href="/c8/module-2/lecture-01-orientation/notes">Lecture 1</a>, where it was introduced and taught the first time.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="The question, which lecture teaches Verifier's Law, goes to search. Search found three pages: a practice set checklist, the Lecture 9 notes, where a section revisits the law, and the Lecture 13 notes. The LLM answered Lecture 9. Off to the side, not picked, sits Lecture 1, where the law was taught first: the ideal answer.">
+  <g class="ln" filter="url(#wob)">
+    <path class="arw" d="M425 40 V66" marker-end="url(#ah)"/>
+    <rect class="dash c-act" x="20" y="74" width="150" height="70" rx="10" fill="none"/>
+    <rect class="f-card" x="200" y="74" width="140" height="70" rx="10"/>
+    <rect class="f-det" x="355" y="74" width="140" height="70" rx="10"/>
+    <rect class="f-card" x="510" y="74" width="140" height="70" rx="10"/>
+    <path class="arw c-prob" d="M425 150 V182" marker-end="url(#ahv)"/>
+  </g>
+  <g class="tx">
+    <text x="425" y="28" class="xs">"Which lecture teaches Verifier's Law?"</text>
+    <text x="700" y="114" class="xxxs c-mute">what search</text>
+    <text x="700" y="130" class="xxxs c-mute">found</text>
+    <text x="95" y="104" class="xs c-act">Lecture 1</text>
+    <text x="95" y="128" class="xxxs c-act">taught first</text>
+    <text x="95" y="166" class="xxxs c-act">the ideal answer, not picked</text>
+    <text x="270" y="104" class="xxs">a practice set</text>
+    <text x="270" y="126" class="xxxs c-mute">checklist</text>
+    <text x="425" y="104" class="xxs">Lecture 9 notes</text>
+    <text x="425" y="126" class="xxxs c-mute">a section revisits it</text>
+    <text x="580" y="104" class="xxs">Lecture 13 notes</text>
+    <text x="425" y="208" class="xs c-prob">the LLM answered: Lecture 9</text>
+  </g>
+</svg>
+<figcaption>Search found real pages that mention the law. None of them is where it was first taught.</figcaption>
+</figure>
+<p>Prateek spotted why: the question never defines "teaches". Introduced? Covered in depth? Every mention? The Verifier's Law comes back in most lectures, so no single one obviously owns it. I picked this query from what we saw in production with Sage and Scout: people ask it when they want to know where a concept was first taught, and rarely say so. Answer comes from domain expertise, by reading between the lines, and that is where the LLM failed.</p>
+<p><b>The tool is not enough</b></p>
+<p class="pull">Retrieving data from the tool is not enough, even when the tool holds all the context a human would need. The model had the right data and still reasoned to the wrong answer.</p>
+</section>
+
+<section class="s" id="s11"><h2><span class="n">11</span>Half Your Job: Compare the Two Reasonings</h2>
+<p>Go back to what we discussed with Charu. A human reasons to the ideal answer in the golden pair. The LLM reasons on the same question and lands somewhere else. Half of your time as an AI builder goes into comparing these two, and finding the gaps that LLM missed.</p>
+<p>This is also how I described the work of the people training the next frontier models. The existing data is already in pre-training. What happens now is <b>post-training</b>: each time a model gives a different answer with similar context to a human expert, the difference in reasoning is captured as an example trace, turned into a rubric, and packaged as training data. The same recipe applies if you want to train or fine-tune a small model of your own.</p>
+</section>
+
+<section class="s" id="s12"><h2><span class="n">12</span>The 100x Brain: A Wiki That Rewrites Itself</h2>
+<p>For the cohort questions I did steps 2 and 3, and compressed the reasoning output into the <a href="https://github.com/Siddhant-Goswami/100x-brain" target="_blank" rel="noopener">100x brain</a>. It is an implementation of the <a href="https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f" target="_blank" rel="noopener"><b>LLM Wiki</b></a>, a concept coined by Andrej Karpathy and now used in some form by memory products such as <a href="https://github.com/letta-ai/letta" target="_blank" rel="noopener">MemGPT</a> and <a href="https://supermemory.ai" target="_blank" rel="noopener">Supermemory</a> to build a second brain with AI.</p>
+<p>It is how humans learn. You do not learn RAG by watching me. Solve one problem a day for 60 days and you hold 60 different reasonings; your brain finds the patterns and the intuition builds. Alex asked how this differs from RAG. There is one major difference.</p>
+<table class="dials">
+  <tr><th></th><th>RAG</th><th>Memory (LLM Wiki)</th></tr>
+  <tr><td>Job</td><td>Search: find the most relevant chunk that fits the window</td><td>Synthesis: organize, learn patterns, build intuition</td></tr>
+  <tr><td>The source</td><td>Never changed. Useful because it cites the exact page.</td><td>Rewritten over time as it learns from gaps</td></tr>
+  <tr><td>Human analogy</td><td>A class 10 student opening the index for every homework question</td><td>The NASA or ISRO engineer who no longer needs the textbook for physics</td></tr>
+</table>
+<p>The engineer has not forgotten that the physics textbook exists. The concepts are compressed into a mental model, the way an Olympic athlete does not think about strategy mid-game because the body just moves. Dependence on retrieval goes down as the mental model gets better.</p>
+<h3>What is inside</h3>
+<p>There is no code and no framework. It is the organization of information: files and folders in a GitHub repository.</p>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 300" role="img" aria-label="The 100x brain. Raw, the course notes copied as they are, goes to the LLM, which writes the wiki: lectures, concepts, threads, how-tos and courses. Above sits index.md, the mental model you design. The wiki gives an answer that names its file and section. When an answer is wrong it is logged in gaps.md, and the gaps go back to the LLM to improve the wiki.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-card" x="215" y="16" width="335" height="40" rx="10"/>
+    <rect class="f-det" x="20" y="90" width="150" height="110" rx="12"/>
+    <path class="arw" d="M178 145 H208" marker-end="url(#ah)"/>
+    <rect class="f-prob" x="215" y="115" width="90" height="60" rx="12"/>
+    <path class="arw c-prob" d="M312 145 H342" marker-end="url(#ahv)"/>
+    <rect class="f-det" x="350" y="76" width="200" height="140" rx="12"/>
+    <path class="arw" d="M558 145 H604" marker-end="url(#ah)"/>
+    <path class="arw c-act" d="M660 190 V266 H558" marker-end="url(#ahc)"/>
+    <rect class="f-act" x="350" y="246" width="200" height="40" rx="10"/>
+    <path class="arw c-act" d="M342 266 H260 V183" marker-end="url(#ahc)"/>
+  </g>
+  <g class="tx">
+    <text x="382" y="42" class="xxs">index.md: the mental model you design</text>
+    <text x="95" y="134" class="xs c-det">raw</text>
+    <text x="95" y="158" class="xxxs c-mute">course notes,</text>
+    <text x="95" y="176" class="xxxs c-mute">copied as they are</text>
+    <text x="260" y="151" class="xs c-prob">LLM</text>
+    <text x="260" y="104" class="xxxs c-prob">synthesis</text>
+    <text x="450" y="112" class="xs c-det">wiki</text>
+    <text x="450" y="138" class="xxxs c-prob">the LLM writes it</text>
+    <text x="450" y="166" class="xxxs c-mute">lectures · concepts · threads</text>
+    <text x="450" y="184" class="xxxs c-mute">how-tos · courses</text>
+    <text x="612" y="140" class="xxs l">answer</text>
+    <text x="612" y="160" class="xxxs c-mute l">names the file</text>
+    <text x="612" y="176" class="xxxs c-mute l">and section</text>
+    <text x="450" y="272" class="xxs c-act">gaps.md: wrong answers</text>
+    <text x="180" y="262" class="xxxs c-act">improves</text>
+    <text x="180" y="278" class="xxxs c-act">the wiki</text>
+  </g>
+</svg>
+<figcaption>Raw comes in unchanged. The LLM writes the wiki, and every logged gap sends it back to rewrite.</figcaption>
+</figure>
+<ul class="pt">
+  <li><b>Raw.</b> The published course notes, copied in as they are: lecture pages, practice sets. This is still a tool's job (or yours, manually). It is the entry into the brain. (<a href="https://github.com/Siddhant-Goswami/100x-brain/tree/main/raw" target="_blank" rel="noopener">raw/</a>)</li>
+  <li><b>Index.</b> The part you design. Think of index.md as the mental model you are building for the LLM: how to organize what arrives and where new information fits. Mine uses lectures, concepts and first principles because my data is lectures. Yours depends on your domain, which is where <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes">domain modeling</a> comes back. (<a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/index.md" target="_blank" rel="noopener">index.md</a>)</li>
+  <li><b>Wiki.</b> The part the LLM writes and I do not touch. It reorganized my notes into lectures, concepts, threads, how-tos and courses. I never asked for a how-tos folder. Next time someone asks how to fix a failed request, it answers from the synthesized page, which is faster and more efficient than the original raw source. (<a href="https://github.com/Siddhant-Goswami/100x-brain/tree/main/wiki" target="_blank" rel="noopener">wiki/</a>)</li>
+  <li><b>Gaps.</b> When an answer built from the wiki is wrong, that is logged in gaps.md, and the LLM uses it to improve the wiki. The gap between human reasoning and LLM reasoning narrows over time. (<a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/gaps.md" target="_blank" rel="noopener">gaps.md</a>)</li>
+</ul>
+<p>The retrieval algorithm is a few plain instructions: read the index (one line per wiki page), open only the pages you need, open the raw source if a wiki page is not enough, answer only from what you opened, and name the file and section after each fact.</p>
+</section>
+
+<section class="s" id="s13"><h2><span class="n">13</span>Round Three: 15 out of 18</h2>
+<table class="dials">
+  <tr><th>Setup</th><th>Correct out of 18</th><th>What happened</th></tr>
+  <tr><td>LLM only</td><td>3</td><td>Refused the rest; no hallucinated answers</td></tr>
+  <tr><td>LLM plus search tool (RAG)</td><td>5</td><td>3 confidently wrong answers</td></tr>
+  <tr><td>LLM plus the 100x brain</td><td>15</td><td>3 still unanswered</td></tr>
+</table>
+<figure class="sk">
+<svg class="wb" viewBox="0 0 760 230" role="img" aria-label="Three bars against a line at 18 questions. The LLM only: 3 right. The LLM plus search: 5 right and 3 confidently wrong. The LLM plus the 100x brain: 15 right.">
+  <g class="ln" filter="url(#wob)">
+    <rect class="f-det" x="170" y="40" width="90" height="30" rx="5"/>
+    <rect class="f-det" x="170" y="100" width="150" height="30" rx="5"/>
+    <rect class="f-act" x="320" y="100" width="90" height="30" rx="5"/>
+    <rect class="f-det" x="170" y="160" width="450" height="30" rx="5"/>
+    <path class="dash ink" d="M710 28 V200"/>
+  </g>
+  <g class="tx">
+    <text x="158" y="62" class="xxs r">LLM only</text>
+    <text x="158" y="122" class="xxs r">LLM + search</text>
+    <text x="158" y="182" class="xxs r">LLM + 100x brain</text>
+    <text x="272" y="62" class="xs l">3</text>
+    <text x="422" y="122" class="xs l">5 right, <tspan class="c-act">3 wrong</tspan></text>
+    <text x="632" y="182" class="xs l">15</text>
+    <text x="710" y="220" class="xxxs c-mute">18 questions</text>
+  </g>
+</svg>
+<figcaption>Same LLM, same questions, same course material.</figcaption>
+</figure>
+<p>Same questions, same course material. The difference is that the brain is not retrieving from a static source it cannot change. The 3 it still cannot answer stay open; we pick them up tomorrow.</p>
+<p><a class="btn" href="/c8/module-2/lecture-15-building-a-second-brain/bench">Run the three rounds on the Brain Bench</a></p>
+</section>
+
+<section class="s" id="s14"><h2><span class="n">14</span>From the Q&amp;A</h2>
+<ul class="pt">
+  <li><b>Will the LLM Wiki make RAG obsolete? (Alex)</b> No. They are two different concepts. Retrieval is the first instinct when anyone, human or AI, meets new information. Even the best search is still searching content it does not modify, so you hit a limit. RAG is searching; the wiki is what understanding looks like to an LLM.</li>
+  <li><b>What exactly is synthesis? (Akash)</b> The process of organizing the raw information into those wiki pages. Nobody tells the LLM how. The first version comes from its own reasoning; the gaps make the next one better. You cannot pinpoint how you learned to walk either. The intuition got encoded through repetition.</li>
+  <li><b>How are wiki and rubric linked? (Akash)</b> They are different things. A rubric is something you write to compress how you judge; you can use it yourself or pass it as a prompt. The wiki is where the LLM synthesizes raw notes. A rubric can guide how the wiki is built, but it is not required.</li>
+  <li><b>How does the LLM weigh the top chunks? (Samarth)</b> In plain retrieval there is no special decision-making: it relies on the model's own reasoning. The brain makes that job easier by indexing concepts instead of page numbers and chunks.</li>
+  <li><b>Was Sage and Scout built this way? (Prateek)</b> Yes, the first version came from the same four steps. It struggled with freshness: the curriculum kept changing and it kept pointing at old docs. I am not continuing it; the brain is a rebuild from first principles.</li>
+  <li><b>How do you deploy it?</b> Push the files to GitHub.</li>
+  <li><b>Comparing it to a tool such as MiroFish? (Akash)</b> Do not anchor on the tool. Rebuild it from these concepts without looking, then compare outputs. That is learning from first principles. The same holds for Jagdeep's codebase idea: code is the most verifiable work we have, so a wiki of changes and errors is a good candidate.</li>
+</ul>
+<h3>Terms we derived (not defined)</h3>
+<table class="dials">
+  <tr><th>Term</th><th>Meaning</th></tr>
+  <tr><td>Missing context</td><td>A failure you can fix by pointing the LLM at a source or API that already exists.</td></tr>
+  <tr><td>Context pollution</td><td>Unnecessary retrieved detail filling the window and dragging down the model's answers.</td></tr>
+  <tr><td>Frequently asked queries</td><td>The most common real questions, written with their ideal answers. Step 1 of the four.</td></tr>
+  <tr><td>Reasoning trace</td><td>The expert's path from query to answer, captured so the judgment can be learned.</td></tr>
+  <tr><td>Rubric (principles)</td><td>The pattern an LLM compresses out of many reasoning traces; a written way to judge.</td></tr>
+  <tr><td>Post-training</td><td>Teaching an already trained model to answer like an expert, using the differences in reasoning as data.</td></tr>
+  <tr><td>LLM Wiki</td><td>A knowledge base the LLM writes and keeps rewriting from raw sources.</td></tr>
+  <tr><td>Second brain</td><td>Raw notes, an index, a wiki and a gaps log: memory that evolves instead of only searching.</td></tr>
+  <tr><td>Index</td><td>The mental model you design for the brain: how to organize and locate information.</td></tr>
+  <tr><td>Synthesis</td><td>The LLM reorganizing raw information into wiki pages it can answer from.</td></tr>
+  <tr><td>Gaps</td><td>Logged mismatches between the brain's answer and the expert's; the feedback that improves the wiki.</td></tr>
+</table>
+</section>
+
+<section class="s" id="s15"><h2><span class="n">15</span>Action Block: Before Tomorrow</h2>
+<p>Tomorrow we continue the second brain and derive one of the most important ideas in this module, the harness, and connect the dots. Arrive having done this:</p>
+<ol>
+  <li><b>Read the <a href="https://github.com/Siddhant-Goswami/100x-brain#readme" target="_blank" rel="noopener">100x brain repository README</a>.</b> It is under construction, so read it as a learning artifact, and note in your own words where the brain differs from a tool call.</li>
+  <li><b>Run the four steps on your own problem.</b> List your frequently asked queries with ideal answers, sort them into rule-based, judgment-based and not verifiable, and capture the reasoning for at least a few judgment-based ones. (The steps are in <a href="#s08">Section 8</a>.)</li>
+  <li><b>Start a second brain.</b> Create a GitHub repository with a raw folder, write your own index.md, let an LLM build the wiki, review the content, and log the first gap you find.</li>
+  <li><b>Do the thought experiment.</b> You have one North Star for the next 6 months and you lose 6 or 7 hours a day to scrolling. Could a second brain take in that stream and pass on only what matters for your goal?</li>
+  <li><b>Think about the open experiment.</b> What is the best index, the best mental model, for everything taught in the cohort so far? We will compare indexes against the same questions in an office hour.</li>
+</ol>
+<p><i>Go and build your second brain. Use it to filter the signal from the noise.</i></p>
+</section>
+
+<nav class="goon" aria-label="Go on"><h2>Go on</h2><ul>
+  <li><a href="/c8/module-2/lecture-15-building-a-second-brain/bench">Brain Bench: the 18 questions, asked three ways</a></li>
+  <li><a href="https://github.com/Siddhant-Goswami/100x-brain" target="_blank" rel="noopener">The 100x brain on GitHub</a></li>
+  <li><a href="/c8/module-2/lecture-14-building-rag-apps/notes">Lecture 14 notes: building RAG apps</a></li>
+  <li><a href="/c8/module-2/lecture-13-retrieval-augmented-generation/notes">Lecture 13 notes: retrieval-augmented generation</a></li>
+  <li><a href="/#L15">Curriculum map</a></li>
+</ul></nav>
+
+<p class="sig">You can outsource your thinking, but you cannot outsource your understanding.<small>Next: we continue the second brain and derive the harness.</small></p>
+  </main>
+</div>
+<footer><div class="wrap"><span>100xEngineers · Cohort 8 · Module 2 · Lecture 15: LLM memory: building a second brain · Both tracks</span><a href="/#L15">Curriculum map</a><a href="/c8/module-2/lecture-15-building-a-second-brain/">All Lecture 15 pages</a></div></footer>
+</body>
+</html>
