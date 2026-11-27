@@ -15,6 +15,7 @@
 .when h2{font:500 22px/1.2 var(--sans);letter-spacing:-.02em;margin:0}
 .when .kick{margin:0}
 .tw{overflow-x:auto}
+.code.wrap .ln code{white-space:pre-wrap;min-width:0}
 </style>
 <script src="/analytics.js" defer></script>
 </head>
@@ -32,7 +33,7 @@
   <p class="dek">Last week you built search. Tonight you meet a question search cannot answer, and decide what to do about it.</p>
 </div>
 
-<div class="call"><p class="kick">Bring tonight</p><p>Your laptop, the tool you open folders with (Antigravity, Claude Code, Codex or Cursor), your North Star from the workshop, and one thing you saved this week and have not read yet (an article, a post, a newsletter), saved as a text file. No code needed.</p></div>
+<div class="call"><p class="kick">Bring tonight</p><p>Your laptop, any chat with an LLM that you already use (a free one is fine), your North Star from the workshop, and one thing you saved this week and have not read yet (an article, a post, a newsletter), saved as a text file. No code, and nothing to install.</p></div>
 
 <div class="when"><p class="kick">01</p><h2>The questions</h2></div>
 <ol class="steps">
@@ -45,15 +46,17 @@
 </ol>
 
 <div class="when"><p class="kick">02</p><h2>The 100x brain</h2></div>
-<p>Everything Cohort 8 has been taught, as one folder of plain files. It holds 126 course pages as they were published, and 126 short pages an LLM wrote from them: one per lecture, one per idea, and a few that run across lectures. Every line links to the place it came from, and a person approves each change.</p>
+<p>Everything Cohort 8 has been taught, as one folder of plain files. It holds 136 course pages as they were published, and 136 short pages an LLM wrote from them: one per lecture, one per idea, and a few that run across lectures. Every line links to the place it came from, and a person approves each change.</p>
 <p><a href="https://github.com/Siddhant-Goswami/100x-brain" target="_blank" rel="noopener">Open the 100x brain on GitHub</a>, start at index.md and click through.</p>
-<p>To ask it from your own chat app, give the app this address, the way you gave it the sheet's server in <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench-notes#s06">Lecture 11</a>:</p>
-<pre class="code">https://100x-curriculum.vercel.app/api/brain</pre>
+<p>To ask it by hand, the way we do in the lecture: paste this message into any chat with an LLM, and paste <a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/index.md" target="_blank" rel="noopener">index.md</a> under it. The LLM names one page. Open that page, paste it, and it answers.</p>
+<div class="code wrap"><div class="hd">Paste this first<button class="cp" type="button">Copy</button></div><pre><span class="ln"><code>Below is the index of a folder of course notes. You cannot open the folder. I can.</code></span><span class="ln"><code></code></span><span class="ln"><code>My question: Every time we added something around the LLM, the score moved. List each time with its numbers.</code></span><span class="ln"><code></code></span><span class="ln"><code>Do not answer yet. Tell me the one page you want me to open, by its path. I will paste it. Then answer from that page only, and name the page.</code></span><span class="ln"><code></code></span><span class="ln"><code>[paste index.md here]</code></span></pre></div>
+<p>If your chat app takes an address, the way you gave it the sheet's server in <a href="/c8/module-2/lecture-11-tool-calling-and-mcp/bench-notes#s06">Lecture 11</a>, this is the brain's:</p>
+<div class="code"><div class="hd">The address<button class="cp" type="button">Copy</button></div><pre><span class="ln"><code>https://100x-curriculum.vercel.app/api/brain</code></span></pre></div>
 <p>Or try it in the browser. The Brain Bench asks one LLM eighteen questions about our course three ways: alone, with search, and with the 100x brain. You guess the score first, then read which pages it opened. Every result is a recorded run on the real model.</p>
 <p><a class="btn" href="/c8/module-2/lecture-15-building-a-second-brain/bench">Open the Brain Bench</a></p>
 
 <div class="when"><p class="kick">03</p><h2>Your brain</h2></div>
-<p>The 100x brain knows the course. It knows nothing about you. You start your own in the lecture from a blank template with the same folders and rules, and hand it in by Sun 29 Nov, then keep using it.</p>
+<p>The 100x brain knows the course. It knows nothing about you. You start your own in the lecture, with a text editor and the same chat. It has the same folders and rules. You hand it in by Sun 29 Nov, then keep using it.</p>
 <p><a class="btn" href="/c8/module-2/lecture-15-building-a-second-brain/your-brain">Open the brief</a></p>
 
 <div class="when"><p class="kick">04</p><h2>When you need it</h2></div>

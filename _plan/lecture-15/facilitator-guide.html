@@ -1,0 +1,531 @@
+<title>Lecture 15 Facilitator Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+/* Layout: one reading column. Three kinds of block: comparison tables (before / tonight), copy boxes for text that gets pasted in the room, and script cards where each line is tagged Say, Ask, Do or Listen. Same colours as the curriculum: warm neutral, coral for what changes, green for what stays, amber for what the room does. */
+:root{
+  --bg:#faf8f4;--card:#ffffff;--bg2:#f1ede6;--line:#e4ded4;--line2:#cfc7ba;
+  --ink:#1f1c18;--ink2:#4d4741;--ink3:#857d72;
+  --coral:#e4583f;--coral-ink:#b43a26;--coral-soft:#fbe6e0;
+  --det:#d99a2b;--det-ink:#8a5a0a;--det-soft:#fbefd6;
+  --hum:#3f9d6a;--hum-ink:#246b45;--hum-soft:#def2e6;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#17150f;--card:#201d17;--bg2:#272319;--line:#363026;--line2:#4a4336;
+  --ink:#f1ece3;--ink2:#c8c0b2;--ink3:#958d7f;
+  --coral:#ef6d55;--coral-ink:#f4917e;--coral-soft:#3a221c;
+  --det:#e0a63d;--det-ink:#f0c270;--det-soft:#3a2d14;
+  --hum:#56b482;--hum-ink:#8ad3a9;--hum-soft:#1b3326;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17150f;--card:#201d17;--bg2:#272319;--line:#363026;--line2:#4a4336;
+  --ink:#f1ece3;--ink2:#c8c0b2;--ink3:#958d7f;
+  --coral:#ef6d55;--coral-ink:#f4917e;--coral-soft:#3a221c;
+  --det:#e0a63d;--det-ink:#f0c270;--det-soft:#3a2d14;
+  --hum:#56b482;--hum-ink:#8ad3a9;--hum-soft:#1b3326;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:860px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:40px 72px;display:flex;flex-direction:column;gap:44px}
+.kick{font:500 11px/1.4 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin:0}
+h1{font:500 clamp(30px,6vw,46px)/1.06 var(--sans);letter-spacing:-.03em;margin:10px 0 12px;text-wrap:balance}
+h2{font:500 24px/1.2 var(--sans);letter-spacing:-.02em;margin:0;text-wrap:balance}
+h3{font:600 16px/1.3 var(--sans);margin:6px 0 0}
+p{margin:0;max-width:70ch}
+a{color:var(--coral-ink);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:4px}
+code{font:13px var(--mono);background:var(--bg2);padding:1px 5px;border-radius:5px;overflow-wrap:anywhere}
+.dek{font-size:18px;color:var(--ink2)}
+header{display:flex;flex-direction:column}
+.call{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:6px;margin-top:20px}
+.call .kick{color:var(--coral-ink)}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 8px;margin-top:20px}
+nav.toc a{font:12.5px var(--mono);color:var(--ink2);text-decoration:none;border:1px solid var(--line2);border-radius:999px;padding:4px 11px;background:var(--card)}
+nav.toc a:hover{border-color:var(--coral);color:var(--coral-ink)}
+section{display:flex;flex-direction:column;gap:14px;min-width:0}
+.num{font:500 12px var(--mono);color:var(--coral-ink);letter-spacing:.06em}
+ul,ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:74ch}
+li b,p b,td b{font-weight:600}
+.tw{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th{text-align:left;font:500 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.t{font:12.5px var(--mono);white-space:nowrap;color:var(--ink2);font-variant-numeric:tabular-nums}
+td.k{font-weight:600;white-space:nowrap}
+.pill{display:inline-block;font:500 11px var(--mono);letter-spacing:.04em;border-radius:999px;padding:2px 9px;white-space:nowrap}
+.pill.s{background:var(--hum-soft);color:var(--hum-ink)}
+.pill.c{background:var(--coral-soft);color:var(--coral-ink)}
+.pill.m{background:var(--det-soft);color:var(--det-ink)}
+/* copy boxes */
+.copy{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.copy .bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.copy .bar span{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.copy button{font:500 12px var(--mono);background:var(--card);color:var(--ink);border:1px solid var(--line2);border-radius:7px;padding:4px 10px;cursor:pointer}
+.copy button:hover{border-color:var(--coral)}
+.copy pre{margin:0;padding:12px 14px;font:13px/1.55 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+details{background:var(--card);border:1px solid var(--line);border-radius:12px}
+details summary{cursor:pointer;padding:12px 14px;font-weight:600}
+details .copy{border:0;border-top:1px solid var(--line);border-radius:0}
+/* script cards */
+.blk{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.blk>.head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--bg2)}
+.blk>.head .tm{font:700 13px var(--mono);color:var(--coral-ink);font-variant-numeric:tabular-nums}
+.blk>.head h3{margin:0;font-size:18px;font-weight:600}
+.blk>.head .goal{flex-basis:100%;color:var(--ink2);font-size:14.5px}
+.lines{display:flex;flex-direction:column}
+.ln{display:grid;grid-template-columns:86px minmax(0,1fr);gap:12px;padding:11px 18px;border-bottom:1px solid var(--line)}
+.ln:last-child{border-bottom:0}
+.ln>.tag{font:500 11px/1.9 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+.ln>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.ln.say>div>p,.ln.ask>div>p{font-size:17px;line-height:1.5}
+.ln.say .tag{color:var(--ink)}
+.ln.ask{background:var(--coral-soft)}
+.ln.ask .tag{color:var(--coral-ink)}
+.ln.ask>div>p{font-weight:500}
+.ln.room .tag{color:var(--det-ink)}
+.ln.do>div,.ln.hear>div,.ln.room>div{font-size:14.5px;color:var(--ink2)}
+.ln.land>div>p{font-size:19px;font-weight:600;letter-spacing:-.01em}
+.ln.land .tag{color:var(--hum-ink)}
+.sub{font:600 12px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:10px 18px;background:var(--bg2);border-bottom:1px solid var(--line)}
+@media (max-width:560px){.ln{grid-template-columns:1fr;gap:2px}.ln>.tag{line-height:1.4}}
+.checks{list-style:none;padding:0;gap:8px}
+.checks li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;align-items:start}
+.checks li::before{content:"";width:14px;height:14px;border:1.5px solid var(--line2);border-radius:4px;margin-top:5px}
+footer{font:12.5px var(--mono);color:var(--ink3)}
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="kick">Cohort 8 · Module 2 · Lecture 15 · Fri 27 Nov 2026 · Both tracks · 90 minutes</p>
+  <h1>Lecture 15, by hand</h1>
+  <p class="dek">The lecture keeps its six blocks. One thing changes: tonight each learner carries the files to the LLM and back themselves. No tool that opens folders, no install, no subscription.</p>
+  <div class="call">
+    <p class="kick">Where things stand</p>
+    <p><b>The edits are made and live</b> (27 Nov, evening): the template and its zip, the brief, the overview and the 100x brain's README. Section 03 lists each one. Still open: the Lecture 16 touches and the plan doc.</p>
+  </div>
+  <nav class="toc" aria-label="Contents">
+    <a href="#idea">01 The idea</a><a href="#lecture">02 Lecture changes</a><a href="#resources">03 Resource changes</a><a href="#prep">04 Before you start</a><a href="#show">05 Run of show</a><a href="#script">06 The script</a><a href="#wrong">07 If it goes wrong</a><a href="#after">08 After tonight</a>
+  </nav>
+</header>
+
+<section id="idea">
+  <p class="num">01</p>
+  <h2>The idea</h2>
+  <p>A brain is an LLM and a set of files, plus something that moves text between them. That third thing can be the learner. A tool only saves the carrying.</p>
+  <div class="tw"><table>
+    <tr><th>The job</th><th>By hand tonight</th><th>Needs software?</th></tr>
+    <tr><td class="k">Read</td><td>Paste the file into the chat</td><td>No</td></tr>
+    <tr><td class="k">Write</td><td>The LLM gives the line and the file. The learner pastes it in. That is also the approval</td><td>No</td></tr>
+    <tr><td class="k">Choose</td><td>Paste the index. The LLM names a page. The learner opens it and pastes it</td><td>No</td></tr>
+    <tr><td class="k">Repeat without you</td><td>Cannot be done by hand</td><td>Yes. This is where Lecture 16 starts</td></tr>
+  </table></div>
+  <p>The one new line of the lecture: <b>"Someone wrote it down, and someone carried it."</b> Tonight the learner is the one carrying. Tomorrow the question is what could carry for them.</p>
+
+  <h3>What I tested today</h3>
+  <p>Plain chats with no tools, on GPT-OSS 120B (the LLM the room has used since Lecture 9) and on Claude Haiku.</p>
+  <div class="tw"><table>
+    <tr><th>Step</th><th>What happened</th></tr>
+    <tr><td>Index, then one page</td><td>Given the 100x brain's index and the scoreboard question, it asked for <code>wiki/threads/scoreboards.md</code> and answered from it. One slip: it invented a "baseline search, 3 of 10" row from the words "recall at 3"</td></tr>
+    <tr><td>Rules pasted first</td><td>It asked for <code>me.md</code>, <code>now.md</code> and <code>index.md</code> in all five chats</td></tr>
+    <tr><td>New chat, nothing pasted</td><td>It did not know the fact</td></tr>
+    <tr><td>New chat, files pasted</td><td>It asked for <code>wiki/told.md</code> from the index, answered "Lecture 4" and named the file. "What is my manager's name?" came back "not known"</td></tr>
+    <tr><td>Save a fact</td><td>It asked for the date, then gave the exact line for <code>wiki/told.md</code> and one for <code>log.md</code></td></tr>
+    <tr><td>Is this worth my time?</td><td>Yes, with the North Star quoted and one line of the source quoted</td></tr>
+    <tr><td>Take in a source (Haiku)</td><td>It returned the page, the index line and the log line as text, each with its file</td></tr>
+    <tr><td>One wrong saved line (Haiku)</td><td>"You live in Mumbai", naming the file. After the line was replaced and marked, "Pune", and it mentioned the replaced line</td></tr>
+  </table></div>
+  <ul>
+    <li><b>Three faults found and fixed in the new files.</b> The LLM said "not known" without asking for a page the index listed. It asked to see a file before adding a line to it. It offered to rewrite <code>now.md</code> because that file says "Change these three lines".</li>
+    <li><b>Not tested:</b> the free apps of ChatGPT, Gemini and Claude; Notepad on Windows opening <code>.md</code> files; a room of people.</li>
+  </ul>
+</section>
+
+<section id="lecture">
+  <p class="num">02</p>
+  <h2>How the lecture changes</h2>
+  <p>"Before" is the run of show in the plan doc. Blocks 4 and 6 are the real change.</p>
+  <div class="tw"><table>
+    <tr><th>Min</th><th>Block</th><th>Before</th><th>Tonight</th><th></th></tr>
+    <tr><td class="t">0 to 8</td><td class="k">It forgot, again</td><td>Room lists what search cannot find</td><td>Same</td><td><span class="pill s">Stays</span></td></tr>
+    <tr><td class="t">8 to 22</td><td class="k">The question with no passage</td><td>Run it on the Retrieval Bench. Save the room's answer as a page. Ask again</td><td>Brain Bench steps 1 and 2 show the miss. You paste the page into a plain chat on screen. New line: someone carried it</td><td><span class="pill m">Small</span></td></tr>
+    <tr><td class="t">22 to 37</td><td class="k">Who writes for fourteen lectures?</td><td>Tour of the 100x brain by three questions</td><td>Same, ending on the index: "in a minute you will read this yourself"</td><td><span class="pill s">Stays</span></td></tr>
+    <tr><td class="t">37 to 50</td><td class="k">Ask it</td><td>Room pastes the brain's address into their own chat app. Needs an app that takes an address</td><td>Room pastes the index. The LLM names a page. They carry it. Then Brain Bench step 3 shows software doing the same</td><td><span class="pill c">Changes</span></td></tr>
+    <tr><td class="t">50 to 62</td><td class="k">Break it three ways</td><td>Three wrong answers, three causes, five rules</td><td>Same. The third one is done live, by hand, in one file</td><td><span class="pill m">Small</span></td></tr>
+    <tr><td class="t">62 to 84</td><td class="k">Your own</td><td>Open the template in Antigravity, Claude Code, Codex or Cursor. The tool reads and writes</td><td>Any chat. Paste the rules, carry the files, paste the lines back. Ask once with nothing, once with the files</td><td><span class="pill c">Changes</span></td></tr>
+    <tr><td class="t">84 to 90</td><td class="k">Close</td><td>"A folder, a rules file and a habit"</td><td>Same answer, plus the question that opens Lecture 16: what could carry for you?</td><td><span class="pill m">Small</span></td></tr>
+  </table></div>
+  <h3>What moves out of tonight</h3>
+  <ul>
+    <li><b>The brain's address in a learner's own app.</b> It stays live and the bench uses it. For learners it becomes optional, after Lecture 16.</li>
+    <li><b>Running on a schedule.</b> It needs software. It moves to after Lecture 16, in Antigravity's free plan for anyone who wants it.</li>
+    <li><b><code>tools/check.py</code>.</b> It stays in the folder. The brief stops asking for it.</li>
+    <li><b>A GitHub account.</b> The zip is the main path. "Use this template" stays for those who have one.</li>
+  </ul>
+</section>
+
+<section id="resources">
+  <p class="num">03</p>
+  <h2>How the resources change</h2>
+  <div class="tw"><table>
+    <tr><th>Resource</th><th>Change</th><th>When</th></tr>
+    <tr><td class="k">Template: <code>AGENTS.md</code></td><td>New section "If I pasted these rules into a chat" (five lines). The jobs say "write the line for" a file, so they work with or without a tool. The course section gains a by-hand line. Full text below</td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">Template: <code>index.md</code></td><td>One line added so the LLM can find told facts: <code>- [Things I told it](wiki/told.md): facts I told it myself, one dated line each.</code></td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">Template: <code>now.md</code></td><td>The last line ("Have a better job? Change these three lines.") comes out. The LLM read it as an order to itself. The README already says it</td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">Template: <code>README.md</code></td><td>"Start here" becomes the by-hand steps. One line for people who already use a tool that opens folders: open the folder in it, the rules are the same</td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">The zip on the site</td><td>Rebuilt from the template</td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">Your brain brief</td><td>Step 02 rewritten for carrying (table below). Section 04 becomes a tick list, no Python. Section 07 flips: "If you already use a tool that opens folders". Section 08 keeps the address as optional</td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">Lecture 15 overview</td><td>"Bring tonight" names any chat with an LLM, not four tools. Section 02 leads with "read it by hand", then the address. A copy box for the block 4 message</td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">100x brain repo</td><td>README, "Ask": a by-hand way (paste the index, then the page it names), and its size line corrected to 136 pages. Sources, wiki, index, scores: no change</td><td><span class="pill s">Done</span></td></tr>
+    <tr><td class="k">The brain's address, Brain Bench, Lecture 16 bench</td><td>No change</td><td><span class="pill s">Stays</span></td></tr>
+    <tr><td class="k">Lecture 16 plan and card</td><td>Block 1 gains one question: "Who carried the files last night?" The card's "Asks" line can read "it asks me for a file by its path". A tool enters only after the name arrives</td><td><span class="pill m">Tomorrow morning</span></td></tr>
+    <tr><td class="k">Lecture 15 plan doc</td><td>Its lecture table replaced by the run of show on this page</td><td><span class="pill m">Can wait</span></td></tr>
+  </table></div>
+
+  <h3>The brief, step 02 (in class), before and after</h3>
+  <div class="tw"><table>
+    <tr><th>Before</th><th>Now live</th></tr>
+    <tr><td><b>Copy the template and open the folder.</b> On GitHub, "Use this template". Or download the zip. Open it in Antigravity, Claude Code, Codex or Cursor.</td><td><b>Get the folder.</b> Download the zip and unzip it. Open the files in any editor: Notepad, TextEdit, or the one you code in.</td></tr>
+    <tr><td><b>Write me.md.</b> By hand. Your North Star goes in it.</td><td>Same.</td></tr>
+    <tr><td><b>Tell it one fact.</b> Say: "Save this in wiki/told.md: ..." Open the file and see the line. Close the chat, open a new one, and ask for it.</td><td><b>Start a chat and tell it one fact.</b> New chat, any LLM. Paste <code>AGENTS.md</code>. Paste the files it asks for. Say: "Today is 27 Nov 2026. Save this in wiki/told.md: ..." It gives you a line. Paste the line into the file yourself.</td></tr>
+    <tr><td></td><td><b>New chat. Ask twice.</b> Once with nothing pasted. Once with the rules and the files. Write down both answers.</td></tr>
+    <tr><td><b>Give it one source.</b> Put one document in raw/. Say: "Take in the new file in raw/."</td><td><b>Give it the thing you saved.</b> Paste it and ask: "Is this worth my time?" Say whether you agree. Taking it in as a page moves to a short "after class tonight" list.</td></tr>
+    <tr><td><b>Write three questions and score them.</b></td><td><b>Write three questions.</b> Score them after class: "Before" is a new chat with nothing, "After" is with your files.</td></tr>
+  </table></div>
+
+  <details>
+    <summary>The new AGENTS.md, in full (this is the text I tested)</summary>
+    <div class="copy"><div class="bar"><span>AGENTS.md</span><button type="button" data-copy="agents">Copy</button></div>
+<pre id="agents"># The rules
+
+This folder is my brain: what I know, what I want and what I have decided, as plain files.
+Whoever reads these rules follows them: an LLM in a chat I pasted them into, or a tool that opens this folder.
+
+## If I pasted these rules into a chat
+
+You cannot see the folder. I carry the files to you and back.
+
+- **To read a file**, ask me for it by its path. I will paste it.
+- **Before you say "not known"**, look at `index.md`. If a page listed there could hold the answer, ask me for that page.
+- **To write**, give me the exact new lines and the file each goes in. I add them myself. You do not need to see a file to add a line to it. Never say "saved".
+- **The date.** When a line needs today's date and I have not given it, ask me.
+- Use only what I have pasted in this chat, not what you remember from other chats.
+
+## The six rules
+
+1. Read `me.md`, `now.md` and `index.md` first, every time.
+2. Never change a file in `raw/`. Those are my sources, kept as they came.
+3. Never write in `notes/` or `me.md`. Those are mine. If you think one should change, say what you would change and wait for me.
+4. You write in `wiki/`. Every line you write ends with the file it came from, in `raw/` or `notes/`. No source, no line.
+5. Date every write. When a line stops being true, do not erase it. Add the new line and mark the old one: `Replaced on 2026-12-01.`
+6. Save only what will still matter next week. If you are not sure, ask me.
+
+## How to do the common jobs
+
+- **"Save this in wiki/told.md: ..."** Write one new line for the top of `wiki/told.md`: today's date, the fact, then `(told by me)`. Write one dated line for the top of `log.md`. Do the same when I say "remember this". Do not put it in your own built-in memory instead: I must be able to open the file and read the line.
+- **"Take in raw/[name]."** Read it. Write one short page for `wiki/` (one fact per line, each ending with its source file). Write one line for the page for `index.md`, and one dated line for `log.md`. Then tell me what you wrote and where each part goes.
+- **"Is this worth my time?"** Read `me.md` and `now.md` first. Answer yes or no for my North Star, in one line. Then give one reason: quote my North Star, and quote one line from the source. If `me.md` has no North Star, say so and stop. Do not praise the source.
+- **A question.** Answer from my files and name the file. If my files do not hold the answer, say "not known". Do not guess.
+- **Something looks wrong or out of date.** Tell me. Change it only after I say yes, following rule 5.
+
+## The course
+
+Questions about the 100xEngineers course (a lecture, a date, a due date, an idea) are answered by the 100x brain, not from your own memory.
+By hand: I paste its index from https://github.com/Siddhant-Goswami/100x-brain and then the page you ask for.
+In a tool: its address is `https://100x-curriculum.vercel.app/api/brain`, with three tools: `read_index`, `open_page`, `search`. If that address is not connected, say so.</pre></div>
+  </details>
+</section>
+
+<section id="prep">
+  <p class="num">04</p>
+  <h2>Before you start</h2>
+  <h3>Rehearse once (15 minutes)</h3>
+  <p>Do blocks 4 and 6 in the two chat apps you will show. My tests ran through code, not through the apps' own screens.</p>
+  <h3>Chat apps</h3>
+  <ul>
+    <li><b>Two different chat apps, each on a new chat.</b> Tell the fact in the first. Ask for it back in the second. That shows the memory is the file and moves with you.</li>
+    <li><b>Turn each app's own memory off</b>, or use its temporary chat.</li>
+    <li><b>Do not rely on your Groq account tonight.</b> Its free allowance for today (200,000 tokens) was used up this afternoon by the bench recording and by my tests, which took about 30,000. It refills over a rolling 24 hours. Learners have their own accounts and are fine.</li>
+    <li><b>If a learner uses the Groq playground for block 4:</b> the index plus one page is close to the free limit of 8,000 tokens a minute. A wait of one minute between the two messages avoids it.</li>
+  </ul>
+  <h3>Tabs, in the order you need them</h3>
+  <ol>
+    <li><a href="https://100x-curriculum.vercel.app/c8/module-2/lecture-15-building-a-second-brain/">Lecture 15 overview</a></li>
+    <li><a href="https://100x-curriculum.vercel.app/c8/module-2/lecture-15-building-a-second-brain/bench">Brain Bench</a>, in a private window. It remembers its place, so a normal window may open on step 3.</li>
+    <li><a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/wiki/threads/scoreboards.md">100x brain: the scoreboards page</a></li>
+    <li><a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/index.md">100x brain: index.md</a> and <a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/log.md">log.md</a></li>
+    <li><a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/wiki/threads/where-sources-disagree.md">100x brain: where sources disagree</a></li>
+    <li>The curriculum sheet, code-track tab, on the Lecture 13 row</li>
+    <li><a href="https://100x-curriculum.vercel.app/c8/module-2/lecture-15-building-a-second-brain/your-brain">Your brain brief</a></li>
+    <li>The two chat apps</li>
+  </ol>
+  <h3>Files on your desktop</h3>
+  <ul class="checks">
+    <li>A fresh copy of the template folder, unzipped, with your own North Star already written in <code>me.md</code>. Keep one untouched copy too, to show the first step.</li>
+    <li>One thing you saved this week and have not read, as a text file.</li>
+    <li>A blank file named <code>scoreboards.md</code>, open in your editor, for block 2.</li>
+    <li>A second folder for block 5 whose <code>wiki/told.md</code> holds the planted line (copy box in block 5).</li>
+    <li>A note holding the three copy boxes from the script, ready to paste into the session chat.</li>
+  </ul>
+</section>
+
+<section id="show">
+  <p class="num">05</p>
+  <h2>Run of show</h2>
+  <div class="tw"><table>
+    <tr><th>Min</th><th>Block</th><th>You ask</th><th>The room does</th><th>On screen</th></tr>
+    <tr><td class="t">0 to 8</td><td class="k">It forgot, again</td><td>What can search still not find?</td><td>Answers in chat</td><td>Overview, section 01</td></tr>
+    <tr><td class="t">8 to 22</td><td class="k">The question with no passage</td><td>How many of the top three passages hold the answer?</td><td>Guesses. Answers the question from memory. Watches you paste the page</td><td>Brain Bench steps 1 and 2, your editor, chat app 1</td></tr>
+    <tr><td class="t">22 to 37</td><td class="k">Who writes for fourteen lectures?</td><td>Who writes the rest, and how would you know it is right?</td><td>Answers three questions on one page</td><td>100x brain on GitHub</td></tr>
+    <tr><td class="t">37 to 50</td><td class="k">Ask it</td><td>How many pages will it need to open?</td><td>Pastes the index, carries one page</td><td>Their own chat, then Brain Bench step 3</td></tr>
+    <tr><td class="t">50 to 62</td><td class="k">Break it three ways</td><td>The LLM did nothing wrong. What did?</td><td>Finds the cause, writes the rule</td><td>The sheet, GitHub, chat app 1</td></tr>
+    <tr><td class="t">62 to 84</td><td class="k">Your own</td><td>What should it know about you that the course never will?</td><td>Four steps by hand, in their own folder</td><td>The brief, your editor, both chat apps</td></tr>
+    <tr><td class="t">84 to 90</td><td class="k">Close</td><td>Which tool for a second brain?</td><td>Says it</td><td>The board from block 1</td></tr>
+  </table></div>
+</section>
+
+<section id="script">
+  <p class="num">06</p>
+  <h2>The script</h2>
+  <p>Lines marked Say and Ask are the words. Lines marked Do are for you. "Listen for" is what you wait for before moving on. Numbers on the bench are from its recorded runs (Claude Haiku, one run a question); check them at rehearsal.</p>
+
+  <!-- BLOCK 1 -->
+  <div class="blk" id="b1">
+    <div class="head"><span class="tm">0 to 8</span><h3>It forgot, again</h3><p class="goal">Get the room to list, in its own words, what search cannot find. Nothing is sorted or named.</p></div>
+    <div class="lines">
+      <div class="ln say"><span class="tag">Say</span><div><p>In Lecture 6, Aarav's app forgot on Tuesday what he typed on Monday. We fixed it with one file, memory.txt, sent back with every prompt.</p><p>Last Saturday you built search over our own course notes. By the end it found 8 of 10.</p><p>So the LLM can read a file, and it can search a pile. Tonight I want to find where that still breaks.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>What can search still not find? One thing each, in the chat.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Wait a full minute. Read six answers aloud. Write them on the board as they come, unsorted.</div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>Something about me. Something that changed. Something spread over many places. Something nobody wrote down. If one is missing, leave it missing.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Keep this list. At the end we count how many of these we dealt with.</p><p>Let me turn one of them into a real question.</p></div></div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2 -->
+  <div class="blk" id="b2">
+    <div class="head"><span class="tm">8 to 22</span><h3>The question with no passage</h3><p class="goal">The turn of the lecture. Search misses, the room writes the answer down, and the same question becomes a lookup.</p></div>
+    <div class="lines">
+      <div class="ln say"><span class="tag">Say</span><div><p>Here is the question. "Every time we added something around the LLM, the score moved. List each time, with its numbers."</p><p>You were there for all of it. Search was not.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Search hands the LLM the three closest passages. How many of those three will hold the answer? Type 0, 1, 2 or 3.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Open the Brain Bench. Step 1, "Bare": take a guess from the room, run it. It shows 3 right, 0 wrong, 15 unanswered of 18. Step 2, "Search": guess, run. 5 right, 3 wrong, 10 unanswered. Open the scoreboard question under "Across lectures". Read out where the three passages came from: one from the Lecture 14 notes, two from the first principles course.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Zero of three. And read what it said: it found 1, 5, 7 from Lecture 10 and told us the passages do not give the rest. It did not make anything up.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Search works. The LLM was careful. So why is there no answer?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"The answer is in three different lectures." "Nobody wrote it in one place."</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>The answer was never written in one place. So let us write it. From memory, in the chat: where did a score move, and what were the numbers?</p></div></div>
+      <div class="ln room"><span class="tag">Room</span><div>Types what it remembers. You type the best of it into <code>scoreboards.md</code>, six lines at most. What you are hoping for: Lecture 10, the track question, 1 then 5 then 7 of 10. Lecture 11, the tool card, 3 then 4 or 5 then 5 of 5. Lecture 14, the search, 5 then 6 then 8 of 10. Take what the room gives, gaps included.</div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Save the file. Open chat app 1, new chat. Select all of the file, copy, paste. Under it, paste the question. Do not send yet.</div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Same LLM as two minutes ago. Same question. What is different?</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Send. Let them read the answer.</div></div>
+      <div class="ln land"><span class="tag">Land</span><div><p>Nothing got smarter. Someone wrote it down.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>One more. How did that page reach the LLM?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"You pasted it."</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>I carried it. Someone wrote it down, and someone carried it. Hold on to that second half. Later tonight you are the one carrying.</p><p>That page is the first page of a second brain.</p></div></div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3 -->
+  <div class="blk" id="b3">
+    <div class="head"><span class="tm">22 to 37</span><h3>Who writes for fourteen lectures?</h3><p class="goal">The room meets the 100x brain through three questions about one page, then the index.</p></div>
+    <div class="lines">
+      <div class="ln ask"><span class="tag">Ask</span><div><p>You wrote one page, all of you together, in five minutes. The course has more than a hundred. Who writes the rest? And how would you know it is right?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"The LLM writes it." "Someone has to check." "You cannot check everything."</div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Open the 100x brain on GitHub, at <code>wiki/threads/scoreboards.md</code>.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>This is the page you just wrote. It was already here. It holds a few things we forgot. Three questions about it.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>One. Pick any line. Where did that sentence come from?</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Click the link at the end of the line "No context: 1." It lands on that section of the Lecture 10 notes, in <code>raw/</code>.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Every line ends with the place it came from. No source, no line.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Two. Who wrote this page?</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Scroll to the top. Read out: "written by Claude Opus 5.5", "approved by Siddhant, 2026-11-27".</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>An LLM wrote it. A person read it and put his name on it. Two names, two different jobs.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Three. Next week the notes change. What happens to this page?</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Open <code>raw/</code>, then <code>log.md</code>.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>The sources are kept exactly as they were published. Nobody edits them. When a page changes, the log gets a dated line saying what changed. You can always see what it believed, and when.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Open <code>index.md</code>. Scroll it slowly.</div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Behind this is about 125,000 words. This page is 155 lines, about one for each page. Why would the LLM read this one page first, and not everything?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"It does not all fit." "Find the few that matter." That is Lecture 13 in their words.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>It reads the list, then opens only the page it needs. In a minute you are going to do exactly that, yourself.</p></div></div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4 -->
+  <div class="blk" id="b4">
+    <div class="head"><span class="tm">37 to 50</span><h3>Ask it, by hand</h3><p class="goal">Each learner reads the index and opens one page for the LLM. Then the bench shows software doing the same carrying.</p></div>
+    <div class="lines">
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Same scoreboard question, asked of this brain. Before anything runs: how many pages will have to be opened? Type a number.</p></div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>The LLM cannot open this folder. You can. So for the next five minutes, you are its hands.</p><p>Open any chat with an LLM, the one you use every day is fine. Start a new chat. I am pasting a message in our session chat. Copy it.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Paste this into the session chat (it is also on the Lecture 15 overview, with a copy button), then do the steps yourself on screen, one beat ahead of the room.
+        <div class="copy"><div class="bar"><span>Block 4 message</span><button type="button" data-copy="m4">Copy</button></div>
+<pre id="m4">Below is the index of a folder of course notes. You cannot open the folder. I can.
+
+My question: Every time we added something around the LLM, the score moved. List each time with its numbers.
+
+Do not answer yet. Tell me the one page you want me to open, by its path. I will paste it. Then answer from that page only, and name the page.
+
+[paste index.md here]</pre></div>
+      </div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Step one. Paste that message into your chat. Do not send.</p><p>Step two. Open the 100x brain on GitHub, open index.md, and press the copy button at the top right of the file. Paste it under the message. Now send.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>What did it ask you for? Type the path.</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div><code>wiki/threads/scoreboards.md</code>. A few will get a different page. Read those out too.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Step three. Go and get it. Open that page on GitHub, copy it the same way, paste it, send.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>How many pages did you carry?</p><p>In Lecture 10, the LLM asked for something and a server ran it. Who was the server just now?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"One." Then: "Me."</div></div>
+      <div class="ln land"><span class="tag">Land</span><div><p>It asked. You fetched. It answered from a page someone wrote earlier.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Brain Bench, step 3, "The brain". Take a guess from the room, run it: 14 right, 1 wrong, 3 unanswered. Open the scoreboard question and read what crossed: it read the index, opened the scoreboards page, then three of the sources.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Same thing, with software doing the carrying. It opened four pages where you opened one, and it never got tired.</p><p>The LLM asks, that was Lecture 10. Through one address, Lecture 11. For the few pages that matter, Lecture 13. What comes back was written earlier and kept. You just did all of it with copy and paste.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Three questions are still unanswered. Look at the list. Which three?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>The group "About the person asking": which lecture did I say I was stuck on, what is my North Star, what date was that lecture.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Hold that thought for twenty minutes.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>If someone's answer has a wrong number in it, read it out. In my test the LLM invented one row even with the right page in front of it. That is why a person approves.</div></div>
+    </div>
+  </div>
+
+  <!-- BLOCK 5 -->
+  <div class="blk" id="b5">
+    <div class="head"><span class="tm">50 to 62</span><h3>Break it three ways</h3><p class="goal">Three wrong answers where the LLM did its job. The room finds each cause and writes the rule that stops it. The board ends with five rules.</p></div>
+    <div class="lines">
+      <div class="ln say"><span class="tag">Say</span><div><p>Writing things down fixes one problem and opens three new ones. I will show you three wrong answers. In each one the LLM did exactly what it should. Find what went wrong.</p></div></div>
+      <div class="sub">One: a date that has passed</div>
+      <div class="ln do"><span class="tag">Do</span><div>Show the sheet, Lecture 13 row. Status: "Planned". Then say what search answered in the score run: "Lecture 13 has not yet been taught."</div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>We held Lecture 13 a week ago. The LLM read the sheet correctly. What went wrong?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"Nobody updated the sheet." "It was true when it was written."</div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Write me the rule that would have stopped it. A few words.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Board, in their words. You want something like: <b>Date it.</b> Then show the brain's own rule on the "where sources disagree" page: a lecture that has notes has been taught, whatever the Status says.</div></div>
+      <div class="sub">Two: two sources that disagree</div>
+      <div class="ln do"><span class="tag">Do</span><div>Same page, under "Dates". Read both: the code-track tick list says "Saturday 17 to Monday 19 October". The sheet says "Ends Tuesday, 20 October 2026, 9:00 PM IST".</div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Both are our own pages. Which one should the brain say? And what is the rule?</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Board: <b>One source wins, and it is named.</b> Here the sheet wins on dates, and the page still shows both.</div></div>
+      <div class="sub">Three: one wrong line that was saved (planted, and say so)</div>
+      <div class="ln say"><span class="tag">Say</span><div><p>The third one I planted, so you can watch it happen. This is Aarav's folder. Here is the file of things he told it.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Show the planted file. New chat. Paste <code>AGENTS.md</code>, the three files it asks for, then this file. Ask: "Which city do I live in?"
+        <div class="copy"><div class="bar"><span>wiki/told.md, planted</span><button type="button" data-copy="m5">Copy</button></div>
+<pre id="m5"># Things I told it
+
+One line per fact, with the date. Newest first.
+
+- 2026-11-20: I live in Mumbai. (told by me)</pre></div>
+      </div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>It says Mumbai, and it names the file. Aarav lives in Pune. Did the LLM do anything wrong?</p><p>So how do we fix it? Do I delete the line?</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Do not delete. Add <code>- 2026-11-27: I live in Pune. (told by me)</code> above it, and add <code>Replaced on 2026-11-27.</code> to the end of the old line. Paste the file again, ask again. It says Pune and mentions the replaced line.</div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Why keep the wrong line at all?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"So you can see what it used to believe." "So you know when it changed."</div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Board: <b>Replace, do not erase.</b> Then ask who should have caught the Mumbai line before it was saved, and add the last two: <b>Save only what will matter next week.</b> <b>The LLM proposes, a person approves.</b></div></div>
+      <div class="ln land"><span class="tag">Land</span><div><p>Five rules. You wrote all five.</p></div></div>
+    </div>
+  </div>
+
+  <!-- BLOCK 6 -->
+  <div class="blk" id="b6">
+    <div class="head"><span class="tm">62 to 84</span><h3>Your own, by hand</h3><p class="goal">Every learner leaves with a folder, a North Star in it, one fact that came back from a file, and one "worth my time?" they agreed or disagreed with. You do each step first, they follow.</p></div>
+    <div class="lines">
+      <div class="ln ask"><span class="tag">Ask</span><div><p>The bench left three questions unanswered, and all three were about the person asking. What should a brain know about you that the course notes never will? In the chat.</p></div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>The 100x brain knows the course. It knows nothing about you. Yours will.</p><p>Four steps, twenty minutes. I do each one first, then you. You need a chat with an LLM and a text editor. Nothing else.</p></div></div>
+
+      <div class="sub">Step 1 · 62 to 67 · The folder, and who you are</div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Open the Your brain page. Download the folder and unzip it.</p><p>Open me.md. Notepad, TextEdit, or the editor you code in. If double-click does nothing, right-click and choose Open with.</p><p>One line is waiting for your North Star, the sentence you wrote at the workshop. Write it in. Save.</p><p>The LLM reads this file. It never edits it. This one is yours.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Show your own <code>me.md</code>. Ask for a thumbs up when theirs is saved. Move on at about two thirds.</div></div>
+
+      <div class="sub">Step 2 · 67 to 72 · Tell it one fact</div>
+      <div class="ln say"><span class="tag">Say</span><div><p>New chat. Open AGENTS.md from the folder. These are the rules. Select all, copy, paste into the chat, send.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>What did it ask you for?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div><code>me.md</code>, <code>now.md</code>, <code>index.md</code>.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>It asked. Go and fetch. Paste all three into one message and send.</p><p>Now tell it one true thing about you that you want back next week. Type it like this.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>Paste into the session chat:
+        <div class="copy"><div class="bar"><span>The save sentence</span><button type="button" data-copy="m6">Copy</button></div>
+<pre id="m6">Today is 27 Nov 2026. Save this in wiki/told.md: I am stuck on Lecture 4, the six parts of a request.</pre></div>
+        Tell them to swap in their own fact after the colon.
+      </div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>Did it save it?</p><p>Where is that line right now? So who saves it?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"No, it gave me a line." "In the chat." "Me."</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Open wiki/told.md. Paste the line in. Save. Do the same with the log line in log.md.</p><p>You read the line before it went in. That was the approval. Nothing enters your brain without passing your eyes.</p></div></div>
+
+      <div class="sub">Step 3 · 72 to 78 · Close the chat. Ask twice</div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Close that chat. Open a brand new one. If you have a second chat app, use that one. Paste nothing. Ask for your fact. Mine is: "Which lecture did I say I was stuck on?"</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>What did it say?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"It does not know." If someone's app does answer, stop and use it: see section 07, first row.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>It can think. It cannot remember. Lecture 6, again.</p><p>Same chat. Paste AGENTS.md. Paste the three files. Ask again.</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>What did it ask for this time? How did it know that file exists?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div><code>wiki/told.md</code>. "The index lists it."</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Fetch it. Paste. Read the answer, and read which file it names.</p></div></div>
+      <div class="ln do"><span class="tag">Do</span><div>You do this second chat in your other chat app, so the fact told in one app comes back in another.</div></div>
+      <div class="ln land"><span class="tag">Land</span><div><p>It came back from a file you can open, fix, and take anywhere.</p></div></div>
+
+      <div class="sub">Step 4 · 78 to 82 · The thing you saved</div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Stay in that chat. Your files are already in it. Paste the thing you saved this week and have not read. Above it, type one question: "Is this worth my time?"</p></div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>It said yes or no, and it quoted your North Star back to you. Do you agree with it? Type agree or disagree, and three words on why.</p></div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Your agree or disagree is the check. Nobody else can write it for you. Remember that you did this. We pick it up tomorrow.</p></div></div>
+
+      <div class="sub">Step 5 · 82 to 84 · Three questions</div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Last one. Open eval/questions.md. Write three questions whose answers you already know. For the third, the right answer is "not known".</p><p>Score them tonight after class. "Before" is a new chat with nothing pasted. "After" is with your files. You have already done both once.</p></div></div>
+    </div>
+  </div>
+
+  <!-- CLOSE -->
+  <div class="blk" id="b7">
+    <div class="head"><span class="tm">84 to 90</span><h3>Close</h3><p class="goal">The room answers the Lecture 1 question itself. You point at tomorrow with their folder, and leave one question open.</p></div>
+    <div class="lines">
+      <div class="ln do"><span class="tag">Do</span><div>Back to the board from block 1. Read each line and ask "did we deal with this tonight?" Tick the ones they say yes to. Leave the rest.</div></div>
+      <div class="ln ask"><span class="tag">Ask</span><div><p>In Lecture 1 someone asked which tool to use for a second brain, and I would not answer. What is the answer now?</p></div></div>
+      <div class="ln hear"><span class="tag">Listen for</span><div>"No tool." "A folder." "Files and rules." Wait until someone says it.</div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>A folder, a rules file and a habit. You built one tonight with a text editor and copy and paste.</p><p>It was slow. And because it was slow, you saw every word that reached the LLM, and every line that went into your brain.</p></div></div>
+      <div class="ln land"><span class="tag">Land</span><div><p>You did not add a smarter LLM tonight. You added a folder it reads first, rules for what gets written, and a way to check it.</p></div></div>
+      <div class="ln say"><span class="tag">Say</span><div><p>Tomorrow, bring this folder. It is one of five things you have built around the LLM since Lecture 9, and tomorrow they get a name.</p><p>One question to sleep on. Tonight you did all the carrying. What could do it for you? And what would you never let it do without asking?</p><p>The brief is on the Your brain page. Hand it in by Sunday 29 November.</p></div></div>
+    </div>
+  </div>
+
+  <h3>Words to hold back</h3>
+  <ul>
+    <li><b>"Harness" and the five piles.</b> Tomorrow.</li>
+    <li><b>The word for an LLM that decides its own next step.</b> Next module.</li>
+    <li><b>Any tool as a requirement.</b> Say "any chat with an LLM". If someone asks about Antigravity or Claude Code: "Yes, the same folder opens in it. Do it by hand once first."</li>
+    <li><b>"RAG versus wiki".</b> Search is one of the brain's tools. Tonight adds writing.</li>
+    <li><b>Research names.</b> They go in the post-read notes.</li>
+  </ul>
+</section>
+
+<section id="wrong">
+  <p class="num">07</p>
+  <h2>If it goes wrong</h2>
+  <div class="tw"><table>
+    <tr><th>What happens</th><th>What to do</th></tr>
+    <tr><td>A chat app answers the fact with nothing pasted</td><td>Use it. "Where is that kept? Can you open it? Can you fix a wrong line in it? Can you take it to another app?" Then have them retry in a temporary chat</td></tr>
+    <tr><td>The LLM answers without asking for files</td><td>Paste <code>AGENTS.md</code> again as the first message of a new chat, on its own, and send before anything else</td></tr>
+    <tr><td>It asks to see a file before it will add a line</td><td>Type: "You do not need the file. Give me the line."</td></tr>
+    <tr><td>It writes a date that is not today</td><td>The save sentence starts with "Today is 27 Nov 2026." Have them add it</td></tr>
+    <tr><td>A <code>.md</code> file will not open</td><td>Right-click, Open with, Notepad or TextEdit. Last resort: they do steps 2 to 4 with <code>me.md</code> alone, typed straight into the chat</td></tr>
+    <tr><td>A free chat hits its limit</td><td>Switch to a second app. The files go with them, which is the point of the evening</td></tr>
+    <tr><td>The Groq playground says "rate limit"</td><td>Wait one minute and send again</td></tr>
+    <tr><td>Someone already uses a tool that opens folders</td><td>They can open the same folder in it. Ask them to do step 3 by hand once, so they see what the tool does for them</td></tr>
+    <tr><td>The Brain Bench opens on the wrong step</td><td>Use a private window. It saves its place in the browser</td></tr>
+  </table></div>
+  <h3>If you are behind</h3>
+  <ul>
+    <li><b>At minute 40:</b> do block 4 on screen only. The room types the page name and does not paste. Saves four minutes.</li>
+    <li><b>At minute 55:</b> say the third failure with the two files on screen, without running it. Saves three minutes.</li>
+    <li><b>At minute 78:</b> step 4 ("worth my time?") becomes the first thing they do after class. Never cut step 3: the fact coming back is the lecture.</li>
+  </ul>
+</section>
+
+<section id="after">
+  <p class="num">08</p>
+  <h2>After tonight</h2>
+  <ul>
+    <li><b>Lecture 16, block 1.</b> After the brain answers the scoreboard question, ask: "Who carried the files last night?" The answer is the thing that lecture names.</li>
+    <li><b>The card.</b> Their "Asks" line is real now: "it asks me for a file by its path". Their "Record" line is <code>log.md</code>.</li>
+    <li><b>A tool, for those who want one.</b> After the name arrives: open the same folder in Antigravity on its free plan. Nothing in the folder changes. Scheduled runs live there. I have not tested the template in Antigravity.</li>
+    <li><b>The week.</b> One thing a day, by hand: paste it, ask "Is this worth my time?", write one line in <code>log.md</code>. On Fri 4 Dec, ask for the fact from tonight.</li>
+  </ul>
+</section>
+
+<footer>Draft for Siddhant · written Fri 27 Nov 2026 · file: _plan/lecture-15/facilitator-guide.html</footer>
+</div>
+
+<script>
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('button[data-copy]'); if (!b) return;
+  var pre = document.getElementById(b.getAttribute('data-copy')); if (!pre) return;
+  var done = function () { var t = b.textContent; b.textContent = 'Copied'; setTimeout(function () { b.textContent = t; }, 1400); };
+  var select = function () { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selected, press copy'; };
+  try { navigator.clipboard.writeText(pre.textContent).then(done, select); } catch (err) { select(); }
+});
+</script>

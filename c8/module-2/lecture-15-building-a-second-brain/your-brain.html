@@ -30,11 +30,11 @@
 <div class="hero">
   <p class="kick">Practice set · Starts in Lecture 15 · Both tracks</p>
   <h1>Your brain</h1>
-  <p class="dek">A folder your tool reads before it answers you. Start it tonight, hand it in this weekend, then keep using it.</p>
-  <div class="meta"><span>20 minutes in class tonight, 45 minutes after Lecture 16. Hand it in by Sun 29 Nov.</span></div>
+  <p class="dek">A folder an LLM reads before it answers you. Start it tonight, hand it in this weekend, then keep using it.</p>
+  <div class="meta"><span>20 minutes in class tonight, 15 after class, 45 after Lecture 16. Hand it in by Sun 29 Nov.</span></div>
 </div>
 
-<div class="call"><p class="kick">The brief</p><p>Start your own brain from the template. Give it your North Star, one source and one fact. Write three questions whose answers you know, and score them. After Lecture 16, fill your card on it and hand it in by Sun 29 Nov. Then use it for one job for a week (keeping you up to date for your North Star), and on Fri 4 Dec ask for the fact again.</p><p><a class="btn" href="https://github.com/Siddhant-Goswami/my-brain" target="_blank" rel="noopener">Get the template</a> </p><p>No GitHub account? <a href="/c8/module-2/lecture-15-building-a-second-brain/assets/my-brain.zip" download>Download the same folder as a zip</a>.</p></div>
+<div class="call"><p class="kick">The brief</p><p>You need a text editor and any chat with an LLM. Nothing else. Start your own brain from the template: you carry the files to the LLM and back. Give it your North Star, one fact and one thing you saved. Write three questions whose answers you know, and score them. After Lecture 16, fill your card on it and hand it in by Sun 29 Nov. Then use it for one job for a week (keeping you up to date for your North Star), and on Fri 4 Dec ask for the fact again.</p><p><a class="btn" href="/c8/module-2/lecture-15-building-a-second-brain/assets/my-brain.zip" download>Download the folder</a> </p><p>Have a GitHub account? <a href="https://github.com/Siddhant-Goswami/my-brain" target="_blank" rel="noopener">Use the same folder as a template there</a>.</p></div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Why</h2>
 <ul>
@@ -44,14 +44,22 @@
 </ul>
 </section>
 
-<section class="s" id="s02"><h2><span class="n">02</span>Tonight, in class <span class="ready" data-ready="a">0 of 5 ready</span></h2>
+<section class="s" id="s02"><h2><span class="n">02</span>Tonight, in class <span class="ready" data-ready="a">0 of 6 ready</span></h2>
 <div data-stage="a">
 <ul class="ck">
-<li><input type="checkbox" id="a1"><label for="a1"><span class="t">Copy the template and open the folder</span><span class="h">On GitHub, "Use this template". Or download the zip. Open it in Antigravity, Claude Code, Codex or Cursor.</span></label></li>
+<li><input type="checkbox" id="a1"><label for="a1"><span class="t">Get the folder</span><span class="h">Download the zip and unzip it. Open the files in any editor: Notepad, TextEdit, or the one you code in.</span></label></li>
 <li><input type="checkbox" id="a2"><label for="a2"><span class="t">Write me.md</span><span class="h">By hand. Your <a href="/c8/module-2/what-to-build/idea-to-app-notes#s02">North Star</a> goes in it. The LLM reads this file and never edits it.</span></label></li>
-<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Give it one source</span><span class="h">Put one document of yours in raw/. Say: "Take in the new file in raw/." Read what it wrote, and open one of its source links.</span></label></li>
-<li><input type="checkbox" id="a4"><label for="a4"><span class="t">Tell it one fact</span><span class="h">Say: "Save this in wiki/told.md: ..." Open the file and see the line. Close the chat, open a new one, and ask for it.</span></label></li>
-<li><input type="checkbox" id="a5"><label for="a5"><span class="t">Write three questions and score them</span><span class="h">In eval/questions.md: three questions whose answers you know. For one of them the right answer is "not known".</span></label></li>
+<li><input type="checkbox" id="a3"><label for="a3"><span class="t">Start a chat and tell it one fact</span><span class="h">New chat, any LLM. Paste all of AGENTS.md and send. Paste the three files it asks for. Say: "Today is 27 Nov 2026. Save this in wiki/told.md: ..." It gives you a line. Paste the line into the file yourself.</span></label></li>
+<li><input type="checkbox" id="a4"><label for="a4"><span class="t">Open a new chat and ask twice</span><span class="h">Once with nothing pasted. Once after pasting AGENTS.md and the files it asks for. The second answer names a file you can open.</span></label></li>
+<li><input type="checkbox" id="a5"><label for="a5"><span class="t">Ask about the thing you saved</span><span class="h">Paste it into the same chat and ask: "Is this worth my time?" Say whether you agree.</span></label></li>
+<li><input type="checkbox" id="a6"><label for="a6"><span class="t">Write three questions</span><span class="h">In eval/questions.md: three questions whose answers you know. For one of them the right answer is "not known".</span></label></li>
+</ul>
+</div>
+<p class="kick">After class tonight, 15 minutes</p>
+<div data-stage="e">
+<ul class="ck">
+<li><input type="checkbox" id="e1"><label for="e1"><span class="t">Take in the thing you saved</span><span class="h">Save it as a text file in raw/. Paste it and say: "Take in raw/[its name]." It writes a page, an index line and a log line. Read them, then paste each where it says.</span></label></li>
+<li><input type="checkbox" id="e2"><label for="e2"><span class="t">Score your three questions</span><span class="h">Before: a new chat with nothing pasted. After: a chat with your files. Mark each right or wrong.</span></label></li>
 </ul>
 </div>
 </section>
@@ -66,8 +74,8 @@
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Check it and hand it in</h2>
-<p>Run <code>python3 tools/check.py</code> in the folder, or ask your tool to run it. It ticks off what is done.</p>
-<p>By Sun 29 Nov, submit on the LMS: a link to your brain or a zip of the folder, with your filled card in it.</p>
+<p>Four things should be true: your North Star is in me.md, one dated line is in wiki/told.md, your three questions are marked before and after, and your card is filled. If you have Python, <code>python3 tools/check.py</code> ticks these off.</p>
+<p>By Sun 29 Nov, submit on the LMS: a zip of your folder or a link to it, with your filled card in it.</p>
 </section>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Then keep it going for a week <span class="ready" data-ready="b">0 of 3 ready</span></h2>
@@ -75,7 +83,7 @@
 <div data-stage="b">
 <ul class="ck">
 <li><input type="checkbox" id="b1"><label for="b1"><span class="t">Use it for one job only</span><span class="h">now.md starts with one: keep me up to date for my North Star. Change it if you have a better one.</span></label></li>
-<li><input type="checkbox" id="b2"><label for="b2"><span class="t">One thing a day, and one line in log.md</span><span class="h">Put one thing you saved into raw/. Say: "Take in the new file in raw/." Ask: "Is this worth my time?" Write what it said and whether you agree. Five days.</span></label></li>
+<li><input type="checkbox" id="b2"><label for="b2"><span class="t">One thing a day, and one line in log.md</span><span class="h">Save one thing in raw/. Paste it into a chat that has your files and ask: "Is this worth my time?" Write what it said and whether you agree. Five days.</span></label></li>
 <li><input type="checkbox" id="b3"><label for="b3"><span class="t">Find one line that is wrong or out of date</span><span class="h">Replace it and keep the old line, marked "Replaced on" with the date.</span></label></li>
 </ul>
 </div>
@@ -84,18 +92,18 @@
 <section class="s" id="s06"><h2><span class="n">06</span>Fri 4 Dec <span class="ready" data-ready="d">0 of 1 ready</span></h2>
 <div data-stage="d">
 <ul class="ck">
-<li><input type="checkbox" id="d1"><label for="d1"><span class="t">Ask for the fact from 27 Nov</span><span class="h">Open a new chat and ask. It should come back from a file you can open. That is the test of a memory.</span></label></li>
+<li><input type="checkbox" id="d1"><label for="d1"><span class="t">Ask for the fact from 27 Nov</span><span class="h">Open a new chat, paste AGENTS.md and the files it asks for, and ask. It should come back from a file you can open. That is the test of a memory.</span></label></li>
 </ul>
 </div>
 </section>
 
-<section class="s" id="s07"><h2><span class="n">07</span>If your tool will not open a folder</h2>
-<p>Do it with one file. Write me.md, and paste it at the top of every new chat. Tell it one fact, add the fact to the file yourself, and ask again next week. That is memory.txt from <a href="/c8/module-2/lecture-06-databases-and-domain-modelling/notes#s04">Lecture 6</a>, and it still counts.</p>
+<section class="s" id="s07"><h2><span class="n">07</span>If you already use a tool that opens folders</h2>
+<p>Antigravity, Claude Code, Codex and Cursor can open this same folder and do the carrying for you. Say the same sentences. Do tonight's steps by hand once first, so you see every word that reaches the LLM. If the tool keeps a memory of its own, check that your fact landed in wiki/told.md.</p>
 </section>
 
 <section class="s" id="s08"><h2><span class="n">08</span>If you want more</h2>
 <ul>
-  <li><b>Ask the course:</b> the template already holds the <a href="/c8/module-2/lecture-15-building-a-second-brain/">100x brain's address</a>. Ask your brain a course question and see where it goes.</li>
+  <li><b>Ask the course:</b> paste the <a href="https://github.com/Siddhant-Goswami/100x-brain/blob/main/index.md" target="_blank" rel="noopener">100x brain's index</a> into your chat with a course question, then the page it asks for. If your app takes an address, the template already holds <a href="/c8/module-2/lecture-15-building-a-second-brain/">the brain's</a>.</li>
   <li><b>Code track:</b> give your brain its own address with mcp_server.py from <a href="/c8/module-2/lecture-12-building-with-tool-calling-and-mcp/practice-set">Lecture 12</a>, and search it with rag.py from <a href="/c8/module-2/lecture-14-building-rag-apps/lab">Lecture 14</a>.</li>
   <li><b>Anyone:</b> connect one more source you already own, such as your Google Sheet from Lecture 11.</li>
 </ul>
