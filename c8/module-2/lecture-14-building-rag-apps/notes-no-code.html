@@ -297,9 +297,9 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </section>
 
 <section class="s" id="s09"><h2><span class="n">09</span>Build it: a car manual you can question</h2>
-<p>A car's owner manual runs to about 114 pages. In an emergency nobody reads 114 pages. The instructor showed a finished app first. Asked what to do about a leak, it answered from the manual and cited its source. No code was written for it. Every step was a prompt in Antigravity, the IDE from <a href="/c8/module-2/lecture-03-building-ui/notes">Lecture 3</a>.</p>
+<p>A car's service manual runs to 154 pages. In an emergency nobody reads 154 pages. The instructor showed a finished app first. Asked what to do about a leak, it answered from the manual and cited its source. No code was written for it. Every step was a prompt in Antigravity, the IDE from <a href="/c8/module-2/lecture-03-building-ui/notes">Lecture 3</a>.</p>
 <figure class="sk">
-<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="Two rows. Top row, done once: the car manual, a PDF of about 114 pages, is cut into chunks with page labels, and the chunks and their embeddings are stored in Supabase with pgvector. Bottom row, on every question: you ask the app, the app searches Supabase for the top chunks, sends them with the question to the LLM on Groq, and shows the answer with its page.">
+<svg class="wb" viewBox="0 0 760 330" role="img" aria-label="Two rows. Top row, done once: the car manual, a PDF of 154 pages, is cut into chunks with page labels, and the chunks and their embeddings are stored in Supabase with pgvector. Bottom row, on every question: you ask the app, the app searches Supabase for the top chunks, sends them with the question to the LLM on Groq, and shows the answer with its page.">
   <g class="ln" filter="url(#wob)">
     <rect class="f-card" x="30" y="50" width="150" height="76" rx="8"/>
     <path class="arw" d="M186 88 H232" marker-end="url(#ah)"/>
@@ -315,7 +315,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
   </g>
   <g class="tx">
     <text x="30" y="32" class="xxxs c-mute l">once: load the manual</text>
-    <text x="105" y="84" class="xs">the manual</text><text x="105" y="106" class="xxxs">PDF, about 114 pages</text>
+    <text x="105" y="84" class="xs">the manual</text><text x="105" y="106" class="xxxs">PDF, 154 pages</text>
     <text x="335" y="84" class="xs c-det">cut into chunks</text><text x="335" y="106" class="xxxs">each with its page</text>
     <text x="514" y="76" class="xxxs c-det">chunks +</text><text x="514" y="110" class="xxxs c-det">embeddings</text>
     <text x="645" y="32" class="xxs c-det">Supabase, with pgvector</text>
@@ -330,16 +330,107 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 </svg>
 <figcaption>Two jobs: load the document once, then answer every question from the few chunks that match.</figcaption>
 </figure>
-<p>You need Antigravity, a Supabase account, a Groq key and the manual as a PDF. The exact prompts are in the step-by-step guide shared in the session. Each step says what its prompt asks for.</p>
+<p>You need Antigravity, a Supabase account, a Groq key and the manual as a PDF. The manual and the build guide are on the LMS, under Week 7, RAG resources. The guide has five prompts. Paste them one at a time into the Antigravity chat, and let each one finish before the next.</p>
 <ol>
-  <li><b>Ask for the plan.</b> Paste the first prompt. Antigravity proposes how it will build the app, as a flow chart. It shows how the PDF is cut, which labels each chunk gets and how the search works. It takes 5 to 10 minutes, depending on the LLM you picked.</li>
-  <li><b>Read the plan and approve.</b> Read enough to guess what each part does. When it asks to run npm, allow it: npm downloads the ready-made parts the app is built from.</li>
-  <li><b>Ask it to use pgvector.</b> pgvector is an add-on for Postgres, the database inside Supabase. It lets the database store embeddings and find the closest ones. Antigravity updates the plan and writes the tables as SQL.</li>
-  <li><b>Give it the manual.</b> This is the PDF the app will answer from.</li>
-  <li><b>Connect the two services.</b> Paste the second prompt. Sign in to Supabase and run the SQL from step 3 there. Supabase stores the chunks and their embeddings. Groq serves the LLM. The prompt for making the embeddings can go in with this step or after it.</li>
-  <li><b>Load the document.</b> The next prompt makes the app cut, label and store the PDF by itself.</li>
-  <li><b>Build the question and answer page.</b> The last prompt builds the chat page and the flow in the sketch. Open the app on localhost and ask it something from the manual.</li>
+  <li><b>Create the project.</b> A separate client and server.
+<details class="acc"><summary>Prompt 1: copy this</summary><div class="b"><pre class="code" style="white-space:pre-wrap;overflow-wrap:anywhere">Build a web application named "Porsche Cayenne RAG".
+
+Create exactly two main application folders:
+- client/ : responsive Porsche-inspired chat interface.
+- server/ : Express.js backend, retrieval workflow, document processing and service integrations.
+
+Use a clean, maintainable structure inside these folders. The client must never call Groq or expose database secrets directly. Keep all API keys and service credentials on the server.
+
+The interface must include:
+- Chat input and conversation history.
+- Suggested service-question buttons.
+- Formatted answers with clear step-by-step instructions.
+- Safety callouts for Danger, Warning and Caution.
+- Clickable source references showing the manual page and supporting excerpt.
+- Loading, error and connection-status states.
+
+Do not add unrelated features. Do not put implementation instructions, developer notes or placeholder content in the user-facing interface.</pre></div></details></li>
+  <li><b>Connect the services.</b> Supabase with pgvector stores the chunks; Groq writes the answers.
+<details class="acc"><summary>Prompt 2: copy this</summary><div class="b"><pre class="code" style="white-space:pre-wrap;overflow-wrap:anywhere">Integrate these services into the server:
+
+1. Supabase
+- Use my Supabase project URL and server-side API key.
+- Enable the pgvector extension.
+- Create the database structure required to store manual passages, page number, section, system category, procedure metadata and embeddings.
+- Add vector similarity search so the server can retrieve the most relevant passages.
+- Keep credentials in server environment variables only.
+
+2. Groq
+- Connect the Groq API using my server-side API key.
+- Use the model I select from the models currently available to my Groq account.
+- Use Groq only for answer generation.
+
+3. Embeddings
+- Use a local embedding model in the server (all-MiniLM-L6-v2 or a compatible replacement).
+- Store vectors in Supabase pgvector.
+- Ensure the embedding dimensions in the model, database column and search function match exactly.
+
+Add a simple connection check for Supabase, pgvector and Groq. Show service status in the app without exposing keys.</pre></div></details></li>
+  <li><b>Load the manual automatically.</b> The app cuts, labels and stores the PDF by itself, once.
+<details class="acc"><summary>Prompt 3: copy this</summary><div class="b"><pre class="code" style="white-space:pre-wrap;overflow-wrap:anywhere">Make the knowledge-base setup automatic.
+
+When the application starts, check whether the Porsche Cayenne (9PA) technical manual has already been indexed.
+
+If it has not:
+1. Locate the supplied 154-page PDF in the server's document area.
+2. Extract the text while preserving page numbers, headings, tables, procedures, torque values, tool references and safety warnings.
+3. Split the content into meaningful procedure-based passages. Do not separate a warning, measurement condition or torque value from the step it belongs to.
+4. Add metadata to every passage: page number, section title, vehicle/system category and procedure name where available.
+5. Generate embeddings using the configured local embedding model.
+6. Store passages and embeddings in Supabase pgvector.
+7. Mark the document as indexed so it is not processed again on every restart.
+
+If the PDF or a service is unavailable, show a clear status and error message. Do not silently claim that indexing succeeded. If the manual is updated, detect the new version and re-index it safely.
+
+I do not want to run a separate manual seed command or maintain a separate scripts folder as part of the normal user workflow.</pre></div></details></li>
+  <li><b>Build the question and answer flow.</b> Every answer must come from retrieved passages.
+<details class="acc"><summary>Prompt 4: copy this</summary><div class="b"><pre class="code" style="white-space:pre-wrap;overflow-wrap:anywhere">Implement the complete RAG flow in the Express server:
+1. Receive the user's question from the client.
+2. Generate an embedding for the question.
+3. Search Supabase pgvector for the most relevant manual passages.
+4. Retrieve a small, configurable set of relevant passages.
+5. Send the question and retrieved passages to Groq.
+6. Generate an answer using only the supplied manual evidence.
+7. Return the answer with source page numbers and supporting excerpts.
+
+Use this system instruction:
+
+"You are a technical assistant for the Porsche Cayenne (9PA) workshop service manual. Answer only from the retrieved manual excerpts. Do not guess, infer missing specifications or invent procedures. If the retrieved material does not contain the answer, say that the manual excerpts available to you do not establish the answer.
+
+Present procedures as numbered steps. Show tightening torques, fluid quantities, temperatures, units and special tool references exactly as stated in the source. Include the manual page number beside each relevant claim. Put any source safety instruction before the procedure and label it Danger, Warning or Caution as appropriate. If a specification depends on a vehicle variant, state the variant and do not combine values from different variants."
+
+Return a structured response containing:
+- Answer.
+- Safety notices, if present in the source.
+- Source page numbers.
+- Supporting source excerpts.
+- Any relevant tool references and specifications.</pre></div></details></li>
+  <li><b>Test before you trust it.</b> Check that each cited page really says it.
+<details class="acc"><summary>Prompt 5: copy this</summary><div class="b"><pre class="code" style="white-space:pre-wrap;overflow-wrap:anywhere">Test the complete application using the following questions. For each answer, verify that the cited page and supporting excerpt actually contain the information. Do not mark a test as passed based only on a plausible-sounding answer.
+
+1. "How do I switch off the air suspension before lifting the vehicle?"
+2. "What is the engine oil capacity and the tightening torque for the drain plugs and filter housing?"
+3. "What is the test condition for checking the ATF level?"
+4. "What is the brake fluid bleeding sequence and pressure?"
+5. "How do I adjust the foot-operated parking brake?"
+
+Also test:
+- A question whose answer is not present in the manual.
+- A question using different wording from the manual.
+- A question that mentions a specific tool number or technical code.
+- A question where the vehicle variant is important.
+
+Fix retrieval, citations or answer-grounding issues before launch. Confirm that the app starts, the PDF is indexed, Supabase vector search works, Groq responds and the client displays answers and source references correctly.
+
+Provide the final local run instructions and a short service-status checklist. Do not claim the application is live or connected unless each check has actually passed.</pre></div></details></li>
 </ol>
+<p>After each prompt, Antigravity shows its plan and waits. Read enough to guess what each part does, then approve. When it asks to run npm, allow it: npm downloads the ready-made parts the app is built from. A plan takes 5 to 10 minutes, depending on the LLM you picked. When prompt 2 writes the tables as SQL, sign in to Supabase and run that SQL there.</p>
+<p>Two things in the prompts are worth a second look. pgvector is an add-on for Postgres, the database inside Supabase. It lets the database store embeddings and find the closest ones. And the embeddings are made by a small embedding model that runs inside your own server, not by Groq. Groq only writes the answer.</p>
 <p>Troubles the room hit:</p>
 <table class="dials">
   <tr><th>Trouble</th><th>Fix</th></tr>
@@ -370,6 +461,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 
 <section class="s" id="s10"><h2><span class="n">10</span>Your turn: your own documents</h2>
 <p>Finish the car manual app first, so you have seen every step work once. Then run the same steps on documents of your own: a long PDF, your lecture notes, HR policies.</p>
+<p>Prompt 5 in section 09 has five test questions for the manual, and four kinds of question to add: one the manual cannot answer, one worded differently from the manual, one with a tool number or code, and one where the car's variant matters. Use the same four kinds on your own documents.</p>
 <p>Before you call it done, write a few questions whose answers you know. Ask them. For each one, check the answer and check that the cited source really says it. That is your fixed set for every change you make later.</p>
 </section>
 

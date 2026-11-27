@@ -150,6 +150,7 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <figcaption>Three parts, three jobs. The same gte-small handles the chunks once and every question after.</figcaption>
 </figure>
 <p>When you ask a question, the same gte-small turns it into numbers. pgvector finds the closest chunks. The server sends them, with the question, to the LLM on Groq, which answers and cites the pages.</p>
+<p>The build guide for the car manual app names another small embedding model, all-MiniLM-L6-v2. Whichever one your app uses, the job is the same, and it does not come from Groq.</p>
 <p>Does pgvector do the chunking? No. It cuts nothing and converts nothing. It stores and it searches.</p>
 <details class="acc"><summary>Can I run the LLM without Groq?</summary><div class="b"><p>Yes. Ollama is a program that runs open LLMs on your own machine. Several open LLMs carry the Apache 2.0 licence, which allows commercial use.</p></div></details>
 </section>

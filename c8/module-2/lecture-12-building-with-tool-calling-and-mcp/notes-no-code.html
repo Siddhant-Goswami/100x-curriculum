@@ -366,14 +366,16 @@ body.read figure.sk figcaption{font-size:14px;color:var(--ink3);margin-top:2px}
 <ol>
   <li><b>Install the right Antigravity.</b> The download page offers two: an app, and the coding tool (labelled IDE). Take the coding tool. Setup takes at least ten minutes.</li>
   <li><b>Open a new window</b> on a new folder. The instructor used Gemini Flash as the LLM.</li>
-  <li><b>Ask for the connection.</b> Antigravity calls a connection a "plugin" on its screens, so the prompt uses that word. Type: <code>install Google Sheets plugin</code></li>
-  <li><b>Sign in with Google</b> when it asks, once, and click Allow. A message then confirms that Google Sheets is installed and configured.</li>
+  <li><b>Ask for the connection.</b> Antigravity calls a connection a "plugin" on its screens, so the prompt uses that word. Type <code>/plugin search google sheets</code> (or <code>install Google Sheets plugin</code>), then click Install on the card that appears.</li>
+  <li><b>Sign in with Google</b>, once. Type <code>Connect my Google account</code>, open the link it gives you, pick your account and click Allow. A message then confirms that Google Sheets is installed and configured.</li>
   <li><b>Make your own copy</b> of the shared order sheet (the link was shared in the session). Do not work in the shared one.</li>
   <li><b>Share your copy.</b> Give editor access to the email you are signed in with in Antigravity, or set the link so anyone with it can edit.</li>
   <li><b>Paste the sheet link</b> into the Antigravity chat. It fetches the sheet through the server.</li>
+  <li><b>Check it is connected.</b> Type <code>/plugin list</code>, or ask: <code>List my recent Google Spreadsheets</code>. Your sheets come back.</li>
   <li><b>See what the server offers.</b> Ask: <code>List all the actions that you can do with Google Sheets MCP.</code></li>
   <li><b>Ask the shop's questions.</b> "Who are the top customers?" "What is the highest sold product?" The second answer was kettles. The cancelled order was left out.</li>
 </ol>
+<p>The one-page quickstart for these steps is on the LMS, under Week 6, MCP Quickstart Guide. It also lists prompts to try on any sheet: create a sheet, add a header and two rows, append a row, read a sheet from its link, make the header bold, delete a row.</p>
 <p>Then one step further. The instructor asked Antigravity for a page that edits the sheet (his words, roughly):</p>
 <blockquote class="q9">"Create a simple HTML file that modifies the fields on the sheet, so I can add and edit an existing sales record through MCP."</blockquote>
 <p>Antigravity built one page and opened it on his own computer, at an address that starts with localhost. He added a mug set order for 123 rupees, marked pending, and clicked Save Record. The row appeared in the Google Sheet, with the next order number, 1051, filled in for him. He changed another order's value to 12,900, and the sheet changed. The sheet had become the database of a small shop app.</p>
