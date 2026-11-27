@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brain Bench | 100xEngineers</title>
+<meta name="description" content="One model, eighteen questions about our own course, asked three ways: alone, with search, and with the 100x brain. Every result is a recorded run on the real model.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-11-tool-calling-and-mcp/assets/bench.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-16-deriving-harness-engineering/assets/harness.css?v=6">
+<script src="/c8/docs.js"></script>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l15-bench" data-noaarav data-upto="3">
+<!-- The first three steps of the Lecture 16 bench (same script, same recorded runs), stopped before anything is named. -->
+<header class="bar">
+  <div class="in">
+    <a class="brand" href="/#L15" title="Back to the curriculum map">100x<b>·</b><span>Brain Bench</span></a>
+    <p class="where" id="where" aria-live="polite"></p>
+    <a class="exit" href="/#L15">Exit</a>
+  </div>
+  <nav class="segs" id="segs" aria-label="Four steps"></nav>
+</header>
+
+<main class="app" id="app">
+  <h1 id="ins" tabindex="-1"></h1>
+  <p class="ctx" id="ctx"></p>
+
+  <div class="hb">
+    <div class="hb-main">
+      <div class="panel" id="panel"></div>
+      <section class="qs" aria-label="The questions">
+        <div class="qs-head"><h2>The questions</h2><p id="tally" aria-live="polite"></p></div>
+        <ol id="qlist"></ol>
+        <p class="rec-note" id="recnote"></p>
+      </section>
+    </div>
+    <aside class="hb-rail" aria-label="What surrounds the model">
+      <div class="graph" id="graph"></div>
+      <div class="cost" id="cost"></div>
+    </aside>
+  </div>
+</main>
+<script src="/c8/module-2/lecture-16-deriving-harness-engineering/assets/harness.v2.js?v=7"></script>
+</body>
+</html>

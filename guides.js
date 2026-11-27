@@ -151,6 +151,7 @@ var GUIDE_LINKS = {
   l14Lab: '/c8/module-2/lecture-14-building-rag-apps/lab',
   l15Hub: '/c8/module-2/lecture-15-building-a-second-brain/',
   l15Brief: '/c8/module-2/lecture-15-building-a-second-brain/your-brain',  /* the practice set started in the lecture; template repo Siddhant-Goswami/my-brain, zip in assets/ */
+  l15Bench: '/c8/module-2/lecture-15-building-a-second-brain/bench',  /* the first three steps of the Lecture 16 bench (same script and runs, data-upto="3") */
   l15Brain: 'https://github.com/Siddhant-Goswami/100x-brain',  /* the 100x brain: raw/ sources, wiki/ pages, served at /api/brain (api/_brain.mjs packed by its tools/pack.py) */
   l16Hub: '/c8/module-2/lecture-16-deriving-harness-engineering/',
   l16Bench: '/c8/module-2/lecture-16-deriving-harness-engineering/bench',  /* replays recorded real-model runs (assets/runs.json, built by _plan/lecture-16/record.mjs); calls no model */
@@ -875,7 +876,7 @@ GUIDES.L14 = { code: {
 
 /* Lecture 15, both tracks: the overview, the Your brain brief and the 100x brain. Notes follow the lecture. */
 GUIDES.L15 = { all: {
-  hub: {link:'l15Hub', title:'Open the Lecture 15 pages', sub:'The overview, the 100x brain and the Your brain brief', more:[['l15Brief','Your brain'],['l15Brain','The 100x brain']]}
+  hub: {link:'l15Hub', title:'Open the Lecture 15 pages', sub:'The overview, the Brain Bench and the Your brain brief', more:[['l15Bench','Brain Bench'],['l15Brief','Your brain'],['l15Brain','The 100x brain']]}
 }};
 
 /* Lecture 16, both tracks: the overview, the Harness Bench and the harness card. Notes follow the lecture. */

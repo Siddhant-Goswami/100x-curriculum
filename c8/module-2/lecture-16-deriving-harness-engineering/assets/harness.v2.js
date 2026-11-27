@@ -32,6 +32,9 @@
     { seg: 'Its name', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'What you just found', end: true,
       ctx: 'Three things to carry to your own brain.' }
   ];
+  /* Lecture 15 shows the first steps of this same bench: data-upto="3" on the body stops after the brain, before anything gets tomorrow's name. */
+  var UPTO = +(document.body.getAttribute('data-upto') || 0);
+  if (UPTO) STEPS = STEPS.slice(0, UPTO).concat([{ seg: 'What you found', on: STEPS[UPTO - 1].on, h1: 'What you just found', end: true, sub: true, ctx: 'Three things to carry into your own brain.' }]);
   var SHORT = { reads: 'Search', asks: 'The brain', remembers: 'Your files', checks: 'Checks' };
   var GROUP = { bench: 'One fact, one page', across: 'Across lectures', stale: 'Dates that have passed', 'about me': 'About the person asking', 'not known': 'Not in the course' };
   var KEY = 'c8.l16.bench2', D = null, REC = {}, S = load();
@@ -66,6 +69,7 @@
     var c = current(), st = STEPS[S.step], free = !!st.free;
     var newest = st.on.length && !free && !st.record && !st.end ? st.on[st.on.length - 1] : '';
     function part(k) {
+      if (UPTO && (k === 'remembers' || k === 'checks')) return '';
       var on = c[SW.indexOf(k)] === '1', p = PART[k];
       return '<' + (free ? 'button type="button"' : 'div') + ' class="gn part ' + k + (on ? ' on' : ' off') + (k === newest ? ' new' : '') + '" data-k="' + k + '"' + (free ? ' aria-pressed="' + on + '"' : '') + '>' +
         '<span class="sw" aria-hidden="true"><i></i></span><b>' + p.box + '</b><span>' + (on ? p.sub : 'off') + '</span></' + (free ? 'button' : 'div') + '>';
@@ -136,7 +140,7 @@
     var st = STEPS[S.step], c = current(), n = count(c), h = '';
     var prev = S.step > 0 ? cfg(STEPS[S.step - 1].on) : null;
     if (st.free) return freePanel();
-    if (st.end) return endPanel();
+    if (st.end) return st.sub ? subPanel() : endPanel();
     if (st.record) {
       var worst = D.questions.filter(function (q) { return ((D.cells[c] || {})[q.id] || {}).mark !== 'right'; });
       var w = worst[0], rec = REC[c], x = w && open === w.id && rec ? rec.cells[w.id] : null;
@@ -219,6 +223,27 @@
       '<tr class="all"><th>Everything on</th><td>' + nf.right + '</td><td>' + nf.wrong + '</td><td>' + nf.none + '</td></tr>' + rows + '</tbody></table>' +
       '<p class="lab">' + (tried < SW.length ? tried + ' of ' + SW.length + ' tried. Switch one back on before you try the next.' : 'All four tried. The part with the biggest drop does the most work.') + '</p>' +
       '<div class="row"><button class="btn ' + (tried === SW.length ? 'go' : 'ghost') + '" id="next">' + (tried === SW.length ? 'See what you found' : 'Skip to what you found') + '</button>' + (c !== full ? '<button class="btn ghost" id="allon">Everything on</button>' : '') + '</div>';
+  }
+  /* Lecture 15's last step: three steps of the ladder, what is still unanswered, then their own brain. No name yet. */
+  function subPanel() {
+    var path = [['0000', 'Nothing around it'], ['1000', 'Search'], ['1100', 'The brain']];
+    var ns = path.map(function (p) { return count(p[0]); }), last = D.cells['1100'];
+    var ladder = path.map(function (p, i) {
+      var m = ns[i];
+      return '<li><span>' + (i ? '+ ' : '') + p[1] + '</span><i><b style="width:' + Math.round(100 * m.right / N) + '%"></b></i><em>' + m.right + '</em><small>' + (m.wrong ? m.wrong + ' wrong sent' : '') + '</small></li>';
+    }).join('');
+    var left = D.questions.filter(function (q) { return last[q.id].mark !== 'right'; });
+    var mine = left.filter(function (q) { return q.group === 'about me'; });
+    $('panel').innerHTML =
+      '<ol class="ladder">' + ladder + '</ol>' +
+      '<ol class="take">' +
+      '<li><b>Search finds what was written.</b> It got ' + ns[1].right + ' of ' + N + (ns[1].wrong ? ' and sent ' + ns[1].wrong + ' wrong ' + (ns[1].wrong === 1 ? 'answer' : 'answers') : '') + '. Three passages cannot hold an answer that sits in three lectures.</li>' +
+      '<li><b>Nothing got smarter. Someone wrote it down.</b> The model was the same in all three steps. The brain got ' + ns[2].right + ' because the answers were already on a page, with their sources.</li>' +
+      '<li><b>' + (left.length === 1 ? 'One question is' : left.length + ' questions are') + ' still unanswered: ' + left.map(function (q) { return q.id; }).join(', ') + '.</b> ' + (mine.length === left.length ? 'They are all about the person asking. The 100x brain knows the course. It does not know you.' : 'Open each one and read why.') + '</li>' +
+      '</ol>' +
+      '<p class="q">So the next brain is yours.</p>' +
+      '<div class="row"><a class="btn go" href="/' + 'c8/module-2/lecture-15-building-a-second-brain/your-brain">Start your brain</a><button class="btn ghost" id="again">Start again</button></div>' +
+      '<p class="lab">Tomorrow this same bench continues from here.</p>';
   }
   /* the last step: what the learner found, counted from the runs, then the name, then the card */
   function endPanel() {
