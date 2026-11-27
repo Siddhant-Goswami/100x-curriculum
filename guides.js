@@ -154,7 +154,7 @@ var GUIDE_LINKS = {
   l15Bench: '/c8/module-2/lecture-15-building-a-second-brain/bench',  /* the first three steps of the Lecture 16 bench (same script and runs, data-upto="3") */
   l15Brain: 'https://github.com/Siddhant-Goswami/100x-brain',  /* the 100x brain: raw/ sources, wiki/ pages, served at /api/brain (api/_brain.mjs packed by its tools/pack.py) */
   l16Hub: '/c8/module-2/lecture-16-deriving-harness-engineering/',
-  l16Bench: '/c8/module-2/lecture-16-deriving-harness-engineering/bench',  /* replays recorded real-model runs (assets/runs.json, built by _plan/lecture-16/record.mjs); calls no model */
+  l16Bench: '/c8/module-2/lecture-16-deriving-harness-engineering/bench',  /* replays recorded real-model runs (assets/runs/, built by _plan/lecture-16/record2.mjs); calls no model */
   l16Card: '/c8/module-2/lecture-16-deriving-harness-engineering/card',
   l11Checklist: '/c8/module-2/checklist/',  /* Before Lecture 11: everything from the probabilistic half so far, as ticks */
   groqPlay: 'https://console.groq.com/playground',

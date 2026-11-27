@@ -73,6 +73,11 @@
       "source": "/c8/module-2/first-principles-films/:path*",
       "destination": "/c8/module-2/first-principles/:path*",
       "permanent": true
+    },
+    {
+      "source": "/c8/module-2/lecture-16-deriving-harness-engineering/bench2",
+      "destination": "/c8/module-2/lecture-16-deriving-harness-engineering/bench",
+      "permanent": false
     }
   ],
   "headers": [

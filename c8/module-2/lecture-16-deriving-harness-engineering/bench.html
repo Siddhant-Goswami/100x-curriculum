@@ -4,32 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Harness Bench | 100xEngineers</title>
-<meta name="description" content="One model, ten questions about our own course, and four parts you switch on and off around it. Every result is a recorded run on the real model.">
-<meta name="robots" content="noindex">
+<meta name="description" content="One model, eighteen questions about our own course, and four parts you switch on and off around it. Every result is a recorded run on the real model.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/c8/docs.css">
 <link rel="stylesheet" href="/c8/module-2/lecture-11-tool-calling-and-mcp/assets/bench.css">
-<link rel="stylesheet" href="/c8/module-2/lecture-16-deriving-harness-engineering/assets/harness.css?v=4">
+<link rel="stylesheet" href="/c8/module-2/lecture-16-deriving-harness-engineering/assets/harness.css?v=6">
 <script src="/c8/docs.js"></script>
 <script src="/analytics.js" defer></script>
 </head>
 <body data-page="l16-bench" data-noaarav>
-<!--
-  One screen that never changes: ten questions on the left, the boxes around the model on the right.
-  Only the instruction changes. Each step switches one more part on, after a guess.
-  Nothing here calls a model. Every result is a run recorded on the real model by _plan/lecture-16/record.mjs
-  (all sixteen switch combinations, ten questions each) and stored in assets/runs.json. The page says so.
-  The shell (bar, steps, headline, panel, buttons) is the Lecture 11 Tool Bench stylesheet.
--->
+<!-- One screen: the questions on the left, the parts around the model on the right. Nothing here calls a model: every result is a run recorded by _plan/lecture-16/record2.mjs and stored in assets/runs/. Lecture 15 shows the first three steps of this same page (its bench.html, data-upto="3"). -->
 <header class="bar">
   <div class="in">
     <a class="brand" href="/#L16" title="Back to the curriculum map">100x<b>·</b><span>Harness Bench</span></a>
     <p class="where" id="where" aria-live="polite"></p>
     <a class="exit" href="/#L16">Exit</a>
   </div>
-  <nav class="segs" id="segs" aria-label="Seven steps"></nav>
+  <nav class="segs" id="segs" aria-label="Eight steps"></nav>
 </header>
 
 <main class="app" id="app">
@@ -51,6 +44,6 @@
     </aside>
   </div>
 </main>
-<script src="/c8/module-2/lecture-16-deriving-harness-engineering/assets/harness.js?v=4"></script>
+<script src="/c8/module-2/lecture-16-deriving-harness-engineering/assets/harness.v2.js?v=7"></script>
 </body>
 </html>
