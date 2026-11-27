@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Harness Bench (test) | 100xEngineers</title>
+<meta name="description" content="One model, ten questions about our own course, and four parts you switch on and off around it. Every result is a recorded run on the real model.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/c8/docs.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-11-tool-calling-and-mcp/assets/bench.css">
+<link rel="stylesheet" href="/c8/module-2/lecture-16-deriving-harness-engineering/assets/harness.css?v=4">
+<script src="/c8/docs.js"></script>
+<script src="/analytics.js" defer></script>
+</head>
+<body data-page="l16-bench" data-noaarav>
+<!--
+  One screen that never changes: ten questions on the left, the boxes around the model on the right.
+  Only the instruction changes. Each step switches one more part on, after a guess.
+  Nothing here calls a model. Every result is a run recorded on the real model by _plan/lecture-16/record.mjs
+  (all sixteen switch combinations, ten questions each) and stored in assets/runs.json. The page says so.
+  The shell (bar, steps, headline, panel, buttons) is the Lecture 11 Tool Bench stylesheet.
+-->
+<header class="bar">
+  <div class="in">
+    <a class="brand" href="/#L16" title="Back to the curriculum map">100x<b>·</b><span>Harness Bench</span></a>
+    <p class="where" id="where" aria-live="polite"></p>
+    <a class="exit" href="/#L16">Exit</a>
+  </div>
+  <nav class="segs" id="segs" aria-label="Seven steps"></nav>
+</header>
+
+<main class="app" id="app">
+  <h1 id="ins" tabindex="-1"></h1>
+  <p class="ctx" id="ctx"></p>
+
+  <div class="hb">
+    <div class="hb-main">
+      <div class="panel" id="panel"></div>
+      <section class="qs" aria-label="The questions">
+        <div class="qs-head"><h2>The questions</h2><p id="tally" aria-live="polite"></p></div>
+        <ol id="qlist"></ol>
+        <p class="rec-note" id="recnote"></p>
+      </section>
+    </div>
+    <aside class="hb-rail" aria-label="What surrounds the model">
+      <div class="graph" id="graph"></div>
+      <div class="cost" id="cost"></div>
+    </aside>
+  </div>
+</main>
+<script src="/c8/module-2/lecture-16-deriving-harness-engineering/assets/harness.v2.js?v=5"></script>
+</body>
+</html>

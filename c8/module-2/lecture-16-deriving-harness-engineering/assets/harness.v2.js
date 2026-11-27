@@ -31,7 +31,7 @@
       ctx: 'The switches are yours now. A part earns its place only if the score drops when it is off.' }
   ];
   var GROUP = { bench: 'One fact, one page', across: 'Across lectures', stale: 'Dates that have passed', 'about me': 'About the person asking', 'not known': 'Not in the course' };
-  var KEY = 'c8.l16.bench', D = null, REC = {}, S = load();
+  var KEY = 'c8.l16.bench2', D = null, REC = {}, S = load();
   var $ = function (id) { return document.getElementById(id); };
   function fresh() { return { v: 2, step: 0, ran: {}, guess: {}, sw: null }; }
   function load() { try { var s = JSON.parse(localStorage.getItem(KEY) || 'null'); if (s && s.v === 2) return s; } catch (e) { /* fresh */ } return fresh(); }
@@ -94,7 +94,7 @@
     $('qlist').innerHTML = h;
     var n = count(c);
     $('tally').innerHTML = ready && reveal == null && n.n ? '<b class="right">' + n.right + ' right</b><b class="wrong">' + n.wrong + ' wrong</b><b class="held">' + n.none + ' ' + noneWord(c) + '</b>' : '';
-    $('recnote').textContent = 'Recorded on ' + D.recorded + ' with ' + D.model + ' on Groq. Each question was asked ' + D.runs + ' times under each setting and takes the result most runs gave. A new run can differ.';
+    $('recnote').textContent = 'Recorded on ' + D.recorded + ' with ' + D.model + (/claude/i.test(D.model) ? '' : ' on Groq') + '. ' + (D.runs > 1 ? 'Each question was asked ' + D.runs + ' times under each setting and takes the result most runs gave.' : 'One run for each question under each setting.') + ' A new run can differ.';
   }
 
   /* one question's record: everything that crossed, in order. The record file for a setting loads when first opened. */

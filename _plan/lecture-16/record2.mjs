@@ -15,15 +15,19 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, execFile } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { mkdtempSync } from 'node:fs';
 
 const root = new URL('../../', import.meta.url), here = new URL('./', import.meta.url);
 const P = u => fileURLToPath(u);
-const MODEL = 'openai/gpt-oss-120b', GROQ = process.env.GROQ_URL || 'https://api.groq.com/openai/v1/chat/completions';
+const CLAUDE = process.env.BACKEND === 'claude', CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'haiku', BRAIN_MCP = process.env.BRAIN_MCP || 'http://127.0.0.1:8792/api/brain';
+let MODEL = CLAUDE ? 'claude ' + CLAUDE_MODEL + ' (test run through Claude Code)' : 'openai/gpt-oss-120b';
+const GROQ = process.env.GROQ_URL || 'https://api.groq.com/openai/v1/chat/completions';
 const RUNS = +(process.env.RUNS || 3), CONC = +(process.env.CONC || 1), ROUNDS = 8;
 const BRAIN_REPO = new URL((process.env.BRAIN_REPO || '../100x-brain').replace(/\/?$/, '/'), root);
 const OUT = new URL('c8/module-2/lecture-16-deriving-harness-engineering/assets/runs/', root);
-const CACHE = new URL('cache2/', here);
+const CACHE = new URL(CLAUDE ? 'cache2-claude-' + CLAUDE_MODEL + '/' : 'cache2/', here);
 mkdirSync(P(CACHE), { recursive: true });
 
 let key = process.env.GROQ_API_KEY || '';
@@ -45,13 +49,16 @@ export const FILES = {
 };
 /* On the bench the system belongs to one learner, so three questions about that learner have answers.
    In the shared 100x brain (the Lecture 15 table) the right answer to the same questions is "not known". */
+/* "Lectures 3, 10 and 11" names Lecture 10 as surely as "Lecture 10" does: the brain's own patterns miss the list form */
+const L = n => '\\blectures?\\b[^.\\n]{0,40}\\b0?' + n + '\\b(?!\\d)';
+const LISTS = { S2: ['golden pair', 'golden set', L(10), L(14)], S4: [L(9), L(10), L(11)] };
 const MINE = {
-  H: { want: 'Lecture 6', right: ['\\b(lecture\\s*)?#?0?(6|six)\\b(?!\\d)'], wrongIf: '', group: 'about me' },
+  H: { want: 'Lecture 6', right: ['\\blecture\\s+#?0?(6|six)\\b(?![\\d-])'], wrongIf: '', group: 'about me' },
   N: { want: 'By May 2027, an automation consultant with three paying clients', right: ['automation consultant|three paying clients'], wrongIf: '', group: 'about me' },
 };
 const EXTRA = [{ id: 'I', group: 'about me', q: 'What date was the lecture I said I was stuck on?', want: 'Sat 10 Oct 2026',
   right: ['\\b10(st|nd|rd|th)?\\s*(of\\s*)?oct|oct\\w*\\s*10\\b'], wrongIf: '', shared: { want: 'Not known: this brain knows the course, not you', right: 'NOT_KNOWN', wrongIf: '\\boct' } }];
-export const QUESTIONS = BASE.map(q => MINE[q.id] ? Object.assign({}, q, MINE[q.id], { shared: { want: q.want, right: q.right, wrongIf: q.wrongIf } }) : q).concat(EXTRA);
+export const QUESTIONS = BASE.map(q => LISTS[q.id] ? Object.assign({}, q, { right: LISTS[q.id] }) : q).map(q => MINE[q.id] ? Object.assign({}, q, MINE[q.id], { shared: { want: q.want, right: q.right, wrongIf: q.wrongIf } }) : q).concat(EXTRA);
 
 /* ---------- the parts ---------- */
 const SHORT = 'Answer in a few short sentences.';
@@ -59,7 +66,7 @@ const CONTRACT = asks => [
   'Reply in exactly this shape:',
   'ANSWER: a few short sentences',
   'SOURCE: the one thing you used, in square brackets: a passage like [P2], a file like [told.md], or a page path like [wiki/lectures/lecture-14.md]',
-  'QUOTE: the exact words copied from that source that hold the answer',
+  'QUOTE: the exact words copied from that source that hold the answer. If the answer needs several lines, copy each one, with ... between them',
   'If nothing you were given holds the answer, write ANSWER: NOT KNOWN and SOURCE: none.'
 ].concat(asks ? ['If a tool you have can fetch the answer, ask for it first.'] : []).join('\n');
 const JUDGE = (q, where, quote, answer) => 'Question: ' + q + '\n\nAnswer given: ' + answer + '\n\nThe answer quotes these words: "' + quote + '"\nThey come from: ' + where +
@@ -117,6 +124,36 @@ async function call(sent) {
   }
 }
 
+/* ---------- a second backend, for testing the idea without Groq: Claude through the local Claude Code CLI ----------
+   Claude Code runs the tool loop itself and reaches the brain over MCP at BRAIN_MCP (run _plan/serve.py on that port).
+   It is not a bare model: Claude Code adds a short system text of its own. Good enough to test the bench, not to teach from. */
+const CWD = CLAUDE ? mkdtempSync(tmpdir() + '/bench-') : '';
+const MCP_CFG = JSON.stringify({ mcpServers: { brain: { type: 'http', url: BRAIN_MCP } } });
+function claudeTurn(prompt, tools, resume) {
+  const args = ['-p', prompt, '--model', CLAUDE_MODEL, '--system-prompt', '', '--tools', '', '--strict-mcp-config', '--setting-sources', '', '--disable-slash-commands', '--output-format', 'stream-json', '--verbose'];
+  if (tools) args.push('--mcp-config', MCP_CFG, '--allowedTools', 'mcp__brain__read_index,mcp__brain__open_page,mcp__brain__search');
+  if (resume) args.push('--resume', resume);
+  return new Promise((resolve, reject) => {
+    execFile('claude', args, { cwd: CWD, maxBuffer: 1 << 28, timeout: 300000 }, (err, stdout) => {
+      const out = { text: '', steps: [], usage: { in: 0, out: 0, calls: 0 }, session: '' }, names = {};
+      for (const line of String(stdout || '').split('\n')) {
+        let d; try { d = JSON.parse(line); } catch (e) { continue; }
+        if (d.type === 'system' && d.subtype === 'init') { out.session = d.session_id; if (d.model) MODEL = d.model + ' (test run through Claude Code)'; }
+        else if (d.type === 'assistant') for (const b of d.message.content || []) {
+          if (b.type === 'text' && b.text.trim()) out.steps.push({ k: 'say', text: b.text });
+          if (b.type === 'tool_use') { names[b.id] = { name: b.name.replace(/^mcp__brain__/, ''), args: b.input || {} }; out.steps.push({ k: 'ask', name: names[b.id].name, args: names[b.id].args }); }
+        }
+        else if (d.type === 'user') for (const b of (d.message && Array.isArray(d.message.content) ? d.message.content : [])) {
+          if (b.type === 'tool_result') { const c = b.content; out.steps.push({ k: 'tool', of: names[b.tool_use_id], text: Array.isArray(c) ? c.map(x => x.text || '').join('\n') : String(c || '') }); }
+        }
+        else if (d.type === 'result') { out.text = d.result || ''; const u = d.usage || {}; out.usage = { in: (u.input_tokens || 0) + (u.cache_read_input_tokens || 0) + (u.cache_creation_input_tokens || 0), out: u.output_tokens || 0, calls: d.num_turns || 1 }; }
+      }
+      if (!out.session && err) return reject(new Error('claude: ' + String(err.message).slice(0, 200)));
+      resolve(out);
+    });
+  });
+}
+
 /* ---------- the harness: one question in, everything that crossed out ---------- */
 export async function harness(q, sw) {
   const ev = [], sources = {}, where = {}, usage = { in: 0, out: 0, calls: 0 };
@@ -139,7 +176,23 @@ export async function harness(q, sw) {
   if (sw.checks) parts.push(CONTRACT(sw.asks));
   const messages = [{ role: 'user', content: parts.join('\n\n') }];
 
+  let session = '';
+  const noteTool = (name, args, text) => {
+    const id = name === 'read_index' ? 'index.md' : name === 'open_page' ? String(args && args.path || '').replace(/^\.?\//, '').replace(/#.*$/, '') : 'search';
+    sources[id] = (sources[id] ? sources[id] + '\n' : '') + text;
+    where[id] = id === 'search' ? 'a search of the 100x brain' : 'the 100x brain, page ' + id + (args && args.section ? ', section "' + args.section + '"' : '');
+    ev.push({ k: 'tool', id, text });
+  };
   async function answer() {
+    if (CLAUDE) {
+      const last = messages[messages.length - 1];
+      ev.push({ k: 'req', text: last.content, role: 'user', first: messages.length === 1, tools: sw.asks ? TOOLS.map(t => t.function.name) : undefined });
+      const r = await claudeTurn(last.content, sw.asks, session); session = r.session;
+      usage.calls += r.usage.calls; usage.in += r.usage.in; usage.out += r.usage.out;
+      for (const st of r.steps) { if (st.k === 'ask') ev.push({ k: 'ask', name: st.name, args: st.args }); else if (st.k === 'tool' && st.of) noteTool(st.of.name, st.of.args, st.text); }
+      ev.push({ k: 'res', text: r.text }); messages.push({ role: 'assistant', content: r.text });
+      return r.text;
+    }
     for (let n = 0; n < ROUNDS; n++) {
       const sent = { model: MODEL, messages: messages.slice() };
       if (sw.asks) sent.tools = TOOLS;
@@ -178,7 +231,9 @@ export async function harness(q, sw) {
       ev.push({ k: 'check', by: 'rule', ok: true, text: 'The shape is right, [' + src + '] was really given, and the quote is in it word for word.' });
       const jsent = { model: MODEL, messages: [{ role: 'user', content: JUDGE(q.q, where[src], p.quote, p.answer) }] };
       ev.push({ k: 'req', text: jsent.messages[0].content, judge: true });
-      const j = await call(jsent); count(j.usage);
+      let j;
+      if (CLAUDE) { const r = await claudeTurn(jsent.messages[0].content, false, ''); usage.calls += r.usage.calls; usage.in += r.usage.in; usage.out += r.usage.out; j = { raw: { content: r.text } }; }
+      else { j = await call(jsent); count(j.usage); }
       ev.push({ k: 'res', text: j.raw.content, judge: true });
       const yes = /^\W*yes\b/i.test(j.raw.content || '');
       ev.push({ k: 'check', by: 'judgment', ok: yes, text: yes ? 'A second call read the quote and said YES, it supports the answer.' : 'A second call read the quote and said NO, it does not support the answer.' });
@@ -206,15 +261,17 @@ const rightBy = (rule, a) => {
   return rule.right.every(p => new RegExp(p, 'i').test(a));
 };
 /* bench: right, wrong (an answer went out and it was not right), or none (it said it did not know, asked back, or was held) */
+/* an answer that opens by saying it does not know is that, whatever page names follow */
+const leadsNotKnown = a => NOT_KNOWN.test((/^[\s\S]{15,}?[.!?](\s|$)/.exec(a) || [a])[0].slice(0, 200));
 export function mark(q, r) {
   const a = (r.sent || '').replace(/[*_`]/g, '');
-  if (q.right === 'NOT_KNOWN') return r.held || rightBy(q, a) ? 'right' : 'wrong';
+  if (q.right === 'NOT_KNOWN') return r.held || leadsNotKnown(a) || rightBy(q, a) ? 'right' : 'wrong';
   if (r.held) return 'none';
   if (rightBy(q, a)) return 'right';
   return !a.trim() || NOT_KNOWN.test(a) || ASKS_BACK.test(a) ? 'none' : 'wrong';
 }
 /* the shared brain's own mark (Lecture 15 table): questions about the person must come back "not known" */
-export const markShared = (q, r) => rightBy(q.shared || q, (r.sent || '').replace(/[*_`]/g, ''));
+export const markShared = (q, r) => { const a = (r.sent || '').replace(/[*_`]/g, ''), rule = q.shared || q; return rule.right === 'NOT_KNOWN' ? leadsNotKnown(a) || rightBy(rule, a) : rightBy(rule, a); };
 const majority = marks => { const n = k => marks.filter(x => x === k).length; return n('right') * 2 > marks.length ? 'right' : n('wrong') >= n('none') ? 'wrong' : 'none'; };
 
 /* ---------- run ---------- */
@@ -258,12 +315,12 @@ function build() {
 const [, , a1, a2] = process.argv;
 if (a1 === 'build') build();
 else if (a1 && a2) {
-  if (!key) { console.error('No key'); process.exit(1); }
+  if (!key && !CLAUDE) { console.error('No key'); process.exit(1); }
   const q = QUESTIONS.find(x => x.id === a2), r = await harness(q, bits(a1));
   for (const e of r.ev) quiet('\n-- ' + e.k + (e.judge ? ' (second reader)' : '') + '\n' + (e.text != null ? String(e.text) : JSON.stringify(e)).slice(0, 1800));
   quiet('\n== sent: ' + JSON.stringify(r.sent) + ' held: ' + r.held + ' mark: ' + mark(q, r) + ' ' + JSON.stringify(r.usage));
 } else {
-  if (!key) { console.error('No key'); process.exit(1); }
+  if (!key && !CLAUDE) { console.error('No key'); process.exit(1); }
   const todo = [];
   for (const s of (a1 ? [a1] : ORDER)) for (const q of QUESTIONS) for (let n = 0; n < RUNS; n++) if (!load(s, q.id, n)) todo.push([s, q, n]);
   quiet(todo.length + ' cells to record, ' + CONC + ' at a time');

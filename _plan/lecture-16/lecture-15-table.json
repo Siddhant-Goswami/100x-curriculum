@@ -1,0 +1,72 @@
+{
+ "recorded": "Fri 27 Nov 2026",
+ "model": "claude haiku (test run through Claude Code)",
+ "runs": 1,
+ "ways": {
+  "1000": "Search: top 3 passages",
+  "0000": "The LLM alone",
+  "0100": "The brain: index, pages, search"
+ },
+ "right": {
+  "1000": {
+   "A": false,
+   "B": false,
+   "C": true,
+   "D": true,
+   "E": true,
+   "F": false,
+   "G": false,
+   "X": true,
+   "S1": false,
+   "S2": false,
+   "S3": false,
+   "S4": true,
+   "S5": false,
+   "T1": false,
+   "T2": false,
+   "H": true,
+   "N": true,
+   "I": true
+  },
+  "0000": {
+   "A": false,
+   "B": false,
+   "C": false,
+   "D": true,
+   "E": true,
+   "F": false,
+   "G": false,
+   "X": true,
+   "S1": false,
+   "S2": false,
+   "S3": false,
+   "S4": false,
+   "S5": false,
+   "T1": false,
+   "T2": false,
+   "H": true,
+   "N": true,
+   "I": true
+  },
+  "0100": {
+   "A": true,
+   "B": true,
+   "C": true,
+   "D": true,
+   "E": true,
+   "F": true,
+   "G": true,
+   "X": true,
+   "S1": true,
+   "S2": false,
+   "S3": true,
+   "S4": true,
+   "S5": true,
+   "T1": true,
+   "T2": true,
+   "H": true,
+   "N": true,
+   "I": true
+  }
+ }
+}
