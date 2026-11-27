@@ -21,7 +21,7 @@
     { seg: 'Search', on: ['reads'], h1: 'Give it something to read',
       ctx: 'Before each question, the server searches the course pages by meaning and puts the three closest passages in the message. That was <a href="' + L13 + '">Lecture 13</a>.' },
     { seg: 'The brain', on: ['reads', 'asks'], h1: 'Let it ask the brain',
-      ctx: 'The model gets the <a href="' + L15 + '">100x brain</a>\'s address: read the index, open a page, search. It asks, the server runs it. Someone wrote those pages down earlier, so a hard question becomes a lookup.' },
+      ctx: 'The model gets the 100x brain\'s address: read the index, open a page, search. It asks, the server runs it. Someone wrote those pages down earlier, so a hard question becomes a lookup.' },
     { seg: 'Your files', on: ['reads', 'asks', 'remembers'], h1: 'Let it remember you',
       ctx: 'The brain knows the course. It knows nothing about the person asking. Three small files of theirs now go in first: who they are, what they told it, and today\'s date. That is <a href="' + L6 + '">memory.txt</a>, grown up.' },
     { seg: 'Checks', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Check every answer before it leaves',
@@ -250,7 +250,7 @@
       '<li><b>' + (left.length === 1 ? 'One question is' : left.length + ' questions are') + ' still unanswered: ' + left.map(function (q) { return q.id; }).join(', ') + '.</b> ' + (mine.length === left.length ? 'They are all about the person asking. The 100x brain knows the course. It does not know you.' : 'Open each one and read why.') + '</li>' +
       '</ol>' +
       '<p class="q">So the next brain is yours.</p>' +
-      '<div class="row"><a class="btn go" href="/' + 'c8/module-2/lecture-15-building-a-second-brain/your-brain">Start your brain</a><button class="btn ghost" id="again">Start again</button></div>' +
+      '<div class="row"><button class="btn ghost" id="again">Start again</button></div>' +
       '<p class="lab">Tomorrow this same bench continues from here.</p>';
   }
   /* the last step: what the learner found, counted from the runs, then the name, then the card */

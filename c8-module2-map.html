@@ -1585,7 +1585,7 @@ function fpHTML(){ var u=gl('fpHub'), a=gl('fpStart'); return u ? '<a class="hub
 function hackHTML(){ var u=gl('hackathon'); return u ? '<a class="hub" href="'+esc(u)+'"><span><b>Open the hackathon page</b><i>Pick a problem, the five moves, timeline, rules, submit</i></span><em aria-hidden="true">→</em></a>' : ''; }
 /* A lecture that has happened shows one line and four key points from its notes (RECAP in guides.js); the pages hold the rest. */
 /* A lecture that has not happened yet shows only its title and a Coming soon badge. */
-function upcomingLec(s){ return s.kind==='lec' && s.date && days(TODAY,s.date)>0; }
+function upcomingLec(s){ return s.kind==='lec' && ((typeof COMING_SOON!=='undefined' && COMING_SOON[s.id]) || (s.date && days(TODAY,s.date)>0)); }
 function recapFor(s){ var r=(typeof RECAP!=='undefined')&&RECAP[s.id]; if(!r) return null; return r.all || (track && r[track]) || null; }
 function recapHTML(r){
   return '<div class="can"><b>In one line</b><span>'+esc(r.line)+'</span></div>'+

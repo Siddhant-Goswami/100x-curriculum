@@ -884,15 +884,20 @@ GUIDES.L14 = { code: {
   hub: {link:'l14Hub', title:'Open the Lecture 14 pages', sub:'The overview, the notes and the RAG Lab', more:[['l14Notes','Notes'],['l14Lab','RAG Lab'],['l14OfficeHour','Office hour, 24 Nov']]}
 }};
 
-/* Lecture 15, both tracks: the overview, the Your brain brief and the 100x brain. Notes follow the lecture. */
+/* Lectures held back (27 Nov): the map card shows Coming soon even on or after the day, and the overview, brief and
+   Lecture 16 pages redirect to the map (vercel.json). Only the Brain Bench is open. To bring them back: delete COMING_SOON
+   and the five redirects, and restore the two hubs kept in the comments below. */
+var COMING_SOON = {L15:1, L16:1};
+
+/* Lecture 15, both tracks: only the Brain Bench for now.
+   Full hub: {link:'l15Hub', title:'Open the Lecture 15 pages', sub:'The overview, the Brain Bench and the Your brain brief', more:[['l15Bench','Brain Bench'],['l15Brief','Your brain'],['l15Brain','The 100x brain']]} */
 GUIDES.L15 = { all: {
-  hub: {link:'l15Hub', title:'Open the Lecture 15 pages', sub:'The overview, the Brain Bench and the Your brain brief', more:[['l15Bench','Brain Bench'],['l15Brief','Your brain'],['l15Brain','The 100x brain']]}
+  hub: {link:'l15Bench', title:'Open the Brain Bench', sub:'One LLM, eighteen questions about our course, asked three ways', more:[]}
 }};
 
 /* Lecture 16, both tracks: the overview, the Harness Bench and the harness card. Notes follow the lecture. */
-GUIDES.L16 = { all: {
-  hub: {link:'l16Hub', title:'Open the Lecture 16 pages', sub:'The overview, the Harness Bench and the harness card', more:[['l16Bench','Harness Bench'],['l16Card','Harness card']]}
-}};
+/* Held back. Full hub: {link:'l16Hub', title:'Open the Lecture 16 pages', sub:'The overview, the Harness Bench and the harness card', more:[['l16Bench','Harness Bench'],['l16Card','Harness card']]} */
+GUIDES.L16 = { all: {} };
 
 /* No-code side of the separate practicals: each card opens that track's own notes page (notes-no-code, beside the code notes). */
 GUIDES.L3.nocode = {
