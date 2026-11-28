@@ -36,7 +36,7 @@ body.read svg.g .ln{stroke:var(--ink3);stroke-width:1.5;fill:none}
   <p class="kick">Practice · After Lecture 16 · Both tracks</p>
   <h1>Your harness card</h1>
   <p class="dek">Take one problem of your own. Write the five lines around its LLM. Find one answer it got wrong. Add the one part that catches it.</p>
-  <div class="meta"><span>On your own, about 45 minutes. Any chat with an LLM is enough. Bring it to Lecture 17, Fri 4 Dec.</span></div>
+  <div class="meta"><span>On your own, about an hour. Any chat with an LLM is enough. Bring it to Lecture 17, Fri 4 Dec.</span></div>
 </div>
 
 <div class="call"><p class="kick">Done equals</p><p>Five lines, three questions with their ideal answers, one wrong answer you kept, and the score before and after you added one part.</p></div>
@@ -79,14 +79,15 @@ body.read svg.g .ln{stroke:var(--ink3);stroke-width:1.5;fill:none}
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Fill five lines</h2>
-<p>One line each. Doing it by hand counts: if you paste the policy in yourself, that is Reads, done by you. "Nothing" is an honest answer, and usually the most useful one.</p>
+<p>One line each. Everything ends up in front of the LLM, so sort by where it came from: found for this question (Reads), fetched because the LLM asked (Asks), or saved from an earlier chat (Remembers).</p>
+<p>Doing it by hand counts: if you paste the policy in yourself, that is Reads, done by you. "Nothing" is an honest answer, and usually the most useful one.</p>
 <table>
   <thead><tr><th>Line</th><th>Ask yourself</th><th>The leave desk from Lecture 15</th></tr></thead>
   <tbody>
-    <tr><td>Reads</td><td>What is in the message before the LLM writes a word?</td><td>The leave policy, and the request</td></tr>
-    <tr><td>Asks</td><td>What can it go and get when it needs it?</td><td>The vacation tracker: who is off that day</td></tr>
-    <tr><td>Remembers</td><td>What is still there tomorrow?</td><td>Past decisions, and the manager's reasoning for each</td></tr>
-    <tr><td>Checks</td><td>What checks an answer before anyone trusts it? A rule, judgment, a person, or nothing?</td><td>The headcount rule. The manager, for the judgment calls</td></tr>
+    <tr><td>Reads</td><td>What goes into the message for this question, before the LLM writes a word?</td><td>The leave policy, and the request</td></tr>
+    <tr><td>Asks</td><td>What can it go and get when it needs it? In a plain chat, it asks you and you fetch it.</td><td>The vacation tracker: who is off that day</td></tr>
+    <tr><td>Remembers</td><td>What was saved from earlier chats, and comes back in the next one?</td><td>Past decisions, and the manager's reasoning for each</td></tr>
+    <tr><td>Checks</td><td>What can stop an answer before anyone acts on it? A rule, a second reader, a person, or nothing?</td><td>The headcount rule. The manager, for the judgment calls</td></tr>
     <tr><td>Record</td><td>Where do you look when it is wrong?</td><td>Every request, the answer, and whether the manager agreed</td></tr>
   </tbody>
 </table>
@@ -95,10 +96,10 @@ System:
 Its one job:
 LLM and chat app:
 
-Reads      What is in the message before the LLM writes a word?
+Reads      What goes into the message for this question?
 Asks       What can it go and get?
-Remembers  What is still there tomorrow, and where?
-Checks     What checks an answer before anyone trusts it? A rule, judgment, a person, or nothing?
+Remembers  What was saved from earlier chats, and where?
+Checks     What can stop an answer before anyone acts on it? A rule, a second reader, a person, or nothing?
 Record     Where do you look when it is wrong?
 
 My three questions, each with its ideal answer:
@@ -116,7 +117,7 @@ After:     of 3 right.</div>
 <ul>
   <li>Write three questions real people ask, each with its ideal answer. Make at least one of them judgment-based.</li>
   <li>Ask each one in a new chat. Give the LLM only what your five lines say it has.</li>
-  <li>Mark each answer right or wrong against your ideal answer. That is your "before".</li>
+  <li>Mark each answer right or wrong against your ideal answer. That is your "before". Your ideal answers are how you score. They are not a part of the system.</li>
   <li>Keep one wrong answer. Write it on the card.</li>
 </ul>
 <p>All three right? Then the questions are too easy. Add one whose answer is only in your head. You are the only one who can mark it, which is the <a href="/c8/module-2/lecture-01-orientation/notes#s05">Verifier's Law</a> from Lecture 1.</p>
@@ -124,7 +125,7 @@ After:     of 3 right.</div>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Add one part</h2>
 <p>Look at the wrong answer, then at your five lines. The cause usually sits on the line that says "nothing".</p>
-<p>Add one part there, by hand. Paste the page it needed (Reads). Paste three of your reasoning traces (Remembers). Or write one rule the answer must pass before you accept it (Checks). Draw the new box on your picture in its colour.</p>
+<p>Add one part there, by hand. Paste the page that question needed (Reads). Or save three of your reasoning traces in a note, and paste that note at the start of every chat (Remembers). Or write one rule an answer must pass, and count an answer that fails it as held back (Checks). Draw the new box on your picture in its colour.</p>
 <p>Ask the same three questions again, each in a new chat, and write the score. If the score does not move, say so on the card. A part that does not move the score has not earned its place yet.</p>
 </section>
 

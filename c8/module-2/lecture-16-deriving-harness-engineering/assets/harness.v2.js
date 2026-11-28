@@ -78,6 +78,8 @@
     var newest = st.on.length && !free && !st.record && !st.end ? st.on[st.on.length - 1] : '';
     function part(k) {
       if (UPTO && (k === 'remembers' || k === 'checks')) return '';
+      /* a part shows on the rail only from the step that introduces it, so the screen never answers the next question early */
+      if (!free && S.step < ({ reads: 1, asks: 2, remembers: 3, checks: 4 })[k]) return '';
       var on = c[SW.indexOf(k)] === '1', p = PART[k];
       return '<' + (free ? 'button type="button"' : 'div') + ' class="gn part ' + k + (on ? ' on' : ' off') + (k === newest ? ' new' : '') + '" data-k="' + k + '"' + (free ? ' aria-pressed="' + on + '"' : '') + '>' +
         '<span class="sw" aria-hidden="true"><i></i></span><b>' + p.box + '</b><span>' + (on ? p.sub : 'off') + '</span></' + (free ? 'button' : 'div') + '>';
@@ -124,8 +126,8 @@
     var h = '<div class="rec" data-nolabel><p class="rec-want">The right answer: <b>' + esc(q.want) + '</b>' + (D.runs > 1 ? ' · ' + word(sum.mark, c).toLowerCase() + ' in ' + sum.n + ' of ' + D.runs + ' runs. This is one of them.' : '') + '</p>';
     x.ev.forEach(function (e) {
       var t = T(rec, e.text);
-      if (e.k === 'memory') h += row('server', 'Server put the person\'s own files first', '<p>' + e.files.map(function (f) { return '<code>' + esc(f) + '</code>'; }).join(' ') + '</p>');
-      else if (e.k === 'search') h += row('server', 'Server searched the course pages', '<ul>' + e.hits.map(function (t) { return '<li><code>' + esc(t.id) + '</code> ' + esc(t.at) + '</li>'; }).join('') + '</ul>');
+      if (e.k === 'memory') h += row('server', 'Server put the person\'s own files first', '<p>' + e.files.map(function (f) { return '<code>' + esc(f) + '</code>'; }).join(' ') + '</p>' + (D.files ? fold(e.files.map(function (f) { return '[' + f + ']\n' + (D.files[f] || ''); }).join('\n\n'), 'what the files say') : ''));
+      else if (e.k === 'search') h += row('server', 'Server searched the course pages', !e.hits.length ? '<p>No passages came back for this question.</p>' : '<ul>' + e.hits.map(function (t) { return '<li><code>' + esc(t.id) + '</code> ' + esc(t.at) + '</li>'; }).join('') + '</ul>');
       else if (e.k === 'req') h += row('server', e.judge ? 'Server sent the quote to a second reader' : (e.first ? 'Server sent this to the LLM' : (e.role === 'tool' ? 'Server sent the result back to the LLM' : 'Server sent it back to the LLM')), e.role === 'tool' ? '' : fold(t, e.first ? 'the whole message' : 'the message'));
       else if (e.k === 'res') h += row('model', e.judge ? 'The second reader said' : 'The LLM said', e.failed ? '<p class="bad">It wrote a tool call the server could not read.</p>' : e.refused ? '<p class="bad">Groq refused the request: ' + esc(e.refused) + '</p>' : long(t));
       else if (e.k === 'ask') h += row('model', 'The LLM asked for', '<p><code>' + esc(e.name) + '(' + esc(JSON.stringify(e.args) === '{}' ? '' : JSON.stringify(e.args)) + ')</code></p>');
@@ -163,12 +165,12 @@
         var ck = x.ev.filter(function (e) { return e.k === 'check'; });
         var rp = ck.filter(function (e) { return e.by === 'rule' && e.ok; }).length, rf = ck.filter(function (e) { return e.by === 'rule' && !e.ok; }).length;
         var jf = ck.filter(function (e) { return e.by !== 'rule' && !e.ok; }).length;
-        h = '<p class="q">Read ' + w.id + ' below, from the top. Compare what the LLM said with the right answer.</p><ul class="found">' +
+        h = '<p class="q">Read ' + w.id + ' below, from the top. Every message was kept.</p><ul class="found">' +
           (rp ? '<li>The rule passed ' + (rp === 1 ? 'once' : rp + ' times') + ': the quote is in the source, word for word.</li>' : '') +
           (rf ? '<li>The rule failed ' + (rf === 1 ? 'once' : rf + ' times') + '.</li>' : '') +
-          (jf ? '<li>The second reader said no ' + (jf === 1 ? 'once' : jf + ' times') + ': the quote did not cover the whole answer.</li>' : '') +
+          (jf ? '<li>The second reader said no ' + (jf === 1 ? 'once' : jf + ' times') + '.</li>' : '') +
           (x.held ? '<li>Two tries failed, so nothing was sent. It goes to a person.</li>' : '') + '</ul>' +
-          '<p class="lab">A check does not know the right answer. It tests only what you told it to test. So a check can stop a right answer, and you have to measure it like any other part.</p>';
+          '<p class="lab">A check does not know the right answer. It tests only what you told it to test. Was it right to stop this one? Compare what the LLM said with the right answer, then decide. You measure a check like any other part.</p>';
       }
       h += '<div class="row"><button class="btn go" id="next">Continue</button></div>';
       $('panel').innerHTML = h; return;
@@ -187,7 +189,7 @@
         var g = S.guess[S.step], before = count(prev);
         if (g != null) h += '<p class="lab">You guessed ' + g + '. ' + (g === n.right ? 'Right.' : 'It was ' + n.right + '.') + '</p>';
         h += changes(prev, c);
-        if (c[3] === '1' && n.right < before.right) h += '<p class="lab">The checks cost ' + (before.right - n.right) + ' right ' + (before.right - n.right === 1 ? 'answer' : 'answers') + ' here' + (before.wrong > n.wrong ? ' and stopped ' + (before.wrong - n.wrong) + ' wrong ' + (before.wrong - n.wrong === 1 ? 'one' : 'ones') + '.' : ' and stopped nothing, because nothing else failed.') + ' The next step shows why.</p>';
+        if (c[3] === '1' && n.right < before.right) h += '<p class="lab">With the checks on, ' + (before.right - n.right) + (before.right - n.right === 1 ? ' answer' : ' answers') + ' that counted as right before ' + (before.right - n.right === 1 ? 'is' : 'are') + ' now held back' + (before.wrong > n.wrong ? ', and ' + (before.wrong - n.wrong) + ' wrong ' + (before.wrong - n.wrong === 1 ? 'one was' : 'ones were') + ' stopped.' : '.') + ' The next step shows what happened.</p>';
       } else h += '<p class="lab">Same LLM for every step from here. Only what is around it changes.</p>';
       h += '<div class="row"><button class="btn go" id="next">Continue</button></div>';
     }
@@ -227,7 +229,7 @@
       '<p class="q">' + line + '</p>' +
       '<div class="togs" role="group" aria-label="Switch a part on or off">' + btns + '</div>' +
       (c !== full && n.full ? changes(full, c).replace('<p class="moved">', '<p class="moved"><span>Against everything on:</span> ') : '') +
-      '<table class="earn"><thead><tr><th>Setting</th><th>Right</th><th>Wrong, sent</th><th>No answer</th></tr></thead><tbody>' +
+      '<table class="earn"><thead><tr><th>Setting</th><th>Right</th><th>Wrong, sent</th><th>No answer or held back</th></tr></thead><tbody>' +
       '<tr class="all"><th>Everything on</th><td>' + nf.right + '</td><td>' + nf.wrong + '</td><td>' + nf.none + '</td></tr>' + rows + '</tbody></table>' +
       '<p class="lab">' + (tried < SW.length ? tried + ' of ' + SW.length + ' tried. Switch one back on before you try the next.' : 'All four tried. The part with the biggest drop does the most work.') + '</p>' +
       '<div class="row"><button class="btn ' + (tried === SW.length ? 'go' : 'ghost') + '" id="next">' + (tried === SW.length ? 'See what you found' : 'Skip to what you found') + '</button>' + (c !== full ? '<button class="btn ghost" id="allon">Everything on</button>' : '') + '</div>';
@@ -281,7 +283,7 @@
       '</ol>' +
       '<details class="named"><summary class="lab">Everything around the LLM has one name. Guess it, then open this.</summary><p class="big">The harness</p><p>Everything around the LLM: what it reads, what it can ask for, what the system remembers, what checks the answer, and the record of what crossed. Arranging those parts, and measuring each one, is harness engineering.</p></details>' +
       '<p class="q">Now the same three moves on a system of your own.</p>' +
-      '<ol class="take plain"><li>Write the five parts around its LLM.</li><li>Find one answer it got wrong.</li><li>Add the one part that catches it.</li></ol>' +
+      '<ol class="take plain"><li>Write down what surrounds its LLM.</li><li>Find one answer it got wrong.</li><li>Add the one part that catches it.</li></ol>' +
       '<div class="row"><a class="btn go" href="' + BASE + 'card">Fill your harness card</a><button class="btn ghost" id="again">Start again</button></div>';
   }
 
