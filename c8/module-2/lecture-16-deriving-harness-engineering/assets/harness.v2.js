@@ -5,7 +5,7 @@
    Every number in the copy is counted from the recorded runs, so a new recording never leaves the words wrong. */
 (function () {
   'use strict';
-  var BASE = '/c8/module-2/lecture-16-deriving-harness-engineering/', V = '?v=6';
+  var BASE = '/c8/module-2/lecture-16-deriving-harness-engineering/', V = '?v=7';
   var L13 = '/c8/module-2/lecture-13-retrieval-augmented-generation/notes', L15 = '/c8/module-2/lecture-15-building-a-second-brain/', L6 = '/c8/module-2/lecture-06-databases-and-domain-modelling/notes';
   var SW = ['reads', 'asks', 'remembers', 'checks'];
   var PART = {
@@ -17,19 +17,19 @@
   var UPTO = +(document.body.getAttribute('data-upto') || 0);
   var STEPS = [
     { seg: 'Bare', on: [], h1: 'Ask the bare LLM the questions',
-      ctx: 'Nothing is switched on. The LLM gets each question and nothing else.' },
-    { seg: 'Search', on: ['reads'], h1: 'Give it something to read',
+      ctx: 'Nothing is switched on. The LLM gets each question and nothing else. Every result on this bench was recorded once, on Claude Haiku, on Fri 27 Nov 2026; nothing calls an LLM while you click.' },
+    { seg: 'Search', on: ['reads'], h1: 'Add a search',
       ctx: 'Before each question, the server searches the course pages by meaning and puts the three closest passages in the message. That was <a href="' + L13 + '">Lecture 13</a>.' },
-    { seg: 'The brain', on: ['reads', 'asks'], h1: 'Let it ask the brain',
+    { seg: 'The brain', on: ['reads', 'asks'], h1: 'Add the 100x brain',
       ctx: 'The LLM gets the 100x brain\'s address: read the index, open a page, search. It asks, the server runs it. Someone wrote those pages down earlier, so a hard question becomes a lookup.' },
-    { seg: 'Your files', on: ['reads', 'asks', 'remembers'], h1: 'Let it remember you',
-      ctx: 'The brain knows the course. It knows nothing about the person asking. Three small files of theirs now go in first: who they are, what they told it, and today\'s date. The files here belong to a made-up learner on the no-code track. That is <a href="' + L6 + '">memory.txt</a>, grown up.' },
+    { seg: 'Your files', on: ['reads', 'asks', 'remembers'], h1: 'Add the person\'s own files',
+      ctx: 'The brain knows the course. It knows nothing about the person asking. Three small files of theirs now go in first: who they are, what they told it, and the date (Fri 27 Nov, the day these runs were recorded). The files here belong to a made-up learner on the no-code track. That is <a href="' + L6 + '">memory.txt</a>, grown up.' },
     { seg: 'Checks', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Check every answer before it leaves',
       ctx: 'The answer must name its source and quote it. Code checks the quote is really there. Then a second, separate call reads the quote and says yes or no. One retry. After that the question goes to a person.' },
     { seg: 'The record', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Read what crossed', record: true,
       ctx: 'Every message is kept: what the server sent, what the LLM asked for, what it said, and which check passed or failed. The record is how you find out why.' },
     { seg: 'Switch one off', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Switch each part off, one at a time', free: true,
-      ctx: 'A part earns its place only if the score drops when it is off. Use the four buttons below.' },
+      ctx: 'A part earns its place if, with it off, fewer answers are right or more wrong answers get out. Use the four buttons below.' },
     { seg: 'What you found', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'What you just found', end: true,
       ctx: 'Three things to carry to a system of your own.' }
   ];
@@ -141,7 +141,12 @@
     return h + '</div>';
   }
   function row(who, title, body) { return '<div class="rw ' + who + '"><p class="rw-t">' + esc(title) + '</p>' + body + '</div>'; }
-  function long(t) { t = String(t || '').replace(/\*\*/g, ''); return t.length > 420 ? '<p class="say">' + esc(t.slice(0, 380)) + '…</p>' + fold(t, 'all ' + t.split(/\s+/).length + ' words') : '<p class="say">' + esc(t) + '</p>'; }
+  function long(t) {
+    t = String(t || '').replace(/\*\*/g, '');
+    /* show the whole ANSWER line; fold the SOURCE and QUOTE, or anything past about 700 characters */
+    var src = t.search(/\n\s*SOURCE:/), cut = src > 0 && src <= 800 ? src : (t.length > 760 ? 700 : -1);
+    return cut < 0 ? '<p class="say">' + esc(t) + '</p>' : '<p class="say">' + esc(t.slice(0, cut).trim()) + (src === cut ? '' : '…') + '</p>' + fold(t, (src === cut ? 'the source and quote, ' : 'all ') + t.split(/\s+/).length + ' words');
+  }
   function fold(t, what) { return '<details><summary>Show ' + esc(what) + '</summary><pre>' + esc(t) + '</pre></details>'; }
 
   /* ---------- the panel: the one thing to do now ---------- */
@@ -170,7 +175,7 @@
           (rf ? '<li>The rule failed ' + (rf === 1 ? 'once' : rf + ' times') + '.</li>' : '') +
           (jf ? '<li>The second reader said no ' + (jf === 1 ? 'once' : jf + ' times') + '.</li>' : '') +
           (x.held ? '<li>Two tries failed, so nothing was sent. It goes to a person.</li>' : '') + '</ul>' +
-          '<p class="lab">A check does not know the right answer. It tests only what you told it to test. Was it right to stop this one? Compare what the LLM said with the right answer, then decide. You measure a check like any other part.</p>';
+          '<p class="lab">Now compare what the LLM said with the right answer at the top. Was the check right to stop it? A check does not know the right answer either: it tests only what you told it to test. So you measure a check like any other part.</p>';
       }
       h += '<div class="row"><button class="btn go" id="next">Continue</button></div>';
       $('panel').innerHTML = h; return;
@@ -189,7 +194,11 @@
         var g = S.guess[S.step], before = count(prev);
         if (g != null) h += '<p class="lab">You guessed ' + g + '. ' + (g === n.right ? 'Right.' : 'It was ' + n.right + '.') + '</p>';
         h += changes(prev, c);
-        if (c[3] === '1' && n.right < before.right) h += '<p class="lab">With the checks on, ' + (before.right - n.right) + (before.right - n.right === 1 ? ' answer' : ' answers') + ' that counted as right before ' + (before.right - n.right === 1 ? 'is' : 'are') + ' now held back' + (before.wrong > n.wrong ? ', and ' + (before.wrong - n.wrong) + ' wrong ' + (before.wrong - n.wrong === 1 ? 'one was' : 'ones were') + ' stopped.' : '.') + ' The next step shows what happened.</p>';
+        if (c[3] === '1' && prev[3] === '0') {
+          var lost = before.right - n.right, stopped = before.wrong - n.wrong;
+          h += '<p class="lab">With the checks on, ' + (stopped > 0 ? stopped + ' wrong ' + (stopped === 1 ? 'answer' : 'answers') + ' that went out before ' + (stopped === 1 ? 'was' : 'were') + ' stopped' : 'no wrong answer was stopped') +
+            (lost > 0 ? ', and ' + lost + ' that counted as right ' + (lost === 1 ? 'is' : 'are') + ' now held back.' : ', and no right answer was lost.') + ' The next step shows what happened.</p>';
+        }
       } else h += '<p class="lab">Same LLM for every step from here. Only what is around it changes.</p>';
       h += '<div class="row"><button class="btn go" id="next">Continue</button></div>';
     }
@@ -231,7 +240,7 @@
       (c !== full && n.full ? changes(full, c).replace('<p class="moved">', '<p class="moved"><span>Against everything on:</span> ') : '') +
       '<table class="earn"><thead><tr><th>Setting</th><th>Right</th><th>Wrong, sent</th><th>No answer or held back</th></tr></thead><tbody>' +
       '<tr class="all"><th>Everything on</th><td>' + nf.right + '</td><td>' + nf.wrong + '</td><td>' + nf.none + '</td></tr>' + rows + '</tbody></table>' +
-      '<p class="lab">' + (tried < SW.length ? tried + ' of ' + SW.length + ' tried. Switch one back on before you try the next.' : 'All four tried. The part with the biggest drop does the most work.') + '</p>' +
+      '<p class="lab">' + (tried < SW.length ? tried + ' of ' + SW.length + ' tried. Switch one back on before you try the next.' : 'All four tried. A part earns its place when, without it, fewer are right or more wrong answers get out. One run each, so a difference of one is weak evidence.') + '</p>' +
       '<div class="row"><button class="btn ' + (tried === SW.length ? 'go' : 'ghost') + '" id="next">' + (tried === SW.length ? 'See what you found' : 'Skip to what you found') + '</button>' + (c !== full ? '<button class="btn ghost" id="allon">Everything on</button>' : '') + '</div>';
   }
   /* Lecture 15's last step: three steps of the ladder, what is still unanswered, then their own brain. No name yet. */
@@ -273,13 +282,15 @@
     var gb = gained('1000', '1100'), gf = gained('1100', '1110'), best = Math.max.apply(null, ns.map(function (m) { return m.right; }));
     var costs = [];
     if (ns[1].wrong > ns[0].wrong) costs.push('Search on its own sent ' + ns[1].wrong + ' wrong ' + (ns[1].wrong === 1 ? 'answer' : 'answers') + '.');
-    if (ns[4].right < ns[3].right) costs.push('The checks held back ' + (ns[3].right - ns[4].right) + ' right ' + (ns[3].right - ns[4].right === 1 ? 'answer' : 'answers') + '.');
+    var stopped = ns[3].wrong - ns[4].wrong, lost = ns[3].right - ns[4].right;
+    if (stopped > 0) costs.push('The checks stopped ' + stopped + ' wrong ' + (stopped === 1 ? 'answer' : 'answers') + ' that the step before sent out' + (lost > 0 ? ', and held back ' + lost + ' right ' + (lost === 1 ? 'one' : 'ones') : '') + '.');
+    else if (lost > 0) costs.push('The checks held back ' + lost + ' right ' + (lost === 1 ? 'answer' : 'answers') + ' and stopped nothing.');
     $('panel').innerHTML =
       '<ol class="ladder">' + ladder + '</ol>' +
       '<ol class="take">' +
       '<li><b>The LLM never changed.</b> The score went from ' + ns[0].right + ' to ' + best + ' of ' + N + ' because of what you put around it.</li>' +
       '<li><b>Each part fixes its own kind of question.</b>' + (gb.length ? ' The brain fixed ' + gb + '.' : '') + (gf.length ? ' Your files fixed the ' + gf + '.' : '') + ' When an answer is wrong, ask which part was missing.</li>' +
-      '<li><b>A part can cost as well as help.</b> ' + costs.join(' ') + ' So you never assume. You switch it off, count, and read the record.</li>' +
+      '<li><b>Measure every part.</b> ' + costs.join(' ') + ' So you never assume. You switch it off, count, and read the record.</li>' +
       '</ol>' +
       '<details class="named"><summary class="lab">Everything around the LLM has one name. Guess it, then open this.</summary><p class="big">The harness</p><p>Everything around the LLM: what it reads, what it can ask for, what the system remembers, what checks the answer, and the record of what crossed. Arranging those parts, and measuring each one, is harness engineering.</p></details>' +
       '<p class="q">Now the same three moves on a system of your own.</p>' +

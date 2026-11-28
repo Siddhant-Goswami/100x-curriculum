@@ -39,7 +39,7 @@ body.read svg.g .ln{stroke:var(--ink3);stroke-width:1.5;fill:none}
   <div class="meta"><span>On your own, about an hour. Any chat with an LLM is enough. Bring it to Lecture 17, Fri 4 Dec.</span></div>
 </div>
 
-<div class="call"><p class="kick">Done equals</p><p>Five lines, three questions with their ideal answers, one wrong answer you kept, and the score before and after you added one part.</p></div>
+<div class="call"><p class="kick">Done equals</p><p>Five lines, three questions with their ideal answers, one wrong answer you kept, and the score (right, wrong, held back) before and after you added one part.</p></div>
 
 <section class="s" id="s01"><h2><span class="n">01</span>Your system</h2>
 <p>The problem you ran the <a href="/c8/module-2/lecture-15-building-a-second-brain/notes#s08">four steps</a> on after Lecture 15.</p>
@@ -79,14 +79,19 @@ body.read svg.g .ln{stroke:var(--ink3);stroke-width:1.5;fill:none}
 </section>
 
 <section class="s" id="s03"><h2><span class="n">03</span>Fill five lines</h2>
-<p>One line each. Everything ends up in front of the LLM, so sort by where it came from: found for this question (Reads), fetched because the LLM asked (Asks), or saved from an earlier chat (Remembers).</p>
+<p>One line each. Two questions sort the first three lines.</p>
+<ol>
+  <li>Was it given to the LLM before it wrote, or fetched because the LLM asked for it? Fetched is <b>Asks</b>.</li>
+  <li>If it was given: is it written down from earlier use and kept for next time (<b>Remembers</b>), or is it the instructions and pages for this question (<b>Reads</b>)?</li>
+</ol>
+<p>One thing can sit on two lines. The 100x brain is memory someone wrote down (Remembers) that the LLM reaches by asking for a page (Asks).</p>
 <p>Doing it by hand counts: if you paste the policy in yourself, that is Reads, done by you. "Nothing" is an honest answer, and usually the most useful one.</p>
 <table>
   <thead><tr><th>Line</th><th>Ask yourself</th><th>The leave desk from Lecture 15</th></tr></thead>
   <tbody>
-    <tr><td>Reads</td><td>What goes into the message for this question, before the LLM writes a word?</td><td>The leave policy, and the request</td></tr>
-    <tr><td>Asks</td><td>What can it go and get when it needs it? In a plain chat, it asks you and you fetch it.</td><td>The vacation tracker: who is off that day</td></tr>
-    <tr><td>Remembers</td><td>What was saved from earlier chats, and comes back in the next one?</td><td>Past decisions, and the manager's reasoning for each</td></tr>
+    <tr><td>Reads</td><td>What is it given before it writes: instructions, a policy, pages for this question?</td><td>The leave policy, and the request</td></tr>
+    <tr><td>Asks</td><td>What can it request while it answers, that something then fetches? In a plain chat, it asks you and you fetch it.</td><td>The vacation tracker: who is off that day</td></tr>
+    <tr><td>Remembers</td><td>What was written down from earlier use, and is kept for next time?</td><td>Past decisions, and the manager's reasoning for each</td></tr>
     <tr><td>Checks</td><td>What can stop an answer before anyone acts on it? A rule, a second reader, a person, or nothing?</td><td>The headcount rule. The manager, for the judgment calls</td></tr>
     <tr><td>Record</td><td>Where do you look when it is wrong?</td><td>Every request, the answer, and whether the manager agreed</td></tr>
   </tbody>
@@ -96,9 +101,9 @@ System:
 Its one job:
 LLM and chat app:
 
-Reads      What goes into the message for this question?
-Asks       What can it go and get?
-Remembers  What was saved from earlier chats, and where?
+Reads      What is it given before it writes?
+Asks       What can it request, that something fetches?
+Remembers  What was written down from earlier use, and kept? Where?
 Checks     What can stop an answer before anyone acts on it? A rule, a second reader, a person, or nothing?
 Record     Where do you look when it is wrong?
 
@@ -107,17 +112,18 @@ My three questions, each with its ideal answer:
 2.
 3.
 
-Before:    of 3 right. One it got wrong:
+Before:    right,    wrong,    held back (of 3)
+One it got wrong:
 Part added:
-After:     of 3 right.</div>
+After:     right,    wrong,    held back (of 3)</div>
 <p><button class="btn ghost" id="copy" type="button">Copy a blank card</button></p>
 </section>
 
 <section class="s" id="s04"><h2><span class="n">04</span>Find one it got wrong</h2>
 <ul>
   <li>Write three questions real people ask, each with its ideal answer. Make at least one of them judgment-based.</li>
-  <li>Ask each one in a new chat. Give the LLM only what your five lines say it has.</li>
-  <li>Mark each answer right or wrong against your ideal answer. That is your "before". Your ideal answers are how you score. They are not a part of the system.</li>
+  <li>Ask each one in a new chat. Use a temporary or incognito chat if your app has one, and leave web search off, so the app's own memory and search stay out. Give the LLM only what your five lines say it has.</li>
+  <li>Mark each answer right, wrong, or held back (held back means a check you wrote stopped it before you used it). That is your "before". Your ideal answers are how you score. They are not a part of the system.</li>
   <li>Keep one wrong answer. Write it on the card.</li>
 </ul>
 <p>All three right? Then the questions are too easy. Add one whose answer is only in your head. You are the only one who can mark it, which is the <a href="/c8/module-2/lecture-01-orientation/notes#s05">Verifier's Law</a> from Lecture 1.</p>
@@ -125,8 +131,8 @@ After:     of 3 right.</div>
 
 <section class="s" id="s05"><h2><span class="n">05</span>Add one part</h2>
 <p>Look at the wrong answer, then at your five lines. The cause usually sits on the line that says "nothing".</p>
-<p>Add one part there, by hand. Paste the page that question needed (Reads). Or save three of your reasoning traces in a note, and paste that note at the start of every chat (Remembers). Or write one rule an answer must pass, and count an answer that fails it as held back (Checks). Draw the new box on your picture in its colour.</p>
-<p>Ask the same three questions again, each in a new chat, and write the score. If the score does not move, say so on the card. A part that does not move the score has not earned its place yet.</p>
+<p>Add one part there, by hand. Paste the page that question needed (Reads). Or keep a note of what was decided and why after each chat, and paste it in at the start of the next one (Remembers). Or write one rule an answer must pass, and hold back any answer that fails it instead of using it (Checks). Draw the new box on your picture in its colour.</p>
+<p>Ask the same three questions again, each in a new chat, and score them the same way. A part earns its place if more answers are right, or fewer wrong ones get through. A check often does the second: the right count stays the same and a wrong answer is held back. If neither number moves, say so on the card. That part has not earned its place yet.</p>
 </section>
 
 <section class="s" id="s06"><h2><span class="n">06</span>Bring it to Lecture 17</h2>
