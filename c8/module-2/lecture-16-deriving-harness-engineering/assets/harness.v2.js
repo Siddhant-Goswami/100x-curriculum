@@ -12,7 +12,7 @@
     reads: { box: 'Search the pages', sub: 'the 3 closest passages go in' },
     asks: { box: 'The 100x brain', sub: 'index, pages and search, at one address' },
     remembers: { box: 'Your own files', sub: 'me.md, told.md, now.md, read first' },
-    checks: { box: 'Checks', sub: 'a rule, then a second reader' }
+    checks: { box: 'Checks', sub: 'verification by rule, then by judgment' }
   };
   var UPTO = +(document.body.getAttribute('data-upto') || 0);
   var STEPS = [
@@ -25,7 +25,7 @@
     { seg: 'Your files', on: ['reads', 'asks', 'remembers'], h1: 'Add the person\'s own files',
       ctx: 'The brain knows the course. It knows nothing about the person asking. Three small files of theirs now go in first: who they are, what they told it, and the date (Fri 27 Nov, the day these runs were recorded). The files here belong to a made-up learner on the no-code track. That is <a href="' + L6 + '">memory.txt</a>, grown up.' },
     { seg: 'Checks', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Check every answer before it leaves',
-      ctx: 'The answer must name its source and quote it. Code checks the quote is really there. Then a second, separate call reads the quote and says yes or no. One retry. After that the question goes to a person.' },
+      ctx: 'The answer must name its source and quote it. Verification by rule: code checks the quote is really there. Verification by judgment: a second, separate LLM call reads the quote and says yes or no. One retry. After that the question goes to a person.' },
     { seg: 'The record', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Read what crossed', record: true,
       ctx: 'Every message is kept: what the server sent, what the LLM asked for, what it said, and which check passed or failed. The record is how you find out why.' },
     { seg: 'Switch one off', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Switch each part off, one at a time', free: true,
@@ -128,11 +128,11 @@
       var t = T(rec, e.text);
       if (e.k === 'memory') h += row('server', 'Server put the person\'s own files first', '<p>' + e.files.map(function (f) { return '<code>' + esc(f) + '</code>'; }).join(' ') + '</p>' + (D.files ? fold(e.files.map(function (f) { return '[' + f + ']\n' + (D.files[f] || ''); }).join('\n\n'), 'what the files say') : ''));
       else if (e.k === 'search') h += row('server', 'Server searched the course pages', !e.hits.length ? '<p>No passages came back for this question.</p>' : '<ul>' + e.hits.map(function (t) { return '<li><code>' + esc(t.id) + '</code> ' + esc(t.at) + '</li>'; }).join('') + '</ul>');
-      else if (e.k === 'req') h += row('server', e.judge ? 'Server sent the quote to a second reader' : (e.first ? 'Server sent this to the LLM' : (e.role === 'tool' ? 'Server sent the result back to the LLM' : 'Server sent it back to the LLM')), e.role === 'tool' ? '' : fold(t, e.first ? 'the whole message' : 'the message'));
-      else if (e.k === 'res') h += row('model', e.judge ? 'The second reader said' : 'The LLM said', e.failed ? '<p class="bad">It wrote a tool call the server could not read.</p>' : e.refused ? '<p class="bad">Groq refused the request: ' + esc(e.refused) + '</p>' : long(t));
+      else if (e.k === 'req') h += row('server', e.judge ? 'Server sent the quote to a second LLM call, to judge it' : (e.first ? 'Server sent this to the LLM' : (e.role === 'tool' ? 'Server sent the result back to the LLM' : 'Server sent it back to the LLM')), e.role === 'tool' ? '' : fold(t, e.first ? 'the whole message' : 'the message'));
+      else if (e.k === 'res') h += row('model', e.judge ? 'The judging call said' : 'The LLM said', e.failed ? '<p class="bad">It wrote a tool call the server could not read.</p>' : e.refused ? '<p class="bad">Groq refused the request: ' + esc(e.refused) + '</p>' : long(t));
       else if (e.k === 'ask') h += row('model', 'The LLM asked for', '<p><code>' + esc(e.name) + '(' + esc(JSON.stringify(e.args) === '{}' ? '' : JSON.stringify(e.args)) + ')</code></p>');
       else if (e.k === 'tool') h += row('server', 'Server ran it on the brain', fold(t, e.id === 'search' ? 'what search found' : e.id));
-      else if (e.k === 'check') h += row(e.by === 'rule' ? 'server' : 'model', (e.by === 'rule' ? 'Check by rule: ' : 'Check by judgment: ') + (e.ok ? 'passed' : 'failed'), '<p class="' + (e.ok ? 'ok' : 'bad') + '">' + esc(t) + '</p>');
+      else if (e.k === 'check') h += row(e.by === 'rule' ? 'server' : 'model', (e.by === 'rule' ? 'Verification by rule: ' : 'Verification by judgment: ') + (e.ok ? 'passed' : 'failed'), '<p class="' + (e.ok ? 'ok' : 'bad') + '">' + esc(t) + '</p>');
       else if (e.k === 'back') h += row('server', 'Server sent the failure back', '<p>' + esc(t) + '</p>');
       else if (e.k === 'note') h += row('server', 'Server stopped', '<p>' + esc(t) + '</p>');
     });
@@ -171,9 +171,9 @@
         var rp = ck.filter(function (e) { return e.by === 'rule' && e.ok; }).length, rf = ck.filter(function (e) { return e.by === 'rule' && !e.ok; }).length;
         var jf = ck.filter(function (e) { return e.by !== 'rule' && !e.ok; }).length;
         h = '<p class="q">Read ' + w.id + ' below, from the top. Every message was kept.</p><ul class="found">' +
-          (rp ? '<li>The rule passed ' + (rp === 1 ? 'once' : rp + ' times') + ': the quote is in the source, word for word.</li>' : '') +
-          (rf ? '<li>The rule failed ' + (rf === 1 ? 'once' : rf + ' times') + '.</li>' : '') +
-          (jf ? '<li>The second reader said no ' + (jf === 1 ? 'once' : jf + ' times') + '.</li>' : '') +
+          (rp ? '<li>Verification by rule passed ' + (rp === 1 ? 'once' : rp + ' times') + ': the quote is in the source, word for word.</li>' : '') +
+          (rf ? '<li>Verification by rule failed ' + (rf === 1 ? 'once' : rf + ' times') + '.</li>' : '') +
+          (jf ? '<li>Verification by judgment said no ' + (jf === 1 ? 'once' : jf + ' times') + '.</li>' : '') +
           (x.held ? '<li>Two tries failed, so nothing was sent. It goes to a person.</li>' : '') + '</ul>' +
           '<p class="lab">Now compare what the LLM said with the right answer at the top. Was the check right to stop it? A check does not know the right answer either: it tests only what you told it to test. So you measure a check like any other part.</p>';
       }

@@ -55,7 +55,7 @@ body.read svg.g .ln{stroke:var(--ink3);stroke-width:1.5;fill:none}
   <li><i class="h"></i>A person: you, your user, a reviewer</li>
 </ul>
 <p>This is the system on the <a href="/c8/module-2/lecture-16-deriving-harness-engineering/bench">Harness Bench</a>, drawn the same way.</p>
-<svg class="g" viewBox="0 0 640 196" role="img" aria-label="You ask. The server searches the notes and adds the files of the person asking, then sends the message to the LLM. The LLM can ask the server to open a page of the brain. The server checks the answer by rule, a second call to the LLM checks it by judgment, and the answer goes to you or to a person.">
+<svg class="g" viewBox="0 0 640 196" role="img" aria-label="You ask. The server searches the notes and adds the files of the person asking, then sends the message to the LLM. The LLM can ask the server to open a page of the brain. The server verifies the answer by rule, a second call to the LLM verifies it by judgment, and the answer goes to you or to a person.">
   <defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="var(--ink3)" stroke-width="1.4"/></marker></defs>
   <g>
     <rect x="2" y="60" width="74" height="46" rx="10" fill="var(--bg2)" stroke="var(--line2)"/><text x="39" y="88" text-anchor="middle">You</text>
@@ -63,8 +63,8 @@ body.read svg.g .ln{stroke:var(--ink3);stroke-width:1.5;fill:none}
     <rect x="104" y="100" width="118" height="46" rx="10" fill="var(--det-soft)" stroke="var(--det)"/><text x="163" y="120" text-anchor="middle">Your files</text><text class="s" x="163" y="136" text-anchor="middle">read first</text>
     <rect x="252" y="60" width="92" height="46" rx="10" fill="var(--prob-soft)" stroke="var(--prob)"/><text x="298" y="88" text-anchor="middle">LLM</text>
     <rect x="240" y="146" width="116" height="46" rx="10" fill="var(--det-soft)" stroke="var(--det)"/><text x="298" y="166" text-anchor="middle">The brain</text><text class="s" x="298" y="182" text-anchor="middle">the server runs it</text>
-    <rect x="374" y="60" width="92" height="46" rx="10" fill="var(--det-soft)" stroke="var(--det)"/><text x="420" y="80" text-anchor="middle">Check</text><text class="s" x="420" y="96" text-anchor="middle">by rule</text>
-    <rect x="484" y="60" width="92" height="46" rx="10" fill="var(--prob-soft)" stroke="var(--prob)"/><text x="530" y="80" text-anchor="middle">Check</text><text class="s" x="530" y="96" text-anchor="middle">by judgment</text>
+    <rect x="374" y="60" width="92" height="46" rx="10" fill="var(--det-soft)" stroke="var(--det)"/><text x="420" y="80" text-anchor="middle">Verify</text><text class="s" x="420" y="96" text-anchor="middle">by rule</text>
+    <rect x="484" y="60" width="92" height="46" rx="10" fill="var(--prob-soft)" stroke="var(--prob)"/><text x="530" y="80" text-anchor="middle">Verify</text><text class="s" x="530" y="96" text-anchor="middle">by judgment</text>
     <rect x="596" y="20" width="42" height="46" rx="10" fill="var(--bg2)" stroke="var(--line2)"/><text x="617" y="48" text-anchor="middle">You</text>
     <rect x="584" y="100" width="54" height="46" rx="10" fill="var(--bg2)" stroke="var(--line2)"/><text class="s" x="611" y="120" text-anchor="middle">A</text><text class="s" x="611" y="134" text-anchor="middle">person</text>
   </g>
@@ -92,7 +92,7 @@ body.read svg.g .ln{stroke:var(--ink3);stroke-width:1.5;fill:none}
     <tr><td>Reads</td><td>What is it given before it writes: instructions, a policy, pages for this question?</td><td>The leave policy, and the request</td></tr>
     <tr><td>Asks</td><td>What can it request while it answers, that something then fetches? In a plain chat, it asks you and you fetch it.</td><td>The vacation tracker: who is off that day</td></tr>
     <tr><td>Remembers</td><td>What was written down from earlier use, and is kept for next time?</td><td>Past decisions, and the manager's reasoning for each</td></tr>
-    <tr><td>Checks</td><td>What can stop an answer before anyone acts on it? A rule, a second reader, a person, or nothing?</td><td>The headcount rule. The manager, for the judgment calls</td></tr>
+    <tr><td>Checks</td><td>What can stop an answer before anyone acts on it? Verification by rule, by judgment (a second LLM call), a person, or nothing?</td><td>The headcount rule. The manager, for the judgment calls</td></tr>
     <tr><td>Record</td><td>Where do you look when it is wrong?</td><td>Every request, the answer, and whether the manager agreed</td></tr>
   </tbody>
 </table>
@@ -104,7 +104,7 @@ LLM and chat app:
 Reads      What is it given before it writes?
 Asks       What can it request, that something fetches?
 Remembers  What was written down from earlier use, and kept? Where?
-Checks     What can stop an answer before anyone acts on it? A rule, a second reader, a person, or nothing?
+Checks     What can stop an answer before anyone acts on it? Verification by rule, by judgment (a second LLM call), a person, or nothing?
 Record     Where do you look when it is wrong?
 
 My three questions, each with its ideal answer:
