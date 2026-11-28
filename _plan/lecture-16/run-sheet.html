@@ -1,0 +1,783 @@
+<title>Lecture 16 run sheet</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,750&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a whiteboard run sheet. Sticky 90-minute bar on top; each block is one row: the question on the left, its moving picture on the right.
+   Colour carries meaning only: orange = a rule, violet = the LLM, grey = a person; green/red/ring = right/wrong/no answer. */
+:root{
+  --bg:#F4F5F7; --card:#FFFFFF; --ink:#15171C; --muted:#5E6573; --line:#DCDFE5; --soft:#ECEEF2;
+  --rule:#E0600F; --rule-bg:#FDEBDD; --llm:#6D46E0; --llm-bg:#ECE6FD; --person:#7C848F; --person-bg:#E9EBEE;
+  --right:#2A8A3E; --wrong:#D9343A; --none:#AEB4BD;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#101216; --card:#181B21; --ink:#E8EBF0; --muted:#9AA2AE; --line:#2B3038; --soft:#20242B;
+  --rule:#FF8B42; --rule-bg:#3A2416; --llm:#A08BFF; --llm-bg:#2A2342; --person:#A9B0BA; --person-bg:#262A31;
+  --right:#4FC765; --wrong:#FF6A6E; --none:#5B626C; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101216; --card:#181B21; --ink:#E8EBF0; --muted:#9AA2AE; --line:#2B3038; --soft:#20242B;
+  --rule:#FF8B42; --rule-bg:#3A2416; --llm:#A08BFF; --llm-bg:#2A2342; --person:#A9B0BA; --person-bg:#262A31;
+  --right:#4FC765; --wrong:#FF6A6E; --none:#5B626C; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(30px,5vw,48px);line-height:1.05;font-weight:750}
+h2{font-size:clamp(22px,3vw,28px);font-weight:750;line-height:1.15}
+h3{font-size:17px;font-weight:600}
+p{margin:0}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--llm);outline-offset:2px;border-radius:4px}
+
+/* sticky timeline */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.bar .lbl{font:600 12px var(--mono);color:var(--muted);white-space:nowrap}
+.tl{flex:1;display:flex;gap:3px;min-width:0}
+.tl a{display:flex;flex-direction:column;justify-content:center;height:34px;padding:0 6px;border-radius:6px;background:var(--soft);color:var(--muted);text-decoration:none;overflow:hidden;white-space:nowrap;transition:background .25s,color .25s}
+.tl a b{font:700 12px var(--mono)}
+.tl a span{font-size:11px;overflow:hidden;text-overflow:ellipsis}
+.tl a.on{background:var(--ink);color:var(--bg)}
+@media (max-width:640px){.tl a span{display:none}.bar .lbl{display:none}}
+
+/* hero */
+header.top{padding-block:40px 18px}
+.kick{font:600 12px var(--mono);color:var(--muted);letter-spacing:.04em;margin-bottom:10px}
+.thesis{font-size:18px;max-width:640px;margin-top:12px;color:var(--muted)}
+.thesis b{color:var(--ink);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+
+/* generic */
+section.blk{padding-block:34px;border-top:1px solid var(--line);scroll-margin-top:64px}
+.row{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:start}
+@media (max-width:860px){.row{grid-template-columns:minmax(0,1fr)}}
+.min{font:700 13px var(--mono);color:var(--muted)}
+.ask{font-family:var(--display);font-size:clamp(19px,2.3vw,23px);font-weight:600;line-height:1.25;margin-top:14px;padding-left:14px;border-left:3px solid var(--ink)}
+.ask small{display:block;font:600 11px var(--mono);letter-spacing:.06em;color:var(--muted);margin-bottom:4px}
+.lines{display:grid;gap:10px;margin-top:18px}
+.ln{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px;font-size:14px}
+.ln > span:first-child{font:600 11px var(--mono);color:var(--muted);padding-top:2px;letter-spacing:.04em}
+.ln q{quotes:"\201C" "\201D"}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;min-width:0}
+.vis{display:grid;gap:14px}
+.play{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 12px 5px 10px;font-size:13px;font-weight:500;cursor:pointer}
+.play:hover{border-color:var(--ink)}
+.play::before{content:"";width:0;height:0;border-left:8px solid currentColor;border-top:5px solid transparent;border-bottom:5px solid transparent}
+.vhead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.vhead h3{font-size:15px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--soft);font-size:13px;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.t-rule{background:var(--rule-bg);color:var(--rule)} .t-llm{background:var(--llm-bg);color:var(--llm)} .t-person{background:var(--person-bg);color:var(--person)}
+.ok{color:var(--right)} .bad{color:var(--wrong)}
+.fade{transition:opacity .45s ease,transform .45s ease}
+.pre .fade{opacity:0;transform:translateY(6px)}
+.pre .fade.in{opacity:1;transform:none}
+
+/* scoreboard */
+.sb .sw{display:flex;flex-wrap:wrap;gap:6px}
+.sw button{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.sw button::before{content:"";width:26px;height:14px;border-radius:9px;background:var(--soft);box-shadow:inset 0 0 0 1px var(--line);transition:background .2s}
+.sw button[aria-pressed="true"]{border-color:var(--ink)}
+.sw button[aria-pressed="true"]::before{background:var(--ink)}
+.dots{display:grid;grid-template-columns:repeat(9,minmax(0,40px));justify-content:start;gap:7px;margin-top:14px}
+.dot{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font:700 10px var(--mono);border:2px solid var(--none);color:var(--muted);transition:background .3s,border-color .3s,color .3s;max-width:100%}
+.dot.r{background:var(--right);border-color:var(--right);color:#fff}
+.dot.w{background:var(--wrong);border-color:var(--wrong);color:#fff}
+.dot.pop{animation:pop .45s ease}
+@keyframes pop{40%{transform:scale(1.22)}}
+.score{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;margin-top:14px}
+.score .big{font:750 44px/1 var(--display)}
+.score .of{font-size:14px;color:var(--muted)}
+.score .sub{font-size:14px}
+.tok{margin-top:12px;font-size:12px;color:var(--muted)}
+.tok .track{height:8px;background:var(--soft);border-radius:4px;margin-top:5px;overflow:hidden}
+.tok .fill{height:100%;background:var(--muted);border-radius:4px;transition:width .5s ease}
+.steps{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.steps button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:4px 10px;font-size:12.5px;cursor:pointer}
+.steps button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cap{margin-top:10px;font-size:14px;min-height:1.5em}
+
+/* block 1 */
+.qs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.qc{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12.5px;line-height:1.35;display:grid;gap:6px;transition:border-color .35s,background .35s}
+.qc .id{font:700 12px var(--mono);display:flex;justify-content:space-between}
+.qc .m::after{content:"?";color:var(--none)}
+.qc.r{border-color:var(--right)} .qc.r .m::after{content:"✓";color:var(--right)}
+.qc.w{border-color:var(--wrong);background:color-mix(in srgb,var(--wrong) 8%,transparent)} .qc.w .m::after{content:"✗";color:var(--wrong)}
+.qc .hold{font:600 11px var(--mono);color:var(--wrong)}
+@media (max-width:520px){.qs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.files{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.file{font:500 12px var(--mono);padding:5px 9px;border-radius:6px;border:1px dashed var(--person);color:var(--person)}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px}
+.chain .box{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--card)}
+.chain .arrow{color:var(--muted)}
+.chain .ans{border-color:var(--right);color:var(--right);font-weight:600}
+
+/* block 2 */
+.lad{display:grid;gap:14px}
+.lad .who{font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.lad .who b{color:var(--ink)}
+.bars{display:flex;gap:6px;align-items:flex-end;height:120px}
+.bars .b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%;min-width:0}
+.bars .b i{display:block;width:100%;background:var(--right);border-radius:5px 5px 2px 2px;height:var(--h);transition:height .6s cubic-bezier(.2,.8,.2,1)}
+.bars .b i.wr{background:repeating-linear-gradient(135deg,var(--right) 0 6px,color-mix(in srgb,var(--right) 70%,var(--bg)) 6px 9px)}
+.bars .b b{font:700 14px var(--mono)}
+.bars .b span{font-size:11px;color:var(--muted);text-align:center;line-height:1.2;min-height:2.4em}
+.pre .bars .b i{height:0}
+.fix{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:14px}
+.fix s{color:var(--muted);text-decoration-thickness:2px;text-decoration-color:var(--wrong)}
+.fix .now{font-weight:600}
+
+/* block 3 */
+.tree{display:grid;gap:10px}
+.qbox{border:1.5px solid var(--ink);border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:500}
+.qbox small{display:block;font:600 11px var(--mono);color:var(--muted)}
+.fork{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.lab{font:600 11.5px var(--mono);color:var(--muted);margin-bottom:6px}
+.pile{border-radius:10px;padding:10px;background:var(--soft);display:grid;gap:6px;align-content:start}
+.pile h4{margin:0;font:750 16px var(--display)}
+.pile .bx{font:500 11px var(--mono);color:var(--muted)}
+.pile .chips .chip{background:var(--card);font-size:12px}
+.pile .chip.two{box-shadow:inset 0 0 0 1.5px var(--llm)}
+.side{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:520px){.side{grid-template-columns:minmax(0,1fr)}}
+.pile.score-side{background:transparent;border:1.5px dashed var(--line)}
+
+/* block 4 pipeline */
+.pipe{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.st{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:12.5px;background:var(--card);transition:opacity .35s,transform .35s,box-shadow .35s;line-height:1.3}
+.st b{display:block;font:700 11px var(--mono)}
+.st.rule{border-color:var(--rule)} .st.rule b{color:var(--rule)}
+.st.llm{border-color:var(--llm)} .st.llm b{color:var(--llm)}
+.st.end{border-color:var(--ink);font-weight:600}
+.st.endbad{border-color:var(--wrong);color:var(--wrong);font-weight:600}
+.pipe .ar{color:var(--muted);font-size:13px}
+.pre .pipe .st,.pre .pipe .ar{opacity:.18}
+.pipe .st.lit,.pipe .ar.lit{opacity:1}
+.st.lit.flash{box-shadow:0 0 0 3px color-mix(in srgb,var(--ink) 18%,transparent)}
+.quote{font-size:13.5px;border-left:3px solid var(--llm);padding:4px 10px;color:var(--muted)}
+.quote b{color:var(--ink)}
+.bill{display:grid;gap:8px}
+.bill .r{display:grid;grid-template-columns:120px minmax(0,1fr) 84px;gap:10px;align-items:center;font-size:13px}
+.bill .tr{height:14px;background:var(--soft);border-radius:4px;overflow:hidden}
+.bill .tr i{display:block;height:100%;width:var(--w);background:var(--muted);border-radius:4px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.pre .bill .tr i{width:0}
+.bill .n{text-align:right}
+
+/* block 5 */
+.name{border:1.5px solid var(--ink);border-radius:10px;padding:0;overflow:hidden}
+.name summary{list-style:none;cursor:pointer;padding:12px 14px;font-weight:600;display:flex;justify-content:space-between;gap:10px}
+.name summary::-webkit-details-marker{display:none}
+.name summary::after{content:"Open";font:600 12px var(--mono);color:var(--muted)}
+.name[open] summary::after{content:"Close"}
+.name .reveal{padding:0 14px 14px;font-size:14px}
+.name .reveal b{font-weight:600}
+.name .reveal b.t{font:750 26px var(--display);display:block;margin-bottom:4px}
+.board{overflow-x:auto}
+.board svg{display:block;min-width:540px;width:100%;height:auto}
+.board text{font-family:var(--body)}
+.draw path,.draw line{stroke-dasharray:var(--len,600);stroke-dashoffset:0}
+.pre .draw path,.pre .draw line{stroke-dashoffset:var(--len,600)}
+.drawn .draw path,.drawn .draw line{transition:stroke-dashoffset 1.1s ease}
+
+/* block 6 */
+.desk{display:grid;gap:6px}
+.dl{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;align-items:center;padding:8px 10px;border-radius:8px;background:var(--soft);font-size:13.5px;transition:box-shadow .35s}
+.dl b{font:750 14px var(--display)}
+.dl.weak{box-shadow:inset 0 0 0 2px var(--wrong)}
+.timer{display:flex;gap:4px;height:40px}
+.timer div{min-height:40px;border-radius:6px;display:flex;flex-direction:column;justify-content:center;padding:0 8px;font-size:12px;background:var(--soft);min-width:0;overflow:hidden;white-space:nowrap}
+.timer div b{font:700 12px var(--mono)}
+
+/* block 7 */
+.formula{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font:600 clamp(17px,2.4vw,22px) var(--display)}
+.formula span{padding:6px 12px;border-radius:8px;background:var(--soft)}
+.formula .m{background:var(--llm-bg);color:var(--llm)}
+.shift{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;font-size:13.5px}
+.shift div{border-radius:10px;padding:10px 12px;border:1px solid var(--line)}
+.shift b{display:block;font:600 11px var(--mono);color:var(--muted);margin-bottom:4px}
+.todo{display:flex;flex-wrap:wrap;gap:6px;counter-reset:t}
+.todo span{counter-increment:t;display:inline-flex;gap:6px;align-items:center;font-size:13px;padding:5px 10px;border-radius:8px;border:1px solid var(--line)}
+.todo span::before{content:counter(t);font:700 11px var(--mono);color:var(--muted)}
+
+/* prep + rehearsal */
+.prep{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:18px}
+@media (max-width:860px){.prep{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.prep .card{padding:14px;display:grid;gap:6px;font-size:13.5px;align-content:start}
+.prep .card b{font:600 11px var(--mono);color:var(--muted);letter-spacing:.04em}
+.habits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+@media (max-width:700px){.habits{grid-template-columns:minmax(0,1fr)}}
+.habits div{padding:12px 14px;border-radius:10px;border:1.5px solid var(--ink);font-size:13.5px}
+.habits div b{display:block;font:750 15px var(--display);margin-bottom:2px}
+.reh{display:grid;gap:6px;margin-top:16px}
+.rr{display:grid;grid-template-columns:28px 76px minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:13.5px}
+.rr input{width:18px;height:18px;accent-color:var(--right)}
+.rr .mb{height:8px;border-radius:4px;background:var(--ink);width:calc(var(--m) * 3.4px);max-width:100%}
+.rr .mm{font:700 11px var(--mono);color:var(--muted);margin-top:3px;white-space:nowrap}
+.rr .pass{color:var(--muted);font-size:13px}
+.rr.core{border-color:var(--ink)}
+.rr.done{opacity:.55}
+.rr .core-tag{font:600 10.5px var(--mono);color:var(--bg);background:var(--ink);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:1px}
+@media (max-width:700px){.rr{grid-template-columns:28px 70px minmax(0,1fr)}.rr .pass{grid-column:3}}
+.recs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
+@media (max-width:860px){.recs{grid-template-columns:minmax(0,1fr)}}
+.rec{display:grid;gap:8px;align-content:start;font-size:13.5px}
+.rec .where{display:flex;justify-content:space-between;gap:8px;font:600 11px var(--mono);color:var(--muted)}
+.rec .q{font-weight:600}
+.rec .say{border-left:3px solid var(--ink);padding-left:10px}
+.hq{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+@media (max-width:700px){.hq{grid-template-columns:minmax(0,1fr)}}
+.hq details{background:var(--card);border:1px solid var(--line);border-radius:12px}
+.hq summary{cursor:pointer;padding:14px 16px;font:600 15px var(--display);list-style:none;display:flex;justify-content:space-between;gap:12px}
+.hq summary::-webkit-details-marker{display:none}
+.hq summary::after{content:"+";font:700 16px var(--mono);color:var(--muted)}
+.hq details[open] summary::after{content:"−"}
+.hq .a{padding:0 16px 14px;font-size:13.5px;color:var(--muted)}
+.hq .a b{color:var(--ink);font-weight:600}
+.oops{display:grid;gap:6px;margin-top:16px}
+.oops div{display:grid;grid-template-columns:minmax(0,1fr) 24px minmax(0,1.4fr);gap:10px;align-items:center;padding:10px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:13.5px}
+.oops div span:nth-child(2){color:var(--muted);text-align:center}
+.oops div span:first-child{font-weight:600}
+footer{padding-block:30px 50px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);margin-top:30px}
+footer a{color:inherit}
+.nt,.nt *{transition:none!important}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+
+<nav class="bar" aria-label="Session timeline"><div class="wrap">
+  <span class="lbl">90 min</span>
+  <div class="tl" id="tl">
+    <a href="#b1" style="flex:10"><b>1</b><span>Three still open</span></a>
+    <a href="#b2" style="flex:12"><b>2</b><span>Two scoreboards</span></a>
+    <a href="#b3" style="flex:12"><b>3</b><span>Sort the board</span></a>
+    <a href="#b4" style="flex:20"><b>4</b><span>Checks, record, switch off</span></a>
+    <a href="#b5" style="flex:8"><b>5</b><span>Name it</span></a>
+    <a href="#b6" style="flex:22"><b>6</b><span>Their own system</span></a>
+    <a href="#b7" style="flex:6"><b>7</b><span>Close</span></a>
+  </div>
+</div></nav>
+
+<header class="top wrap">
+  <p class="kick">LECTURE 16 · SAT 28 NOV 2026 · 90 MIN · BOTH TRACKS</p>
+  <h1>Lecture 16 run sheet</h1>
+  <p class="thesis">Inside each scoreboard <b>the LLM never changed</b>. Every point the score moved came from <b>a box put around it</b>. The room sorts the boxes into five parts, names the whole, then writes five lines for a problem of their own.</p>
+  <div class="legend">
+    <span><i style="background:var(--rule)"></i>a rule</span>
+    <span><i style="background:var(--llm)"></i>the LLM</span>
+    <span><i style="background:var(--person)"></i>a person</span>
+    <span><i style="background:var(--right);border-radius:50%"></i>right</span>
+    <span><i style="background:var(--wrong);border-radius:50%"></i>wrong, sent</span>
+    <span><i style="border:2px solid var(--none);border-radius:50%"></i>no answer or held back</span>
+  </div>
+
+  <div class="card sb" id="sbTop" style="margin-top:22px">
+    <div class="vhead"><h3>The whole session in one picture: 18 questions, one LLM, four switches</h3><button class="play" data-ladder>Play the ladder</button></div>
+    <div class="steps" data-presets='[["0000","1 · Nothing"],["1000","2 · Search"],["1100","3 · + the brain"],["1110","4 · + their files"],["1111","5 · + checks"]]'></div>
+    <div class="sw" style="margin-top:10px"></div>
+    <div class="dots"></div>
+    <div class="score"><span class="big mono">17</span><span class="of">right of 18</span><span class="sub"></span></div>
+    <p class="cap"></p>
+    <div class="tok"><span class="tv"></span><div class="track"><div class="fill"></div></div></div>
+  </div>
+
+  <div class="prep">
+    <div class="card"><b>OPEN ON SCREEN</b><span>Bench on the <b style="font:inherit;font-weight:600;color:var(--ink)">The brain</b> tab, showing 15 of 18</span></div>
+    <div class="card"><b>SECOND TAB</b><span>Lecture 15 notes at section 13</span></div>
+    <div class="card"><b>BOARD PENS</b><span class="chips"><span class="chip t-rule">orange: rule</span><span class="chip t-llm">violet: LLM</span><span class="chip t-person">grey: person</span></span></div>
+    <div class="card"><b>KEEP OUT OF CHAT</b><span>The bench link, until block 4</span></div>
+  </div>
+  <div class="habits">
+    <div><b>Guess first</b>A guess in chat before every number. Read two aloud, then run it.</div>
+    <div><b>Their words</b>Write the room's words on the board. Tidy labels later.</div>
+    <div><b>No definition before block 5</b>“Hold that. In twenty minutes you tell me what it is.”</div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- BLOCK 1 -->
+<section class="blk" id="b1"><div class="row">
+  <div>
+    <p class="min">0 TO 10 MIN · BLOCK 1</p>
+    <h2>The three still open</h2>
+    <p class="ask"><small>ASK</small>“The brain holds every page of the course. Why can't it answer these three?”</p>
+    <div class="lines">
+      <div class="ln"><span>SAY FIRST</span><span>“The person asking is a made-up no-code learner. Their North Star, not yours.”</span></div>
+      <div class="ln"><span>WAIT FOR</span><span>“With the person.” “In what they told it.”</span></div>
+      <div class="ln"><span>RUN</span><span>Step 4. Guess first. <b>17 right, 1 wrong.</b></span></div>
+      <div class="ln"><span>LAND</span><span>“The files fixed all three. One other answer went wrong. <b>Hold it</b> for block 4.”</span></div>
+      <div class="ln"><span>IF QUIET</span><span>“What did you tell a chat app last week that it has forgotten?”</span></div>
+    </div>
+  </div>
+  <div class="vis">
+    <div class="card" id="v1">
+      <div class="vhead"><h3>Add three small files</h3><button class="play" data-play="v1">Play</button></div>
+      <div class="files fade" data-s="1" style="margin-top:12px"><span class="muted" style="font-size:12.5px">the person's files:</span><span class="file">me.md</span><span class="file">told.md</span><span class="file">now.md</span></div>
+      <div class="qs" style="margin-top:12px">
+        <div class="qc" data-q="H"><span class="id">H<span class="m"></span></span>Which lecture did I say I was stuck on?</div>
+        <div class="qc" data-q="N"><span class="id">N<span class="m"></span></span>What is my North Star?</div>
+        <div class="qc" data-q="I"><span class="id">I<span class="m"></span></span>What date was that lecture?</div>
+        <div class="qc r" data-q="S4"><span class="id">S4<span class="m"></span></span>The track question<span class="hold fade" data-s="3">hold it</span></div>
+      </div>
+      <div class="score" style="margin-top:12px"><span class="big mono" data-n>15</span><span class="of">right of 18</span><span class="sub" data-w></span></div>
+    </div>
+    <div class="card">
+      <div class="vhead"><h3>Best record of the session: question I</h3><span class="chip">click “Show what the files say”</span></div>
+      <div class="chain" style="margin-top:12px">
+        <span class="box"><span class="mono">told.md</span><br>“I am stuck on Lecture 6”</span><span class="arrow">+</span>
+        <span class="box">the brain's schedule page<br><span class="muted">the LLM asked for it</span></span><span class="arrow">→</span>
+        <span class="box ans">Saturday 10 October 2026</span>
+      </div>
+      <p style="margin-top:10px;font-size:14px">“No single part could answer it. The file knew the lecture. The brain knew the date.”</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- BLOCK 2 -->
+<section class="blk" id="b2"><div class="row">
+  <div>
+    <p class="min">10 TO 22 MIN · BLOCK 2</p>
+    <h2>Two scoreboards</h2>
+    <p class="ask"><small>ASK</small>“Inside each line, did the LLM change? Then what did?”</p>
+    <div class="lines">
+      <div class="ln"><span>FIRST</span><span>Correct Friday's number. <b>30 seconds.</b></span></div>
+      <div class="ln"><span>WRITE</span><span>Every answer, where it lands, unsorted. Stop at 8 to 10.</span></div>
+      <div class="ln"><span>IF MISSING</span><span>“How did we know 3 were wrong?” → the ideal answers.<br>“How did we find why Verifier's Law failed?” → we opened what search returned.</span></div>
+      <div class="ln"><span>CODE TRACK</span><span>Show as a result: Lecture 14 went 5 → 6 → 8 of 10, changing only the search.</span></div>
+      <div class="ln"><span>“BETTER PROMPT”</span><span>Write it down. It sorts into reads.</span></div>
+    </div>
+  </div>
+  <div class="vis">
+    <div class="card" id="v2">
+      <div class="vhead"><h3>Same LLM inside each line</h3><button class="play" data-play="v2">Play</button></div>
+      <div class="lad" style="margin-top:12px">
+        <div>
+          <p class="who"><b>Lecture 10</b> · GPT-OSS 120B · the track question, out of 10</p>
+          <div class="bars" style="height:90px">
+            <div class="b"><b>1</b><i style="--h:10%"></i><span>bare</span></div>
+            <div class="b"><b>5</b><i style="--h:50%"></i><span>a short block</span></div>
+            <div class="b"><b>7</b><i style="--h:70%"></i><span>full curriculum</span></div>
+          </div>
+        </div>
+        <div>
+          <p class="who"><b>The bench</b> · Claude Haiku · right of 18</p>
+          <div class="bars">
+            <div class="b"><b>3</b><i style="--h:16.7%"></i><span>nothing</span></div>
+            <div class="b"><b>4</b><i style="--h:22.2%"></i><span>search<br><span class="bad">5 wrong</span></span></div>
+            <div class="b"><b>15</b><i style="--h:83.3%"></i><span>+ the brain</span></div>
+            <div class="b"><b>17</b><i style="--h:94.4%"></i><span>+ their files<br><span class="bad">1 wrong</span></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="v2b">
+      <div class="vhead"><h3>Friday's search score, corrected</h3><button class="play" data-play="v2b">Play</button></div>
+      <div class="fix" style="margin-top:10px">
+        <span class="fade in" data-s="0"><s>5 right · 3 wrong</s></span><span class="arrow muted fade" data-s="1">→</span><span class="now fade" data-s="1">4 right · <span class="bad">5 wrong</span></span>
+      </div>
+      <div class="quote fade" data-s="2" style="margin-top:10px">One answer said <b>Lecture 11</b> reran the track question. <b>Lecture 10</b> did. The rule only checked that lecture numbers were named.</div>
+      <p class="fade" data-s="3" style="margin-top:10px;font-weight:600">“Our scoring had a check in it, and the check was weak.”</p>
+    </div>
+    <div class="card">
+      <h3 style="font-size:15px">Expect from the room</h3>
+      <div class="chips" style="margin-top:10px">
+        <span class="chip">context</span><span class="chip">curriculum pasted in</span><span class="chip">a tool</span><span class="chip">the sheet</span><span class="chip">search</span><span class="chip">chunks</span><span class="chip">the index</span><span class="chip">the wiki</span><span class="chip">their files</span><span class="chip">ideal answers</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- BLOCK 3 -->
+<section class="blk" id="b3"><div class="row">
+  <div>
+    <p class="min">22 TO 34 MIN · BLOCK 3</p>
+    <h2>Sort the board</h2>
+    <p class="ask"><small>ASK</small>“Some of these belong together. Which ones?”</p>
+    <div class="lines">
+      <div class="ln"><span>STEER</span><span>With a question per pile. Never with the label.</span></div>
+      <div class="ln"><span>CHECKS</span><span>“17 right, one wrong went out. Put it in front of the cohort tomorrow? What could stop it?”</span></div>
+      <div class="ln"><span>RECORD</span><span>“When it is wrong, where do you look?”</span></div>
+      <div class="ln"><span>THE BRAIN</span><span>“Both. Written down earlier and kept: remembers. Fetched by asking: asks.” One minute.</span></div>
+      <div class="ln"><span>IDEAL ANSWERS</span><span>Side of the board: <b>how we score</b>. A check sits inside and can stop an answer.</span></div>
+      <div class="ln"><span>4 OR 6 PILES</span><span>Keep theirs.</span></div>
+    </div>
+  </div>
+  <div class="vis">
+    <div class="card" id="v3">
+      <div class="vhead"><h3>Two questions sort everything</h3><button class="play" data-play="v3">Play</button></div>
+      <div class="tree" style="margin-top:12px">
+        <div class="qbox"><small>QUESTION 1</small>Given to the LLM before it wrote, or fetched because the LLM asked?</div>
+        <div class="fork">
+          <div>
+            <p class="lab">GIVEN ↓</p>
+            <div class="qbox"><small>QUESTION 2</small>Written down from earlier use and kept, or the pages for this question?</div>
+            <div class="fork" style="margin-top:10px">
+              <div class="pile"><p class="lab" style="margin:0">for this question</p><h4>Reads</h4><span class="bx">bench: search the pages</span>
+                <div class="chips"><span class="chip fade" data-s="1">the prompt</span><span class="chip fade" data-s="1">a policy</span><span class="chip fade" data-s="1">search passages</span></div></div>
+              <div class="pile"><p class="lab" style="margin:0">kept from before</p><h4>Remembers</h4><span class="bx">bench: your own files</span>
+                <div class="chips"><span class="chip fade" data-s="2">their files</span><span class="chip fade" data-s="2">what they told it</span><span class="chip two fade" data-s="4">the brain's pages</span></div></div>
+            </div>
+          </div>
+          <div>
+            <p class="lab">FETCHED ↓</p>
+            <div class="pile" style="margin-top:0"><h4>Asks</h4><span class="bx">bench: the 100x brain</span>
+              <div class="chips"><span class="chip fade" data-s="3">tools</span><span class="chip fade" data-s="3">the sheet</span><span class="chip two fade" data-s="4">the brain's index, pages, search</span></div></div>
+            <p class="fade" data-s="4" style="font-size:12.5px;margin-top:8px"><span style="color:var(--llm);font-weight:600">The brain sits on two lines.</span> <span class="muted">Search: reads when the server runs it first, asks when the LLM requests it.</span></p>
+          </div>
+        </div>
+        <p class="lab" style="margin:6px 0 0">ADD NO TEXT ↓</p>
+        <div class="side">
+          <div class="pile"><h4>Checks</h4><span class="bx">bench: checks</span><div class="chips"><span class="chip t-rule fade" data-s="5">a rule in code</span><span class="chip t-llm fade" data-s="5">a second reader</span><span class="chip t-person fade" data-s="5">a person</span></div></div>
+          <div class="pile"><h4>Record</h4><span class="bx">bench: open any question</span><div class="chips"><span class="chip fade" data-s="6">every message kept</span></div></div>
+          <div class="pile score-side"><h4 class="muted">How we score</h4><span class="bx">outside the system</span><div class="chips"><span class="chip fade" data-s="7">ideal answers</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- BLOCK 4 -->
+<section class="blk" id="b4"><div class="row">
+  <div>
+    <p class="min">34 TO 54 MIN · BLOCK 4</p>
+    <h2>Checks, the record, switch one off</h2>
+    <p class="ask"><small>ASK</small>“Every answer must quote its source. How many of 18 now?”</p>
+    <div class="lines">
+      <div class="ln"><span>CHAT</span><span class="mono" style="font-size:12px;word-break:break-all">100x-curriculum.vercel.app/c8/module-2/lecture-16-deriving-harness-engineering/bench#5</span></div>
+      <div class="ln"><span>RUN</span><span>Step 5: <b>17 right, 0 wrong, 1 held.</b></span></div>
+      <div class="ln"><span>THEN ASK</span><span>“Same 17. One wrong answer fewer. What happened to it?” Open the held question in step 6.</span></div>
+      <div class="ln"><span>ASK</span><span>“Which lecture actually ran it with more context?” → Lecture 10.</span></div>
+      <div class="ln"><span>LAND</span><span>“The check stopped it. Friday's scoring passed it. <b>The scoring is a check too.</b>”</span></div>
+      <div class="ln"><span>SWITCH OFF</span><span>“Vote for the part you'd remove.” Switch off in their order, one at a time.</span></div>
+      <div class="ln"><span>PAST MIN 50</span><span>Cut the bill. Go to the name.</span></div>
+    </div>
+  </div>
+  <div class="vis">
+    <div class="card" id="v4a">
+      <div class="vhead"><h3>The check stops the wrong one (S4)</h3><button class="play" data-play="v4a">Play</button></div>
+      <p class="quote" style="margin-top:10px">“In <b>Lecture 11</b> the execution-track version was rerun with different amounts of context, scoring 1, then 5, then 7.”</p>
+      <div class="pipe" style="margin-top:12px">
+        <span class="st llm" data-s="1"><b>LLM</b>answers</span><span class="ar" data-s="1">→</span>
+        <span class="st rule" data-s="2"><b>RULE</b>quote is real ✓</span><span class="ar" data-s="2">→</span>
+        <span class="st llm" data-s="3"><b>SECOND READER</b><span class="bad">NO</span></span><span class="ar" data-s="3">→</span>
+        <span class="st" data-s="4"><b>RETRY</b>same again</span><span class="ar" data-s="4">→</span>
+        <span class="st llm" data-s="5"><b>SECOND READER</b><span class="bad">NO</span></span><span class="ar" data-s="5">→</span>
+        <span class="st end" data-s="6"><b>SERVER STOPPED</b>nothing sent</span>
+      </div>
+    </div>
+    <div class="card" id="v4b">
+      <div class="vhead"><h3>The other way: brain off, T2 gets through</h3><button class="play" data-play="v4b">Play</button></div>
+      <p class="quote" style="margin-top:10px">“The checklist implies Lecture 13 is <b>still ahead</b>.” <span class="muted">It was held on Fri 20 Nov.</span></p>
+      <div class="pipe" style="margin-top:12px">
+        <span class="st llm" data-s="1"><b>LLM</b>answers</span><span class="ar" data-s="1">→</span>
+        <span class="st rule" data-s="2"><b>RULE</b>quote is real ✓</span><span class="ar" data-s="2">→</span>
+        <span class="st llm" data-s="3"><b>SECOND READER</b><span class="ok">yes</span></span><span class="ar" data-s="3">→</span>
+        <span class="st endbad" data-s="4"><b>SENT</b>and wrong ✗</span>
+      </div>
+      <p style="margin-top:10px;font-size:14px;font-weight:600">“A check tests only what you told it to test.”</p>
+    </div>
+    <div class="card sb" id="sbOff">
+      <div class="vhead"><h3>Which part earns its place?</h3><span class="chip">vote first</span></div>
+      <div class="steps" data-presets='[["1111","All on"],["1011","No brain"],["1101","No files"],["0111","No search"],["1110","No checks"]]'></div>
+      <div class="sw" style="margin-top:10px"></div>
+      <div class="dots"></div>
+      <div class="score"><span class="big mono">17</span><span class="of">right of 18</span><span class="sub"></span></div>
+      <p class="cap"></p>
+      <div class="tok"><span class="tv"></span><div class="track"><div class="fill"></div></div></div>
+      <p style="margin-top:12px;font-size:13.5px"><b>Earns its place</b> if, without it, fewer are right or more wrong get out. <span class="muted">One run each: a difference of one is weak evidence.</span></p>
+    </div>
+    <div class="card" id="v4c">
+      <div class="vhead"><h3>The bill (optional)</h3><button class="play" data-play="v4c">Play</button></div>
+      <div class="bill" style="margin-top:12px">
+        <div class="r"><span>Nothing on</span><span class="tr"><i style="--w:3.6%"></i></span><span class="n mono">16,896</span></div>
+        <div class="r"><span>All on, no brain</span><span class="tr"><i style="--w:14.2%"></i></span><span class="n mono">66,133</span></div>
+        <div class="r"><span>All on</span><span class="tr"><i style="--w:100%;background:var(--ink)"></i></span><span class="n mono">467,043</span></div>
+      </div>
+      <p style="margin-top:10px;font-size:14px">About <b>28×</b> the bare run. The brain is nearly all of it, and bought <b>9 right answers</b>. “Count, price, budget: worth it?”</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- BLOCK 5 -->
+<section class="blk" id="b5"><div class="row">
+  <div>
+    <p class="min">54 TO 62 MIN · BLOCK 5</p>
+    <h2>Name it</h2>
+    <p class="ask"><small>ASK</small>“Five piles, all around the LLM. What would you call all of it together?”</p>
+    <div class="lines">
+      <div class="ln"><span>TAKE</span><span>“The system.” “The wrapper.” “Scaffolding.” Someone says last night's word.</span></div>
+      <div class="ln"><span>OPEN</span><span>The closed line on bench step 8.</span></div>
+      <div class="ln"><span>DRAW</span><span>The board on the right. Read it left to right.</span></div>
+      <div class="ln"><span>LAND</span><span>“Same LLM in every row. Every point came from a box around it. Reliability comes from the arrangement.”</span></div>
+      <div class="ln"><span>TOOLS?</span><span>Claude Code, Codex, Antigravity: “Same five lines. Fill them tonight.” No tour.</span></div>
+    </div>
+  </div>
+  <div class="vis">
+    <details class="name card" id="nm">
+      <summary>Everything around the LLM has one name</summary>
+      <div class="reveal"><b class="t">The harness</b>What it reads, what it can ask for, what it remembers, what checks it, what gets recorded. Arranging those parts, and measuring each one, is <b>harness engineering</b>.</div>
+    </details>
+    <div class="card" id="v5">
+      <div class="vhead"><h3>The final board</h3><button class="play" data-play="v5">Draw it</button></div>
+      <div class="board" style="margin-top:10px">
+        <svg viewBox="0 0 900 250" role="img" aria-label="Reads and remembers flow into the LLM, which asks for more; then a rule check, a second reader and a person; the record runs under every part.">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="var(--muted)"/></marker></defs>
+          <g class="draw" fill="none" stroke="var(--muted)" stroke-width="2" marker-end="url(#ah)">
+            <path d="M128 66 H300" style="--len:180"/>
+            <path d="M128 136 C200 136 230 100 300 96" style="--len:200"/>
+            <path d="M380 128 V170" style="--len:50" marker-end="url(#ah)"/>
+            <path d="M400 170 V128" style="--len:50"/>
+            <path d="M460 86 H530" style="--len:80"/>
+            <path d="M640 86 H660" style="--len:30"/>
+            <path d="M770 86 H790" style="--len:30"/>
+          </g>
+          <g font-size="14" font-weight="600">
+            <rect x="10" y="44" width="118" height="44" rx="9" fill="var(--rule-bg)" stroke="var(--rule)" stroke-width="1.5"/><text x="69" y="71" text-anchor="middle" fill="var(--rule)">Reads</text>
+            <rect x="10" y="114" width="118" height="44" rx="9" fill="var(--rule-bg)" stroke="var(--rule)" stroke-width="1.5"/><text x="69" y="141" text-anchor="middle" fill="var(--rule)">Remembers</text>
+            <rect x="300" y="50" width="160" height="78" rx="12" fill="var(--llm-bg)" stroke="var(--llm)" stroke-width="2.5"/><text x="380" y="95" text-anchor="middle" fill="var(--llm)" font-size="18" font-weight="750" font-family="Bricolage Grotesque, sans-serif">LLM</text>
+            <rect x="330" y="170" width="100" height="40" rx="9" fill="var(--rule-bg)" stroke="var(--rule)" stroke-width="1.5"/><text x="380" y="195" text-anchor="middle" fill="var(--rule)">Asks</text>
+            <rect x="530" y="64" width="110" height="44" rx="9" fill="var(--rule-bg)" stroke="var(--rule)" stroke-width="1.5"/><text x="585" y="91" text-anchor="middle" fill="var(--rule)">Rule check</text>
+            <rect x="660" y="64" width="110" height="44" rx="9" fill="var(--llm-bg)" stroke="var(--llm)" stroke-width="1.5"/><text x="715" y="85" text-anchor="middle" fill="var(--llm)">Second</text><text x="715" y="101" text-anchor="middle" fill="var(--llm)">reader</text>
+            <rect x="790" y="64" width="100" height="44" rx="9" fill="var(--person-bg)" stroke="var(--person)" stroke-width="1.5"/><text x="840" y="91" text-anchor="middle" fill="var(--person)">Person</text>
+          </g>
+          <line x1="10" y1="234" x2="890" y2="234" stroke="var(--ink)" stroke-width="2" stroke-dasharray="6 5"/>
+          <text x="890" y="226" text-anchor="end" font-size="12.5" fill="var(--muted)" font-family="JetBrains Mono, monospace">record: every message, under every part</text>
+          <text x="545" y="140" font-size="12" fill="var(--muted)">checks</text>
+          <path d="M530 130 H890" stroke="var(--line)" stroke-width="1.5" fill="none"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- BLOCK 6 -->
+<section class="blk" id="b6"><div class="row">
+  <div>
+    <p class="min">62 TO 84 MIN · BLOCK 6</p>
+    <h2>Their own system</h2>
+    <p class="ask"><small>ASK</small>“Take a problem of your own. Write five lines.”</p>
+    <div class="lines">
+      <div class="ln"><span>WEAKEST?</span><span>“Which line is the weakest?” Checks or remembers: both right. Circle it. “Smallest thing you could add there?”</span></div>
+      <div class="ln"><span>CHAT</span><span>The harness card link.</span></div>
+      <div class="ln"><span>NO PROBLEM?</span><span>“Three questions people ask you at work, with your answer.”</span></div>
+      <div class="ln"><span>NO SYSTEM?</span><span>“Any chat is your LLM. You are every other part.”</span></div>
+      <div class="ln"><span>WALK</span><span>Answer only with questions: “Who checks that today?”</span></div>
+      <div class="ln"><span>SHARE</span><span>Three people, one minute each, both tracks.</span></div>
+    </div>
+  </div>
+  <div class="vis">
+    <div class="timer card" style="padding:6px;height:auto">
+      <div style="flex:4;background:var(--ink);color:var(--bg)"><b>4 min</b>leave desk</div>
+      <div style="flex:12"><b>12 min</b>they write five lines</div>
+      <div style="flex:6"><b>6 min</b>3 share</div>
+    </div>
+    <div class="card" id="v6">
+      <div class="vhead"><h3>Worked example: the leave desk</h3><button class="play" data-play="v6">Play</button></div>
+      <div class="desk" style="margin-top:12px">
+        <div class="dl fade" data-s="1"><b>Reads</b><span>the leave policy, and the request</span></div>
+        <div class="dl fade" data-s="2"><b>Asks</b><span>the vacation tracker: who is off that day</span></div>
+        <div class="dl fade" data-s="3" data-weak="6"><b>Remembers</b><span>past decisions, and the manager's reasoning</span></div>
+        <div class="dl fade" data-s="4" data-weak="6"><b>Checks</b><span><span class="chip t-rule">headcount rule in code</span> <span class="chip t-person">the manager, for judgment calls</span></span></div>
+        <div class="dl fade" data-s="5"><b>Record</b><span>every request, the answer, did the manager agree</span></div>
+      </div>
+      <p class="fade" data-s="6" style="margin-top:10px;font-size:13.5px"><span class="bad" style="font-weight:600">Weakest:</span> checks (the manager's bandwidth) or remembers (reasoning never written down).</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- BLOCK 7 -->
+<section class="blk" id="b7"><div class="row">
+  <div>
+    <p class="min">84 TO 90 MIN · BLOCK 7</p>
+    <h2>Close</h2>
+    <p class="ask"><small>ASK</small>“Which line will you fill first, and how will you know it worked?”</p>
+    <div class="lines">
+      <div class="ln"><span>READ</span><span>Four answers from the chat.</span></div>
+      <div class="ln"><span>PRACTICE</span><span>In one breath, the six steps on the right.</span></div>
+      <div class="ln"><span>LAST</span><span>The closing line, once.</span></div>
+      <div class="ln"><span>IF SAID</span><span>The held word: “Yes. Next module.”</span></div>
+    </div>
+  </div>
+  <div class="vis">
+    <div class="card" id="v7">
+      <div class="vhead"><h3>The closing line points at Lecture 1</h3><button class="play" data-play="v7">Play</button></div>
+      <div class="formula" style="margin-top:14px">
+        <span class="m fade" data-s="1">model</span><span class="fade" data-s="2">+ tools</span><span class="fade" data-s="3">+ a loop</span><span class="fade" data-s="4">+ a success condition</span>
+      </div>
+      <div class="shift" style="margin-top:14px">
+        <div class="fade" data-s="5"><b>SINCE LECTURE 9</b>You put the tools, loop and success condition around a model. <span style="color:var(--person);font-weight:600">A person</span> decided every step.</div>
+        <div class="fade" data-s="6"><b>NEXT MODULE</b><span style="color:var(--llm);font-weight:600">The model</span> decides the next step. The only new thing. Today still holds it up.</div>
+      </div>
+      <p class="muted fade" data-s="6" style="margin-top:10px;font-size:12.5px">The formula is Lecture 1's definition of the held word, on purpose. Never say the word.</p>
+    </div>
+    <div class="card">
+      <div class="vhead"><h3>The practice: the harness card</h3><span class="chip">submit on the LMS · before Fri 4 Dec</span></div>
+      <div class="todo" style="margin-top:12px"><span>five lines</span><span>three questions + ideal answers</span><span>ask them in a temporary chat</span><span>keep one wrong answer</span><span>add one part by hand</span><span>score again</span></div>
+    </div>
+  </div>
+</div></section>
+
+<!-- REHEARSAL -->
+<section class="blk" id="reh">
+  <p class="min">BEFORE THE SESSION · ABOUT 70 MIN</p>
+  <h2>Rehearsal</h2>
+  <p class="muted" style="margin-top:6px;font-size:14px">Tick as you go; ticks stay in this browser. Short on time: do the four marked <span class="core-tag" style="font:600 10.5px var(--mono);color:var(--bg);background:var(--ink);border-radius:4px;padding:1px 5px">core</span>.</p>
+  <div class="reh" id="rehList"></div>
+
+  <h3 style="margin-top:28px;font-size:19px">Six records to open in step 2</h3>
+  <div class="recs">
+    <div class="card rec"><span class="where"><span>STEP 2 · SEARCH</span><span>block 1</span></span><span class="q">Which lecture teaches Verifier's Law?</span><span class="say">Said Lecture 9, from a real section, “The Verifier's Rule, revisited”.</span></div>
+    <div class="card rec"><span class="where"><span>STEP 3 · THE BRAIN</span><span>block 1</span></span><span class="q">Which lecture did I say I was stuck on?</span><span class="say">“Not known. The 100x brain covers what the course taught, not what you have told anyone.”</span></div>
+    <div class="card rec"><span class="where"><span>STEP 4 · THEIR FILES</span><span>block 1 · best one</span></span><span class="q">What date was the lecture I said I was stuck on?</span><span class="say">Files fold: “stuck on Lecture 6”. Last “asked for”: the schedule. Answer: Sat 10 Oct 2026.</span></div>
+    <div class="card rec"><span class="where"><span>STEP 6 · THE RECORD</span><span>block 4</span></span><span class="q">The track question (S4)</span><span class="say">Right answer at top → the Lecture 11 sentence → titles only: rule passed, reader NO, retry, NO, server stopped.</span></div>
+    <div class="card rec"><span class="where"><span>STEP 7 · BRAIN OFF</span><span>block 4</span></span><span class="q">Has Lecture 13 been taught? (T2)</span><span class="say">“Still ahead.” Rule passed. Reader passed. Sent, and wrong.</span></div>
+    <div class="card rec"><span class="where"><span>STEP 7 · CHECKS ONLY</span><span>only if asked</span></span><span class="q">What does CRUD stand for?</span><span class="say">Nothing to quote, so NOT KNOWN for a fact it knows. Checks alone: 3 → 1.</span></div>
+  </div>
+  <p class="muted" style="margin-top:10px;font-size:13px">A record takes a second to load the first time. Ask your question before you open it: the right answer sits at the top.</p>
+
+  <h3 style="margin-top:28px;font-size:19px">Hard questions: answer aloud, under 30 seconds</h3>
+  <div class="hq">
+    <details><summary>“Friday said 5. Why 4 now?”</summary><p class="a">Every mark was read by hand after class. One said <b>Lecture 11</b> reran the track question; Lecture 10 did. The rule only checked lecture numbers. <b>The scoring is a check too.</b></p></details>
+    <details><summary>“Why did 18 become 17 at step 4?”</summary><p class="a">The files fixed all three. In the same run, S4 came back with the Lecture 11 mistake. <b>One run each</b>, so a question can flip.</p></details>
+    <details><summary>“Which LLM? Did it change?”</summary><p class="a">Bench: <b>Claude Haiku</b>, 27 Nov. Lecture 10: GPT-OSS 120B. Different between scoreboards, <b>never inside one</b>. Same pattern on both.</p></details>
+    <details><summary>“So checks always help?”</summary><p class="a">No. T2 “still ahead” passed both. Checks alone take the bare score <b>3 → 1</b>. A check tests only what you told it to test.</p></details>
+    <details><summary>“Is the brain worth 28× the tokens?”</summary><p class="a"><b>Count, price, budget</b>, on the spot. Nine more right. Cents for 18 questions; a real bill at 10,000 a day.</p></details>
+    <details><summary>“Whose files are these?”</summary><p class="a">A <b>made-up no-code learner</b>. Step 4 says so. “Today” in now.md is Fri 27 Nov, the recording day.</p></details>
+    <details><summary>“Are the ideal answers a check?”</summary><p class="a">No. They are <b>how we score</b>, after the fact. A check sits inside and can stop an answer.</p></details>
+    <details><summary>“Is the brain memory or something it asks?”</summary><p class="a"><b>Both.</b> Written down and kept: remembers. Fetched by asking: asks. Both lines.</p></details>
+  </div>
+
+  <h3 style="margin-top:28px;font-size:19px">If things go wrong</h3>
+  <div class="oops">
+    <div><span>Bench won't load</span><span>→</span><span>Use the scoreboard at the top of this page. Read the six records aloud.</span></div>
+    <div><span>Screen differs from this page</span><span>→</span><span>Trust the screen. One run per question. Open the record.</span></div>
+    <div><span>Block 2 dries up at five</span><span>→</span><span>“What did we add in Lecture 10? 11? 13? Last night?”</span></div>
+    <div><span>Block 4 past minute 50</span><span>→</span><span>Cut the bill. Go to the name.</span></div>
+    <div><span>Block 6 starts after minute 68</span><span>→</span><span>Leave desk, then one line in chat: “Which of the five is ‘nothing’ for you?”</span></div>
+    <div><span>“Show it run live”</span><span>→</span><span>Copy any request from the record into any chat. Run it there.</span></div>
+  </div>
+</section>
+
+<footer>
+  Numbers: one recorded run per question on the Harness Bench, Claude Haiku, Fri 27 Nov 2026; marks read by hand on 28 Nov. The full guide, with every word to say: <a href="https://claude.ai/artifact/E9u4chzMoyYaSJvNAks8Up">Lecture 16: plan, rehearsal and facilitator guide</a>.
+</footer>
+</main>
+
+<script>
+(function(){
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const IDS = ["A","B","C","D","E","F","G","X","S1","S2","S3","S4","S5","T1","T2","H","N","I"];
+const QT = {"A":"Which lecture teaches Verifier's Law?","B":"With the full curriculum pasted in, what did the model score out of 10?","C":"Whose app forgets what he typed the day before?","D":"How many requests per minute does Groq's free tier allow?","E":"What does CRUD stand for?","F":"What date is Lecture 17?","G":"What is Lecture 18 about?","X":"Which lecture shows how to put our app on the App Store? (not in the course)","S1":"Every time we added something around the model, list the score","S2":"Which lectures wrote a question and its known answer first?","S3":"What went wrong with memory.txt, and what replaced it?","S4":"The track question: which lectures, and what did each do?","S5":"Every practice set with a due date","T1":"Is the Lecture 12 practice set still open?","T2":"Has Lecture 13 been taught?","H":"Which lecture did I say I was stuck on?","N":"What is my North Star?","I":"What date was the lecture I said I was stuck on?"};
+const RUNS = {"0000":["nnnrrnnrnnnnnnnnnn",16896],"0001":["nnnnnnnrnnnnnnnnnn",18269],"0010":["nnnrrnnrnnnnnnnrrw",18310],"0011":["nnnnnnnrnnnnnnnrrn",25498],"0100":["rrrrrrrrrwrrrrrnnn",457308],"0101":["rrrrrrrrwnrrrrrnnn",657608],"0110":["rrrrrrrrrwrrrrrrrr",429638],"0111":["nrrrrrrrrnrrrrrrrr",490284],"1000":["wnrrrnnrnwnwnwwnnn",32404],"1001":["wnrrrnnrwnnnnnnnnn",63351],"1010":["rnrrrnnrnwnwwwwrrn",37118],"1011":["rnrrrnnrnnnrnwwrrn",66133],"1100":["rrrrrrrrrrrrrrrnnn",432982],"1101":["rrrrrrrrrrrrrrrnnn",589906],"1110":["rrrrrrrrrrrwrrrrrr",464387],"1111":["rrrrrrrrrrrnrrrrrr",467043]};
+const MAXT = 657608;
+const NAMES = ["Search","The 100x brain","Their files","Checks"];
+const CAPS = {"0000":"The LLM alone: it knows general facts, not this course.","1000":"Search adds passages. One more right, and 5 confident wrong answers get out.","1100":"The brain: the LLM asks for the index, opens pages. 15 right, none wrong.","1110":"Their files fix H, N, I. S4 goes wrong in the same run: hold it.","1111":"Checks hold S4 back. 17 right, nothing wrong gets out.","1011":"No brain: 8 right, 2 wrong. Clearly earns its place.","1101":"No files: 15. Loses exactly the three questions about the person.","0111":"No search: 16. A difference of one: weak evidence.","1110x":"No checks: 17 right, 1 wrong gets out. One, but the kind that hurts most.","0001":"Checks alone: 3 → 1. With nothing to quote, it says NOT KNOWN for facts it knows."};
+const fmt = n => n.toLocaleString('en-US');
+
+function board(root, start, offMode){
+  const sw = root.querySelector('.sw'), dots = root.querySelector('.dots'), big = root.querySelector('.big'),
+        sub = root.querySelector('.sub'), cap = root.querySelector('.cap'), tv = root.querySelector('.tv'), fill = root.querySelector('.fill'),
+        stepsEl = root.querySelector('.steps');
+  let key = start, prev = null;
+  const btns = NAMES.map((n,i) => { const b = document.createElement('button'); b.type='button'; b.textContent = n; b.id = root.id+'-sw'+i;
+    b.onclick = () => { const a = key.split(''); a[i] = a[i]==='1'?'0':'1'; set(a.join('')); }; sw.appendChild(b); return b; });
+  const ds = IDS.map(id => { const d = document.createElement('span'); d.className='dot'; d.textContent=id; d.title = id+': '+QT[id]; dots.appendChild(d); return d; });
+  const presets = JSON.parse(stepsEl.dataset.presets);
+  const pbs = presets.map(([k,l]) => { const b = document.createElement('button'); b.type='button'; b.textContent=l; b.onclick=()=>set(k); stepsEl.appendChild(b); return [k,b]; });
+  function set(k){
+    key = k; const [m,t] = RUNS[k];
+    btns.forEach((b,i)=>b.setAttribute('aria-pressed', k[i]==='1'));
+    ds.forEach((d,i)=>{ const c = m[i]; const was = d.dataset.m; d.className = 'dot'+(c==='r'?' r':c==='w'?' w':''); d.dataset.m=c;
+      if(prev!==null && was!==c && !RM){ void d.offsetWidth; d.classList.add('pop'); } });
+    const r = (m.match(/r/g)||[]).length, w = (m.match(/w/g)||[]).length, n = 18-r-w;
+    big.textContent = r;
+    sub.innerHTML = (w? '<span class="bad">'+w+' wrong, sent</span>' : '<span class="ok">0 wrong</span>') + ' · <span class="muted">'+n+(k[3]==='1'?' no answer or held back':' no answer')+'</span>';
+    cap.textContent = CAPS[offMode && k==='1110' ? '1110x' : k] || ('Switched on: ' + (NAMES.filter((_,i)=>k[i]==='1').join(', ') || 'nothing') + '.');
+    tv.textContent = fmt(t)+' tokens for 18 questions';
+    fill.style.width = (t/MAXT*100).toFixed(1)+'%';
+    pbs.forEach(([pk,b])=>b.classList.toggle('on', pk===k));
+    prev = k;
+  }
+  set(start);
+  return {set};
+}
+const top = board(document.getElementById('sbTop'), '1111', false);
+board(document.getElementById('sbOff'), '1111', true);
+let ladderT = [];
+document.querySelector('[data-ladder]').onclick = () => {
+  ladderT.forEach(clearTimeout); ladderT = [];
+  ['0000','1000','1100','1110','1111'].forEach((k,i)=> ladderT.push(setTimeout(()=>top.set(k), i*(RM?0:1700))));
+};
+
+/* step players: elements with data-s light up in order; rest state = everything lit */
+const custom = {
+  v1: { reset(el){ el.querySelectorAll('.qc').forEach(q=>{ q.classList.remove('r','w'); if(q.dataset.q==='S4') q.classList.add('r'); }); el.querySelector('[data-n]').textContent='15'; el.querySelector('[data-w]').innerHTML='<span class="ok">0 wrong</span>'; },
+        step(el,s){ if(s===2){ ['H','N','I'].forEach((id,j)=>setTimeout(()=>el.querySelector('[data-q="'+id+'"]').classList.add('r'), RM?0:j*350)); }
+                    if(s===3){ const q=el.querySelector('[data-q="S4"]'); q.classList.remove('r'); q.classList.add('w'); el.querySelector('[data-n]').textContent='17'; el.querySelector('[data-w]').innerHTML='<span class="bad">1 wrong, sent</span>'; } }, n:3 },
+  v6: { reset(el){ el.querySelectorAll('[data-weak]').forEach(d=>d.classList.remove('weak')); }, step(el,s){ if(s===6) el.querySelectorAll('[data-weak]').forEach(d=>d.classList.add('weak')); }, n:6 },
+  v5: { n:1 }
+};
+function maxStep(el){ let m=0; el.querySelectorAll('[data-s]').forEach(x=>m=Math.max(m,+x.dataset.s)); return Math.max(m,(custom[el.id]||{}).n||0); }
+function lightAll(el){ const c=custom[el.id]; if(c&&c.reset) c.reset(el); el.querySelectorAll('[data-s]').forEach(x=>x.classList.add('in','lit')); if(c&&c.step) for(let s=1;s<=maxStep(el);s++) c.step(el,s); }
+const timers = {};
+function play(el){
+  (timers[el.id]||[]).forEach(clearTimeout); timers[el.id]=[];
+  if(el.id==='v5'){ el.classList.remove('drawn'); el.classList.add('nt','pre'); void el.offsetWidth; el.classList.remove('nt'); el.classList.add('drawn'); requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.remove('pre'))); return; }
+  const c = custom[el.id], n = maxStep(el), gap = RM?0:(el.id.startsWith('v4')?750:700);
+  el.classList.add('nt','pre');
+  el.querySelectorAll('[data-s]').forEach(x=>{ x.classList.remove('lit','flash'); if(+x.dataset.s>0) x.classList.remove('in'); });
+  if(c&&c.reset) c.reset(el);
+  void el.offsetWidth; el.classList.remove('nt');
+  for(let s=1;s<=n;s++) timers[el.id].push(setTimeout(()=>{
+    el.querySelectorAll('[data-s="'+s+'"]').forEach(x=>{ x.classList.add('in','lit'); if(x.classList.contains('st')){ x.classList.add('flash'); setTimeout(()=>x.classList.remove('flash'),500);} });
+    if(c&&c.step) c.step(el,s);
+  }, s*gap));
+  timers[el.id].push(setTimeout(()=>el.classList.remove('pre'), (n+1)*gap));
+}
+/* bars (v2, v4c) grow from zero on play */
+function playBars(el){ el.classList.add('nt','pre'); void el.offsetWidth; el.classList.remove('nt'); requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.remove('pre'))); }
+const BARS = new Set(['v2','v4c']);
+document.querySelectorAll('[data-play]').forEach(b=>{ const el=document.getElementById(b.dataset.play); lightAll(el);
+  b.onclick=()=> BARS.has(el.id)? playBars(el) : play(el); });
+
+/* auto-play each picture once, the first time it scrolls into view */
+if(!RM && 'IntersectionObserver' in window){
+  const seen = new Set();
+  const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting && !seen.has(e.target.id)){ seen.add(e.target.id); io.unobserve(e.target);
+    BARS.has(e.target.id)? playBars(e.target) : play(e.target); } }), {threshold:.45});
+  document.querySelectorAll('[data-play]').forEach(b=>io.observe(document.getElementById(b.dataset.play)));
+}
+
+/* timeline follows the scroll */
+const links = [...document.querySelectorAll('#tl a')];
+const secs = links.map(a=>document.querySelector(a.getAttribute('href')));
+function onScroll(){ const y = innerHeight*0.35; let cur=-1; secs.forEach((s,i)=>{ if(s.getBoundingClientRect().top < y) cur=i; });
+  const pastEnd = document.getElementById('reh').getBoundingClientRect().top < y;
+  links.forEach((a,i)=>a.classList.toggle('on', i===cur && !pastEnd)); }
+addEventListener('scroll', onScroll, {passive:true}); onScroll();
+
+/* rehearsal checklist */
+const REH = [
+  [5,"Open the bench and the card. Run steps 1 to 3 once. Click “The brain” tab.","Bench on step 3, 15 of 18. Name on step 8 closed.",1],
+  [15,"Click steps 3 to 8 at speaking pace. Open the six records below.","Numbers match: 3 · 4 (5 wrong) · 15 · 17 (1 wrong) · 17 (1 held). Each line found in 10 s.",1],
+  [5,"Say block 1 aloud, with a timer.","Under 10 min. You say whose files they are.",0],
+  [10,"Do the board in a note: 8 to 10 answers, then sort with the two questions.","Every answer lands. The brain on two lines.",1],
+  [5,"Say Friday's correction, the naming lines, the closing line.","Correction 30 s. Definition under a minute. Held word never said.",0],
+  [10,"Do the leave desk with a timer.","Five lines in 4 min. One circled weakest.",1],
+  [10,"Fill the card for a system of your own.","A second example for block 6.",0],
+  [10,"Close the bench. Teach block 4 from this page. Answer the hard questions aloud.","Block 4 works without the bench. Each answer under 30 s.",0]];
+const KEY='l16-reh-v1'; let done={}; try{ done=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
+const list=document.getElementById('rehList');
+REH.forEach(([m,doIt,pass,core],i)=>{ const r=document.createElement('label'); r.className='rr'+(core?' core':'')+(done[i]?' done':'');
+  r.innerHTML='<input type="checkbox" id="reh'+i+'"'+(done[i]?' checked':'')+'><div><div class="mb" style="--m:'+m+'"></div><div class="mm">'+(i+1)+' · '+m+' min</div></div><span>'+doIt+(core?'<span class="core-tag">core</span>':'')+'</span><span class="pass">✓ '+pass+'</span>';
+  r.querySelector('input').onchange=e=>{ done[i]=e.target.checked; r.classList.toggle('done',e.target.checked); try{ localStorage.setItem(KEY,JSON.stringify(done)); }catch(err){} };
+  list.appendChild(r); });
+})();
+</script>
