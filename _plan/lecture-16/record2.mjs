@@ -57,7 +57,14 @@ const LISTS = { S2: ['golden pair', 'golden set', L(10), L(14)], S4: [L(9), L(10
    Lecture 11 only recapped those scores; the tool was Lecture 12. The old rule only checked that 9, 10 and 11 were named,
    so three answers that said Lecture 11 reran it with more context were marked right. Now saying so is wrong. */
 const FIX = { S4: { want: 'Lecture 9 asked it and the answer invented tracks. Lecture 10 scored it 1, then 5, then 7 out of 10 as context was added. Lecture 11 recapped those scores. Lecture 12 answered it with a tool on the curriculum sheet.',
-  wrongIf: '\\blectures?\\s*11\\b[^\\n]{0,160}?\\b(re-?ran|re-?run|varied|ran (it|the))\\b' } };
+  wrongIf: '\\blectures?\\s*11\\b[^\\n]{0,160}?\\b(re-?ran|re-?run|varied|ran (it|the))\\b' },
+  /* Also 28 Nov, after reading every mark on the taught settings: "the course's first lecture" is Lecture 1; an answer that
+     says the practice set "still looks open" or that Lecture 13 is "still ahead" is wrong, as its twin in another setting
+     already was; and "only one practice set in the course pages has a due date" is a false claim about the course. */
+  A: { right: ['\\blecture\\s*(1|one)\\b(?!\\d)|\\bfirst lecture\\b'] },
+  T1: { wrongIf: "\\bstill (looks|seems|appears) (to be )?open\\b|\\bit(?:'s| is) still open:" },
+  T2: { wrongIf: 'not (yet )?(been )?(taught|held)|\\bno\\b[,.]|\\bstill ahead\\b' },
+  S5: { wrongIf: '\\bonly one practice set\\b[^.]{0,40}\\b(course|curriculum)\\b' } };
 const MINE = {
   H: { want: 'Lecture 6', right: ['\\blecture\\s+#?0?(6|six)\\b(?![\\d-])'], wrongIf: '', group: 'about me' },
   N: { want: 'By May 2027, an automation consultant with three paying clients', right: ['automation consultant|three paying clients'], wrongIf: '', group: 'about me' },
@@ -258,8 +265,10 @@ export async function harness(q, sw) {
 
 /* ---------- marking: the brain's own rules (eval/score.py), plus one more outcome ---------- */
 const NOT_KNOWN = new RegExp("not known|not (in|part of|covered in|mentioned in|found in) (the|our|this|any|my)|no (record|information|mention|lecture|way)|" +
-  "(do|does|did)(n't| not) (know|have|hold|say|mention|cover|show|contain|include|teach)|(can|could)(not|n't| not) (find|tell|answer|know|see)|" +
-  "(isn't|is not|aren't|are not) (covered|in|mentioned|known|part)|not found|don't know|none of the", 'i');
+  "(do|does|did)(n't| not) (know|have|hold|say|mention|cover|show|contain|include|teach|give|list)|(can|could)(not|n't| not) (find|tell|answer|know|see)|" +
+  "(isn't|is not|aren't|are not) (covered|in|mentioned|known|part)|not found|don't know|none of the|" +
+  /* "can't" was missed: the pattern above spells it can + n't */
+  "(can't|cannot|couldn't) (find|tell|answer|know|see|say|give|confirm)", 'i');
 const ASKS_BACK = /not sure which|could you (please )?(let me know|tell me|share|clarify|provide|remind)|which (course|class|program|programme|syllabus)|can you (tell|share|clarify)/i;
 const rightBy = (rule, a) => {
   if (rule.wrongIf && new RegExp(rule.wrongIf, 'i').test(a)) return false;

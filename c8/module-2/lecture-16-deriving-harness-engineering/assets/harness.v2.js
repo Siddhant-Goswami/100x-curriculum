@@ -5,7 +5,7 @@
    Every number in the copy is counted from the recorded runs, so a new recording never leaves the words wrong. */
 (function () {
   'use strict';
-  var BASE = '/c8/module-2/lecture-16-deriving-harness-engineering/', V = '?v=7';
+  var BASE = '/c8/module-2/lecture-16-deriving-harness-engineering/', V = '?v=8';
   var L13 = '/c8/module-2/lecture-13-retrieval-augmented-generation/notes', L15 = '/c8/module-2/lecture-15-building-a-second-brain/', L6 = '/c8/module-2/lecture-06-databases-and-domain-modelling/notes';
   var SW = ['reads', 'asks', 'remembers', 'checks'];
   var PART = {

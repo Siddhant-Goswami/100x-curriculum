@@ -1038,7 +1038,7 @@ var RECAP = {
       'Tool call or RAG? Count the tokens, price input and output, and compare with your budget.',
       '"How much do I understand acceleration?" has no source to search. The answer is only in a head.',
       'Four steps to capture a judgment: frequent queries, sort by verifiable, reasoning trace, rubric.',
-      'Same 18 questions: the LLM alone got 3, search 4 with 4 confidently wrong, the 100x brain 15 (one mark corrected after class).'
+      'Same 18 questions: the LLM alone got 3, search 4 with 5 wrong, the 100x brain 15 (marks corrected after class).'
     ]}}
 };
 
