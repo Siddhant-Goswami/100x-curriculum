@@ -16,22 +16,22 @@
   };
   var UPTO = +(document.body.getAttribute('data-upto') || 0);
   var STEPS = [
-    { seg: 'Bare', on: [], h1: 'Ask the bare model the questions',
-      ctx: 'Nothing is switched on. The model gets each question and nothing else.' },
+    { seg: 'Bare', on: [], h1: 'Ask the bare LLM the questions',
+      ctx: 'Nothing is switched on. The LLM gets each question and nothing else.' },
     { seg: 'Search', on: ['reads'], h1: 'Give it something to read',
       ctx: 'Before each question, the server searches the course pages by meaning and puts the three closest passages in the message. That was <a href="' + L13 + '">Lecture 13</a>.' },
     { seg: 'The brain', on: ['reads', 'asks'], h1: 'Let it ask the brain',
-      ctx: 'The model gets the 100x brain\'s address: read the index, open a page, search. It asks, the server runs it. Someone wrote those pages down earlier, so a hard question becomes a lookup.' },
+      ctx: 'The LLM gets the 100x brain\'s address: read the index, open a page, search. It asks, the server runs it. Someone wrote those pages down earlier, so a hard question becomes a lookup.' },
     { seg: 'Your files', on: ['reads', 'asks', 'remembers'], h1: 'Let it remember you',
-      ctx: 'The brain knows the course. It knows nothing about the person asking. Three small files of theirs now go in first: who they are, what they told it, and today\'s date. That is <a href="' + L6 + '">memory.txt</a>, grown up.' },
+      ctx: 'The brain knows the course. It knows nothing about the person asking. Three small files of theirs now go in first: who they are, what they told it, and today\'s date. The files here belong to a made-up learner on the no-code track. That is <a href="' + L6 + '">memory.txt</a>, grown up.' },
     { seg: 'Checks', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Check every answer before it leaves',
       ctx: 'The answer must name its source and quote it. Code checks the quote is really there. Then a second, separate call reads the quote and says yes or no. One retry. After that the question goes to a person.' },
     { seg: 'The record', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Read what crossed', record: true,
-      ctx: 'Every message is kept: what the server sent, what the model asked for, what it said, and which check passed or failed. The record is how you find out why.' },
+      ctx: 'Every message is kept: what the server sent, what the LLM asked for, what it said, and which check passed or failed. The record is how you find out why.' },
     { seg: 'Switch one off', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'Switch each part off, one at a time', free: true,
       ctx: 'A part earns its place only if the score drops when it is off. Use the four buttons below.' },
-    { seg: 'Its name', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'What you just found', end: true,
-      ctx: 'Three things to carry to your own brain.' }
+    { seg: 'What you found', on: ['reads', 'asks', 'remembers', 'checks'], h1: 'What you just found', end: true,
+      ctx: 'Three things to carry to a system of your own.' }
   ];
   /* Lecture 15 shows the first steps of this same bench: data-upto="3" on the body stops after the brain, before anything gets tomorrow's name. */
   if (UPTO) STEPS = STEPS.slice(0, UPTO).concat([{ seg: 'What you found', on: STEPS[UPTO - 1].on, h1: 'What you just found', end: true, sub: true, ctx: 'Three things to carry into your own brain.' }]);
@@ -52,7 +52,7 @@
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* private mode */ } }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function cfg(on) { return SW.map(function (k) { return on.indexOf(k) >= 0 ? '1' : '0'; }).join(''); }
-  function num(n) { return Math.round(n).toLocaleString('en-IN'); }
+  function num(n) { return Math.round(n).toLocaleString('en-US'); }
   function count(c) {
     var r = D.cells[c] || {}, o = { right: 0, wrong: 0, none: 0, tokens: 0, calls: 0, n: 0 };
     D.questions.forEach(function (q) { var x = r[q.id]; if (!x) return; o.n++; o[x.mark]++; o.tokens += x.tokens; o.calls += x.calls; });
@@ -83,14 +83,14 @@
         '<span class="sw" aria-hidden="true"><i></i></span><b>' + p.box + '</b><span>' + (on ? p.sub : 'off') + '</span></' + (free ? 'button' : 'div') + '>';
     }
     $('graph').innerHTML =
-      '<p class="g-title">Around the model</p>' +
+      '<p class="g-title">Around the LLM</p>' +
       '<div class="gn you"><b>You</b><span>ask a question</span></div><i class="ar"></i>' +
       '<div class="g-server"><p>Server <small>follows rules</small></p>' + part('remembers') + part('reads') + '</div><i class="ar"></i>' +
       '<div class="g-pair"><div class="gn model"><b>LLM</b><span>predicts</span></div><i class="ar2"></i>' + part('asks') + '</div><i class="ar"></i>' +
       part('checks') + '<i class="ar"></i>' +
-      '<div class="gn you"><b>You</b><span>' + (c[3] === '1' ? 'get an answer, or it goes to a person' : 'get whatever the model said') + '</span></div>';
+      '<div class="gn you"><b>You</b><span>' + (c[3] === '1' ? 'get an answer, or it goes to a person' : 'get whatever the LLM said') + '</span></div>';
     var n = count(c);
-    $('cost').innerHTML = (ranHere() && n.full) ? '<p><b>' + num(n.calls) + '</b> calls to the model</p><p><b>' + num(n.tokens) + '</b> tokens for the ' + N + ' questions</p>' : '';
+    $('cost').innerHTML = (ranHere() && n.full) ? '<p><b>' + num(n.calls) + '</b> calls to the LLM</p><p><b>' + num(n.tokens) + '</b> tokens for the ' + N + ' questions</p>' : '';
   }
 
   /* ---------- the questions ---------- */
@@ -139,7 +139,7 @@
     return h + '</div>';
   }
   function row(who, title, body) { return '<div class="rw ' + who + '"><p class="rw-t">' + esc(title) + '</p>' + body + '</div>'; }
-  function long(t) { t = String(t || ''); return t.length > 420 ? '<p class="say">' + esc(t.slice(0, 380)) + '…</p>' + fold(t, 'all ' + t.split(/\s+/).length + ' words') : '<p class="say">' + esc(t) + '</p>'; }
+  function long(t) { t = String(t || '').replace(/\*\*/g, ''); return t.length > 420 ? '<p class="say">' + esc(t.slice(0, 380)) + '…</p>' + fold(t, 'all ' + t.split(/\s+/).length + ' words') : '<p class="say">' + esc(t) + '</p>'; }
   function fold(t, what) { return '<details><summary>Show ' + esc(what) + '</summary><pre>' + esc(t) + '</pre></details>'; }
 
   /* ---------- the panel: the one thing to do now ---------- */
@@ -188,7 +188,7 @@
         if (g != null) h += '<p class="lab">You guessed ' + g + '. ' + (g === n.right ? 'Right.' : 'It was ' + n.right + '.') + '</p>';
         h += changes(prev, c);
         if (c[3] === '1' && n.right < before.right) h += '<p class="lab">The checks cost ' + (before.right - n.right) + ' right ' + (before.right - n.right === 1 ? 'answer' : 'answers') + ' here' + (before.wrong > n.wrong ? ' and stopped ' + (before.wrong - n.wrong) + ' wrong ' + (before.wrong - n.wrong === 1 ? 'one' : 'ones') + '.' : ' and stopped nothing, because nothing else failed.') + ' The next step shows why.</p>';
-      } else h += '<p class="lab">Same model for every step from here. Only what is around it changes.</p>';
+      } else h += '<p class="lab">Same LLM for every step from here. Only what is around it changes.</p>';
       h += '<div class="row"><button class="btn go" id="next">Continue</button></div>';
     }
     $('panel').innerHTML = h;
@@ -246,7 +246,7 @@
       '<ol class="ladder">' + ladder + '</ol>' +
       '<ol class="take">' +
       '<li><b>Search finds what was written.</b> It got ' + ns[1].right + ' of ' + N + (ns[1].wrong ? ' and sent ' + ns[1].wrong + ' wrong ' + (ns[1].wrong === 1 ? 'answer' : 'answers') : '') + '. Three passages cannot hold an answer that sits in three lectures.</li>' +
-      '<li><b>Nothing got smarter. Someone wrote it down.</b> The model was the same in all three steps. The brain got ' + ns[2].right + ' because the answers were already on a page, with their sources.</li>' +
+      '<li><b>Nothing got smarter. Someone wrote it down.</b> The LLM was the same in all three steps. The brain got ' + ns[2].right + ' because the answers were already on a page, with their sources.</li>' +
       '<li><b>' + (left.length === 1 ? 'One question is' : left.length + ' questions are') + ' still unanswered: ' + left.map(function (q) { return q.id; }).join(', ') + '.</b> ' + (mine.length === left.length ? 'They are all about the person asking. The 100x brain knows the course. It does not know you.' : 'Open each one and read why.') + '</li>' +
       '</ol>' +
       '<p class="q">So the next brain is yours.</p>' +
@@ -275,13 +275,13 @@
     $('panel').innerHTML =
       '<ol class="ladder">' + ladder + '</ol>' +
       '<ol class="take">' +
-      '<li><b>The model never changed.</b> The score went from ' + ns[0].right + ' to ' + best + ' of ' + N + ' because of what you put around it.</li>' +
+      '<li><b>The LLM never changed.</b> The score went from ' + ns[0].right + ' to ' + best + ' of ' + N + ' because of what you put around it.</li>' +
       '<li><b>Each part fixes its own kind of question.</b>' + (gb.length ? ' The brain fixed ' + gb + '.' : '') + (gf.length ? ' Your files fixed the ' + gf + '.' : '') + ' When an answer is wrong, ask which part was missing.</li>' +
       '<li><b>A part can cost as well as help.</b> ' + costs.join(' ') + ' So you never assume. You switch it off, count, and read the record.</li>' +
       '</ol>' +
-      '<div class="named"><p class="lab">Its name</p><p class="big">The harness</p><p>Everything around the model: what it reads, what it can ask for, what the system remembers, what checks the answer, and the record of what crossed. Arranging those parts, and measuring each one, is harness engineering.</p></div>' +
-      '<p class="q">Now the same three moves on your own brain.</p>' +
-      '<ol class="take plain"><li>Draw the five parts around its model.</li><li>Find one answer it got wrong.</li><li>Add the one part that catches it.</li></ol>' +
+      '<details class="named"><summary class="lab">Everything around the LLM has one name. Guess it, then open this.</summary><p class="big">The harness</p><p>Everything around the LLM: what it reads, what it can ask for, what the system remembers, what checks the answer, and the record of what crossed. Arranging those parts, and measuring each one, is harness engineering.</p></details>' +
+      '<p class="q">Now the same three moves on a system of your own.</p>' +
+      '<ol class="take plain"><li>Write the five parts around its LLM.</li><li>Find one answer it got wrong.</li><li>Add the one part that catches it.</li></ol>' +
       '<div class="row"><a class="btn go" href="' + BASE + 'card">Fill your harness card</a><button class="btn ghost" id="again">Start again</button></div>';
   }
 

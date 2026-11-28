@@ -118,3 +118,9 @@ button.gn.part:hover{border-color:var(--ink3)}
 .take{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15.5px;line-height:1.5;color:var(--ink2)}
 .take b{font-weight:600;color:var(--ink)}
 .take.plain{gap:4px;color:var(--ink)}
+/* the name stays closed until the learner has guessed it */
+details.named{display:block}
+details.named>summary{cursor:pointer;font-size:15.5px;color:var(--ink2)}
+details.named[open]>summary{margin-bottom:12px}
+details.named .big{margin:0 0 8px}
+details.named>p{margin:0;font-size:15.5px;line-height:1.5}

@@ -100,11 +100,6 @@
       "permanent": false
     },
     {
-      "source": "/c8/module-2/lecture-16-deriving-harness-engineering/card",
-      "destination": "/#L16",
-      "permanent": false
-    },
-    {
       "source": "/c8/module-2/lecture-16-deriving-harness-engineering/bench2",
       "destination": "/c8/module-2/lecture-16-deriving-harness-engineering/bench",
       "permanent": false

@@ -899,9 +899,9 @@ GUIDES.L15 = { all: {
 
 /* Lecture 16, both tracks: the overview, the Harness Bench and the harness card. Notes follow the lecture. */
 /* Held back. Full hub: {link:'l16Hub', title:'Open the Lecture 16 pages', sub:'The overview, the Harness Bench and the harness card', more:[['l16Bench','Harness Bench'],['l16Card','Harness card']]} */
-/* 28 Nov: the Harness Bench is open (its redirect is gone); the overview and the card are still held back. */
+/* 28 Nov: the Harness Bench is open (its redirect is gone); the card (rewritten around the learner's own problem) is open too; the overview is still held back. */
 GUIDES.L16 = { all: {
-  hub: {link:'l16Bench', title:'Open the Harness Bench', sub:'One LLM, eighteen questions, four parts you switch on and off', more:[]}
+  hub: {link:'l16Bench', title:'Open the Harness Bench', sub:'One LLM, eighteen questions, four parts you switch on and off', more:[['l16Card','Harness card']]}
 }};
 
 /* No-code side of the separate practicals: each card opens that track's own notes page (notes-no-code, beside the code notes). */
