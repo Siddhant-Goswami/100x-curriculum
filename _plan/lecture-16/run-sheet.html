@@ -119,6 +119,14 @@ section.blk{padding-block:34px;border-top:1px solid var(--line);scroll-margin-to
 .chain .box{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--card)}
 .chain .arrow{color:var(--muted)}
 .chain .ans{border-color:var(--right);color:var(--right);font-weight:600}
+.kw{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;margin-top:12px;font-size:13px}
+.kw .who{display:flex;gap:4px;flex-wrap:wrap}
+.kw .tag{border:1px solid var(--line);border-radius:6px;padding:2px 7px;font:600 11.5px var(--mono);white-space:nowrap}
+.kw .tag.off{opacity:.3;text-decoration:line-through}
+.kw .said{display:flex;gap:8px;align-items:center}
+.kw .said .dot{width:16px;flex:none}
+.kw .said q{quotes:"“" "”"}
+.kw .said.ok q{color:var(--right);font-weight:600}
 
 /* block 2 */
 .lad{display:grid;gap:14px}
@@ -329,13 +337,22 @@ footer a{color:inherit}
       <div class="score" style="margin-top:12px"><span class="big mono" data-n>15</span><span class="of">right of 18</span><span class="sub" data-w></span></div>
     </div>
     <div class="card">
-      <div class="vhead"><h3>Best record of the session: question I</h3><span class="chip">click “Show what the files say”</span></div>
+      <div class="vhead"><h3>Question I needs two halves</h3><span class="chip">“What date was the lecture I said I was stuck on?”</span></div>
       <div class="chain" style="margin-top:12px">
-        <span class="box"><span class="mono">told.md</span><br>“I am stuck on Lecture 6”</span><span class="arrow">+</span>
-        <span class="box">the brain's schedule page<br><span class="muted">the LLM asked for it</span></span><span class="arrow">→</span>
-        <span class="box ans">Saturday 10 October 2026</span>
+        <span class="box"><span class="mono">told.md</span> knows<br><b>which lecture</b>: 6</span><span class="arrow">+</span>
+        <span class="box">the brain knows<br><b>every date</b>, not who asks</span><span class="arrow">=</span>
+        <span class="box ans">Sat 10 Oct 2026</span>
       </div>
-      <p style="margin-top:10px;font-size:14px">“No single part could answer it. The file knew the lecture. The brain knew the date.”</p>
+      <div class="kw">
+        <div class="who"><span class="tag">brain</span><span class="tag off">files</span></div>
+        <div class="said"><span class="dot"></span><q>I can't tell which lecture you mean.</q></div>
+        <div class="who"><span class="tag off">brain</span><span class="tag">files</span></div>
+        <div class="said"><span class="dot"></span><q>Lecture 6, but I can't find its date.</q></div>
+        <div class="who"><span class="tag">brain</span><span class="tag">files</span></div>
+        <div class="said ok"><span class="dot r"></span><q>Lecture 6 was Saturday 10 October.</q></div>
+      </div>
+      <p style="margin-top:10px;font-size:14px">SAY: “Each half alone says ‘I don't know’. Together, the LLM joins them.”</p>
+      <p class="muted" style="margin-top:4px;font-size:12.5px">Every bench question is a new chat. If you name the lecture in the chat, the brain alone can answer it.</p>
     </div>
   </div>
 </div></section>
